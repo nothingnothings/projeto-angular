@@ -1,0 +1,1619 @@
+
+
+
+
+
+
+
+
+
+CERTO.... DEVEMOS CRIAR UM NOVO COMPONENT COM 
+
+
+'ng g c nomeDoComponent',
+
+
+
+
+E AÍ EXAMINAR O SEU ARQUIVO 'xxxx.component.spect.ts'..
+
+
+
+
+
+
+
+
+
+certo... é o component 'exemplo-component'...
+
+
+
+
+
+
+
+
+
+
+
+
+EX DO ARQUIVO DE TEST:
+
+
+
+
+
+
+
+
+
+
+
+
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { ExemploComponentComponent } from './exemplo-component.component';
+
+describe('ExemploComponentComponent', () => {
+  let component: ExemploComponentComponent;
+  let fixture: ComponentFixture<ExemploComponentComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ ExemploComponentComponent ]
+    })
+    .compileComponents();
+
+    fixture = TestBed.createComponent(ExemploComponentComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { ExemploComponent } from './exemplo.component';
+
+describe('ExemploComponent', () => {
+  let component: ExemploComponent;
+  let fixture: ComponentFixture<ExemploComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ ExemploComponent ]
+    })
+    .compileComponents();
+
+    fixture = TestBed.createComponent(ExemploComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo... até agora, nada de mais...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CRIEI ALGUNS TESTS...
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { ExemploComponent } from './exemplo.component';
+
+describe('ExemploComponent', () => {
+  let component: ExemploComponent;
+  let fixture: ComponentFixture<ExemploComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ ExemploComponent ]
+    })
+    .compileComponents();
+
+    fixture = TestBed.createComponent(ExemploComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+
+  it('should have "example" property', () => {
+    expect(component.example).toBeTruthy()
+  });
+
+  it('"example" property should have a value of "EXEMPLO"', () => {
+    expect(component.example).toEqual('EXEMPLO');
+  });
+
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> Agora basta RODAR ESSE ARQUIVO AÍ... --> acho que se eu rodar o 'ng test' GERAL,
+
+esse arquivo aí de 'spec.ts'
+
+SERÁ CONSIDERADO NO TEST...
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, MEU CÓDIGO ATUAL DE 'exemplo.component.ts'
+
+
+ESTÁ ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-exemplo',
+  templateUrl: './exemplo.component.html',
+  styleUrls: ['./exemplo.component.css']
+})
+export class ExemploComponent implements OnInit {
+
+
+  example = 'EXEMPLO';
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo... mais algum case que nos interessa?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR TAMBÉM CRIA UM COMPONENT PARA SI,
+
+
+
+component de 'user'...
+
+
+
+
+
+
+
+
+
+
+--> AÍ ELE EDITA O ARQUIVO '.spec.ts'...
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE AINDA NÃO ESCREVEMOS TESTS MAIS COMPLEXOS.
+
+
+
+
+
+
+
+-> SERIA INTERESSANTE ESCREVER UM POUCO DE CÓDIGO HTML PARA ESSE COMPONENT, POR ISSO O PROFESSOR ESCREVE ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+<div>
+    <h1>Logged In</h1>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DEPOIS ELE COLOCA UMA STRING INTERPOLATION DE 'user is'..
+
+
+
+
+ex:
+
+
+
+
+
+
+
+<div>
+    <h1>Logged In</h1>
+    <p>User is:</p>
+</div>
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+<div>
+  <h1>Logged In</h1>
+  <p>User is: {{exemplo}}</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK.... 
+
+
+
+
+
+ELE COPIA ESSE CÓDIGO AÍ,
+
+PARA COLAR LOGO EM BAIXO,
+
+
+PARA TER UMA VERSÃO QUE USAREMOS COM 'ngIf'
+
+PARA VER O COMPORTAMENTO DE NGIF  COM
+
+
+O TESTING:
+
+
+
+
+
+
+
+
+
+
+
+
+<div>
+  <h1>Logged in</h1>
+  <p>User is: {{exemplo}}</p>
+</div>
+<div *ngIf="isShow" >
+    <h1>User not logged in</h1>
+    <p>Please log in first!</p>
+  </div>
+  
+
+
+
+
+
+
+
+
+  --> certo, aí o professor adiciona um object de 'user' ao component,
+
+
+  junto de uma variável de 'isLoggedIn',
+
+  que será FALSE INICIALMENTE..
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> vou trocar o nome da propriedade 'example' para 'user', 
+
+  e aí VOU DEFINIR ESSA PROPRIEDADE DE 'isLoggedIn'...
+
+
+
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+
+
+
+  import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-exemplo',
+  templateUrl: './exemplo.component.html',
+  styleUrls: ['./exemplo.component.css'],
+})
+export class ExemploComponent implements OnInit {
+  example: {
+    name: string;
+  };
+
+  isLoggedIn = false;
+
+  constructor() {}
+
+  ngOnInit(): void {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, AÍ O PROFESSOR EDITA O HTML, PARA FAZER COM QUE A PRIMEIRA DIV SÓ SEJA RENDERIZADA 
+
+
+SE '''TIVERMOS O LOGGEDIN COMO TRUE'''....
+
+
+
+
+
+
+
+
+
+
+--> FICA TIPO ASSIM:
+
+
+
+
+ 
+
+
+
+
+ <div *ngIf="isLoggedIn">
+  <h1>Logged in</h1>
+  <p>User is: {{exemplo}}</p>
+</div>
+<div *ngIf="!isLoggedIn" >
+    <h1>User not logged in</h1>
+    <p>Please log in first!</p>
+  </div>
+  
+
+
+
+
+
+
+
+
+
+
+  CERTO.... ESSE É O NOSSO USER COMPONENT..
+
+
+
+
+
+
+
+
+
+
+  -> ESSE COMPONENT FOI ADICIONADO, SIM..
+
+
+
+
+
+
+
+
+
+
+
+
+  --> TEORICAMENTE,
+
+
+
+
+  _TERÍAMOS DE POSICIONAR ESSE 'COMPONENT RECÉM CRIADO'
+
+
+
+
+
+  lá no app.component.ts,
+
+
+
+
+
+
+
+
+  LÁ DETNRO DO COMPONENT 'app.component.html' ... ---> ENTRETANTO,
+
+
+
+
+
+
+COMO AQUI ESTAMOS RODANDO ESSE TEST EM  UM 'TESTING ENVIRONMENT',
+
+
+
+
+NÃO HÁ UTILIDADE ALGUMA EU USAR O CHROME/NAVEGADOR... ->  (PQ NÃO VAMOS 'WATCH ESSE APP NO BROWSER'),
+
+
+
+
+
+
+
+E SIM VAMOS APENAS __ TESTAr_ ESSE COMPONENT...
+
+
+
+
+
+
+
+
+
+----> O PROFESSOR PEDE QUE FECHEMOS TODOS OS TEST, E QUE AÍ 
+
+
+
+
+
+tentemos escrever TESTS PARA ESSE BRAND NEW USER-CREATED COMPONENT..
+
+
+
+
+
+
+
+
+
+
+
+
+-> PODEMOS USAR  A SPEC FILE QUE JÁ FOI CRIADA... (mas ela é mt SIMPLES, pq só contém as tasks de async e 'TestBed')....
+
+
+
+
+
+---> 
+E A ÚNICA COISA QUE ESSE ARQUIVO DESCREVE É QUE 
+
+
+
+
+'''''
+SEU COMPONENT ''''DEVE CRIAR UMA INSTANCE,
+
+
+
+
+E AQUI TENTAMOS CRIAR UMA NOVA INSTANCE DE 'USER,
+'
+
+
+
+
+
+
+
+com o código de 'let component = new UserComponent()'
+
+
+
+
+
+
+
+
+
+
+
+
+------> MAS O PROFESROR  diz que devemos _ REMOVER ESSE CÓDIGO DO 'CREATE DE UMA NOVA INSTANCE DO SEU  COMPONENT'..
+
+
+
+pq ele realmente não é tão útil...ok removemos, e entaõa 
+
+
+PASSSAMOS A ESCREVER 
+
+
+
+nossos próprios tests, com o angular2 testing environmnet...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok... 
+
+a primeira coisa que o profesSor decide fazer é ''DECLARAR'' O MODULO/COMPONENT 
+
+
+A SER USADO COM NOSOSS TESTS, mais uma vez
+ 
+
+
+
+
+
+
+
+
+ ESCREVENDO  no method de 'beforeEach',
+
+ tipo assiM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+ import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { ExemploComponent } from './exemplo.component';
+
+describe('ExemploComponent', () => {
+  let component: ExemploComponent;
+  let fixture: ComponentFixture<ExemploComponent>;
+
+
+  beforeEach(
+    () => {
+     TestBed.configureTestingModule
+    }
+  )
+
+
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+
+  it('should have "example" property', () => {
+    expect(component.example).toBeTruthy()
+  });
+
+  it('"example" property should have a value of "EXEMPLO"', () => {
+    expect(component.example).toEqual('EXEMPLO');
+  });
+
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK...
+
+
+
+
+
+
+testing.configureTestingModule..
+
+
+
+
+
+
+
+É DENTRO DELE QUE VAMOS DEFINIR 'QUAIS COMPONENTS SERÃO ALVO DE NOSSO TEST'...
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+ import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { ExemploComponent } from './exemplo.component';
+
+describe('ExemploComponent', () => {
+  let component: ExemploComponent;
+  let fixture: ComponentFixture<ExemploComponent>;
+
+
+  beforeEach(
+    () => {
+     TestBed.configureTestingModule(
+        {
+            declarations: [UserComponent]
+        }
+     )
+    }
+  )
+
+
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+
+  it('should have "example" property', () => {
+    expect(component.example).toBeTruthy()
+  });
+
+  it('"example" property should have a value of "EXEMPLO"', () => {
+    expect(component.example).toEqual('EXEMPLO');
+  });
+
+
+});
+
+s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, MAS AQUI TEMOS UM DETALHE IMPORTANTE:
+
+
+
+
+
+
+
+1) SE VOCÊ NAÕ ESTIVESSE USANDO O 'ANGULAR-CLI' OU 'QUALQUER OUTRO WEBPACK-BASED SETUP' ,
+
+
+
+
+
+
+
+
+VOCÊ 
+
+
+_ É OBRIGADO A RODAR O CÓDIGO DE 'compileComponents'
+
+DEPOIS,
+
+
+
+
+
+
+VOCÊ PRECISA EXECUTAR ESSE MÉTODO PARA 'COMPILAR' SEUS ARQUIVOS..
+
+
+
+
+
+
+
+
+
+
+  beforeEach(
+    () => {
+     TestBed.configureTestingModule()
+    }
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE METHOD DE 'configureTestingModule'
+
+
+
+
+REQUER QUE VOCÊ PASSE UM OBJECT JAVASCRIPT A ELE...
+
+
+
+
+
+
+
+
+-. DENTRO DESSE OBJECT JS,
+
+você 
+
+
+
+
+VAI TER UMA KEY DE 'declarations',
+
+
+
+EM QUE VOCê DEVERÁ ESPECIFICAR TODOS OS COMPONENTS QUE VOCÊ VAI QUERER TESTAR..
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+  beforeEach(
+    () => {
+     TestBed.configureTestingModule({
+        declarations: [
+            ExemploComponent
+        ]
+     })
+    }
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+BEM, O CÓDIGO COMPLETO DE TESTING FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { AppComponent } from '../app.component';
+
+import { ExemploComponent } from './exemplo.component';
+
+describe('ExemploComponent', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [
+        ExemploComponent, //aqui vamos DECLARAR TODOS OS COMPONENTS QUE VAO SER ALVOS DE NOSSO TESTING..
+      ],
+    }).compileComponents(); ///devemos chamar isso....
+  });
+
+  let component: ExemploComponent; ///COMPONENT EM SI
+  let fixture: ComponentFixture<ExemploComponent>; ///COMPONENT NO NOSSO DOM..
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should have "example" property', () => {
+    expect(component.example).toBeTruthy();
+  });
+
+  it('"example" property should have a value of "EXEMPLO"', () => {
+    expect(component.example.name).toEqual('EXEMPLO');
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, MAS AQUI DEVEMOS INSPECIONAR ESTE TRECHO AQUI,
+
+MAIS DE PERTO:
+
+
+
+
+
+
+
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [
+        ExemploComponent, //aqui vamos DECLARAR TODOS OS COMPONENTS QUE VAO SER ALVOS DE NOSSO TESTING..
+      ],
+    }).compileComponents(); ///devemos chamar isso....
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+  -> aquele '.compileComponents()' ... -----> 
+
+
+
+
+
+
+
+  _________ SE ________  VOCÊ NÃO ESTIVESSE 
+
+
+
+  USANDO O 'ANGULAR CLI',
+
+
+
+
+  OU QUAQLUER OUTRO 
+
+
+  'WEBPACK-BASED SETUp',
+
+
+
+
+  VOCÊ SERIA OBRIGADO A ESCREVER ESSE 'compileComponents()',
+
+
+
+
+  esse method aí,
+
+  PARA CONSEGUIR __ COMPILAR__ SEUS COMPONENTS DEPOIS__ DE OS DECLARAR..
+
+
+
+
+
+
+
+
+
+
+  ESSE É UM METHOD DO 'ANGULAR/TESTING,' a propósito... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> APENAS QUANDO USAMOS O 'WEBPACK' esse method de 'compileComponents()'
+
+
+  NÃO É NECESSÁRIO (
+
+    pq o webpack tem um workflow diferente,
+    em que 
+
+    esse processo é realizado DE QUALQUER FORMA; 
+
+
+    isso devido 
+
+    AO MODO PELO QUAL VOCÊ IMPORTA SUAS EXTERNAL HTML/CSS/JS FILES,
+
+
+
+    EM QUE __ O WEBPACK FAZ ISSO ENQUANTO BUNDLA/PRODUZ SEU APP..
+
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> CERTO... MAS EM UM SETUP DE UM 'SYSTEM' TÍPICO,
+
+
+  ISSO NÃO SERÁ FEITO,
+
+
+
+  PQ O ANGULAR2 COMPILER_ NÃO VAI ESTAR PRESENTE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> ok... agora temos nossos 'COMPILED COMPONENTS',
+
+
+
+  e o próximo passo é RODAR UM TEST...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  TEMOS OS NOSSOS EXEMPLOS DE TEST:
+
+
+
+
+
+
+
+
+
+
+
+
+  import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { AppComponent } from '../app.component';
+
+import { ExemploComponent } from './exemplo.component';
+
+describe('ExemploComponent', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [
+        ExemploComponent, //aqui vamos DECLARAR TODOS OS COMPONENTS QUE VAO SER ALVOS DE NOSSO TESTING..
+      ],
+    }).compileComponents(); ///devemos chamar isso....
+  });
+
+  let component: ExemploComponent; ///COMPONENT EM SI
+  let fixture: ComponentFixture<ExemploComponent>; ///COMPONENT NO NOSSO DOM..
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should have "example" property', () => {
+    expect(component.example).toBeTruthy();
+  });
+
+  it('"example" property should have a value of "EXEMPLO"', () => {
+    expect(component.example.name).toEqual('EXEMPLO');
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> SÓ HÁ UNS CÓDIGOS QUE FICARAM MEIO DIFERENTES DO CÓDIGO QUE O PROFESSOR USOU:
+
+
+
+
+
+
+
+
+
+
+
+
+para criar o 'fixture' e o 'app',
+
+
+o professor
+
+escreveu assim:
+
+
+
+
+
+
+
+
+
+
+let fixture = TestBed.createComponent(UserComponent);
+let component = fixture.debugElement.componentInstance;
+
+
+
+
+
+
+
+
+
+
+
+--> já no código ANGULAR MAIS MODERNO, temos:
+
+
+
+
+
+
+  let fixture: ComponentFixture<ExemploComponent>; ///COMPONENT NO NOSSO DOM..
+    let component: ExemploComponent; ///COMPONENT EM SI
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> BEM, MAS ESSE CÓDIGO DO PROFESSOR ESTÁ UMA _ BAGUNÇA__...
+
+
+
+
+
+
+
+
+
+
+    O CÓDIGO MAIS ATUAL DO ANGULAR RELATIVO A TESTES, DE ACORDO COM OS DOCS (https://angular.io/guide/testing-components-basics)
+
+
+
+    É ESTE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ExemploComponent } from './exemplo.component';
+
+describe('ExemploComponent', () => {
+  let component: ExemploComponent;
+  let fixture: ComponentFixture<ExemploComponent>;
+
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [ExemploComponent],
+    }).compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(ExemploComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should have "example" property', () => {
+    expect(component.example).toBeTruthy();
+  });
+
+  it('"example" property should have a value of "EXEMPLO"', () => {
+    expect(component.example.name).toEqual('EXEMPLO');
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ou seja,
+
+
+são 2 CALLS de 'beforeEach',
+
+
+
+
+
+
+1 para definir inicialmente o 'TYPE' de fixture e component,
+
+
+
+
+
+e 
+
+OUTRO, mais tarde,
+
+
+
+PARA ENTÃO 
+
+DEFINIR SEUS VALUES COM 
+
+
+'createComponent'
+
+
+
+e 
+
+'componentInstance'...
+
+
+
+
+
+
+
+
+
+DETALHE:
+
+
+
+
+
+
+
+
+
+
+a linha 
+
+
+
+''''     let component = fixture.componentInstance;  ''''
+
+
+
+
+
+
+
+E OS CHECKS EM CIMA DESSE COMPONENT, COMO ISTO AQUI:
+
+
+
+
+
+    expect(component).toContain( 
+      'novoProjetoTesting app is running!'
+    ); 
+
+
+
+
+
+
+SÓ _ FUNCIONAM_ 
+
+
+
+QUANDO O COMPONENT QUE VOCÊ 'selecionou'
+
+
+
+
+NÃO É O APP COMPONENT EM SI (ou seja, tem de ser um 'component menor')...
+
+
+
+
+
+
+
+
+
+
+
+--> caso você esteja testando o APP COMPONENT EM SI,
+
+
+
+
+o jeito correto de o selecionar é com este código:
+
+
+
+
+
+
+
+
+
+
+
+    const fixture = TestBed.createComponent(AppComponent); //cria 1 de nossos components (podemos testar vários) enumerados em 'declarations', para que então possa ser TESTADO DE FORMA UNITÁRIA (separada do resto dos components)...
+    
+
+    fixture.detectChanges();  ///é necessário, pq vai DETECTAR MUDANÇAS NESSE ELEMENTO NOSSO, NO DOM (ou seja, como o 'render de title')...
+
+
+    const compiled = fixture.nativeElement as HTMLElement;  ///ISSO NOS DÁ ACESSO AO NOSSO 'ACTUAL TEMPLATE'... ---. e essa variable será um 'ACTUAL JAVASCRIPT OBJECT', essa é a razão de podermos chamar '.querySelector' em cima dela, no código logo abaixo...
+    
+    
+    expect(compiled.querySelector('.content span')?.textContent).toContain(
+      'novoProjetoTesting app is running!'
+    ); 

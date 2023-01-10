@@ -1,0 +1,1515 @@
+ 
+
+
+
+
+
+
+
+
+
+
+
+ estamos próximos do final do módulo, e o professor quer acabar com uma demonstraçõa de outra 
+
+
+
+ TÉCNICA DE OPTIMIZAÇÃO....
+
+
+
+
+
+
+
+
+
+
+
+ --> É UMA TÉCNICA QUE PODEMOS _ E DEVEMOS__ 
+
+
+
+
+ UTILIZAR 
+
+
+
+
+ ANTES DE SHIPPARMOS NOSSO APP PARA DEPLOYMENT..
+
+
+
+
+
+
+
+
+
+
+
+ --> essa técnica 
+
+
+ é 
+
+
+
+
+
+ O 'AHEAD OF TIME VS JUST IN TIME COMPILATION'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> BEM, NO NOSSO APP, ATÉ AGORA, ESCREVEMOS:
+
+
+
+
+
+
+
+ 1) TEMPLATE CODE 
+
+
+
+ 2) TS CODE... 
+
+
+
+
+
+
+
+
+
+
+
+
+ --> CERTO... NOSSOS TEMPLATES, É CLAOR,
+
+
+
+ INCLUEM CERTA SINTAXE ESPECIAL ANGULAR,
+
+
+
+ como 
+
+ 'NgIf'
+
+
+ e 
+
+
+
+ 'NgFor'...
+
+
+
+
+
+
+
+
+
+
+
+ --> E OS TEMPLATES QUE ESTAMOS CRIANDO,
+
+
+
+
+
+ ELES NÃO SÃO UMA ONE-TO-ONE SNAPSHOT 
+
+
+
+
+
+ DAS COISAS QUE SERÃO EFETIVAMENTE RENDERIZADAS NO DOM.... -> EM VEZ DISSO,
+
+
+ O 
+
+
+ ANGULAR VAI 'PARSEAR' NOSSOS TEMPLATES 
+
+
+
+ E ENTAÕ 
+
+
+
+UPDATE O 'REAL DOM' 
+
+
+com 
+
+
+
+
+
+BASE __ NAS INSTRUÇÕES QUE 
+
+
+COLOCAMOS DENTRO DE NOSSOS TEMPLATES 
+
+
+
+
+
+
+
+
+
+
+
+
+ISSO QUER DIZER QUE TODOS NOSSOS COMPONENTS E DIRECTIVES SERÃO TRADUZIDOS EM COMANMDOS QUE 
+
+
+SERÃO 
+
+
+
+USADOS __ PARA __ ALTERAR_ 
+
+
+O DOM DE VERDAED...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO PQ O JAVASCRIPT NO BROWSER NÃO ENTENDE OS NOSSOS TEMPLATES,
+
+
+ 
+SÓ O ANGULAR ENTENDE... 
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE USAMOS O TYPESCRIPT, PARA COMPILAR O 
+
+
+
+
+
+O TYPESCRIPT CODE EM JAVASCRIPT CODE,
+
+
+
+QUE É CÓDIGO COMPREENDIDO PELO BROWSER....
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS TEMOS OUTRO COMPILER, ALÉM DO TYPESCRIPT COMPILER,
+
+
+QUE TRABALHA 'BEHIND THE SCENES',
+
+
+quando executamos 'ng serve',
+
+
+
+
+
+QUE É 
+
+O 
+
+'ANGULAR COMPILER'... ----> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ANGULAR COMPILER ---> É UM COMPILER INCLUÍDO NO ANGULAR FRAMEWORK,
+
+
+E É 
+
+'QUITE BIG'..
+
+
+
+
+
+
+----> O ANGULAR COMPILER EM SI É ESCRITO EM JAVASCRIPT,
+
+
+É RELATIVAMENTE LARGO,
+
+
+
+
+
+E FAZ PARTE DO ANGULAR APP QUE VOCÊ VÊ NO BROWSER, COM NG SERVE... -->
+
+
+
+
+
+
+
+
+
+
+
+EM OUTRAS PALAVRAS,
+
+O 'ANGULAR COMPILER'
+
+
+
+PEGA O _ COMPILED JAVASCRIPT CODE,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ELE:
+
+
+1) PEGA O COMPILED JAVASCRIPT CODE NOS SEUS TEMPLATES...
+
+
+
+
+
+
+
+
+2) ELE ACTUALLY TRADUZ TODA A LÓGICA DE LÁ 
+
+
+EM 'CONCRETE INSTRUCTIONS',
+
+
+
+
+
+
+
+QUE ACABAM UPDATANDO O DOM DE VERDAED.... 
+
+
+
+
+
+
+
+
+
+
+
+--> E ISSO, 
+
+
+POR DEFAULT,
+
+
+ACONTECE, TUDO ISSO,
+
+NO _ SEU BROWSER... ------> ISSO TUDO PQ 
+
+O 
+
+
+
+
+'ANGULAR COMPILER'
+
+
+,
+
+
+NO FINAL 
+
+DAS 
+
+CONTAS,
+
+
+
+__ FAZ__ PARTE__ 
+
+
+
+
+
+
+DO ANGULAR CODE QUE VOCÊ ACABA SHIPPANDO...
+
+
+
+
+
+
+
+Angular Compiler (automatically included in built code) 
+compiles template syntax to Javascript DOM instructions...
+
+
+
+
+
+
+
+------> ESSE PROCESSO, DESCRITO LOGO ACIMA,
+
+É CHAMADO DE 
+
+
+
+'JUST-IN-TIME COMPILATION' (JIT)..,
+
+
+
+
+
+
+ISSO PQ 
+
+
+
+
+
+
+__ OS 'ANGULAR TEMPLATES'
+
+SÃO 
+
+
+
+_ COMPILADOS 'JUST IN TIME',
+
+
+QUANDO 
+
+O RENDERING OCORRE NO SEU BROWSER...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> EM OUTRAS PALAVRAS,
+ O ANGULAR COMPILER 
+
+
+
+ __ RODA__ NO SEU BROWSER, DURANTE O RUNTIME...
+
+
+
+ (
+    ANGULAR TEMPLATE COMPILER RUNS IN BROWSER AT RUNTIME...
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> A ÓBVIA DESVANTAGEM DISSO É QUE 
+ESSE 'COMPILATION PROCCESS' 
+
+
+É ALGO QUE LEVA TEMPO;
+
+
+É UM PROCESSO SUPER RÁPIDO,
+
+
+
+
+MAS AINDA É UM PERFORMANCE HIT PEQUENO..
+
+
+
+
+
+
+
+
+-> além disso,
+
+
+ O 'ANGULAR COMPILER',
+
+
+
+ QUE 
+
+
+ É 
+
+ O CÓDIGO QUE 
+
+
+
+ SOMENTE É RESPONSÁVEL __ PELO _ COMPILE_ 
+
+
+
+ DE SUAS TEMPLATES E ETC,
+
+
+
+
+
+
+
+ ESSE CÓDIGO _ NÃO É PEQUENO, NEM UM POUCO PEQUENO,
+
+
+
+ É GRANDÃO,
+
+ E FAZ PARTE DO 
+
+
+
+ SEU ANGULAR APP,
+
+ __ AINDA QUE 
+
+
+
+ ELE 
+
+ NÃO TENHA NENHUMA CONEXÃO COM SUA 'BUSINESS LOGIC' (fora o actual render do conteúdo de suas templates na tela)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ---> RESUMINDO: O ANGULAR COMPILER É NECESSÁRIO, SIM, 
+
+
+ MAS NÃO DEIXA DE SER IRRITANTE (pq no approach de 'JIT', just-in-time compilation, ele vai ser enviado junto, pq é necessário)..
+
+
+
+
+
+
+
+
+
+
+
+ -----> OK.... MAS NÃO TEMOS COMO EVITAR QUE ELE
+
+ FAÇA 
+
+ PARTE DE NOSSO APP?
+
+
+
+
+
+
+
+
+
+
+ --> BEM, AS BOAS NOTÍCIAS É QUE ISSO É POSSÍVEL...
+
+
+
+
+
+
+
+
+
+
+ --> COMO O 'ANGULAR COMPILER' É RESPONSÁVEL 
+
+
+
+
+
+ PELO 'CONVERT' DE SEU TEMPLATE CODE/INSTRUCTIONS EM 
+
+ JAVASCRIPT 
+
+
+ COMMANDS 
+
+
+COMPREENSÍVEIS PELO 
+
+
+BROWSER,
+
+
+
+
+
+
+
+É POSSÍVEL FAZER 
+
+
+
+
+TUDO 
+
+
+ISSO 
+
+
+
+
+
+NO NOSSO DEV WORKFLOW,
+
+
+COMO PARTE 
+
+DO NOSSO 
+
+
+BUILD PROCCESS...
+
+
+
+
+
+
+
+
+
+
+
+--> E ESSE PROCESSO É CHAMADO DE 
+
+
+
+
+AOT,
+
+
+
+
+
+Ahead of time compilation,
+
+
+
+
+
+
+
+
+__ ISSO __ PQ NÓS COMPILAMOS 
+
+ESSES 'ANGULAR TEMPLATES'
+
+
+
+
+
+'AHEAD' 
+
+
+DO MOMENTO DA EXECUÇÃO.. ->  
+
+
+
+
+
+COM ISSO,
+
+O ANGULAR 
+
+
+TEMPLATE COMPILER 
+
+
+
+__ É EXECUTADO __ DURANTE O BUILD PROCCESS,
+
+
+ANTES 
+
+
+DO 
+
+APP SER EFETIVAMENTE DEPLOYADO,
+
+
+E NÃO __ 
+
+
+
+DURANTE_ O SEU DEPLOY...  (e não no browser, o que é ótimo)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O 'ngServe',
+
+
+AGORA,
+
+
+NATIVAMENTE,
+
+
+
+
+
+POR DEFAULT,
+
+
+USA O 
+
+
+
+'JUST-IN-TIME COMPILER',
+
+
+
+
+
+
+
+ISSO PQ 
+
+
+
+ESSE COMPILER É _ MAIS RÁPIDO,
+
+
+
+
+
+
+MELHOR PARA DEBUGGING 
+
+
+
+E 
+
+UPDATA MAIS RÁPIDO 
+
+
+
+
+durante o dev....
+
+
+
+
+
+
+
+
+
+
+--> E ISSO É ÓTIMO, DURANTE O DEVELOPMENT,
+
+PQ 
+
+
+
+NÃO TEMOS PROBLEMA 
+
+
+EM SHIPPAR 
+
+
+1 
+
+
+APP MT GRANDE,
+
+
+ISSO 
+
+
+
+
+
+PQ NÃO ESTAMOS OTIMIZANDO 
+
+
+O 
+
+CODE-SIZE 
+
+
+
+DURANTE O DEVELOPMENT,
+
+
+
+SÓ QUEREMOS TER UMA RICA DEVELOPMENT EXPERIENCE,
+
+
+
+COM MENSAGENS DE ERRO RICAS E ETC...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS ASSIM QUE NOS PREPARARMOS 
+
+PARA PRODUCTION,
+
+
+PARA O DEPLOY 
+
+
+DE NOSSO 
+
+
+APP 
+
+EM 1 
+
+SERVER,
+
+
+
+
+
+
+
+
+
+
+VAMOS QUERER OPTIMIZAR O NOSSO APP AO MÁXIMO,
+
+
+
+E AÍ 
+
+SHRINK NOSSO APP AO MÁXIMO...
+
+
+
+
+
+
+
+
+
+
+
+-> FAZEMOS ESSA OPTIMIZATION PARA DEPLOYMENT POR MEIO DE UM COMANDO ESPECIAL,
+
+
+Q
+UE É 
+
+
+
+
+
+
+'ng build --prod' 
+
+
+
+
+
+
+
+
+
+
+
+--> VOCê DIGITA 'ng build' para 
+
+
+
+CONSTRUIR UMA VERSÃO DE SEU APP,
+
+e aí 
+
+'--prod'
+
+
+
+
+
+
+
+PARA ESPECIFICAR QUE QUER CONSTRUIR PARA PRODUCTION..
+
+
+
+
+
+
+
+
+
+--> ESSE COMANDO 
+
+
+
+
+NÃO VAI SPIN UP UM WEBSERVER,
+
+
+
+
+MAS ACTUALLY 
+
+CONSTRÓI SEU APP INTEIRO EM UM PUNHADO DE FILES,
+
+
+
+
+OS QUAIS VOCê JÁ PODE 'DEPLOY'..
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR MOSTRARÁ O DEPLOYMENT PROCCESS EM UM MODULO SEPARADO,
+
+
+
+
+MAS AGORA DEVEMOS JÁ EXECUTAR ESSE COMANDO,
+
+
+
+PQ 
+
+
+
+
+ISSO 
+
+
+AÍ JÁ FAZ UMA 
+
+OPTIMIZATION 
+
+
+BEM IMPORTANTE 
+
+
+PARA NÓS,
+
+
+
+QUE É 
+
+
+
+
+O USO DESSE 
+
+'AHEAD OF TIME COMPILATION'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> VOCÊ NÃO PRECISA CONFIGURAR NADA DE ESPECIAL...
+
+
+
+
+PS A:\projeto8-ANGULAR\MODULO22-MODULESANGULAREOPTIMIZANDOAPPSANGULAR\novoprojeto13-MODULESNONOSSOPROJETO-COMLAZYLOADING> ng build --prod  
+Option "--prod" is deprecated: No need to use this option as this builder defaults to configuration "production".
+
+
+
+
+
+
+
+
+
+
+
+
+--------> OK... MAS NO CÓDIGO DO PROFESSOR, ELE GANHOU UM ERROR:
+
+
+
+
+'property control does not exist on type AbstractControl'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE ERRO NÃO ACONTECEU ANTES PQ O 'JUST IN TIME' COMPILER É UM POUCO MAIS 
+
+
+
+'FORGIVING'
+
+do que 
+
+o 
+
+
+
+AHEAD OF TIME COMPILER.. -> ESSE COMPILER DE DEPLOYMENT RODA 
+
+ALGUNS CHECKS 
+
+EXTRAS,
+
+
+E AQUI
+
+
+ELE NÃO COMPREENDEU ALGUMAS COISAS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O CÓDIGO QUE ELE NÃO ENTENDEU FOI ISTO:
+
+
+  <div
+            class="row"
+            *ngFor="
+              let ingredientControl of getIngredientControls();
+              let index = index
+            "
+            [ngStyle]="{ 'margin-bottom': '12px' }"
+          >
+
+
+
+
+
+
+
+
+
+
+
+
+-------> O PROFESSOR DIZ QUE 
+
+
+O AHEAD OF TIME COMPILER _ NÃO _ ENTENDE/ENTENDEU QUE 
+
+
+ESSA PARTE 
+
+de 
+
+
+
+
+
+recipeForm.get('ingredients').controls;
+
+
+
+
+NOS DÁ DE VOLTA UM 'FORM ARRAY'
+
+
+COM UMA PROPRIEDADE DE 'controls'... -->  ISSO 
+
+
+
+
+
+
+
+PQ ELE NÃO SABE QUE 
+
+
+'recipeForm.get('ingredients')'
+
+
+
+
+NOS RETORNA UM ARRAY QUE 
+
+
+
+POSSUI UMA PROPRIEDADE DE 'controls'...
+
+
+
+
+
+
+--> OU SEJA,
+
+ELE SÓ SABE QUE GANHAMOS DE VOLTA UM 'ABSTRACT CONTROL',
+
+
+
+
+MAS NÃO SABE QUE TEREMOS ESSA PROPRIEDADE DE 'controls' dentro 
+
+desse abstract control,
+
+
+
+pq nenhum outro 'AbstractControl' a tem...
+
+
+
+
+
+-> e esse é o problema que foi destacado pelo 'ahead of time compiler'...
+
+
+
+
+
+
+
+
+--> NO MEU CÓDIGO TS:
+
+
+
+  getIngredientControls() {  ///// This adjustment is required due to the way TS works and Angular parses your templates (it doesn't understand TS there).
+    return (<FormArray>this.recipeForm.get('ingredients')).controls;
+  }
+
+
+
+
+
+
+
+
+
+
+
+  --->  A SOLUÇÃO,
+   
+   DIZ O PROFESSOR,
+
+
+
+
+   É FAZER O QUE FIZEMOS:
+
+
+
+
+   REMOVER ESSE CÓDIGO LÁ DO TEMPLATE,
+
+
+   E AÍ 
+
+   POSICIONÁ-LO DENTRO DO CÓDIGO TS:
+
+
+
+
+
+
+
+
+
+     getIngredientControls() {  ///// This adjustment is required due to the way TS works and Angular parses your templates (it doesn't understand TS there).
+    return (<FormArray>this.recipeForm.get('ingredients')).controls;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> bastou usar esse method aí,
+
+e 
+
+
+
+aí 
+
+utilizá-lo lá no template...
+
+
+
+
+
+
+
+--> COMO RESULTADO DISSO,
+
+DEIXAMOS ISSO MAIS 'TYPE SECURE' -----> ISSO É IMPORTANTE PARA 
+
+EVITAR O FAIL DO AHEAD OF TIME 
+
+
+COMPILEr....
+
+
+
+
+
+
+
+
+
+
+
+
+-> AGORA RE-RODAMOS ng build,
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+Initial Chunk Files           | Names                            |  Raw Size | Estimated Transfer Size       
+main.b8f22f4e5937134b.js      | main                             | 243.02 kB |                66.30 kB       
+styles.054a699817434cef.css   | styles                           | 111.74 kB |                15.33 kB       
+polyfills.2f5c9cf2f825ea54.js | polyfills                        |  33.03 kB |                10.62 kB       
+runtime.4a05b27de349fe19.js   | runtime                          |   2.85 kB |                 1.36 kB       
+
+                              | Initial Total                    | 390.64 kB |                93.61 kB       
+
+Lazy Chunk Files              | Names                            |  Raw Size | Estimated Transfer Size       
+382.02891d56bcbd130d.js       | recipeBook-recipe-book-module    |  38.88 kB |                 7.69 kB       
+343.dcbde3cb30e01435.js       | recipeBook-recipe-book-module    |  16.08 kB |                 3.85 kB       
+400.e871b5c72ccc610b.js       | auth-auth-module                 |   7.11 kB |                 2.27 kB       
+672.cc7484f5b5d6f4bc.js       | ShoppingList-shoppingList-module |   6.04 kB |                 1.87 kB       
+common.4f9deb2502ce6b88.js    | common                           | 603 bytes |               369 bytes       
+
+Build at: 2022-06-11T05:25:13.360Z - Hash: acaae50903500fe0 - Time: 11822ms
+PS A:\projeto8-ANGULAR\MODULO22-MODULESANGULAREOPTIMIZANDOAPPSANGULAR\novoprojeto13-MODULESNONOSSOPROJETO-COMLAZYLOADING>    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> certo... mas onde ficaram esses arquivos?
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ACHO QUE FICARAM EM 'dist', 
+
+MAS NÃO TENHO CERTEZA....
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ESSE FOLDER AGORA CONTÉM UM __ FOLDER_ COM NOSSO 'PROJECT NAME' ( por alguma razão, fiquei com 'novoprojeto5')...
+
+
+
+
+
+
+
+--> E DENTRO DESSE FOLDER TEMOS MÚLTIPLOS ARQUIVOS ,
+
+
+
+QUE 
+
+BASICAMENTE CONTÊM
+
+
+O 
+
+
+CÓDIGO DE SEU APP,
+
+
+MAS AGORA 
+
+
+COM 
+
+UM TAMANHO BEM REDUZIDO,
+
+
+
+
+propositalmente...
+
+
+
+
+
+
+
+
+----> 
+
+
+
+
+
+
+
+
+
+
+
+OS ARQUIVOS ESTARÃO BEM MENORES....
+
+
+
+
+
+
+TODOS OS ARQUIVOS COm '3.8mb'
+
+
+E ETC 
+
+
+TERÃO SUMIDO... -> 
+
+
+
+
+
+TERÃO SIDO 'ENCOLHIDOS'...
+
+
+
+
+
+
+
+
+--> E É CLARO QUE ESSE 'ng build' ,
+
+o AHEAD OF TIME COMPILATION,
+
+É SUPER GRANDE,
+
+
+
+PQ 
+
+
+
+TIRA_  ESSE 'JUST IN TIME COMPILATION' 
+
+
+
+de dentro de seus bundles..
+
+
+
+
+
+
+
+
+
+
+-> ok, rode sempre 'ng build'
+
+ANTES DE DEPLOYAR SEU CÓDIGO EM ALGUM LUGAR...

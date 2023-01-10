@@ -1,0 +1,3366 @@
+
+
+
+
+
+
+
+
+
+
+ANGULAR ANIMATIONS,
+
+
+QUE SEMPRE USAMOS ___ EM __ COMPONENTS (
+
+
+
+pq  você vai querer usar essas animations nos seus TEMPLATES...
+
+),
+
+
+
+
+
+
+
+SÃO SETTADOS NO DECORATOR DE 
+
+
+'@Component(
+    {
+
+    }
+)
+'
+
+
+
+
+
+
+
+
+
+--> OU SEJA,
+
+
+SÃO COLOCADOS JUNTO DE 'selector', 'templateUrl' 
+
+
+
+e 
+
+
+'styleUrls'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> PARA COLOCAR UMA 'ANIMATION' EM ALGUM COMPONENT,
+
+
+VOCê DEVE 
+
+ADICIONAR O ARRAY DE 'animations' dentro do decorator 'Component',
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  animations: [] ////////////É ASSIM QUE ADICIONAMOS ANIMATIONS ANGULAR AOS NOSSOS COMPONENTS...
+})
+export class AppComponent {
+  items: string[] = ['Milk', 'Sugar', 'Bread'];
+
+  constructor() {}
+
+  onDeleteItem(item: string) {
+
+
+    console.log(item);
+
+  }
+
+  onAddItem(item: string) {
+    this.items.push(item);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DENTRO DESSE ARRAY,
+
+
+DEFINIMOS AS DIFERENTES ANIMATIONS QUE ESSE TEMPLATE DEVERÁ FICAR 
+
+
+'AWARE OF'...
+
+
+
+
+
+
+
+
+
+
+---> animations ---> são geralmente ____ CÓDIGO TYPESCRIPT___,
+
+
+
+
+
+
+
+MAS ___ É MT FÁCIL ENTENDER__ COMO NÓS __ MANIPULAMOS___ CERTOS 
+
+
+ESTILOS 
+
+
+
+
+__ DE ELEMENTOS,
+
+
+
+PQ LÁ, NO MANIPULATE DESSES ELEMENTOS,
+
+VAMOS USAR 
+
+
+
+OS __ MESMOS __ NOMES__ DAS PROPRIEDADES E ESTILOS QUE 
+
+
+
+USAMOS 
+
+
+COM O CSS NORMAL... -------. mas o professor vai mostrar como isso funciona...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... MAS COMO UMA ANGULAR ANIMATION SE PARECE,
+
+COMO É DEFINIDA?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> CADA ANIMATION DO ANGULAR POSSUI UM 'TRIGGER'...
+
+
+
+
+
+
+
+
+
+
+
+-> OK... E o 'TRIGGER' 
+
+
+
+PRECISA SER COLOCADO DENTRO DO ARRAY DE 'animations'...
+
+
+
+
+
+
+
+
+
+
+--> e 'trigger' PRECISA SER IMPORTADO LÁ DO '@angular/core'..
+
+
+
+
+
+
+
+
+
+
+MAS ANTES DISSO,
+
+
+
+LEMBRE-SE DAS DICAS PARA SETUPPAR ANIMATIONS:
+
+
+
+
+
+
+
+
+
+
+
+
+
+You probably need to install the new animations package (running the command never hurts): npm install --save @angular/animations 
+
+
+Add the BrowserAnimationsModule  to your imports[]  array in AppModule
+
+
+This Module needs to be imported from @angular/platform-browser/animations'  => import { BrowserAnimationsModule } from '@angular/platform-browser/animations'  (in the AppModule!)
+
+
+
+You then import trigger , state , style  etc from @angular/animations  instead of @angular/core 
+
+
+
+
+
+
+
+
+
+
+
+ok... isso feito, 
+
+
+
+escrevemos aquele module de 'BrowserAnimationsModule'
+
+
+no app.module.ts....
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok, mas ainda NÃO TEMOS ESSE MODULE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ENFIM,
+
+
+
+
+O PROFESSOR IMPORTA O 'trigger' LÁ DO '@angular/core'...
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+import { Component } from '@angular/core';
+
+import { trigger } from '@angular/animations';  ///ESSENCIAL.
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  animations: [trigger] ////////////É ASSIM QUE ADICIONAMOS ANIMATIONS ANGULAR AOS NOSSOS COMPONENTS...
+})
+export class AppComponent {
+  items: string[] = ['Milk', 'Sugar', 'Bread'];
+
+  constructor() {}
+
+  onDeleteItem(item: string) {
+
+
+    console.log(item);
+
+  }
+
+  onAddItem(item: string) {
+    this.items.push(item);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> CERTO...
+
+
+
+
+
+
+
+
+COM O TRIGGER, QUE É UMA 'FUNCTION',
+
+
+
+
+VAMOS QUERER _ DIZER AO 
+
+
+
+
+ANGULAR QUE 
+
+
+
+''''QUEREMOS _ DEFINIR UM __ CERTO NOME,
+
+
+NOME QUE VAMOS POSICIONAR LÁ NO TEMPLATE/DOM,
+
+
+
+NOME QUE __ ENTÃO, SE ESTIVER POSICIONADO LÁ,
+
+DEVERÁ __ FAZER___ PLAy__ DE UMA CERTA ANIMATION''''...
+
+
+
+
+
+
+
+
+
+
+
+--> o professor decide um nome qualquer, no caso 
+
+'divStateExample'...
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+import { trigger } from '@angular/animations';  ///ESSENCIAL.
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  animations: [trigger('divStateExample')] ////////////É ASSIM QUE ADICIONAMOS ANIMATIONS ANGULAR AOS NOSSOS COMPONENTS...
+})
+export class AppComponent {
+  items: string[] = ['Milk', 'Sugar', 'Bread'];
+
+  constructor() {}
+
+  onDeleteItem(item: string) {
+
+
+    console.log(item);
+
+  }
+
+  onAddItem(item: string) {
+    this.items.push(item);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------> O PROFESSOR ESCREVEU 'divState'
+
+
+PQ ELE __ PLANEJA _ 
+
+
+ALTERAR O 'STATE' 
+
+
+DAQUELE ELEMENTO '<div>' 
+
+NO NOSSO TEMPLATE....
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <h1>Animations</h1>
+      <button class="btn btn-primary">Animate!</button>
+      <button class="btn btn-primary">Shrink!</button>
+      <hr />
+      <div></div>  <!-- ESSE É O ELEMENTO QUE SOFRERÁ AS 'ANIMATIONS' -->
+    </div>
+  </div>
+<hr />
+<div class="row">
+  <div class="col-xs-12">
+    <input type="text" #input >
+    <button class="btn btn-primary" (click)="onAddItem(input.value)">
+      Add Item!
+    </button>
+    <hr />
+    <ul class="list-group">
+      <li
+        class="list-group-item"
+        (click)="onDeleteItem(item)"
+        *ngFor="let item of items"
+      >
+        {{ item }}
+      </li>
+    </ul>
+  </div>
+</div>
+<hr />
+<div class="row">
+  <div class="col-xs-12">
+    <ul class="list-group">
+      <li
+        class="list-group-item"
+        (click)="onDeleteItem(item)"
+        *ngFor="let item of items"
+      >
+        {{ item }}
+      </li>
+    </ul>
+  </div>
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> OK, 
+
+
+
+
+
+ISSO QUER DIZER QUE O 'trigger'
+
+
+
+
+É ESSE 
+
+
+'divStateExample'...
+
+
+
+
+
+
+
+
+
+
+--> MAS É CLARO QUE O __ TRIGGEr_ POR SI SÓ _ NÃO VAI FAZER COISA ALGUMA...
+
+
+
+
+
+
+
+
+--> PARA QUE ELE SURTA ALGUM EFEITO NO SEU TEMPALTE,
+
+
+
+VOCÊ 
+
+
+
+
+___PRECISA_ _ ANEXAR ALGUMAS ANIMATIONS OU COISA DO GÊNERO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> ESSAS ANIMATIONS SÃO 'A COISA QUE ESSE TRIGGER VAI FAZER'... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO... O SEGUNDO ARGUMENTO DEFINE A 'ANIMATION QUE ESSE TRIGGER DEVE TOGGLAR'...
+
+
+
+
+
+
+
+
+
+
+
+se você colocar o mouse em cima, verá 
+
+
+
+
+
+
+'name: string, animation: Animation.Metadata[]',
+
+
+
+
+
+
+
+
+
+
+O QUE SIGNIFICA QUE 
+
+
+ANIMATIONS POSSUEM O TYPE DE 'Animation.Metadata[]'...
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE TYPE _ É SIMPLESMENTE UM __ARRAY,
+
+
+
+POR ISSO O PROFESSOR ESCREVE ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+animations: [
+
+    trigger(
+        'divStateExample',
+        [] ////2o parametro...
+    )
+]
+
+
+
+
+
+
+
+
+
+
+
+
+ok... 
+
+
+
+
+NÓS AINDA NÃO TEMOS NENHUMA ANIMATION A SER DISPARADA,
+
+
+MAS MESMO ASSIM O PROFESSOR NOS 
+
+
+
+
+INFORMA QUE __ JÁ PODEMOS IR ATÉ O 'app.component.html'
+
+
+
+
+
+E ENTÃO __ ADICIONAR__ ESSE TRIGGER DE 'divStateExample'
+
+
+
+
+
+ÀQUELA DIV 
+
+
+<div></div>
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+------> O PROFESSOR FAZ ISSO COM 
+
+
+ 
+ UMA ESCRITA TÍPICA DO PROPERTY BINDING,
+
+
+ TIPO ASSIM:
+
+
+
+
+ <div [exemplo]></div>,
+
+
+
+
+
+
+
+
+
+
+ MAS EM VEZ DE ESCREVER SÓ O NOME DO NOSSO TRIGGER DENTRO DOS SQUARE BRACKETS,
+
+
+ O PROFESSOR 
+
+
+ COLOCA '@' + O NOME...
+
+
+
+
+
+
+
+ EX:
+
+
+
+
+
+
+ <div [@divStateExample]></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ EX:
+
+
+
+
+
+
+
+
+
+ <div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <h1>Animations</h1>
+      <button class="btn btn-primary">Animate!</button>
+      <button class="btn btn-primary">Shrink!</button>
+      <hr />
+      <div [@divStateExample]></div>  <!-- ESSE É O ELEMENTO QUE SOFRERÁ AS 'ANIMATIONS'. OBS: o trigger sempre é colocado/posicionado em algum elemento, usando essa notation de [@nomeDoTrigger]   -->
+    </div>
+  </div>
+<hr />
+<div class="row">
+  <div class="col-xs-12">
+    <input type="text" #input >
+    <button class="btn btn-primary" (click)="onAddItem(input.value)">
+      Add Item!
+    </button>
+    <hr />
+    <ul class="list-group">
+      <li
+        class="list-group-item"
+        (click)="onDeleteItem(item)"
+        *ngFor="let item of items"
+      >
+        {{ item }}
+      </li>
+    </ul>
+  </div>
+</div>
+<hr />
+<div class="row">
+  <div class="col-xs-12">
+    <ul class="list-group">
+      <li
+        class="list-group-item"
+        (click)="onDeleteItem(item)"
+        *ngFor="let item of items"
+      >
+        {{ item }}
+      </li>
+    </ul>
+  </div>
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK.... ISSO QUER DIZER QUE ESSE TRIGGER,
+
+
+CONFIGURADO LÁ NO CÓDIGO TYPESCRIPT de 'app.component.ts',
+
+
+
+AGORA 
+
+
+
+
+__ ESTÁ SENDO UTILIZADO AQUI,
+
+
+NESSA DIV, 
+
+
+EM QUE 
+
+
+FICARÁ ANEXADO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-->  OK............. --------> MAS NÓS PRECISAMOS BINDAR ESSE 'TRIGGER' A ALGUMA COISA,
+
+
+
+
+
+
+PRECISAMOS BINDAR JUSTAMENTE PQ 
+
+ESSA _ ANIMATION QUE ESTAMOS SETTANDO AGORA (e qualquer animation, no caso)
+
+
+
+
+__ NÃO DEVE __ 
+
+RODAR O TEMPO INTEIRO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... --> ISSO SIGNIFICA QUE 
+
+
+
+
+
+NA ESCRITA DE 
+
+
+
+
+<div [@divState]></div> 
+
+
+
+
+
+
+
+
+
+
+
+
+PRECISAMOS  
+
+
+
+
+
+
+KINDOF 'BIND THE CONDITION',
+
+
+BINDAR A CONDIÇÃO 
+
+
+
+_ QUE __ VAI _ CONTROLAR__ QUAL PARTE__ DE NOSSA ANIMATION (que ainda vamos definir)
+
+
+
+
+DEVERÁ SER EXECUTADA..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO, PARA DEFINIRMOS UMA CONDIÇÃO,
+
+USAMOS  ''''     = ""       '''''''''
+
+
+
+
+
+
+
+
+
+
+
+
+
+no caso, o PROFESSOR VAI BINDAR ESSA NOSSA ANIMATION A UMA PROPRIEDADE CAHMADA DE 
+
+'state',
+
+QUE AINDA NÃO EXISTE, PQ NÃO A CRIAMOS....
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO FICA TIPO ASSIM:
+
+
+
+
+
+
+
+<div [@divStateExample]="state"> </div>
+
+
+
+
+
+
+
+
+
+
+
+
+-----> VAMOS CRIAR ESSA PROPRIEDADE DE 'state' LÁ NO COMPONENT DE 'app.component.ts'...
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <h1>Animations</h1>
+      <button class="btn btn-primary">Animate!</button>
+      <button class="btn btn-primary">Shrink!</button>
+      <hr />
+      <div [@divStateExample]="state"></div>  <!-- ESSE É O ELEMENTO QUE SOFRERÁ AS 'ANIMATIONS'. OBS: o trigger sempre é colocado/posicionado em algum elemento, usando essa notation de [@nomeDoTrigger]   -->
+      <!-- QUEREMOS QUE ESSE TRIGGER DE 'divStateExample' FIQUE _ VINCULADO_  à PROPRIEDADE DE 'state' DE NOSSO COMPONENT.....--> 
+    
+    </div>
+  </div>
+<hr />
+<div class="row">
+  <div class="col-xs-12">
+    <input type="text" #input >
+    <button class="btn btn-primary" (click)="onAddItem(input.value)">
+      Add Item!
+    </button>
+    <hr />
+    <ul class="list-group">
+      <li
+        class="list-group-item"
+        (click)="onDeleteItem(item)"
+        *ngFor="let item of items"
+      >
+        {{ item }}
+      </li>
+    </ul>
+  </div>
+</div>
+<hr />
+<div class="row">
+  <div class="col-xs-12">
+    <ul class="list-group">
+      <li
+        class="list-group-item"
+        (click)="onDeleteItem(item)"
+        *ngFor="let item of items"
+      >
+        {{ item }}
+      </li>
+    </ul>
+  </div>
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> ESSA PROPRIEDADE, PROPRIEDADE NOMRAL,
+
+
+
+
+
+ 
+AINDA NÃO FOI CRIADA NAQUELE COMPONENT,
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> RECAPITULANDO:
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+import { trigger } from '@angular/animations';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+
+  animations: [trigger('divStateExample'), []],
+})
+export class AppComponent {
+  items: string[] = ['Milk', 'Sugar', 'Bread'];
+
+  constructor() {}
+
+  onDeleteItem(item: string) {
+    console.log(item);
+  }
+
+  onAddItem(item: string) {
+    this.items.push(item);
+  }
+}
+
+
+
+
+
+E:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <h1>Animations</h1>
+      <button class="btn btn-primary">Animate!</button>
+      <button class="btn btn-primary">Shrink!</button>
+      <hr />
+      <div [@divStateExample]="state"></div>  <!-- ESSE É O ELEMENTO QUE SOFRERÁ AS 'ANIMATIONS'. OBS: o trigger sempre é colocado/posicionado em algum elemento, usando essa notation de [@nomeDoTrigger]   -->
+      <!-- QUEREMOS QUE ESSE TRIGGER DE 'divStateExample' FIQUE _ VINCULADO_  à PROPRIEDADE DE 'state' DE NOSSO COMPONENT.....--> 
+    
+    </div>
+  </div>
+<hr />
+<div class="row">
+  <div class="col-xs-12">
+    <input type="text" #input >
+    <button class="btn btn-primary" (click)="onAddItem(input.value)">
+      Add Item!
+    </button>
+    <hr />
+    <ul class="list-group">
+      <li
+        class="list-group-item"
+        (click)="onDeleteItem(item)"
+        *ngFor="let item of items"
+      >
+        {{ item }}
+      </li>
+    </ul>
+  </div>
+</div>
+<hr />
+<div class="row">
+  <div class="col-xs-12">
+    <ul class="list-group">
+      <li
+        class="list-group-item"
+        (click)="onDeleteItem(item)"
+        *ngFor="let item of items"
+      >
+        {{ item }}
+      </li>
+    </ul>
+  </div>
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------------
+
+
+
+
+
+ok... no nosso template,
+
+já adicionamos esse trigger específico de 'divStateExample'...
+
+
+
+
+
+
+
+
+
+
+
+
+---> NOSSA DIV FICOU COM ESSE TRIGGER ANEXADO...
+
+
+
+
+
+
+
+
+
+
+--> ok.... agora precisamos BINDAR A CONDITION QUE 'CONTROLA QUAL PARTE DESSA ANIMATION DEVERÁ 
+
+
+SER TOCADA'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... ->  E BINDAREMOS 
+
+
+ESSE TRIGGER DE 
+
+
+
+'''     <div [@divStateExample]="state"></div> ''
+
+
+
+
+
+
+A ESSA PROPRIEDADE 
+
+
+
+
+QUE CRIAREMOS NO NOSSO COMPONENT,
+
+
+
+
+
+
+
+
+
+
+
+
+
+QUE O PROFESSOR 
+
+
+
+VAI ESCREVER TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+state = 'normal'... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ELE DEFINE O VALUE INICIAL DESSA PROPRIEDADE COMO SENDO 'normal',
+
+
+
+
+
+MAS ESSE VALUE PODERIA SER QUALQUER COISA , PODERIA SER UM BOOLEAN, UM NUMBER,
+
+QUALQUER COISA...  
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+export class AppComponent {
+
+
+  state = 'normal'; ////vamos USAR ESSA PROPRIEDADE COMO 'CONDITION' para dar PLAY EM DIFERENTES ANIMATIONS, por meio do bind do nosso trigger de 'divStateExample' a essa propriedade....
+
+
+  items: string[] = ['Milk', 'Sugar', 'Bread'];
+
+  constructor() {}
+
+  onDeleteItem(item: string) {
+
+
+    console.log(item);
+
+  }
+
+  onAddItem(item: string) {
+    this.items.push(item);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> O PROFESSOR EXPLICA QUE O NAMING DE SUA PROPRIEDADE PODE SER QUALQUER COISA,
+
+
+NÃO TEM RELAÇÃO ÀS ANIMATIONS EM GERAL,
+
+
+
+
+MAS _ O QUE INTERESSA É QUE VAMOS USAR 
+
+
+
+
+ESSA PROPRIEDADE DE 
+
+'state'
+
+
+
+
+
+
+
+
+COM __ NOSSO 'TRIGGER' QUE ESTAMOS DEFININDO NAQUELE TRECHO DE ''
+
+
+
+
+
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  //colocamos o nome de 'divState' pq QUEREMOS ALTERAR O 'STATE' DO ELEMENTO '<div></div>' que temos lá no nosso HTML, NESSE COMPONENT...
+  animations: [trigger('divStateExample'), ////////////É ASSIM QUE ADICIONAMOS ANIMATIONS ANGULAR AOS NOSSOS COMPONENTS...
+
+
+  [             /////É O ARRAY DE 'ANIMATIONS' que serão TRIGGADAS a partir do 'satisfact' da primeira condição, que é o trigger...
+
+
+  
+  ]        
+] 
+
+
+
+
+
+
+
+
+
+'''''''''',
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, MAS COMO ISSO FUNCIONA?
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, DIGAMOS QUE QUEREMOS _ DEFINIR _ 2 STATES DIFERENTES...
+
+
+
+
+
+
+
+
+
+
+--> 1o state --> 'normal' , QUE É __ SETTADO POR DEFAULT...
+
+
+
+
+
+
+
+--> 2o state --> é o STATE ALTERNATIVO, que o professor vai querer deixar como 'highlighted'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> OK... DIGAMOS QUE VAMOS QUERER FAZER UMA 'ANIMATION' ENTRE 
+
+
+
+
+2 STATES..
+
+
+
+
+
+
+
+
+
+
+
+
+--> E ESSE É OUTRO _ DETALHE_ BEM IMPORTANTE: --> É ASSIM QUE 
+
+
+
+
+ANGULAR ANIMATIONS FUNCIONAM,
+
+
+
+VOCÊ 
+
+
+SEMPRE 
+
+
+VAI 
+
+
+'TRANSICIONAR' ENTRE 
+
+
+
+
+O 'STATE 1' E UM 'STATE 2'... ----------> ISSO SIGNIFICA QUE 
+
+
+
+VOCê TRABALHA COM __ STATES..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> quanto à propriedade que CONTROLA/CONTROLARÁ 
+
+
+
+O 'STATE' DE SUAS ANIMATIONS,
+
+
+VOCÊ NÃO PRECISA A CHAMAR 
+
+DE 
+
+
+'state',
+
+
+
+
+
+
+
+
+
+
+
+
+MAS __ O PROFESSOR DIZ QUE 
+AQUI FAZ SENTIDO,
+
+
+PQ ESTAMOS FALANDO SOBRE 'OS DIFERENTES STATES DESSA ANIMATION 
+
+
+
+definida nesse trigger específico'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK... --> PARA ___ DEFINIR _ 1 STATE 'NOVO' DESSES 
+
+
+
+NA NOSSA ANIMATION, PARA QUE ELA PASSE A CONSIDERAR ESSE STATE,
+
+
+VOCÊ _ DEVE_ ESCREVÊ-LO DENTRO 
+
+
+
+DO ARRAY-PARÂMETRO do 'trigger'.........
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO, MAS AQUI FICAMOS COM UM POUCO DE CONFUSÃO,
+
+
+pq o 'state' QUE VOCê VAI ESCREVER DENTRO DO ARRAY de 'trigger'
+
+
+NÃO SERÁ O 
+
+
+MESMO 'state'
+
+
+QUE VOCê ADICIONOU COMO PROPRIEDADE 
+
+
+
+no seu component AppComponent...
+
+
+
+
+
+
+
+-> É POR ISSO QUE VOU RENOMEAR O 'state', a nossa propriedade do component,
+
+para 'animationState'..
+
+
+
+
+
+
+
+eis o código em questão:
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+import { trigger } from '@angular/animations';
+
+import { state } from '@angular/core'; ///////EIS O CÓDIGO EM QUESTAÕ.
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+
+  animations: [trigger('divStateExample'), [
+
+
+    state
+
+
+  ]],
+})
+export class AppComponent {
+  animationState = 'normal';
+
+  items: string[] = ['Milk', 'Sugar', 'Bread'];
+
+  constructor() {}
+
+  onDeleteItem(item: string) {
+    console.log(item);
+  }
+
+  onAddItem(item: string) {
+    this.items.push(item);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... 
+
+
+
+
+
+
+
+
+MAS O PRÓXIMO DETALHE É QUE 
+
+
+'state' 
+
+
+
+
+NÃO É UMA PROPRIEDADE/VARIABLE,
+
+
+E SIM _ É UM__ METHOD.. --> É UM METHOD LÁ DO 'angular/core' QUE TAMBÉM 
+
+
+
+
+
+TEM RELAÇÃO COM ANIMATIONS....
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+
+  animations: [trigger('divStateExample'), [
+
+
+    state()
+
+
+  ]],
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS O PROFESSOR NOS EXPLICA QUE SEMPRE VAMOS QUERER __ TER __ NO MÍNIMO 
+
+
+2 
+
+
+'state' DIFERENTES DENTRO DESSE ARRAY,
+
+
+ISSO 
+
+
+
+
+_ PQ __ VAMOS __ PRECISAr_ DE + 1 STATE __ PARA SER POSSÍVEL 
+
+
+
+'TRANSICIONAR ENTRE STATES'...
+
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE O CÓDIGO VAI FICANDO ASSIM:
+
+
+
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+
+  animations: [trigger('divStateExample'), [
+
+
+    state(),
+    state()
+
+
+  ]],
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK.... FICAMOS COM 2 'states' distintos....
+
+
+
+
+
+
+
+
+
+
+
+-> MAIS TARDE, EM OUTRO DE SEUS VÍDEOS, O PROFESSOR VAI NOS MOSTRAR UM APPROACH DIFERENTE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO, COM ISSO SETTAMOS CADA_ _ STATE_....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PRIMEIRO STATE QUE O PROFESSOR DEFINE É 'normal'.. -------> 
+
+
+
+
+E ELE NOS EXPLICA QUE O VALUE DESSE 'state'
+
+
+
+__DEVE __ MATCHEAR_ O VALUE DA PROPRIEDADE (ter o mesmo value) __ QUE 
+
+
+
+
+
+
+
+DEFINIMOS LÁ EM 'AppComponent'..
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+
+  animations: [trigger('divStateExample'), [
+
+
+    state('normal'),
+    state()
+
+
+  ]],
+})
+
+
+
+
+
+
+
+export class AppComponent {
+  state = 'normal';
+  list = ['Milk', 'Sugar', 'Bread']
+}
+
+
+
+
+UÉ, MAS PQ ISSO? 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> É PQ O PROFESSOR QUER 'ACTUALLY USAR' 
+
+
+
+
+
+
+__ O 'STATE'/PROPRIEDADE  QUE _ RECÉM_  USAMOS 
+
+
+
+
+__ NO NOSSO TEMPLATE/TS CODE ,
+
+
+
+
+
+
+
+
+POR ISSO ELE DEFINE 'normal'..
+
+
+
+
+
+
+
+
+
+
+
+NO SEGUNDO 'state',
+
+O PROFESSOR COLOCA O IDENTIFIER/NOME DE 
+
+
+'highlighted'...
+
+
+
+
+
+
+
+
+
+
+
+-----> ESSES SÃO EXEMPLOS DE NOMES COMUNS.... ('normal' e 'highlighted')...
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO.. 
+
+
+
+
+
+
+
+
+
+--> MAS AGORA PRECISAMOS _ USAR __ ESSA LÓGICA..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NO NOSSO CASO,
+
+
+
+acho que isso já está sendo feito,
+
+
+
+PQ NOSSO HTML JÁ FEZ O 'BIND' DA DIV HTML 
+
+
+
+__ AO _ 'divStateExample'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.................  MAS É CLARO QUE AINDA NÃO ACABAMOS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+->  AGORA A PERGUNTA É 
+
+
+
+''COMO UM _NORMAL_ STATE_ DEVE SER, COMO DEVE SER SEU FORMATO?'''''
+
+
+
+
+
+
+
+
+
+
+
+
+PARa _ CONSEGUIR DEFINIR ESSE DETALHE,
+
+VOCÊ PRECISA 
+
+DO _ SEGUNDO PARÂMETRO DO METHOD 'ANGULAR',
+
+
+
+
+
+
+
+
+QUE VAI PEDIR MAIS ALGUMAS COISAS....
+
+
+
+
+
+
+CÓDIGO ATUAL:
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+import { trigger } from '@angular/animations';
+
+import { state } from '@angular/animations';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+
+  animations: [trigger('divStateExample'), 
+  
+  [
+    
+    
+    state('normal'),
+   state('highlighted')]],
+})
+export class AppComponent {
+  animationState = 'normal';
+
+  items: string[] = ['Milk', 'Sugar', 'Bread'];
+
+  constructor() {}
+
+  onDeleteItem(item: string) {
+    console.log(item);
+  }
+
+  onAddItem(item: string) {
+    this.items.push(item);
+  }
+}
+
+
+
+
+
+
+
+
+
+ 
+
+
+-> OK... O SEGUNDO ARGUMENTO DA FUNCTION 'state()"
+
+
+
+É JUSTAMENTE ISSO, 
+
+
+
+
+
+
+
+MAS O PROFESSOR NOS APONTA QUE 
+
+
+
+
+'''PRECISAMOS DEFINIR COMO É A APARÊNCIA 
+
+
+
+
+DO NORMAL STATE'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA ISSO, precisamos estipular 'ESTE CÓDIGO AQUI É MEU INITIAL STATE, PAREM DE ME INCOMODAR'..
+
+
+
+
+
+
+
+
+
+COMO FAZEMOS ISSO?
+
+
+
+
+
+
+
+
+
+
+
+
+-> É PARA ISSO QUE SERVE O SEGUNDO PARâMETRO DE 'state()' 
+,
+
+
+
+
+
+QUE SERÁ JUSTAMENTE UM OBJECT/METHOD  DE 'style',
+
+
+
+
+QUE TAMBÉM SERÁ PROVIDENCIADO  pelo @angular/core....
+
+
+
+
+
+
+
+
+
+
+
+OK, MAS DENTRO DESSE METHOD/OBJECT _ VAMOS ESPECIFICAR 
+
+
+
+
+
+
+
+
+__ COMO ERA _ O INITIAL STATE DESSE COMPONENT, POR MEIO DESTA ESCRITA..
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+import { trigger } from '@angular/animations';
+
+import { state } from '@angular/animations';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+
+  animations: [
+    trigger('divStateExample'),
+
+    [state('divStateExample', state('hightlighted')), state('')],
+  ],
+})
+export class AppComponent {
+  animationState = 'normal';
+
+  items: string[] = ['Milk', 'Sugar', 'Bread'];
+
+  constructor() {}
+
+  onDeleteItem(item: string) {
+    console.log(item);
+  }
+
+  onAddItem(item: string) {
+    this.items.push(item);
+  }
+}
+import { Component } from '@angular/core';
+
+import { trigger } from '@angular/animations';
+
+import { state } from '@angular/animations';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+
+  animations: [
+    trigger('divStateExample'),
+
+    [state('divStateExample'), 
+    
+    
+    
+    ,
+  ],
+})
+export class AppComponent {
+  animationState = 'normal';
+
+  items: string[] = ['Milk', 'Sugar', 'Bread'];
+
+  constructor() {}
+
+  onDeleteItem(item: string) {
+    console.log(item);
+  }
+
+  onAddItem(item: string) {
+    this.items.push(item);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE CÓDIGO DE CIMA ESTÁ MEIO ERRADO..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O CÓDIGO COM FORMATO CORRETO É ESTE:
+
+
+
+
+
+
+
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  animations: [
+    trigger('divStateExample', [
+      state('normal', style({})),
+      state('hightlighted', style({})),
+    ]),
+  ],
+})
+export class AppComponent {
+  animationState = 'normal'; ////vamos USAR ESSA PROPRIEDADE COMO 'CONDITION' para dar PLAY EM DIFERENTES ANIMATIONS, por meio do bind do nosso trigger de 'divStateExample' a essa propriedade....
+
+  items: string[] = ['Milk', 'Sugar', 'Bread'];
+
+  constructor() {}
+
+  onDeleteItem(item: string) {
+    console.log(item);
+  }
+
+  onAddItem(item: string) {
+    this.items.push(item);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+-----------------------
+
+
+
+EX:
+
+
+      state('normal', style({})),
+
+
+
+
+
+      -> esse value de 'normal' deve MATCHEAR o value do state que definimos no próprio component, aquele 'animationState'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      OK, MAS  QUAL É A 'APARÊNCIA' que nosso component deve ter,
+
+      no state de 'normal'?
+
+
+
+
+
+      -> vamos estipular essa info no SEGUNDO PARÂMETRO DE CADA method 'state()',
+
+
+
+
+      como visto aqui:
+
+
+
+         state('normal', style({})),
+
+
+
+
+
+
+
+
+
+
+
+
+
+      --> nesse method 'style()',
+
+
+
+
+
+      DEFINIMOS O STYLE DO STATE..
+
+
+
+
+
+
+
+
+
+    --. o professor diz que devemos escrever CSS STYLES DENTRO DO 
+
+
+
+    OBJECT JAVASCRIPT...
+
+
+
+
+    -> quase igual a CSS STYLES, mas não usamos '-' entre names...
+
+
+
+
+
+
+
+
+
+
+
+    ->  você deve escrever ou 
+
+    'background-color' 
+
+
+
+    ou 
+
+    'backgroundColor'...
+
+
+
+
+
+
+
+  --> professor escolhe a primeira sintaxe...
+
+
+
+
+
+
+  ex:
+
+
+
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  animations: [
+    trigger('divStateExample', [
+      state('normal', style({ /////queremos que o value desse 'starting state' SEJA IGUAL ao value do state ('normal', nesse caso) que temos ali embaixo, o starting state...
+
+        'background-color': 'red'
+
+      })), 
+      state('hightlighted', style({})),
+    ]),
+  ],
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> O PROFESSOR TAMBÉM QUER DAR A ESSE ELEMENTO/COISA 
+
+
+um style diferente,
+
+um 
+
+
+
+
+
+
+
+'transform': 'translateX(0)' ,
+
+
+
+
+
+
+
+PARA QUE 
+
+ELE FIQUE NA SUA POSIÇÃO ORIGINAL, E PARA QUE NÃO SE MEXA INICIALMENTE...
+
+
+
+
+
+
+
+
+
+
+
+ATÉ AGORA, TUDO ISSO FOI ESTILOS CSS NORMAIS...
+
+
+
+
+
+
+eX:
+
+
+
+
+
+
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  animations: [
+    trigger('divStateExample', [
+      state('normal', style({ /////queremos que o value desse 'starting state' SEJA IGUAL ao value do state ('normal', nesse caso) que temos ali embaixo, o starting state...
+
+        'background-color': 'red',
+        'transform': 'translateX(0) '
+
+      })), 
+      state('hightlighted', style({})),
+    ]),
+  ],
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> ok... É CLARO QUE ATÉ AGORA 
+
+
+
+NÃO VEREMOS NADA NO NOSSO DOM,
+
+PQ 
+
+
+
+
+APENAS DEFINIMOS 
+
+
+
+'position' 
+
+
+e não a 'width e height'....
+
+
+
+
+
+
+
+
+
+
+------> É POR ISSO QUE O PROFESSOR ADICIONA UM INLINE STYLE À NOSSA DIV,
+
+tipo assim:
+
+
+
+
+
+
+      <div [@divStateExample]="animationState"
+        style="width: 100px; height: 100px"
+      
+      
+      
+      ></div> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, 
+
+
+NÓS JÁ DEFINIMOS O 'NORMAL STATE',
+
+
+
+MAS AGORA QUEREMOS 
+
+
+FAZER A MESMA COISA COM O SEGUNDO STATE,
+
+
+DE 'highlighted',
+
+
+
+PARA QUE REALMENTE OCORRA A 'ANIMATION' ENTRE O STATE 1 E O STATE 2....
+
+
+
+
+
+
+
+
+
+
+
+100 PX PARA A DIREITA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  animations: [
+    trigger('divStateExample', [
+      state('normal', style({ /////queremos que o value desse 'starting state' SEJA IGUAL ao value do state ('normal', nesse caso) que temos ali embaixo, o starting state...
+
+        'background-color': 'red',
+        'transform': 'translateX(0) '
+
+      })), 
+      state('hightlighted', style({
+
+        'background-color': 'blue',
+        'transform': 'translateX(100px)'
+
+
+
+      })),
+    ]),
+  ],
+})
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo... isso vai definir que o 'TRIGGER', quando TRIGGADO,
+
+
+
+
+vai 
+
+
+
+EXECUTAR ESSE CÓDIGO AÍ....
+
+
+
+
+
+(acho que é isso...)
+
+
+
+
+
+
+
+É CLARO QUE AO RECARREGARMOS A PAGE,
+
+NADA ACONTECERÁ (o quadrado permanecerá imóvel)....
+
+
+
+
+
+
+
+
+
+
+->_ MAS É CLARO QUE O STYLE 'INICIAL' 
+
+
+
+DESSE ELEMENTO JÁ TERÁ SIDO SETTADO/APLICADO,
+
+pq essa color de 'red'
+ 
+
+
+JÁ ESTÁ VINDO DO 'INITIAL STATE' 
+
+
+DO NOSSO TRIGGER....
+
+
+
+
+
+
+
+
+
+
+
+--> RESUMINDO:
+
+
+
+
+
+
+
+1) TRIGGERS PODEM SER POSICIONADOS EM ELEMENTOS DE UM TEMPLATE...
+
+
+
+
+
+
+2) OS TRIGGERS DEPENDEM DOS 'values' nos primeiros parâmetros dos seus 'state()' methods... 
+
+(
+
+  como colocamos 'normal' COMO O VALUE PARA O PRIMEIRO PARÂMETRO,
+
+
+  e como nosso state está como 'normal',
+
+
+  FOI DISPARADO/ACEITO O CÓDIGO DE 
+
+
+
+  'state(
+    'normal',
+    style(
+      {
+        'background-color: 'red',
+        'transform': 'translateX(0)'
+      }
+    )
+  )
+)
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO...
+
+
+
+
+
+
+
+
+
+
+MAS JÁ GANHEI UM ERROR:
+
+
+
+
+ERROR Error: Unexpected synthetic property @divStateExample found. Please make sure that:
+  - Either `BrowserAnimationsModule` or `NoopAnimationsModule` are imported in your application.
+  - There is corresponding configuration for the animation named `@divStateExample` defined in the `animations` field of the `@Component` decorator 
+
+
+
+
+
+
+
+
+
+CONSEGUI CONSERTAR...
+
+
+
+
+
+
+ERA O IMPORT DE 'BrowserAnimationsModule',
+
+
+
+
+
+cuja sintaxe mudou mtas vezes ao longo dos anos...
+
+
+
+
+
+
+
+
+
+
+a sintaxe atual é esta:
+
+
+
+
+
+
+
+
+
+
+
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; ///É ASSIM QUE CONSEGUIMOS IMPORTAR ESSE MODULE, que é indispensável...
+
+
+
+
+
+
+
+---> agora o quadrado apareceu..
+
+
+
+
+
+
+
+
+
+
+
+
+ --> PARA CONSEGUIR __ ALTERAR ENTRE 2 'states' 
+
+
+
+ DE NOSSA ANIMATION, É NECESSÁRIO ALTERAR O 'STATE' LOCAL DO NOSSO COMPONENT... no nosso caso, trocar a string 'normal' pela string 'highlighted'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> isso pode ser facilmente obtido por meio de nossos methods do component, tipo assim:
+
+
+
+
+
+
+
+ @Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  animations: [
+    trigger('divStateExample', [
+      state('normal', style({ /////queremos que o value desse 'starting state' SEJA IGUAL ao value do state ('normal', nesse caso) que temos ali embaixo, o starting state...
+
+        'background-color': 'red',
+        'transform': 'translateX(0) '
+
+      })), 
+      state('hightlighted', style({
+
+        'background-color': 'blue',
+        'transform': 'translateX(px)'
+
+
+
+      })),
+    ]),
+  ],
+})
+export class AppComponent {
+  animationState = 'normal'; ////vamos USAR ESSA PROPRIEDADE COMO 'CONDITION' para dar PLAY EM DIFERENTES ANIMATIONS, por meio do bind do nosso trigger de 'divStateExample' a essa propriedade....
+
+  items: string[] = ['Milk', 'Sugar', 'Bread'];
+
+  constructor() {}
+
+  onDeleteItem(item: string) {
+    console.log(item);
+  }
+
+  onAddItem(item: string) {
+    this.items.push(item);
+  }
+
+
+  
+
+
+  animateBox() {
+
+
+
+    switch(this.animationState) {
+
+      case 'normal':
+        this.animationState = 'highlighted';
+        break;
+      case 'highlighted':
+        this.animationState = 'normal';
+        break;
+
+    }
+
+
+}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS MESMO COM ESSA LÓGICA AÍ, O EFEITO NÃO FOI O DESEJADO..
+
+
+
+
+
+
+
+
+
+
+
+--> QUANDO CLICO EM 'animate',
+
+
+
+O _ QUADRADO SIMPLESMENTE __ SOME_.... (ele não vai para a direita, e sim apenas SOME)....
+
+
+
+
+
+
+
+
+
+
+
+-> NO PRÓXIMO VIDEO VEREMOS COMO ANIMAR ESSE ELEMENTO, A PARTIR DA TROCA DE VALUES DO STATE...

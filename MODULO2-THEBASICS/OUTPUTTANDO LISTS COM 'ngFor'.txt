@@ -1,0 +1,1119 @@
+
+
+
+
+
+
+
+
+
+
+
+
+--> JÁ VIMOS 
+
+
+
+
+ngIf,
+
+
+
+
+ngClass
+
+
+
+ngStyle 
+
+
+
+
+
+
+
+...
+
+
+
+
+
+
+
+
+
+
+
+
+
+E COM TODAS ESSAS DIRECTIVES APRENDIDAS,
+
+
+
+DEVEMOS DAR UMA OLHADA NA ÚLTIMA BUILT-IN DIRECTIVE,
+
+
+
+
+que não deixa de ser super importante...
+
+
+
+
+
+
+
+
+
+
+----> O NOSSO BOTÃO DE 
+
+
+
+
+'add Server'
+
+
+
+AINDA _ NÃO FAZ O ACTUAL ADD  de 
+
+um novo 
+
+list item 
+
+
+
+'<app-server>'...
+
+
+
+
+
+
+
+
+
+
+--> ESSA LIST PRECISA CRESCER..
+
+
+
+
+PODEMOS MUDAR ESSA SITUAÇÃO POR MEIO DA DIRECTIVE DE 
+
+
+'ngFor'...
+
+
+
+
+
+
+
+
+
+----> vamos ver como isso acontece....
+
+
+
+
+
+
+
+
+
+---> LÁ NO NOSSO TEMPLATE DE 
+
+
+
+'server.component.html',
+
+
+
+
+NÓS ATÉ AGORA SÓ PODEMOS 
+
+
+ADICIONAR 
+
+'app-server'
+
+
+MANUALMENTE...
+
+
+
+
+
+
+
+
+------> SERIA MAIS LEGAL SE TIVÉSSEMOS UM 
+
+'ARRAY'
+
+de 
+
+'server',
+
+
+
+
+e alguma maneira de os ADICIONAR DINAMICAMENTE....
+
+
+
+
+
+
+
+--> É POR ISSO QUE 
+
+
+
+NO COMPONENT DE 'servers'
+
+
+
+ADICIONAMOS UMA NOVA PROPRIEDADE,
+
+
+
+'servers',
+
+
+
+
+
+E ISSO SERÁ UM ARRAY
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+export class ServersComponent implements OnInit {
+  allowNewServer = false;
+  serverCreationStatus: any = false;
+  serverName = '';
+  servers = [];
+
+  constructor() {
+    setTimeout(
+      () => {
+        this.allowNewServer = true;
+      },
+
+      2000
+    );
+  }
+
+
+
+  toggleServer() {
+    this.serverCreationStatus =  !this.serverCreationStatus
+  }
+
+
+  onUpdateServerName(event: Event) {
+      // console.log(event.target.value)  ###sem DEFINIÇÃO TYPESCRIPT.
+      // this.serverName = event.target.value; 
+      console.log((<HTMLInputElement>event.target).value);  ///COM DEFINIÇÃO TYPESCRIPT.
+      this.serverName = (<HTMLInputElement>event.target).value;
+  }
+
+  ngOnInit(): void {}
+
+
+  showServerName() {
+    return this.serverName;
+  }
+
+  onCreateServer() {
+    this.serverCreationStatus = 'Server was created! Name is ' + this.serverName;
+}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> dentro desse negócio,
+
+
+podemos ter 
+
+'Testserver' 
+e 
+
+'Testserver 2'...
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+export class ServersComponent implements OnInit {
+  allowNewServer = false;
+  serverCreationStatus: any = false;
+  serverName = '';
+  servers = [
+
+        'Testserver',
+        'TestServer 2'
+
+  ];
+
+  constructor() {
+    setTimeout(
+      () => {
+        this.allowNewServer = true;
+      },
+
+      2000
+    );
+  }
+
+
+
+  toggleServer() {
+    this.serverCreationStatus =  !this.serverCreationStatus
+  }
+
+
+  onUpdateServerName(event: Event) {
+      // console.log(event.target.value)  ###sem DEFINIÇÃO TYPESCRIPT.
+      // this.serverName = event.target.value; 
+      console.log((<HTMLInputElement>event.target).value);  ///COM DEFINIÇÃO TYPESCRIPT.
+      this.serverName = (<HTMLInputElement>event.target).value;
+  }
+
+  ngOnInit(): void {}
+
+
+  showServerName() {
+    return this.serverName;
+  }
+
+  onCreateServer() {
+    this.serverCreationStatus = 'Server was created! Name is ' + this.serverName;
+}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> E AGORA,
+
+
+
+quando 
+
+
+ACESSARMOS 
+
+'onCreateServer', com aquele button,
+
+VAMOS ACTUALLY __ QUERER 
+
+ACESSAR ESSE ARRAY 
+
+
+DE 
+
+
+'servers'
+
+E ENTÃO FAZER PUSH DE UM NOVO SERVER A ELE...
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+export class ServersComponent implements OnInit {
+  allowNewServer = false;
+  serverCreationStatus: any = false;
+  serverName = '';
+  servers = [
+
+        'Testserver',
+        'TestServer 2'
+
+  ];
+
+  constructor() {
+    setTimeout(
+      () => {
+        this.allowNewServer = true;
+      },
+
+      2000
+    );
+  }
+
+
+
+  toggleServer() {
+    this.serverCreationStatus =  !this.serverCreationStatus
+  }
+
+
+  onUpdateServerName(event: Event) {
+      // console.log(event.target.value)  ###sem DEFINIÇÃO TYPESCRIPT.
+      // this.serverName = event.target.value; 
+      console.log((<HTMLInputElement>event.target).value);  ///COM DEFINIÇÃO TYPESCRIPT.
+      this.serverName = (<HTMLInputElement>event.target).value;
+  }
+
+  ngOnInit(): void {}
+
+
+  showServerName() {
+    return this.serverName;
+  }
+
+  onCreateServer() {
+    this.serverCreationStatus = 'Server was created! Name is ' + this.serverName;
+    this.servers.push(
+
+
+    )
+}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COMO valor desse novo 'server',
+
+vamos querer 
+
+
+
+O VALOR DE 'serverName',
+que terá sido EDITADO por nosso input e armazeando em 'serverName'...
+
+
+
+
+
+
+
+
+
+
+
+,
+
+
+
+
+
+
+OK, COM ISSO TEMOS UM ARRAY DE SERVERS (que são strings)..
+
+
+
+
+
+
+
+
+
+
+
+
+-> agora seria legal se conseguíssemos REPLICAR O 
+
+
+COMPONENT DE 'app-server'
+
+
+quantas vezes quisessemos, a partir 
+
+desse array de strings...  (
+
+    é meio o 'state' do react...
+)
+
+
+
+
+
+
+
+
+1 SERVER PARA CADA ELEMENT NO ARRAY.... (3 elements inicialmente, aí 1 element para cada 
+
+string que adicionarmos no aray...)
+
+
+
+
+
+
+
+
+
+
+
+--> podemos fazer isso...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA FAZER ISSO AÍ,
+
+PRECISAMOS IR ATÉ 
+
+
+
+
+'servers.component.html'
+
+
+E AÍ 
+
+ADICIONAR UMA 
+
+NOVA DIRECTIVE 
+
+
+
+DENTRO DO 
+
+
+'<app-server>'
+
+
+referenciado 
+
+no seu interior....
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+<label>Server Name</label>
+<input 
+type="text" 
+class="form-control"
+placeholder="Input your server name"
+(input)="onUpdateServerName($event)" 
+> <!--  É OBRIGATÓRIO ADICIONAR aquele '$event' como parâmetro quando você QUER PASSAR O VALOR/SEU EVENT __ A ALGUM METHOD EM SEU ARQUIVO '.ts'...-->
+<button class="btn btn-primary" [disabled]="!allowNewServer" 
+(click)="toggleServer()"
+>Toggle Server</button>
+<button class="btn btn-primary" [disabled]="!allowNewServer" 
+(click)="onCreateServer()"
+>Add Server</button>
+
+<!-- <button class="btn btn-primary" disabled="{{ !allowNewServer }}"> não funciona -->
+  <!-- Add Server -->
+<!-- </button> -->
+<p [innerText]="allowNewServer"></p>
+<p>User can edit: {{ allowNewServer ? "Yes" : "No" }}</p>
+<app-server></app-server>
+<app-server></app-server>
+<app-server></app-server>
+
+
+
+<p>{{ serverCreationStatus ? serverCreationStatus : 'Server still not created.'  }}</p>
+
+
+
+
+
+
+
+--------------------------
+
+
+
+
+
+
+
+
+
+dentro do primeiro 'app-server',
+
+
+ADICIONAMOS UMA DIRECTIVE COM 
+
+
+'*' 
+
+
+
+
+
+VAMOS COLOCAR A 
+
+
+DIRECTIVE DE 
+
+
+'ngFor',
+
+
+
+
+
+
+
+mas a coisa interessante do 'ngFor' 
+
+
+
+
+é que __ ELE _ É UM 'STRUCTURAL DIRECTIVE'
+
+
+,
+
+
+o que quer  dizer que 
+
+ELE 
+
+
+
+
+__ALTERA__ O DOM _  (adiciona/remove elementos no dom por inteiro),
+
+
+
+o que 
+
+FAZ COM QUE A ESTRELA SEJA OBRIGATÓRIA ('*')....
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+<label>Server Name</label>
+<input 
+type="text" 
+class="form-control"
+placeholder="Input your server name"
+(input)="onUpdateServerName($event)" 
+> <!--  É OBRIGATÓRIO ADICIONAR aquele '$event' como parâmetro quando você QUER PASSAR O VALOR/SEU EVENT __ A ALGUM METHOD EM SEU ARQUIVO '.ts'...-->
+<button class="btn btn-primary" [disabled]="!allowNewServer" 
+(click)="toggleServer()"
+>Toggle Server</button>
+<button class="btn btn-primary" [disabled]="!allowNewServer" 
+(click)="onCreateServer()"
+>Add Server</button>
+
+<!-- <button class="btn btn-primary" disabled="{{ !allowNewServer }}"> não funciona -->
+  <!-- Add Server -->
+<!-- </button> -->
+<p [innerText]="allowNewServer"></p>
+<p>User can edit: {{ allowNewServer ? "Yes" : "No" }}</p>
+<app-server></app-server>
+<app-server></app-server>
+<app-server *ngFor=""></app-server>
+
+
+
+<p>{{ serverCreationStatus ? serverCreationStatus : 'Server still not created.'  }}</p>
+
+
+
+
+
+-------------------------------------
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+<app-server *ngFor=""></app-server>
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSA SINTAXE DE 'ngFor' 
+
+
+
+
+É TIPO ASSIM....
+
+
+
+
+
+
+-> MAS NÃO ACABAMOS.... --> DENTRO DE UMA DIRECTIVE 'ngFor,'
+
+
+
+
+somos OBRIGADOS A DEFINIR:
+
+
+
+
+
+1) UMA 'TEMPORARY VARIABLE',
+
+
+que existirá _- DENTRO DO LOOP_.... -----> essa variável é definida com 'let'...
+
+
+
+
+
+podemos escolher qualquer nome, como 'let server'... 
+
+
+
+2) A KEYWORD 'of' 
+
+
+
+
+
+
+
+
+3) O ARRAY/OBJETO PELO QUAL VOCÊ QUER 'ITERATE THROUGH'...
+
+
+
+NO CASO, 'servers'..
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+<app-server *ngFor="let server of servers"></app-server>
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------
+
+
+
+CERTO....
+
+
+
+
+
+
+OK... O QUE ISSO FARÁ É 'LOOP THROUGH'
+
+todos os elements 
+
+
+DENTRO DO ARRA de 'servers' 
+
+ 
+
+
+ E ENTÃO _ 
+
+
+
+ ASSIGNAR 
+
+ O 
+
+ 'INDIVIDUAL ELEMENT' DE CADA 1 DOS ELEMENTOS DO ARRAY _  A 
+
+ ESSA VARIÁVEL DE 
+
+
+
+ 'server'....
+
+
+
+
+
+
+
+
+
+
+ -> É QUASE A MESMA COISA QUE UM NORMAL JAVASCRIPT CODE,
+
+ UM FOR-of LOOP..
+
+
+
+
+
+
+
+
+
+
+
+ --> OK.... ESSA VARIÁVEL 'server' PODE SER USADA 
+
+
+ NO TEMPLATE....
+
+
+
+
+
+
+ --> MAS AQUI, NO NOSSO CASO, ELA NÃO É MT NECESSÁRIAA.... ----> o professor diz que 
+
+ logo 
+
+
+ aprenderemos 
+
+
+
+
+
+A 
+
+
+
+'PASS DATA TO OUR OWN COMPONENTS, para outputtar a data neles'.'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O CÓDIGO FICA ASSIM:
+
+
+
+
+
+
+
+<label>Server Name</label>
+<input 
+type="text" 
+class="form-control"
+placeholder="Input your server name"
+(input)="onUpdateServerName($event)" 
+> <!--  É OBRIGATÓRIO ADICIONAR aquele '$event' como parâmetro quando você QUER PASSAR O VALOR/SEU EVENT __ A ALGUM METHOD EM SEU ARQUIVO '.ts'...-->
+<button class="btn btn-primary" [disabled]="!allowNewServer" 
+(click)="toggleServer()"
+>Toggle Server</button>
+<button class="btn btn-primary" [disabled]="!allowNewServer" 
+(click)="onCreateServer()"
+>Add Server</button>
+
+<!-- <button class="btn btn-primary" disabled="{{ !allowNewServer }}"> não funciona -->
+  <!-- Add Server -->
+<!-- </button> -->
+<p [innerText]="allowNewServer"></p>
+<p>User can edit: {{ allowNewServer ? "Yes" : "No" }}</p>
+<app-server></app-server>
+<app-server></app-server>
+<app-server *ngFor="let server in servers"></app-server>
+
+
+
+<p>{{ serverCreationStatus ? serverCreationStatus : 'Server still not created.'  }}</p>
+
+
+
+
+
+
+
+
+
+
+
+
+MAS ISSO NÁO ESTÁ FUNCIONANDO NA MINHA VERSÃO DO CÓDIGO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ISSO ACONTECEU PQ EU HAVIA ESCRITO 'in' em vez de 'of'...
+
+
+
+
+
+
+
+
+
+ok, funcionou...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> agora nossa list está crescendo 
+a partir  dos clicks...
+
+
+
+
+
+
+
+
+--> É CLARO QUE O CONTEÚDO DE CADA 'INDIVIDUAL SERVER'
+
+
+AINDA ESTÁ ESTÁTICO 
+
+
+(
+
+
+    é sempre 'server with ID xxx is online/offline'
+)
+
+
+
+
+
+
+
+--> É ESTÁTICO PQ _ NÓS NÃO PODEMOS PASSAR A DATA COMO O 
+
+
+'SERVER NAME'
+
+
+a esse component.... (e não podemos usar string interpolation) -----> 
+
+
+
+
+
+MAS ISSO É ALGO QUE APRENDEREMOS __ NA PRÓXIMA COURSE SECTION... (
+
+    em que 
+
+
+    VAMOS ANALISAR OS COMPONENTS DE FORMA MAIS DEEP...
+)
+
+
+
+
+
+
+
+
+--> no próximo módulo aprenderemos 
+
+A CRIAR NOSSAS PRÓPRIAS PROPERTIES 
+
+NOS COMPONENTS,
+
+
+
+
+
+
+properties que podemos então settar do lado de FORA DELES...
+
+
+
+
+
+
+
+
+--> veremos isso na próxima course section...
+
+
+
+
+
+
+
+-> ANTES DISSO,
+
+
+DEVEMOS 
+TREINAR AS COISAS QUE 
+
+
+APRENDEMOS NAS ÚLTIMAS LIÇÕES....
+
+
+
+
+
+
+
+
+
+-> DEVEMOS FAZER ISSO ANTES DE SETTARMOS O PROJETO E ESTUDARMOS 
+
+
+mais os components e databinding...

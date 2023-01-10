@@ -1,0 +1,2396 @@
+
+
+
+
+
+COMEÇO INSTALANDO com 
+
+
+
+npm i --save @angular/animations@latest...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DEPOIS IMPORTO O MODULO DE 
+
+
+
+
+BrowserAnimationsModule lá no app.module.ts...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO FEITO,
+
+
+AGORA É HORA DE IMPLEEMNTAR 
+
+
+
+AS ANIMATIONS...
+
+
+
+
+
+
+
+
+
+
+--> encontrei um problema com a propriedade de 'transform', que não estava funcionado...
+
+
+
+
+
+
+
+
+
+--> a resposta ao problema é esta:
+
+
+
+
+
+
+
+Because components in Angular are rendered as custom HTML elements, they, by default, have a display styling of inline. This means that transform won't work on them, unless they have block. Since a host binding is placed on the component element, the animation styling is applied on that element and, in the case of the transform style, it won't animate as expected.
+
+Just add styles: [':host { display: block }]` to the component definition:
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS ISSO NÃO FUNCIONOU...
+
+
+
+
+
+
+
+
+
+NÃO ERA NADA DISSO,
+
+
+ERAM ERROS DE ESCRITA ('transformation' em vez de transform)
+
+
+
+
+
+
+E TAMBÉM EU ESTAVA ESCREVENDO ESSE CÓDIGO DE 'ANIMATIONS' no component errado;
+
+
+deveria estar escrevendo no 'shopListIteM',
+
+
+
+
+e não na 'ShoppingList'
+
+
+
+EM GERAL...
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { Component, Input, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-shopping-list-item',
+  templateUrl: './shopping-list-item.component.html',
+  styleUrls: ['./shopping-list-item.component.css'],
+  animations: [
+
+
+
+    trigger(
+         'shopListItem',
+   
+   
+       [
+         state(
+           'in', style({
+            opacity: '1',
+            transform: 'translateX(0)'
+           })
+         ),
+   
+         transition(
+           'void => *',
+
+         [
+           style({
+             'opacity': '0',
+             'transform': 'translateX(-60px)'
+           }),
+
+           animate(1000)
+  
+          ]
+         )
+   
+       ]
+    )
+   
+   
+     ]
+})
+export class ShoppingListItemComponent implements OnInit {
+  @Input() name: string;
+  @Input() amount: number;
+
+  constructor() {}
+
+  ngOnInit(): void {}
+}
+
+
+
+
+
+
+
+
+
+
+E ASSIm:
+
+
+
+
+
+
+
+
+<a class="list-group-item" 
+[@shopListItem]
+
+style="cursor: pointer;"
+> {{name}} ({{amount}})
+</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> certo, mas agora temos outro problema... --> quando tento ADICIONAR UM NOVO ITEM,
+
+
+
+
+
+
+O ITEM VEM TODO BUGADO PARA A PÁGINA, E NÃO FICA ANIMADO BONITINHO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> parece ser um bug do nosso CÓDIGO ANTERIOR às ANIMATIONS,
+
+
+e não às animations em si...
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, O CÓDIGO ANTIGO AINDA FUNCIONA, POR ALGUMA RAZAÕ...
+
+
+
+
+
+
+
+
+
+
+-> por alguma razão, é  A 
+
+
+'DIRECTIVE' (property binding)
+
+
+
+de 
+
+'[@shopListItem]'
+
+
+
+
+
+
+
+
+QUE COLOCAMOS LÁ NO NOSSO TEMPLATE de 'shoppingList',
+
+QUE EU TIREI AGOARW...
+
+
+
+
+
+
+
+
+
+
+BEM, AGORA O CÓDIGO ESTÁ FUNCIONANDO, E FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a class="list-group-item" 
+[@shopListItem]
+
+style="cursor: pointer;"
+> {{name}} ({{amount}})
+</a>
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { Component, Input, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-shopping-list-item',
+  templateUrl: './shopping-list-item.component.html',
+  styleUrls: ['./shopping-list-item.component.css'],
+  animations: [
+
+
+
+    trigger(
+         'shopListItem',
+   
+   
+       [
+         state(
+           'in', style({
+            opacity: '1',
+            transform: 'translateX(0)'
+           })
+         ),
+   
+         transition(
+           'void => *',
+
+         [
+           style({
+             'opacity': '0',
+             'transform': 'translateX(-60px)'
+           }),
+
+           animate(1000)
+  
+          ]
+         )
+   
+       ]
+    )
+   
+   
+     ]
+})
+export class ShoppingListItemComponent implements OnInit {
+  @Input() name: string;
+  @Input() amount: number;
+
+  constructor() {}
+
+  ngOnInit(): void {}
+}
+
+
+
+
+
+
+
+
+
+
+
+OK, MAS A ANIMATION DE 'REMOVE' ainda não está funcionando...
+
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+    trigger(
+         'shopListItem',
+   
+   
+       [
+         state(
+           'in', style({
+            opacity: '1',
+            transform: 'translateX(0)'
+           })
+         ),
+   
+         transition(
+           'void => *',
+
+         [
+           style({
+             'opacity': '0',
+             'transform': 'translateX(-60px)'
+           }),
+
+           animate(1000)
+  
+          ]
+         ),
+
+
+
+         transition(
+          '* => void',
+
+        [
+  
+          animate(1000, style(
+            {
+              opacity: '0',
+              transform: 'translate(-60px)'
+            }
+          ))
+ 
+         ]
+        )
+   
+       ]
+    )
+
+
+
+
+
+
+
+
+
+
+    EDX:
+
+
+
+
+    https://stackblitz.com/edit/angular-animation-when-removing?file=src%2Fapp%2Fapp.component.ts
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> uma das soluções talvez seja colocar a animation de 'remove'
+
+
+    no elemento acima dele,  a 'list'....
+
+
+
+
+
+
+
+
+
+
+
+--> CONSEGUI CONSERTAR, TIVE QUE WRAPPAR ELEMENTO COM UMA DIV... FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+<li
+  style="list-style: none"
+
+>
+  <a class="list-group-item" style="cursor: pointer">
+    {{ name }} ({{ amount }})
+  </a>
+</li>
+
+
+
+
+
+
+
+
+
+
+
+
+e o shopping list:
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-10">
+    <app-shop-list-edit 
+    
+    ></app-shop-list-edit>
+    <hr />
+    <ul class="list-group">
+
+      <!-- ESSE É O APPROACH QUE FUNCIONA, TEORICAMENTE.... e sim, precisamos dessa wrapping div.-->
+      <div  
+      [@shopListItem]
+      (@shopListItem.start)="animationStarted($event)"
+      (@shopListItem.done)="animationEnded($event)"
+      *ngFor="let ingredient of (ingredients | async)?.ingredients; let index=index"
+      >
+      <app-shopping-list-item  
+      [name]="ingredient.ingredient"
+      [amount]="ingredient.amount"
+      (click)="onShopListItemClick(index)"
+      ></app-shopping-list-item>
+    </div>
+
+    </ul>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO TS DE SHOPPING LIST:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { Store } from '@ngrx/store';
+
+import { Observable} from 'rxjs';
+
+import { LoggingService } from '../logging.service';
+import { Ingredient } from '../shared/ingredient.model';
+
+import * as ShoppingListActions from './store/shoppingListActions';
+
+import { AppState } from '..';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+// import { animate, state, style, transition, trigger } from '@angular/animations';
+
+@Component({
+  selector: 'app-shopping-list',
+  templateUrl: './shoppingList.component.html',
+
+  styleUrls: ['./shoppingList.component.css'],
+  animations: [  
+
+
+
+    trigger(
+         'shopListItem',
+   
+   
+       [
+         state(
+           'in', style({
+            opacity: '1',
+            transform: 'translateX(0)'
+           })
+         ),
+   
+         transition(
+           'void => *',
+
+         [
+           style({
+             'opacity': '0',
+             'transform': 'translateX(-60px)'
+           }),
+
+           animate(1000)
+  
+          ]
+         ),
+
+         transition(
+          // '* => void',  ///ISSO PODE SER SUBSTITUÍDO POR ':leave'...
+          ':leave',
+
+        [
+  
+          animate(1000, style(
+            {
+              opacity: '0',
+              transform: 'translate(60px)'
+            }
+          ))
+ 
+         ]
+        )
+   
+       ]
+    )
+   
+   
+     ]
+
+
+
+
+
+
+
+
+})
+export class ShoppingListComponent implements OnInit {
+  ingredients: Observable<{ ingredients: Ingredient[] }>;
+
+  constructor(
+    private loggingService: LoggingService,
+
+    private store: Store<AppState>
+  ) {}
+
+  ngOnInit(): void {
+    this.ingredients = this.store.select('shoppingList');
+  }
+
+  onShopListItemClick(index: number) {
+    this.store.dispatch(new ShoppingListActions.StartEdit(index));
+  }
+
+
+
+  animationStarted(event: any) {  ///exemplo de CALLBACK A PARTIR DE UMA ANIMATION...
+
+    console.log(event);
+  }
+
+
+  animationEnded(event: any) {
+      console.log(event);
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo...
+
+
+
+
+
+
+
+
+
+
+agora vou tentar adicionar uma animation ao 'recipeBook' area...
+
+
+
+
+
+
+
+
+
+---> preciso ir até o 'recipeBook.component.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> hmmm estou com um bug no meu código... --> quando recarrego 
+
+
+
+a página estando 
+
+
+
+
+no component de 'recipeBook' e ESTANDO AUTHENTICATED,
+
+
+
+SOU REDIRECIONADO PARA A PAGE  DE 'AUTH'... (comportamento indesejado)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, MAS CONSEGUI A ANIMATION LÁ NO COMPONENT DE 'RECIPEBOOK':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnDestroy, OnInit, Output } from '@angular/core';
+
+import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { LoggingService } from '../logging.service';
+
+import * as fromRecipeBook from './store/recipeBookActions';
+
+import { AppState } from '..';
+import { Subscription } from 'rxjs';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+
+@Component({
+  selector: 'app-recipe-book',
+  templateUrl: './recipe-book.component.html',
+  styleUrls: ['./recipe-book.component.css'],
+  animations: [
+
+
+    trigger(
+      'recipeList',
+
+      [
+
+        state('in', 
+        
+        
+        style({
+          'opacity': '1',
+          'transform': 'translateX(0)'
+        }
+        )),
+
+
+        transition(
+          ':enter',
+
+          [style(
+            {
+              'opacity': '0',
+              'transform': 'translateX(-30px)'
+            }
+          ),
+
+          animate(800)
+
+          ]
+
+        )
+        
+        
+        
+      ]
+    )
+
+
+
+  ]
+})
+export class RecipeBookComponent implements OnInit {
+  isLoading = false;
+
+  constructor(
+    private store: Store<AppState>,
+
+    private loggingService: LoggingService
+  ) {}
+
+  ngOnInit(): void {
+    this.loggingService.printLog('Hello from recipeBookModule');
+
+    this.store.dispatch(new fromRecipeBook.StartFetchRecipes());
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+CÓDIGO HTML:
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-md-5">
+    <div  [@recipeList]>
+    <app-recipe-list
+   
+    
+    ></app-recipe-list>
+  </div>
+  </div>
+
+  <div class="col-md-7" [ngStyle]="{ 'margin-top': '36px' }">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> Agora tenho que adicionar uma animation para quando elementos são adicionados/removidos 
+à list 
+
+
+de 
+
+
+'recipe-list'...
+
+
+
+
+
+
+
+
+(
+
+  para isso, tenho que ir até o component 'recipe-list'..
+)
+
+
+
+
+
+
+
+
+
+
+-------> CONSEGUI ADICIONAR O 'ADD/REMOVE' DE RECIPES DA LIST, COM ANIMATIONS:
+
+
+
+
+
+
+
+
+
+
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+
+import { Recipe } from '../recipe.model';
+
+import { AppState } from 'src/app';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
+
+@Component({
+  selector: 'app-recipe-list',
+  templateUrl: './recipe-list.component.html',
+  styleUrls: ['./recipe-list.component.css'],
+  animations: [
+    trigger(
+      'recipeListItem',
+
+      [
+        state(
+          'in',
+
+          style({
+            opacity: '1',
+            transform: 'translateX(0)',
+          })
+        ),
+
+
+
+        transition(
+          ':enter',
+          [
+
+            style(
+              {
+                'opacity': '0',
+                'transform': 'translateX(-30px)'
+              }
+            ),
+
+            animate(800)
+          ]
+        ),
+
+
+
+        transition(
+          ':leave',
+          [
+
+            style(
+              {
+                'opacity': '1',
+                'transform': 'translateX(0px)'
+              }
+            ),
+
+            animate(800, style(
+              {
+                'opacity': '0',
+                'transform': 'translateX(30px)'
+              }
+            ))
+          ]
+        )
+
+      ]
+    ),
+  ],
+})
+export class RecipeListComponent implements OnInit, OnDestroy {
+  subscription: Subscription;
+
+  recipes: Recipe[] = [];
+
+  isLoading = false;
+
+  constructor(
+    private store: Store<AppState>,
+
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.subscription = this.store
+      .select('recipeBook')
+      .subscribe((recipeBookState) => {
+        this.isLoading = recipeBookState.isLoading;
+        this.recipes = recipeBookState.recipes;
+      });
+  }
+
+  onNewRecipe() {
+    this.router.navigate(['/recipe-book', 'new']);
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+       
+<div class="row" >
+  <div class="col-xs-12">
+
+    <button class="btn btn-success"    (click)="onNewRecipe()">New Recipe</button> 
+  </div>
+</div>
+<hr>
+<app-spinner *ngIf="isLoading"></app-spinner>
+<div class="row" *ngIf="!isLoading">
+  <div class="col-xs-12">
+
+    <div *ngFor="let recipe of recipes; let index=index" [@recipeListItem]>
+    <app-recipe-item  
+    [routerLink]="['/recipe-book', recipe.id]"
+    routerLinkActive="active"
+    [index]="index"
+    [name]="recipe.name"
+    [description]="recipe.description"
+    [ngStyle]="{'cursor': 'pointer'}"
+    [imagePath]="recipe.imagePath"
+
+    ></app-recipe-item>
+  </div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> hmmm... mas aqui temos um problema....
+
+
+
+
+
+
+
+
+
+
+
+
+-> quando fazemos EDIT de uma recipe/shop-list-item,
+
+
+
+ISSO AINDA __ É _ CONSIDERADO COMO UM 'EXIT DO DOM'...
+
+
+
+
+
+
+
+
+
+--->  o ideal seria fazer esse item PERMANECER NA LISTA,
+
+e aí apenas 'refreshar', de alguma forma..
+
+
+
+
+
+
+
+
+
+
+esse é um uso avançado de animations, mas acho que é possível...
+
+
+
+
+
+
+
+
+
+
+
+--> mas não sei como fazer...
+
+
+
+
+
+
+tentar fazer o básico antes...
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... FICOU BEM ANIMADO...
+
+
+
+
+
+
+
+
+
+CÓDIGO DO 'shoppingList' com o animate do 'shop-edit':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { Store } from '@ngrx/store';
+
+import { Observable } from 'rxjs';
+
+import { LoggingService } from '../logging.service';
+import { Ingredient } from '../shared/ingredient.model';
+
+import * as ShoppingListActions from './store/shoppingListActions';
+
+import { AppState } from '..';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
+// import { animate, state, style, transition, trigger } from '@angular/animations';
+
+@Component({
+  selector: 'app-shopping-list',
+  templateUrl: './shoppingList.component.html',
+
+  styleUrls: ['./shoppingList.component.css'],
+  animations: [
+    trigger(
+      'shopListItem',
+
+      [
+        state(
+          'in',
+          style({
+            opacity: '1',
+            transform: 'translateX(0)',
+          })
+        ),
+
+        transition(
+          'void => *',
+
+          [
+            style({
+              opacity: '0',
+              transform: 'translateX(-15px)',
+            }),
+
+            animate(800),
+          ]
+        ),
+
+        transition(
+          // '* => void',  ///ISSO PODE SER SUBSTITUÍDO POR ':leave'...
+          ':leave',
+
+          [
+            animate(
+              800,
+              style({
+                opacity: '0',
+                transform: 'translate(15px)',
+              })
+            ),
+          ]
+        ),
+      ]
+    ),
+
+    trigger(
+      'appEdit',
+
+      [
+        state(
+          'in2',
+          style({
+            opacity: '1',
+          })
+        ),
+
+        transition(
+          'void => *',
+
+          [
+            style({
+              opacity: '0',
+            }),
+
+            animate(800),
+          ]
+        ),
+      ]
+    ),
+  ],
+})
+export class ShoppingListComponent implements OnInit {
+  ingredients: Observable<{ ingredients: Ingredient[] }>;
+
+  constructor(
+    private loggingService: LoggingService,
+
+    private store: Store<AppState>
+  ) {}
+
+  ngOnInit(): void {
+    this.ingredients = this.store.select('shoppingList');
+  }
+
+  onShopListItemClick(index: number) {
+    this.store.dispatch(new ShoppingListActions.StartEdit(index));
+  }
+
+  animationStarted(event: any) {
+    ///exemplo de CALLBACK A PARTIR DE UMA ANIMATION...
+
+    console.log(event);
+  }
+
+  animationEnded(event: any) {
+    console.log(event);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+HTML:
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-10">
+    <div  [@appEdit]>
+    <app-shop-list-edit 
+
+    
+    ></app-shop-list-edit>
+  </div>
+    <hr />
+    <ul class="list-group">
+
+      <!-- ESSE É O APPROACH QUE FUNCIONA, TEORICAMENTE.... e sim, precisamos dessa wrapping div.-->
+      <div  
+      [@shopListItem]
+      (@shopListItem.start)="animationStarted($event)"
+      (@shopListItem.done)="animationEnded($event)"
+      *ngFor="let ingredient of (ingredients | async)?.ingredients; let index=index"
+      >
+      <app-shopping-list-item  
+      [name]="ingredient.ingredient"
+      [amount]="ingredient.amount"
+      (click)="onShopListItemClick(index)"
+      ></app-shopping-list-item>
+    </div>
+
+    </ul>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+IMPLEMENTEI NA AUTH PAGE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row" [@authPage]>
+  <div
+    class="col-xs-12 col-md-6 col-md-offset-3"
+    [ngStyle]="{ display: 'flex', 'justify-content': 'center' }"
+  >
+    <form
+      (ngSubmit)="onAuthFormSubmit(localFormReference)"
+      #localFormReference="ngForm"
+    >
+      <ng-template appPlaceholder></ng-template>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          required
+          email
+          name="email"
+          ngModel
+          placeholder="email@example.com"
+          #emailReference="ngModel"
+        />
+        <span *ngIf="!emailReference.value && emailReference.touched"
+          >Email is required</span
+        >
+        <span
+          *ngIf="
+            !emailReference.valid &&
+            emailReference.value &&
+            emailReference.touched
+          "
+          >Invalid email entered</span
+        >
+      </div>
+
+      <div class="form-group" [ngStyle]="{ 'margin-top': '12px' }">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          class="form-control"
+          id="password"
+          required
+          name="password"
+          ngModel
+          minlength="6"
+          placeholder="Your Password"
+          #passwordReference="ngModel"
+        />
+        <span *ngIf="!passwordReference.value && passwordReference.touched"
+          >Password is required</span
+        >
+        <span
+          *ngIf="
+            !passwordReference.valid &&
+            passwordReference.value &&
+            passwordReference.touched
+          "
+          >Password must have at least 6 characters</span
+        >
+      </div>
+
+      <div
+        [ngStyle]="{ display: 'flex', 'justify-content': 'center' }"
+        *ngIf="!isLoading"
+      >
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="!localFormReference.valid"
+        >
+          {{ isSignup ? "SIGN UP" : "LOGIN" }}
+        </button>
+        <button
+          class="textBtn"
+          (click)="onSwitchAuth()"
+          [ngStyle]="{ cursor: 'pointer' }"
+          type="button"
+        >
+          {{ isSignup ? "Switch to Login" : "Switch to Signup" }}
+        </button>
+      </div>
+      <app-spinner *ngIf="isLoading"></app-spinner>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+e código ts:
+
+
+
+
+
+
+
+
+
+import {
+  Component,
+  ComponentFactoryResolver,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { Subscription } from 'rxjs';
+
+import { PlaceholderDirective } from '../placeholderDirective/placeholder.directive';
+
+import { AlertDynamicComponent } from '../shared/alertVersaoImperativa/alert.component';
+import { Store } from '@ngrx/store';
+import { AppState } from '..';
+
+import * as AuthActions from '../auth/store/authActions';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+
+@Component({
+  selector: 'app-auth-page',
+  templateUrl: './auth-page.component.html',
+  styleUrls: ['./auth-page.component.css'],
+  animations: [
+    trigger(
+      'authPage',
+
+      [
+        state(
+          'in',
+          style({
+            opacity: '1',
+            transform: 'translateX(0)',
+          })
+        ),
+
+        transition(
+          'void => *',
+
+          [
+            style({
+              opacity: '0',
+              transform: 'translateX(-15px)',
+            }),
+
+            animate(800),
+          ]
+        ),
+
+        transition(
+          // '* => void',  ///ISSO PODE SER SUBSTITUÍDO POR ':leave'...
+          ':leave',
+
+          [
+            animate(
+              800,
+              style({
+                opacity: '0',
+                transform: 'translate(15px)',
+              })
+            ),
+          ]
+        ),
+      ]
+    ),
+  ],
+
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> agora só me resta fazer isso no 'add do elemento recipe-edit À page'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CÓDIGO DE 'RECIPE-DETAIL':
+
+
+
+
+
+
+
+
+
+
+
+<div *ngIf="loadedRecipe; else noRecipeLoaded" [@recipeDetailPage]>
+  <div class="row">
+    <div class="col-xs-12">
+      <img
+        src="{{ loadedRecipe.imagePath }}"
+        alt=""
+        class="img-responsive"
+        style="max-height: 300px; max-width: 400px"
+      />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <h1>{{ loadedRecipe.name }}</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <h2>{{ loadedRecipe.description }}</h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="btn-group" appDropdown>
+        <button type="button" class="btn btn-primary dropdown-toggle">
+          Manage Recipe <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" style="cursor: pointer">
+          <li (click)="sendToShoppingList()"><a>Add to Shopping List</a></li>
+          <li><a (click)="onEditRecipe()">Edit Recipe</a></li>
+          <li><a (click)="onDeleteRecipe()">Delete Recipe</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <ul class="list-group">
+        <li
+          class="list-group-item"
+          *ngFor="let ingredient of loadedRecipe.ingredients"
+          [ngStyle]="{
+            'margin-top': '12px',
+            'user-select': 'none'
+          }"
+        >
+          {{ ingredient.ingredient }} - {{ ingredient.amount }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<ng-template #noRecipeLoaded>
+  <h3>Please select a Recipe!</h3>
+</ng-template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ESTE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+
+import { Recipe } from '../recipe.model';
+
+import { ActivatedRoute, Params, Router } from '@angular/router';
+
+import { Store } from '@ngrx/store';
+
+import * as fromRecipeBook from '../store/recipeBookActions';
+import { AppState } from 'src/app';
+import { map, Subscription, switchMap } from 'rxjs';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+
+@Component({
+  selector: 'app-recipe-detail',
+  templateUrl: './recipe-detail.component.html',
+  styleUrls: ['./recipe-detail.component.css'],
+  animations: [
+    trigger(
+      'recipeDetailPage',
+
+      [
+        state(
+          'in',
+          style({
+            opacity: '1',
+          })
+        ),
+
+        transition(
+          'void => *',
+
+          [
+            style({
+              opacity: '0',
+            }),
+
+            animate(800),
+          ]
+        ),
+
+      ]
+    ),
+  ]
+  
+})
+export class RecipeDetailComponent implements OnInit, OnDestroy {
+  loadedRecipe: Recipe;
+  id: number;
+
+  loadedRecipeSubscription: Subscription;
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private store: Store<AppState>
+  ) {}
+
+  ngOnInit(): void {
+    this.loadedRecipeSubscription = this.route.params
+      .pipe(
+        map((params: Params) => {
+          return +params['id'];
+        }),
+
+        switchMap((id) => {
+          this.id = id;
+          return this.store.select('recipeBook');
+        }),
+
+        map((recipesState) => {
+          const recipeIndex = recipesState.recipes.findIndex((recipe) => {
+            return recipe.id === this.id;
+          });
+
+          return recipesState.recipes[recipeIndex];
+        })
+      )
+      .subscribe((recipe) => {
+        this.loadedRecipe = recipe;
+      });
+  }
+
+  sendToShoppingList() {
+    this.store.dispatch(
+      new fromRecipeBook.SendIngredientsToShopList(
+        this.loadedRecipe.ingredients
+      )
+    );
+
+    this.router.navigate(['/shop-list']);
+  }
+
+  onEditRecipe() {
+    this.router.navigate(['/recipe-book', this.id, 'edit']);
+  }
+
+  onDeleteRecipe() {
+    this.store.dispatch(new fromRecipeBook.DeleteRecipe(this.id));
+
+    this.router.navigate(['/recipe-book']);
+  }
+
+  ngOnDestroy(): void {
+    if (this.loadedRecipeSubscription) {
+      this.loadedRecipeSubscription.unsubscribe();
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> ok, mas quero que essa animation SEMPRE SEJA RETOCADA (Replay) 
+
+
+
+QUANDO UM NOVO ELEMENTO FOR CARREGADO (um novo recipe entrar no component de 'recipe-detail')...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, AGORA TEMOS UM PUNHADO DE ANIMAÇÕES NO NOSSO PROJETO, e ficou legal..
+
+
+
+
+
+
+
+
+
+
+
+--> MAS AGORA TEMOS OUTRA COISA QUE DEVEMOS FAZER..
+
+
+
+
+
+
+TEMOS QUE CONSERTAR O BUG DE 'RELOAD NA RECIPE-BOOK, REDIRECT DIRETAMENTE AO 
+
+AUTH'...
+
+
+
+
+
+
+---> talvez seja a authguard, ou o interceptor....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O PROBLEMA ESTÁ NESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+import {
+  ActivatedRouteSnapshot,
+  CanActivate,
+  RouterStateSnapshot,
+  UrlTree,
+} from '@angular/router';
+import { map, Observable, take } from 'rxjs';
+
+import { Router } from '@angular/router';
+import { AppState } from '..';
+import { Store } from '@ngrx/store';
+
+@Injectable({ providedIn: 'root' })
+export class AuthGuardService implements CanActivate {
+  constructor(private store: Store<AppState>, private router: Router) {}
+
+  canActivate(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ):
+    | boolean
+    | UrlTree
+    | Observable<boolean | UrlTree>
+    | Promise<boolean | UrlTree> {
+    const userObservable = this.store.select('auth');
+
+    if (state.url === '/auth') {
+      return userObservable.pipe(
+        take(1),
+
+        map((user) => {
+          if (!user.token) {
+            return true;
+          } else {
+            return this.router.createUrlTree(['/recipe-book']);
+          }
+        })
+      );
+    }
+
+    return userObservable.pipe(
+      take(1),
+
+      map((user) => {
+
+        console.log(user);
+        if (!user.token) {
+          return this.router.createUrlTree(['/auth']);
+        } else {
+          return true;
+        }
+      })
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+NESTE TRECHO AQUI:
+
+
+
+    return userObservable.pipe(
+      take(1),
+
+      map((user) => {
+
+        console.log(user);
+        if (!user.token) {
+          return this.router.createUrlTree(['/auth']);
+        } else {
+          return true;
+        }
+      })
+    );
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> HMMM MAS, PELO VISTO, ESSE É UM PROBLEMA QUE SÓ EXISTE NAS VERSÕES MAIS RECENTES DO NOSSO APP (alguma coisa mais recente está o causando)..
+
+
+
+
+
+
+
+
+TALVEZ O PROBLEMA SEJA O NESTJS/ ANGULAR UNIVERSAL...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ACHO QUE ESTOU FINALMENTE ENCONTRANDO O PROBLEMA...
+
+
+
+
+
+
+
+
+
+
+-_> ESTÁ NESTE EFFECT AQUI:
+
+
+
+
+
+
+
+
+  authLogout$ = createEffect(
+    () => {
+      console.log('ENTERED');
+      return this.actions$.pipe(
+        ofType(AuthActions.AUTH_LOGOUT),
+
+        tap(() => {
+          this.authService.clearLogoutTimer();
+          localStorage.removeItem('userData');
+          this.router.navigate(['/auth']);
+        })
+      );
+    },
+
+    { dispatch: false }
+  );
+
+
+
+
+
+
+
+
+
+
+  --> O EFFECT DE 'authLogout' ESTÁ SENDO DISPARADO TODA VEZ QUE REINICIO MINHA PAGE, POR ALGUMA RAZÃO....
+
+
+
+
+
+
+
+
+
+
+  ok... mas o código de 'effects' inteiro está EXATAMENTE IGUAL....
+
+
+
+
+
+
+
+
+
+
+
+
+
+  só pode ser o nestjs/angular universal...
+
+
+
+
+
+
+  vou deinstalar e tentar de novo...
+
+
+
+
+
+
+
+
+
+
+  --> não, mas não era esse o problema..
+
+
+
+
+  é outra coisa...
+
+
+
+
+
+
+
+
+
+
+
+  --> o problema realmente é o angular universal, que fode 
+
+
+  as nossas authGuards..
+
+
+
+
+  ex:
+
+
+
+
+
+
+  So in my opinion: Either use server side rendering fully which means also check the auth state of the user in the backend. Or use angular as a real front end project and handle the auth process there. Mixing those two worlds will lead to some nasty problems and makes it unnecessarily complex to maintain.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ----> próximo tópico 'como desintalar o angular universal', tirar o serverside rendering do seu app..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ok... isso quer dizer que eu TIREI O SERVERSIDE RENDERING DO MEU APP,
+
+
+
+
+  MAS AO MESMO TEMPO CONSERTEI A AUTH dele....
+
+
+
+
+
+
+
+
+
+
+
+  O PROBLEMA ERA ESTE:
+
+
+LÁ EM 'app-routing.module.ts'
+
+
+
+
+
+
+   // initialNavigation: 'enabledBlocking' /////////NÃO DEIXE ISSO HABILITADO; ESSA OPTION _ BLOQUEIA SUA AUTHGUARD, NESSE SEU PROJETO.... ---> ESSA OPTION É USADA PARA SERVERSIDE RENDERING, mas o serverside rendering SEMPRE traz problemas quanto ao authenticate de suas routes, ou seja, a respeito dos AUTHGUARDS..
+
+
+
+
+
+
+
+
+
+
+
+   não sei como consertar esse memory leak...
+
+
+
+
+
+
+
+   hora de estudar o próximo módulo...

@@ -1,0 +1,2357 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> APRENDEMOS SOBRE TODOS OS HOOKS DO ANGULAR...
+
+
+
+
+
+
+
+são eles:
+
+
+
+
+
+
+
+
+1) ngOnChanges
+
+
+
+
+
+2) ngOnInit 
+
+
+
+3) ngDoCheck
+
+
+
+
+
+
+4) ngAfterContentInit 
+
+
+
+5) ngAfterContentChecked 
+
+
+
+
+6) ngAfterViewInit
+
+
+
+7) ngAfterViewChecked
+
+
+
+
+
+
+8) ngOnDestroy
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> NO COMPONENT DE 'server-item',
+
+vamos ver 
+
+uma demonstração desses hooks...
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR 
+
+
+
+VAI ENFIAR UM CONSOLE.LOG 
+
+
+
+dentro de 
+
+
+'constructor',
+
+
+
+dizendo 
+
+
+
+
+
+
+
+
+
+console.log('constructor called');
+
+
+
+
+
+
+
+
+
+
+
+--> ele TAMBÉM ESCREVE um console.log em 'ngOnInit()',
+
+para VER QUANDO ELE É EXECUTADO....
+
+
+
+
+
+
+
+
+FICA TIPO assim:
+
+
+
+
+
+
+
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+
+@Component({
+  selector: 'app-server-item',
+  templateUrl: './server-item.component.html',
+  styleUrls: ['./server-item.component.css'],
+  encapsulation: ViewEncapsulation.Emulated, ////'encapsulation' é usada para _ COPIAR O COMPORTAMENTO DE 'CSS MODULES' (cada arquivo css é aplicado só AO COMPONENT A QUE ESTÁ VINCULADO, não sendo aplicados seus selectors aos DEMAIS COMPONENTS DO CÓDIGO).. ->_ esse comportamneto pode ser OVERWRITTEN, substituído pelo 'COMPORTAMENTO DEFAULT' de arquivos css (que é sempre aplicar os selectors A TODOS OS ELEMENTS DO SEU PROJETO)....
+
+})
+export class ServerItemComponent implements OnInit {
+
+
+  @Input('srvElement') element: {
+
+    name: string;
+    type: string;
+    content: string;
+  } = {
+    name: '',
+    type: '',
+    content: '',
+  };
+
+  constructor() {
+    console.log('server-item constructor called');
+  }
+
+  ngOnInit(): void {
+    console.log('server-item ngOnInit called');
+  }
+}
+
+
+
+
+
+
+
+
+------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok... 
+
+
+
+
+
+vamos ver este output no console:
+
+
+
+
+
+
+
+
+
+constructor called! 
+
+
+
+ngOnInit called!
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK... ISSO QUER DIZER QUE 
+
+
+
+O CONSTRUCTOR É SEMPRE CHAMADO __ ANTES__ DE 'onInit'...
+
+
+
+
+
+
+--> SEMPRE QUE CRIARMOS UMA NOVA INSTANCE,
+VEREMOS 
+
+ESSE OUTPUT AÍ.. 
+(cada instance é independente da outra)...
+
+
+
+
+
+
+
+
+
+
+----> OK..  
+
+essa é a relação 
+ENTRE CONSTRUCTOR E NGONINIT..
+
+
+
+
+
+
+
+
+
+
+-> o ngOnInit 
+
+
+SEMPRE _ É EXECUTADO_ DEPOIS DO 
+
+'constructor.'...
+
+
+
+
+
+
+
+
+
+
+-> E O 'ngOnChanges' É EXECUTADO EM UM MOMENTO AINDA ANTERIOR,
+
+
+ANTES DE 
+
+
+
+'constructor.'..
+
+
+
+
+
+
+
+
+PODEMOS OBSERVAR ISSO COM ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+import {
+  Component,
+  ComponentFactoryResolver,
+  Input,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
+
+@Component({
+  selector: 'app-server-item',
+  templateUrl: './server-item.component.html',
+  styleUrls: ['./server-item.component.css'],
+  encapsulation: ViewEncapsulation.Emulated, 
+})
+
+
+export class ServerItemComponent implements OnInit {
+
+  @Input('srvElement') element: {
+    name: string;
+    type: string;
+    content: string;
+  } = {
+    name: '',
+    type: '',
+    content: '',
+  };
+
+  constructor() {
+    ///é executado ANTES DE ONINIT... (primeiro na ordem)
+    console.log('server-item constructor called');
+  }
+
+  ngOnChanges() {
+    ///é executado DEPOIS DE 'constructor' (segundo na ordem), MAS __ ANTES_ DE 'onInit'....
+    console.log('server-item ngOnChanges called');
+  }
+
+  ngOnInit(): void {
+    ///é executado DEPOIS de CONSTRUCTOR (terceiro na ordem)
+
+    console.log('server-item ngOnInit called');
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> CERTO.... E PODERÍAMOS DEIXAR O CÓDIGO ASSIM,
+
+
+
+SEM 
+
+
+ESCREVER O 'implement' DA INTERFACE 
+
+
+de 
+
+
+
+'OnChanges',
+
+
+MAS COMO 
+
+O 
+
+PROFESSOR QUER QUE NÓS PRATIQUEMOS E QUE FIQUEMOS COM UM MELHOR 'TYPE SUPPORT',
+
+
+
+
+ele escreve assim o implement:
+
+
+
+
+export class ServerItemComponent implements OnInit, OnChanges {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+    ---> O PROFESSOR DIZ QUE ESSA É UMA VERDADE PARA  _TODOS OS HOOKS:
+
+
+
+
+**** SE VOCÊ PRETENDE USAR UM HOOK ESPECÍFICO EM 1 GIVEN COMPONENT,
+
+
+
+
+O IDEAL É DECLARAR/IMPLEMENTAR ESSE HOOK 
+
+
+LOGO 
+
+
+NA DEFINIÇÃO 
+
+DA CLASS,
+
+COMO FIZEMOS AGORA,
+
+
+
+com 'OnChanges'...
+
+
+
+
+
+
+
+
+ 
+-----> É BOM SER BEM EXPLÍCITO ACERCA DE 'QUAIS INTERFACES SEU COMPONENT/CLASS USA'...
+
+
+
+
+
+
+
+
+
+
+
+-> IMPLEMENTAR AS INTERFACES QUE VOCÊ PLANEJA USAR É UMA ÓTIMA PRACTICE...
+
+
+
+
+
+
+
+
+-> FICA BEM CLARO QUAIS METHODS VOCÊ CHAMARÁ NO SEU 
+
+
+
+COMPONENT,
+
+E QUAIS NÃO PRETENDE...
+
+
+
+
+
+
+
+
+
+---> É CLARO QUE VOCÊ PRECISA IMPORTAR TODAS ESSAS INTERFACES....
+
+
+
+
+
+
+
+
+
+
+---> O PROFESSOR DIZ QUE 
+'ngOnChanges'
+
+
+roda ANTES DE 'ngOnInit',
+
+O QUE É VERDADE...
+
+
+
+
+
+
+
+
+
+
+-----> O PROFESSOR TAMBÉM NOS CONTA QUE 
+
+
+
+'ngOnChanges()' 
+
+
+
+É __ O _ _ÚNICO HOOK __ QUE 
+
+RECEBE UM ARGUMENTO....  ----------> o ARGUMENTO É 
+
+
+
+
+SEMPRE 
+
+
+
+
+chamado de 'changes',
+
+
+
+
+E 
+O SEU TYPE É SEMPRE 
+
+
+'SimpleChanges'... -------> ESSE TYPE TAMBÉM PRECISA SER IMPORTADO LÁ DE 
+
+'@angular/core'...
+
+
+
+
+
+
+
+
+
+O CÓDIGO FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+ngOnChanges(changes: SimpleChanges) {
+
+        console.log('ngOnChanges called', changes)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR LOGGA ESSE OBJECT DE 'changes',
+E AÍ FICAMOS COM ISTO:
+
+
+
+
+{element: SimpleChange}
+element: SimpleChange
+currentValue:
+content: "asasasasas"
+name: "assasaasas"
+type: "server"
+[[Prototype]]: Object
+firstChange: true
+previousValue: undefined
+[[Prototype]]: Object
+[[Prototype]]: Object
+
+
+
+
+
+
+
+
+-----------
+
+
+
+
+
+
+
+
+
+OK... ISSO NOS DÁ ESSENCIALMENTE A 'bound property'
+
+
+
+
+
+
+
+que enfiamos no nosso component,
+
+com visto em 
+
+
+@Input('srvElement') element: {type:string, name: string, content: string }
+
+
+
+
+
+
+
+
+
+
+
+--> OK... --> ISSO QUER DIZER QUE AQUI O ANGULAR SÓ NOS DEU 
+
+'
+SOME SIMPLE INFORMATIOn' --> INFO COMO:
+
+
+
+
+a) 'QUAL O CURRENT VALUE' 
+
+
+
+
+
+
+
+
+b) SE ESSA FOI A __ FIRST CHANGE_ __
+do nosso object/component...
+
+
+
+
+
+C) 'previousValue',
+
+que está como 
+
+UNDEFINED,
+
+
+PQ 
+
+NÃO EXISTIA UM VALUE ANTERIOR,
+
+
+ESSE 
+
+
+SERVER-ITEM FOI CRIADO A PARTIR DO 'NADA'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA OBSERVARMOS QUE 'ngOnChanges'
+
+
+
+acaba sendo EXECUTADO MAIS DE 1 ÚNICA VEZ 
+
+DURANTE O NOSSO RUNTIME,
+
+
+
+
+
+O PROFESSOR ADICIONA UM 
+
+
+
+
+
+NOVO BUTTON A 'app.component.html',
+
+
+um button 
+
+
+
+
+
+
+
+de 
+
+<button class="btn btn-primary">Change First Element</button>
+
+
+
+
+
+
+
+
+
+
+
+
+----> COLOCAMOS UM CLICK LISTENER PARA EXECUTAR 
+
+
+
+uma function de 'onChangeFirst()'..
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+<button class="btn btn-primary">Change First Element</button>
+
+
+
+
+
+
+
+      <button class="btn btn-primary" (click)="onChangeFirst()">Change First Element</button>
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  serverElements: any[] = [{type: 'server', name: 'TestServer', content: 'Just a test!'}, {type: 'blueprint', name: 'BlueprintServer', content: 'Just a test!'}]
+  newServerName = '';
+  newServerContent = '';
+
+  // onAddServer(event: Event) {
+    onServerAdded(serverData: {serverName: string, serverContent: string}) {
+    this.serverElements.push({
+      type: 'server',
+      name: serverData.serverName,
+      content: serverData.serverContent
+    });
+  }
+
+  onBlueprintAdded(blueprintData: {blueprintName: string, blueprintContent: string}) {
+    this.serverElements.push(
+      {
+        type: 'blueprint',
+        name: blueprintData.blueprintName,
+        content: blueprintData.blueprintContent
+      }
+    )
+  }
+
+
+  constructor() {
+    console.log('app.ts constructor called')
+  }
+
+
+  onChangeFirst()
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK... MAS COMO VAMOS MUDAR O NAME DO PRIMEIRO ELEMENT?
+
+
+
+
+
+
+
+
+
+-> PARA ISSO, O PROFESSOR NOS EXPLICA UQE 
+
+
+
+_TAMBÉM PRECISAMOS MUDAR _A 
+
+'MANEIRA PELA QUAL PASSAMOS 
+
+ESSE ELEMENT 
+
+AO 
+
+COMPONENT DE 'app-server-item'...
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO PQ ATÉ AGORA __ NÓS 
+
+RECEBEMOS 
+
+O 
+
+
+'FULL ELEMENT', 
+
+
+
+O 
+
+'FULL OBJECT' 
+de 
+
+
+'server-item'
+
+
+
+AO INPUT COLOCADO EM 'app-server-item',
+
+como observado neste código:
+
+
+
+
+
+
+
+})
+export class ServerItemComponent implements OnInit, OnChanges { //aqui fazemos IMPLEMENT das INTERFACES que pretendemos usar...
+
+
+
+  @Input('srvElement') element: {
+    name: string;
+    type: string;
+    content: string;
+  } = {
+    name: '',
+    type: '',
+    content: '',
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ----> NÃO VAMOS QUERER PASSAR O 'OBJECT INTEIRO ', o element inteiro,
+
+
+  POR ISSO O PROFESSOR 
+
+
+  SÓ 
+
+  ESCREVE UM NOVO '@Input',
+
+
+
+  um input em que 
+
+  SÓ VAMOS ESPERAR PEGAR O 'name',
+
+
+
+
+
+
+  PQ O NAME É JUSTAMENTE A ÚNICA COISA QUE ESTAMOS OUTPUTTANDO EM 'app-server-item',
+
+  COMO VISTO NESTE CÓDIGo:
+
+
+      <div class="panel panel-default">
+      <div class="panel-heading">{{ element.name }}</div>
+      <div class="panel-body">
+ 
+        <ng-content></ng-content>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ------>  AGORA SÓ OUTPUTTAMOS O NAME, PQ TODA A OUTRA 'ELEMENT INFORMATION'
+
+
+
+
+
+FOI PROJETADA, VIA 'ng-Content'
+
+PARA DENTRO DESSE COMPONENT...
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+--> O CÓDIGO FICA ASSIM:
+
+
+
+
+})
+export class ServerItemComponent implements OnInit, OnChanges { //aqui fazemos IMPLEMENT das INTERFACES que pretendemos usar...
+
+
+
+  @Input('srvElement') element: {
+    name: string;
+    type: string;
+    content: string;
+  } = {
+    name: '',
+    type: '',
+    content: '',
+  };
+
+
+
+@Input() name: string; ##eis o código em questaõ.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---->  OK.. O PROFESSOR VAI USAR PROPERTY BINDING LÁ 
+
+
+em 
+
+'app.component.html...
+
+
+
+
+
+
+
+
+
+-> ELE VAI BINDAR a propriedade de 'name'  
+
+a 
+
+
+'serverElement.name',
+
+tipo assim:
+
+
+
+
+  <div class="row">
+    <div class="col-xs-12">
+      <button class="btn btn-primary" (click)="onChangeFirst()">Change First Element</button>
+      <app-server-item 
+      *ngFor="let serverElement of serverElements"
+      [srvElement]="serverElement" 
+      [name]="serverElement.name"
+      >
+        <!-- ESTES 2 '<p>' FORAM INSERIDOS ENTRE A OPENING E ECLOSING TAGS DE 'app-server-item', e só conseguiram ser inseridos PQ ESCREVEMOS '<ng-content>' lá no CÓDIGO DE 'app-server-item', NO LOCAL EM QUE AUTORIZAMOS O 'INSERT' dessas 2 linhas '<p>'....'-->
+      <p>
+        <strong *ngIf="serverElement.type === 'server'" style="color: red">{{   
+          serverElement.content
+        }}</strong>
+        <em *ngIf="serverElement.type === 'blueprint'">{{ serverElement.content }}</em>
+      </p>
+  
+    </app-server-item>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AÍ A FUNCTION  DE 
+
+
+
+'onChangeFirst()"
+
+
+
+
+vai basicamente ter este código:
+
+
+
+
+
+
+
+
+
+
+onChangeFirst() {
+    this.serverElements[0]
+}
+
+
+
+
+
+
+
+
+
+
+-> ELE VAI PEGAR _ 
+
+
+
+
+O PRIMEIRO ELEMENTO DO ARRAY DE 'serverElements'
+
+
+em 'app.component.html'
+
+
+
+E AÍ _ VAI DEFINIR O NAME 
+
+como sendo 
+
+'changed'..
+
+
+
+
+
+ex:
+
+
+
+
+
+onChangeFirst() {
+    this.serverElements[0] = 'Changed!';
+}
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR FEZ ESSAS CHANGES PARA QUE SEJA POSSÍVEL ''REALMENTE VER QUANDO O 'ngOnChanges', em app-server-item,
+
+
+
+ACABA DISPARADO'''...
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK.... AÍ 
+
+
+
+
+
+VAMOS ATÉ NOSSA PÁGINA E 
+
+CLICAMOS EM 
+
+
+
+
+'CHANGE FIRST ELEMENt'...
+
+
+
+
+
+
+
+
+-----> ok, agora quando esse hook é chamado?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+o primeiro elemento do serverElements altera o name do primeiro element....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK.... AGORA ESTAMOS BINDANDO A UM PRIMITIVE VALUE,
+
+
+'name', que é só uma string...
+
+
+
+
+
+
+
+
+-> se clicamos em 'change first element',
+
+
+O 'ngOnChanges'
+
+
+ _ É DISPARADO.. --_> MAS 
+
+
+ O 
+ CONSTRUCTOR E 'ngOnInit()'
+
+
+ NÃO FORAM CHAMADOS.. -----> mas o ngOnChanges foi...
+
+
+
+
+
+
+
+
+
+
+
+ ----> ESSE HOOK PODE SER INTERESSANTE SE VOCÊ QUISER ''REAGIR A QUAISQUER CHANGES''
+
+ em 1 component  E ENTÃO ''FAZER ALGO COM OS VELHOS VALUES, TALVEZ OS ARMAZENAR ANTES DE 
+ ELES SEREM DESCARTADOS'',,
+
+
+ algo assim...
+
+
+
+
+
+
+
+
+
+ -> ok, esse é o ngOnChanges...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> mas temos mais alguns 
+
+
+
+ HOOKS,
+
+
+
+ como 
+
+
+
+
+ 'ngDoCheck'..
+
+
+
+
+
+
+
+
+
+
+
+ --> professor escreve 
+
+
+
+
+
+
+
+
+
+
+
+ ngDoCheck() {
+     console.log('server-item ngDoCheck called')
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+ --> NO CONSOLE,
+
+ OBSERVAMOS QUE 
+
+ 'doCheck'
+
+
+ É EXECUTADO LOGO APÓS 
+
+ 'ngOnInit()'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ---> o professor nos mostra ue 
+
+
+ 'doCheck'
+
+ TAMBÉM 
+
+ É DISPARADO 
+
+ SE 
+
+
+
+
+
+ CLICAMOS EM 'CHANGE FIRST ELEMENT' OU 
+
+ 'ADD SERVER'.. -----> ESSE METHOD É CHAMADO SEMPRE QUE 
+ O ANGULAR 
+
+ PROCURA 
+
+
+ POR QUAISQUER CHANGES... -> EXISTME 
+
+ VÁRIOS 
+
+
+
+ TRIGGERS QUE TRIGGAM ESSE METHOD,
+
+
+ COMO 
+
+
+
+
+ 'UM EVENT FOI CHAMADO POR UM CLICKING',
+
+
+ OU 
+
+ 'UMA PROMISE NOS RETORNOU DATA' ------> TUDO ISSO TRIGGA O 
+
+ 'doCheck' -------> É POR ISSO QUE 
+
+
+
+
+
+ O DOCHECK NÃO É UM LOCAL EM QUE VOCÊ VAI QUERER RODAR CÓDIGO SUPER PODEROSO.... -----> pq isso vai custar 
+
+
+ mt performance,... --> mas o fato de que 
+
+ isso 
+ aí roda 
+
+ com tant frequência não é um prolbmea...-->  ESSE É UM BOM HOOK SE VOCÊ QUER 'CHECAR SE PRECISA ALTERAR ALGO MANUALMENTE 
+
+ PQ 
+
+
+ O 
+
+
+
+ ANGULAR 
+
+ NÃO 'PICKED UP' essa change que ocorreu'... 
+
+
+
+
+
+
+
+
+
+
+
+
+ --------> NOSSO CÓDIGO VAI FICANDO ASSIM:
+
+
+
+
+
+
+
+ import {
+  AfterContentInit,
+  Component,
+  DoCheck,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  ViewEncapsulation,
+} from '@angular/core';
+
+@Component({
+  selector: 'app-server-item',
+  templateUrl: './server-item.component.html',
+  styleUrls: ['./server-item.component.css'],
+  encapsulation: ViewEncapsulation.Emulated, ////'encapsulation' é usada para _ COPIAR O COMPORTAMENTO DE 'CSS MODULES' (cada arquivo css é aplicado só AO COMPONENT A QUE ESTÁ VINCULADO, não sendo aplicados seus selectors aos DEMAIS COMPONENTS DO CÓDIGO).. ->_ esse comportamneto pode ser OVERWRITTEN, substituído pelo 'COMPORTAMENTO DEFAULT' de arquivos css (que é sempre aplicar os selectors A TODOS OS ELEMENTS DO SEU PROJETO)....
+
+  ////encapsulation tem 3 MODOS: 'emulated' (default, é o padrão do angular, é o comportamento de 'css modules'), 'none' (aplica seus selectors a TODOS OS ELEMENTS DA PÁGINA, tendo um behavior de 'css/javascript' comum...),
+  /// 'ShadowDom', antigamente chamado de 'Native', é uma opção que faz a MESMA COISA QUE EMULATED, mas com SUPORTE PIOR NOS BROWSERS...
+})
+export class ServerItemComponent implements OnInit, OnChanges, DoCheck, AfterContentInit { //aqui fazemos IMPLEMENT das INTERFACES que pretendemos usar...
+
+
+  // @Input() element: { /////USO DE '@Input' SEM O USO _ DE 'alias' para sua property name.... (element aqui será exatamente '[element]' no seu elemento html de 'app-server-item'...)
+  //   ///por meio de '@Input' fazemos o _ 'EXPOSE' de sua given property '''' AO MUNDO''' (o que quer dizer que podemos PASSAR DATA A ESSA PROPRIEDADE de 'eleemnt' _ DO LADO_ DE FORA de seu element, tipo um react-props, pq VAMOS PODER PASSAR DATA LÁ DE UM 'PARENT COMPONENT' para esse nosso component de 'app-server-item', basta usar aquele PROPERTY BINDING de '[element]="yourValue/object"' ao COMPONENT DE 'app-server-item'....)
+  //   name: string;
+  //   type: string;
+  //   content: string;
+  // } = {
+  //   name: '',
+  //   type: '',
+  //   content: '',
+  // };
+
+  @Input('srvElement') element: {
+    /////USO DE '@Input' COM O USO _ DE 'alias' para sua property name.... (element, essa propriedade, aqui terá nome de 'element', mas no HTML terá um NOME DISTINTO, como esse exemplo 'srvElement'...) --> isso ocorre por meio do PASS DO PARÂMETRO A 'input'..
+    ///por meio de '@Input' fazemos o _ 'EXPOSE' de sua given property '''' AO MUNDO''' (o que quer dizer que podemos PASSAR DATA A ESSA PROPRIEDADE de 'eleemnt' _ DO LADO_ DE FORA de seu element, tipo um react-props, pq VAMOS PODER PASSAR DATA LÁ DE UM 'PARENT COMPONENT' para esse nosso component de 'app-server-item', basta usar aquele PROPERTY BINDING de '[element]="yourValue/object"' ao COMPONENT DE 'app-server-item'....)
+    name: string;
+    type: string;
+    content: string;
+  } = {
+    name: '',
+    type: '',
+    content: '',
+  };
+
+
+  @Input() name: string;///approach/demo de 
+
+
+
+
+  constructor() {
+    ///é executado ANTES DE ONINIT... (primeiro na ordem)
+    console.log('server-item constructor called');
+  }
+
+  ngOnChanges(changes: SimpleChanges) {  ////este é o ÚNICO HOOK _ QUE RECEBE_ UM PARÂMETRO....
+    ///é executado DEPOIS DE 'constructor' (segundo na ordem), MAS __ ANTES_ DE 'onInit'....
+    console.log('server-item ngOnChanges called', changes);
+  }
+
+  ngOnInit(): void {
+    ///é executado DEPOIS de CONSTRUCTOR (terceiro na ordem)
+
+    console.log('server-item ngOnInit called');
+  }
+
+
+  
+ ngDoCheck() {
+  console.log('server-item ngDoCheck called')
+}
+
+
+
+ngAfterContentInit(): void {
+  
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------> OK... ----> COM ISSO IMPORTADO,
+
+
+colocamos um 
+
+
+
+CONSOLE.LOG de 
+
+
+
+'ngAfterContentInit called' 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ESSE HOOK É CHAMADO EXATAMENTE 1 ÚNICA VEZ.... --> ISSO PQ ELE 'NÃO ACABA INITIALIZED NENHUMA OUTRA VEZ'...
+
+
+
+
+
+(
+    ISSO PQ 'CONTENT' É A COISA QUE FAZEMOS 'PROJECT'/projetamos  para 
+
+    dentro  
+
+
+
+
+DOS NOSSOS COMPONENTS,
+
+
+ATRAVÉS DE 
+
+'ng-content' 
+
+e 
+
+usando aquele conteúdo entre as OPENING E CLOSING TAGS em nosso component que recebe o project...
+
+)
+
+
+
+
+
+
+
+
+
+
+
+-> O PRÓXIMO HOOK É 
+
+
+
+
+
+
+'AfterContentChecked',
+
+
+
+
+
+
+
+
+
+
+
+
+
+ngAfterContentChecked...
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+import {
+  AfterContentChecked,
+  AfterContentInit,
+  Component,
+  DoCheck,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  ViewEncapsulation,
+} from '@angular/core';
+
+@Component({
+  selector: 'app-server-item',
+  templateUrl: './server-item.component.html',
+  styleUrls: ['./server-item.component.css'],
+  encapsulation: ViewEncapsulation.Emulated, ////'encapsulation' é usada para _ COPIAR O COMPORTAMENTO DE 'CSS MODULES' (cada arquivo css é aplicado só AO COMPONENT A QUE ESTÁ VINCULADO, não sendo aplicados seus selectors aos DEMAIS COMPONENTS DO CÓDIGO).. ->_ esse comportamneto pode ser OVERWRITTEN, substituído pelo 'COMPORTAMENTO DEFAULT' de arquivos css (que é sempre aplicar os selectors A TODOS OS ELEMENTS DO SEU PROJETO)....
+
+  ////encapsulation tem 3 MODOS: 'emulated' (default, é o padrão do angular, é o comportamento de 'css modules'), 'none' (aplica seus selectors a TODOS OS ELEMENTS DA PÁGINA, tendo um behavior de 'css/javascript' comum...),
+  /// 'ShadowDom', antigamente chamado de 'Native', é uma opção que faz a MESMA COISA QUE EMULATED, mas com SUPORTE PIOR NOS BROWSERS...
+})
+export class ServerItemComponent implements OnInit, OnChanges, DoCheck, AfterContentInit, AfterContentChecked { //aqui fazemos IMPLEMENT das INTERFACES que pretendemos usar...
+
+
+  // @Input() element: { /////USO DE '@Input' SEM O USO _ DE 'alias' para sua property name.... (element aqui será exatamente '[element]' no seu elemento html de 'app-server-item'...)
+  //   ///por meio de '@Input' fazemos o _ 'EXPOSE' de sua given property '''' AO MUNDO''' (o que quer dizer que podemos PASSAR DATA A ESSA PROPRIEDADE de 'eleemnt' _ DO LADO_ DE FORA de seu element, tipo um react-props, pq VAMOS PODER PASSAR DATA LÁ DE UM 'PARENT COMPONENT' para esse nosso component de 'app-server-item', basta usar aquele PROPERTY BINDING de '[element]="yourValue/object"' ao COMPONENT DE 'app-server-item'....)
+  //   name: string;
+  //   type: string;
+  //   content: string;
+  // } = {
+  //   name: '',
+  //   type: '',
+  //   content: '',
+  // };
+
+  @Input('srvElement') element: {
+    /////USO DE '@Input' COM O USO _ DE 'alias' para sua property name.... (element, essa propriedade, aqui terá nome de 'element', mas no HTML terá um NOME DISTINTO, como esse exemplo 'srvElement'...) --> isso ocorre por meio do PASS DO PARÂMETRO A 'input'..
+    ///por meio de '@Input' fazemos o _ 'EXPOSE' de sua given property '''' AO MUNDO''' (o que quer dizer que podemos PASSAR DATA A ESSA PROPRIEDADE de 'eleemnt' _ DO LADO_ DE FORA de seu element, tipo um react-props, pq VAMOS PODER PASSAR DATA LÁ DE UM 'PARENT COMPONENT' para esse nosso component de 'app-server-item', basta usar aquele PROPERTY BINDING de '[element]="yourValue/object"' ao COMPONENT DE 'app-server-item'....)
+    name: string;
+    type: string;
+    content: string;
+  } = {
+    name: '',
+    type: '',
+    content: '',
+  };
+
+
+  @Input() name: string;///approach/demo de 
+
+
+
+
+  constructor() {
+    ///é executado ANTES DE ONINIT... (primeiro na ordem)
+    console.log('server-item constructor called');
+  }
+
+  ngOnChanges(changes: SimpleChanges) {  ////este é o ÚNICO HOOK _ QUE RECEBE_ UM PARÂMETRO....
+    ///é executado DEPOIS DE 'constructor' (segundo na ordem), MAS __ ANTES_ DE 'onInit'....
+    console.log('server-item ngOnChanges called', changes);
+  }
+
+  ngOnInit(): void {
+    ///é executado DEPOIS de CONSTRUCTOR (terceiro na ordem)
+
+    console.log('server-item ngOnInit called');
+  }
+
+
+  
+ ngDoCheck() {
+  console.log('server-item ngDoCheck called')
+}
+
+
+
+ngAfterContentInit(): void {
+  console.log(' server-item ngAfterContentInit Called')
+}
+
+
+ngAfterContentChecked(): void {
+  console.log(' server-item ngAfterContentChecked Called')
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> isso é chaamdo DEPOIS DE 'DoCheck',
+
+o que faz sentido,
+
+
+PQ 
+
+ELE __ É CHAMADO SEMPRE _ 'APÓS 
+
+CADA CHANGE DETECTION CYCLE'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> O PROFESSOR ENTÃO ADICIONA MAIS 2 NOVOS HOOKS, ATRAVÉS DAS INTERFACES 
+
+
+de 
+
+
+'AfterViewInit' 
+
+
+
+E
+'AfterViewChecked'..
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+
+import {
+  AfterContentChecked,
+  AfterContentInit,
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  DoCheck,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  ViewEncapsulation,
+} from '@angular/core';
+
+@Component({
+  selector: 'app-server-item',
+  templateUrl: './server-item.component.html',
+  styleUrls: ['./server-item.component.css'],
+  encapsulation: ViewEncapsulation.Emulated, ////'encapsulation' é usada para _ COPIAR O COMPORTAMENTO DE 'CSS MODULES' (cada arquivo css é aplicado só AO COMPONENT A QUE ESTÁ VINCULADO, não sendo aplicados seus selectors aos DEMAIS COMPONENTS DO CÓDIGO).. ->_ esse comportamneto pode ser OVERWRITTEN, substituído pelo 'COMPORTAMENTO DEFAULT' de arquivos css (que é sempre aplicar os selectors A TODOS OS ELEMENTS DO SEU PROJETO)....
+
+  ////encapsulation tem 3 MODOS: 'emulated' (default, é o padrão do angular, é o comportamento de 'css modules'), 'none' (aplica seus selectors a TODOS OS ELEMENTS DA PÁGINA, tendo um behavior de 'css/javascript' comum...),
+  /// 'ShadowDom', antigamente chamado de 'Native', é uma opção que faz a MESMA COISA QUE EMULATED, mas com SUPORTE PIOR NOS BROWSERS...
+})
+export class ServerItemComponent implements OnInit, OnChanges, DoCheck, AfterContentInit, AfterContentChecked, AfterViewInit, AfterViewChecked { //aqui fazemos IMPLEMENT das INTERFACES que pretendemos usar...
+
+
+  // @Input() element: { /////USO DE '@Input' SEM O USO _ DE 'alias' para sua property name.... (element aqui será exatamente '[element]' no seu elemento html de 'app-server-item'...)
+  //   ///por meio de '@Input' fazemos o _ 'EXPOSE' de sua given property '''' AO MUNDO''' (o que quer dizer que podemos PASSAR DATA A ESSA PROPRIEDADE de 'eleemnt' _ DO LADO_ DE FORA de seu element, tipo um react-props, pq VAMOS PODER PASSAR DATA LÁ DE UM 'PARENT COMPONENT' para esse nosso component de 'app-server-item', basta usar aquele PROPERTY BINDING de '[element]="yourValue/object"' ao COMPONENT DE 'app-server-item'....)
+  //   name: string;
+  //   type: string;
+  //   content: string;
+  // } = {
+  //   name: '',
+  //   type: '',
+  //   content: '',
+  // };
+
+  @Input('srvElement') element: {
+    /////USO DE '@Input' COM O USO _ DE 'alias' para sua property name.... (element, essa propriedade, aqui terá nome de 'element', mas no HTML terá um NOME DISTINTO, como esse exemplo 'srvElement'...) --> isso ocorre por meio do PASS DO PARÂMETRO A 'input'..
+    ///por meio de '@Input' fazemos o _ 'EXPOSE' de sua given property '''' AO MUNDO''' (o que quer dizer que podemos PASSAR DATA A ESSA PROPRIEDADE de 'eleemnt' _ DO LADO_ DE FORA de seu element, tipo um react-props, pq VAMOS PODER PASSAR DATA LÁ DE UM 'PARENT COMPONENT' para esse nosso component de 'app-server-item', basta usar aquele PROPERTY BINDING de '[element]="yourValue/object"' ao COMPONENT DE 'app-server-item'....)
+    name: string;
+    type: string;
+    content: string;
+  } = {
+    name: '',
+    type: '',
+    content: '',
+  };
+
+
+  @Input() name: string;///approach/demo de 
+
+
+
+
+  constructor() {
+    ///é executado ANTES DE ONINIT... (primeiro na ordem)
+    console.log('server-item constructor called');
+  }
+
+  ngOnChanges(changes: SimpleChanges) {  ////este é o ÚNICO HOOK _ QUE RECEBE_ UM PARÂMETRO....
+    ///é executado DEPOIS DE 'constructor' (segundo na ordem), MAS __ ANTES_ DE 'onInit'....
+    console.log('server-item ngOnChanges called', changes);
+  }
+
+  ngOnInit(): void {
+    ///é executado DEPOIS de CONSTRUCTOR (terceiro na ordem)
+
+    console.log('server-item ngOnInit called');
+  }
+
+
+  
+ ngDoCheck() {
+  console.log('server-item ngDoCheck called')
+}
+
+
+
+ngAfterContentInit(): void {
+  console.log('server-item ngAfterContentInit Called')
+}
+
+
+ngAfterContentChecked(): void {
+  console.log('server-item ngAfterContentChecked Called')
+}
+
+
+ngAfterViewInit(): void {
+  console.log('server-item ngAfterviewInit Called')
+}
+
+
+ngAfterViewChecked(): void {
+  console.log('server-item ngAfterviewChecked Called')
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-_> ESSE HOOK É CHAAMDO __ APÓS_ O CONTENT TER SIDO CHECADO...
+
+
+
+
+
+
+
+
+
+
+
+
+-> certo, com isso estamos quase ao fim...
+
+
+
+
+
+
+
+-> o 
+
+
+
+
+HOOK FINAL É ONDESTROY,
+
+
+e é chamado 
+
+__ 
+
+
+LOGO ANTES_ DE ESSE COMPONENT EM SI SER DESTRUÍDO..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> adicioanmos assim:
+
+
+
+
+
+import {
+  AfterContentChecked,
+  AfterContentInit,
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  DoCheck,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  ViewEncapsulation,
+} from '@angular/core';
+
+@Component({
+  selector: 'app-server-item',
+  templateUrl: './server-item.component.html',
+  styleUrls: ['./server-item.component.css'],
+  encapsulation: ViewEncapsulation.Emulated, ////'encapsulation' é usada para _ COPIAR O COMPORTAMENTO DE 'CSS MODULES' (cada arquivo css é aplicado só AO COMPONENT A QUE ESTÁ VINCULADO, não sendo aplicados seus selectors aos DEMAIS COMPONENTS DO CÓDIGO).. ->_ esse comportamneto pode ser OVERWRITTEN, substituído pelo 'COMPORTAMENTO DEFAULT' de arquivos css (que é sempre aplicar os selectors A TODOS OS ELEMENTS DO SEU PROJETO)....
+
+  ////encapsulation tem 3 MODOS: 'emulated' (default, é o padrão do angular, é o comportamento de 'css modules'), 'none' (aplica seus selectors a TODOS OS ELEMENTS DA PÁGINA, tendo um behavior de 'css/javascript' comum...),
+  /// 'ShadowDom', antigamente chamado de 'Native', é uma opção que faz a MESMA COISA QUE EMULATED, mas com SUPORTE PIOR NOS BROWSERS...
+})
+export class ServerItemComponent implements OnInit, OnChanges, DoCheck, AfterContentInit, AfterContentChecked, AfterViewInit, AfterViewChecked, OnDestroy { //aqui fazemos IMPLEMENT das INTERFACES que pretendemos usar...
+
+
+  // @Input() element: { /////USO DE '@Input' SEM O USO _ DE 'alias' para sua property name.... (element aqui será exatamente '[element]' no seu elemento html de 'app-server-item'...)
+  //   ///por meio de '@Input' fazemos o _ 'EXPOSE' de sua given property '''' AO MUNDO''' (o que quer dizer que podemos PASSAR DATA A ESSA PROPRIEDADE de 'eleemnt' _ DO LADO_ DE FORA de seu element, tipo um react-props, pq VAMOS PODER PASSAR DATA LÁ DE UM 'PARENT COMPONENT' para esse nosso component de 'app-server-item', basta usar aquele PROPERTY BINDING de '[element]="yourValue/object"' ao COMPONENT DE 'app-server-item'....)
+  //   name: string;
+  //   type: string;
+  //   content: string;
+  // } = {
+  //   name: '',
+  //   type: '',
+  //   content: '',
+  // };
+
+  @Input('srvElement') element: {
+    /////USO DE '@Input' COM O USO _ DE 'alias' para sua property name.... (element, essa propriedade, aqui terá nome de 'element', mas no HTML terá um NOME DISTINTO, como esse exemplo 'srvElement'...) --> isso ocorre por meio do PASS DO PARÂMETRO A 'input'..
+    ///por meio de '@Input' fazemos o _ 'EXPOSE' de sua given property '''' AO MUNDO''' (o que quer dizer que podemos PASSAR DATA A ESSA PROPRIEDADE de 'eleemnt' _ DO LADO_ DE FORA de seu element, tipo um react-props, pq VAMOS PODER PASSAR DATA LÁ DE UM 'PARENT COMPONENT' para esse nosso component de 'app-server-item', basta usar aquele PROPERTY BINDING de '[element]="yourValue/object"' ao COMPONENT DE 'app-server-item'....)
+    name: string;
+    type: string;
+    content: string;
+  } = {
+    name: '',
+    type: '',
+    content: '',
+  };
+
+
+  @Input() name: string;///approach/demo de 
+
+
+
+
+  constructor() {
+    ///é executado ANTES DE ONINIT... (primeiro na ordem)
+    console.log('server-item constructor called');
+  }
+
+  ngOnChanges(changes: SimpleChanges) {  ////este é o ÚNICO HOOK _ QUE RECEBE_ UM PARÂMETRO....
+    ///é executado DEPOIS DE 'constructor' (segundo na ordem), MAS __ ANTES_ DE 'onInit'....
+    console.log('server-item ngOnChanges called', changes);
+  }
+
+  ngOnInit(): void {
+    ///é executado DEPOIS de CONSTRUCTOR (terceiro na ordem)
+
+    console.log('server-item ngOnInit called');
+  }
+
+
+  
+ ngDoCheck() {
+  console.log('server-item ngDoCheck called')
+}
+
+
+
+ngAfterContentInit(): void {
+  console.log('server-item ngAfterContentInit Called')
+}
+
+
+ngAfterContentChecked(): void {
+  console.log('server-item ngAfterContentChecked Called')
+}
+
+
+ngAfterViewInit(): void {
+  console.log('server-item ngAfterviewInit Called')
+}
+
+
+ngAfterViewChecked(): void {
+  console.log('server-item ngAfterviewChecked Called')
+}
+
+ngOnDestroy(): void {
+  console.log('server-item ngOnDestroy called')
+}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK... AGORA QUANDO REMOVERMOS 
+
+ESSE 
+
+
+COMPONENT, O 'onDestroy' vai executar  E 
+
+
+
+RODAR O CÓDIGO DESSE CONSOLE.LOG... --> PARA ISSO, É CLARO,
+
+PRECISAMOS __ DELETAr_ 
+
+
+O 
+
+
+
+NOSSO PRÓPRIO COMPONENT 
+
+
+DO DOM...
+
+
+
+
+
+
+--> para fazer isso,
+
+precisamos:
+
+
+
+
+1) de um event 'click' (grudado no component de 'server-item') vinculado a um 
+
+
+
+METHOD LÁ EM 'app.component.ts'...
+
+
+
+
+
+
+
+2) ESSE method precisa receber algum id/coisa que identifique esse nosso component e o delete..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> CONSEGUI, FIZ ESSE CÓDIGO LÁ NO 
+
+'app.component.html' 
+
+
+mesmo, e ficou assim:
+
+
+
+
+
+
+
+
+
+
+
+  <div class="row">
+    <div class="col-xs-12">
+      <button class="btn btn-primary" (click)="onChangeFirst()">Change First Element</button>
+      <app-server-item 
+      (click)="onServerRemoved(indexOfServer)"
+      *ngFor="let serverElement of serverElements; let indexOfServer=index"
+
+      [srvElement]="serverElement" 
+      [name]="serverElement.name"
+      >
+        <!-- ESTES 2 '<p>' FORAM INSERIDOS ENTRE A OPENING E ECLOSING TAGS DE 'app-server-item', e só conseguiram ser inseridos PQ ESCREVEMOS '<ng-content>' lá no CÓDIGO DE 'app-server-item', NO LOCAL EM QUE AUTORIZAMOS O 'INSERT' dessas 2 linhas '<p>'....'-->
+      <p>
+        <strong *ngIf="serverElement.type === 'server'" style="color: red">{{   
+          serverElement.content
+        }}</strong>
+        <em *ngIf="serverElement.type === 'blueprint'">{{ serverElement.content }}</em>
+      </p>
+  
+    </app-server-item>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O CÓDIGO DO METHOD, ESCRITO EM 'app.component.ts',
+
+ficou assim:
+
+
+
+
+
+
+  onServerRemoved(index: number) {
+    this.serverElements.splice(index, 1)
+  }
+
+
+
+
+
+
+
+--> O OUTPUT DO CONSOLE FICOU ASSIM:
+
+
+
+
+
+
+
+server-item ngOnDestroy called
+ server-item ngDoCheck called
+ server-item ngAfterContentChecked Called
+ server-item ngAfterviewChecked Called
+
+
+
+
+
+
+
+
+
+-> o DoCheck 
+
+
+
+e o resto dos hooks foram chamados para CHECAR SE ESSE ELEMENT REALMENTE DEIXOU DE EXISTIR....
+
+(
+    mas isso só acontece se temos 
+
+    2 COMPONENTS/SERVERS, SE TIVERMOS SÓ 1,
+
+    ESSAS ETAPAS DE 
+
+
+    ''
+
+
+     server-item ngDoCheck called
+ server-item ngAfterContentChecked Called
+ server-item ngAfterviewChecked Called
+
+
+
+''
+
+NÃO ACONTECEM...
+
+)

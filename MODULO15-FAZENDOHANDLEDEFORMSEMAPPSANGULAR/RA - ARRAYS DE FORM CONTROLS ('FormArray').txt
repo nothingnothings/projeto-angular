@@ -1,0 +1,2276 @@
+
+
+
+
+
+
+
+
+
+
+
+VIMOS MUITO SOBRE O REACTIVE APPROACH..
+
+
+
+
+
+
+
+-> MAS HÁ UMA OUTRA FEATURE NICE QUE O PROFESSOR QUER NOS MOSTRAR..
+
+
+
+--> VAMOS QUERER 
+
+ADICIONAR UMA NOVA ÁREA A 
+
+
+NOSSA FORM REACTIVE....
+
+
+
+
+
+
+
+
+
+
+--> VAMOS COLOCAR__ DEBAIXO __ DOS RADIO BUTTONS.
+
+
+
+
+
+-> colocaremos DENTRO DE UMA NOVA DIV..
+
+
+
+
+
+--> NESSA DIV,
+VAMOS QUERER 
+
+
+
+'PERMITIR AO USER ___ ADICIONAR _ FORM CONTROLS __ DE FORMA DINÂMICA'''
+
+
+
+(
+
+    ou seja,
+
+    ele vai poder criar NOVOS INPUT fieldS....
+)
+
+
+
+
+
+
+
+
+
+
+------> DIGAMOS QUE VAMOS QUERER DEIXAR UMA OPÇÃO ABERTA PARA O USER 'ADD HIS HOBBIES',
+
+
+
+
+
+
+
+
+por isso escrevemos algo tipo assim:
+
+
+
+
+
+
+
+<div>
+<h4>Your Hobbies</h4>
+<button class="btn btn-default">Add Hobby</button>
+</div>
+
+
+
+
+
+
+
+
+
+-> É CLARO QUE VAMOS QUERER COLOCAR O TYPE DE 'button' nesse button,
+
+isso para que 
+
+ESSE BUTTON NÃO ACABE FAZENDO SUBMIT DA FORM INTEIRA..
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+<div>
+<h4>Your Hobbies</h4>
+<button class="btn btn-default" type="button">Add Hobby</button>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... ---> AGORA QUNADO O USER CLICAR NESSE BUTTON,
+
+
+VAMOS QUERER 
+
+
+
+
+
+
+__ ADICIONAR _ DINAMICAMENTE 
+
+
+
+UM 'CONTROL'
+
+a nossa 
+
+FORM 
+
+
+
+de 'signupForm',
+
+
+
+AÇÃO QUE SERÁ REFLETIDA NO NOSSO ACTUAL TEMPLATE DA PÁGINA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E ISSO, NA VERDADE ,É __ SUPER SIMPLES 
+
+DE 
+SE 
+
+
+FAZER...
+
+
+
+
+
+
+
+
+
+
+--> ESPECIFICAMENTE,
+
+O PROFESSOR VAI QUERER __ ADICIONAR __ 
+
+
+ESSE 'control' novo 
+
+
+
+A UM _ _ARRAY __ DE CONTROLS JÁ EXISTENTE.... ----> (
+
+    ISSO 
+
+
+    PQ 
+
+    O PROFESSOR/USER PODE ACABAR TENDO __ MÚLTIPLOS HOBBIES....
+)
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+O PROFESSOR ADICIONA UM CLICK 
+
+
+LISTENR,
+
+
+
+
+e aí escreve 'onAddHobby()'...
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+<div>
+<h4>Your Hobbies</h4>
+<button class="btn btn-default" type="button" (click)="onAddHobby()">Add Hobby</button>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+        <div>
+          <h4>Your Hobbies</h4>
+          <button class="btn btn-default" type="button" (click)="onAddHobby()">
+            Add Hobby
+          </button>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+        --> OK, DENTRO 
+
+
+
+
+        DESSE 'ARRAY DE HOBBIES',
+
+
+        é claro que 
+
+    VAMOS QUERER ADICIONAR 
+
+
+
+    CONTROLS...
+
+
+
+
+
+
+
+
+
+    --> para isso,
+
+    PRECISAMOS DE UM NOVO METHOD de 'onAddHobby',
+
+
+    LÁ NO CÓDIGO TYPESCRIPT...
+
+
+
+
+
+
+
+
+
+
+
+
+onAddHobby() {
+
+}
+
+
+
+
+
+    ---> agora precisamos 
+
+    adicionar 
+
+
+    UM NOVO 
+
+
+
+    TYPE DE CONTROL 
+
+
+
+    A MINHA 'OVERALL FORM',
+
+
+    que havia sido 
+
+    definida anteriormente 
+
+
+    COM ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+    
+  ngOnInit(): void {
+    this.signupForm = new FormGroup({
+
+      'userData': new FormGroup({ ////AQUI É POSSÍVEL OBSERVAR O 'NESTING' de 1 form GROUP dentro do nosso 'OVERALL FORM GROUP' (que representa nossa FORM INTEIRA)...
+        'username': new FormControl(null, [Validators.required, Validators.minLength(5)]
+        ),
+        'email': new FormControl(  null, [Validators.required, Validators.email]),
+      }),
+      'gender': new FormControl(this.genders[0], [Validators.required]),
+    });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> PARA ISSO,
+
+
+
+
+
+  O PROFESSOR CRIA UMA NOVA KEY, 
+
+
+  de 
+  'hobbies',
+
+
+
+  pq 
+
+  ISSO, NO FINAL DAS CONTAS,
+
+
+  É O QUE ELE VAI ARMAZENAR NESSE NEGÓCIo...
+
+
+
+
+
+
+
+
+
+
+
+
+  -----> COMO O PROFESSOR HAVIA MENCIONADO,
+
+
+  ISSO DEVERÁ SER UM ARRAY,
+
+
+  PQ PODE SER 
+
+
+
+
+  10, 100, 1000 hobbies..
+
+
+
+
+
+  eX:
+
+
+
+
+
+      
+  ngOnInit(): void {
+    this.signupForm = new FormGroup({
+
+      'userData': new FormGroup({ ////AQUI É POSSÍVEL OBSERVAR O 'NESTING' de 1 form GROUP dentro do nosso 'OVERALL FORM GROUP' (que representa nossa FORM INTEIRA)...
+        'username': new FormControl(null, [Validators.required, Validators.minLength(5)]
+        ),
+        'email': new FormControl(  null, [Validators.required, Validators.email]),
+      }),
+      'gender': new FormControl(this.genders[0], [Validators.required]),
+      'hobbies': new ...
+    });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> BEM, EU __ASSUMO__ QUE AQUI VAMOS PRECISAR DE UM NOVO TYPE
+,
+
+
+
+algo como 
+
+
+'FormArray'...
+
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+      
+  ngOnInit(): void {
+    this.signupForm = new FormGroup({
+
+      'userData': new FormGroup({ ////AQUI É POSSÍVEL OBSERVAR O 'NESTING' de 1 form GROUP dentro do nosso 'OVERALL FORM GROUP' (que representa nossa FORM INTEIRA)...
+        'username': new FormControl(null, [Validators.required, Validators.minLength(5)]
+        ),
+        'email': new FormControl(  null, [Validators.required, Validators.email]),
+      }),
+      'gender': new FormControl(this.genders[0], [Validators.required]),
+      'hobbies': new FormArray()
+    });
+  }
+
+
+  ------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+  --> VOCÊ DEVE IMPORTAR ISSO TAMBÉM LÁ DE 'angular/forms'..
+
+
+
+
+
+
+
+
+
+  ----> É CLARO QUE O 
+
+
+
+  'FormArray'
+
+
+  __ SEGURARÁ __ 
+
+  UM ARRAY _ DE CONTROLS,
+
+
+
+
+  POR ISSO 
+
+
+  VOCÊ DEVE PASSAR UM __ ARRAy___ PARA O INICIALIZar...
+
+
+
+
+
+
+  ex:
+
+
+
+
+
+    ngOnInit(): void {
+    this.signupForm = new FormGroup({
+
+      'userData': new FormGroup({ ////AQUI É POSSÍVEL OBSERVAR O 'NESTING' de 1 form GROUP dentro do nosso 'OVERALL FORM GROUP' (que representa nossa FORM INTEIRA)...
+        'username': new FormControl(null, [Validators.required, Validators.minLength(5)]
+        ),
+        'email': new FormControl(  null, [Validators.required, Validators.email]),
+      }),
+      'gender': new FormControl(this.genders[0], [Validators.required]),
+      'hobbies': new FormArray([])
+    });
+  }
+
+
+
+
+-->  É CLARO QUE 
+
+
+
+JÁ PODERÍAMOS INICIALIZAR ALGUNS FORM CONTROLS,
+
+
+
+
+com uma escrita como esta:
+
+
+
+
+      'hobbies': new FormArray([new FormControl(null, [Validators.required, etc])])
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS MAIS PROVEITOSO É INICIALIZAR ISSO COMO 'EMPTY',
+
+para não termos hobbies ao início...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> BEM.... MAS QUANDO CLICAMOS NO BUTTON DE 'ADD HOBBY',
+
+vamos querer ADICIONAR UM NOVO HOBBY AO ARRAY...
+
+
+
+
+
+
+
+
+-->  talvez fazer PUSH DE UM NOVO 
+
+
+ELEMENTO 
+
+'new FormControl()'...
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR ESCREVE ASSIM:
+
+
+
+
+onAddHobby() {
+    this.signupForm.get('hobbies)' 
+
+}
+
+
+
+
+
+
+
+
+
+
+
+--> OU SEJA,
+
+
+TAMBÉM PODEMOS USAR ESSE METHOD DE '.get()"
+
+
+NO NOSSO CÓDIGO TYPESCRIPT,
+
+
+PQ 
+
+
+ELE EXISTE EM TODAS AS REPRESENTAÇÕES DE NOSSA 'OVERALL FORM',
+
+
+
+
+tanto no typescript como no template (que roda código typescript)..
+
+
+
+
+
+
+
+
+--> ok, ganhamos acesso a esse 'hobbies' aí....
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK...
+
+
+
+
+
+
+O CÓDIGO VAI FICANDO ASSIM:
+
+
+
+onAddHobby() {
+    this.signupForm.get('hobbies')
+
+}
+
+
+
+
+
+
+
+
+
+
+
+MAS AGORA PRECISAMOS DIZER AO TYPESCRIPT QUE 
+
+
+
+__ ESSE VALUE AÍ 
+
+
+
+__ É DE UM TYPE DE 'FormArray'...  (
+
+
+PRECISAMOS FAZER ISSO _ PARA EVITAR__ O GANHO DE UM ERRO...
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> RARAMENTE TEMOS DE FAZER ISSO NO ANGULAR,
+
+MAS AQUI PRECISAMOS FAZER O 'CAST EXPLÍCITO'
+
+
+
+desse value (type casting)..
+
+
+
+
+
+
+---> ou seja,
+
+teremos de usar 
+
+'as ...' (
+
+
+    isso é TYPE CASTING...
+)
+
+
+
+
+
+
+---> A SINTAXE ALTERNATIVA É 
+
+
+
+ESCREVER 
+
+
+
+
+<FormArray>this.signupForm.get('hobbies')
+
+
+
+
+
+
+
+
+
+
+
+
+-----> O QUE ISSO FARÁ, NO CASO, É TRATAR 
+
+
+
+__TODA ESSA EXPRESSÃO AÍ COMO UM 'FormArray',
+
+
+
+O
+ QUE ENTÃO NOS POSSIBILITARÁ FAZER O 'PUSH'
+
+
+
+ DE UM NOVO 
+
+ 
+
+
+ 'FormControl'
+
+
+
+ A ESSE ARRAY.... 
+
+
+
+
+ (
+     e isso só é possível pq fizemos o cast 
+     desse 
+
+     elemento como sendo um FORMARRAY...
+
+
+
+
+     
+ )
+
+
+
+
+
+
+ O CÓDIGO FICA ASSIm:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  onAddHobby() {
+    (this.signupForm.get('hobbies') as FormArray).push(new FormControl(null, [Validators.minLength(5)]))
+  }
+
+
+
+
+
+
+
+
+OU ASSIM:
+
+
+
+
+onAddHobby() {
+
+    (<FormArray>this.signupForm.get('hobbies')).push(new FormControl(null, [Validators.minLength(5)]))
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK... 
+
+
+COM ISSO PODEMOS FAZER O PUSH DE UM NOVO 
+
+
+FORMCONTROL A ESSE NEGÓCIO...
+
+
+
+
+
+
+
+
+
+-> CERTo.... ----> isso quer dizer que o HOBBY AGORA SERÁ ALGO QUE O USER REALMENTE CONSEGUIRÁ 'ENTER'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO... --> MAS QUANDO EU APERTO ESSE BUTTON,
+
+GANHO ESTE ERROR:
+
+
+
+
+
+
+
+
+core.mjs:6494 ERROR TypeError: Cannot read properties of null (reading 'push')
+    at AppComponent.onAddHobby (app.component.ts:82:50)
+    at AppComponent_Template_button_click_24_listener (app.component.html:91:66)
+    at executeListenerWithErrorHandling (core.mjs:15031:1)
+    at wrapListenerIn_markDirtyAndPreventDefault (core.mjs:15069:1)
+    at HTMLButtonElement.<anonymous> (platform-browser.mjs:466:38)
+    at _ZoneDelegate.invokeTask (zone.js:406:1)
+    at Object.onInvokeTask (core.mjs:25595:1)
+    at _ZoneDelegate.invokeTask (zone.js:405:1)
+    at Zone.runTask (zone.js:178:1)
+    at ZoneTask.invokeTask [as invoke] (z
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ----> TALVEZ PQ MINHA SINTAXE DE 'as' NÃO FUNCIONA...
+
+
+
+
+
+
+
+
+    --> O PROFESSOR DECIDE COLOCAR UM VALIDATOR DE 'required',
+
+    PQ O 
+
+    INPUT DE HOBBY NÃO DEVE SER EMPTY...
+
+
+
+
+
+
+
+    ex:
+
+
+
+
+    
+
+
+onAddHobby() {
+
+    (<FormArray>this.signupForm.get('hobbies')).push(new FormControl(null, [Validators.required, Validators.minLength(5)]))
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO, NÓS ESTAMOS CRIANDO 
+
+
+ESSE ARRAY,
+
+
+
+
+
+FICAMOS CAPAZES DE 'ADD FORM CONTROLS',
+
+
+
+
+MAS _ AINDA _ NÃO SEREMOS CAPAZES DE O ENXERGAR NA NOSSA PÁGINA,
+
+
+
+
+ISSO PQ 
+
+
+__ PRECISAMOS O SINCRONIZAR COM NOSSO CÓDIGO HTML...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO, VAMOS PRECISAR DE UMA NOVA DIRECTIVE,
+
+
+A DIRECTIVE DE 
+
+'formArrayName=" 
+
+
+
+
+
+
+
+
+
+
+--> E AÍ PRECISAMOS _ COLOCAR, COMO 'name'
+
+
+
+
+desse negócio aí,
+
+
+
+
+DEVEMOS COLOCAR 'hobbies',
+
+
+
+PQ 
+
+É
+
+
+ESSA A KEY DENTRO DE NOSSO OBJECT 'formGroup'
+
+
+QUE 
+
+
+
+
+EQUIVALE A ISSO AÍ....
+
+
+
+
+
+
+
+
+
+
+
+NOSSO CÓDIGO, PORTANTO, FICA ASSIM:
+
+
+
+
+
+
+
+
+        <div formArrayName="hobbies">
+          <h4>Your Hobbies</h4>
+          <button class="btn btn-default" type="button" (click)="onAddHobby()">
+            Add Hobby
+          </button>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO ACABA DIZENDO AO ANGULAR QUE 
+
+
+
+'''' EM ALGUM LUGAR DESSA DIV,
+
+NOSSO ARRAY VAI VIVER''...
+
+
+
+
+
+
+
+
+
+
+--> E AGORA PODEMOS USAR 
+
+
+ESSE 
+
+
+ARRAY DENTRO DESSA DIV,
+
+
+
+por isso criamos uma nested div,
+
+
+
+tipo 
+
+
+
+
+<div class="form-group">
+    <input type="text">
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+----> MAS É CLARO QUE PRECISAMOS, DE ALGUMA FORMA,
+
+
+FAZER 'LOOP THROUGH'
+
+
+POR TODOS OS CONTROLS QUE TEMOS NESSE ARRAY..
+
+
+
+
+
+
+
+
+--> é por isso que 
+
+
+
+NESSA NESTED DIV 
+
+vamos colocar A DIRECTIVE DE 
+
+
+'*ngFor',
+
+para aí 
+
+
+FAZER 
+
+
+
+
+LOOP POR TODOS OS 'hobbyControl' 
+
+
+
+na nossa 'signupForm.get('hobbies).controls' 
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO, PORTANTO, FICA ASSIM:
+
+
+
+
+
+
+        <div formArrayName="hobbies">
+          <h4>Your Hobbies</h4>
+          <button class="btn btn-default" type="button" (click)="onAddHobby()">
+            Add Hobby
+          </button>
+<div 
+class="form-group"
+*ngFor="let hobbyControl of signupForm.get('hobbies').controls">
+    <input type="text">
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> FIZ UMA PEQUENA CORREÇÃO NO CÓDIGO DO LOOP E NO CÓDIGO TS ,
+
+
+
+de acordo com as anotações de 
+
+'RA - ANTES DA AULA DE ARRAYS DE FORM CONTROLS':
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+  onAddHobby() {
+    // (this.signupForm.get('hobbies') as FormArray).push(new FormControl(null, [Validators.minLength(5)]))
+
+
+    ///esse código de type casting é bem raro....s
+      const newControl: FormControl = new FormControl(null, [Validators.required, Validators.minLength(5)]);
+
+    (<FormArray>this.signupForm.get('hobbies')).push(newControl);
+  }
+
+
+
+
+  getControls() {  ///ver anotações em 'RA - ANTES DA AULA DE ARRAYS DE FORM CONTROLS'
+      return (<FormArray>this.signupForm.get('hobbies')).controls;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E AÍ O LOOP FICOU ASSIM:
+
+
+
+
+
+
+
+        <div formArrayName="hobbies">
+          <h4>Your Hobbies</h4>
+          <button class="btn btn-default" type="button" (click)="onAddHobby()">
+            Add Hobby
+          </button>
+          <div
+          class="form-group"
+          *ngFor="let hobbyControl of getControls(); let i=index"
+          >
+          <input type="text">
+          </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--. CERTO...  AGORA DEVEMOS VER SE ISSO FOI O BASTANTE, SE AGORA PODEMOS REALMENTE ADICIONAR NOVOS 
+
+'FormControl'....
+
+
+
+
+
+
+
+
+
+
+--> BEM, MAS ISSO BUGOU ALGUMAS COISAS DE NOSSO CÓDIGo...
+
+
+EX:
+
+
+
+
+
+
+
+
+core.mjs:6494 ERROR Error: Cannot find control with name: 'hobbies'
+    at _throwError (forms.mjs:1785:11)
+    at setUpFormContainer (forms.mjs:1767:9)
+    at FormGroupDirective._setUpFormContainer (forms.mjs:5494:9)
+    at FormGroupDirective.addFormArray (forms.mjs:5410:14)
+    at FormArrayName.ngOnInit (forms.mjs:5709:28)
+    at callHook (core.mjs:2551:1)
+    at callHooks (core.mjs:2520:1)
+    at executeInitAndCheckHooks (core.mjs:2471:1)
+    at selectIndexInternal (core.mjs:8416:1)
+    at Module.ɵɵadvance (core.mjs:8399:1)
+
+
+
+
+
+
+    core.mjs:6494 ERROR TypeError: Cannot read properties of null (reading 'controls')
+    at AppComponent.getControls (app.component.ts:95:57)
+    at AppComponent_Template (app.component.html:96:36)
+    at executeTemplate (core.mjs:9632:1)
+    at refreshView (core.mjs:9495:1)
+    at refreshComponent (core.mjs:10692:1)
+    at refreshChildComponents (core.mjs:9291:1)
+    at refreshView (core.mjs:9545:1)
+    at renderComponentOrTemplate (core.mjs:9612:1)
+    at tickRootContext (core.mjs:10866:1)
+    at detectChangesInRootView (core.mjs:10891:1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+    O PRIMEIRO ERRO ACONTECEU PQ EU ESQUECI DE ADICIONAR 'hobbies' na nossa definição da form,
+
+    no código typescript:
+
+
+
+
+
+
+      ngOnInit(): void {
+    this.signupForm = new FormGroup({
+
+      'userData': new FormGroup({ ////AQUI É POSSÍVEL OBSERVAR O 'NESTING' de 1 form GROUP dentro do nosso 'OVERALL FORM GROUP' (que representa nossa FORM INTEIRA)...
+        'username': new FormControl(null, [Validators.required, Validators.minLength(5)]
+        ),
+        'email': new FormControl(  null, [Validators.required, Validators.email]),
+      }),
+      'gender': new FormControl(this.genders[0], [Validators.required]),
+      'hobbies': new FormArray([])
+    });
+  }
+
+
+
+
+
+
+
+
+
+
+
+  --> BEM, MAS AGORA ESSE CÓDIGO ESTÁ FUNCIONANDO... -> 
+
+
+
+  POSSO ADICIONAR _ MÚLTIPLOS INPUT FIELDS DE 'hobby'
+
+
+
+  na nossa página...
+
+
+
+
+
+
+
+
+
+
+
+  O CÓDIGO ATÉ AGORA FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmitForm()">
+        <!--AQUI AINDA VAMOS USAR ESSA DIRECTIVE/EVENT de 'ngSubmit', pq vamos querer USAR O COMPORTAMENTO DE 'submit' do HTML/JS comum _ PARA _ EXECUTAR NOSSOS PRÓPRIOS METHODS no arquivo .ts....-->
+        <!-- É ASSIM QUE VINCULAMOS NOSSA FORM CRIADA LÁ EM UM ARQUIVO TS, nesse arquivo html, nessa form do arquivo html... através de property binding com '[formGroup]'-->
+        <div formGroupName="userData">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              [ngClass]="{
+                redBorder:
+                  signupForm.get('userData.username')?.value &&
+                  !signupForm.get('userData.username')?.valid
+                    ? 1
+                    : 0
+              }"
+              type="text"
+              id="username"
+              class="form-control"
+              formControlName="username"
+            />
+            <!-- AQUI, O QUE INTERESSA É 'formControlName', pq O VALUE PASSADO A ESSA DIRECTIVE SERÁ BUSCADO LÁ NO SEU CÓDIGO TYPESCRIPT, na form TS a que foi vinculada essa form do HTML...  (o angular vai buscar pelos KEY NAMES da sua form, lá no código typescript)-->
+          </div>
+
+          <!-- PARA GANHAR ACESSO A PROPRIEDADES como 'valid', 'invalid', 'touched', 'pristine' e 'dirty' de nossos CONTROLS, DEVEMOS USAR ESSE METHOD DE '.get()' NA NOSSA FORM TS, form criada lá no código ts...-->
+          <span
+            *ngIf="
+              !signupForm.get('userData.username')?.valid &&
+              signupForm.get('userData.username')?.touched
+            "
+            class="help-block"
+            [ngStyle]="{ color: 'red' }"
+            >Username must have more than 4 characters</span
+          >
+
+          <button class="btn btn-default" type="button">
+            Suggest an Username
+          </button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input
+              type="email"
+              [ngClass]="{
+                redBorder:
+                  signupForm.get('userData.email')?.value &&
+                  !signupForm.get('userData.email')?.valid
+                    ? 1
+                    : 0
+              }"
+              id="email"
+              class="form-control"
+              formControlName="email"
+            />
+            <!-- DE NOVO, O QUE INTERESSA É 'formControlName'-->
+          </div>
+          <span
+            *ngIf="
+              !signupForm.get('userData.email')?.valid &&
+              signupForm.get('userData.email')?.touched
+            "
+            class="help-block"
+            [ngStyle]="{ color: 'red' }"
+            >Please enter a valid email</span
+          >
+        </div>
+        <span
+          *ngIf="
+            !signupForm.get('userData')?.valid &&
+            signupForm.get('userData')?.touched
+          "
+          class="help-block"
+          [ngStyle]="{ color: 'red' }"
+          >Please correct entered user data</span
+        >
+        <div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input type="radio" [value]="gender" formControlName="gender" />
+            {{ gender }}
+          </label>
+        </div>
+
+        <hr />
+        <div formArrayName="hobbies">
+          <h4>Your Hobbies</h4>
+          <button class="btn btn-default" type="button" (click)="onAddHobby()">
+            Add Hobby
+          </button>
+          <div
+          class="form-group"
+          *ngFor="let hobbyControl of getControls(); let i=index"
+          >
+          <label>Hobby nº {{i}} &nbsp;</label>
+          <input type="text">
+          </div>
+        </div>
+        <hr />
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="!signupForm.valid"
+        >
+          Submit
+        </button>
+        <span
+        *ngIf="!signupForm?.valid && signupForm?.touched"
+        class="help-block"
+        [ngStyle]="{ color: 'red' }"
+        >Please amend your data!</span
+      >
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS ESTOU COM UM _ PROBLEMA....
+
+
+
+
+
+
+
+
+
+
+--> quando eu adiciono 
+
+
+
+formControls 
+
+
+a esse array,
+
+
+
+
+EU NUNCA MAIS CONSIGO DEIXAR ESSE 'FormArray'
+
+
+COMO 'valid'... --. ele sempre fica como 'invalid',
+
+o que 
+
+ESTÁ BLOQUEANDO MEU BUTTON E, CONSEQUENTEMENTE,
+
+O SUBMIT DE MINHA FORM....
+
+
+
+
+
+
+
+
+
+
+
+
+ACHO QUE ISSO ESTÁ ACONTECENDO 
+
+
+
+PQ NÃO ESTOU USANDO AS DATAPIECES DE 
+
+'hobbyControl'
+
+
+e 
+'i' (o index)
+
+
+
+
+DE CADA 
+
+
+ELEMENTO DO LOOP de ngFor... -------> O PROFESSOR DIZ QUE 
+
+
+
+__VAMOS PRECISAR DESSAS VARIABLES AÍ _ JUSTAMENTE __ 
+
+
+PARA _ 
+
+
+
+ASSIGNAR 
+
+
+CADA 1 DOS formControl que 
+
+
+É ADICIONADO,
+
+
+
+de forma adequada..
+
+
+
+
+
+(talvez com 'formControlName',
+
+ou algo do gênero, essa directive aí)... 
+
+
+
+
+
+
+
+
+
+
+-> OK.. VAMOS TER QUE ADICIOANR ALGUMA COISA NESSE '<input>'...
+
+
+
+
+
+
+
+
+
+
+--> VAMOS, NOVAMENTE,
+
+TER DE ADICIONAR 'formControlName',
+
+
+
+PQ __ AINDA PRECISAMOS _ SINCRONIZAR ESSE INPUT COM O 'DYNAMICALLY CREATED INPUT'...
+
+
+
+
+
+
+
+
+
+--> ok, tento escrever assim:
+
+
+
+
+
+
+          <div
+          class="form-group"
+          *ngFor="let hobbyControl of getControls(); let i=index"
+          >
+          <label>Hobby nº {{i}} &nbsp;</label>
+          <input 
+          type="text"
+          class="form-control"
+          formControlName="hobbyControl"  ///EIS A TENTATIVA EM QUESTAÕ.
+          
+          >
+          </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NÃO, MAS ISSO _ NÃO ESTÁ CERTO,
+
+
+NÃO DEU CERTO..
+
+
+
+
+
+
+
+----> NÃO DEU CERTO/NÃO DARÁ CERTO __ JUSTAMENTE _ PQ 
+
+
+ESSE 
+
+'DYNAMICALLY CREATED INPUT/formControl'
+
+
+
+NÃO VAI 
+
+TER UM _ NOME _ ESCOLHIDO POR NÓS... -> MAS COMO 
+
+
+
+
+
+AQUELE NEGÓCIO ALI É UM _ ARRAy_,
+
+
+
+
+
+
+
+
+PODEMOS SIMPLESMENTE USAR O ___INDEXADOR_ COMO NAME,
+
+PQ 
+
+O NAME __ SERÁ 
+
+SIMPLESMENTE O INDEX DESSE 'FormControl'
+
+
+
+NESSE NOSSO ARRAY..
+
+
+
+
+
+
+
+--> POR ISSO ESCREVEMOS ASSIM:
+
+
+
+
+        <div formArrayName="hobbies">
+          <h4>Your Hobbies</h4>
+          <button class="btn btn-default" type="button" (click)="onAddHobby()">
+            Add Hobby
+          </button>
+          <div
+          class="form-group"
+          *ngFor="let hobbyControl of getControls(); let i=index"
+          >
+          <label>Hobby nº {{i}} &nbsp;</label>
+          <input type="text" formControlName="i">
+          </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO, MAS ISSO AINDA ME DEU UM ERROR:
+
+
+
+
+
+
+core.mjs:6494 ERROR Error: Cannot find control with path: 'hobbies -> i'
+    at _throwError (forms.mjs:1785:11)
+    at setUpControl (forms.mjs:1574:13)
+    at FormGroupDirective.addControl (forms.mjs:5354:9)
+    at FormControlName._setUpControl (forms.mjs:5916:43)
+    at FormControlName.ngOnChanges (forms.mjs:5861:18)
+    at FormControlName.rememberChangeHistoryAndInvokeOnChangesHook (core.mjs:1508:1)
+    at callHook (core.mjs:2561:1)
+    at callHooks (core.mjs:2520:1)
+    at executeInitAndCheckHooks (core.mjs:2471:1)
+    at refreshView (core.mjs:9510:1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM.... PARECE QUE AGORA SEI A RAZÃO DO PROBLEMA... --> 
+
+
+O PROBLEMA É QUE 
+
+
+eu havia escrito 
+
+
+
+formControlName="i"
+
+
+DIRETAMENTE.... ------> 
+
+
+
+
+
+
+
+
+
+
+E ISSO NÃO VAI FUNCIONAR,
+
+DIZ O PROFESSOR,
+
+
+PQ AQUI PRECISAMOS __ DE PROPERTY BINDING,
+
+
+PROPERTY BINDING PQ NÃO ESTAREMOS PASSANDO UMA 'STRING',
+
+
+
+
+
+
+E SIM 
+
+VAMOS PASSAR ESSA 'local variable' 
+
+
+
+QUE É 
+
+'i',
+
+PARA PASSAR ESSE INDEX....
+
+
+
+
+
+
+--> É POR ISSO QUE O CÓDIGO FICA 
+
+[formControlName]="i"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmitForm()">
+        <!--AQUI AINDA VAMOS USAR ESSA DIRECTIVE/EVENT de 'ngSubmit', pq vamos querer USAR O COMPORTAMENTO DE 'submit' do HTML/JS comum _ PARA _ EXECUTAR NOSSOS PRÓPRIOS METHODS no arquivo .ts....-->
+        <!-- É ASSIM QUE VINCULAMOS NOSSA FORM CRIADA LÁ EM UM ARQUIVO TS, nesse arquivo html, nessa form do arquivo html... através de property binding com '[formGroup]'-->
+        <div formGroupName="userData">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              [ngClass]="{
+                redBorder:
+                  signupForm.get('userData.username')?.value &&
+                  !signupForm.get('userData.username')?.valid
+                    ? 1
+                    : 0
+              }"
+              type="text"
+              id="username"
+              class="form-control"
+              formControlName="username"
+            />
+            <!-- AQUI, O QUE INTERESSA É 'formControlName', pq O VALUE PASSADO A ESSA DIRECTIVE SERÁ BUSCADO LÁ NO SEU CÓDIGO TYPESCRIPT, na form TS a que foi vinculada essa form do HTML...  (o angular vai buscar pelos KEY NAMES da sua form, lá no código typescript)-->
+          </div>
+
+          <!-- PARA GANHAR ACESSO A PROPRIEDADES como 'valid', 'invalid', 'touched', 'pristine' e 'dirty' de nossos CONTROLS, DEVEMOS USAR ESSE METHOD DE '.get()' NA NOSSA FORM TS, form criada lá no código ts...-->
+          <span
+            *ngIf="
+              !signupForm.get('userData.username')?.valid &&
+              signupForm.get('userData.username')?.touched
+            "
+            class="help-block"
+            [ngStyle]="{ color: 'red' }"
+            >Username must have more than 4 characters</span
+          >
+
+          <button class="btn btn-default" type="button">
+            Suggest an Username
+          </button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input
+              type="email"
+              [ngClass]="{
+                redBorder:
+                  signupForm.get('userData.email')?.value &&
+                  !signupForm.get('userData.email')?.valid
+                    ? 1
+                    : 0
+              }"
+              id="email"
+              class="form-control"
+              formControlName="email"
+            />
+            <!-- DE NOVO, O QUE INTERESSA É 'formControlName'-->
+          </div>
+          <span
+            *ngIf="
+              !signupForm.get('userData.email')?.valid &&
+              signupForm.get('userData.email')?.touched
+            "
+            class="help-block"
+            [ngStyle]="{ color: 'red' }"
+            >Please enter a valid email</span
+          >
+        </div>
+        <span
+          *ngIf="
+            !signupForm.get('userData')?.valid &&
+            signupForm.get('userData')?.touched
+          "
+          class="help-block"
+          [ngStyle]="{ color: 'red' }"
+          >Please correct entered user data</span
+        >
+        <div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input type="radio" [value]="gender" formControlName="gender" />
+            {{ gender }}
+          </label>
+        </div>
+
+        <hr />
+        <div formArrayName="hobbies">
+          <h4>Your Hobbies</h4>
+          <button class="btn btn-default" type="button" (click)="onAddHobby()">
+            Add Hobby
+          </button>
+          <div
+          class="form-group"
+          *ngFor="let hobbyControl of getControls(); let i=index"
+          >
+          <label>Hobby nº {{i}} &nbsp;</label>
+          <input type="text" [formControlName]="i">
+          </div>
+        </div>
+        <hr />
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="!signupForm.valid"
+        >
+          Submit
+        </button> 
+        <span
+        *ngIf="!signupForm?.valid && signupForm?.touched"
+        class="help-block"
+        [ngStyle]="{ color: 'red' }"
+        >Please amend your data!</span
+      >
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, COM ISSO __ NOSSO CÓDIGO __ FINALMENTE __ FUNCIONOU COMO O ESPERADO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> AGORA CONSEGUIMOS ADICIONAR NOVOS 
+
+
+
+FormControl,
+
+
+
+
+
+E ELES TAMBÉM POSSUEM VALIDATION, COMO TODOS OS OUTROS FIELDS...
+
+
+
+
+
+
+
+
+
+
+
+--> NO NOSSO OBJECT DE 'formGroup'
+
+
+QUE É FORMADO A PARTIR DO SUBMIT,
+
+poderemos encontrar,
+
+lá em 
+
+'value',
+
+
+
+um object com 
+
+
+'hobbies: {
+
+0: value1,
+1: value2
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK... FUNCIONOU... É ASSIM QUE PODEMOS USAR O FORMARRAY COM O REACTIVE APPROACH..
+
+
+
+
+
+tudo que vocÊ precisa fazer:
+
+
+1) SINCRONIZAR O TEMPLATE COM O HTML
+
+
+
+
+2) CASTAR O TYPE DE 'FormArray'
+
+LÁ NO CÓDIGO TYPESCRIPT, para que tudo isso funcione..

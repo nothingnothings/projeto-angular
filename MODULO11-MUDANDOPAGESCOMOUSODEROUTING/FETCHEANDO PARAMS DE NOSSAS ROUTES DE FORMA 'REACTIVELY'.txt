@@ -1,0 +1,1961 @@
+
+
+
+
+
+
+
+NA última 
+
+
+aula,
+
+vimos como podemos 
+
+
+RETRIEVE NOSSOS ROUTE PARAMETERS...
+
+
+
+
+
+
+
+NÓS FIZEMOS TIPO ASSIM, LÁ EM 'user.component.ts':
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { UsersService } from '../users.service';
+
+@Component({
+  selector: 'app-user',
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.css'],
+})
+export class UserComponent implements OnInit {
+  user: { id: number; name: string };
+
+  constructor(
+    private route: ActivatedRoute, /////esse type é essencial para nós, pq é A PARTIR DELE QUE PODEMOS PEGAR OS VALUES DOS 'DYNAMIC SEGMENTS' de nossas urls dinÂmicas... (como 'localhost:4200/users/:id')...
+    private usersService: UsersService
+  ) {}
+
+  ngOnInit(): void {
+    const selectedUserId: string = this.route.snapshot.params['userId']; ///é com isso que conseguimos o SEGMENTO DINÂMICO NA NOSSA URL (com o userId, o value do userId)...
+    // const selectedUserName: string = this.route.snapshot.params['name'];
+    console.log(selectedUserId);
+
+    const selectedUser = this.usersService.users.find((user) => {
+      return user.id.toString() === selectedUserId;
+    });
+
+    this.user = selectedUser!;
+
+
+  }
+
+  randomMethod() {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E ISSO ESTÁ FUNCIONANDO, SIM,
+
+
+MAS _ EXISTEM MANEIRAS 
+
+
+DE 
+
+'BREAK' esse código...
+
+
+
+
+
+
+
+
+
+
+
+
+--> HÁ CASES EM QUE ESSE APPROACH NÃO VAI FUNCIONAR..
+
+
+
+
+
+
+
+----> professor quer nos mostrar um exemplol....
+
+
+
+
+
+
+
+
+--> lá no nosso component de 'user.component.ts',
+
+
+
+
+
+VIMOs que 
+
+
+SEMPRE 
+
+
+TEMOS 
+
+
+o 
+
+'user.id' 
+
+e o 
+
+'user.name' 
+
+
+
+que 
+
+passamos 
+
+a
+ NOSSA URL...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> certo... mas dentro 
+
+
+
+ do nosso 
+
+ 'user.component.html',
+
+
+
+ O PROFESSOR 
+
+
+ ADICIONA UM NOVO ANCHOR TAG,
+
+ UM ROUTER LINK...
+
+
+
+
+
+
+
+
+
+
+ -> 
+
+
+SERÁ UM ROUTER LINK 
+
+
+
+
+__ QUE _ VAI ACTUALLY __ 
+
+
+USAR 
+
+
+
+a sintaxe do 
+
+
+[routerLink]="['/users', 10, 'Anna' ]
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO VAI ESSENCIALMENTE CONSTRUIR UMA ROUTE DE 
+
+
+
+'localhost:4200/users/10/Anna'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO VAI FICANDO ASSIM:
+
+
+
+
+
+<p>User with ID {{user ? user.id : ''}}</p>
+<p>User name is {{user ? user.name : ''}}</p>
+<a [routerLink]="['/users', 10, 'Anna']"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> certo....
+
+
+
+
+
+
+O LINK DIRÁ 'load anna (10)'....
+
+
+
+
+
+
+
+--> 
+
+AÍ TENTAMOS 
+
+
+
+CARREGAR ESSE LINK AÍ ,
+
+TUDO CERTO...
+
+
+
+
+
+
+
+
+--> AÍ QUANDO CLICARMOS NESSE LINK,
+
+VEREMOS 
+
+QUE 
+
+
+
+NOSSA URLBAR SERÁ UPDATADA,
+
+
+FICARÁ 
+
+
+
+'localhost:4200/users/10/Anna'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> E ISSO VAI REALMENTE MUDAR A URLBAR,
+
+
+
+MAS _ O PROBLEMA É QUE 
+
+
+
+O _ TEXTO_ 
+
+DE NOSSA PAGE (
+
+
+    aquele 
+
+
+
+    'user with Id xx is loaded', 
+    etc...
+)
+
+
+
+
+
+
+__ NÃO _ SERÁ UPDATADO__...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O CONTENT DE NOSSA PAGE __ NÃO TERÁ SIDO UPDATADO,
+
+
+E __ ISSOO_  NÃO É UM BUG,
+ DIZ O PROFESSOR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> ESSE É O COMPORTAMENTO _ DEFAULT__ DO ANGULAR,
+
+ E DO ANGULAR ROUTER...
+
+
+
+
+
+
+
+
+ --> MAS O QUE ESTÁ ACONTECENDO AQUI, NO CASO?
+
+
+
+
+
+
+
+ --> NÃO É UM BUG, 
+
+
+
+ E SIM 
+
+
+
+
+
+
+
+ ''NÓS CARREGAMOS NOSSA DATA,
+
+
+ NO COMPONENT DE 
+
+ 'user.component.ts',
+
+
+ POR __ MEIO 
+
+ DO _ LOAD__ 
+
+
+ DO 
+
+
+SNAPSHOT OBJECT 
+
+
+de nossa route'',
+
+
+
+
+
+como 
+
+visto por este código:
+
+
+
+
+
+
+
+
+
+  ngOnInit(): void {
+    const selectedUserId: string = this.route.snapshot.params['userId']; ///é com isso que conseguimos o SEGMENTO DINÂMICO NA NOSSA URL (com o userId, o value do userId)...
+    const selectedUser = this.usersService.users.find((user) => {
+      return user.id.toString() === selectedUserId;
+    });
+
+    this.user = selectedUser!;
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> e isso é executado em 'ngOnInit'...
+
+
+
+
+
+
+
+
+  --> bem, se nós CARREGAMOS UMA NOVA ROUTE,
+
+
+  O QUE __ ACONTECE?
+
+
+
+
+
+
+
+  --> BEM, 
+  O ANGULAR:
+
+
+
+
+
+
+  1) DÁ UMA OLHADA NO NOSSO 'app.module.ts',
+
+
+
+
+  2) ENCONTRA __ A 'FITTING ROUTE', dentro daquele array de 
+
+
+  ''
+
+
+  const appRoutes: Routes = [
+
+  {
+    path: '', ////localhost:4200/   (É O _ DEFAULT, A HOME PAGE, PQ É o domain.com SEM O PATH depois)...
+    component: HomeComponent
+
+  },
+
+  {  /////é a nossa primeira route... cada object nesse array é uma ROUTE, que é governada por um 'PAGE-COMPONENT' (o page-component é a ROUTE/page, no caso)...
+    path: 'users', ///   localhost:4200/users
+    component: UsersComponent  ///users.component.html
+  },
+  {
+    path: 'users/:userId',   ////exemplo de DYNAMIC SEGMENTS (carregar user específico, dentro de list de users.... mesma coisa vista no NODEJS)...
+    component: UserComponent
+},
+
+
+
+
+'''
+
+
+
+
+
+
+
+
+
+
+
+3) SE ELE ENCONTROU A ROUTE, MELHOR PARA NÓS...
+
+
+
+
+
+
+
+
+
+4) SE ENCONTROU A ROUTE, ELE VAI _ 
+
+CARREGAR O COMPONENT CORRESPONDENTE..
+
+
+
+
+
+
+5) VAI INICIALIZAR O COMPONENT...
+ 
+
+
+
+
+5) O COMPONENT É 'user.component.html/ts', nesse caso...
+
+
+
+
+6) por fim, nesse 'user.component.ts', ele 
+
+
+NOS DÁ A DATA APROPRIADA,
+
+POR MEIO DO 'ACCESS' 
+da snapshot 
+com o código da route/url 
+
+
+
+com 
+
+
+'this.route.snapshot.params['xxx']' 
+
+
+
+
+
+
+
+
+
+****** MAS É CLARO QUE __ ISSO _____________ SÓ ACONTECE__ 
+
+
+
+SE NÓS _ NÃO ESTIVEMOS NESSE COMPONENT ANTERIORMENTE... --> 
+
+
+como aqui nós __ NUNCA SAÍMOS DESSE COMPONENT (
+
+
+    e sim 
+
+    só 
+
+    a 
+
+    parte de 
+
+    '/:userId/:name' 
+
+    MUDOU....
+),
+
+
+
+
+
+
+COMO NÓS NUNCA SAÍMOS DESSE COMPONENT,
+
+
+
+COMO APENAS CLICAMOS NESSA ANCHOR TAG com 'routerLiNK' 
+
+
+_QUE EXISTE __ DENTRO DESSE PRÓPRIO COMPONNET AÍ,
+
+
+
+
+
+
+A __ URL ACABA ALTERADA,
+
+SIM,
+
+
+
+
+__ MAS NÓS __ AINDA __ ESTAMOS _ NO 'COMPONENT QUE DEVE SER  CARREGADO' (e como já está carregado, NADA ACONTECERÁ)..
+
+
+
+
+
+
+ 
+
+
+ --> É POR ISSO QUE O ANGULAR,
+
+
+ SABIAMENTE,
+
+
+ _ NÃO VAI 'INSTANTIATE' esse component mais uma vez..
+ 
+
+
+
+
+
+
+
+
+
+
+
+ --> ELE NÃO VAI INSTANCIAR ESSE COMPONENT MAIS 1 VEZ _ PQ _ ISSO 
+
+
+ APENAS NOS CUSTARIA PERFORMANCE...
+
+
+
+
+
+
+
+
+ --> PQ DIABOS ELE RE-RENDERIZARIA UM 
+
+ COMPONENT EM QUE _ JÁ ESTAMOS? 
+
+
+
+
+ (
+
+     você poderia dizer 
+
+     '''ah, é pq a DATA QUE QUEREMOS CARREGAR MUDOU''.... ----> MAS 
+
+     O ANGULAR 
+
+
+
+     __ NÃO SABE DISSO....
+ )
+
+
+
+
+
+
+
+
+
+
+
+ --> E É MT BOM QUE, POR DEFAULT,
+
+ ELE 
+
+ __ NÃO CONSIGA __ RECRIAR O COMPONENT INTEIRO E 'DESTROY THE OLD COMPONENT'... ------> 
+
+
+
+
+
+
+ TUDO PQ 
+
+ __ JÁ ESTAMOS NESSE COMPONENT...
+
+
+
+
+
+
+
+
+
+
+ ----> ainda assim, queremos __ GANHAR _ ACESSO
+
+
+ à 
+ 'UPDATED DATA'...
+
+
+
+
+
+
+
+
+
+
+
+ -> E PODEMOS, NA VERDADE....
+
+
+
+
+
+
+
+
+
+
+
+ -> A REGRA GERAL É:
+
+
+
+
+
+
+
+
+
+ '''É FINE USAR A SNAPSHOT _ PARA A PRIMEIRA INITIALIZATION DO SEU  COMPONENT....''''...
+
+
+
+
+
+
+''' MAS  __ PARA __ SERMOS CAPAZES DE __REACT__ 
+
+
+A 
+
+
+MUDANÇAS SUBSEQUENTES DE NOSSA URL/URLBAR,
+
+
+
+__PRECISAMOS _ DE UM APPROACH _ DIFERENTE_...''''
+
+
+
+
+
+
+
+
+
+
+
+
+--> é por isso que o professor vai ALTERAR O CÓDIGO DE 'user.component.ts':
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { UsersService } from '../users.service';
+
+@Component({
+  selector: 'app-user',
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.css'],
+})
+export class UserComponent implements OnInit {
+  user: { id: number; name: string };
+
+  constructor(
+    private route: ActivatedRoute, /////esse type é essencial para nós, pq é A PARTIR DELE QUE PODEMOS PEGAR OS VALUES DOS 'DYNAMIC SEGMENTS' de nossas urls dinÂmicas... (como 'localhost:4200/users/:id')...
+    private usersService: UsersService
+  ) {}
+
+  ngOnInit(): void {
+    const selectedUserId: string = this.route.snapshot.params['userId']; ///é com isso que conseguimos o SEGMENTO DINÂMICO NA NOSSA URL (com o userId, o value do userId)...
+    // const selectedUserName: string = this.route.snapshot.params['name'];
+    console.log(selectedUserId);
+
+    const selectedUser = this.usersService.users.find((user) => {
+      return user.id.toString() === selectedUserId;
+    });
+
+    this.user = selectedUser!;
+
+
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo... nesse 'ngOnInit()',
+
+
+
+ 
+ DEPOIS __ 
+
+ QUE 
+
+ FAZEMOS ESSE 'initial setup',
+
+
+
+
+
+
+
+ por meio do código de 
+
+
+   ngOnInit(): void {
+    const selectedUserId: string = this.route.snapshot.params['userId']; 
+    const selectedUser = this.usersService.users.find((user) => {
+      return user.id.toString() === selectedUserId;
+    });
+
+    this.user = selectedUser!;
+
+
+  }
+
+
+
+
+
+
+  ,
+
+
+
+  EM 
+
+  VEZ 
+
+
+
+
+
+
+
+  DE USAR _ 
+
+
+  A SNAPSHOT 
+
+  mais uma vez,
+
+
+
+
+  ___ HÁ __ UMA 
+
+  PROPRIEDADE 
+
+
+
+  CHAMADA 
+
+
+  DE 
+
+
+  'params',
+
+
+  diretamente 
+
+
+
+  nesse object de 
+
+  'this.route'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -------> BEM, NÓS _ NÃO UTILIZAMOS 
+
+
+  essa propriedaed 
+
+
+  'this.route.params' 
+
+  ANTERIORMENTE,
+
+
+
+   
+
+
+
+PQ __ NÓS TÍNHAMOS O 'SNAPSHOT'...
+
+
+
+
+
+
+
+
+
+
+
+-> MAS QUAL É A DIFERENÇA 
+
+DE 
+
+'snapshot' 
+para 
+
+
+
+essa 
+'.params?'
+
+
+
+
+
+
+
+
+
+
+-> A DIFERENÇA É QUE 
+
+'.params' 
+
+
+é um 
+
+
+
+__ OBSERVABLE....
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OBSERVABLES __ SÃO CONSTRUCTS QUE O PROFESSOR 
+
+
+NOS ENSINARÁ 
+
+
+
+__ NO PRÓXIMO MÓDULo...
+
+
+
+
+
+
+
+
+
+
+
+--> BASICAMENTE,
+
+OBSERVABLES 
+
+__SÃO UMA FEATURE__,
+
+
+
+UMA FEATURE __ ADICIONADA _ POR OUTRAS THIRD PARTY PACKAGES,
+
+
+
+E NAÕ 
+
+
+
+
+__ PELO ANGULAR,
+
+
+
+
+
+__ MAS __ QUE SÃO 
+
+
+
+USADAS PESADAMENTE 
+
+PELO ANGULAR,
+
+
+
+
+QUE TE DEIXAM
+ 
+
+ FACILMENTE 
+
+
+ TRABALHAR COM 
+
+ 'ASYNCHRONOUS TASKS'...
+
+
+
+
+
+
+
+
+
+ --> OBSERVABLES --------------> SÃO USADAS COM ASYNC TASKS...
+
+
+
+
+
+
+ --> E 'this.route.params' 
+
+
+
+
+
+
+
+ É _ ALGO QUE TEM MT A VER COM 
+
+
+
+ ASYNC TASKS,
+
+
+
+ PQ 
+
+
+
+ __ OS PARAMS DE SUA 
+
+ 'CURRENTLY LOADED ROUTE'
+
+
+
+
+
+
+
+ ________PODEM____ (é uma possibilidade)
+
+
+
+ MUDAR 
+
+ NO FUTURO,
+
+
+ SE __ O USER__ CLICAR _ 
+
+
+
+
+ NESSE LINK DE 'LOAD ANNA',
+
+ por exemplo....
+
+
+
+
+
+
+
+
+
+
+
+
+ --> É UMA ASYNC TASK PQ VOCÊ NÃO SABE QUANDO ISSO VAI ACONTECER,
+
+
+ PQ 
+
+ ISSO 
+
+ TALVEZ 
+
+ NUNCA ACONTEÇA...
+
+
+
+
+
+
+
+
+
+
+
+ ---> É POR ISSO QUE UM 'OBSERVABLE'
+  
+
+  É UMA MANEIRA FÁCIL DE FAZER 
+
+  'SUBSCRIBE' 
+
+
+  A UM 
+
+  EVENT QUE 
+
+  TALVEZ 
+
+
+  OCORRA NO FUTURO...
+
+
+
+
+
+
+
+
+  ---> O OBSERVABLE ENTÃO VAI EXECUTAR ESSE CÓDIGO,
+
+
+  NO FUTURO,
+
+  SEM VOCÊ TER QUE ESPERAR POR ELE,
+   NO PRESENTE...
+
+
+
+
+
+
+
+
+
+
+--> e o PARAMS É UM OBSERVABLE...
+
+
+
+
+
+
+
+
+
+
+
+-> PARA _ USAR__ 
+
+
+ESSE 
+
+'OBSERVABLE
+que é 
+
+'params',
+
+
+
+VOCÊ 
+
+
+
+TEM QUE CHAMAR O METHOD DE '.subscribe()'
+
+
+nele...
+
+
+
+
+
+
+
+
+
+
+
+-----> OK..
+
+
+
+VAI FICAR TIPO
+
+
+
+
+
+this.route.params
+.subscribe(
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E O SUBSCRIBE _ SEMPRE__ EXIGE 3 
+
+FUNCTIONS,
+
+
+QUE VOCÊ PASSA COMO ARGUMENTS...
+
+
+
+
+
+
+
+
+
+
+--> O PRIMEIRO PARÂMETRO SEMPRE É O MAIS IMPORTANTE,
+
+
+
+
+
+
+PQ PROVAVELMENTE 
+
+É 
+
+A FUNÇÃO QUE 
+
+
+DEVE 
+
+SER 
+
+DISPARADA 
+
+ 
+ SEMPRE QUE 
+
+
+ __ NOVA __ DATA _ FOR ENVIADA _ ATRAVÉS _ DESSE OBSERVABLE (
+
+
+
+     no use-case 
+
+
+     do 
+     'this.route.params',
+
+
+     isso significa 
+
+
+     ''''SEMPRE QUE OS PARAMS NOSSOS FOREM ALTERADOS''''...
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> AÍ,
+
+
+
+ ESSE PRIMEIROO PARÂEMTRO, QUE SERÁ 
+
+ UMA FUNCTION,
+
+ SERÁ EXECUTADO...
+
+
+
+
+
+
+
+
+ -> O PROFESSOR VAI USAR UMA 
+
+ ES6 
+
+
+ ARROW FUNCTION...
+
+
+
+
+
+
+
+ -> 
+
+
+
+
+
+ ele escreve tipo assim:
+
+
+
+
+
+
+ this.route.params
+.subscribe(
+(params) => {
+
+}
+)
+
+
+
+
+
+
+
+
+
+
+
+--> NESSE PRIMEIRO PARÂMETRO,
+
+
+VAMOS 
+
+
+GANHAR 
+
+
+
+
+OS 'UPDATEDPARAMS'
+
+como parâmetro...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR DEFINE ESSE PARÂMETRO AÍ COMO SENDO DE TIPO 'Params',
+
+
+só para 
+
+ajudar  com o type 
+
+
+correction...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ngOnInit(): void {
+    const selectedUserId: string = this.route.snapshot.params['userId']; 
+
+    const selectedUser = this.usersService.users.find((user) => {
+      return user.id.toString() === selectedUserId;
+    });
+
+    this.user = selectedUser!;
+
+
+    this.route.params  /////esse é um OBSERVABLE.... ---> funciona com/para ASYNC TASKS, como o CHANGE DA URL/ROUTE no seu browser AO LONGO DO TEMPO, EM 1 MESMO COMPONENT (como o que acontece quando o button de 'Load Anna' é clicado, e nossa url muda para '/users/10/Anna')
+     .subscribe( ///ele OBSERVA e então EXECUTA CÓDIGO, se a coisa que está observando acontecer.... mas não vai travar a execução de seu código, por isso funciona de forma async... ele faz tipo um SUBSCRIBE, e aí fica esperando....
+
+
+     (newParams: Params) => {  //1o parâmetro de 'subscribe()'..
+
+      
+     }
+
+     )     
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... O PARAMS SERÁ 
+
+
+
+SEMPRE UM OBJECT EXATAMENTE ASSIM, COMO 
+
+
+
+NA SNAPSHOT,
+
+
+
+
+
+_ OBJECT QUE VAI SEGURAR 
+
+
+
+OS __ 
+
+'PARAMETER NAMES'  (e seus values)
+
+
+
+QUE VOCÊ 
+
+DEFINIU NA ROUTE,
+
+
+
+
+
+
+QUE FICARÃO COMO PROPRIEDADES DE 'newParams',
+nesse caso....
+
+
+
+
+
+
+
+
+
+
+
+
+--> o negócio vai ficando assim:
+
+
+
+
+
+
+
+
+this.route.params
+.subscribe(
+    (params: Params) => {
+        
+
+    }
+)
+
+
+
+
+
+
+
+
+-> AÍ VAMOS DEFINIR 
+O 
+
+
+'user.id' 
+
+e o 
+
+
+'user.name' 
+
+
+
+COMO SENDO IGUAL A 
+
+'params['name']' 
+
+
+
+
+
+'params['id']'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { UsersService } from '../users.service';
+
+import { Params } from '@angular/router';
+
+@Component({
+  selector: 'app-user',
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.css'],
+})
+export class UserComponent implements OnInit {
+  user: { id: number; name: string };
+
+  constructor(
+    private route: ActivatedRoute, /////esse type é essencial para nós, pq é A PARTIR DELE QUE PODEMOS PEGAR OS VALUES DOS 'DYNAMIC SEGMENTS' de nossas urls dinÂmicas... (como 'localhost:4200/users/:id')...
+    private usersService: UsersService
+  ) {}
+
+  ngOnInit(): void {
+    const selectedUserId: string = this.route.snapshot.params['userId']; ///é com isso que conseguimos o SEGMENTO DINÂMICO NA NOSSA URL (com o userId, o value do userId)...
+    // const selectedUserName: string = this.route.snapshot.params['name'];
+    console.log(selectedUserId);
+
+    const selectedUser = this.usersService.users.find((user) => {
+      return user.id.toString() === selectedUserId;
+    });
+
+    this.user = selectedUser!;
+
+
+    this.route.params  /////esse é um OBSERVABLE.... ---> funciona com/para ASYNC TASKS, como o CHANGE DA URL/ROUTE no seu browser AO LONGO DO TEMPO, EM 1 MESMO COMPONENT (como o que acontece quando o button de 'Load Anna' é clicado, e nossa url muda para '/users/10/Anna')
+     .subscribe( ///ele OBSERVA e então EXECUTA CÓDIGO, se a coisa que está observando acontecer.... mas não vai travar a execução de seu código, por isso funciona de forma async... ele faz tipo um SUBSCRIBE, e aí fica esperando....
+
+
+     (newParams: Params) => {  //1o parâmetro de 'subscribe()'..
+      console.log(newParams);
+        this.user.id = newParams['userId'];
+
+     }
+
+     )     
+     //E O METHOD DE 'subscribe', em nossos observables, sempre exige TRÊS PARÂMETROS, QUE SERÃO 3 FUNCTIONS...
+
+     ////1o parâmetro --> É O CÓDIGO/FUNCTION QUE DEVE SER DISPARADA __ ASSIM _ QUE 'NOVA DATA' for funnelada através desse observable (no caso de 'this.route.params', essa nova data SERÁ NOVOS PARAMS, NOVOS PARAMS NA NOSSA URL, que terá sido alterada durante a existência desse nosso component...)
+  
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+<p>User with ID {{user ? user.id : ''}}</p>
+<p>User name is {{user ? user.name : ''}}</p>
+<a [routerLink]="['/users', 44]">Load Number 44</a>
+
+
+
+
+
+
+
+
+
+
+------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok... agora conseguimos ALTERAR _O  CONTEÚDO__ DE NOSSA PAGE _ ( a partir de mudanças no object 'user' de nosso component)
+
+A 
+
+PARTIR 
+
+DE MUDANÇAS 
+
+
+
+NA NOSSA ROUTE... (tudo graças a esse OBSERVABLE)..
+
+
+
+
+
+-> 
+
+QUANDO 
+
+
+NOSSOS PARAMS FOREM ALTERADOS,
+
+
+SÓ NESSA HIPÓTESE,
+
+
+
+
+
+NOSSO 
+
+
+USER OBJECT SERÁ ALTERADO 
+
+E 
+
+RECEBERÁ 
+
+
+ESSA NOVA DATA DOS PARAMS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> ESSE É O APPROACH, EXPLICA O PROFESSOR,
+
+QUE DEVEMOS SEGUIR PARA 
+
+FICARMOS 
+
+
+__SUPER__ SAFE_ 
+
+
+
+CONTRA __ CHANGES__ 
+
+
+NÃO SEREM REFLETIDAS NO 
+
+NO NOSSO TEMPLATE...
+
+
+
+
+
+
+
+
+
+
+
+--->  SE VOCe^_ SABE__, TEM CERTEZA__ DE QUE 
+
+
+
+
+
+
+SEU COMPONENT, O COMPONENT EM QUE VOCÊ ESTÁ,
+
+
+
+NUNCA VAI SER 'RELOADED' (
+
+
+    ou seja,
+
+    contrariamente a nossa situação ATUAL,
+
+    em que permanecemos no MESMO COMPONENT
+),
+
+
+
+
+aí 
+
+
+
+
+ESSA ADDITION 
+
+de 
+
+
+'this.route.params.subscribe()'
+
+
+TALVEZ NÃO SEJA NECESSÁRIA,
+
+
+
+
+
+
+nesses casos o 'snapshot'
+
+já será suficiente...
+
+
+
+
+
+
+
+
+
+----> SE VOCÊ TIVER 100% DE CERTEZA QUE 
+
+SEU 
+
+
+_COMPONENT __ SEMPRE VAI SER 'RECREATED' 
+quando ele 
+
+for alcançado/atingido,
+
+
+
+
+
+NENHUMA OUTRA MANEIRA DE 
+
+O 'REACHAR' (
+
+
+    ou seja,
+
+    nenhum link DENTRO DELE _ 
+
+    que 
+
+    faz o re-render 
+
+    DELE MESMO...
+),
+
+
+
+SE VOCÊ TEM CERTEZA DISSO,
+
+NÃO É NECESSÁRIO 
+
+
+
+
+
+
+USAR O  'subscribe' 
+
+
+
+dos this.route.params..
+
+
+
+
+
+
+
+
+
+-> MAS SE VOCê TIVER ESSE USE-CASE,
+
+
+
+
+
+utilize esse subscribe para 
+
+ACABAR __ INFORMADO _ SOBRE QUAISQUER 
+
+CHANGES NOS SEUS ROUTE PARAMETERS durante a vida desse component... 

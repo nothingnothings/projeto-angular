@@ -1,0 +1,407 @@
+
+
+
+
+
+
+
+1) adicione UM BUTTON QUE DIZ 'Display Details' 
+
+
+
+
+
+
+2) adicione um paragraph com QUALQUER CONTEÚDO DE SUA ESCOLHA (ex: 'secret password = tuna')
+
+
+
+
+
+
+3) FAÇA TOGGLE DO PARAGRAPH DO DISPLAY DESSE PARAGRAPH POR MEIO DO BUTTON CRIADO NA PRIMEIRA ETAPA 
+
+
+
+
+
+4) FAÇA UM 'console.log'/output de um console.log da 
+
+
+TIMESTAMP DE TODOS 
+
+OS BUTTON CLICKS,
+
+
+e aí 
+
+armazene eses valores em um array, que deve ser outputtado EMBAIXO DO PÁRÁGRAFO SECRETO...
+
+
+
+
+
+
+5) COMEÇANDO NO 5o item do log,
+
+DÊ A TODOS OS LOG ITEMS FUTUROS um BLUE BACKGROUND (por meio de NGSTYLE) 
+
+e 
+
+UMA 
+
+COR BRANCA (por meio de 'ngClass')
+
+
+
+
+
+
+
+
+
+-> DEVO CRIAR UM NOVO PROJETO,
+
+
+
+
+novoprojeto4....
+
+
+
+
+
+
+
+->  CONSEGUI ATÉ CERTO PONTO....
+
+
+
+
+
+
+
+
+O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+<button class="btn btn-primary" (click)="onButtonClick($event)">
+  {{ !showParagraph ? "Show" : "Hide" }} Details
+</button>
+<p *ngIf="showParagraph === true">Secret Password: 'Busted'</p>
+<ul
+  [ngStyle]="{
+    listStyle: 'none'
+  }"
+>
+  <li
+    [ngStyle]="{
+        backgroundColor: getColor()
+    }"
+    [ngClass]="{
+                     whiteColor: buttonClicks.length >= 5
+
+    }"
+  >
+    <p *ngFor="let timestamp of buttonClicks">Timestamp: {{ timestamp }}</p>
+  </li>
+</ul>
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-training-component',
+  templateUrl: './training-component.component.html',
+  // styleUrls: ['./training-component.component.css'],
+  styles: [
+    `
+    .whiteColor {
+          color: white;
+    }
+    
+    `
+  ]
+})
+export class TrainingComponentComponent implements OnInit {
+  showParagraph = false;
+  buttonClicks: number[] = [];
+
+  constructor() {}
+
+  ngOnInit(): void {}
+
+  onButtonClick(event: Event) {
+    this.showParagraph = !this.showParagraph;
+    console.log(event);
+    this.buttonClicks.push(event.timeStamp);
+  }
+
+
+  getColor() {
+    if (this.buttonClicks.length >= 5) {
+      return 'blue'
+    }
+
+    return;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+--> mas estou com um PROBLEMA:
+
+
+
+
+
+
+
+todos os 'list item' 
+
+de minha list acabaram coloridos quando o 
+
+
+
+
+
+
+limite de 5 items é excedido (os items anteriores também acabam coloridos)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> talvez a alternativa/única opção seja 
+
+
+TRANSFORMAR CADA 'li'
+
+
+EM UM _ ITEM INDEPENDENTE...
+
+
+
+
+
+
+
+
+
+-. mas isso não está dando certo/nõa vai dar certo.... -> não consigo passar a info do component pai 
+
+'training-component' 
+
+
+
+aos training-component-list-item....
+
+
+
+
+
+
+
+
+
+
+-> tenho que pensar um poucoo..
+
+
+
+
+
+
+
+
+
+-> FINALMENTE CONSEGUI:
+
+
+
+
+
+
+
+
+
+
+
+<button class="btn btn-primary" (click)="onButtonClick($event)">
+  {{ !showParagraph ? "Show" : "Hide" }} Details
+</button>
+<p *ngIf="showParagraph === true">Secret Password: 'Busted'</p>
+<ul
+  [ngStyle]="{
+    listStyle: 'none'
+  }"
+>
+  <li 
+  
+  *ngFor="let timestamp of buttonClicks"
+
+    [ngStyle]="{
+      backgroundColor: buttonClicks.indexOf(timestamp) >= 5 ? 'blue' : 'transparent'
+    }"
+    [ngClass]="{
+      whiteColor:  buttonClicks.indexOf(timestamp) >= 5
+    }"
+  >
+    <p>Timestamp: {{ timestamp }}</p>
+  </li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E O OUTRO CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-training-component',
+  templateUrl: './training-component.component.html',
+  // styleUrls: ['./training-component.component.css'],
+  styles: [
+    `
+    .whiteColor {
+          color: white;
+    }
+    
+    `
+  ]
+})
+export class TrainingComponentComponent implements OnInit {
+  showParagraph = false;
+  buttonClicks: number[] = [];
+
+
+
+  constructor() {
+   
+  }
+
+  ngOnInit(): void {}
+
+  onButtonClick(event: Event) {
+    this.showParagraph = !this.showParagraph;
+    console.log(event);
+    this.buttonClicks.push(event.timeStamp);
+  }
+
+
+  getColor() {
+
+    console.log(this.buttonClicks)
+    return;
+  }
+}
+
+
+
+
+
+CONSEGUI, FICOU + OU -:
+
+
+
+
+
+
+
+<hr>
+
+    <button class="btn btn-primary" (click)="onButtonClick($event)">
+      {{ !showParagraph ? "Show" : "Hide" }} Details
+    </button>
+    <hr>
+    <p *ngIf="showParagraph === true">Secret Password: 'Busted'</p>
+    <ul
+      [ngStyle]="{
+        listStyle: 'none'
+      }"
+    >
+      <li
+        *ngFor="let timestamp of buttonClicks"
+        [ngStyle]="{
+          backgroundColor:
+            buttonClicks.indexOf(timestamp) >= 5 ? 'blue' : 'transparent'
+        }"
+        [ngClass]="{
+          whiteColor: buttonClicks.indexOf(timestamp) >= 5
+        }"
+      >
+        <p>Timestamp: {{ timestamp }}</p>
+      </li>
+    </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    certo....

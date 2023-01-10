@@ -1,0 +1,2102 @@
+
+
+--> O PROFESSOR COMENTA QUE 'AINDA NÃO ESTAMOS COM O LOADING SPINNER'...
+
+
+
+
+
+
+
+
+
+entretanto, na minha versão do código, já temos essa feature...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E ISSO É FEITO NAS PRÓPRIAS ACTIONS QUE INICIAM NOSSOS EFFECTS:
+
+
+
+
+
+
+
+
+export class AuthStart implements Action {
+  readonly type = AUTH_START;
+
+  constructor(public payload: { email: string; password: string }) {}
+}
+
+
+
+
+
+
+
+
+E 
+
+
+
+ISTO:
+
+
+
+
+
+
+export class AuthSignupStart implements Action {
+  readonly type = AUTH_SIGNUP_START;
+
+  constructor(public payload: { email: string; password: string }) {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+ACABAM 
+
+
+
+
+TRIGGANDO NOSSO REDUCER, QUE TEM ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+export function AuthReducer(
+  state: AuthState = initialState,
+  action: AuthActions.AuthActions
+) {
+  switch (action.type) {
+    case AuthActions.AUTH_START:
+      return authStart(state, action as AuthActions.AuthStart);
+    case AuthActions.AUTH_SIGNUP_START:
+      return authSignupStart(state, action as AuthActions.AuthSignupStart);
+    case AuthActions.AUTH_SUCCESS:
+      return authSuccess(state, action as AuthActions.AuthSuccess);
+    case AuthActions.AUTH_FAIL:
+      return authFail(state, action as AuthActions.AuthFail);
+    case AuthActions.AUTH_LOGOUT:
+      return authLogout(state, action as AuthActions.AuthLogout);
+      default:
+        return state;
+  }
+}
+
+
+
+
+const authStart = (
+  state: AuthState,
+  action: AuthActions.AuthStart
+): AuthState => {
+  return updateObject(state, { isLoading: true, error: null });
+};
+
+const authSignupStart = (
+  state: AuthState,
+  action: AuthActions.AuthSignupStart
+): AuthState => {
+  return updateObject(state, { isLoading: true, error: null });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> como você pode ver,
+
+
+
+
+
+
+
+
+
+é isso que INICIA NOSSO LOADING SPINNER,
+
+
+
+
+que é triggado por meio desse 'isLoading'....
+
+
+
+
+
+
+
+
+
+--> ENQUANTO ESSA ACTION FOI DISPARADA/NO MOMENTO EM QUE ESSA ACTION É DISPARADA,
+
+
+
+
+NOSSOS EFFECTS ENTRAM EM JOGO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+private loginUser(operationType: 'LOGIN' | 'SIGNUP') {
+  let url: string;
+
+  let type: string = AuthActions.AUTH_START;
+
+  if (operationType === 'LOGIN') {
+    url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`;
+
+  } else {
+    url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.firebaseAPIKey}`;
+    type = AuthActions.AUTH_SIGNUP_START
+  }
+
+
+
+  return this.actions$.pipe(
+    ofType(type as any),
+    switchMap((authData: AuthActions.AuthStart) => {
+      const requestHeaders = new HttpHeaders();
+      requestHeaders.append('Content-Type', 'application/json');
+
+      const httpAuthData: {
+        email: string;
+        password: string;
+        returnSecureToken: boolean;
+      } = {
+        email: authData.payload.email,
+        password: authData.payload.password,
+        returnSecureToken: true,
+      };
+
+      return this.http
+        .post<AuthResponseData>(
+          // `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`,
+
+          url,
+          httpAuthData,
+
+          {
+            headers: requestHeaders,
+          }
+        )
+        .pipe(
+          map((resData: AuthResponseData) => {
+            const expirationDate = new Date(
+              new Date().getTime() + +resData.expiresIn * 1000
+            );
+
+            return new AuthActions.AuthSuccess(
+              new User(
+                resData.email,
+                resData.localId,
+                resData.idToken,
+                expirationDate
+              )
+            );
+          }),
+
+          catchError((errorRes) => {
+            let errorMessage = 'An unknown error has occured.';
+
+            if (!errorRes.error || !errorRes.error.error) {
+              return of(new AuthActions.AuthFail(errorMessage));
+            }
+
+            switch (errorRes.error.error.message) {
+              case 'EMAIL_NOT_FOUND':
+                errorMessage = 'No user found for the entered email!';
+                break;
+              case 'INVALID_PASSWORD':
+                errorMessage = 'Invalid password, please try again.';
+                break;
+              case 'EMAIL_ALREADY_EXISTS':
+                errorMessage = 'Email already exists, please try again.';
+            }
+
+            return of(new AuthActions.AuthFail(errorMessage));
+          })
+        );
+    })
+  );
+}
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> e como você pode ver,
+
+
+os nossos effects vão triggar 
+
+
+
+OU AQUELA ACTION DE 'AuthSuccess',
+
+
+
+
+
+
+ou aquela outra action de 'AUTHFAIL',
+
+
+
+
+E _ AMBAS__ 
+
+
+
+
+VÃO ALTERAR NOSSO STATE,
+
+
+
+
+E VÃO 
+
+DEFINIR 
+
+
+
+
+'isLoading' COMO FALSE,
+
+
+ENCERRANDO O NOSSO SPINNER... (a diferença entre os 2 é que 'AuthFail' vai fazer o SHOW DE UMA MENSAGEM DE ERROR POR CONTA DA MANIPULAÇÃO DO STATE, ao passo que 'AUTH_SUCCESS' não o fará)...
+
+
+
+
+
+
+
+
+
+Ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export class AuthFail implements Action {
+  readonly type = AUTH_FAIL;
+
+  constructor(public payload: string) {} ////vai segurar 'error', que será uma STRING (ou um object error).
+}
+
+
+export class AuthSuccess implements Action {
+  readonly type = AUTH_SUCCESS;
+
+  constructor(public payload: User) {}
+}
+
+
+
+
+
+
+
+
+
+const authSuccess = (
+  state: AuthState,
+  action: AuthActions.AuthSuccess
+): AuthState => {
+  const { token, email, id } = action.payload;
+
+  return updateObject(state, {
+    isLoading: false,
+    error: null, //resetta o nosso state...
+    token: token,
+    email: email,
+    userId: id,
+  });
+};
+
+const authFail = (
+  state: AuthState,
+  action: AuthActions.AuthFail
+): AuthState => {
+  return updateObject(state, {
+    isLoading: false,
+    token: null,
+    email: null,
+    userId: null,
+    error: action.payload
+    
+  });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS AINDA NÃO SEI SE ISSO TUDO ESTÁ CORRETO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> O 'LOADING SPINNER AINDA ESTÁ FALTANDO'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... 
+
+
+
+
+
+O PROFESSOR ESCREVEU DE FORMA UM POUCO DIFERENTE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ELE NOS EXPLICA QUE 
+
+'SWITCH CASES PODEM_ _FALL_THROUGH_ DENTRO 
+
+
+1 DO OUTRO''..
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO SIGNIFICA QUE 
+
+PODEMOS AGRUPAR 
+
+
+
+
+OS CASES DE 
+
+
+
+
+
+'AuthActions.AUTH_START'
+
+
+
+e 
+
+
+
+
+'AuthActions.AUTH_SIGNUP_START'
+
+
+
+
+
+
+
+
+
+
+
+EM 1 SÓ CASE,
+
+
+
+BASTA ESCREVER OS 2 1 EM CIMA DO OUTRO,
+
+
+
+
+
+
+SEM BREAKS ENTRE ELES...
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+case AuthActions.AUTH_START:
+case AuthActions.AUTH_SIGNUP_START:
+    return {
+        ...state,
+        authError: null,
+        loading: true
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    CERTO...
+
+
+
+
+
+
+
+    --> no meu código, no caso,
+
+
+
+
+
+
+
+tive de remover o código de 'authSignupStart',
+
+
+
+pq era redundante (mesma lógica de 'authStart'):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export function AuthReducer(
+  state: AuthState = initialState,
+  action: AuthActions.AuthActions
+) {
+  switch (action.type) {
+    case AuthActions.AUTH_START: ///esses 2 cases dão no MESMO RESULTADO NO REDUCER, O RUN DE 'authStart'...
+      case AuthActions.AUTH_SIGNUP_START:
+      return authStart(state, action as AuthActions.AuthStart);  ////isto e 'authStart' são a mesma coisa, possuem o mesmo efeito nesse reducer...
+    // case AuthActions.AUTH_SIGNUP_START:
+    //   return authSignupStart(state, action as AuthActions.AuthSignupStart); //isto e 'authStart' são a mesma coisa...
+    case AuthActions.AUTH_SUCCESS:
+      return authSuccess(state, action as AuthActions.AuthSuccess);
+    case AuthActions.AUTH_FAIL:
+      return authFail(state, action as AuthActions.AuthFail);
+    case AuthActions.AUTH_LOGOUT:
+      return authLogout(state, action as AuthActions.AuthLogout);
+      default:
+        return state;
+  }
+}
+
+const authStart = (
+  state: AuthState,
+  action: AuthActions.AuthStart
+): AuthState => {
+  return updateObject(state, { isLoading: true, error: null });
+};
+
+// const authSignupStart = ( ///mesma coisa que o código de cima, por isso agrupamos as 2 actions em 1 só helper method, o de 'AuthStart'..
+//   state: AuthState,
+//   action: AuthActions.AuthSignupStart
+// ): AuthState => {
+//   return updateObject(state, { isLoading: true, error: null });
+// };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ALÉM DISSO,
+
+
+
+O PROFESSOR DIZ QUE 
+
+
+
+
+
+AINDA TEMOS O PROBLEMA 
+
+
+DO METHOD DE 
+
+
+
+
+'onHandleError() {
+    this.error = null;
+}
+',
+
+
+
+
+
+
+
+LÁ EM 'authPage.component.ts',
+
+
+QUE É UM METHOD QUE ESTÁ 
+
+
+
+SENDO CHAMADO QUANDO CLICAMOS NO BUTTON DE 'CLOSE ' NO NOSSO MODAL DE ERROR...
+
+
+
+
+
+
+
+
+
+
+ESSE METHOD, EM OUTRAS PALAVRAS,
+
+ESTÁ REVERTENDO O STATE DE 'error' de authPage.component.ts 
+
+
+PARA NULL,
+
+localmente...
+
+
+
+
+
+
+
+
+
+
+
+---> mas eu estou sem esse código 
+
+
+
+
+na minha versão....
+
+
+
+
+
+
+
+
+
+---> o único código que tenho, na verdade,
+
+é este:
+
+
+
+
+
+
+
+
+
+
+
+  private showErrorAlert(errorMessage: string) {
+    const alertComponentFactory =
+      this.componentFactoryResolver.resolveComponentFactory(
+        AlertDynamicComponent
+      );
+
+    const hostViewContainerRef = this.dynamicAlertBoxHost.viewContainerRef;
+
+    hostViewContainerRef.clear();
+
+    const componentReference = hostViewContainerRef.createComponent(
+      alertComponentFactory
+    );
+
+    componentReference.instance.message = errorMessage;
+
+    this.closeAlertBoxSubscription =
+      componentReference.instance.close.subscribe(() => {
+        this.closeAlertBoxSubscription.unsubscribe();
+        hostViewContainerRef.clear();
+      });
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> agora tenho de pensar um pouco:
+
+
+
+
+
+
+
+
+  devo criar uma action para 
+
+
+
+  o nosso button?
+
+
+
+
+
+  -> talvez uma action de 'closeModal?'
+
+
+
+
+  --> com essa action, provavelmente 
+
+
+  definiríamos 'error: null', junto com um state de 'isOpenModal'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OUTRO PROBLEMA É A NOSSA SUBSCRIPTION AO STORE DE 'auth',
+
+
+
+
+  lá em 'ngOnInit()',
+
+
+  A QUE NUNCA ESTAMOS FAZENDO 'UNSUBSCRIBE':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  ngOnInit(): void {
+
+
+      this.store.select('auth').subscribe(
+        (authState) => {
+
+
+          this.isLoading = authState.isLoading;  ///com isso, usamos o state de 'auth' PARA ATUALIZAR O STATE DESSE NOSSO 'PAGE COMPONENT' de 'AuthPage'...
+          this.error = authState.error; 
+          if (this.error) {
+            this.showErrorAlert(this.error);
+          }
+        }
+      )
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -----> ANTES DE MAIS NADA,
+
+  DEVEMOS HANDLAR ESSA SUBSCRIPTION,
+
+  provavelmente
+
+  LÁ 
+
+
+  NO 
+
+  ngOnDestroy..
+
+
+
+
+
+
+
+
+
+
+  --> PARA ISSO, ESCREVEMOS ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  private storeSubscription: Subscription;
+
+
+
+
+
+    ngOnDestroy(): void {
+    if (this.closeAlertBoxSubscription) {
+      this.closeAlertBoxSubscription.unsubscribe();
+    }
+
+
+    this.storeSubscription.unsubscribe();
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> ok... mas de volta ao 
+
+
+tópico do 'reset do error', o error handling,
+
+
+
+
+
+__ FAZER O RESET DO ERROR Em 
+
+
+
+'onHandleError() {
+
+    this.error = null
+}
+'
+
+
+
+
+
+
+__ NÃO É BOM,
+
+
+
+PQ 
+
+SIGNIFICA QUE 
+
+
+NOSSO 
+
+
+'NGRX STATE'
+
+
+NÃO VAI ESTAR _ EM SINCRONIA __ 
+
+
+
+COM O STATE LOCAL DESSE COMPONENT AUTHPAGE...------> 
+
+
+
+
+
+
+
+
+
+NO CASO,
+
+
+
+
+O 'ngRx'
+
+
+STORE 
+
+
+
+
+__DEVE SER NOSSA ___ 'UNICA FONTE DE VERDADE',
+
+
+ 
+
+
+
+
+
+
+ SOURCE OF TRUTH,
+
+
+
+
+
+
+
+
+ PELO MENOS EM RELAÇÃO A TODO  STATE QUE ELE MANAGEIA...
+
+
+
+
+
+
+
+
+
+ --> É POR ISSO QUE 
+
+
+
+
+ FAZER 'DUPLICATE STATE MANAGEMENT'
+
+
+ É ALGO MT RUIM
+
+ ALGO QUE VOCÊ DEVE 
+
+
+ EVITAR..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> PARA ISSO,
+
+ PARA EVITAR 
+
+
+ O DOUBLE 
+
+ STATE MANAGEMENT (local e geral),
+
+
+
+
+ O PROFESSOR CRIA UMA NOVA ACTION,
+
+
+
+
+
+
+
+
+ de nome 
+
+
+
+ 'clear_error',
+
+
+ 
+
+
+
+
+QUE VAI CUMPRIR ESSA FUNÇÃO DE LIMPAR NOSSO STATE DE 'ERROR'...
+
+
+
+
+
+
+
+
+
+--> PELO VISTO O PROFESSOR NÃO VAI QUERER 
+
+
+
+CRIAR UMA ACTION ESPECIFICAMENTE PARA 'SHOW/HIDE' DE UM ALERT,
+
+
+
+MAS VAI QUERER USAR ESSA ACTION, EM CONJUNÇÃO COM ESTE CÓDIGO AQUI:
+
+
+
+
+
+
+
+
+
+
+  private showErrorAlert(errorMessage: string) {
+    const alertComponentFactory =
+      this.componentFactoryResolver.resolveComponentFactory(
+        AlertDynamicComponent
+      );
+
+    const hostViewContainerRef = this.dynamicAlertBoxHost.viewContainerRef;
+
+    hostViewContainerRef.clear();
+
+    const componentReference = hostViewContainerRef.createComponent(
+      alertComponentFactory
+    );
+
+    componentReference.instance.message = errorMessage;
+
+    this.closeAlertBoxSubscription =
+      componentReference.instance.close.subscribe(() => {
+        this.closeAlertBoxSubscription.unsubscribe();
+        hostViewContainerRef.clear();
+      });
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  PARA LIMPAR __ 
+
+
+
+  O STATE DE 'NGRX' de error,
+
+
+
+  rodar 'clear'..
+
+
+
+
+
+
+
+
+
+
+
+  ex:
+
+
+
+
+
+
+
+
+
+
+  export function AuthReducer(
+  state: AuthState = initialState,
+  action: AuthActions.AuthActions
+) {
+  switch (action.type) {
+    case AuthActions.AUTH_START: ///esses 2 cases dão no MESMO RESULTADO NO REDUCER, O RUN DE 'authStart'...
+    case AuthActions.AUTH_SIGNUP_START:
+      return authStart(state, action as AuthActions.AuthStart); ////isto e 'authStart' são a mesma coisa, possuem o mesmo efeito nesse reducer...
+    // case AuthActions.AUTH_SIGNUP_START:
+    //   return authSignupStart(state, action as AuthActions.AuthSignupStart); //isto e 'authStart' são a mesma coisa...
+    case AuthActions.AUTH_SUCCESS:
+      return authSuccess(state, action as AuthActions.AuthSuccess);
+    case AuthActions.AUTH_FAIL:
+      return authFail(state, action as AuthActions.AuthFail);
+    case AuthActions.AUTH_LOGOUT:
+      return authLogout(state, action as AuthActions.AuthLogout);
+    case AuthActions.CLEAR_ERROR:
+      clearError(state, action as AuthActions.ClearError);
+      return;
+    default:
+      return state;
+  }
+}
+
+
+
+
+
+const clearError = (
+  state: AuthState,
+  action: AuthActions.ClearError
+): AuthState => {
+  return updateObject(state, {
+    error: null,
+  });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E LÁ 
+
+
+
+NO NOSSO 'authPage.component.ts':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  private showErrorAlert(errorMessage: string) {
+    const alertComponentFactory =
+      this.componentFactoryResolver.resolveComponentFactory(
+        AlertDynamicComponent
+      );
+
+    const hostViewContainerRef = this.dynamicAlertBoxHost.viewContainerRef;
+
+    hostViewContainerRef.clear();
+
+    const componentReference = hostViewContainerRef.createComponent(
+      alertComponentFactory
+    );
+
+    componentReference.instance.message = errorMessage;
+
+    this.closeAlertBoxSubscription =
+      componentReference.instance.close.subscribe(() => {
+        this.closeAlertBoxSubscription.unsubscribe();
+        hostViewContainerRef.clear();
+        this.store.dispatch(new AuthActions.ClearError());
+      });
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok, agora quando A NOSSA ALERT BOX FOR FECHADA,
+
+
+
+SERÁ DISPATCHEADA ESSA ACTION,
+
+QUE ENTAÕ 
+
+VAI 
+
+DEFINIR O STATE DE 'error' como 'NULL'...
+
+
+
+
+
+
+
+
+
+
+
+
+COM ISSO, O 'LOCAL STATE' E O 'NGRX STATE'
+
+ESTARÃO EM SINCRONIA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO... ISSO FUNCIONOU....
+
+
+
+
+
+
+
+
+
+COMM ISSO ESTAMOS QUASE ACABADOS COM O MANAGE DE TODOS OS EFFECTS RELACIONADOS 
+
+
+AO NGRX NO NOSSO PROJETO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OS PEDAÇOS QUE AINDA FALTAM É:
+
+
+
+
+
+'''EU AINDA QUERO FAZER REDIRECT _ QUANDO EU FAÇO
+
+
+
+LOGOUT''''..
+
+
+
+
+
+
+
+
+---> NO NOSSO CÓDIGO,
+
+
+
+
+NO LOGOUT, TEMOS ISTO:
+
+
+
+
+
+
+
+export class AuthLogout {
+  readonly type = AUTH_LOGOUT;
+  ///temos que remover os items no localStorage, por meio de algum helper method, no reducer...
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O NOSSO REDIRECT DE 'logout'
+
+
+AINDA É FEITO POR MEIO 
+
+
+DO USO DO SERVICE DE 'auth.service.ts',
+
+
+
+
+MAS _ NÃO QUEREMOS MAIS O UTILIZAR...
+
+
+
+
+
+
+
+
+--> é por isso qeu comentamos este código para fora:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  logoutUser() { ////inutilizado. (fazemos isso nos 'effects', agora) --> coisas como 'localStorage.remove'...
+
+
+    // localStorage.removeItem('token');
+    // localStorage.removeItem('userId');
+    // localStorage.removeItem('expirationDate');
+    // localStorage.removeItem('email');
+    
+
+
+    // this.emitUser(null); //Agora usamos o method do NGRX, 'handleUser'... (criei para fazer o dispatch de actions, especificamente)...
+
+    this.handleUser(null);
+
+    // localStorage.removeItem('userData'); //agora faço isso na própria action, não precisa ser aqui....
+
+    this.router.navigate(['/auth']);
+
+
+    if (this.tokenExpirationTimer) {   ///'cleanup' de nosso timer de 'autologout' (em caso de tokens expiradas), CUJO TIMER NÃO VAI DEIXAR DE EXISTIR SOZINHO.. (precisamos limpar manualmente, com 'clearTimeout()')....
+
+      clearTimeout(this.tokenExpirationTimer);
+    }
+
+    this.tokenExpirationTimer = null; ///resettamos o state de nosso 'tokenExpirationTimer' property...
+
+
+  
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -----> pq agora queremos fazer isso com a ajuda dos effects, supostamente..
+
+
+
+
+
+
+
+
+
+
+
+
+  --> vamos escrever assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export function AuthReducer(
+  state: AuthState = initialState,
+  action: AuthActions.AuthActions
+) {
+  switch (action.type) {
+    case AuthActions.AUTH_START: ///esses 2 cases dão no MESMO RESULTADO NO REDUCER, O RUN DE 'authStart'...
+    case AuthActions.AUTH_SIGNUP_START:
+      return authStart(state, action as AuthActions.AuthStart); ////isto e 'authStart' são a mesma coisa, possuem o mesmo efeito nesse reducer...
+    // case AuthActions.AUTH_SIGNUP_START:
+    //   return authSignupStart(state, action as AuthActions.AuthSignupStart); //isto e 'authStart' são a mesma coisa...
+    case AuthActions.AUTH_SUCCESS:
+      return authSuccess(state, action as AuthActions.AuthSuccess);
+    case AuthActions.AUTH_FAIL:
+      return authFail(state, action as AuthActions.AuthFail);
+    case AuthActions.AUTH_LOGOUT:
+      return authLogout(state, action as AuthActions.AuthLogout);
+    case AuthActions.CLEAR_ERROR:
+      return clearError(state, action as AuthActions.ClearError);
+    default:
+      return state;
+  }
+}
+
+
+
+
+
+  const authLogout = (
+  state: AuthState,
+  action: AuthActions.AuthLogout
+): AuthState => {
+  // localStorage.removeItem('userData'); ///REMOVE A DATA DO USER DE SUA 'LOCALSTORAGE', aquela 'cookie' que fica lá.... //talvez esse seja um lugar ruim para colocar esse código ('side effect', não tem relação direta com o reducer, esse movimento)...
+
+  return updateObject(state, {
+    token: null,
+    email: null,
+    userId: null,
+  });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... 
+
+
+
+
+
+
+
+
+
+
+aí, lá nos nossos effects:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  authLogout$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(AuthActions.AUTH_LOGOUT),
+
+
+
+        tap(
+          () => {
+            localStorage.removeItem('userData');
+            this.router.navigate(['/auth']);
+
+          }
+        )
+
+      )
+    },
+
+    {dispatch: false}
+  )
+
+
+
+
+
+
+
+
+
+
+  -> ou seja, não fazemos dispatch de nenhuma nova action,
+
+  e aí 
+
+
+removemos 1 item da localStorage (nossa user data)
+
+
+
+e aí 
+
+
+
+navegamos para 'auth'...
+
+
+
+
+
+
+
+
+---> vou testar esse código...
+
+
+
+
+
+
+
+
+
+
+-> QUASE__ deu certo...
+
+
+
+
+
+
+-> mas ele redirecionou para 'localhost:4200/',
+
+
+e naõ 
+
+para 
+
+'/auth'...
+
+
+
+
+
+
+
+qual a razão disso?
+
+
+talvez algum código residual em 'HeaderComponent.ts'...
+
+
+
+
+
+
+
+
+
+
+
+bem, coloquei este código no headeR:
+
+
+
+
+
+
+
+
+
+
+
+  onLogout() {
+    // this.authService.logoutUser(); //inutilizado. agora usamos o dispatch de uma action ao nosso store para querer fazer logout (aí usamos effects, a partir desse dispatch, etc)
+
+    this.store.dispatch(new AuthActions.AuthLogout());
+  }
+
+
+
+
+
+
+
+
+
+-> mas o redirect ainda não está funcionando, por alguma razão..
+
+
+
+
+
+
+
+
+
+
+-> talvez seja o 'autoLogin'...
+
+
+
+
+
+
+
+
+
+--> não, mas isso TAMBÉM NÃO FUNCIONOU...
+
+
+
+
+
+
+
+
+
+
+-> PROFESSOR COMENTA OUTRO PROBLEMA:
+
+
+QUANDO REINICIAMOS NOSSA PAGE/APP,
+
+
+SEMPRE FICAMOS 'UNAUTH',
+
+PERDEMOS O STATE DE AUTH DO NOSSO APP,
+
+TUDO PQ 
+
+NÃO ESTAMOS MAIS ARMAZENANDO A USER DATA NO LOCAL STORAGE..
+
+(
+
+
+  É POR ISSO QUE NOSSA LÓGICA DE AUTO-LOGIN NÃO CONSEGUE SER BEM-SUCEDIDA,
+
+
+  PQ NÕA HÁ NADA 
+
+  PARA RETRIEVAR LÁ DO LOCAL STORAGE, NO MOMENTO...
+)
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO ACONTECE PQ 
+
+
+NAS PARTES EM QUE ANTES FAZÍAMOS O STORE NA LOCAL STORAGE,
+
+
+
+
+como 
+
+
+
+'storeUserToken',
+
+
+
+
+NÃO ESTÃO MAIS SENDO UTILIZADOS (eram/são de nosso service 'auth.service.ts')..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> como não estamos mais usando esses methods,
+
+
+
+
+PODEMOS OS REMOVER (removemos 'storeUserToken')....
+
+
+
+
+
+
+
+
+
+
+
+-_> NOSSO OBJETIVO É TRANSFERIR ESSA LÓGICA DE 'MANAGE OUR USER DATA IN THE LOCAL STORAGE'
+
+
+
+AO _ MUNDO DO NGRX, TAMBÉM...
+
+
+
+
+(
+
+  essa lógica provavelmente será adicionada LÁ NOS EFFECTS...
+)
+
+
+
+
+
+
+
+
+
+-- >VEREMOS ISSO NA PRÓXIMA AULA,
+
+
+
+
+'adicionando auto-login com ngrx'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+eu tentei escrever assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  authSuccess$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(AuthActions.AUTH_SUCCESS),
+
+        tap(
+          (authData: AuthActions.AuthSuccess) => {
+
+            localStorage.setItem('userData', JSON.stringify(authData.payload) )
+            this.router.navigate(['/'])
+          }
+        )
+        
+      
+      )
+    },
+    {dispatch: false}
+  )
+
+
+
+
+
+
+
+
+
+
+
+-> SÓ NÃO SEI SE ISSO FUNCIONOU....
+
+
+
+
+
+
+
+
+-> FUNCIONOU:
+
+
+
+{email: "exemplo@exemplo.com", id: "6So6FRjWGFRGzhIwbsKbd7yWNUL2",…}
+email: "exemplo@exemplo.com"
+id: "6So6FRjWGFRGzhIwbsKbd7yWNUL2"
+_token: "eyJhbGciOiJSUzI1NiIsImtpZCI6ImY5MGZiMWFlMDQ4YTU0OGZiNjgxYWQ2MDkyYjBiODY5ZWE0NjdhYzYiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcmVjaXBlYm9va2RlcGxveXByb2plY3QiLCJhdWQiOiJyZWNpcGVib29rZGVwbG95cHJvamVjdCIsImF1dGhfdGltZSI6MTY1NTc4NTQzNCwidXNlcl9pZCI6IjZTbzZGUmpXR0ZSR3poSXdic0tiZDd5V05VTDIiLCJzdWIiOiI2U282RlJqV0dGUkd6aEl3YnNLYmQ3eVdOVUwyIiwiaWF0IjoxNjU1Nzg1NDM0LCJleHAiOjE2NTU3ODkwMzQsImVtYWlsIjoiZXhlbXBsb0BleGVtcGxvLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJleGVtcGxvQGV4ZW1wbG8uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.njY2q_r-foZd_pMu_McshFhAH04id4Cs32JAxJ-QBRdCSZLFCGZYKVUI4PjAwkogLhM9CDoeFLYlXDnF_J7oKHzt2t-ooHiou9exP3cITkybPQ_bckOCaW1SH_YWA3aKYgYO6xKt7yI_2QlQNvnKg_2gAZ1RkpEoIcvMQ6yJ0NdOdWt5KtQMYFJH-K0b2klQMiNWDL3wCXWTBIAoxx8GY7T_9qrlXC8S1uMeg3LXReJYTJuj1T9WQkWl1iN7-6p7bOF0rWBa9KgSoRktgBBUcxwqghY30Ndj9PSe-lo3wZZjyxjZDDMUTDdhm6UbFDZAlsZLXOjA1wAQZ4kQzduL4Q"
+_tokenExpirationDate: "2022-06-21T05:23:54.398Z"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo...
+
+
+
+
+
+
+
+agora só me resta CONSERTAR O REDIRECT ERRADO A '/' em vez de '/auth'...
+
+
+
+
+
+
+
+
+--> TAMBÉM ME RESTA IMPLEMENTAR UM CÓDIGO DE 'AUTOLOGIN' que 
+
+
+use o nosso NGRX/STORE
+
+
+e nossos effects de ngrx/effects...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VEREMOS ISSO NA PRÓXIMA AULA....

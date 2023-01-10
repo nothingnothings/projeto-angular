@@ -1,0 +1,700 @@
+
+
+
+
+
+
+
+
+
+
+
+
+queremos modificar o código do component 'shoppingList',
+
+que está assim, no momento:
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-10">
+    <app-shop-list-edit></app-shop-list-edit>
+    <hr />
+    <ul class="list-group">
+      <a class="list-group-item" 
+      style="cursor: pointer"
+      *ngFor="let ingredient of ingredients"
+      > {{ingredient.name}} ({{ingredient.amount}})
+      </a>
+    </ul>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+-----> queremos passar o 'name' e o 'amount' como 
+
+
+VALORES DE PROPERTIES DENTRO DE UM COMPONENT 'LIST ITEM'...
+
+
+
+
+
+
+
+
+
+--> para isso, primeiramente precisamos CRIAR UM COMPONENT 'LIST-ITEM'... (recipe)...
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+ng g c /ShoppingList/ShoppingListItem
+
+
+
+
+
+
+
+--------------------------------
+
+
+
+
+
+
+
+
+CONSEGUI FAZER ISSO SOZINHO...
+
+
+
+
+
+
+
+
+
+
+
+--> OS COMPONENTS FICARAM ASSIM:
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-10">
+    <app-shop-list-edit></app-shop-list-edit>
+    <hr />
+    <ul class="list-group">
+      <app-shopping-list-item
+      
+      *ngFor="let ingredient of ingredients"
+
+      [name]="ingredient.name"
+      [amount]="ingredient.amount"
+      ></app-shopping-list-item>
+    </ul>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+<a class="list-group-item" 
+style="cursor: pointer"
+> {{name}} ({{amount}})
+</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+import { Component, Input, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-shopping-list-item',
+  templateUrl: './shopping-list-item.component.html',
+  styleUrls: ['./shopping-list-item.component.css']
+})
+export class ShoppingListItemComponent implements OnInit {
+
+
+ @Input() name: string;
+ @Input() amount: number;
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { Ingredient } from '../shared/ingredient.model';
+
+@Component({
+  selector: 'app-shopping-list',
+  templateUrl: './shoppingList.component.html',
+  styleUrls: ['./shoppingList.component.css'],
+})
+export class ShoppingListComponent implements OnInit {
+  ingredients: Ingredient[] = [
+
+    new Ingredient('Potato', 1),
+    new Ingredient('Tomato', 3),
+    new Ingredient('Banana', 5)
+
+  ];
+
+  constructor() {}
+
+  ngOnInit(): void {}
+}
+
+
+
+
+-------------------------
+
+
+
+
+
+
+
+
+oops... mas eu fiz isso com o component de 'shopList Item',
+
+
+quando eu deveria ter feito isso com o 'RECIPE ITEM' component...
+
+
+
+
+
+
+
+
+
+
+--> quanto ao recipe item,
+
+o código inicial de 'recipeBook'
+
+é este:
+
+
+
+
+<div class="row">
+    <div class="col-md-5">
+        <app-recipe-list></app-recipe-list>
+    </div>
+    <div class="col-md-7">
+        <app-recipe-detail></app-recipe-detail>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+--> E RECIPELIST É ASSIM:
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <button class="btn btn-success">New Recipe</button>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-xs-12">
+    <a href="#" class="list-group-item clearfix" 
+    *ngFor="let recipe of recipes">
+      <div class="pull-left">
+        <h4 class="list-group-item-heading">{{ recipe.name }}</h4>
+        <p class="list-group-item-text">{{ recipe.description }}</p>
+      </div>
+      <span class="pull-right">
+        <!-- <img src="{{recipe.imagePath}}" alt="{{recipe.name}}" class="img-responsive" style="max-height: 50px" /> -->
+        <img
+          [src]="recipe.imagePath"
+          alt="{{ recipe.name }}"
+          class="img-responsive"
+          style="max-height: 50px;"
+        >
+      </span>
+    </a>
+    <!-- <app-recipe-item *ngFor="let recipe of recipes"></app-recipe-item> -->
+    <app-recipe-item></app-recipe-item>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+o CÓDIGO QUE QUEREMOS 'REPLICAR'/transformar é este:
+
+
+
+
+
+
+
+
+
+
+ <a href="#" class="list-group-item clearfix" 
+    *ngFor="let recipe of recipes">
+      <div class="pull-left">
+        <h4 class="list-group-item-heading">{{ recipe.name }}</h4>
+        <p class="list-group-item-text">{{ recipe.description }}</p>
+      </div>
+      <span class="pull-right">
+        <!-- <img src="{{recipe.imagePath}}" alt="{{recipe.name}}" class="img-responsive" style="max-height: 50px" /> -->
+        <img
+          [src]="recipe.imagePath"
+          alt="{{ recipe.name }}"
+          class="img-responsive"
+          style="max-height: 50px;"
+        >
+      </span>
+    </a>
+
+
+
+
+
+
+    --> queremos transformar isso em um 'LIST-ITEM' component, independente...
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+    --> mas eu já consegui fazer isso..
+
+
+
+
+
+
+
+
+
+    --> a versão do professor talvez ficou um pouco diferente..
+
+
+
+
+
+    -------> como ficou?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> primeiramente ele pegou  o '*ngFor' 
+
+
+
+    E COLOCOU LÁ 
+
+
+
+
+
+    em 'recipe-list',
+
+
+    NO SELECTOR DE 'recipe-item'...
+
+
+
+
+
+
+
+
+
+
+
+--> fica tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <button class="btn btn-success">New Recipe</button>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-xs-12">
+    <app-recipe-item *ngFor="let recipe of recipes"
+    [name]="recipe.name"
+    [description]="recipe.description"
+    [imagePath]="recipe.imagePath"
+    
+    ></app-recipe-item>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+-------> aí o professor coloca um state/propriedades de 
+
+
+
+'recipe'
+
+dentro 
+
+do 
+'recipe-item',
+
+tipo assim:
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+
+import { Input } from '@angular/core';
+
+@Component({
+  selector: 'app-recipe-item',
+  templateUrl: './recipe-item.component.html',
+  styleUrls: ['./recipe-item.component.css']
+})
+export class RecipeItemComponent implements OnInit {
+
+  @Input() name: string;
+  @Input() description: string;
+  @Input() imagePath: string;
+
+
+  constructor() { }
+
+
+
+
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE ELE USA 
+
+
+
+
+
+ESSE DECORATOR de '@Input'...
+
+--------->
+
+
+
+
+
+
+
+esse 
+
+decorator nos deixa fazer BIND DESSAS PROPRIEDAES DE 
+
+'name',
+
+'amount' 
+
+
+
+e 
+'imageUrl'
+
+
+DO LADO DE FORA....
+
+
+
+
+
+
+
+
+
+----> é por isso que o professor escreveu exatamente como eu fiz:
+
+
+
+
+
+
+
+
+    <app-recipe-item *ngFor="let recipe of recipes"
+    [name]="recipe.name"
+    [description]="recipe.description"
+    [imagePath]="recipe.imagePath"
+    
+    ></app-recipe-item>
+
+
+
+
+
+
+
+
+
+
+
+-----------------------
+
+
+
+
+
+
+
+
+
+
+
+
+--> a 'recipe of recipes'
+
+
+É 
+
+
+TIRADO 
+
+
+
+lá 
+
+
+
+do 
+
+
+'recipe-list',
+
+
+
+desta linha aqui:
+
+
+
+
+  recipes: Recipe[] = [
+    new Recipe('CHICKEN WINGS', 'Delicious chicken wings.', 'https://www.farmfor.com.br/wp-content/uploads/2022/02/coxinha-da-asa-superbowl.jpg'), 
+    new Recipe('CHICKEN WINGS', 'Delicious chicken wings.', 'https://www.farmfor.com.br/wp-content/uploads/2022/02/coxinha-da-asa-superbowl.jpg'), 
+  ];
+
+
+
+
+
+
+
+
+
+
+
+
+  ---> OK..... SE RECARREGAMOS NOSSO CÓDIGO, ELE CONTINUA FUNCIONANDO.... (não quebra)...
+
+
+
+
+
+
+
+-> estamos successfully 'passing down' data 
+
+QUE ESTÁ ARMAZENADA LÁ EM 
+
+
+
+'recipe-list'.... ---> 
+
+
+
+
+
+
+
+armazenado no array.... --> isso está sendo passado ao component de 'recipe-item'...
+
+
+
+
+
+
+
+--> AGORA VAMOS VER 
+
+
+
+COMO CARREGAR 
+
+
+
+
+ISSO NO COMPONENT DE 'recipe detail'.... (outro tipo de communication)...

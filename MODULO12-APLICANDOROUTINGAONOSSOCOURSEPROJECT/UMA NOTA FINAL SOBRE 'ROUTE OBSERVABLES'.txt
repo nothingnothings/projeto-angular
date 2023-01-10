@@ -1,0 +1,218 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> UM DETALHE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ADICIONAMOS UM MONTE DE ROUTING FUNCTIONALITY AO NOSSO APP...
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS UM DETALHE QUE O PROFESSOR QUER RESSALTAR:
+
+
+
+
+
+
+
+
+
+LÁ EM 
+
+
+
+
+
+'recipe-detail',
+
+
+NÓS ESTAMOS FAZENDO SUBSCRIBE A 'PARAMS':
+
+
+
+
+
+
+
+
+
+
+    this.route.params.subscribe(
+      (params: Params) => {
+        console.log('TEST');
+        // this.loadedRecipe = this.loadedRecipes[+params['id']];
+
+        // this.loadedRecipe = this.recipeBookService.getRecipes()[+params['id']]
+        this.id = +params['id'];
+        this.loadedRecipe = this.recipeBookService.getRecipe(+params['id']);
+  
+      }
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E TAMBÉM LÁ NO COMPONENT 
+
+
+
+
+DE 'RECIPE-EDIT':
+
+
+
+
+    this.route.params.subscribe(
+      (params: Params) => {
+        this.recipeId = +params['id'];
+        //este é o código que CHECA SE ESTAMOS EM EDIT MODE OU NÃO (checa a url)...
+        this.editMode = params['id'] != null; /////OU SEJA, SE TIVERMOS UM 'ID' NA NOSSA URL, o 'editMode' ESTARÁ PRESENTE (pq aí vamos querer EDITAR AQUELA RECIPE, DAQUELE ID específico).... --> caso contrário, estaremos no modo de 'add a new recipe'....
+      }
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AQUI O PROFESSOR REITERA UM PONTO QUE ELE HAVIA DITO ANTERIORMENTE...
+
+
+-> VOCÊ NÃO TEM QUE FAZER 'CLEAN' DESSA SUBSCRIPTION AQUI...- -> 
+
+
+MAS EM OUTROS CASES,
+
+CASES EM QUE 
+
+VOCÊ MESMO CRIOU O OBSERVABLE,
+
+
+
+
+
+OBSERVABLES NÃO MANAGEADOS PELO ANGUlar,
+
+
+
+VOCÊ É OBRIGADO A OS DESTRUIR, POR MEIO DE HOOKS COMO 'ngOnDestroy' (quando seu component é destruído, você executa alguns methods no seu observable para o DESTRUIR TAMBÉM)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS AGORA, POR ENQUANTO, PODEMOS APENAS PROSSEGUIR E DEIXAR 
+
+
+O TRAbalho de cleanup com o angular....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+There's one thing I forgot to clean up here (will be cleaned up later in the course). Feel free to do the cleanup right now though.
+
+Our app.component.html file looks like that:
+
+<app-header (featureSelected)="onNavigate($event)"></app-header>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
+The (featureSelected)="..."  event listener is a relict of our "old" navigation approach using ngIf. We no longer need it, so feel free to change this template to:
+
+<app-header></app-header>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
+

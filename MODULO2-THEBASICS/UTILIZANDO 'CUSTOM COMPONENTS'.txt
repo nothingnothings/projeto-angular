@@ -1,0 +1,245 @@
+
+
+
+
+
+
+
+
+-----> com nosso component 'ServerComponent' CRIADO E 
+
+
+
+
+REGISTRADO (em app.module.ts),
+
+
+
+DEVEMOS O UTILIZAR NO  
+
+
+
+NOSSO PROJETO..
+
+
+
+
+
+
+
+
+
+--> JÁ TEMOS O CÓDIGO DE 
+
+
+
+ServerComponent,
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core'; ////ISTO É NECESSÁRIO, PQ COMUNICA AO TYPESCRIPT QUE vamos querer definir um component/usar aqule decorator de COMPONENT..
+////angular é subdividido em diversas PACKAGES, uma delas é o 'core', que é SUPER IMPORTANTE...
+
+@Component(
+  //uma das partes MAIS IMPORTANTES DO ANGULAR...
+  {
+    selector: 'app-server',
+    templateUrl: './server.component.html'
+  }
+)
+export class ServerComponent {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> ESSE COMPONENT JÁ NOS DÁ INFORMAÇÕES 
+
+
+
+IMPORTANTES:
+
+
+
+ELE FALA DO SEU SELECTOR,
+
+que é 
+
+'app-server'...
+
+
+
+
+
+
+
+
+
+--> ISSO SIGNIFICA QUE LÁ EM 
+
+
+'app.component.html',
+
+
+ELE SERÁ 
+
+INSERIDO NO LOCAL DE UMA TAG DE 
+
+
+
+<app-server />
+
+
+
+
+
+
+
+
+--> vamos até o 'app.component.html' e o editamos...
+
+
+
+
+
+
+-------------------------------
+
+
+
+
+
+
+
+
+EXEMPLO:
+
+
+
+
+<h3>I'm in the AppComponent!</h3>
+<app-server></app-server>
+
+
+
+
+
+
+
+
+
+
+
+ok... 
+
+
+nosso component será inserido nessa segunda linha...
+
+
+
+
+
+
+
+
+-------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EMMET...
+
+
+
+
+
+
+
+AGORA SE RECARREGARMOS NOSSA PÁGINA, VEREMOS NOSSO COMPONENT OUTPUTTADO NA PÁGINAA..
+
+
+
+
+
+
+----------------------------
+
+
+
+
+
+
+
+
+
+
+--> É ASSIM QUE PODEMOS USAR NOSSOS COMPONENTS,
+ 
+
+
+ COM SEUS SELECTORS,
+
+ DEPOIS DE OS ADICIONAR EM 
+
+
+ 1 
+
+ MODULE (app.module.ts),
+
+
+
+
+
+
+
+ O QUE RESULTA NO SEU DISPLAY NA PÁGINA...
+
+
+
+
+
+
+
+
+ EX:
+
+
+
+
+ <h3>I'm in the AppComponent!</h3>
+<hr>
+<app-server></app-server>
+<exemplo></exemplo>

@@ -1,0 +1,471 @@
+CÓDIGO:
+
+
+
+
+
+
+
+
+<div class="row">
+  <div
+    class="col-xs-12 col-md-6 col-md-offset-3"
+    [ngStyle]="{ display: 'flex', 'justify-content': 'center' }"
+  >
+    <form
+      (ngSubmit)="onAuthFormSubmit(localFormReference)"
+      #localFormReference="ngForm"
+    >
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          required
+          email
+          name="email"
+          ngModel
+          placeholder="email@example.com"
+          #emailReference="ngModel"
+        />
+        <span *ngIf="!emailReference.value && emailReference.touched">Email is required</span>
+        <span *ngIf="!emailReference.valid && emailReference.value && emailReference.touched">Invalid email entered</span>
+       
+      </div>
+
+      <div class="form-group" [ngStyle]="{ 'margin-top': '12px' }">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          class="form-control"
+          id="password"
+          required
+          name="password"
+          ngModel
+          minlength="6"
+          placeholder="Your Password"
+          #passwordReference="ngModel"
+        />
+        <span *ngIf="!passwordReference.value && passwordReference.touched">Password is required</span>
+        <span *ngIf="!passwordReference.valid && passwordReference.value && passwordReference.touched ">Password must have at least 6 characters</span>
+      </div>
+
+      <div [ngStyle]="{ display: 'flex', 'justify-content': 'center' }">
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="!localFormReference.valid"
+        >
+          {{ isSignup ? "SIGN UP" : "LOGIN" }}
+        </button>
+        <button
+          class="textBtn"
+          (click)="onSwitchAuth()"
+          [ngStyle]="{ cursor: 'pointer' }"
+        >
+          {{ isSignup ? "Switch to Login" : "Switch to Signup" }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ESTE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../auth.service';
+
+@Component({
+  selector: 'app-auth-page',
+  templateUrl: './auth-page.component.html',
+  styleUrls: ['./auth-page.component.css'],
+})
+export class AuthPageComponent implements OnInit {
+  isSignup: boolean = true;
+
+  constructor(private authService: AuthService, private router: Router) {}
+
+  ngOnInit(): void {}
+
+  onAuthFormSubmit(form: NgForm) {
+    const email = form.form.get('email')?.value;
+
+    const password = form.form.get('password')?.value;
+
+    const userData = {
+      email: email,
+      password: password,
+      returnSecureToken: true,
+    };
+
+    if (this.isSignup) {
+      this.authService.onCreateAccount(userData)
+      .subscribe(
+        (responseData) => {
+
+          this.router.navigate(['/auth']);
+        }
+      )
+    } else {
+      this.authService.onLogin(userData)
+
+
+      
+    }
+  }
+
+  onSwitchAuth() {
+    this.isSignup = !this.isSignup;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ESTE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+
+import { HttpHeaders } from '@angular/common/http';
+
+import { HttpParams } from '@angular/common/http';
+import { Router } from '@angular/router';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AuthService {
+  constructor(private http: HttpClient, private router: Router) {}
+
+  onCreateAccount(authData: {
+    email: string;
+    password: string;
+    returnSecureToken: boolean;
+  }) {
+    const requestHeaders = new HttpHeaders();
+
+    requestHeaders.append('Content-Type', 'application/json');
+    // requestHeaders.append('Content-Type', 'application/json');
+
+   return this.http
+      .post(
+        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg',
+
+        authData,
+        {
+          headers: requestHeaders,
+        }
+      )
+      // .subscribe((responseData) => {
+      //   console.log(responseData);
+
+
+      // });
+  }
+
+  onLogin(authData: {
+    email: string;
+    password: string;
+    returnSecureToken: boolean;
+  }) {
+    const requestHeaders = new HttpHeaders();
+
+    requestHeaders.append('Content-Type', 'application/json');
+
+    this.http.post<{expiresIn: number, idToken: string, expirationDate: string, localId: string, email: string} >(
+      'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg',
+      authData,
+
+      {
+        headers: requestHeaders
+      }
+    )
+    .subscribe(
+      (responseData) => {
+        console.log(responseData);
+        const expirationDate = new Date(new Date().getTime() + responseData.expiresIn * 1000); ////lembre-se de adicionar '* 1000', pois o JAVASCRIPT SEMPRE CONSIDERA 'TEMPO' EM MILISSEGUNDOS, E NÃO EM SEGUNDOS.... (só o 'expiresIn' que é mostrado em segundos....)
+        localStorage.setItem('token', responseData.idToken);
+        localStorage.setItem('expirationDate', expirationDate.toString());
+        localStorage.setItem('userId', responseData.localId);
+        localStorage.setItem('email', responseData.email )
+      
+        this.router.navigate(['/recipe-book'])
+      }
+    )
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> JÁ CONSEGUI FAZER O SWITCH ENTRE SIGNUP E LOGIN...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> eu fiz exatamente assim,
+
+
+com a propriedade 'isSignup'.. --> 
+
+
+ISSO ARMAZENA SE O USER ESTÁ EM 'LOGIN'  ou 'SIGNUP' mode...
+
+
+
+
+
+
+
+
+
+
+--> VAMOS USAR UM METHOD PARA ISSO,
+
+É CLARO....
+
+
+
+
+
+ex:
+
+
+
+
+
+
+  onSwitchAuth() {
+    this.isSignup = !this.isSignup;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ok... 
+
+
+
+
+
+  JÁ USAMOS ESSE PADRÃO UM MILHÃO DE VEZES...
+
+
+
+
+
+
+
+
+  ----> colocamos um toggle,
+
+
+  por isso 
+
+  usamos 
+
+  o !...
+
+
+
+
+
+  --> TAMBÉM COLOQUEI UMA STRING INTERPOLATION 
+
+
+  PARA ALTERNAR ENTRE 'Login' e 'SIGNIN'...
+
+
+
+
+
+
+  ex:
+
+
+
+
+          <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="!localFormReference.valid"
+        >
+          {{ isSignup ? "SIGN UP" : "LOGIN" }}
+        </button>
+        <button
+          class="textBtn"
+          (click)="onSwitchAuth()"
+          [ngStyle]="{ cursor: 'pointer' }"
+        >
+          {{ isSignup ? "Switch to Login" : "Switch to Signup" }}
+        </button>
+
+
+
+
+
+
+
+          {{ isSignup ? "SIGN UP" : "LOGIN" }}
+
+
+
+-
+
+
+
+
+
+
+
+
+ok...
+
+
+
+
+
+
+
+
+
+ESSE BUTTON DEVERÁ FAZER SUBMIT DA FORM,
+
+POR ISSO DEVEMOS COLOCAR O TYPE COMO 'submit',
+
+
+E O DE SWITCH DEVERÁ SER DE TYPE 'button',
+
+PQ 
+
+
+ELE 
+
+
+NÃO VAI SUBMIT, NÃO VAMOS QUERER TRIGGAR A FORM SUBMISSION NO ANGULAR, CERTAMENTE..
+
+
+
+
+
+
+
+
+
+
+--> ok... essa parte da user interface está funcionando...
+
+
+
+
+
+
+
+
+
+
+
+--> O PRÓXIMO PASSO É HANDLAR NOSSA FORM INPUT ADEQUADAMENTE...

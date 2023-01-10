@@ -1,0 +1,788 @@
+
+
+
+
+
+
+
+
+
+
+--> AGORA QUE DEMOS UMA OLHADA MAIS DE PERTO EM 'attribute directives'
+
+
+
+E CRIAMOS NOSSA PRÓPRIA DIRECIVE,
+
+
+
+
+
+ANTES DE PROSSEGUIRMOS E APRENDERMOS A CRIAAR 
+
+
+
+
+
+
+UMA 'STRUCTURAWL DIRECTIVE',
+
+
+
+
+
+
+
+
+O PROFESSOR QUER NOS EXPLICAR PQ DIABOS 
+
+ESSA 
+
+ESTRELA (*)
+
+
+
+
+nas 
+
+STRUCTURAL DIRECTIVES COMO 
+
+
+
+
+*ngIf=
+
+
+
+e 
+
+*ngFor 
+
+
+
+
+É ABSOLUTAMENTE NECESSÁRIA... 
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSA ESTRELA INDICA AO ANGULAR QUE __ ESSA DIRECTIVE É UMA STRUCTURAL DIRECTIVE...
+
+
+
+
+
+
+
+
+
+
+--> A PERGUNTA É:
+
+
+PQ DIABOS 
+
+
+O ANGULAR TEM QUE SABER DISSO?
+
+
+
+
+
+
+
+
+
+--> É PQ STRUCTURAL DIRECTIVES COM ESSA ESTRELAW 
+
+
+SÃO ACTUALLY ''APENAS UMA MANEIRA MAIS NICE DE NÓS AS UTILIZARMOS''' ->  ISSO PQ,
+
+
+
+POR TRÁS DAS CENAS,
+
+
+
+O ANGULAR VAI TRANSFORMAR 
+
+
+
+ESSAS DIRECTIVES EM 
+
+
+''ALGUMA COISA COMPLETAMENTE DIFERENTE''' --.--------> ISSO PQ 
+
+
+A 'estrela'
+
+NUNCA APARECE 
+
+NO ANGULAR QUANDO ESTAMOS USANDO ATTRIBUTE DIRECTIVES,
+
+PROPERTY BINDING OU QUALQUER COISA DO GÊNERO...
+
+
+
+
+
+
+
+
+--> AS ÚNICAS COISAS QUE EXISTEM NO ANGULAR,
+
+PORTANTO,
+
+SÃO:
+
+
+
+1) PROPERTY BINDING 
+
+
+
+2) EVENT BINDING 
+
+
+
+
+3) TWO-WAY BINDNIG 
+
+
+
+4) STRING INTERPOLATION 
+
+
+
+
+
+
+
+
+--> isso quer dizer que NÃO EXISTE O OPERATOR DE '*' ou algo assim...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE POR TRÁS DAS CENAS O ANGULAR PRECISA CONVERTER ESSE USO DE 
+
+'*ngIf'
+
+
+
+EM ALGO QUE  
+
+ 
+
+
+
+
+FIQUE COM ESSAS TOOLS (property binding e assim por diante)...
+
+
+
+
+
+
+
+
+
+
+
+
+------->  o professor explica que podemos escrever aquela mesma list em 'app.componment.html'
+
+
+
+
+
+DE FORMA COMPLETAMENTE DIFERNETE..
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+ESTE É O CÓDIGO ATUAL:
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <button class="btn btn-primary" (click)="onlyOdd = !onlyOdd">
+        Only show odd numbers
+      </button>
+      <br /><br />
+      <ul class="list-group">
+        <div *ngIf="onlyOdd">
+          <li
+            class="list-group-item"
+            *ngFor="let odd of oddNumbers"
+            [ngStyle]="{
+              backgroundColor: odd % 2 !== 0 ? 'yellow' : 'transparent'
+            }"
+            [ngClass]="{ odd: odd % 2 !== 0 }"
+          >
+            {{ odd }}
+          </li>
+        </div>
+        <div *ngIf="!onlyOdd">
+          <li
+            class="list-group-item"
+            *ngFor="let even of evenNumbers"
+            [ngStyle]="{
+              backgroundColor: even % 2 !== 0 ? 'yellow' : 'transparent'
+            }"
+            [ngClass]="{ odd: even % 2 !== 0 }"
+          >
+            {{ even }}
+          </li>
+        </div>
+      </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> o professor explica que SE ELE TENTAR ESCREVER SÓ ESSE BLOCK DE 'odd' 
+
+DE FORMA DIFERENTE,
+
+
+
+ELE ACABARIA COM UM FORMATO TOTALMENTE DIFERENTE,
+
+
+
+ACABARIA COM 
+
+
+
+
+
+um uso de 
+
+
+'ng-template'
+
+assim:
+
+
+
+
+
+
+
+
+
+
+<ng-template></ng-template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DENTRO DISSO,
+
+COLOCARÍAMOS/COLOCAMOS O CONTENT QUE QUEREMOS RENDERIZAR CONDICIONALEMNTE...
+
+
+
+
+
+
+
+--> NESSE CASE,
+
+
+COLOCARÍAMOS/COLOCAMOS UMA DIV E ENTÃO NOSSO LIST ITEM..
+
+
+
+
+
+
+eX:
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <button class="btn btn-primary" (click)="onlyOdd = !onlyOdd">
+        Only show odd numbers
+      </button>
+      <br /><br />
+      <ul class="list-group">
+        <div *ngIf="onlyOdd">
+          <li
+            class="list-group-item"
+            *ngFor="let odd of oddNumbers"
+            [ngStyle]="{
+              backgroundColor: odd % 2 !== 0 ? 'yellow' : 'transparent'
+            }"
+            [ngClass]="{ odd: odd % 2 !== 0 }"
+          >
+            {{ odd }}
+          </li>
+        </div>
+        <div *ngIf="!onlyOdd">
+          <li
+            class="list-group-item"
+            *ngFor="let even of evenNumbers"
+            [ngStyle]="{
+              backgroundColor: even % 2 !== 0 ? 'yellow' : 'transparent'
+            }"
+            [ngClass]="{ odd: even % 2 !== 0 }"
+          >
+            {{ even }}
+          </li>
+        </div>
+
+        <ng-template>
+            <div>
+                <li
+            class="list-group-item"
+            *ngFor="let even of evenNumbers"
+            [ngStyle]="{
+              backgroundColor: even % 2 !== 0 ? 'yellow' : 'transparent'
+            }"
+            [ngClass]="{ odd: even % 2 !== 0 }"
+          >
+            </div>
+       </ng-template>
+
+      </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+        <ng-template>
+            <div>
+                <li
+            class="list-group-item"
+            *ngFor="let even of evenNumbers"
+            [ngStyle]="{
+              backgroundColor: even % 2 !== 0 ? 'yellow' : 'transparent'
+            }"
+            [ngClass]="{ odd: even % 2 !== 0 }"
+          >
+            </div>
+       </ng-template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       --> OU SEJA,
+
+       TEMOS ESSENCIALMENTE O MESMO CÓDIGO DE ANTES, MAS WRAPPADO COM 'NG-TEMPLATE'...
+
+
+
+
+
+
+
+
+       -> A RAZÃO PARA ISSO É QUE 
+
+       'ng-template'
+
+       POR SI SÓ _ É UM ELEMENTO QUE NÃO É RENDERIZADO,
+
+MAS QUE 
+
+NOS DEIXA 
+
+
+
+'DEFINIR UM TEMPLATE'
+
+
+A SER USADO PELO ANGULAR,
+
+CAPAZ DE SER USADO PELO ANGULAR,
+
+
+
+ 
+USADO _ QUANDO FOR CONSTATADO QUE ESSE ELEMENT  __ PRECISA __ SER RENDERIZADO,
+
+
+PRECISA PQ 
+
+
+A CONDITION QUE DEFINIMOS FOI SATISFEITA, NO FINAL DAS CONTAS...
+
+
+
+
+
+
+
+
+
+
+--> continuando a sintaxe do 'ngIf',
+
+
+O PROFESSOR 
+
+
+
+ESCREVE 'ngIf'
+
+
+
+__ SEM A ESTRELA,
+
+DENTRO 
+
+
+DE 
+
+'ng-template'... ---------> EM VEZ DE USAR O '*ngIF' ,
+
+
+o professor 
+
+
+
+
+
+USA 
+
+'[ngIf]',
+
+
+USA ESSE RECURSO DO PROPERTY BINDING,
+
+
+E AÍ SIMPLESMENTE 
+
+DEFINE 
+
+
+
+a condição como '!onlyOdd'...
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+        <ng-template [ngIf]="!onlyOdd">
+            <div>
+                <li
+            class="list-group-item"
+            *ngFor="let even of evenNumbers"
+            [ngStyle]="{
+              backgroundColor: even % 2 !== 0 ? 'yellow' : 'transparent'
+            }"
+            [ngClass]="{ odd: even % 2 !== 0 }"
+          >
+            </div>
+       </ng-template>
+
+
+
+
+---------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> isso, no caso,
+
+
+
+eventualmente será CONVERTIDO, PELO ANGULAR,
+
+
+
+em 
+
+
+*ngIf="!onlyOdd"
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> e é por isso que usamos a '*',
+
+
+PQ 
+
+
+É 
+
+UMA SINTAXE MAIS INTUITIVA,
+
+PQ BASTA COLOCARMOS 
+
+ESSE NGIF* 
+
+
+
+
+NO CONTENT QUE QUEREMOS CONDICIONALMENTE RENDERIZAR...
+
+
+
+
+
+
+*(
+
+
+
+
+    APESAR DO CONTEÚDO
+
+    DE VERDADE,
+
+
+
+    POR TRÁS DAS CENAS,
+
+
+    SER 
+
+
+
+
+
+
+'''''''''''''
+
+
+
+
+        <ng-template [ngIf]="!onlyOdd">
+            <div>
+                <li
+            class="list-group-item"
+            *ngFor="let even of evenNumbers"
+            [ngStyle]="{
+              backgroundColor: even % 2 !== 0 ? 'yellow' : 'transparent'
+            }"
+            [ngClass]="{ odd: even % 2 !== 0 }"
+          >
+            </div>
+       </ng-template>
+
+
+
+
+
+'''''''''''''''
+
+)
+
+
+
+
+
+
+
+
+
+
+--> não é preciso usar essa sintaxe, mas é bom conhecê-la...
+
+
+
+
+
+
+
+
+
+--> é a estrela que converte essa sintaxe bosta em uma sintaxe mais bonitinha...
+
+
+
+
+
+
+
+
+
+
+
+        <ng-template [ngIf]="!onlyOdd">
+            <div>
+                <li
+            class="list-group-item"
+            *ngFor="let even of evenNumbers"
+            [ngStyle]="{
+              backgroundColor: even % 2 !== 0 ? 'yellow' : 'transparent'
+            }"
+            [ngClass]="{ odd: even % 2 !== 0 }"
+          >
+            </div>
+       </ng-template>
+
+
+
+É IGUAL A 
+
+
+
+
+
+
+
+ <div *ngIf="!onlyOdd">
+          <li
+            class="list-group-item"
+            *ngFor="let even of evenNumbers"
+            [ngStyle]="{
+              backgroundColor: even % 2 !== 0 ? 'yellow' : 'transparent'
+            }"
+            [ngClass]="{ odd: even % 2 !== 0 }"
+          >
+            {{ even }}
+          </li>
+        </div>
+
+
+
+
+
+
+
+
+------------------------
+
+
+
+
+
+
+ok...

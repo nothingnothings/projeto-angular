@@ -1,0 +1,212 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> JÁ APRENDEMOS MT SOBRE ANGULAR,
+
+
+
+
+
+e até agora 
+
+
+
+
+CONSTRUÍMOS UMA 'SINGLE-PAGE APPLICATION'... 
+
+
+
+
+
+
+
+
+--> CERTAMENTE,
+
+
+NÓS USAMOS 'DIRECTIVES'
+
+E ASSIM POR DIANTE,
+
+
+PARA _ MUDAR_ 'PORTIONS' 
+
+DE NOSSA 
+
+PAGE (
+
+
+    com 'ngIf' 
+
+
+    'else',
+    etc
+),
+
+
+
+
+
+
+
+
+
+
+MAS __ NO FINAL DAS CONTAS SEMPRE ESTIVEMOS NA _ MESMA PÁGINA... --> 
+basta
+
+
+ver 
+
+a 
+
+
+
+url no topo,
+
+que nunca sai de 
+
+
+'locahost:4200'...
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK, MAS E SE VOCê QUISESSE TER UMA PAGE EM QUE VOCê _ ACTUALLY__ 
+
+
+
+
+
+
+DISPLAYA VÁRIAS PAGES,
+
+
+
+como 
+
+page 
+
+de 
+
+
+'/users' 
+
+
+
+
+
+
+
+
+e 
+
+'/account'..
+
+
+
+
+
+
+
+
+
+--> NÃO PRECISAMOS DE MÚLTIPLOS ARQUIVOS INDEX.HTML....
+
+
+
+
+
+
+
+
+-> COMPORTAMENTO PARECIDO COM O DO REACT..
+
+
+
+
+
+
+
+
+--> O ANGULAR VEM COM SEU PRÓPRIO ROUTER,
+
+QUE TE DEIXA 
+
+
+MUDAR A URL NA URL BAR 
+
+e __ AINDA _ USAR 
+
+
+1 ÚNICA PAGE,
+
+
+
+
+
+MAS AÍ _ TROCAR PARTES_ GRANDES DESSA PAGE,
+
+PARA QUE 
+
+
+
+AO USER PAREÇA 
+
+QUE UMA NOVA 
+
+PAGE 
+
+
+
+
+FOI CARREGADA,
+
+
+
+MAS __, POR TRÁS DAS CENAS,
+
+
+
+
+__ ISSO É APENAS JAVASCRIPT,
+
+
+JS 
+
+MUDANDO UM MONTE DE PARTES 
+
+DE SUA PAGE,
+
+
+DE SEU DOM,
+
+FAZENDO PARECER QUE UMA NOVA PAGE FOI RENDERIZADA,
+
+
+
+MAS __ VOCÊ AINDA ESTARÁ NO 'ANGULAR WORLD',
+
+
+na sua 
+
+SINGLE PAGE APPLICATION....

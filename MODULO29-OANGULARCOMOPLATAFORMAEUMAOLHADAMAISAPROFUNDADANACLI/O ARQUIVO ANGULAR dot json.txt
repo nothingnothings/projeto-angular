@@ -1,0 +1,2959 @@
+
+
+
+
+
+
+
+
+
+
+-> aGORA VAMOS EXAMINAR O ARQUIVO 'angular.json',
+
+
+QUE É CENTRAL AO NOSSO APP:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "angularConfigExample": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/angular-config-example",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.app.json",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles.css"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "angularConfigExample:build:production"
+            },
+            "development": {
+              "browserTarget": "angularConfigExample:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "angularConfigExample:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "src/test.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.spec.json",
+            "karmaConfig": "karma.conf.js",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles.css"
+            ],
+            "scripts": []
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> temos várias config options nele...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> 
+o que há dentro desse arquivo?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> esse arquivo é produzido automaticamente quando você gera um novo angular project...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE ARQUIVO É USADO PELO CLI, POR TRÁS DAS CENAS,
+
+PARA 
+
+RODAR DIFERENTES 
+
+
+
+
+COMANDOS DO CLI ANGULAR,
+
+E 
+
+
+
+
+
+___ PARA __ SABER__ 'COMO RODAR ESSES COMANDOS' -->
+
+
+
+
+
+
+
+
+ 
+
+BASICAMENTE,
+
+DENTRO DESSE ARQUIVO 
+
+
+
+
+PODEMOS SETTAR UM MONTE DE DEFAULTS PARA TODAS ESSAS FLAGS 
+
+
+
+
+
+
+QUE 
+
+VOCÊ normalmente adicionaria __ MANUALMENTE A TODO OUTRO COMMAND  (como '--open')...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--. E É CLARO QUE 
+
+
+O SET DOS DEFAULTS, NESSE ARQUIVO,
+
+
+É MAIS CONVENIENTE,.
+
+
+
+PQ 
+
+TE SALVA O TRABALHO DE ESCREVER CADA FLAG QUANDO VOCÊ QUER RODAR ALGUM COMMAND (como ng serve --open)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+
+
+
+MAS O QUE TEMOS DENTRO DISSO?
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, O ANGULAR.JSON FILE 
+
+usa o formato json 
+PARA ARMAZENAR 
+
+SUA INFO,
+
+
+
+
+
+
+
+
+E UTILIZA 
+
+CERTO SCHEMA, DESENVOLVIDO PELA TEAM DO ANGULAR,
+
+
+
+ALGO QUE 
+
+
+LEMOS LOGO NA PRIMEIRA LINHA:
+
+
+
+
+
+
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> ISSO NÃO É ALGO QUE VAMOS MUDAR,
+
+
+
+
+
+  E É ARMAZENADO NESSE FOLDER AÍ.. (naõ deve ser alterado)...
+
+
+
+
+
+
+
+
+
+
+
+
+  -> A VERSION DEVE FICAR COMO '1',
+
+  pq é o 
+
+NÚMERO DA VERSION DESSE FILE...
+
+
+
+
+
+
+
+
+
+--> 
+
+
+
+
+O IMPORTANTE É AQUELA LINHA 
+
+
+'newProjectRoot'...
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+  "newProjectRoot": "projects",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO __ CONTROLA__ 
+
+
+
+
+'''EM QUE LUGAR,
+
+DENTRO DO SEU PROJECT,
+
+
+SEUS 
+
+PROJECTS SÃO ADICIONADOS''' --> ISSO PODE NÃO TE DIZER MT,
+
+
+VOCÊ PODE DIZER 
+
+
+
+
+'''o que são projects???''' ,
+
+
+
+
+
+MAS LOGO VEREMOS O QUE ISSO SIGNIFICA -->  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+NO FINAL DAS CONTAS,
+
+ DIZ O PROFESSOR,
+
+
+
+
+
+ PODEMOS FAZER MANAGE DE 
+
+
+
+ '''MAIS DE 1 ÚNICO PROJETO''',
+
+ DENTRO 
+
+
+ DE 
+
+ 1 GIVEN 'ANGULAR PROJECT FOLDER' (folder geral do angular project)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> ATÉ AGORA, AO LONGO DO CURSO INTEIRO,
+
+
+ TIVEMOS SÓ 1 UNICO PROJETO,
+
+
+ 1 APP,
+
+
+
+ MAS PODEMOS TER MAIS DE 1 ÚNICO PROJECT EM 1 MESMO APP/PROJECT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> CERTO... 
+
+
+
+
+
+
+
+
+
+
+ --> DEPOIS DISSO,
+
+ TEMOS AQUELA ENTRY DE 'projects',
+
+
+ TIPO ASSIM:
+
+
+
+
+
+   "projects": {
+    "angularConfigExample": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/angular-config-example",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.app.json",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles.css"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "angularConfigExample:build:production"
+            },
+            "development": {
+              "browserTarget": "angularConfigExample:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "angularConfigExample:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "src/test.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.spec.json",
+            "karmaConfig": "karma.conf.js",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles.css"
+            ],
+            "scripts": []
+          }
+        }
+      }
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> DENTRO DISSO AÍ,
+
+
+
+  TEMOS 
+
+
+
+  '''1 NESTED ENTRY POR PROJETO...'''
+
+
+
+
+
+
+
+
+
+
+
+
+  -> como temos 1 projeto, o 'angularConfigExample',
+
+
+
+
+  TEMOS ISTO:
+
+
+
+
+
+
+      "angularConfigExample": {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        --> CERTO...
+
+
+
+
+
+
+
+        SÓ TEMOS ESSA ENTRY AÍ, NO CASO,
+
+
+        PQ NÃO DEFINIMOS MAIS NENHUMA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        --> MAIS EMBAIXO,
+
+        TEMOS A LINHA 
+
+        'defaultProject',
+
+
+
+
+
+
+        QUE ESTÁ ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "angularConfigExample": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/angular-config-example",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.app.json",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles.css"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "angularConfigExample:build:production"
+            },
+            "development": {
+              "browserTarget": "angularConfigExample:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "angularConfigExample:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "src/test.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.spec.json",
+            "karmaConfig": "karma.conf.js",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles.css"
+            ],
+            "scripts": []
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "angularConfigExample"
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> A LINHA 'defaultProject'
+
+
+
+DEFINE 
+
+
+
+
+
+
+'''O DEFAULT PROJECT A QUE SERÃO EXECUTADOS NOSSOS DIFERENTES CLI COMMANDS''...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SE VOCÊ TEM MÚLTIPLOS PROJECTS (algo que veremos mais tarde),
+
+
+
+
+
+
+VOCÊ PODE ESPECIFICAR, NESSA LINHA,
+
+
+
+
+
+
+QUAL PROJECT OS COMANDOS COMO 'ng serve, generate, deploy'
+
+
+
+
+
+VÃO TARGETTAR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+como aqui só temos 1 único project,
+
+vamos 
+
+ver só 
+
+suas configs específicas...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EM 'angularConfigExample', NOSSO PROJETO, 
+
+temos:
+
+
+
+
+
+
+
+
+
+    "angularConfigExample": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/angular-config-example",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.app.json",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles.css"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "angularConfigExample:build:production"
+            },
+            "development": {
+              "browserTarget": "angularConfigExample:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "angularConfigExample:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "src/test.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.spec.json",
+            "karmaConfig": "karma.conf.js",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles.css"
+            ],
+            "scripts": []
+          }
+        }
+      }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> VEMOS QUE 
+
+
+
+    O 'projectType'
+
+
+    ESTÁ COMO 
+
+    'application' ...
+
+
+
+
+
+
+
+
+
+
+    OS TYPES POSSÍVEIS SÃO 'application' e 'library'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> O DEFAULT É APPLICATION, QUE É UM WEBPAPP ANGULAR DEFAULT... 
+
+
+
+
+
+
+
+
+
+
+
+
+---> MAS VOCê PODERIA TROCAR ISSO PARA 'LIBRARY',
+
+
+E
+ MAIS 
+
+ TARDE 
+
+ VEREMOS O QUE UMA LIBRARY ANGULAR É...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> DEPOIS DISSO,
+
+ TEMOS A LINHA DE 'schematics'... ------->
+
+
+
+
+
+
+
+
+ ISSO NÃO NOS DIZ MT COISA,
+
+ MAS 'schematics'
+
+
+
+ É ACTUALLY UMA FEATURE MT LEGAL 
+
+
+
+
+
+
+ DO ANGULAR ECOSYSTEM... -> 
+
+
+
+
+
+
+
+
+
+
+
+ MAIS TARDE VEERMOS O QUE ISSO FAZ...
+
+
+
+
+
+
+
+
+
+
+ --> já 'root' 
+
+
+
+
+
+
+
+BASICAMENTE DIZ AO ANGULAR CLI ''''qual é o root folder desse project''',
+
+
+
+E como aqui o FOLDER EM SI, O FOLDER INTEIRO,
+
+É O ROOT FOLDER,
+
+
+está como 
+
+
+empty string...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> 'sourceRoot' -----> É O LOCAL EM QUE NOSSAS FILES 
+
+
+
+RESIDEM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E VOCÊ PODERIA MUDAR O 'sourceRoot'
+
+
+SE VOCÊ QUISESSE 
+
+
+
+MUDAR, ARMAZENAR 
+
+ SEU CÓDIGO EM ALGUM LUGAR DIFERENTE DE 'src'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> 
+
+EMBAIXO DISSO,
+
+
+
+temos o 'prefix',
+
+
+
+
+QUE É O PREFIX ADICIONADO A QUALQUER COMPONENT...
+
+
+
+
+( se não quisermos colocar 'app', podemos escolher OUTRO PREFIX)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> AÍ TEMOS 'architect' area... -> É O 
+
+RESTO 
+
+
+
+
+DAS SETTINGS ESPECÍFICAS AO NOSSO PROJECT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DENTRO DALI,
+
+
+
+OS DIFERENTES COMANDOS QUE VOCÊ EXECUTA __ PODEM _ SER 
+
+
+
+CONFIGURADOS...
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/angular-config-example",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.app.json",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles.css"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "angularConfigExample:build:production"
+            },
+            "development": {
+              "browserTarget": "angularConfigExample:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "angularConfigExample:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "src/test.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.spec.json",
+            "karmaConfig": "karma.conf.js",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles.css"
+            ],
+            "scripts": []
+          }
+        }
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+
+      --> 
+
+
+
+
+
+
+
+      ok...  
+
+
+
+
+
+
+      AÍ, DENTRO DE 'architect',
+
+
+
+
+
+      OBSERVAMOS QUAIS FERRAMENTAS ACABASM SENDO EXECUTADAS 'UNDER THE HOOD'...
+
+
+
+
+
+
+
+
+
+
+
+      --> vemos que 
+
+
+
+      a ferramenta é 
+
+
+         "builder": "@angular-devkit/build-angular:browser",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ---> É UMA FERRAMENTA QUE FAZ PARTE DO 'ANGULAR-DEVKIT' package... (é uma das nossas tpps)...
+
+
+
+
+
+
+
+
+
+
+    --> esse é BASICAMENTE A FERRAMENTA/CONFIG QUE _ SABE __ COMO 
+
+
+    RODAR UM 
+
+
+    ANGULAR PROJECT...
+
+
+
+
+
+
+
+
+
+
+
+    --> E ESSA FERRAMENTA 
+
+    PODE SER CONFIGURADA 
+
+    COM ALGUMAS OPTIONS,
+
+    que são vistas aqui>:
+
+
+
+
+
+
+
+
+
+     "options": {
+            "outputPath": "dist/angular-config-example",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.app.json",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles.css"
+            ],
+            "scripts": []
+          },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          --> essas são options que você também pode, ao menos parcialmente,
+
+
+          CONFIGURAR COM AQUELAS FLAGS EXTRAS 
+
+
+          EM CLI COMMANDS...
+
+
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+ng build --aot=true 
+
+
+
+(
+
+
+    ESSE É O DEFAULT, VAI PRODUZIR PARA PRODUCTION LEVANDO EM CONSIDERAÇÃO 
+
+    'AHEAD OF TIME COMPILATION'...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-->  vocÊ pode definir isso como 'false',
+
+ou então 
+
+
+DEFINIR 
+
+
+
+
+
+
+A CONFIGURAÇÃO 'aot' COMO FALSE,
+
+lá em 'angular.json':
+
+
+
+
+
+     "options": {
+            "outputPath": "dist/angular-config-example",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.app.json",
+            "aot": false,
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles.css"
+            ],
+            "scripts": []
+          },
+
+
+
+
+
+
+
+
+
+
+
+
+SE VOCÊ FIZESSE ISSO, TODAS AS COMPILATIONS DE 'BUILD'
+
+
+levariam em consideração essa opção como 'off' 
+
+
+
+,
+
+no futuro...
+
+
+
+
+
+
+
+
+
+...
+
+
+
+
+
+
+
+
+
+podemos definir o folder do output,
+
+
+
+
+
+
+
+
+
+PODEMOS 
+
+
+DEFINIR O 'ROOT ENTRY FILE LOCATION',
+
+
+
+
+
+
+
+
+
+
+
+também o root entry file para o ANGULAR APP EM SI ('main')..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> também onde os polyfills são manageados,
+
+
+e também a localização de 'tsconfig.app.json'...
+
+
+
+
+
+
+
+
+
+-> 'assets'
+
+
+TE DEIXA CONFIGURAR 
+
+
+'QUAIS FILES DEVEM SER COPIED OVER DURANTE O OUTPUT'... ----->
+ 
+
+
+
+
+
+
+
+
+VAMOS UTILIZAR ESSA OPTION 
+
+
+
+
+quando tivermos algumas 'assets' no folder de assets, como CÓDIGOS CSS OU IMAGES... -->
+
+
+
+
+
+
+
+
+EU PODERIA ARMAZENAR 
+
+
+
+essa image nesse folder aí,
+
+e então 
+
+
+REFERENCIAR ESSA IMAGE, DENTRO DE ALGUM DOS MEUS COMPONENTS,
+
+
+
+
+(como o render de uma image tag),
+
+ 
+
+ E É JUSTAMENTE ESSA CONFIG DE 
+
+
+
+
+
+
+'''''''''''''
+
+         "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+
+
+
+
+''''''''''''
+
+
+
+
+
+
+
+QUE VAI _ GARANTIR_ QUE ESSA FILE, ESSA IMAGE/ARQUIVO CSS 
+
+
+VAI 
+
+ACABAR 
+
+
+SENDO SERVIDA LÁ NOS BUILD FILES 
+
+
+
+de nossos components também...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO...
+
+
+
+
+
+
+
+
+
+
+
+--> JÁ O NODE DE 'styles' 
+
+É ESTE AQUI:
+
+
+
+
+            "styles": [
+              "src/styles.css"
+            ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> USAMOS ELE, AO LONGO DO NOSSO PROJETO,
+ 
+ PARA INCLUIR OS STYLES DO BOOTSTRAP.. ---->
+
+
+
+
+ AQUI VOCÊ PODE SETTAR QUAIS DIFERENTES ARQUIVOS CSS (
+
+
+    os seus, ou de TPPs 
+ )
+
+ DEVEM 
+
+ SER DEFINIDOS 
+
+
+
+ NO SEU APP...
+
+
+
+
+
+
+
+
+
+
+
+ --> É CLARO QUE CADA COMPONENT POSSUI UM ARQUIVO CSS PRÓPRIO,
+
+
+ como aprendemos durante o curso,
+
+
+ MAS __ SE VOCÊ TIVER ALGUMA 'GLOBAL, APPLICATION-WIDE STYLES',
+
+
+
+ ESSES STYLES SÃO ENTÃO USADOS E 'EVALUATED'
+
+
+ PELO BUILD WORKFLOW 
+
+
+ E ENTÃO,
+
+ NO FINAL DAS CONTAS,
+
+
+
+ OPTIMIZADOS E 'COPIED OVER'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+ é o arquivo de 'styles.css'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -----> OK, ESSE É ALGO IMPORTANTE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> MAS SE VOCÊ TIVER SCRIPTS JAVASCRIPT 'AVULSOS'
+
+
+ que você precisa implementar no seu project,
+
+
+ VOCÊ OS ENUMERARIA 
+
+ lá em 
+
+ 
+
+
+ '''         "scripts": [] '''' 
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ISSO __ NÃO SERÁ USADO COM MT FREQUÊNCIA, 
+
+ PQ A MAIOR PARTE DE SUA LÓGICA SERÁ USADA DENTRO DOS SEUS ANGULAR COMPONENTS... (
+
+
+
+mas se você estiver usando 
+
+
+UMA 
+
+
+TPP COmo 'googlemaps',
+
+'lodash'
+
+OU QUALQUER COISA DO GêNERO,
+
+
+
+
+
+
+
+
+EM QUE 
+
+VOCÊ 
+TALVEZ 
+
+
+BAIXA 
+
+UM 
+
+SCRIPT FILE JÁ OPTIMIZADO,
+ 
+
+
+
+nessas situações você vai especificar seu path 
+
+nesse array,
+
+para que 
+ele então 
+
+SEJA INCLUÍDO NO SEU APP...
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ OBS::: MAIS SOBRE TODAS ESSAS CONFIG OPTIONS PODE SER 
+
+
+
+
+ LIDO 
+
+
+ NOS OFFICIAL DOCS,
+
+
+
+
+ em 
+
+ 'workspace configuration' 
+
+ do angular.....
+
+
+
+
+
+
+
+
+
+
+ --> OU SEJA,
+ ESSE É UM RESOURCE QUE VOCê 
+
+
+
+
+ PODE LER PARA 
+
+ APRENDER TUDO QUE VOCÊ PODE FAZER, AQUI...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> POR FIM,
+
+ ALÉM DAS OPTIONS PARA SEU PROJECT,
+
+
+ VOCê 
+
+ TEM OPTIONS PARA SUAs PRÓPRIAs 'configurations':
+
+
+
+
+
+      "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          -> ISSO PODE PARECER QUE É A MESMA COISA QUE 
+
+
+
+
+
+
+
+
+          'options',
+
+          as options de nosso project em si,
+
+
+
+
+
+
+          MAS A DIFERENEÇA ENTRE AS DUAS É QUE 
+
+
+
+
+
+
+          com 'configurations' 
+
+          PODEMOS 
+
+
+
+          configurar diferentes 'ENVIRONMENTS' 
+
+
+
+
+
+
+
+
+          _ PARA __ SUAS OPTIONS... --> ou seja,
+
+
+
+          você poderia 
+
+
+
+
+estipular 
+
+
+
+
+'''SÓ QUERO QUE ALGUMAS 
+
+OPTIONS SEJAM APLICADAS DURANTE A PRODUCTION''' ,
+
+
+
+
+
+
+
+
+
+'' e essas devem ocorrer SOMENTE DURANTE O DEVELOPMENT''' (
+
+
+    ou seja,
+
+    production-specific settings...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> UMA OPTION BEM IMPORTANTE, NO CASO, É ESTA:
+
+
+
+
+
+
+       "configurations": {
+            "production": {
+
+                             "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ---> ISSO ESTIPULA 
+
+
+    QUE 
+
+    O ARQUIVO DE 'environment.ts'
+
+
+    DEVE SER SUBSTITUÍDO PELO DE 'environment.prod.ts' (
+
+        o
+         arquivo de PRODUCTION,
+
+         com as variables 
+
+         DE PRODUCTION, QUE NAÕ SÃO DUMMIES...
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ------>  ISSO TE PERMITE DEFINIR DIFERENTES ENVIRONMENT VAIRABLES,
+
+
+
+    PARA OS DIFERENTES ENVIRONMENTS EM QUE VOCê ESTÁ ESCREVENDO CÓDIGO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> SIDENOTE -->  '--prod' 
+
+
+
+    É 
+
+    APENAS UM SHORTHAND PARA 
+
+    '--configuration=production'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E HÁ COISAS ALÉM DE 'production',
+
+
+
+a flag de 'production'....
+
+
+
+
+
+
+
+
+
+--> VOCÊ PODE DEFINIR SUAS PRÓPRIAS FLAGS,
+
+
+BASTA ESCREVÊ-LAS NO NÍVEL DE 'configurations',
+
+ ao lado de 'production', 
+
+ tipo assim:
+
+
+
+
+
+    "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            },
+
+
+
+            "EXEMPLO": {
+                "aot": false
+            }
+          },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E É CLARO QUE PODEMOS OVERWRITTAR 
+
+
+TODOS ESSES DEFAULTS,
+
+
+
+
+
+
+
+
+MAS NÃO É RECOMENDADO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-_> PARA 'production',
+
+TEMOS UM MONTE DE OVERWRITES DE DEFAULTS,
+
+
+
+COMO:
+
+
+
+
+   "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E NO DEVELOPMENT:
+
+
+
+
+
+
+
+
+
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> ok... essas são todas 
+
+
+
+configurações 
+
+
+
+para o command de 'build',
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+__ 
+
+
+
+
+TEMOS TAMBÉM O COMMAND DE 'serve',
+ 
+
+ que é assim:
+
+
+  
+
+
+
+
+
+
+
+
+          "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "angularConfigExample:build:production"
+            },
+            "development": {
+              "browserTarget": "angularConfigExample:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+
+
+
+
+
+
+
+
+
+
+
+
+
+        --> OK... -> 
+
+
+
+        ESSE É BEM MAIS SIMPLES,
+
+
+
+
+        APENAS 
+        DEFINE 
+
+
+        OS DEFAULTS 
+
+    ,
+
+
+    que usamos 
+
+
+    'serve' para 'development',
+
+
+    e 
+
+
+    'build' para usar o PROD...
+
+
+
+
+
+
+
+
+
+
+
+    --> tudo isso é webpack...
+
+
+
+
+
+
+
+    -> OS DOCS NOS FALAM MAIS SOBRE AS DIFERENTES OPÇÕES...
+
+
+
+
+
+
+      
+
+
+
+
+
+      -> TEMOS OPTIONS para 
+      'internationalization'... ('extract-i18n')
+
+
+
+
+
+
+
+      EX:
+
+
+      https://www.digitalocean.com/community/tutorials/angular-internationalization
+
+
+
+
+
+
+
+
+
+
+
+
+      -> TAMBÉM TEMOS AS OPTIONS DE 'Test',
+
+
+
+      USADAS PARA 
+
+      DEFINIR COMO SEU CÓDIGO DEVE SER COMPILADO E TESTADO...
+
+
+
+
+
+
+
+
+      'lint' --> configura linting..
+
+
+
+
+
+
+
+
+
+
+      'e2e' --> END TO END TESTING (bem avançado)...
+
+
+
+
+
+
+
+
+
+
+      --> SE VOCÊ QUER TWEAKAR ALGO, VOCÊ GANHA AUTO-COMPLETION, E DEVE 
+
+
+
+
+      LER OS 
+
+
+
+      OFFICIAL DOCS..
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ----> OK... MAS O PROFESSOR QUER VOLTAR A ALGO SUPER IMPORATNTE,
+
+      'schematics',
+
+
+      AQUELA OPTION LÁ DO INÍCIO,
+
+      QUE É ACTUALLY SUPER IMPORTANTE,
+
+      E QUE 
+
+      NOS AJUDA A ESCREVER 
+      APPS 
+
+
+      incríveis...

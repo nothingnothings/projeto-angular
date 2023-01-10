@@ -1,0 +1,1233 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NA ÚLTIMA LIÇÃO, APRENDEMOS SOBRE O 'HIERARCHICAL INJECTOR',
+
+
+
+que é 
+
+
+o fenômeno 
+
+
+de que 
+
+
+
+
+
+SERVICES CONTRATADOS POR COMPONENTS MAIS ACIMA NA ÁRVORE DE COMPONENTS 
+
+
+
+TEM 
+
+AS INSTANCES DOS SERVICES SENDO COMPARTILHADAS PELOS 
+
+
+
+CHILD COMPONENTS...
+
+
+
+
+
+
+
+
+
+
+--> SABEMOS QUE AGORA PODEMOS ESCOLHER ENTRE '1 ÚNICA INSTANCE' 
+
+E 
+'MÚLTIPLAS INSTANCES' de 1 mesmo service/class...
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR MENCIONOU, ANTERIOREMNTE,
+
+
+
+QUE O 
+
+
+__LEVEL__ MAIS ALTO PARA O 'CONTRATO' COM UM SERVICE,
+
+
+
+PARA 
+
+A CRIAÇÃO/ESTABELECIMENTO DE 
+
+
+
+1 INSTANCE DE UM SERVICE,
+
+
+É __ LÁ 
+
+
+
+
+NO COMPONENT DE 'app.module.ts',
+
+
+o
+ 
+
+
+ ROOT DE NOSSO ANGULAR APP...  ---------> 
+
+
+
+
+
+
+
+
+
+
+
+
+ LÁ NO APP MODULE,
+
+ LÁ NÓS TAMBÉM TEMOS 'providers: []',
+
+
+
+ E LÁ TAMBÉM PODEMOS COLOCAR 'AccountsService'...
+
+
+
+
+
+
+
+
+ FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+ import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppComponent } from './app.component';
+import { NewAccountComponent } from './new-account/new-account.component';
+import { AccountComponent } from './account/account.component';
+import { AccountsService } from './accounts.service';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    NewAccountComponent,
+    AccountComponent
+  ],
+  imports: [
+    BrowserModule
+  ],
+  providers: [AccountsService], //se colocamos nosso service aqui, no ROOT DE NOSSO APP, a INSTANCE desse service vai acabar COMPARTILHADA POR TODO SEU APP (app-wide), A COMPONENTS, A DIRECTIVES E A OUTROS SERVICES.... (E a todos os child components dos components)...
+                ///se quisermos INJETAR 1 SERVICE DENTRO DE OUTRO SERVICE, É NECESSÁRIO ESPECIFICAR ESSE SERVICE AQUI, em 'app.module.ts', nesse array de 'providers'...
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> FIZEMOS ISSO PQ _ 
+
+
+SE QUISERMOS 
+
+
+
+INJETAR 
+
+'''1 SERVICE DENTRO DE OUTRO SERVICE'''',
+
+
+
+SOMOS OBRIGADOS 
+
+
+
+A __ FAZER 'PROVIDE' 
+
+DESSE SERVICE 
+
+
+LÁ 
+
+EM 
+
+'app.module.ts',
+
+
+
+para que 
+
+essa instance
+CONSIGA 
+
+SER VINCULADA A TODO NOSSO APP...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> OK.... COMO EXEMPLO,
+
+
+
+
+EXEMPLO DE 'INJECT A SERVICE INSIDE OF ANOTHER SERVICE',
+
+
+
+O PROFESSOR DIZ QUE 
+VAMOS QUERER 
+
+
+EXECUTAR AQUELE 
+
+
+METHOD DE 'log'
+
+
+
+
+que temos dentro de 'LoggingService',
+
+
+MAS DENTRO DO __ SERVICE__ DE 'AccountsService'...
+
+
+
+
+
+
+
+
+
+
+-> SE QUISERMOS FAZER ISSO,
+
+SOMOS OBRIGADOS _ A COLOCAR COMO PROVIDERS 
+
+
+tanto 
+
+'AccountsService'
+
+
+como 
+
+'LoggingService',
+
+
+
+lá 
+
+
+
+
+NO COMPONENT 'app.module.ts',
+
+NO NOSSO ROOT...
+
+
+
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppComponent } from './app.component';
+import { NewAccountComponent } from './new-account/new-account.component';
+import { AccountComponent } from './account/account.component';
+import { AccountsService } from './accounts.service';
+import { LoggingService } from './logging.service';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    NewAccountComponent,
+    AccountComponent
+  ],
+  imports: [
+    BrowserModule
+  ],
+  providers: [AccountsService, LoggingService], //se colocamos nosso service aqui, no ROOT DE NOSSO APP, a INSTANCE desse service vai acabar COMPARTILHADA POR TODO SEU APP (app-wide), A COMPONENTS, A DIRECTIVES E A OUTROS SERVICES.... (E a todos os child components dos components)...
+
+                ///se quisermos INJETAR 1 SERVICE DENTRO DE OUTRO SERVICE, É NECESSÁRIO ESPECIFICAR ESSE SERVICE AQUI, em 'app.module.ts', nesse array de 'providers'...
+                ///AccountsService e LoggingService, juntos, são um EXEMPLO DE 'INJECT DE UM SERVICE DENTRO DE OUTRO SERVICE' (inject do service de 'LoggingService' dentro de 'AccountsService')...
+ 
+                bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok... mas agora precisamos 
+
+
+
+
+
+ESCREVER O USO DO CÓDIGO DE 'log' 
+
+
+
+do LoggingService
+
+
+lá em 
+
+'AccountsService'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS COMO POSSO FAZER ISSO?
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, PRECISAMOS TIRAR O CÓDIGO DE 
+
+
+
+
+'this.loggingService.logStatusChange(status)'
+
+
+
+
+DE TODOS 
+
+
+OS COMPONENTS EM QUE VINCULAMOS UMA 'INSTANCE' independente de 'LoggingService'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(
+    tirar tanto de 'new-account'
+
+    como de 
+
+
+    'account' components..
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, MAS __ COMO _ 
+
+
+INJETAMOS O SERVICE DE 'LoggingService'
+
+
+
+dentro de 'ACCOUNTSSSERVICE'?
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> para __ USAR _ O SERVICE 'LoggingService'
+
+
+
+
+
+ DENTRO 
+
+
+
+
+
+ DO SERVICE 
+
+
+ 'AccountsService',
+
+
+
+
+
+
+ PRECISAMOS FAZER O QUE SEMPRE PRECISAMOS FAZER PARA CONSEGUIR OS UTILIZAR,
+
+ QUE É 
+
+
+ OS 
+
+ DEFINIR COM 
+ 'private'
+
+
+ LÁ NO __ CONSTRUCTOR __ DESSE SERVICE,
+
+ TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ import { LoggingService } from './logging.service';
+
+export class AccountsService {
+  accounts = [
+    //tirados lá de 'app.component.html'...
+    {
+      name: 'Master Account',
+      status: 'active',
+    },
+
+    {
+      name: 'Test Account',
+      status: 'inactive',
+    },
+
+    {
+      name: 'Hidden Account',
+      status: 'unknown',
+    },
+  ];
+
+  addAccount(name: string, status: string) {
+    this.accounts.push({
+      name: name,
+      status: status,
+    });
+  }
+
+  updateStatus(updateInfo: { id: number; status: string }) {
+    this.accounts[updateInfo.id].status = updateInfo.status;
+  }
+
+  constructor(private loggingService: LoggingService) {
+    ///é assim que fazemos _ INJECT__ DE UM SERVICE DENTRO DE OUTRO (inject de 'LoggingService' dentro de 'AccountsService')...
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS ISSO ME DEU UM ERRO:
+
+
+
+
+
+Either add the @Injectable() decorator to 'AccountsService', or configure a different provider (such as a provider with 'useFactory').
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> acho que PRECISO DESSE DECORATOR DE "@Injectable()'...
+
+
+
+
+
+
+
+
+--> MAS ACHO QUE INJECTABLE É USADO 
+
+PARA 
+
+__DISPONIBILIZAR ESSA CLASS/service COMO 'INJECTABLE',
+
+
+
+E _ NÃO __ PARA INJETAR, PROPRIAMENTE FALANDO..
+
+
+
+
+
+
+
+
+--> vai ficar tipo assim, talvez:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { LoggingService } from './logging.service';
+import { Inject } from '@angular/core';
+
+
+@Inject()
+export class AccountsService {
+  accounts = [
+    //tirados lá de 'app.component.html'...
+    {
+      name: 'Master Account',
+      status: 'active',
+    },
+
+    {
+      name: 'Test Account',
+      status: 'inactive',
+    },
+
+    {
+      name: 'Hidden Account',
+      status: 'unknown',
+    },
+  ];
+
+  addAccount(name: string, status: string) {
+    this.accounts.push({
+      name: name,
+      status: status,
+    });
+  }
+
+  updateStatus(updateInfo: { id: number; status: string }) {
+    this.accounts[updateInfo.id].status = updateInfo.status;
+  }
+
+  constructor(private loggingService: LoggingService) {
+    ///é assim que fazemos _ INJECT__ DE UM SERVICE DENTRO DE OUTRO (inject de 'LoggingService' dentro de 'AccountsService')...
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, AGORA SÓ PRECISO ADICIONAR O DECORATOR DE 'INJECTABLE'
+
+
+lá 
+
+em 
+
+
+'logging.service.ts',
+
+tipo assim
+:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O PROFESSOR NOS EXPLICA:
+
+
+
+
+
+
+
+
+
+
+__ SE VOCÊ _ VAI INJETAR UM SERVICE EM ALGUMA COISA,
+
+
+
+
+
+__ ESSA 'ALGUMA COISA'
+
+ 
+
+
+
+
+
+ __ PRECISA__ 
+
+
+
+ TER __ UMA 'METADATA'
+
+
+ ANEXADA 
+
+
+ A 
+
+ ELA...
+
+
+
+
+
+
+
+
+
+
+   --> components possuem metadata pq adicionamos o decorator de '@Component({})'
+
+
+
+
+
+
+   --> DIRECTIVES POSSUEM METADATA PQ ADICIONAMOS O DECORATOR DE '@Directive({})'
+
+
+
+
+
+
+
+
+
+
+
+
+   --> MAS UM __ SERVICE NÃO TEM NENHUM DECORATOR,
+
+   E NÃO TEM NENHUMA METADATA POR 
+
+   CONTA PRÓPRIA...
+
+
+
+
+
+
+
+
+
+
+   --> PARA _ CONSEGUIR __ INJETAR 1 SERVICE DENTRO DE OUTRO SERVICE,
+
+
+   VOCÊ É _ OBRIGADO_ A USAR O DECORATOR DE 'INJECTABLE'...
+
+
+
+
+
+
+
+
+
+
+
+   ---> e parece que vocÊ REALMENTE VAI 
+
+   COLOCAR O 
+
+   'injectable'
+
+
+   DENTRO 
+
+
+
+
+
+
+DO ARQUIVO DE 'accounts.service.ts' (que é o service que VAI TER ALGO INJETADO SOBRE SI)...
+
+
+
+
+
+
+
+
+
+
+
+
+------. INJECTABLE -->  ISSO __ NÃO DEVE SER ADICIONADO AO SERVICE QUE VOCÊ QUER INJETAR,
+
+E SIM 
+A
+O 
+
+
+SERVICE QUE VOCê QUER QUE 'RECEBA UMA INJEÇÃO' de outro service (ou seja, 'ACCOUNTSSSERVICE')...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { LoggingService } from './logging.service';
+
+
+import { Injectable } from '@angular/core';
+
+@Injectable()   ////VOCÊ DEVE DECLARAR 'injectable' no service se vocÊ DESEJA INJETAR OUTRO SERVICE DENTRO DELE (nesse caso, 'logging.service.ts')...
+export class AccountsService {
+  accounts = [
+    //tirados lá de 'app.component.html'...
+    {
+      name: 'Master Account',
+      status: 'active',
+    },
+
+    {
+      name: 'Test Account',
+      status: 'inactive',
+    },
+
+    {
+      name: 'Hidden Account',
+      status: 'unknown',
+    },
+  ];
+
+  addAccount(name: string, status: string) {
+    this.accounts.push({
+      name: name,
+      status: status,
+    });
+  }
+
+  updateStatus(updateInfo: { id: number; status: string }) {
+    this.accounts[updateInfo.id].status = updateInfo.status;
+  }
+
+  constructor(private loggingService: LoggingService) {
+    ///é assim que fazemos _ INJECT__ DE UM SERVICE DENTRO DE OUTRO (inject de 'LoggingService' dentro de 'AccountsService')...
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> CERTO...
+
+
+
+
+
+
+
+
+
+
+--> E VOCÊ NÃO PRECISA ADICIONAR ISSO A QUALQUER OUTRO SERVICE..
+
+
+
+
+
+
+
+
+
+-------> se você NÃO QUER INJETAR NADA A UM SERVICE ,
+
+
+VOCê NÃO DEVE ESCREVER '@Injectable()',
+
+
+PQ 
+
+
+
+
+_ o 
+
+
+INJECTABLE DEVE SER USADO APENAS QUANDDO VOCÊ QUER _ QUE ALGO SEJA 'INJECTED'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, FUNCIONOU, E FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { LoggingService } from './logging.service';
+
+
+import { Injectable } from '@angular/core';
+
+@Injectable()   ////VOCÊ DEVE DECLARAR 'injectable' no service se vocÊ DESEJA INJETAR OUTRO SERVICE DENTRO DELE (nesse caso, 'logging.service.ts')...
+export class AccountsService {
+  accounts = [
+    //tirados lá de 'app.component.html'...
+    {
+      name: 'Master Account',
+      status: 'active',
+    },
+
+    {
+      name: 'Test Account',
+      status: 'inactive',
+    },
+
+    {
+      name: 'Hidden Account',
+      status: 'unknown',
+    },
+  ];
+
+  addAccount(name: string, status: string) {
+    this.accounts.push({
+      name: name,
+      status: status,
+    });
+    this.loggingService.logStatusChange(status);
+    
+  }
+
+  updateStatus(updateInfo: { id: number; status: string }) {
+    this.accounts[updateInfo.id].status = updateInfo.status;
+    this.loggingService.logStatusChange(updateInfo.status)
+  }
+
+  constructor(private loggingService: LoggingService) {
+    ///é assim que fazemos _ INJECT__ DE UM SERVICE DENTRO DE OUTRO (inject de 'LoggingService' dentro de 'AccountsService')...
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> O PROFESSOR 
+
+
+
+
+NOS FALA DE ALGO IMPORTANTE:
+
+
+
+NÓS _ NÃO PRECISAMOS 
+
+ADICIONAR 
+
+'INJECTABLE',
+
+O 
+
+DECORATOR,
+
+
+
+
+A ESSE SERVICE 
+DE 
+
+
+'LoggingService',
+
+
+
+
+
+
+
+PQ __ 
+
+
+NÃO VAMOS INJETAR NADA NESSE SERVICE... -> 
+
+
+
+
+O INJECTABLE SÓ É NECESSÁRIO SE 
+
+
+1 SERVICE PRECISA QUE ALGO (um service) SEJA INJECTADO NELE...
+
+
+
+
+
+
+
+
+
+
+->  MAS __ EM 
+
+VERSÕES MAIS 
+
+NOVAS DO ANGULAR,
+
+
+
+__ É RECOMENDADO _ SEMPRE __ ADICIONAR 
+
+
+@Injectable
+
+
+
+
+NOS 
+
+
+
+
+
+SERVICES QUE FICAM SE INJETANDO (tanto no que injeta, quanto aquele que é injetado, que recebe a injection)....
+
+
+
+
+
+
+
+
+
+--> FAÇA ISSO PARA QUE SEU CÓDIGO NO FUTURO NÃO DÊ BREAK...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------> certo, com isso tudo,
+
+
+recarregamos nossa págnia,
+
+e agora o negócio funciona,
+
+
+
+
+agora com essa feature de 'inject de um service dentro de outro service',
+
+TUDO 
+
+
+
+
+CENTRALIZADO NO SERVICE DE 'accountsService.'.. (que faz o work com a data e faz o console.log também)...

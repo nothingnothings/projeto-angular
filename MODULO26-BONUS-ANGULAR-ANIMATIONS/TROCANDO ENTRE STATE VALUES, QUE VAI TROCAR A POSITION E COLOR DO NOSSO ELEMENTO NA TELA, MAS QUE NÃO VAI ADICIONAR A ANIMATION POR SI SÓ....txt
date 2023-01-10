@@ -1,0 +1,395 @@
+
+
+
+
+NA ÚLTIMA AULA,
+
+MEU CÓDIGO HAVIA FICADO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  animations: [
+    trigger('divStateExample', [
+      state('normal', style({ /////queremos que o value desse 'starting state' SEJA IGUAL ao value do state ('normal', nesse caso) que temos ali embaixo, o starting state...
+
+        'background-color': 'red',
+        'transform': 'translateX(0) '
+
+      })), 
+      state('hightlighted', style({
+
+        'background-color': 'blue',
+        'transform': 'translateX(px)'
+
+
+
+      })),
+    ]),
+  ],
+})
+export class AppComponent {
+  animationState = 'normal'; ////vamos USAR ESSA PROPRIEDADE COMO 'CONDITION' para dar PLAY EM DIFERENTES ANIMATIONS, por meio do bind do nosso trigger de 'divStateExample' a essa propriedade....
+
+  items: string[] = ['Milk', 'Sugar', 'Bread'];
+
+  constructor() {}
+
+  onDeleteItem(item: string) {
+    console.log(item);
+  }
+
+  onAddItem(item: string) {
+    this.items.push(item);
+  }
+
+
+  
+
+
+  animateBox() {
+
+
+
+    switch(this.animationState) {
+
+      case 'normal':
+        this.animationState = 'highlighted';
+        break;
+      case 'highlighted':
+        this.animationState = 'normal';
+        break;
+
+    }
+
+
+}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+achno que é pq TROQUEI AS COISAS, ESSENCIALMENTE..
+
+
+
+
+
+
+
+
+
+--> realmente, eu havia escrito coisas errado (erro nos nomes)....
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO CORRETO FICOU ASSIM:
+
+
+
+
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  animations: [
+    trigger('divStateExample', [
+      state('normal', style({ /////queremos que o value desse 'starting state' SEJA IGUAL ao value do state ('normal', nesse caso) que temos ali embaixo, o starting state...
+
+        'background-color': 'red',
+        'transform': 'translateX(0px) '
+
+      })), 
+      state('highlighted', style({
+
+        'background-color': 'blue',
+        'transform': 'translateX(50px)'
+
+
+
+      })),
+    ]),
+  ],
+})
+export class AppComponent {
+  animationState = 'normal'; ////vamos USAR ESSA PROPRIEDADE COMO 'CONDITION' para dar PLAY EM DIFERENTES ANIMATIONS, por meio do bind do nosso trigger de 'divStateExample' a essa propriedade....
+
+  items: string[] = ['Milk', 'Sugar', 'Bread'];
+
+  constructor() {}
+
+  onDeleteItem(item: string) {
+    console.log(item);
+  }
+
+  onAddItem(item: string) {
+    this.items.push(item);
+  }
+
+
+  
+
+
+  animateBox() {
+
+
+
+    switch(this.animationState) {
+
+      case 'normal':
+        this.animationState = 'highlighted';
+        break;
+      case 'highlighted':
+        this.animationState = 'normal';
+        break;
+
+    }
+
+
+}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <h1>Animations</h1>
+      <button class="btn btn-primary" (click)="animateBox()">Animate!</button>
+      <button class="btn btn-primary">Shrink!</button>
+      <hr />
+
+
+
+       <!-- ESSE É O ELEMENTO QUE SOFRERÁ AS 'ANIMATIONS'. OBS: o trigger sempre é colocado/posicionado em algum elemento, usando essa notation de [@nomeDoTrigger]   -->
+      <!-- QUEREMOS QUE ESSE TRIGGER DE 'divStateExample' FIQUE _ VINCULADO_  à PROPRIEDADE DE 'state' DE NOSSO COMPONENT.....--> 
+      <div [@divStateExample]="animationState"
+        style="width: 100px; height: 100px"
+      
+      
+      
+      ></div> 
+    </div>
+  </div>
+<hr />
+<div class="row">
+  <div class="col-xs-12">
+    <input type="text" #input >
+    <button class="btn btn-primary" (click)="onAddItem(input.value)">
+      Add Item!
+    </button>
+    <hr />
+    <ul class="list-group">
+      <li
+        class="list-group-item"
+        (click)="onDeleteItem(item)"
+        *ngFor="let item of items"
+      >
+        {{ item }}
+      </li>
+    </ul>
+  </div>
+</div>
+<hr />
+<div class="row">
+  <div class="col-xs-12">
+    <ul class="list-group">
+      <li
+        class="list-group-item"
+        (click)="onDeleteItem(item)"
+        *ngFor="let item of items"
+      >
+        {{ item }}
+      </li>
+    </ul>
+  </div>
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> CERTO.... ISSO QUER DIZER QUE ESSE METHOD DE 'animateBox'
+
+
+
+
+FICOU ASSIGNADO A ESSA LÓGICA AÍ,
+
+
+QUE TROCA O NOSSO STATE....
+
+
+
+
+
+
+
+
+
+
+
+
+--> claro que poderíamos ter escrito uma ternary expression...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VOCÊ DEVE SETTAR AS 2 PROPRIEDADES COMO 'STRINGS',
+
+
+pq se você não fizer isso, você 
+
+
+
+ficará com um bug (
+
+  o elemento vai sumir...
+)
+
+
+
+
+
+
+
+
+
+--> SIM, CONSEGUIMOS TOGGLAR ENTRE ESSES 2 'STATES',
+
+
+
+MAS O PROBLEMA É QUE NÃO HÁ NENHUMA 'TRANSIÇÃO' entre 
+
+
+esses 2 'states' 
+
+
+
+
+do nosso elemento,
+
+
+ele só troca 
+
+INSTANTANEAMENTE,
+
+SEM AVISO... --> 
+
+
+
+
+
+
+E QUEREMOS 'ANIMATE' ESSA TRANSIÇÃO,
+
+
+FAZER COM QUE ELA FIQUE ANIMADA, GRADUAL...
+
+
+
+
+
+
+
+
+
+
+
+
+-> ISSO PQ _ SE NÓS NÃO PRECISÁSSEMOS DESSA FEATURE DE 'ANIMATION',
+
+
+
+PODERÍAMOS SIMPLESMENTE FAZER APPEND DE DIFERENTES STYLES,
+
+QUE ISSO JÁ TERIA ESSE EFEITO QUE ESTAMOS TESTANDO AGORA...
+
+
+
+
+
+
+
+
+
+->  A MORAL DESSE 'ANIMATION TRIGGER' É JUSTAMENTE __ ATIVAR_ 
+
+
+ESSA TRANSITION ENTRE 1 STATE A PARA 1 STATE B __ GRADUALMENTE_....
+
+
+
+
+
+
+
+
+
+
+--> VEREMOS COMO FAZER ISSO _ NA PRÓXIMA AULA...

@@ -1,0 +1,40 @@
+
+
+
+
+
+
+
+
+-> NA ÚLTIMA LIÇÃO, APRENDEMOS ALGO CRUCIAL:
+
+
+
+
+
+
+
+
+
+APRENDEMOS A __ BINDAR__ DATA_ A NOSSAS PRÓPRIAS 'PROPERTIES' (como 'element' em 'app-server-item'),
+
+
+
+
+
+
+TUDO POR MEIO DE 
+
+
+
+'@Input()' 
+,
+
+
+
+
+ESSE DECORATOR:
+
+
+
+

@@ -1,0 +1,1938 @@
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK....
+
+
+
+
+
+
+
+COMEÇAREMOS PELO 'FORWARD DO USER PARA UMA NOVA ROUTE',
+
+ASSIM QUE ELE ESTIVER 'LOGGED IN' 
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> COMO 
+
+
+NÓS _ SEMPRE_ VAMOS QUERER 
+
+
+
+
+'''REDIRECIONAR O USER QUANDO ELE ESTIVER AUTHENTICATED''',
+
+
+
+
+
+
+
+
+
+
+
+é claro que 
+
+podemos 
+
+
+
+
+FAZER ESSE REDIRECT __ EM 2 DIFERENTES LUGARES...
+
+
+
+
+
+
+
+
+
+
+
+
+---> 1 approach válido seria:
+
+
+
+
+
+
+
+'''' COLOCAR UM REDIRECT PARA A ROUTE DE 'recipe-book',
+
+
+ao mesmo 
+
+
+
+TEMPO 
+
+QUE COLOCAMOS UMA 
+
+
+
+
+GUARD EM 'localhost:4200/auth'
+
+
+
+PARA __ QUE _O 
+
+
+USER SEJA REDIRECIONADO
+ 
+
+
+ SE TENTAR ENTRAR NESSA ROUTE 
+
+
+
+
+
+
+
+estando 'authenticated' (token de AUTENTICATION armazenada em algum lugar, provavelmente)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK, MAS COMO FARÍAMOS ISSO?
+
+
+
+
+
+
+
+
+---> provavelmente por meio de um __ RESOLVER_ 
+
+
+(
+
+    QUE FAÇA 'resolve' da data necessária, data de auth,
+
+
+    NAS ROUTES QUE CONSIDERAMOS NECESSÁRIO O AUTHENTICATION (routes/páginas VIPs... )
+
+
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+--> para isso, teremos de criar um novo resolver, é claro....
+
+
+
+
+
+
+
+
+
+
+
+
+-> NA VERDADE, JÁ TEMOS UM RESOLVER PARA ISSO,
+
+O RESOLVER DE 
+
+
+'recipes-resolver':
+
+
+
+
+
+
+
+
+
+
+
+
+import { Injectable } from "@angular/core";
+
+import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
+import { Observable } from "rxjs";
+import { RecipeBookService } from "./recipeBook.service";
+import { Recipe } from "./recipeBook/recipe.model";
+
+
+@Injectable({providedIn: 'root'})
+export class RecipesResolverService implements Resolve<Recipe[]> {
+
+
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Recipe[] | Observable<Recipe[]> | Promise<Recipe[]> {
+        
+
+        const recipes = this.recipeBookService.getRecipes();
+        console.log('TEST');
+        ///aqui fazemos o RETURN DE UM OBSERVABLE, que vai essencialmente sofrer 'subscribe' automaticamente pelo typesccript por estar posicionado em 1 resolver....
+        
+        
+        if (recipes.length === 0) {
+            console.log('LINE')
+            return this.recipeBookService.loadRecipes();  // vai 'resolve' essa data ANTES DE NOSSOS COMPONENTS SEREM CARREGADOS, ANTES DA PAGE DE 'recipe-book' SER CARREGADA...
+        
+        } else {
+            console.log('LINE2')
+            console.log(recipes);
+            return recipes
+        }
+        
+
+    }
+
+    constructor(private recipeBookService: RecipeBookService) {
+
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------> agora só nos resta __ COLOCAR_ UM CÓDIGO DE 'CHECK FOR AUTH'
+
+
+dentro 
+
+
+desse 
+
+
+
+resolver, provavelmente uns if checks checando por tokens 
+
+
+
+no nosso local storage..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> MAS O PROFESSOR EXPLICA QUE PODERÍAMOS FAZER ESSE 'REDIRECT'
+
+
+
+EM 
+
+2 DIFERENTES LUGARES....
+
+
+
+
+
+
+
+
+
+--> PODEMOS FAZER ISSO, QUANDO OCORRE O LOGIN/signup,
+
+
+
+
+OU 
+
+
+
+em 
+
+'emitUser',
+
+
+
+EM QUE FAZEMOS O HANDLE DE NOSSA AUTHENTICATION (fazemos EMIT do user válido , ao longo do app)...
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+  private emitUser(responseData: AuthResponseData) {
+    const { email, localId, expiresIn, idToken } = responseData;
+
+          const expirationDate = new Date( /// vai nos dar um object 'Date'...
+            new Date().getTime() + +expiresIn * 1000
+          );
+
+          const newUser = new User(email, localId, idToken, expirationDate);
+
+          this.user.next(newUser); 
+
+
+
+
+          /////TIPO AQUI....
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OU, ENTAÕ,
+
+
+LÁ 
+
+
+NO SUCCESS CASE 
+
+
+
+
+
+DO SUBSCRIBE, NO NOSSO COMPONENT DE 'auth.component.ts':
+
+
+
+
+
+
+
+
+
+
+
+    authObs.subscribe(
+      (responseData) => {
+
+        this.router.navigate(['/recipe-book']);
+      },
+
+      (errorMessage) => {
+        console.log(errorMessage);
+        this.isLoading = false;
+        this.error = errorMessage;
+      }
+    );
+
+    form.reset();
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --. O PROFESSOR DIZ QUE PODEMOS ESCOLHER QUALQUER 1 DOS LUGARES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> SE VOCÊ PREFERE FAWZER REDIRECT NO 'COMPONENT' OU 'DENTRO DE UM SERVICE' ----> OS 2 SÃO VÁLIDOS,
+
+
+
+  E SE VOCÊ NÃO PRECISA DE DATA ALGUMA VINDA OU DO SERVICE OU DO COMPONENT,
+
+
+  E SE VOCÊ NÃO TEM NENHUMA RAZÃO FORTE PARA FAZER 
+
+
+
+  DE UMA MANEIRA OU DE OUTRA,
+
+
+  VOCê PODE 
+
+   
+
+
+   ESCOLHER QUALQUER UMA..
+
+
+
+
+
+
+
+
+
+
+
+
+   --. HÁ O ARGUMENTO DE ''VOCÊ SEMPER QUER DEIXAR AS COISAS RELACIONADAS à UI,
+
+   A REDIRECTS E TAL,
+
+
+   LÁ NOS SEUS COMPONENTS''' (pq os services não devem interferir com a user experience)..
+
+
+
+
+
+
+
+   -> MAS O PROFESSOR NÃO VE NENHUM PROBLEMA COM ISSO (mas deixarei no component o redirect, pq acho melhor)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   --> ok... ele faz redirect no success case..
+
+
+
+
+
+
+
+
+
+
+
+   -> ESSE É UM GRANDE EXEMPLO DE PROGRAMMATIC NAVIGATION (
+
+
+]'''queremos que O USER SEJA NAVIGATED 
+
+
+
+SÓ DEPOIS DE UMA CERTA ACTION ESTAR DONE,
+
+
+
+E NÃO IMEDIATAMENTE 
+
+DEPOIS DO USER CLICAR EM UM BUTTON ----> PQ NESSAS SITUAÇÕES PREICSAMOS 'NAVIGATE FROM INSIDE THE CODE',
+
+
+
+pq 
+
+é só dentro do código que teremos CERTEZA  DE QUE ALGO ESTÁ 'DONE'..  
+   )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   --_> TENTAMOS FAZER LOGIN,
+
+
+
+   TUDO CERTO,
+
+   AÍ SOMOS REDIRECIONADOS a 'recipes' (
+
+       onde recebemos aquele error 
+
+       de 
+
+
+
+       authentication,
+
+       pq 
+
+
+
+       deixei 'read/write' como 'false.'..
+   )
+
+
+
+
+
+
+
+
+
+
+
+
+
+   --> O NAVIGATE FUNCIONA,
+
+   SIM,
+
+
+
+   MAS AINDA NÃO IMPLEMENTAMOS 
+
+
+
+
+   A LÓGICA DE 
+
+
+
+
+
+   ''STORE AUTHENTICATION 
+
+
+   IN 
+
+   LOCALSTORAGE''' 
+
+
+
+
+   (
+
+       pq 
+       o 
+
+
+       USER OBJECT NAÕ ESTÁ PERSISTINDO NA MEMÓRIA,
+       É APAGADO
+        
+
+  DEPOIS DO EMIT 
+
+
+
+  dele 
+
+  ao longo do app,
+
+  com 'this.emitUser()'...
+
+
+
+
+   )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   --> O PRÓXIMO PASSO É REFLETIR NOSSO 'CURRENT AUTH STATUS'
+
+   NO UI,
+
+
+
+
+
+   O QUE SIGNIFICA,
+
+   NA GRANDE MAIORIA DOS CASOS,
+
+
+
+   NO _ HEADER_ 
+
+
+
+
+   DE NOSSO APP...
+
+
+
+
+
+
+
+
+
+
+   --> PRECISAMOS COLOCAR UM 
+
+
+
+   'subscribe'
+
+
+
+   LÁ NO 'header',
+
+
+
+
+
+   UM SUBSCRIBE QUE VAI DEFINIR PROVAVELMENTE UMA PROPRIEDADE DE 'isAuth'
+
+   COMO SENDO TRUE (inicialmente fica como false)..
+
+
+
+
+
+
+
+
+
+
+
+   --> PARA ISSO,
+
+
+
+   PROVAVELMENTE PRECISAMOS DE ALGO MAIS FORTE DO QUE 
+
+
+
+   UM SIMPLES 'EMIT DE DATA' (user data, no caso).... 
+
+
+
+
+
+
+
+
+
+
+   --> isso pq, CADA VEZ QUE REINICIARMOS NOSSO APP/PAGE,
+
+
+   ESSE HEADER DEVERÁ CONTINUAR no state de isAuth/not auth....
+
+
+
+
+
+
+
+
+
+
+
+
+
+   --> MAS ANTES DE MAIS NADA, O PROFESSOR COMEÇA COM UM BUTTON DE LOGOUT,
+
+   tipo assim:
+
+
+
+
+
+
+
+
+   <li>
+   <a style="cursor: pointer;" class="dropdown-toggle" role="button">Logout</a>
+   </li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+
+
+
+  <nav class="navbar navbar-default"> <!-- COM O USO DE ROUTING -->
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" (click)="collapsed = !collapsed">
+            <span class="icon-bar" *ngFor="let iconBar of [1, 2, 3]"></span>
+          </button>
+          <a routerLink="/" class="navbar-brand">Recipe Book</a>
+      </div>
+      <!-- <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true"> -->
+        <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true">
+        <ul class="nav navbar-nav">
+          <!-- <li (click)="onRecipeBook()"><a href="#">Recipes</a></li>
+          <li (click)="onShopList()"><a href="#">Shopping List</a></li> -->
+          <li routerLinkActive="active"><a [routerLink]="['/recipe-book']" (click)="collapsed = !collapsed">Recipes</a></li>
+          <li routerLinkActive="active"><a [routerLink]="['/shop-list']"(click)="collapsed = !collapsed" >Shopping List</a></li>
+          <li routerLinkActive="active"><a [routerLink]="['/auth']"(click)="collapsed = !collapsed" >Auth</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li>
+            <a style="cursor: pointer;" class="dropdown-toggle" role="button">Logout</a>
+            </li>
+            <li class="dropdown" appDropdown #dropdown>
+                <a class="dropdown-toggle" role="button">Manage<span class="caret"></span></a>
+                <ul class="dropdown-menu" style="cursor: pointer;">
+                    <!-- <li><a href="#">Save Data</a></li>
+                    <li><a href="#">Fetch Data</a></li> -->
+                    <li><a (click)="onSaveData()">Save Data</a></li>
+                    <li><a (click)="onLoadData()">Fetch Data</a></li>
+                </ul>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OK... AGORA PRECISAMOS BASICAMENTE ENFIAR O 'CURRENT AUTH STATUS'
+
+
+  dentro do 
+
+
+
+
+  header component... 
+
+
+  (
+      basicamente descobrir se TEMOS UM USER COM UMA VALID TOKEN OU NÃO...
+  )
+
+
+
+
+
+
+
+
+
+  ----> E AÍ, A PARTIR DISSO,
+
+
+
+  PRECISAMOS 
+
+  DESSA INFO PARA UPDATAR 
+
+
+
+
+  O TEMPLATE CORRETAMETNE...
+
+
+
+
+
+
+
+  -> PARA ISSO,
+
+
+  ANTES DE MAIS NADA,
+
+
+
+
+  NO service de 'auth.service.ts'
+
+
+
+
+
+
+
+ESTAMOS _ 
+
+MANAGEANDO NOSSO 'USER'
+
+ATRAVÉS 
+
+
+DE UM SUBJECT,
+
+
+TIPO ASSIM;
+
+
+
+  user = new Subject();
+
+
+
+
+
+
+
+
+
+  E ASSIM:
+
+
+
+
+      const { email, localId, expiresIn, idToken } = responseData;
+
+          const expirationDate = new Date( /// vai nos dar um object 'Date'...
+            new Date().getTime() + +expiresIn * 1000
+          );
+
+          const newUser = new User(email, localId, idToken, expirationDate);
+
+          this.user.next(newUser); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          --> ISSO INFORMA TODOS OS LUGARES DE NOSSO APP QUE 
+
+          'O USER MUDOU'...
+
+
+
+
+
+
+
+
+
+
+
+          --> e, agora,
+
+
+          ainda QUE NÃO TENHAMOS IMPLEMENTADO TODA A LÓGICA PARA ISSO,
+
+
+          DEVEMOS 
+
+
+          ASSUMIR QUE 
+
+
+
+
+
+
+          __ O USER __ SEMPRE_ MUDA_ QUANDO 
+
+          O 
+
+          'AUTH STATUS'
+
+
+          mUDAR--> 
+
+
+           
+           ISSO QUER DIZER QUE ,
+
+
+            MESMO 
+
+            QUANDO 
+
+
+
+            O 
+
+
+            'token' EXPIRAR,
+
+
+            O 
+
+
+            USER 
+
+
+            VAI 'EMIT A NEW VALUE',
+
+
+
+            VALUE QUE SERÁ ENTÃO 'NULL',
+
+
+            PQ 
+
+
+
+            ELE 
+
+
+            ESTARÁ COMO 'INVALID'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -_> OU SEJA,
+
+    O PROFESSOR DIZ QUE DEVEMOS 'ASSUMIR QUE O NOSSO SUBJECT AQUI É O 
+
+
+    __ SOURCE OF TRUTH''' ......
+
+
+
+
+
+
+
+
+
+    -> se ele for o 'source of truth',
+
+
+
+
+
+    NOSSO HEADER _ COMPONENT _ PODERÁ 
+
+    SER UPDATADO A PARTIR DA INFO QUE ELE TRANSMITE,
+
+
+
+    POR MEIO DE SUBSCRIBE... (subscribe em cima do subject),
+
+
+
+    TUDO PARA QUE ELE CONSIGA 'UPDATE CORRETAMETNE' a partir do user status...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE VAMOS COLOCAR UMA NOVA PROPRIEDADE DE 
+
+
+
+'Subscription' lá no nosso header,
+
+que 
+
+
+
+
+
+será então responsável pela SUBSCRIPTION DESSE SUBJECT DE 'emitUser'...
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnDestroy, OnInit, Output } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { AuthService } from '../auth.service';
+
+import { RecipeBookService } from '../recipeBook.service';
+
+@Component({
+  templateUrl: './headerComponent.app.html',
+  styleUrls: ['./headerComponent.app.css'],
+  selector: 'app-header-component',
+})
+export class HeaderComponent implements OnInit, OnDestroy {
+  collapsed = true;
+
+  userEmitted: Subscription;
+
+  constructor(
+    private recipeService: RecipeBookService,
+    private authService: AuthService
+  ) {}
+
+  ngOnInit(): void {
+    this.userEmitted = this.authService.user.subscribe();
+  }
+
+  onLoadData() {
+    console.log('TEST');
+
+    this.recipeService.loadRecipes().subscribe();
+  }
+
+  onSaveData() {
+    this.recipeService.saveRecipes();
+  }
+
+  ngOnDestroy(): void {
+    this.userEmitted.unsubscribe();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO VAI FAZER SUBSCRIBE 
+
+
+
+a esse 'change do user'..
+
+
+
+
+
+
+
+
+--> agora só temos que 
+
+
+ATUALIZAR O STATE DE 'Header'
+
+a partir disso...
+
+
+
+
+
+
+
+
+--> provavelmente colocar um state como 'isAuth',
+
+e aí atualizar de acordo....
+
+
+
+
+
+
+
+
+
+-> VAMOS CONFIAR NO FATO DE QUE ESSE USER OU É 'NULL' (se não existe)
+
+
+OU 
+
+'EXISTS'..
+
+
+
+
+
+
+--> ok, professor realmente adicionou uma nova propriedade aqui,
+
+que vamos chamar de 
+
+
+
+
+''isAuth: boolean = false;'''
+
+
+
+
+eX:
+
+
+
+
+
+isAuth: boolean = false;
+
+
+
+  ngOnInit(): void {
+    this.userEmitted = this.authService.user.subscribe(
+      () => {
+
+      }
+    );
+  }
+
+
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+isAuth: boolean = false;
+
+
+
+    ngOnInit(): void {
+    this.userEmitted = this.authService.user.subscribe(
+      (data) => {
+        if (data) {
+            this.isAuth = true;
+        } else {
+          this.isAuth = false;
+        }
+
+      }
+    )
+  }
+
+
+
+
+
+  ----------------------------
+
+
+
+
+
+
+
+  --> melhor escrever 'user' do que 'data',
+
+
+  pq isso faz mais sentido:
+
+
+
+
+
+
+
+      ngOnInit(): void {
+    this.userEmitted = this.authService.user.subscribe(
+      (user) => {
+        if (user) {
+            this.isAuth = true;
+        } else {
+          this.isAuth = false;
+        }
+
+      }
+    )
+  }
+
+
+
+
+
+-----------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok..COM ESSA PROPRIEDADE DE 'isAuth',
+
+
+PODEMOS 
+
+MOSTRAR/ESCONDER DETALHES NO NOSSO COMPONENT DE 'HEADER'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+  <nav class="navbar navbar-default"> <!-- COM O USO DE ROUTING -->
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" (click)="collapsed = !collapsed">
+            <span class="icon-bar" *ngFor="let iconBar of [1, 2, 3]"></span>
+          </button>
+          <a routerLink="/" class="navbar-brand">Recipe Book</a>
+      </div>
+      <!-- <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true"> -->
+        <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true">
+        <ul class="nav navbar-nav">
+          <!-- <li (click)="onRecipeBook()"><a href="#">Recipes</a></li>
+          <li (click)="onShopList()"><a href="#">Shopping List</a></li> -->
+          <li routerLinkActive="active"><a [routerLink]="['/recipe-book']" (click)="collapsed = !collapsed" *ngIf="isAuth">Recipes</a></li>
+          <li routerLinkActive="active"><a [routerLink]="['/shop-list']"(click)="collapsed = !collapsed">Shopping List</a></li>
+          <li routerLinkActive="active"><a [routerLink]="['/auth']"(click)="collapsed = !collapsed" >Auth</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li>
+            <a style="cursor: pointer;" class="dropdown-toggle" role="button" *ngIf="isAuth">Logout</a>
+            </li>
+            <li class="dropdown" appDropdown #dropdown>
+                <a class="dropdown-toggle" role="button">Manage<span class="caret"></span></a>
+                <ul class="dropdown-menu" style="cursor: pointer;">
+                    <!-- <li><a href="#">Save Data</a></li>
+                    <li><a href="#">Fetch Data</a></li> -->
+                    <li><a (click)="onSaveData()">Save Data</a></li>
+                    <li><a (click)="onLoadData()">Fetch Data</a></li>
+                </ul>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -------> agora apenas o button de 'Auth' aparece quando NÃO ESTAMOS AUTENTICADOS...
+
+
+
+
+
+-> mas o link de nosso 'home' também aparece... --> queremos que 
+
+
+
+
+o 
+
+
+user seja redirecionado À 'localhost:4200/auth'
+
+
+
+
+quando 
+
+NÃO TIVER O OBJECT DE 'user'
+
+dentro 
+
+do localstorage do browser....
+
+
+
+
+
+
+
+
+
+--> ok, mas como posso fazer isso?
+
+
+
+talvez por meio de um resolver?
+
+
+
+
+
+
+
+
+
+
+
+
+-> BEM, E O BUTTON DE 'AUTHENTICATE' DEVE APARECER _ SOMENTE_ SE NÃO ESTIVERMOS AUTH,
+
+
+por issoo 
+
+o professor 
+
+escreve
+
+
+
+
+
+*ngIf="!isAuth"
+
+
+
+
+
+
+
+
+
+
+
+Ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <nav class="navbar navbar-default"> <!-- COM O USO DE ROUTING -->
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" (click)="collapsed = !collapsed">
+            <span class="icon-bar" *ngFor="let iconBar of [1, 2, 3]"></span>
+          </button>
+          <a routerLink="/" class="navbar-brand">Recipe Book</a>
+      </div>
+      <!-- <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true"> -->
+        <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true">
+        <ul class="nav navbar-nav">
+          <!-- <li (click)="onRecipeBook()"><a href="#">Recipes</a></li>
+          <li (click)="onShopList()"><a href="#">Shopping List</a></li> -->
+          <li routerLinkActive="active"  *ngIf="isAuth"><a [routerLink]="['/recipe-book']" (click)="collapsed = !collapsed">Recipes</a></li>
+          <li routerLinkActive="active"><a [routerLink]="['/shop-list']"(click)="collapsed = !collapsed">Shopping List</a></li>
+          <li routerLinkActive="active" *ngIf="!isAuth"><a [routerLink]="['/auth']"(click)="collapsed = !collapsed" >Auth</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li>
+            <a style="cursor: pointer;" class="dropdown-toggle" role="button" *ngIf="isAuth">Logout</a>
+            </li>
+            <li class="dropdown" appDropdown #dropdown>
+                <a class="dropdown-toggle" role="button">Manage<span class="caret"></span></a>
+                <ul class="dropdown-menu" style="cursor: pointer;">
+                    <!-- <li><a href="#">Save Data</a></li>
+                    <li><a href="#">Fetch Data</a></li> -->
+                    <li><a (click)="onSaveData()">Save Data</a></li>
+                    <li><a (click)="onLoadData()">Fetch Data</a></li>
+                </ul>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ---> o logout só deverá ficar visible quando estivermos AUTHENTICATED...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ---> O DROPDOWN DE 'MANAGE' _ TAMBÉM_ SÓ DEVE FICAR 'VISIBLE'
+
+  SE ESTIVERMOS AUTHENTICATED...
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <nav class="navbar navbar-default"> <!-- COM O USO DE ROUTING -->
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" (click)="collapsed = !collapsed">
+            <span class="icon-bar" *ngFor="let iconBar of [1, 2, 3]"></span>
+          </button>
+          <a routerLink="/" class="navbar-brand">Recipe Book</a>
+      </div>
+      <!-- <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true"> -->
+        <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true">
+        <ul class="nav navbar-nav">
+          <!-- <li (click)="onRecipeBook()"><a href="#">Recipes</a></li>
+          <li (click)="onShopList()"><a href="#">Shopping List</a></li> -->
+          <li routerLinkActive="active"  *ngIf="isAuth"><a [routerLink]="['/recipe-book']" (click)="collapsed = !collapsed">Recipes</a></li>
+          <li routerLinkActive="active"><a [routerLink]="['/shop-list']"(click)="collapsed = !collapsed">Shopping List</a></li>
+          <li routerLinkActive="active" *ngIf="!isAuth"><a [routerLink]="['/auth']"(click)="collapsed = !collapsed" >Auth</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li>
+            <a style="cursor: pointer;" class="dropdown-toggle" role="button" *ngIf="isAuth">Logout</a>
+            </li>
+            <li class="dropdown" appDropdown #dropdown *ngIf="isAuth">
+                <a class="dropdown-toggle" role="button">Manage<span class="caret"></span></a>
+                <ul class="dropdown-menu" style="cursor: pointer;">
+                    <!-- <li><a href="#">Save Data</a></li>
+                    <li><a href="#">Fetch Data</a></li> -->
+                    <li><a (click)="onSaveData()">Save Data</a></li>
+                    <li><a (click)="onLoadData()">Fetch Data</a></li>
+                </ul>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> OK, SE SALVARMOS ISSO, VEREMOS SÓ 
+
+
+  'AUTHENTICATE' E 'SHOPPING LIST'
+
+  como links...
+
+
+
+
+
+
+
+
+  --> e se fizermos login, veremos que a INTERFACE MUDARÁ,
+
+
+  ficaremos com os links adicionais de 'recipes' e 'logout' e 'manage' dropdown...
+
+
+
+
+
+
+
+
+
+
+
+
+  ---> 
+
+
+
+
+
+  CERTO... 
+
+
+
+
+
+
+
+
+
+
+  --> MAS AGORA, AINDA TEREMOS UM PROBLEMA:
+
+
+
+
+
+
+
+  A PAGE DE 'localhost:4200/auth' 
+
+
+
+  AINDA SERÁ 
+  VISITÁVEL/FICARÁ VISITÁVEL
+
+
+
+  __ ATÉ MESMO__ QUANDO 
+
+  ESTIVERMOS 
+
+  'LOGGED IN'...
+
+
+
+
+
+
+
+  --> temos que consertar esse comportamento, COLOCAR UM _ GUARD_ 
+
+  QUE 
+
+  BLOQUEIE O ACESSO DO USER A ESSA ROUTE QUANDO FOR CONSTATADO QUE 
+
+  ELE 
+
+  'JÁ POSSUI ESSE USER OBJECT DENTRO DE ALGUM LUGAR DO APP' (provavelmente local storage)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OK... MAS SE DIGITAMOS 'localhost:4200/auth'
+
+  MANUALMENTE,
+
+
+  JÁ VAMOS PERDER TODO O STATE DE NOSSO APP,
+
+
+
+
+
+  por isso é meio inútil tentar 'reloggar', no presente momento....
+
+
+
+
+
+
+
+
+
+  -> MAS O QUE INTERESSA A NÓS,
+  POR ENQUANTO,
+
+  É QUE ESSA USER INTERFACE ATUALIZA CORRETAMENTE... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ----> COM ESSA USER INTERFACE UPDATANDO CORRETAMENTE,
+
+  ANTES 
+
+
+
+  DE 
+  TRABALHARMOS COM COISAS COMO:
+
+
+
+
+
+
+  1) STORE DA TOKEN NO LOCAL STORAGE 
+
+
+
+
+  2) PROTECT DE CERTAS ROUTES PARA QUE NÃO CONSIGAMOS AS VISITAR 
+
+
+  SE TENTARMOS INPUTTAR SUAS URLS diretamente,
+
+
+
+
+
+
+
+
+
+
+
+
+  ANTES DE EXAMINARMOS ISSO,
+
+
+  DEVEMOS 
+
+
+
+  ___ FINALMENTE_ 
+
+
+
+  ASSEGURAR QUE '''É POSSÍVEL USAR NOSSA TOKEN PARA FAZER 
+
+  FETCH DE DATA/FAZER HTTP   REQUESTS DIVERSOS''',
+
+
+
+
+
+  pq isso 
+
+  é algo que AINDA NÃO ESTÁ FUNCIONANDO,
+
+
+
+
+
+  E 
+
+  É ALGO QUE FAZ PARTE DO 
+
+  'CORE' DE NOSSO APP (fetch de recipes)....
+
+
+
+
+
+
+
+
+
+
+
+
+  ---> nós teoricamente '''ESTAMOS AUTHENTICATED''',
+
+
+  MAS AINDA ASSIM não é possível ACESSAR A PAGE DE 
+
+
+  'recipes'
+
+
+
+
+  e conseguir carregar 
+
+
+
+
+
+  as nossas recipes... (código de 'getRecipes' é executado lá no 'ngOnInit()' de 'recipe-book')..
+
+
+
+
+
+
+
+
+
+
+
+  --> MAS PQ ISSO?

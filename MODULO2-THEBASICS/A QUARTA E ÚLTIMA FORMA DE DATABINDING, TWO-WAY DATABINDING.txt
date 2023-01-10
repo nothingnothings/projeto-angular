@@ -1,0 +1,840 @@
+ 
+
+
+
+
+
+
+
+
+
+ -> NAS ÚLTIMAS AULAS APRENDEMOS MT SOBRE 
+
+
+
+ STRING INTERPOLATION,
+
+
+
+ PROPERTY BINDING 
+
+
+ E 
+
+
+ EVENT BINDING...
+
+
+
+
+
+
+
+
+
+
+
+ ----> AGORA VAMOS COMBINAR 
+
+
+
+
+ PROPERTY BINDING E 
+
+
+
+ EVENT BINDING 
+
+
+
+ PARA __ CRIAR _ 
+
+
+ O 
+
+
+ 'TWO-WAY DATABINDING'...
+
+
+
+
+
+
+
+
+
+
+ --> DESCOBRIMOS QUE PODEMOS PEGAR A 'EVENT DATA'
+
+
+ em um determinado elemento por meio da escrita de 
+
+
+
+
+
+
+ (input)="onUpdateServerName($event)"
+
+ (eventName)="methodName($event)"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ----> (
+     ISSO NO HTML...
+ )
+
+
+
+
+
+
+
+
+
+ MAS É CLARO QUE EXISTE UM OUTRO APPROACH PARA OBTER ESSA DATA RELATIVA AO EVENT..
+
+
+
+
+
+
+
+
+
+ --> PARA ISSO,
+
+
+
+ O PROFESSOR 
+
+
+
+
+
+ REMOVE ESSE 
+
+ '' (input)="onUpdateServerName($event)" '''
+
+
+
+ E COLOCA OUTRA COISA NO SEU LUGAR...
+
+
+
+
+
+
+
+
+
+
+
+ --> VOCê DESCOBRIRÁ 
+
+
+ QUE 
+
+
+
+ TEMOS UMA MANEIRA AINDA MAIS 
+ FÁCIL 
+
+
+ DE 
+ FAZER 
+
+ 'BINDING' 
+
+
+ a alguma data...
+
+
+
+
+
+
+
+
+
+
+ --> COM TWO-WAY DATABINDING,
+
+
+ COMBINAMOS 
+
+ PROPERTY E EVENT BINDING...
+
+
+
+
+
+
+
+
+
+
+
+------> PARA USAR O TWO-WAY DATABINDING,
+
+
+
+VOCê 
+
+DEVE __ COMBINAR_ AS 2 SINTAXES... (você 
+
+
+usará 
+
+
+TANTO 
+
+'()' 
+
+
+como 
+
+'[]'....
+
+
+
+
+
+
+
+)
+
+
+
+
+
+
+
+
+---> A MORAL DO TWO-WAY DATABINDING É QUE 
+VOCê 
+UTILIZARÁ 
+
+
+
+'[]',
+
+
+E DENTRO 
+
+DAS SQUARE BRACKETS,
+
+
+VOCê USARÁ 
+
+'()'..
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+<input 
+type="text"
+class="form-control"
+[()]
+>
+
+
+
+
+
+
+
+
+CERTO... DENTRO DESSE NEGÓCIO,
+
+
+
+DEVEMOS USAR 
+
+UMA 
+
+
+
+
+ESPECIAL 'DIRECTIVE'... --> MAIS TARDE APRENDEREMOS SOBRE DIRECTIVES..
+
+
+
+
+
+
+
+
+
+
+
+
+-> A DIRECTIVE  que UTILIZAREMOS É 
+
+
+
+'ngModel'...
+
+
+
+
+
+
+
+---> 
+
+
+
+PARA ISSO ESCREVA ASSIM:
+
+
+
+
+
+
+
+
+<input 
+type="text"
+class="form-control"
+[(
+
+
+ngModel
+
+)]
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ASSIM QUE ESCREVERMOS ESSE 'ngModel' 
+
+
+NESSE SLOT (slot de  '''  [()] ''''),
+
+
+
+
+
+
+
+
+
+SERÁ POSSÍVEL DEFINIR O VALOR 
+
+
+
+
+DESSE 'ngModel'
+
+
+
+CCOMO _ SENDO  EQUIVALENTE A ALGUMA PROPRIEDADE QUE 
+
+
+DEFINIMOS 
+
+LÁ 
+
+NO CÓDIGO TYPESCRIPT (.ts)....  ------> NO NOSSO CASO,
+
+
+
+
+O PROFESSOR VAI QUERER DEFINIR O VALUE 
+
+desse 
+'ngModel'
+
+
+COMO SENDO EQUIVALENTE à PROPRIEDADE DE 
+
+'serverName'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> ex:
+
+
+
+
+
+
+<input 
+type="text"
+class="form-control"
+[(
+
+
+ngModel
+
+)]="serverName"
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK....
+
+
+
+
+
+
+
+
+
+--> vou criar um novo component para isso,
+
+o 
+
+'exemplo-two-way-databinding'...
+
+
+
+
+
+
+
+
+
+
+
+CRIEI UMA CÓPIA DO COMPONENT, TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-exemplo-two-way-databinding',
+  templateUrl: './exemplo-two-way-databinding.component.html',
+  styleUrls: ['./exemplo-two-way-databinding.component.css'],
+})
+export class ExemploTwoWayDatabindingComponent implements OnInit {
+  ngOnInit(): void {}
+
+  allowNewServer = false;
+  serverCreationStatus = false;
+  serverName = '';
+
+  constructor() {
+    setTimeout(
+      () => {
+        this.allowNewServer = true;
+      },
+
+      2000
+    );
+  }
+
+  toggleServer() {
+    this.serverCreationStatus = !this.serverCreationStatus;
+  }
+
+  onUpdateServerName(event: Event) {
+    // console.log(event.target.value)  ###sem DEFINIÇÃO TYPESCRIPT.
+    // this.serverName = event.target.value;
+    console.log((<HTMLInputElement>event.target).value); ///COM DEFINIÇÃO TYPESCRIPT.
+    this.serverName = (<HTMLInputElement>event.target).value;
+  }
+
+
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIm:
+
+
+
+
+
+
+
+<label>Server Name 2 </label>
+<input 
+type="text" 
+class="form-control"
+placeholder="Input your server name"
+[(
+    ngModel
+)]="serverName"
+> <!--  É OBRIGATÓRIO ADICIONAR aquele '$event' como parâmetro quando você QUER PASSAR O VALOR/SEU EVENT __ A ALGUM METHOD EM SEU ARQUIVO '.ts'...-->
+
+
+
+<button class="btn btn-primary" [disabled]="!allowNewServer" 
+(click)="toggleServer()"
+>Add Server 2</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK... AGORA SÓ FALTA CODAR O 'ngModel'
+
+
+lá 
+
+em 
+
+
+'exemplo-two-way-databinding.component.ts'...
+
+
+
+
+
+
+
+
+
+---------------------------------
+
+
+
+
+
+
+
+
+O SETUP DE 
+
+
+
+'''''
+
+[(
+    ngModel
+)]="serverName"
+
+
+''''
+
+
+
+
+
+VAI FAZER ISTO:
+
+
+
+
+
+
+
+__ ELE __ VAI TRIGGAR__ 
+
+
+
+
+
+A PARTIR _ DO EVENTO 'INPUT',
+
+
+E AÍ 
+
+
+
+__ VAI _ UPDATAR__ O  
+
+
+
+
+
+
+VALOR 
+
+DE 
+
+
+'serverName' 
+
+
+NO __ NOSSO COMPONENT, DE FORMA __ AUTOMÁTICA.. 
+
+
+
+
+
+
+O NOME É DE 'TWO-WAY BINDING'
+
+
+PQ 
+
+
+
+__ SE NÓS _ EVENTUALMENTE 
+
+ALTERARMOS O VALUE DE 
+
+
+
+
+'serverName'
+
+
+LÁ 
+
+
+
+NO NOSSO COMPONENT (em '.ts'),
+
+
+
+
+ISSO TAMBÉM SERÁ AUTOMATICAMENTE REFLETIDO 
+
+NO CÓDIGO DO TEMPLATE (
+
+
+
+    isso quer dizer que o CÓDIGO DO TEMPLATE E O CÓDIGO TYPESCRIPT ESTÃO CONECTADOS;
+
+    O QUE FOR ALTERADO EM 1 DOS LADOS REFLETIRÁ NO OUTRO, SEMPRE...
+)
+
+
+
+
+
+
+
+
+
+
+ESCREVI UM CÓDIGO TIPO ASSIM:
+
+
+
+
+
+
+<label>Server Name 2 </label>
+<input 
+type="text" 
+class="form-control"
+placeholder="Input your server name"
+[(ngModel)]="serverName"
+> <!--  É OBRIGATÓRIO ADICIONAR aquele '$event' como parâmetro quando você QUER PASSAR O VALOR/SEU EVENT __ A ALGUM METHOD EM SEU ARQUIVO '.ts'...-->
+
+<p>{{serverName}}</p>
+
+<button class="btn btn-primary" [disabled]="!allowNewServer" 
+(click)="restoreServerName()"
+>Restore Server Name</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS ISSO AINDA NÃO É UM EXEMPLO DE TWO-WAY BINDING,...
+
+
+
+
+
+
+
+
+
+
+
+--> COMO POSSO ALTERAR O VALOR 
+
+
+
+DE 
+
+'serverName'
+
+
+
+diretamente POR MEIO DO MEU CÓDIGO 'TYPESCRIPT'?
+
+
+
+
+
+
+
+
+
+
+--> PARA MOSTRAR UM EXEMPLO DISSO,
+
+O PROFESSOR 
+
+SETTA UM VALOR INICIAL DE 
+
+
+
+'serverName'
+
+
+
+COMO SENDO 
+
+'TestServer' -----> ISSO É OUTPUTTADO DIRETAMENTE COMO 'TestServer' onde antes só havia uma EMPTY STRING...
+
+
+
+
+
+
+
+
+
+
+
+
+--> SE FAZEMOS ISSO, NOSSO INPUT FIELD __ TAMBÉM__ É INICIALMENTE PREENCHIDO POR 'TESTSERVER'...
+
+
+
+
+
+
+
+
+
+
+
+
+----> ESSE É O TWO WAY BINDING,´E UMA MANEIRA MT 
+
+SIMPLES DE 'REAGIR A MUDANÇAS EM AMBOS OS SENTIDOS'... --> É USADO PARA 
+
+
+
+
+REAGIR A MUDANÇAS NO 'INPUT VALUE', por exemplo...
+
+
+
+
+
+
+
+-> DEVEMOS MELHORAR NOSSO APP UM POUCO, ANTES DE SEGUIR ESTUDANDO 'directives',
+
+
+QUE É UMA CORE FEATURE DO ANGULAR...
+
+
+
+
+
+
+
+
+
+
+
+
+OK, ACHO QUE ENTENDI... MAS É BEM SITUACIONAL..

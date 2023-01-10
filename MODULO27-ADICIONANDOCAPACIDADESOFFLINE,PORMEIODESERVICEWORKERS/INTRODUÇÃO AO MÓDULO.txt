@@ -1,0 +1,535 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+NESSE MÓDULO,
+
+
+VAMOS TRANSFORMAR UMA 'ONLINE-ONLY ANGULAR APP'
+
+
+
+
+
+
+
+
+
+
+em um  app 'OFFLINE-AVAILABLE'..  (bem situacional, mas é interessante)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> A MANEIRA DE FAZER UMA PAGE ANGULAR _ SER __ DISPONÍVEL __ DE MODO OFFLINE É 
+
+ATRAVÉS 
+
+
+DO USO DE UM 
+
+
+
+'SERVICE WORKER'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ADD DE SERVICE WORKERS --> É SUPER SIMPLES DE SER FEITO, EM APPS ANGULAR....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR VAI NOS MOSTRAR COMO CONVERTER 1 APP COMUM EM 
+
+
+
+1 APP 'OFFLINE', com os service workers...
+
+
+
+
+
+
+
+
+
+
+
+
+--> E ELE TAMBÉM VAI NOS ENSINAR A USAR OS SERVICE WORKERS PARA 
+
+
+
+FAZER O QUE QUISERMOS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COMEÇAMOS COM UM PROJECT ANGULAR BEM SIMPLES...
+
+
+
+
+
+
+
+
+
+
+
+--> o professor anexou o código, mas vou codar do zero...
+
+
+
+
+
+
+
+
+
+
+
+certo... vou começar por uma versão 'online' do código,
+
+
+
+
+
+
+
+pq só mais tarde vamos codar a versão 'OFFLINE', que terá nossos service workers...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK...
+
+
+
+
+
+
+
+
+
+
+
+
+--> É UM APP BEM SIMPLES, SEM MT FIRULA...
+
+
+
+
+
+
+
+
+
+--> ESSE APP RENDERIZA UMA LISTA DE BLOG POSTS,
+
+DUMMY BLOG POSTS,
+
+
+QUE SÃO FETCHEADOS 
+
+
+
+LÁ EM 'app.component.ts',
+
+
+LÁ 
+
+
+DAQUELE 
+
+
+
+
+
+
+
+SITE QUE JÁ USAMOS UMA VEZ,
+
+
+o 
+
+
+
+
+
+
+'jsonplaceholder.typicode.com/posts'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É UMA PAGE QUE EXPÕE UMA DUMMY REST API, A QUAL PODEMOS USAR PARA PEGAR DATA PARA DISPLAYAR
+
+
+E TESTAR NA NOSSA PAGE...
+
+
+
+
+
+
+
+
+
+
+--> TAMBÉM É POSSÍVEL ENVIAR DUMMY POST REQUESTS A ESSA PAEG,
+
+
+
+MAS AQUI VAMOS FOCAR NO 'GET' DE DATA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK, É UM APP ANGULAR COMUM, SEM MTAS FEATURES,
+
+MAS ELE _ REPRESENTA UM APP ANGULAR TÍPICO....
+
+
+
+
+
+
+
+--> nosso projeto NÃO TERÁ BOOTSTRAP...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok... escrevi o código....
+
+
+
+
+
+
+
+está funcionando, mas é claro que esse código aí APENAS FUNCIONA ONLINE, e nunca offline...
+
+
+
+
+
+
+
+
+
+
+
+
+--> para que FUNCIONE OFFLINE,
+
+precisamos usar 'SERVICE WORKERS'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É UM APP ANGULAR TÍPICO:
+
+
+
+
+
+
+
+1) TEMOS MAIS DE 1 COMPONENT 
+
+
+
+
+
+
+
+2) ESTAMOS USANDO UMA FONTE ESPECIAL, QUE ESTAMOS TIRANDO LÁ DO GOOGLEFONTS, COMO VISTO NO 'index.html'
+
+
+
+
+DE NOSSO PROJETO, 
+
+
+Naquele 'link href'
+
+
+
+QUE PODEMOS ENCONTRAR AQUI:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>NovoProjetoServiceWorkersVersaoOnline</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald:300,700">
+</head>
+<body>
+  <app-root></app-root>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS SE INSPECIONARMOS ISSO AÍ NO CHROME,
+
+
+
+
+
+
+O PROFESSOR EXPLICA QUE PODEMOS ABRIR A ABA DE 'APPLICATION' no devtools,
+
+e aí clicar em 'service workers' e então 'OFFLINE MODE'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SE CLICAMOS NESSA OPÇÃO,
+
+
+
+NÓS NÃO PRECISAMOS FICAR _'OFFLINE DE VERDADE'
+
+
+PARA __ CONSEGUIRMOS 
+
+
+
+
+SIMULAR O DISCONNECT DE NOSSA REDE, no contexto de nosso app...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok, clico nesse button, e aí automaticamente aparece aquela page de 'you are offline'...
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+ ----> OK... ISSO SIMULA AUSÊNCIA DE CONEXÃO DE INTERNET...
+
+
+
+
+
+
+
+
+
+
+ --> E VAMOS REALMENTE CONSEGUIR UM 'ERROR' POR CONTA DA FALTA DE INTERNET...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> O PROFESSOR DIZ QUE DEVEMOS VER COMO _ ALTERAr_ ESSE COMPORTAMENTO,
+
+
+ POR MEIO DE UM SERVICE WORKER,
+
+
+ 
+
+ PARTICULARMENTE COMO ADICIONAR UM _ NO CONTEXTO DO ANGULAR..

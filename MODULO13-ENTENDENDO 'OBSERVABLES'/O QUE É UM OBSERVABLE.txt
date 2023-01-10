@@ -1,0 +1,944 @@
+
+
+
+
+
+
+
+
+
+
+
+
+OBSERVABLES PODEM SER COMPREENDIDOS COMO 
+
+
+
+'DATA SOURCES'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NO NOSSO 
+
+
+ANGULAR PROJECT,
+
+
+
+
+1 OBSERVABLE É 
+
+'BASICAMENTE SÓ UM OBJECT',
+
+
+
+
+
+
+
+
+1 object que IMPORTAMOS DE UMA 
+
+
+THIRD PARTY PACKAGE,
+
+
+
+
+
+daquela 
+
+package de 
+
+
+
+'rxjs'....
+
+
+
+
+
+
+
+
+
+
+
+tipo 
+
+
+import { Observable } from 'rxjs';
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OBSERVABLE 
+
+
+
+
+Various Data Sources 
+
+(User Input) Events, Http Requests, Triggered in Code,....
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------> O OBSERVABLE DE 'rxjs' 
+
+
+ 
+
+ É _ IMPLEMENTADO _ DE UM MODO QUE 
+
+
+ ELE 
+
+ SEGUE 
+
+
+ UM TAL DE 
+
+ 'OBSERVABLE PATTERN'...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> SEMPRE COM OBSERVABLES, TEMOS ESTE PADRÃO:
+
+
+
+
+
+
+
+
+
+
+
+
+ OBSERVABLE <---------------------------------> OBSERVER 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -- TEMOS UM OBSERVABLE, 
+ E UM 
+
+ OBSERVER...
+
+
+
+
+
+
+
+
+
+ -----> entre os DOIS,
+
+
+ NÓS TEMOS UMA _ _STREAM,
+
+ TIPO UMA TIMELINE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ex:
+
+
+
+
+
+
+
+ 
+ OBSERVABLE <---------------------------------> OBSERVER
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> NESSA TIMELINE,
+
+
+ PODEMOS TER MÚLTIPLOS __EVENTS__,
+
+
+
+ TODOS EMITIDOS PELO 
+
+
+
+ 'OBSERVABLE' (objeto observado)....
+
+
+
+
+
+
+
+
+
+
+
+ -> ESSES 'EVENTS' PODEM SER CONSIDERADOS COMO 'DATA PACKAGES',
+
+
+
+TODAS EMITIDAS PELO OBSERVABLE...  -------> É CLARO QUE TUDO DEPENDE 
+
+
+
+
+
+ 
+
+
+ DO 
+
+ 'DATA SOURCE'
+
+
+ do observable em questão...
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER QUE 
+
+
+O OBSERVABLE PODE EMITIR DATA:
+
+
+
+
+
+
+
+
+1) PQ VOCÊ O TRIGGOU PARA QUE FIZESSE ISSO.... (você pode fazer isso programaticamente)....
+
+
+
+
+
+
+
+
+2) PODE EMITIR DATA _ PQ _ ELE, O OBSERVABLE,
+
+ESTÁ __ CONECTADO A UM BUTTON,
+
+E AÍ 
+
+SEMPRE QUE 
+VOCÊ 
+
+CLICAR 
+
+NESSE BUTTON,
+
+1 EVENT NESSA 'DATA PACKAGE'
+
+é 
+
+EMITIDO AUTOMATICAMENTE...
+
+
+
+
+
+
+
+
+
+
+
+3) ou, como O SERVICE HTTP DO ANGULAR FAZ,
+
+
+O OBSERVABLE ESTÁ __ CONECTADO A UM HTTP REQUEST,
+
+
+O QUE QUER DIZER QUE __ SEMPRE QUE _ 
+
+A RESPONSE 
+
+
+CHEGA AO CLIENT,
+
+A RESPONSE É EMITIDA COMO UM 'DATA PACKAGE'...
+
+
+
+
+
+
+
+
+
+
+--> E EXISTEM DEZENAS DE DIFERENTS 'DATA SOURCES'... --> logo aprenderemos algumas....
+
+
+
+
+
+
+
+
+
+
+
+--> A PARTE MAIS IMPORTANTE É O OBSERVER....
+
+
+
+
+
+
+
+
+
+
+--> O OBSERVER É A PARTE __NOSSA DO CÓDIGO__... -------> 
+
+
+
+
+
+
+
+
+
+
+
+O OBSERVER, A 'COISA QUE OBSERVA',
+
+
+
+é a parte que 
+
+
+USAMOS ANTERIORMENTE,
+
+É 
+
+
+
+
+
+A FUNCTION DE 'subscribe' 
+
+QUE USAMOS ANTERIORMENTE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> NOS OBSERVERS,
+
+
+
+TEMOS _ 
+
+
+
+
+
+
+3 MANEIRAS__ DE HANDLAR _ AS DATA PACKAGES:
+
+
+
+
+
+
+
+
+
+1) pode handlar a data package como _ DATA, ''''HANDLE DATA'''''
+
+
+
+
+2) pode handlar a data package como um ERROR, '''HANDLE ERROR'''
+
+
+
+
+
+
+3) pode handlar a data package como 'COMPLETION', como a COMPLETION DO OBSERVABLE...
+
+
+
+
+
+
+ESSES SÃO OS 3 TIPOS DE DATA PACKAGES QUE PODEMOS RECEBER...
+
+
+
+
+
+
+
+
+
+
+--> E DENTRO DESSES 'HOOKS',
+
+
+dentro dessas 'BOXES' que são 
+
+os 
+
+'OBSERVERS',
+
+
+
+__ SEU CÓDIGO,
+
+SUA LÓGICA ESPECÍFICA (que você escreveu),
+
+
+
+PODERÁ SER EXECUTADA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER QUE 
+
+
+VOCÊ PODE _ DETERMINAR 
+
+
+'''O QUE ACONTECE QUANDO EU RECEBER UMA DATA PACAKGE'''
+
+
+
+'' O QUE ACONTECE QUANDO EU RECEBER UMA __ ERROR_ PACKAGE'''
+
+
+
+
+
+
+
+
+'' O QUE ACONTECE QUANDO O OBSERVABLE EVENTUALMENTE _ CONCLUIR__''? 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OBS: QUANTO A ISSO,
+
+
+É IMPORTANTE ESCLARECER QEU __ ALGUNS OBSERVABLES _ NUNCA VÃO 'COMPLETE'...
+
+
+
+
+
+
+-> exemplo disso é os observables hookados a coisas como 'NORMAL BUTTONS',
+
+
+QUE __ NUNCA __ VÃO 'COMPLETE',
+
+
+pq o user sempre vai poder apertar no button, certo?
+
+
+
+
+
+
+
+
+
+
+----> não há como saber quando um observable como um 'button' 
+
+
+vai acabar,
+
+pq eles não possuem um fim bem definido....
+
+
+
+
+
+
+
+
+
+
+
+--->  OUTROS OBSERVABLES,
+
+
+
+
+como HTTP REQUEST,
+
+
+
+
+POSSUEM UM FIM BEM DEFINIDO,
+
+
+E VÃO EVENTUALMENTE 
+
+
+CONCLUIR,
+
+
+pq 
+
+
+
+uma vez que 
+
+a 
+'response' chega,
+
+
+
+
+
+não há mais o que fazer, sua tarefa está concluída...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> É ASSIM QUE O 'OBSERVABLE PATTERN'
+
+
+geralmente funciona...
+
+
+
+
+
+
+
+
+
+-> E É CLARO QUE 
+
+
+NÓS UTILIZAMOS 
+
+
+
+O OBSERVABLE PATTERN PARA 
+
+HANDLAR ASYNC TASKS,
+
+
+
+
+
+
+PQ __ TODAS __ 
+
+
+
+ESSAS DATA SOURCES (
+
+
+    como user events triggados no seu código,
+
+    ou HTTP REQUESTS
+),
+
+
+
+
+
+TODAS ELAS SÃO 
+
+ASYNC,
+
+
+
+__VOCê NÃO SABE QUANDO ELAS VÃO ACONTECER/SE VÃO ACONTECER,
+
+
+E NÃO 
+
+SABE_ _ QUANTO _ TEMPO ELAS VÃO TOMAR...
+
+
+
+
+
+
+
+
+
+
+
+------> ISSO QUER DIZER QUE SE VOCê 
+
+
+EXECUTA SEU CÓDIGO NORMAL, DO SEU APP,
+
+
+
+
+VOCÊ NÃO VAI QUERER 'WAIT' POR ESSES EVENTS,
+
+
+
+PELO COMPLETE DE COISAS COMO HTTP REQUESTS,
+
+
+
+PQ _ ISSO 
+
+
+
+ACABARIA, EVENTUALLY,
+
+_BLOQUEANDO SEU CÓDIGO,
+
+BLOQUEANDO A LÓGICA DE SEU APP...
+
+
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE PRECISAMOS DE METHODS PARA HANDLAR 
+
+
+
+
+
+__ ESSES ASYNC TASKS... ----->  HISTORICAMENTE,
+
+
+
+VOCÊ 
+
+
+
+JÁ DEVE TER USADO 
+
+CALLBACKS E PROMISES,
+
+
+
+
+
+
+
+e naõ é necessariamente RUIM as utilizar...
+
+
+
+
+
+
+
+
+------> O 'OBSERVABLES'
+
+
+É APENAS UM _ APPROACH_ -DIFERENTE 
+
+DE HANDLAR 
+
+
+
+ESSAS TAREFAS,
+
+
+
+
+
+UMA ALTERNATIVA DIFERENTE,
+
+E O 
+
+
+ANGULAR 
+
+
+ABRAÇAS OS OBSERVABLES,
+
+
+
+
+
+UTILIZA-OS MUITO....
+
+
+
+
+
+
+
+
+
+
+---> E OBSERVABLES, NA VERDADE,
+
+
+POSSUEM UMA _ GRANDE VANTAGEM,
+
+
+INEXISTENTE EM 'PROMISES' E 'CALLBACKS',
+
+
+
+que o professor logo nos mostrará...
+
+
+
+
+
+
+
+
+
+
+--> essa vantagem é os 'OPERATORS' 
+
+
+
+das observables... -----> ELE NOS MOSTRARÁ MAIS TARDE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK... DE VOLTA AO SLIDE:
+
+
+
+
+
+
+TEMOS SEMPRE 1 OBSERVABLE,
+
+
+E AÍ OS 
+
+
+3 
+
+'BUCKETS'
+
+
+
+ou hooks 
+
+
+
+
+DO 'OBSERVER',
+
+que 
+
+vai executar 
+
+
+
+DIFERENTES CÓDIGOS/LÓGICA A PARITR 
+
+
+
+DO TYPE DE PACKAGE QUE RECEBEMOS...
+
+
+
+
+
+
+
+
+
+
+---------> O QUE PODE ACONTECER É:
+
+
+
+
+
+'observable emite 2 packages de tipo 'DATA COMUM' ',
+
+
+
+
+para aí 
+
+
+'EMITIR 2 PACKAGES DE TIPO ERROR',
+
+
+para finalmente 
+
+'emitir 1 package de tipo COMPLETION'...
+
+
+
+
+
+
+
+
+
+--> e aí o CÓDIGO/A LÓGICA RESPECTIVA É EXECUTADA...
+
+
+
+
+
+
+
+
+
+
+
+--> ESSA É A TEORIA, AGORA DEVEMOS VER COMO ISSO SE ENCAIXA NO NOSSO 'ACTUAL PROJECT'...

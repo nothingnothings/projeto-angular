@@ -1,0 +1,117 @@
+
+
+
+
+
+
+COMEÇO EXECUTANDO 'ng new' no folder de 'novoprojeto2'... --> isso vai criar um novo projeto angular..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... AGORA QUE COMEÇAMOS COM ESSE PROJETO E COM O ANGULAR,
+
+
+
+COM O PROJETO QUE VAMOS USAR NESSE CURSO,
+É HORA 
+
+D
+E 
+
+
+
+'DIVE DEEPER' NO ANGULAR,
+
+
+
+VER 
+
+
+COMO ELE FUNCIONA POR TRÁS DAS CENAS,
+
+
+COMO UM APP ANGULAR 
+
+
+
+É INICIADO 
+
+
+PARA INÍCIO DE CONVERSA,
+
+
+
+
+
+
+
+
+
+TAMBÉM QUAIS 'BASIC BUILDING BLOCKS'
+
+que ele nos oferece --> VEREMOS COMO CONSTRUIR 
+
+BASIC 
+
+
+
+ANGULAR APPS,
+
+
+
+QUAIS FEATURES USAMOS PARA ISSO,
+
+
+
+
+
+O QUE SEU APP ANGULAR FAZ,
+
+E O QUE VOCÊ PODE MEXER PARA 
+
+
+
+OBTER UM DIFERENTE 
+
+RESULTADO COM O ANGULAR....
+
+
+
+
+
+
+--> O QUE ACONTECE QUANDO VISITAMOS/RECARREGAMOS UMA PAGE ANGULAR...
+
+
+
+
+
+
+
+
+
+
+---> A PÁGINA PODE PARECER VAZIA, MAS HÁ MAIS COISAS NELA DO QUE VOCÊ IMAGINA...
+
+
+
+
+
+
+
+
+-> CERTO...

@@ -1,0 +1,298 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ACABAMOS COM O MÓDULO DE 'HTTP'... 
+
+
+
+
+
+
+
+--> MÓDULO BEM LONGO..
+
+
+
+
+
+--> APRENDEMOS SOBRE O CLIENT HTTP ANGULAR...
+
+
+
+
+
+
+HttpClient e HttpClientModule....
+
+
+
+
+
+
+
+
+
+
+
+
+--> A COISA QUE VOCÊ FARÁ COM MAIOR FREQUÊNCIA:
+
+
+
+
+1) SEND DE REQUESTS COM post, get, patch, com urls...
+
+
+
+
+
+2) ADD DE REQUEST BODIES NOS SEUS REQUESTS....
+
+
+
+
+
+
+
+
+3) TALVEZ O ADD DE UNS REQUEST HEADERS, DEPENDENDO 
+
+da situação...
+
+
+
+
+
+
+--> você deve praticar isso...
+
+
+
+
+
+
+
+--> VOCÊ DEVE SE LEMBRAR QUE TODOS ESSES METHODS COMO '.post()"  e '.get()'
+
+
+
+
+
+
+TE RETORNAM 'OBSERVABLES',
+
+
+
+
+
+
+
+
+
+que devem então ser 'SUBSCRIBED' 
+
+PARA QUE 
+
+OS 
+REQUESTS ACTUALLY 
+
+SEJAM DISPARADOS..
+
+
+
+
+
+
+
+
+--> COMO ESSES NEGÓCIOS NOS RETORNAM OBSERVABLES,
+
+
+
+PODEMOS USAR _ OPERATORS (observable operators)
+
+
+
+PARA TRANSFORMAR A DATA,
+
+CATCHEAR ERRORS ,
+
+ETC...
+
+
+
+
+
+
+
+
+---> MAS O QUE INTERESSA É QUE VOCÊ PRECISA CHAAMR 'SUBSCRIbe',
+
+
+
+não importa se for EM 1 COMPONENT  OU __ NO SERVICE EM SI... (dependendo de onde vocÊ precisa trabalahr com a data)...s
+
+
+
+
+
+
+
+
+
+--> SE VOCÊ NÃO PRECISA DA DATA DA RESPONSE,
+
+ 
+ VOCÊ PODE USAR _ UM __ 'subject' 
+
+
+
+
+
+
+
+
+
+ --> SUBJECTS TAMBÉM PODEM SER USADOS COM ERROR HANDLING...
+
+
+
+
+
+
+
+
+
+
+ --> o error handling mais comum é o realizado 
+
+
+ NO PRÓPRIO METHOD DE '.subscribe()',
+
+
+ NO _ SEGUNDO PARÂMETRO DESSE METHOD... (
+
+     error handling functions...
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> É ASSIM QUE TRABALHAMSO COM HTTP REQUESTS NO ANGULAR...
+
+
+
+
+
+
+
+ --> VOCÊ TEM ALGUMAS ADVANCED FEATURES,
+
+ COMO  
+
+ A POSSIBILIDADE DE 
+
+
+ 'DEFINE WHAT YOU WANNA OBSERVE '
+
+ (
+
+     'body' (default) ,
+
+     'response' (response completa, com headers, params, url, tudo),
+
+     'event'  (te dá um object tipo '{type: number}' , em que o NUMBER DESCREVE O TIPO DE EVENT QUE foi 
+     
+     RECEBIDO/OBSERVADO nesse http request.... )
+ )
+
+
+
+
+
+
+
+
+
+--> você pode DEFINIR QUERY PARAMS, HEADERS, ETC...
+
+
+ --> VOCÊ TAMBÉM PODE DEFINIR O TYPE DE DATA QUE PODE SER RETORNADA ('json' (default), 'text', 'blob' ou 'ArrayBuffer')
+
+
+
+
+
+
+
+
+
+ observe: 'body' 
+
+ observe: 'response' 
+
+
+ observe: 'event'...
+
+
+
+
+
+
+
+
+
+ -> POR FIM, 
+
+
+VOCÊ TEM AQUELA FEATURE SUPER ÚTIL DE 'INTERCEPTORS',
+
+que pode realmente te ajudar a 
+
+salvar 
+
+
+TEMPO e CÓDIGO  
+
+
+SE VOCÊ TIVER ALGUM HEADER QUE PRECISA SER 
+
+APPENDED A TODO E QUALQUER REQUEST QUE SAI DE SEU APP (authentication , por exemplo)...
+
+
+
+
+
+
+
+
+
+
+--> AGORA DEVEMOS IR ATÉ O COURSE PROJECT E TESTAR O USO DESSES 
+
+
+HTTP REQUESTS E METHODS LÁ...

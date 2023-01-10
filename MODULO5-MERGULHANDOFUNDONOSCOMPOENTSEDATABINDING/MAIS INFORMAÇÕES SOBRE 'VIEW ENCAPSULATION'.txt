@@ -1,0 +1,472 @@
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> OK.. --> NA ÚLTIMA LIÇÃO APRENDMEOS QUE O ANGULAR
+
+
+
+ 'ENCAPSULATES'
+
+ os nossos styles....
+
+
+
+
+(
+
+    STYLES DEFINIDOS EM UM arquivo 
+
+    ''xxxx.component.css''
+
+
+    só serão APLICADOS AO COMPONENT 'html' 
+
+    vincualdo a esse arquivo...
+)
+
+
+
+
+
+--> É UM COMPORTAMENTO SIMILAR A 'CSS MODULES'....
+
+
+
+
+
+
+
+ --> MAS _ ESSA 'ENCAPSULATION'  
+ __ PODE _ 
+
+
+ SER OVERWRITTADA/OVERRIDEN.. --> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ SE VOCÊ QUER _ IGNORAR/AFASTAR ESSE COMPORTAMENTO TÍPICO DO ANGULAR (e contrário ao comportamento COMUM DO JAVASCRIPT, QUE APLICA OS STYLES EM SELECTORS __ no seu app inteiro)l,
+
+
+
+
+ VOCÊ 
+
+
+ DEVE voltar 
+
+
+
+
+
+
+ AO CÓDIGO DO 
+
+  
+
+  'server-item.component.ts',
+
+
+
+
+
+
+
+
+COMPONENT EM QUE TEMOS O NOSSO STYLE DE 
+
+
+'p {
+    color: blue 
+}
+
+',
+
+
+que no momento SÓ É APLICADO 
+
+
+
+
+
+
+
+NOS '<p>'
+
+
+DO COMPONENT 'server-item'...
+
+
+
+
+
+
+
+
+
+
+---> NESSE 'server-item .component.ts',
+
+
+
+VOCê 
+
+
+
+
+
+
+
+
+PODE _ __ ADICIONAR_ UM 
+
+
+ARGUMENTO ESPECIAL AO DECORATOR CORE 
+de 
+
+
+
+
+"""@Component''' -----> 
+
+
+
+
+
+
+
+ESSE ARGUMENTO ESPECIAL É ADICIONADO DENTRO DO 'CONFIG-OBJECT'
+
+
+desse '@Component',
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+@Component (
+    {
+          selector: 'app-server-item',
+  templateUrl: './server-item.component.html',
+  styleUrls: ['./server-item.component.css'],
+
+  encapsulation: 
+    }
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> É ESSA PROPRIEDADE CHAMADA DE 'ENCAPSULATION'... ----> 
+
+COM VALOR DESSA 
+
+PROPRIEDADE,
+
+
+
+
+
+
+
+
+
+
+PROFESSOR DIZ QUE PODEMOS ACESSAR 
+
+'ViewEncapsulation' 
+
+
+
+
+
+
+
+
+__,
+
+ QUE 
+
+ É UM OBJETO/COISA QUE 
+
+ PRECISA SER IMPORTADA 
+
+ LÁ 
+ DE 
+
+
+
+ '@angular/core',
+
+ por isso ESCREVA ASSIm:
+
+
+
+
+
+
+
+
+
+@Component({
+  selector: 'app-server-item',
+  templateUrl: './server-item.component.html',
+  styleUrls: ['./server-item.component.css'],
+  encapsulation: ViewEncapsulation    ////'encapsulation' é usada para _ COPIAR O COMPORTAMENTO DE 'CSS MODULES' (cada arquivo css é aplicado só AO COMPONENT A QUE ESTÁ VINCULADO, não sendo aplicados seus selectors aos DEMAIS COMPONENTS DO CÓDIGO).. ->_ esse comportamneto pode ser OVERWRITTEN, substituído pelo 'COMPORTAMENTO DEFAULT' de arquivos css (que é sempre aplicar os selectors A TODOS OS ELEMENTS DO SEU PROJETO)....
+
+
+
+  ////encapsulation tem 3 MODOS: 'emulated' (default, é o padrão do angular, é o comportamento de 'css modules'), 'none' (aplica seus selectors a TODOS OS ELEMENTS DA PÁGINA, tendo um behavior de 'css/javascript' comum...), 
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> MAS ESSE 'encapsulation' possui 3 modos:
+
+
+
+
+
+
+'emulated' --> É O DEFAULT, QUE USAMOS ATÉ AGORA (encapsulation ATIVADA, BEHAVIOR SEMELHANTE AO 'CSS MODULES', REPLICAÇÃO/EMULAÇÃO DO 'SHADOW DOM' para cada element)...
+
+
+
+
+
+
+
+'none' ---> SE DEFINIMOS QUAISQUER SELECTORS NESSE ARQUIVO 'CSS' do component que colocamos 'encapsulation: none', 
+
+
+ESSES SELECTORS SERÃO APLICADOS __ GLOBALMENTE, A TODOS OS ELEEMNTOS DE NOSSO APp...
+
+
+
+
+
+
+--> O PROFESSOR demonstra isso por meio da alteração de 
+
+'label',
+
+
+da cor de label para 'RED',
+
+QUE ACABARÁ SENDO APLICADA EM TODAS AS LABELS 
+
+
+
+
+
+DE 
+NOSSO APP....
+
+
+
+
+    
+
+
+
+
+
+
+
+    -> MAS O COMPORTAMENTO DE 'emulated'
+
+    AINDA É MT MELHOR, PQ 
+
+    FAZ COM QUE NOSSOS  COMPONENTS DEIXEM DE 'INTERFERIR' 1 COM OS OUTROS EM RELAÇÃO AO STYLING....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS ISSO É BEM SITUACIONAL, O 'none'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ALÉM DE 'none',
+
+
+
+
+
+existe também a opção 'NATIVE',
+
+
+tip oassim:
+
+
+
+
+
+
+
+encapsulation: ViewEncapsulation.Native
+
+
+
+
+
+
+
+
+
+
+
+
+--> O 'NATIVE' (também chamado de 'ShadowDom') usa __ a 
+
+
+
+
+
+TECNOLOGIA DE 'SHADOW DOM'... -----> ISSO DEVERÁ _ TE DAR O MESMO RESULTADO 
+
+
+
+
+
+OBTIDO COM 'emulated',
+
+
+
+MAS __ 
+
+
+APENAS _ COM BROWSERS QUE OS SUPORTAM,
+
+
+
+
+
+
+RAZÃO PELA QUAL NA GRANDE MAIORIA DOS CASOS VAMOS PREFERIR 'EMULATED'....
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR VOLTA Ao 'emulated',
+
+QUE É O DEFAULT... 
+
+
+
+
+
+
+
+
+
+
+
+(não precisa ser escrito, é automático)...
+
+
+
+
+
+
+
+
+
+-> ENCAPSULATION -> É UMA BOA FERRAMENTA QUE ASSEGURA QUE SÓ SEU COMPONENT ,
+
+por defauilt,
+
+
+
+vai receber os styles que você definiu para ele... (e é uma ferramneta que pode ser OVERWRITTEN por meio da key  de 'encapsulation')...

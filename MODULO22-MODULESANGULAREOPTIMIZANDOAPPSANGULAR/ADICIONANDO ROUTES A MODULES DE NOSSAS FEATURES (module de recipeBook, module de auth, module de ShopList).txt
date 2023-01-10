@@ -1,0 +1,1556 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO.... O TRABALHO QUE FIZEMOS LÁ COM 
+
+
+O 
+
+'RECIPE-BOOK',
+
+
+
+com o module de recipeBookModule,
+
+
+
+
+
+
+FOI UM BOM COMEÇO,
+
+
+
+
+
+
+
+MAS __ É __ CLARO __ QUE 
+
+
+
+A ÚNICA COISA QUE FIZEMOS, ATÉ AGORA,
+
+
+
+É O OUTSOURCE 
+
+
+
+
+
+
+
+
+DA DECLARATION DE 'recipeBook'
+
+
+
+EM UM 
+
+
+MODULE SEPARADO,
+
+TUDO PARA DEIXAR UM 
+
+
+
+
+app.module.ts
+
+
+
+MAIS LEAN...
+
+
+
+
+
+
+
+
+
+
+
+--> NÃO HÁ NADA DE ERRADO EM FAZER ISSO,
+
+FAZER O OUTSOURCE  DE 'FEATURE AREAS'
+
+
+
+
+de seu código EM MODULES PRÓPRIOS/INDEPENDENTES,
+
+
+PARA DEIXAR SEU CÓDIGO MAIS LEAN..
+
+
+
+
+
+
+
+
+
+--> MAS É CLARO QUE PODEMOS FAZER MAIS DO QUE ISSO.......
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS, ALÉM DISSO,
+
+
+
+
+MOVER A 'ROUTING CONFIGURATION'
+
+
+RELATIVA AOS _ 'RECIPES' (RecipeBook)
+
+
+
+
+
+____ PARA __ LONGE _ 
+
+
+
+
+DO MODULE DE 'app-routing.module.ts',
+
+
+
+
+
+
+
+
+OU SEJA,
+
+
+
+TODO AQUELE BRANCH DE 
+
+
+
+
+
+
+
+
+
+
+
+
+'''''''''''''''
+
+
+
+
+
+
+
+
+
+  {
+    path: 'recipe-book',
+    component: RecipeBookComponent,
+    canActivate: [AuthGuardService], ////VAI REDIRECIONAR à 'auth', SE O USER NÃO ESTIVER AUTH....
+    children: [
+      {
+        path: '',
+        resolve: [RecipesResolverService],
+        component: SelectARecipeComponent,
+      },
+      {
+        path: 'new',
+
+        component: RecipeEditComponent,
+      },
+      {
+        path: ':id',
+        resolve: [RecipesResolverService],
+        component: RecipeDetailComponent,
+      },
+
+      {
+        path: ':id/edit',
+        resolve: [RecipesResolverService],
+        component: RecipeEditComponent,
+      },
+
+      // {
+      //     path: 'new-recipe',
+      // }
+    ],
+  },
+
+
+
+
+
+
+
+
+
+
+
+  '''''''''''''
+
+
+
+
+
+
+
+
+
+
+
+
+
+  , PODEMOS PEGAR ESSE BRANCH 
+
+
+
+
+  E COLOCÁ-LO 
+
+
+
+
+  __DENTRO __ DE NOSSO 'recipeBookModule'...
+
+
+
+
+
+
+
+  --> PARA ISSO,
+
+
+
+
+
+
+  DENTRO DO 
+
+
+  arquivo 
+
+
+
+
+  'recip-book.module.ts',
+
+
+
+
+  TEMOS ESTE CÓDIGO:
+
+
+
+
+
+import { CommonModule } from "@angular/common";
+import { NgModule } from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
+import { RouterModule } from "@angular/router";
+import { RecipeBookComponent } from "./recipe-book.component";
+import { RecipeDetailComponent } from "./recipe-detail/recipe-detail.component";
+import { RecipeEditComponent } from "./recipe-edit/recipe-edit.component";
+import { RecipeItemComponent } from "./recipe-list/recipe-item/recipe-item.component";
+import { RecipeListComponent } from "./recipe-list/recipe-list.component";
+import { SelectARecipeComponent } from "./select-a-recipe/select-a-recipe.component";
+
+
+
+
+@NgModule({
+
+    declarations: [
+        RecipeBookComponent,
+        RecipeDetailComponent,
+        RecipeBookComponent,
+        SelectARecipeComponent,
+        RecipeEditComponent,
+        RecipeListComponent,
+        RecipeItemComponent,
+
+    ],
+    providers: [],
+    imports: [
+        RouterModule,
+        CommonModule,
+        ReactiveFormsModule  ///esses 3 modules são necessários, aqui, pq usamos essas 3 features dentro dos componnets/código de 'recipeBookMOdule', esse SUBMODULE de nosso app (que é representado por 'app.module.ts', o module em que esse 'recipeBookMOdule' é importado) ------> 
+        ///A RAZÃO PARA TERMOS DE 'REPETIR' ESSES IMPORTS, AQUI, É QUE __ IMPORTS REALIZADOS LÁ EM 'app.module.ts' NÃO SÃO TRANSFERIDOS/INHERITED AUTOMATICAMENTE PELOS 'child modules' importados nele...
+    ],
+     exports: [
+         RecipeBookComponent,
+        RecipeDetailComponent,
+        RecipeBookComponent,
+        SelectARecipeComponent, 
+        RecipeItemComponent
+    ],
+
+})
+
+export class RecipeBookModule {
+
+    
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> PODEMOS 
+
+
+
+
+
+
+
+
+
+PEGAR _ E ADICIONAR UMA NOVA COISINHA,
+
+
+
+editar 
+
+
+
+aquele import de 
+
+'RouterModule',
+
+
+
+
+
+
+
+
+
+colocar um call de '.forChild()'... 
+
+
+
+
+
+
+
+
+(
+
+    ANTIGAMENTE ESTUDAMOS O '.forRoot(appRoutes)',
+
+
+
+
+
+
+
+
+
+    mas agora vamos usar o '.forChild()'...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O 'forRoot()'
+
+
+
+
+ERA ESSENCIALMENTE _ USADO __ UMA ÚNICA VEZ,
+
+
+
+LÁ EM 
+
+
+
+
+app-routing.module.ts,
+
+
+
+
+como 
+
+
+observamos neste trecho:
+
+
+
+
+
+
+
+
+
+@NgModule({
+  imports: [RouterModule.forRoot(appRoutes)],
+
+  exports: [RouterModule],
+})
+
+
+
+
+
+
+
+
+
+--> usamos/usávamos esse 
+
+
+
+
+
+'forRoot'
+
+
+PARA CONFIGURAR 
+
+
+
+NOSSAS 'ROOT ROUTES'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS QUANDO FALAMOS DE UM 'FEATURE MODULE',
+
+
+
+
+
+um module que VOCê PLANEJA IMPORTAR PARA DENTRO DO SEU CHIEF APP MODULE,
+
+
+
+
+
+você 
+
+
+
+
+
+normalmente usa esse 
+
+
+'.forChild()',
+
+
+
+
+
+QUE É UM METHOD QUE VAI AUTOMATICAMENTE 
+
+
+FAZER 
+
+
+'''MERGE'''
+ 
+
+
+
+
+
+ DA __ 'CHILD ROUTING CONFIGURATION'
+
+
+ COM AS 'ROOT ROUTES', 
+
+
+
+
+ as routes maiores...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ Ex>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ import { CommonModule } from "@angular/common";
+import { NgModule } from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
+import { RouterModule } from "@angular/router";
+import { RecipeBookComponent } from "./recipe-book.component";
+import { RecipeDetailComponent } from "./recipe-detail/recipe-detail.component";
+import { RecipeEditComponent } from "./recipe-edit/recipe-edit.component";
+import { RecipeItemComponent } from "./recipe-list/recipe-item/recipe-item.component";
+import { RecipeListComponent } from "./recipe-list/recipe-list.component";
+import { SelectARecipeComponent } from "./select-a-recipe/select-a-recipe.component";
+
+
+
+
+@NgModule({
+
+    declarations: [
+        RecipeBookComponent,
+        RecipeDetailComponent,
+        RecipeBookComponent,
+        SelectARecipeComponent,
+        RecipeEditComponent,
+        RecipeListComponent,
+        RecipeItemComponent,
+
+    ],
+    providers: [],
+    imports: [
+        RouterModule.forChild(),    ////quando você quer incluir algum 'FEATURE MODULE' dentro de seu APP MODULE (outsourcing), você usa esse 'forChild' em vez de 'forRoot()'...
+        CommonModule,
+        ReactiveFormsModule  ///esses 3 modules são necessários, aqui, pq usamos essas 3 features dentro dos componnets/código de 'recipeBookMOdule', esse SUBMODULE de nosso app (que é representado por 'app.module.ts', o module em que esse 'recipeBookMOdule' é importado) ------> 
+        ///A RAZÃO PARA TERMOS DE 'REPETIR' ESSES IMPORTS, AQUI, É QUE __ IMPORTS REALIZADOS LÁ EM 'app.module.ts' NÃO SÃO TRANSFERIDOS/INHERITED AUTOMATICAMENTE PELOS 'child modules' importados nele...
+    ],
+     exports: [
+         RecipeBookComponent,
+        RecipeDetailComponent,
+        RecipeBookComponent,
+        SelectARecipeComponent, 
+        RecipeItemComponent
+    ],
+
+})
+
+export class RecipeBookModule {
+
+    
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E É CLARO QUE DENTRO DESSE 
+
+
+
+
+'.forChild()'
+
+
+
+
+
+
+
+VOCê 
+
+DEVE PASSAR _ O MESMO TIPO DE 'ARRAY DE ROUTING CONFIGURATIOn' 
+
+
+
+
+que vimos lá com 
+
+o 
+
+
+
+'forRoot()',
+
+
+
+
+ou seja,
+
+
+
+um array como 
+
+
+
+
+'' 
+
+
+
+const appRoutes: Routes = [
+
+  {////ordem das routes importa, exatamente como no REACT ROUTER
+    
+    path: '',
+    redirectTo: '/recipe-book',
+    pathMatch: 'full', /// (COMMON GOTCHA) evita o error de 'SEMPRE VAI REDIRECIONAR PARA ESSA ROUTE DE recipe-book' (pq o padrão é 'prefix' em vez de 'full'; ou seja, é o MESMO COMPORTAMENTO DEFAULT DO REACT ROUTER)...
+  },
+  {
+    path: 'recipe-book',
+    component: RecipeBookComponent,
+    canActivate: [AuthGuardService], ////VAI REDIRECIONAR à 'auth', SE O USER NÃO ESTIVER AUTH....
+    children: [
+      {
+        path: '',
+        resolve: [RecipesResolverService],
+        component: SelectARecipeComponent,
+      },
+      {
+        path: 'new',
+
+        component: RecipeEditComponent,
+      },
+      {
+        path: ':id',
+        resolve: [RecipesResolverService],
+        component: RecipeDetailComponent,
+      },
+
+      {
+        path: ':id/edit',
+        resolve: [RecipesResolverService],
+        component: RecipeEditComponent,
+      },
+
+      // {
+      //     path: 'new-recipe',
+      // }
+    ],
+  },
+
+  {
+    path: 'shop-list',
+    component: ShoppingListComponent,
+  },
+
+
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COM UM FORMATO TIPO ASSIM,
+
+ESSENCIALMENTE..
+
+
+
+
+
+
+
+
+---> MAS O PROFESSOR EXPLICA QUE 
+
+
+
+
+''PARA DEIXAR ESSE 
+
+
+
+FILE DE RECIPE-book.module.ts 
+
+
+
+BEM _ LEAN,
+
+
+
+EU VOU QUERER CRIAR UM ARQUIVO SEPARADO,
+
+
+
+
+
+UM ARQUIVO CHAMADO DE recipe-book-routing.module.ts'''...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AÍ DENTRO DE UMA CLASS EXPORTADA,
+
+
+DENTRO DESSE ARQUIVO,
+
+VAMOS DEFINIR AS 'ROUTES'
+
+
+
+QUE 
+
+
+
+ESSA NOSSA FEATURE/MODULE DE 
+
+'recipeBook'
+
+
+deverá 
+possuir.....
+
+
+
+
+
+
+
+
+--> é claro que vamos precisar importar o DECORATOR DE '@NgModule' 
+
+
+LÁ 
+
+
+DO ANGULAR,
+
+
+
+
+
+
+
+
+
+justamente pq 
+
+
+
+
+arquivos de 'routing' GERALMENTE SÃO MODULES,
+
+
+
+
+
+por isso o código começa assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from "@angular/core";
+
+
+
+
+
+
+
+
+
+
+@NgModule(
+    {
+        
+    }
+)
+export class RecipeBookRoutingModule {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> é claro que só vamos definir nossa 'routing config'
+
+
+
+
+nesse arquivo para 
+
+
+
+DEIXAR DE 'CLUTTAR'
+
+
+
+O RESTO 
+
+DOS ARQUIVOS,
+
+COMO 
+
+ATRAPALHAR O CÓDIGO DO ARQUIVO 'recipeBook.module.ts'...
+
+
+
+
+
+
+
+
+
+
+ok....
+
+
+
+
+
+
+
+
+
+
+
+
+--> VAMOS QUERER CRIAR UMA CONST DE 'routes',
+
+
+DE TIPO 'Route',
+
+
+EM QUE TEREMOS UM ARRAY COM TODAS NOSSAS ROUTES,
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { AuthGuardService } from "../auth-guard.service";
+import { RecipesResolverService } from "../recipes-resolver.service";
+import { RecipeBookComponent } from "./recipe-book.component";
+import { RecipeDetailComponent } from "./recipe-detail/recipe-detail.component";
+import { RecipeEditComponent } from "./recipe-edit/recipe-edit.component";
+import { SelectARecipeComponent } from "./select-a-recipe/select-a-recipe.component";
+
+
+
+
+
+
+const recipeBookRoutes: Routes = [
+    {
+        path: 'recipe-book',
+        component: RecipeBookComponent,
+        canActivate: [AuthGuardService], ////VAI REDIRECIONAR à 'auth', SE O USER NÃO ESTIVER AUTH....
+        children: [
+          {
+            path: '',
+            resolve: [RecipesResolverService],
+            component: SelectARecipeComponent,
+          },
+          {
+            path: 'new',
+            component: RecipeEditComponent,
+          },
+          {
+            path: ':id',
+            resolve: [RecipesResolverService],
+            component: RecipeDetailComponent,
+          },
+    
+          {
+            path: ':id/edit',
+            resolve: [RecipesResolverService],
+            component: RecipeEditComponent,
+          },
+    
+        ],
+      },
+]
+
+
+
+
+@NgModule(
+    {
+        exports: [
+        
+        ]
+    }
+)
+export class RecipeBookRoutingModule {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> EU COMEÇO POR MEIO DESSE CÓDIGO AÍ,
+
+
+MAS É CLARO QUE ALGUMAS COISAS AINDA FALTAM...
+
+
+
+
+
+
+
+
+
+
+
+--> FALTA EXPORTAR ESSA 'CONST'
+
+que será nosso actual routing config 
+
+
+do module de 
+
+'RecipeBook'...
+
+
+
+
+
+
+
+
+
+
+-------------------------
+
+
+
+
+
+
+
+
+
+
+CERTO... para conseguir fazer isso,
+
+precisamos importar 
+
+'RouterModule'
+
+
+
+lá no array de imports,
+
+e aí 
+
+
+PROVAVELMENTE 
+
+
+
+
+__ EDITAR__ ESSE IMPORT__ COM 
+
+
+
+
+
+
+
+
+
+
+O CALL DE '.forChild(recipeBookRoutes)'...
+
+
+
+
+
+
+
+
+(
+    PASSAMOS NOSSA CONST COM AS ROUTES DENTRO DESSE 
+
+
+    CALL DE '.forChild()'..
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO FICA ESSENCIALMENTE ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { AuthGuardService } from "../auth-guard.service";
+import { RecipesResolverService } from "../recipes-resolver.service";
+import { RecipeBookComponent } from "./recipe-book.component";
+import { RecipeDetailComponent } from "./recipe-detail/recipe-detail.component";
+import { RecipeEditComponent } from "./recipe-edit/recipe-edit.component";
+import { SelectARecipeComponent } from "./select-a-recipe/select-a-recipe.component";
+
+
+
+
+
+
+const recipeBookRoutes: Routes = [
+    {
+        path: 'recipe-book',
+        component: RecipeBookComponent,
+        canActivate: [AuthGuardService], ////VAI REDIRECIONAR à 'auth', SE O USER NÃO ESTIVER AUTH....
+        children: [
+          {
+            path: '',
+            resolve: [RecipesResolverService],
+            component: SelectARecipeComponent,
+          },
+          {
+            path: 'new',
+            component: RecipeEditComponent,
+          },
+          {
+            path: ':id',
+            resolve: [RecipesResolverService],
+            component: RecipeDetailComponent,
+          },
+    
+          {
+            path: ':id/edit',
+            resolve: [RecipesResolverService],
+            component: RecipeEditComponent,
+          },
+    
+        ],
+      },
+]
+
+
+
+
+@NgModule(
+    {
+        imports: [
+            RouterModule.forChild(recipeBookRoutes)
+        ],
+
+        exports: [
+            RouterModule
+        ]
+    }
+)
+export class RecipeBookRoutingModule {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ou seja,
+
+editamos essas routes, por meio do module de 'RouterModule',
+
+
+
+e aí 
+
+
+
+
+
+
+EXPORTAMOS APENAS ESSE MODULE DE 'RouterModule'..
+
+
+
+
+
+--> aí lá 
+
+no 'recipeBookModule'
+
+
+
+em questão,
+
+VAMOS _ IMPORTAR__ 
+
+
+ESSE 
+
+
+'recipe-book-routing.module.ts'
+
+
+
+
+
+INTEIRO, E AÍ VAMOS 
+
+
+
+
+
+escrever 'RecipeBookRoutingModule'
+
+
+
+
+no array de imports, tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { CommonModule } from "@angular/common";
+import { NgModule } from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
+import { RouterModule } from "@angular/router";
+import { RecipeBookRoutingModule } from "./recipe-book-routing.module";
+import { RecipeBookComponent } from "./recipe-book.component";
+import { RecipeDetailComponent } from "./recipe-detail/recipe-detail.component";
+import { RecipeEditComponent } from "./recipe-edit/recipe-edit.component";
+import { RecipeItemComponent } from "./recipe-list/recipe-item/recipe-item.component";
+import { RecipeListComponent } from "./recipe-list/recipe-list.component";
+import { SelectARecipeComponent } from "./select-a-recipe/select-a-recipe.component";
+
+
+
+
+@NgModule({
+
+    declarations: [
+        RecipeBookComponent,
+        RecipeDetailComponent,
+        RecipeBookComponent,
+        SelectARecipeComponent,
+        RecipeEditComponent,
+        RecipeListComponent,
+        RecipeItemComponent,
+
+    ],
+    providers: [],
+    imports: [
+       
+        RecipeBookRoutingModule,  ////assim fazemos o ACTUAL IMPORT DAS  _ROUTES_ RELATIVAS_ A ESSA FEATURE DE 'recipeBook' dentro do nosso module de 'recipeBook' (ou seja, aqui há um outsourcing bem absurdo, que deixa nossos components bem mais 'lean')...
+        CommonModule,
+        ReactiveFormsModule  ///esses 3 modules são necessários, aqui, pq usamos essas 3 features dentro dos componnets/código de 'recipeBookMOdule', esse SUBMODULE de nosso app (que é representado por 'app.module.ts', o module em que esse 'recipeBookMOdule' é importado) ------> 
+        ///A RAZÃO PARA TERMOS DE 'REPETIR' ESSES IMPORTS, AQUI, É QUE __ IMPORTS REALIZADOS LÁ EM 'app.module.ts' NÃO SÃO TRANSFERIDOS/INHERITED AUTOMATICAMENTE PELOS 'child modules' importados nele...
+    ],
+     exports: [
+         RecipeBookComponent,
+        RecipeDetailComponent,
+        RecipeBookComponent,
+        SelectARecipeComponent, 
+        RecipeItemComponent
+    ],
+
+})
+
+export class RecipeBookModule {
+
+    
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO....
+
+
+ ISSO QUER DIZER, EM OUTRAS PALAVRAS,
+
+ QUE LÁ EM 
+
+
+ 'app-routing.module.ts'
+
+
+
+
+ FICAMOS COM UMA _ ROUTE A MENOS APARECENDO NAQUELE CÓDIGO LA´,
+
+
+
+
+
+TUDO POR CONTA DESSE OUTSOURCING...
+
+
+
+
+
+
+
+
+
+
+--> MAS NO APP MODULE,
+
+
+nós 
+
+
+
+realmente ainda ESTAMOS 
+
+
+
+
+TENDO O 'RecipeBookModule'
+
+
+
+
+
+
+NO ARRAY DE IMPORTS -----> E ISSO FAZ SENTIDO,
+
+
+PQ 
+
+
+
+
+
+o 'RecipeBookModule'
+
+
+
+AINDA DEVE FAZER PARTE DA NOSSA 'GENERAL ROUTING CONFIG',
+
+
+
+
+
+
+
+
+
+
+
+
+A ÚNICA COISA QUE MUDOU É QUE AGORA NOSSO 'ROUTING CONFIG' ACABOU SPLITTADO ENTRE 
+
+2 
+
+DIFERENTES ARQUIVOS... ( o 'app-routing.module.ts' e o 'recipeBook-routing.module.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ISSO TAMBÉM SIGNIFICA QUE 
+
+
+
+
+
+
+
+
+LÁ NO 'app-routing.module.ts'
+
+
+
+PODEMOS REMOVER TODOS OS IMPORTS RELATIVOS À ÁREA DE 'RECIPE-BOOK'....
+
+
+
+
+
+
+
+
+
+--> SE SALVARMOS TUDO ISSO, NOSSAS ROUTES AINDA FUNCIONARÃO,
+
+
+MAS AGORA COM NOSSA 'SPLIT ROUTING CONFIG'....
+
+
+
+
+
+
+
+
+
+
+
+-> A IDEIA AQUI É 
+
+
+'MAKE SURE THAT WE HAVE A LEANER APP MODULE E 
+
+
+
+APP-ROUTING.MODULE.TS',
+
+
+
+
+
+TUDO PARA QUE 'CONSIGAMOS MANAGE RECIPE RELATED THINGS IN RECIPE RELATED COMPONNETS',
+
+
+e nada mais do que isso..

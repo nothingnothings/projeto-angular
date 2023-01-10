@@ -1,0 +1,460 @@
+
+
+
+
+
+
+
+
+
+
+--> NA ÚLTIMA AULA,
+
+
+VIMOS O USO BÁSICO DE PIPES:
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="list-group">
+        <li class="list-group-item"
+        *ngFor="let server of servers"
+        [ngClass]="getStatusClasses(server)"
+        >
+          <span class="badge" >{{ server.status }}</span>
+          <strong>{{ server.name  }}</strong> | {{ server.instanceType | uppercase }} |
+          {{ server.started | date }}
+        </li> <!-- AQUI CONSTATAMOS O USO DE ALGUNS PIPES (uppercase e DATE... Aug 9, 1920)-->
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+ELES SÃO ESCRITOS DIRETAMENTE NOS ARQUIVOS html
+
+
+do angular,
+
+
+
+
+
+E _ TRANSFORMAM O OUTPUT 'BEM FINAL' 
+
+
+
+
+
+DE NOSSA DATA....  (deixando a data 'original', lá de nossos arquivos '.ts', INTACTA/sem ser manipulada)...
+
+
+
+
+
+
+
+
+
+
+
+
+--> USAMOS O UPPERCASE PIPE PARA TRANSFORMAR 
+
+
+
+
+O CASING,
+
+
+E O 
+
+`date`
+
+
+
+PIPE,
+
+
+
+
+
+PARA _ ALTERAR A MANEIRA PELA QUAL DATES SÃO OUTPUTTADAS NO NOSSO TEMPLATE...
+
+
+
+
+
+
+
+
+
+
+
+
+-> AÍ O PROFESSOR COMENTOU QUE HÁ COMO CUSTOMIZAR O DISPLAY DE NOSSA DATE... 
+
+
+
+
+
+
+
+
+
+
+--> você pode OUTPUTTAR SUA DATE DE MANEIRA DIFERENET..
+
+
+
+
+
+
+
+
+
+
+--> SERIA LEGAL SE PUDÉSSEMOS 'PARAMETRIZE' UM PIPE...
+
+
+
+
+
+
+
+
+
+
+--> PARA PIPES DIVERSOS,
+
+
+VOCÊ GERALMENTE INCLUI PARÂMETROS NELES POR MEIO DA 
+
+
+S
+INTAXE DE 
+
+
+':' DEPOIS DO PIPE..
+
+
+
+
+
+
+
+
+
+
+
+--> TIPO ASSIM:
+
+
+
+
+
+
+
+{{ server.instanceType | date: }}
+
+
+
+
+
+
+
+
+
+
+---->  ok... coloque um ':',
+
+
+
+
+E AÍ 
+
+
+ADICIONE UM PARÂMETRO... ----> MAS É CLARO QUE NEM TODOS OS PIPES _ ACEITAM__ O PASS DE PARÂMETROS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DEPOIS O PROFESSOR VAI NOS EXPLICAR A MANEIRA PELA QUAL PODEMOS SABER SE 1 
+
+
+
+PIPE ACEITA OU NÃO PARAMETERS...
+
+
+
+
+
+
+
+-->  ADICIONAMOS OS PARAMETERS DEPOIS DO ':'...
+
+
+
+
+
+
+
+-> O PIPE 
+
+DE 'date'
+
+
+
+EXIGE UMA STRING...----->  VOCÊ __PASSA__ A DATE QUE VOCÊ 
+
+QUER,
+
+
+
+
+NO FORMATO DE UMA STRING....
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR LOGO NOS CONTARÁ SOBRE AS DIFERENTES OPÇÕES
+
+
+
+
+NESSE PIPE AÍ...
+
+
+
+
+
+
+
+-> por enquanto, ele apenas escreve isto:
+
+
+
+
+
+{{ server.instanceType | date: 'fullDate'}}
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO FICOU ASSIM:
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="list-group">
+        <li class="list-group-item"
+        *ngFor="let server of servers"
+        [ngClass]="getStatusClasses(server)"
+        >
+          <span class="badge" >{{ server.status }}</span>
+          <strong>{{ server.name  }}</strong> | {{ server.instanceType | uppercase }} |
+          {{ server.started }} |
+          {{ server.started | date }} |
+          {{server.started | date: 'fullDate' }}
+        </li> <!-- AQUI CONSTATAMOS O USO DE ALGUNS PIPES (uppercase e DATE... Aug 9, 1920)-->
+            <!-- PIPES _ TAMBÉM ACEITAKM PARÂMETROS, E ELES SÃO PASSADOS COM ESTA SINTAXE, de ':' :  '''{{ server.started | date: 'xxx' }}'''' -->
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E O OUTPUT FICOU ASSIM:
+
+
+
+
+Mon Aug 09 1920 00:00:00 GMT-0300 (Horário Padrão de Brasília) 
+
+ Aug 9, 1920
+ 
+  Monday, August 9, 1920
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> COM ''  Monday, August 9, 1920'',
+
+
+   
+
+   CONSEGUIMOS UMA DATE EM UM FORMATO UM POUCO MAIS FORMATADO....
+
+
+
+
+
+
+
+
+   -> ESSE FORMATO AINDA PODE NÃO SER IDEAL,
+
+
+
+
+
+
+   MAS 
+
+
+
+
+   É ALGO MELHOR DO QUE ANTES...
+
+
+
+
+
+
+   --> ISSO QUER DIZER QUE PODEMOS 'PARAMETRIZE' UM PIPE..
+
+
+
+
+
+
+
+
+   --> CERTO...
+
+
+
+
+
+
+   DETALHE ADICIONAL:
+
+
+
+
+
+
+
+   SE VOCÊ  _TEM MÚLTIPLOS PIPES_ 
+
+
+
+
+   EM 1 MESMO LOCAL DE SEU CÓDIGO,
+
+
+
+
+   COMO EM UMA STRING INTERPOLATION,
+
+
+
+
+   VOCÊ SIMPLESMENTE 
+
+
+
+
+OS SEPARA _ COM ':" ADICIONAIS...
+
+
+
+
+
+
+
+
+tipo assim:
+
+
+          {{server.started | date:'fullDate':uppercase }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -----> OK.. COM ESSAS CONFIGURAÇÕES BÁSICAS SETTADAS, DEVEMOS VER QUAL É O LUGAR QUE NOS EXPLICA SOBRE DIFERENTES 
+
+
+    PIPES,
+
+
+
+
+
+    INFO SOBRE PIPES E SUA CONFIGURAÇÃO...

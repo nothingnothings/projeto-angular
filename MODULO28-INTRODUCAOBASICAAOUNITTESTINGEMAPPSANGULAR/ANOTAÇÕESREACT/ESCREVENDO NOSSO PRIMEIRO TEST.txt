@@ -1,0 +1,2687 @@
+
+
+
+
+
+
+
+---> PROFESSOR VOLTA AO BURGER PROJECT...    ---> professor quer 
+
+adicionar um 
+
+'testing'.. 
+
+
+
+
+
+
+
+---> professor roda 'ctrl c' no terminal,
+
+PARA 
+
+PARAR 
+
+
+O 
+
+
+NPM START...  --------> ISSO ELE FAZ PQ __ELE PRETENDE__ INSTALAR ALGUMAS 
+
+PACKAGES...
+
+
+
+
+
+
+---> professor pretende usar, além de 'jest' (que já vem com o REACT),
+
+o 
+
+
+
+'ENZYME'...
+
+
+------------------------------
+
+
+
+
+
+
+
+---> no nosso package.json,
+
+
+OBSERVAMOS QUE 
+
+'jest'
+JÁ ESTÁ INSTALADO...
+
+
+
+
+
+-----------------------------
+
+
+
+
+
+
+---> OK... MAS O ENZYME _NÃO ESTÁ INSTALADO....___...
+
+
+
+
+
+devemos 
+
+escrever 
+
+
+
+
+
+npm install --save enzyme
+
+
+
+
+-------------------------------------
+
+
+
+CERTO...
+
+
+MAS SÓ O INSTALL DO ENZYME NÃO ADIANTA NEM UM POUCO.... ---> DEVEMOS INSTALAR 2 PACKAGES 
+
+ADICIONAIS 
+
+PARA 
+
+FAZER 
+COM QUE 
+
+
+
+ELE 
+FUNCIONE 
+
+COM O 
+
+JEST 
+
+E 
+
+
+COM O REACT...
+
+---------------------
+
+
+
+
+A PRIMEIRA PACKAGE É 
+
+
+
+A 
+
+
+
+
+a 
+
+'react-test-renderer' -----------> ESSA É UMA __dEPENDENCY___ DO ENZYME QUE 
+
+
+__PRECISAMOS INSTALAR SEPARADAMENTE___...
+
+
+
+
+
+ex:
+
+
+
+
+npm install react-test-renderer
+
+
+
+-----------------------------
+
+
+
+
+
+
+---> E, ALÉM DISSO, PRECISAMOS 
+
+INSTALAR UM 'ADAPTADOR' 
+
+DA PAKCAGE 
+
+DO ENZYME 
+
+PARA 
+
+O NOSSO 
+
+
+REACT ATUAL.... ----> AQUI,
+
+
+É NECESSÁRIO 
+
+O 
+
+
+
+
+'enzyme-adapter-react-16'.... 
+
+
+
+
+
+
+
+
+
+---> vai ficar 
+
+
+
+
+'npm install enzyme-adapter-react-16'....
+
+
+
+(só não sei se isso é compatível com 
+
+MEU 
+
+REACT 
+
+
+ATUAL... ---> que  acho que é versão 17, e não 16....)
+
+
+
+
+------------------------
+
+
+para isso, provavelmente terei de instalar esta package aqui, para o react 17:
+
+
+
+@wojtekmaj/enzyme-adapter-react-17
+
+
+
+Unofficial adapter for React 17 for Enzyme.
+
+Installation
+npm install --save-dev @wojtekmaj/enzyme-adapter-react-17
+or, if you're using Yarn:
+
+yarn add --dev @wojtekmaj/enzyme-adapter-react-17
+
+
+
+
+Finally, you need to configure enzyme to use the adapter you want it to use. To do this, you can use the top level configure(...) API.
+
+import Enzyme from 'enzyme';
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+
+Enzyme.configure({ adapter: new Adapter() });
+
+
+
+
+----------------------------------------------------
+
+
+
+
+CERTO, INSTALEI OS 3...
+
+
+
+dependencies:
+
+
+"enzyme": "^3.11.0",
+
+
+
+"react-test-renderer": "^17.0.2",
+
+
+
+
+  "devDependencies": {
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.3"
+  }
+
+
+
+------------------------------
+
+
+
+
+
+
+
+
+
+COM ESSES NEGÓCIOS INSTALADOS,
+
+
+PODEMOS ESCREVER 
+
+NOSSO PRIMEIRO TEST... ------> 
+
+
+
+
+
+
+
+ISSO FEITO,
+
+
+
+__VAMOS QUERER ___ ESCREVER 1 TEST __ PARA 1 COMPONENT ESPECÍFICO (é assim que funciona 
+
+o write de 
+
+TESTS)....
+
+
+
+
+
+
+
+--> É POR ISSO QUE É 'UNIT TESTING' O nome... -------------> PROFESSOR 
+
+
+VAI 
+
+
+COMEÇAR 
+
+
+POR 
+
+UM 
+
+
+'FUNCTIONAL COMPONENT',
+
+
+
+pois essa é 
+
+uma maneira
+ 
+
+ super fácil de testing... ------> DEPOIS DISSO, VEREMOS 
+
+
+ COMO 
+
+
+ FAZER 
+
+
+ TESTING 
+
+ D
+ E 
+
+ CONTAINERS,
+
+
+ E 
+
+ DEPOIS 
+
+ VAMOS 
+
+
+ VER COMO FAZER 
+
+ O 
+
+
+ TESTING 
+
+
+ DO 
+
+ REDUX EM SI...
+
+
+
+ -------------------------
+
+
+
+
+
+ --> PROFESSOR QUER COMEÇAR PELO DUMB COMPONENT 'NavigationItems.js'...
+
+
+
+
+
+
+
+ -------------------->
+
+
+ O COMPONENT É ESTE:
+
+
+
+
+
+ import React from 'react';
+
+import NavigationItem from '../NavigationItems/NavigationItem/NavigationItem';
+
+
+import NavigationItemsStyle from './NavigationItems.module.css';
+
+
+const navigationItems = (props) => {
+
+
+ 
+
+     let authenticate = (
+      <NavigationItem link={'/auth'} closed={props.closed}>Authenticate</NavigationItem>
+    )
+
+
+      if (props.logout) {
+        authenticate = (<NavigationItem link={'/logout'} closed={props.closed} 
+        
+        style={
+          {
+            backgroundColor: '#8F5C2C',
+            borderBottom: '4px solid #40A4C8',
+            color: 'white'
+          }
+        }
+        
+        
+        
+        >Log out</NavigationItem>)
+      }
+
+
+
+  return (<ul className={NavigationItemsStyle.NavigationItems}>
+          
+          <NavigationItem closed={props.closed} link={'/'}  >Burger Builder</NavigationItem>
+
+
+      
+         {props.logout ? <NavigationItem link={'/orders'} closed={props.closed}>Orders</NavigationItem>: null }
+          {/* <NavigationItem link={'/auth'}>Authenticate</NavigationItem> */}
+          
+          {authenticate}
+
+
+         
+  
+          
+       
+
+
+  </ul>
+  )
+};
+
+
+
+------------------------------------------
+
+
+
+
+
+
+
+ANTES DE MAIS NADA, VOCÊ DEVE TER EM MENTE 
+
+QUE 
+
+
+A GRANDE MAIORIA DE 
+
+
+SEUS 
+
+
+COMPONENTS/CONTAINERS __ SÃO NADA MAIS NADA MENOS DO QUE __FUNÇÕES__... ---- >
+
+
+
+
+E COMO 
+
+SÃO 
+
+__FUNÇÕEs__, ELES BASICAMENTE 
+
+
+
+___DEPENDEM __ DOS 'props' (o parâmetro, essencialmente)
+
+
+
+
+QUE 
+
+
+RECEBEM....
+
+
+
+(e você deve ter isso em mente quando 'testing'...)
+
+
+
+
+
+
+CERTO, DEVEMOS ESCREVER 
+
+
+
+
+UM 'TESTING FILE' PARA 
+
+esse component... --------> 
+
+
+
+
+
+
+PARA ISSO, 
+
+
+PROFESSOR 
+
+CRIARÁ 
+
+UM NOVO ARQUIVO, NO MESMO FOLDER DE 'NavigationItems',
+
+O QUAL CHAMARÁ 
+
+D
+E 
+
+'NavigationItems.test.js'....
+
+
+
+
+
+
+'.test.js' --> isso é IMPORTANTE, pq 
+
+essa 
+
+extensão 
+
+de 
+
+arquivo 
+
+É 
+
+
+AUTOMATICAMENTE 
+
+'PICKED UP' PELO 
+
+
+
+'CREATE-REACT-APP' 
+
+
+quando rodamos um 
+
+
+comando especial,
+
+
+
+
+e isso faz com QUE ESSE ARQUIVO SEJA INCLUÍDO 
+
+
+NO 'TESTING' E ENTÃO TESTADO....
+
+
+
+
+
+
+-----------> BEM, 
+
+DENTRO 
+
+DESSE 
+
+ARQUIVO 
+
+
+'.test.js',
+
+
+
+
+
+O PROFESSOR 
+
+QUER COMEÇAR 
+
+A 
+
+ESCREVER 
+
+UM TEST.... 
+
+
+
+
+
+E OS TESTS 
+
+
+
+USAM 
+
+'JEST POR DEFAULT',
+
+e 
+
+ o 
+
+
+ JEST 
+
+
+ EM SI 
+
+ NOS 
+
+ DÁ 
+ ALGUNS 
+
+ 
+
+ _METHODS_ PARA DEFINIR O TEST... ---> 
+
+
+
+
+
+ O PRIMEIRO MÉTODO É o
+  
+
+  METHOD 
+
+  de 
+
+
+  'describe()'... --------> esse método aí 
+
+  __NÃO PRECISA __ SER IMPORTADO no arquivo de testes, pq 
+
+  ELE 
+
+  É 
+
+  AUTOMATICAMENTE DISPONIBILIZADO ('made available') NO NOSSO 
+
+projeto 
+  'create-react-app', quando 
+
+
+  EXECUTARMOS 
+
+  O COMANDO 
+
+
+  'test' no terminal...
+
+
+
+
+
+
+
+
+  ---> certo...  e 'describe()' 
+
+
+  ACEITA/EXIGE __ 2 PARÂMETROS__...
+
+
+
+
+
+
+
+
+
+
+1o pARÂMETRO ---> É UMA SIMPLES DESCRIÇÃO (uma string) DO '''TEST BUNDLE''''' QUE 
+
+esse 
+
+
+arquivo de test
+
+
+
+SEGURA (holds) --> aqui, no caso,
+
+
+
+O PROFESSOR 
+
+ESCREVE 
+
+
+
+
+
+'describe('<NavigationItems />'); '
+
+
+
+
+
+
+
+--> ELE NOS EXPLICA QUE 
+
+
+
+ESSA ESCRITA NO FORMATO 'JSX' NÃO É REALMENTE NECESSÁRIA,
+
+MAS 
+
+QUE 
+
+É BOA PQ __ DEPOIS __ APARECE NO OUTPUT DO CONSOLE,
+
+E AJUDA A NOS GUIAR... ----------> ESSA 'description' 
+DEVE 
+
+
+SER 
+
+ALGO QUE 
+
+
+TE AJUDE 
+
+A IDENTIFICAR __QUAIS __ TESTS __FORAM EXECUTADOS/RODADOS 
+
+
+DENTRO DESTE ARQUIVO...
+
+
+
+
+
+
+
+--> a parte mais INTERESSANTE É __o  SEGUNDO PARÂMETRO__, 
+
+QUE 
+
+É 
+
+A 
+
+'TESTING FUNCTION' EM SI...
+
+
+
+
+
+
+
+TESTING FUNCTION ---> É UMA FUNÇÃO JAVASCRIPT NORMAL,
+
+
+
+MAS 
+AQUI 
+O PROFESSOR 
+
+VAI USAR 
+
+UMA 
+
+
+ARROW FUNCTION ES6...
+
+
+
+
+
+
+--> dentro 
+desse segundo parâmetro, 
+
+professor 
+
+vai 
+
+
+escrever 
+
+
+O 'ACTUAL TEST'... --> para 
+
+escrever 
+
+um 
+
+TEST,
+
+você 
+
+
+
+deve 
+
+
+USAR 
+
+ A KEYWORD/expressão 
+
+
+
+ 'it()' ---------------------> 
+
+
+
+ CERTO.... E 'it' 
+
+ NOS 
+
+ PERMITE 
+
+
+ ESCREVER 
+
+ 1 TEST INDIVIDUAL...
+
+
+
+
+ ex:
+
+
+
+ describe('<NavigationItems />', 
+
+() => {
+        it();
+}
+
+)
+
+
+ 
+
+
+
+CERTO.... E O 'it()' 
+
+EM 
+
+SI 
+
+
+EXIGE/ACEITA 
+
+2 ARGUMENTOS....
+
+
+
+
+
+1o argumento -->  DE NOVO, É SÓ UMA DESCRIPTION, É UMA DESC QUE VAI APARECER NO CONSOLE... ----> TIPICAMENTE, VOCÊ SIMPLESMENTE COMPLETA A 'FRASE' QUE COMEÇOU COM 'it'... ---------> ex: 'it().... should xxxxxx'...  ------------>  o formato do código é este pq , SE VOCÊ SEGUIR ESSE PADRÃO QUE O PROFESSOR NOS MOSTROU, FICARÁ ASSIM O OUTPUT NO CONSOLE:   '''''''''''''<NavigationItems /> should be rendered when props are received'''''''''''''
+                                                                                                                                                                                                                                                                                                                                                                                                 it('                xx                        ')
+
+------------------------
+
+
+
+
+CERTO,
+ 
+ NO CASO 
+
+ DE 
+
+ 'NavigationItems'.... devemos examinar seu código:
+
+
+
+ 
+const navigationItems = (props) => {
+
+  let authenticate = (
+    <NavigationItem link={'/auth'} closed={props.closed}>
+      Authenticate
+    </NavigationItem>
+  );
+
+  if (props.logout) {
+    authenticate = (
+      <NavigationItem
+        link={'/logout'}
+        closed={props.closed}
+        style={{
+          backgroundColor: '#8F5C2C',
+          borderBottom: '4px solid #40A4C8',
+          color: 'white',
+        }}
+      >
+        Log out
+      </NavigationItem>
+    );
+  }
+
+  return (
+    <ul className={NavigationItemsStyle.NavigationItems}>
+      <NavigationItem closed={props.closed} link={'/'}>
+        Burger Builder
+      </NavigationItem>
+
+      {props.logout ? (
+        <NavigationItem link={'/orders'} closed={props.closed}>
+          Orders
+        </NavigationItem>
+      ) : null}
+      {authenticate}
+    </ul>
+  );
+};
+
+
+-----------------------------------
+
+
+OK.. POR DEFAULT,
+
+
+se estivermos 
+
+NÃO AUTENTICADOS (o que é o default),
+
+
+
+
+
+
+OS ÚNICOS 'NavItem' que 
+
+
+DEVERÃO 
+
+SER RENDERIZADOS 
+
+SÃO 
+
+
+o 
+
+NAVITEM DE 'BurgerBuilder' 
+
+e 
+
+
+de 
+
+
+'auth'... 
+
+
+
+
+
+(2 navItems deverão ser renderizados, portanto...) -------> JÁ 
+
+TEMOS 
+
+A 
+
+'DESCRIÇÃO' 
+
+
+
+DO RESULTADO QUE ESPERAMOS,
+
+
+POR ISSO 
+
+JÁ 
+
+PODEMOS 
+
+ESCREVER 
+
+
+NOSSA 
+
+'FRASE' no primeiro argumento de 
+
+'it()'...
+
+
+
+ex:
+
+
+
+
+it('should render two <NavigationItem /> elements if not authenticated')... ------>  E ESSE 
+
+
+CÓDIGO 
+
+
+AQUI 
+
+__NÃO IMPORTA__... NÃO IMPORTA PQ ELE __NÃO É PARSEADO OU QUALQUER COISA DO GÊNERO... --------> 
+
+
+DEVE 
+
+APENAS 
+
+SER 
+
+ALGO 
+
+'MEANINGFUL', que você possa reconhecer no console... (você vai querer saber QUAL CÓDIGO FALHOU, no final das contas.)
+
+
+
+
+
+
+
+RESULTADO:
+
+
+
+
+
+ describe('<NavigationItems />', 
+
+() => {
+        it('should render two <NavigationItem /> elements if not authenticated');
+}
+
+)
+
+
+
+
+
+
+
+---------------------------------------------------
+
+
+
+
+JÁ O SEGUNDO 
+
+
+
+ARGUMENTO DE 
+
+
+'it', no caso,
+ 
+
+
+
+ É __ DE NOVO __ UMA 'TESTING FUNCTION' que 
+
+ DESCREVE 
+
+ O 
+
+ 'ACTUAL TEST'...
+
+
+
+--> de novo, devemos usar 
+
+UMA 
+
+NORMAL FUNCTION, NO CASO 
+
+UMA 
+
+
+ARROW FUNCTION (professor prefere...).
+
+
+
+
+
+ ex:
+
+
+
+
+
+ describe('<NavigationItems />', 
+
+() => {
+        it('should render two <NavigationItem /> elements if not authenticated'),
+
+        () => {
+
+        }
+}
+
+)
+
+
+
+
+
+---------------------------------------
+
+
+
+
+
+DENTRO DESSA ARROW FUNCTION NESTEADA,
+
+
+
+NÓS __VAMOS ESCREVER NOSSA 'ACTUAL TESTING LOGIC'... -----> o que 
+
+o professor 
+
+quer 
+
+
+fazer é 
+
+
+__CRIAR __ UMA INSTANCE___ DESSE COMPONENT (copiar esse component),
+
+
+
+
+COMO 
+
+
+
+
+SE ELE FOSSE RENDERIZADO AO DOM (dom de verdade, através do react),
+
+
+
+
+E ENTÃO 
+
+
+DAR UMA 
+
+
+OLHADA 
+
+
+
+NO 
+
+
+'RENDERED COMPONENT' pelo jest,
+
+
+
+E ENTÃO 
+
+
+EXAMINAR __O QUE FOI __ RENDERIZADO 
+
+PARA 
+
+O 
+
+CASE 
+
+DE 
+
+'AUTHENTICATION = FALSE',
+
+nesse nosso caso.
+
+
+
+-------------------------------
+
+
+
+
+
+--> você poderia pensar que PARA ISSO _NÓS PRECISARÍAMOS ___ RENDERIZAR __ 
+
+A INTEGRALIDADE DE NOSSO APLICATIVO REACT... (justamente pq 
+'NavigationItems' é só um pedacinho de nosso grande app... ) --------> 
+
+
+
+BEM, 
+
+
+
+É AÍ __ QUE O __ ENZYME___ ENTRA NO JOGO___... --------> 
+
+ESSA 
+
+É 
+
+A UTILIDADE 
+
+
+DA 
+PACKAGE 
+
+
+'ENZYME'... ------> ENZYME NOS PERMITE RENDERIZAR ESSE COMPONENT 
+
+'<NavigationItems />'  ( e qualquer outro component)
+
+
+DE 
+
+FORMA 
+
+STANDALONE, 
+
+
+INDEPENDENTE DO RESTO DE NOSSA REACT APPLICATION......... ------------> E ESSE É O 
+USO 
+
+
+DO ENZYME,
+
+
+NOS PERMITIR
+ 
+
+ ESCREVER 
+
+ TESTS ___REALMENTE ISOLADOS__, UNIT TESTS NO REACT... -----> TESTS EM QUE 
+
+ NÃO PRECISAMOS RENDERIZR 
+
+ O 
+
+ 'REACT APP' completo... 
+
+
+
+
+
+
+
+
+
+ --> para isso, 
+
+ professor 
+
+ vai 
+
+ escrever 
+
+
+
+ 'import xxxxx from 'enzyme';
+
+
+
+
+
+
+
+
+ ANTES DE escrever esse 'xxx',
+
+
+
+
+professor nos diz que 
+
+DEVEMOS CONFIGURAR E CONECTAR O 'ENZYME' À NOSSA VERSÃO DO REACT..
+
+
+
+
+
+
+-- >para isso,
+
+
+vamos 
+
+escrever 
+
+
+
+'import Adapter' (você pode escolher qualquer nome, na verdade, pq esse é um DEFAULT EXPORT...).
+
+
+
+
+
+'import Adapter from '@wojtekmaj/enzyme-adapter-react-17'
+
+
+
+
+
+------------------------------------
+
+
+
+
+
+
+CERTO.... NOSSO CÓDIGO ESTÁ FICANDO ASSIM:
+
+
+
+
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17
+
+
+
+ describe('<NavigationItems />', 
+
+() => {
+        it('should render two <NavigationItem /> elements if not authenticated'),
+
+        () => {
+
+        }
+}
+
+)
+
+
+
+
+
+
+--------------------------------------
+
+
+
+
+AGORA FALTA O __ÚLTIMO PEDAÇO__ DO QUEBRA-CABEÇA,
+
+QUE 
+
+RESIDE 
+
+LÁ NA PACKAGE DO 
+
+'enzyme'.... ----> aqui, estamos 
+
+falando 
+
+do 
+
+
+OBJETO
+
+
+'configure',
+
+QUE 
+
+DEVE 
+
+SER IMPORTADO DE LÁ 
+
+POR MEIO 
+
+
+DO CÓDIGO 
+
+
+
+'import { configure } from 'enzyme';
+
+
+
+
+ex:
+
+
+
+
+
+
+import { configure } from 'enzyme
+
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17
+
+ describe('<NavigationItems />', 
+
+() => {
+        it('should render two <NavigationItem /> elements if not authenticated'),
+
+        () => {
+
+        }
+}
+
+)
+
+
+-----------------------------------------
+
+
+
+
+
+
+
+ESSAS SÃO AS 3 'PEÇAS' que precisamos para poder 
+
+escrever nosso código de test...
+
+
+
+1) o import de 'configure', lá do enzyme 
+
+
+
+
+2) o import do 'Adapter', lá do 'enzyme-adapter-react-16/17'....
+
+
+
+
+
+3) a FUNÇÃO DE TEST EM SI,
+
+
+que é 
+
+'describe()'...
+
+
+
+
+
+
+
+----------------------------
+
+
+COM ESSAS 
+
+
+COISAS TODAS IMPORTADAS/ESCRITAS,
+
+podemos 
+
+
+
+
+chamar 
+
+
+
+
+'configure()',
+
+e então 
+
+
+passar um 
+
+OBJETO JAVASCRIPT 
+
+COMO PARÂMETRO...
+
+
+
+
+
+--> esse objeto ({}) vai 
+
+ter uma 
+
+
+PROPRIEDADE 
+
+CHAMADA 
+
+DE 
+
+
+
+'adapter',
+
+
+e 
+
+
+seu 
+
+VALOR 
+
+
+SERÁ 
+DE 
+
+
+'new Adapter()'..
+
+
+
+
+
+
+ex:
+
+
+
+
+configure(
+    {
+        adapter: new Adapter()
+    }
+)  ------------------> ISSO SIGNIFICA QUE 
+
+ESSE 
+
+IMPORT 
+
+
+DE 
+
+'Adapter'
+ 
+
+ É INSTANCIADO COM 
+
+
+ ESSE call de '
+
+ new Adapter()'
+
+
+
+
+
+ ---------------------------
+
+
+
+ E 
+
+ É ISSO,
+
+ ISSO É TUDO.
+
+
+
+
+ EX:
+
+
+ import { configure } from 'enzyme';
+
+
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+
+
+configure(
+    {
+        adapter: new Adapter()
+    }
+)
+
+
+
+describe('<NavigationItems />', 
+
+() => {
+        it('should render two <NavigationItem /> elements if not authenticated'),
+
+        () => {
+
+        }
+}
+
+)
+
+
+
+----------------------------------
+
+
+COM ISSO,
+
+O ENZYME ESTÁ CONECTADO... 
+
+
+
+
+
+
+
+--> agora vamos querer 
+
+
+
+
+RENDERIZAR UM COMPONENT 
+
+'NavigationItems' 
+
+e então 
+
+
+OLHAR 
+
+DENTRO DELE....
+
+
+
+
+
+
+
+
+
+---> para isso, o ENZYME NOS DÁ UM 'HELPER METHOD' bem específico,
+
+
+
+o 
+
+
+método chamado 'shallow'... --------> 
+
+
+eX:
+
+
+
+
+import { configure, shallow } from 'enzyme';
+
+
+
+
+
+
+------------------------------------------
+
+
+
+SHALLOW ---->  É O JEITO MAIS POPULAR E MELHOR DE RENDERIZAR 
+
+
+COMPONENTS 
+
+
+REACT, na grande maioria dos casos... --------> O ENZYME 
+
+
+
+OFERECE 2 ALTERNATIVAS 
+
+A 
+
+'SHALLOW',
+
+
+MAS 
+
+
+SHALLOW É O MÉTODO MAIS USADO... --> você deve 
+
+o utilizar 
+
+
+SEMPRE QUE POSSÍVEL... ---> o que shallow faz?
+
+
+
+
+
+
+SHALLOW ---> ELE RENDERIZA O COMPONENT 
+
+
+COM __TODO O SEU CONTEÚDO__, 
+
+MAS 
+
+
+O 
+
+CONTEÚDO DO COMPONENT NÃO É 'DEEPLY RENDERED',
+
+
+
+ISSO SIGNIFICA QUE 
+
+O 
+NAVITEMS 
+
+component 
+
+vai 
+
+
+ter 
+
+ 
+
+ OS SEUS 
+ COMPONENTS 
+
+
+ 'NavItem', sim,
+
+
+ MAS 
+
+
+ ___ESSES__ COMPONENTS 'NavItem',
+ por sua vez,
+
+
+
+ SÓ __ SERÃO RENDERIZADOS __ COMO PLACEHOLDERS, 
+SEM SEU CONTEÚDO INTERNO... (the content of them is not rendered)...  ---> E ISSO 
+
+É IMPORTANTE __ JUSTAMENTE __ PARA 
+
+QUE 
+
+CONSIGAMOS RODAR 
+
+OS 
+
+TAIS 
+
+'UNIT TESTS',
+
+PQ 
+
+EVITAMOS 
+
+
+A CRIAÇÃO DE SUB TREES EXTENSAS, e podemos focar 
+
+naquele component 
+
+específico que está sendo testado.
+
+
+
+
+
+----------------------
+
+
+
+---> NÓS SÓ QUEREMOS renderizar o component 
+
+'NavItems',
+
+e renderizar SEM RENDERIZAR O CONTEÚDO DENTRO DOS SEUS 
+
+CHILD components...
+
+
+
+
+-----------> CERTO... --> VAMOS USAR 
+
+SHALLOW... --->  
+
+
+
+shallow 
+
+
+para 
+
+renderizar 
+
+'NavItems'... --> para isso,
+
+
+
+PROFESSOR 
+
+
+VAI 
+
+CRIAR UMA 
+
+CONSTANTE,
+
+
+
+que chamará 
+
+de 
+
+
+'wrapper'... ----> 
+
+
+
+
+
+ como valor dessa constante,
+
+ professor 
+
+ vai chamar 
+
+ 'shallow()'
+
+
+
+ E ENTÃO 
+
+ VAI 
+
+ PASSAR, COMO ARGUMENTO,
+
+
+
+
+o NAVIGATION ITEMS,
+
+NO FORMATO 
+
+DE 
+
+UM 'REACT ELEMENT'... ---> PARA ISSO, PROFESSOR 
+
+TERÁ 
+
+DE 
+IMPORTAR 
+
+
+'NavItems' com a sintaxe de imports 
+
+
+ES6...
+
+
+
+ex:
+
+
+
+
+import NavigationItems from './NavigationItems.js';
+
+
+
+
+----------------------------------------------
+
+
+
+
+
+AÍ ESCREVEMOS:
+
+
+
+
+describe('<NavigationItems />', 
+
+() => {
+        it('should render two <NavigationItem /> elements if not authenticated'),
+
+        () => {
+            const wrapper = shallow(<NavigationItems/>) ///EIS O CÓDIGO EM QUESTÃO.
+        }
+}
+
+)
+
+
+
+-------------------------------------
+
+
+
+OK, 
+
+
+MAS 
+
+É 
+
+
+ÓBVIO QUE PARA QUE ISSO FUNCIONE,
+
+PRECISAMOS 
+IMPORTAR 
+
+'React' 
+
+
+NESSE ARQUIVO DE 
+
+'NavigationItems.js'...
+
+
+
+(E ISSO REALMENTE É NECESSÁRIO)
+
+
+------------------------------------
+
+
+
+--> OK, AGORA ESTAMOS 'SHALLOWLY' RENDERING o 
+
+
+'<NavigationItems />',
+e então 
+
+estamos 
+
+
+O ARMAZENANDO 
+NESSA 
+
+
+CONSTANTE 
+
+DE 
+
+'wrapper'... 
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+import { configure } from 'enzyme';
+
+import { shallow } from 'enzyme';
+
+import React from 'react';
+
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+
+import NavigationItems from './NavigationItems';
+
+
+configure(
+    {
+        adapter: new Adapter()
+    }
+);
+
+
+
+describe('<NavigationItems />', 
+
+() => {
+        it('should render two <NavigationItem /> elements if not authenticated', 
+
+        () => {
+            const wrapper = shallow(<NavigationItems/>)
+        }
+
+        )
+    }
+
+)
+
+
+
+
+
+--------------------------------
+
+
+
+
+
+ISSO FEITO, 
+
+TENDO 
+
+ESSE 'WRAPPER' EM MÃOS,
+
+
+PODEMOS __ FINALMENTE__ DAR UMA OLHADA ___ 
+
+
+NESSE 
+
+'WRAPPER',
+
+nesse test aí... ------> E ESSA É A ÚLTIMA PARTE 
+
+
+DE UM TEST:
+
+
+NÓS 
+
+
+ESCREVEMOS 
+
+
+NOSSAS 
+
+'EXPECTATIONS'... ---------> 
+
+
+e 
+
+para 
+
+escrever 
+
+
+nossa 
+
+EXPECTATION,
+
+
+
+NÓS USAMOS 
+
+
+OUTRO MÉTODO DISPONIBILIZADO GLOBALMENTE 
+
+PELO 
+
+
+JEST,
+que 
+
+
+é 
+
+
+
+O 
+
+MÉTODO 
+
+
+'expect()' -----> DENTRO DE EXPECT NÓS DEFINIMOS A COISA QUE 
+
+NÓS QUEREMOS CHECAR... ---------------> 
+
+
+
+
+
+
+
+ME LEMBRO VAGAMENTE DISSO: 
+
+EXISTEM 
+
+MUITOS 
+
+'CHECKS' que podemos 
+
+
+escrever dentro 
+
+de 
+
+'expect()'....  -------> 
+
+
+
+
+
+--> nós vamos usar/escrever 
+
+
+'wrapper', aquela const lá ,
+
+
+
+E ENTÃO USAR 
+
+
+A 
+DOT NOTATION PARA 
+
+
+USAR 
+
+UMA UTILITY FUNCTION especial,
+
+PROVIDENCIADA PELO 
+
+ENZYME,
+
+O 
+
+MÉTODO 
+
+
+
+'.find()'... ----> ESSE MÉTODO NOS PERMITE __DAR UMA OLHADA __ DENTRO 
+
+DE UM COMPONENT, PARA ENTÃO 
+
+
+AVERIGUAR SE ELE POSSUI CERTO CONTEÚDO ESPECÍFICO... 
+
+
+
+
+
+
+ex:
+
+
+
+
+    const wrapper = shallow(<NavigationItems/>);
+    expect(wrapper.find())///EIS O CÓDIGO EM QUESTÃO.
+
+
+
+
+---------------------------
+
+
+
+
+
+
+
+
+
+
+
+AQUI, O PROFESSOR ESPERA (expects) 
+
+ENCONTRAR 
+UM 
+
+
+
+'<NavigationItem />',
+
+POR ISSO 
+
+
+
+
+ELE 
+
+
+DIZ QUE __DEVEMOS IMPORTAR__ ESSE COMPONENT TAMBÉM, DENTRO DESSE ARQUIVO 
+
+
+
+'NavigationItems.test.js'...
+
+
+
+------------------------
+
+
+
+ex:
+
+
+
+
+import NavigationItems from './NavigationItems';
+import NavigationItem from './NavigationItem/NavigationItem';
+
+
+
+
+
+
+    const wrapper = shallow(<NavigationItems/>);
+    expect(wrapper.find(NavigationItem))///EIS O CÓDIGO EM QUESTÃO.
+
+
+
+
+
+
+---------------------------
+
+
+OK, MAS 
+
+ESTE DETALHE É IMPORTANTE:
+
+
+
+REPARE A GRAFIA DE 
+
+'NavigationItem'... ---> ISSO 
+
+NÃO SERÁ, AGORA, UM ELEMENTO 
+
+'<JSX />'.... ---> NÃO SERÁ ESCRITO ASSIM __JUSTAMENTE__ PQ 
+
+ESSE 
+
+COMPONENT AÍ __ NÃO SERÁ 'DEEPLY RENDERED', NÃO SERÁ 
+RENDERIZADO 
+
+COM SEU CONTEÚDO INTERNO, JUSTAMENTE POR ESTARMOS 
+
+USANDO 
+
+
+'shallow()'...
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+import { configure } from 'enzyme';
+
+import { shallow } from 'enzyme';
+
+import React from 'react';
+
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+
+import NavigationItems from './NavigationItems';
+
+import NavigationItem from './NavigationItem/NavigationItem';
+
+
+configure(
+    {
+        adapter: new Adapter()
+    }
+);
+
+
+
+describe('<NavigationItems />', 
+
+() => {
+        it('should render two <NavigationItem /> elements if not authenticated', 
+
+        () => {
+            const wrapper = shallow(<NavigationItems/>);
+            expect(wrapper.find(NavigationItem)); /////SIM, COISAS NO INTERIOR DE NOSSO COMPONENT DEVEM SER ESCRITAS ASSIM... (shallowly rendered, por isso não usamos '< JSX />', e sim 'JSX'...)
+
+        
+    }
+        )
+}
+
+)
+
+
+
+-------------------------------------------
+
+
+
+
+
+AGORA PROVAVELMENTE ESTÁ FALTANDO UM CALL DE 'match' em cima desse 'expect()'...
+
+
+
+
+
+-----------> NAQUELA LINHA 
+
+'expect(wrapper.find(NavigationItem))',
+
+
+NÓS BASICAMENTE 
+
+DIZEMOS 
+
+' 
+encontraremos isto dentro daquele component'...  -------> 
+
+
+
+MAS 
+
+
+
+TESTS SÃO UM POUCO MAIS FLEXÍVEIS,
+
+NOS PERMITEM 
+
+ESCREVER 
+
+
+CHECKS MAIS COMPLEXOS.... ---->  você pode especificar que 
+
+
+VOCÊ ___VAI QUERER __ ENCONTRAR/EXPECT ENCONTRAR 
+
+
+
+
+APENAS 1, OU 2, OU 3 DAQUELE COMPONENT... OU ENTÃO QUE EXPECT
+
+ENCONTRAR __NENHUM DAQUELE COMPONENT__... -----------------> para isso,
+
+
+PRECISAMOS 
+
+
+CHAINAR 
+
+ALGO 
+
+
+
+AO CALL  
+
+
+de 'expect()'... -----------> 
+
+
+
+
+ESSES SÃO UTILITY METHODS 
+
+
+DISPONIBILIZADOS PELO 'JEST'... ---> 
+
+
+
+
+
+há inúmeros,
+
+
+alguns deles 
+
+são 
+
+
+
+'toBe'
+
+
+
+'toBeCalled'
+
+
+'toBeCalledWith' 
+
+
+
+'toBeCloseTo' 
+
+
+
+'toBeDefined' 
+
+
+
+
+
+'toBeFalsy'
+
+
+
+'toBeGreaterThan'....
+
+
+
+
+
+
+--------------------
+
+
+
+NO NOSSO CASO,
+
+
+
+vamos 
+
+colocar
+
+
+
+
+'toHaveLength'  (pq É ISSO QUE QUEREMOS ESPECIFICAR, QUEREMOS ESPECIFICAR QUE 
+
+AQUELE 
+
+ELEMENTO 
+
+ALI/ELEMENTOS ALI 
+
+TERÃO 
+
+TAL 
+E TAL 
+
+LENGTH...) ------> 
+
+E 
+
+A LENGTH QUE VAMOS 
+
+ESPECIFICAR É '2',
+
+PQ 
+
+É 
+
+ISSO QUE ESPERAMOS,
+
+ESPERAMOS QUE 
+
+2 
+
+
+COMPONENTS 
+
+'NavigationItem' SEJAM
+
+RENDERIZADOS 
+
+DENTRO 
+
+
+DE 
+
+
+'NavigationItems'...
+
+
+
+
+ex:
+
+
+
+
+
+
+import { configure } from 'enzyme';
+
+import { shallow } from 'enzyme';
+
+import React from 'react';
+
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+
+import NavigationItems from './NavigationItems';
+
+import NavigationItem from './NavigationItem/NavigationItem';
+
+
+configure(
+    {
+        adapter: new Adapter()
+    }
+);
+
+
+
+describe('<NavigationItems />', 
+
+() => {
+        it('should render two <NavigationItem /> elements if not authenticated', 
+
+        () => {
+            const wrapper = shallow(<NavigationItems/>);
+            expect(wrapper.find(NavigationItem)).toHaveLength(2);
+
+        
+    }
+        )
+}
+
+)
+
+
+
+
+----------------------------------------------------------
+
+
+
+
+
+
+ISSO PQ ESSES 'COMPONENTS' SÃO AUTOMATICAMENTE ADICIONADOS A UM ARRAY,
+E NÓS 
+
+VAMOS QUERER 
+
+QUE 
+
+A LENGTH DESSE ARRAY SEJA DE 2... 
+
+
+
+
+
+
+--> COMO NOSSO APP __POR DEFAULT__ 
+
+DEIXA 
+
+'TOKEN = FALSE/AUSENTE',
+
+
+por default 
+
+
+NÃO É PASSADO O PROP DE 
+
+
+'token' 
+
+A 
+ESSE '
+
+NAVIGATIONitems'  (shallow render),
+
+
+
+E É 
+
+EXATAMENTE 
+
+POR ISSO 
+
+QUE 
+
+
+2 
+
+COMPONENTS 'NavItem' 
+
+SERÃO 
+
+
+RENDERIZADOS,
+
+E É POR ISSO QUE 
+
+
+O 
+
+TEST 
+
+VAI 
+
+DAR 
+
+'PASS'...
+
+
+
+-----------------------
+
+
+OK, COMO PODEMOS 
+
+TESTAR 
+
+ESSE PACKAGE? -------> BEM,
+ 
+
+
+ DEVEMOS 
+
+
+ ESCREVER 
+
+
+ 'npm test' 
+
+ NO TERMINAL...
+
+
+
+
+
+ --> é só rodar 'npm test' no folder do nosso projeto.
+
+
+
+
+
+
+
+
+
+
+
+ --> ISSO DEU 'PASS'...
+
+
+
+
+ ----------------------------------
+
+
+ --> e o test fica em 'watch mode', se deixarmos ele rodando... (fica dando watch NOS NOSSOS ARQUIVOS DE 'TEST'...)
+
+
+
+
+
+'Test suites' ---> é o TEST EM GERAL, aquele coiso de '<NavigationItems />' QUE 
+COBRE OS NOSSOS 
+
+CALLS 
+
+DE 
+
+'it()' (que são os nossos tests individuais, no final das contas...)
+
+
+
+
+
+
+
+
+
+
+
+----> certo, nosso test passou...
+
+
+
+
+
+
+
+
+
+--> AGORA DEVEMOS ADICIONAR MAIS ALGUNS TESTS SIMPLES A ESSE COMPONENT 
+
+
+'NavigationItems',
+
+antes 
+
+de 
+
+
+TESTARMOS OUTRAS COISAS...

@@ -1,0 +1,302 @@
+
+
+
+
+'ng test' NO NOSSO CLI VAI _ TESTAR O NOSSO PROGRAMA, OS TESTS DEFINIDOS NO ARQUIVO 
+
+'app.componnet.ts',
+
+
+NO CASO..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, VAMOS RODAR NG test dentro 
+
+
+
+DO NOSSO PROEJTO,
+
+
+
+
+BASTA RODAR 
+
+
+
+'ng test'
+
+
+NO FOLDER DO NOSSO PROEJTO..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> o que isso fará, no caso,
+
+
+É _ COMEÇAR O 'TESTING ENVIRONMENT',
+
+
+
+
+
+E AÍ RODAR O KARMA... --> 
+
+
+
+
+
+
+
+
+
+KARMA TESTING ENVIRONMENT..
+
+
+
+
+
+
+
+
+--> ELE VAI EXECUTAR '3 DE 3 TESTS' ( 
+
+
+
+    pq o DEFAULT DO ANGULAR É SEMPRE TER 3 TESTS NO INÍCIO...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA VER COMO FICA O NEGÓCIO QUANDO 
+
+
+
+__FALHAMOS__,
+
+O PROFESSOR 
+
+ALTERA O VALOR DE 'title' para outro value,
+
+
+
+para que os tests falhem:
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'novoProjetoTestiax';
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> quando isso acontecer,
+
+
+veremos 
+
+
+
+
+
+
+
+que o KARMA VAI SPITTAR ESSA MENSAGEM DE ERROR:
+
+
+
+
+
+
+Chrome 103.0.5060.66 (Windows 10) AppComponent should render title FAILED
+        Expected 'novoProjetoTestiax app is running!' to contain 'novoProjetoTesting app is running!'.        
+            at <Jasmine>
+            at UserContext.apply (src/app/app.component.spec.ts:47:66)
+            at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:372:26)
+            at ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:287:39)
+Chrome 103.0.5060.66 (Windows 10) AppComponent should have as title 'novoProjetoTesting' FAILED
+        Expected 'novoProjetoTestiax' to equal 'novoProjetoTesting'.
+            at <Jasmine>
+            at UserContext.apply (src/app/app.component.spec.ts:37:23)
+            at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:372:26)
+            at ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:287:39)
+Chrome 103.0.5060.66 (Windows 10): Executed 3 of 3 (2 FAILED) (0.122 secs / 0.077 secs)
+TOTAL: 2 FAILED, 1 SUCCESS
+
+
+
+
+
+
+
+
+
+
+
+
+
+OU SEJA, 2 DOS TESTS ( de 3) 
+
+
+FALHARAM..
+
+
+
+
+
+
+
+
+
+
+
+
+
+     Expected 'novoProjetoTestiax app is running!' to contain 'novoProjetoTesting app is running!'.        
+            at <Jasmine>
+
+
+
+
+
+
+
+
+
+
+Chrome 103.0.5060.66 (Windows 10) AppComponent should have as title 'novoProjetoTesting' FAILED
+        Expected 'novoProjetoTestiax' to equal 'novoProjetoTesting'.
+
+
+
+
+
+
+
+
+
+
+
+
+        -----> OK... ISSO SIGNIFCA QUE NÓS ESTÁVAMOS COM 'EXPECT' DESSE VALUE ESPECÍFFICO,
+
+
+
+        E COMO DEIXAMOS DE O TER,
+
+
+
+
+        RECEBEMOS ESSE ERROR...
+
+
+
+
+
+
+
+
+        -> É ASSIM QUE RODAMOS OS TESTS DO ANGULAR... --> é assim que vemos 
+
+        test que dão FAIL ou SUCCESS...
+
+
+
+
+
+
+
+
+
+
+        OK... -> E COM O 'TEST' RODANDO, PODEMOS 'ENHANCE O NOSSO APP',
+
+        e ver um pouco mais sobre o tópico do testing..;..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        hmmm... entendi... o 'ng test' no angular __ TAMBÉM TEM 'REAL TIME CAPABILITIES'...

@@ -1,0 +1,123 @@
+
+
+
+
+ao longo desta lição 
+
+
+vimos um pouquinho do 
+
+
+
+REACT TESTING... ---------> 
+
+
+
+
+DEVEMOS 
+
+VER ARTIGOS
+ 
+ SOBRE 
+
+
+ TESTING PARA APRENDER MAIS.... ---> 
+
+
+
+ TESTING -- >DEVEMOS 
+
+
+ SEMPRE PENSAR 
+
+ SOBRE A MANEIRA PELA QUAL TESTAMOS....
+
+
+
+
+
+
+
+
+
+ ---> AS COISAS MAIS FÁCEIS DE TESTAR 
+
+
+
+ __SÃO ___ AS MAIS IMPORTANTES... ---> 
+
+
+
+
+
+
+
+
+
+ complexas chains de eventos SÃO DIFÍCEIS E CHATAS 
+
+ DE 
+
+ TESTAR.... --> vocÊ terá 
+
+que 
+
+codar 
+
+um monte 
+
+de coisa diferente.... ----> 'no fun', e REDUNDANTE... --> não precisamos 
+
+
+testar 
+
+se 
+
+conseguimos alcançar 
+
+o server, por exemplo....
+
+
+
+
+COISAS QUE DEVEMOS TESTAR: NOSSO 
+
+
+REDUCER FUNCIONA CORRETAMETNE?
+
+
+
+
+--> NOSSOS COMPONENTS SÃO UPDATADOS CORRETAMENTE QUANDO O INPUT MUDA?
+
+
+
+
+
+----> NÓS DISPARAMOS O 
+
+PROP CORRETO AO CLICAR EM UM CERTO BOTAo? ------> TODAS ESSAS 
+
+COISAS 
+
+podem 
+
+ser 
+
+testadas 
+
+
+FACILMENTE,
+
+COM 
+
+UNIT TESTS...
+
+
+
+--> É ASSIM QUE DEVEMOS PRATICAR 
+
+
+O 
+
+WRITE DE TESTS...

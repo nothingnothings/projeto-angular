@@ -1,0 +1,1083 @@
+
+
+
+
+
+
+
+
+
+
+
+
+--> NO APP EXEMPLO QUE CONSTRUÍMOS ATÉ AGORA,
+
+
+AINDA NÃO 
+
+
+USAMOS NENHUMA DIRECTIVE ALÉM DE 'COMPONENTS CLÁSSICOS'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> components SÃO DIRECTIVES, ISSO É UM FATO..
+
+
+
+
+
+
+
+--> MAS AINDA NÃO USAMOS NENHUMA OUTRA 'BUILT-IN DIRECTIVE'....
+
+
+
+
+
+
+
+
+
+
+
+
+-> DIGAMOS QUE UMA COISA QUE 
+QUEREMOS 
+
+FAZER 
+
+É 
+
+
+
+
+
+
+
+
+_____ ''''APENAS MOSTRAR ESSE TEXTO DE 
+
+
+"a server was created",
+
+
+
+
+
+
+
+
+sem mostrar aquele 'No server was created' anteriormente''' -->  OU SEJA,
+
+
+
+
+
+
+
+
+VAMOS QUERER _ RENDERIZAR__ CONDICIONALMENTE _ ESSE 
+
+
+PEDAÇO 
+
+DE 
+
+
+NOSSA PÁGINA..
+
+
+
+
+
+
+
+
+
+
+-----> PARA ISSO, CRIAREI UM NOVO COMPONENT,
+
+
+
+
+
+usoDaDirectiveNgIf
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO COMEÇA ASSIM:
+
+
+
+
+
+
+<hr>
+<label>NgIf directive</label>
+<input 
+type="text" 
+class="form-control"
+placeholder="Input your server name"
+>
+<button class="btn btn-primary" [disabled]="!allowNewServer" 
+>Add Server</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-uso-da-directive-ng-if',
+  templateUrl: './uso-da-directive-ng-if.component.html',
+  styleUrls: ['./uso-da-directive-ng-if.component.css']
+})
+export class UsoDaDirectiveNgIfComponent implements OnInit {
+
+
+  allowNewServer = false;
+
+
+
+  constructor() { 
+
+
+    setTimeout(
+      () => {
+        this.allowNewServer = true;
+      },
+
+      2000
+    );
+
+
+  }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> certo.... agora tenho que fazer o RENDER CONDICIONAL 
+
+
+de 'Server was created'.
+
+
+
+
+
+
+
+
+
+--> como faço isso?
+
+
+
+
+
+
+
+
+
+
+
+--> BASTA IMPORTAR O 'ngIf' assim, LÁ NO COMPONENT   '''uso-da-directive-ng-if'''....
+
+
+
+
+
+
+
+import { NgIf } from '@angular/common';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok... --> agora preciso escrever isso em algum local do código... provavelmenet dentro do component em si...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> tipo assim:
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { NgIf } from '@angular/common';
+
+@Component({
+  selector: 'app-uso-da-directive-ng-if',
+  templateUrl: './uso-da-directive-ng-if.component.html',
+  styleUrls: ['./uso-da-directive-ng-if.component.css'],
+})
+export class UsoDaDirectiveNgIfComponent implements OnInit {
+  allowNewServer = false;
+
+  constructor() {
+    setTimeout(
+      () => {
+        this.allowNewServer = true;
+      },
+
+      2000
+    );
+  }
+
+  ngOnInit(): void {}
+
+  Ngif() {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> agora tenho que VINCULAR ESSE 'NgIf' 
+
+
+
+
+PROVAVELMENTE A UM '<p>' 
+
+
+que 
+
+vai 
+
+APARECER 
+
+
+condicionalmente (quando o um 'server' for criado)....
+
+
+
+
+
+
+--> crio uma propriedade,
+
+'serverCreated',
+que começa como FALSE...
+
+
+
+
+
+eX:
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { NgIf } from '@angular/common';
+
+@Component({
+  selector: 'app-uso-da-directive-ng-if',
+  templateUrl: './uso-da-directive-ng-if.component.html',
+  styleUrls: ['./uso-da-directive-ng-if.component.css'],
+})
+export class UsoDaDirectiveNgIfComponent implements OnInit {
+  allowNewServer = false;
+  serverCreated = false;
+
+  constructor() {
+    setTimeout(
+      () => {
+        this.allowNewServer = true;
+      },
+
+      2000
+    );
+  }
+
+  ngOnInit(): void {}
+
+  Ngif() {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> vou lá no template e escrevo:
+
+
+
+
+
+
+
+<hr>
+<label>NgIf directive</label>
+<input 
+type="text" 
+class="form-control"
+placeholder="Input your server name"
+>
+<button class="btn btn-primary" [disabled]="!allowNewServer" 
+>Add Server</button>
+<p [(NgIf)]="serverCreated" >Server was created!</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> só que isso está ERRADO....
+
+
+
+
+
+
+
+
+
+
+
+A SINTAXE CORRETA É ASSIM:
+
+
+
+
+(SHORTHAND)
+
+<div *ngIf="condition">Content to render when condition is true.</div>
+
+
+
+
+
+
+
+
+
+
+SINTAXE EXPANDIDA:
+
+
+
+
+
+<ng-template [ngIf]="condition"><div>Content to render when condition is
+true.</div></ng-template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS ESTOU GANHANDO ESTE ERROR AQUI:
+
+
+
+
+
+
+
+core.mjs:10166 NG0303: Can't bind to 'NgIf' since it isn't a known property of 'p'.
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, ME PERDI, HORA DE VER A AULA..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> PROFESSOR FALA DA DIRECTIVE DE 'NgIf'...
+
+
+
+
+
+
+
+
+
+
+-> ELA FUNCIONA COMO UM 'IF STATEMENT'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ELA FUNCIONA ASSIM>:
+
+
+
+
+
+
+
+
+-----> LÁ NO NOSSO TEMPLATE,
+
+EM QUE TÍNHAMOS 
+
+
+
+<p>{{serverCreationStatus}}</p>
+,
+
+
+
+
+
+
+
+
+O PROFESSOR COMENTA ISSO PARA FORA.... 
+
+
+
+
+
+
+
+
+
+-----> MAS AÍ  ELE ADICIONA UM NOVO 
+
+
+paragraph,
+
+
+que diz 
+
+
+
+
+
+<p>Server was created</p>
+
+
+
+
+
+
+
+--> QUEREMOS QUE 
+
+
+
+ESSE <p>
+
+
+SEJA OUTPUTTADO NO MOMENTO 
+
+
+
+
+EM QUE 
+
+
+CLICAMOS 
+
+
+
+
+
+no button de 'onCreateServer'...
+
+
+
+
+
+
+
+
+
+--> PROFESSOR ADICIONA UMA DIRECTIVE NESSE <p>..
+
+
+
+
+
+
+
+
+
+-> DIRECTIVES SÃO SEMPRE 
+
+
+
+ADICIONADAS (Quase sempre)
+
+
+
+POR MEIO DE UM 
+
+
+__ATTRIBUTE SELECTOR ( '[attributeName]' )
+
+
+
+
+
+
+
+
+
+---> E AÍ DEVEMOS ESCREVER ASSIm:
+
+
+
+
+
+
+
+
+<p *ngIf >
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> PROFESSOR EXPLICA QUE ESSA 
+
+
+
+
+_ESTRELA_ _É IMPORTANTE.... --> É IMPORTANTE 
+
+
+
+
+
+
+E NECESSÁRIA PQ _ 'NgIf'
+ 
+ É AQUILO QUE CHAMAMOS DE 
+
+
+
+
+ 'STRUCTURAL DIRECTIVE' ------> O QUE QUER DIZER QUE ELA _ ALTERA __ DIRETAMENTE A 
+
+
+
+ ESTRUTURA DE NOSSO DOM... (
+
+     ela OU VAI ADICIONAR ESSE ELEMENT,
+     OU VAI 
+
+
+     'NÃO O ADICIONAR'.... 
+ )
+
+
+
+
+
+
+ -----> OK..
+
+
+
+
+
+
+
+
+
+ É POR ISSO QUE ESCREVEMOS ASSIm:
+
+
+
+
+ <p *ngIf>Server was created</p>
+
+
+
+
+
+
+
+
+
+
+
+ -> OK, ESSA É UMA INSTRUÇÃO PARA O ANGULAR:
+
+
+
+ A DIRECTIVE EM SI É 'ngIf',
+
+
+ MAS 
+
+ A
+  
+
+
+  _ESTRELA__ É NECESSÁRIA,
+
+  SEM ELA O NEGÓCIO NÃO  FUNCIONA DIREITO....
+
+
+
+
+
+
+
+
+  ----> DENTRO DE 'ngIf',
+
+  NÓS DEFINIMOS __ A CONDITION_ 
+
+
+  DESSE ELEMENTO,
+
+  PARA O RENDER DESSE ELEMENTO...
+
+
+
+
+
+
+
+
+  --> PARA NGIF,
+
+
+
+  ISSO DEVE SER __ QUALQUER EXPRESSÃO QUE 
+  RETORNE TRUE  OU FALSE (
+
+      pq NGIF tem o mesmo papel de 'if'....
+
+  )
+
+
+
+
+
+
+
+
+
+
+  -> É POR ISSO QUE ESCREVEMOS ASSIM:
+
+
+
+
+
+   <p *ngIf="serverCreated">Server was created</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, FUNCIONOU,
+
+E FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+<hr>
+<label>NgIf directive</label>
+<input 
+type="text" 
+class="form-control"
+placeholder="Input your server name"
+
+>
+<button class="btn btn-primary" [disabled]="!allowNewServer" 
+(click)="onCreateServer()"
+>Add Server</button>
+<p *ngIf="serverCreated" >Server was created!</p>
+
+
+
+
+
+
+
+
+
+
+-----------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+professor fez a mesma coisa que eu fiz...
+
+
+
+
+
+
+
+
+
+
+
+
+-> O 'ngIf' 
+é flexível,
+
+DENTRO 
+
+
+
+
+DA SUA CONDITION VOCÊ PODERIA _ CHAMAR __ UM METHOD,
+METHOD QUE 
+
+RETORNA TRUE OU FALSE...
+
+
+(
+
+
+    OU ENTAÕ 
+
+    REALIZAR O CHECK DIRETAMENTE DENTRO DOS ""
+
+
+)
+
+
+
+
+
+
+
+
+-----> OK... É ASSIM QUE 
+
+RENDERIZAMOS 
+
+ELEMENTOS __ CONDICIONALMENTE _ 
+
+
+
+
+
+NO ANGULAR, POR MEIO DE 'NgIf'... 
+
+
+
+
+
+
+
+
+
+
+-----> LÁ 
+
+
+
+
+
+NO DOM,
+
+
+no inspect elements,
+
+podemos 
+
+ver os HOOKS 
+
+QUE O ANGULAR CRIA 
+
+
+PARA 
+
+
+
+INSERIR 
+
+NOSSOS ELEMENTOS CONDICIONAIS,
+
+
+que é 
+
+
+
+algo como 
+
+
+<!--template bindings={
+    "ng-reflect-ng-if": "true
+} -->
+
+
+
+
+
+
+
+
+
+
+
+é um comment-hook,
+
+
+
+mas isso não é importante...
+
+
+
+
+
+
+
+
+
+--> MAS A PARTE INTERESSANTE, AQUI, É QUE 
+
+ESSE ELEMENTO _ FOI ADICIONADO AO DOM.... 
+
+(
+
+    ele não existe no dom o tempo inteiro,
+
+
+    não está 'hidden',
+
+
+    e sim 
+
+
+    ''NÃO ESTÁ LÁ'''....
+)
+
+
+
+
+
+
+
+
+
+
+----> OK.... ESSE É O 'ngIf' -->  a estrela NO INÍCIO INDICA QUE 
+
+ISSO 
+É 
+
+UMA 
+
+'STRUCTURAL DIRECTIVE',
+
+
+
+
+uma directive que 
+
+REALMENTE __ ALTERA O DOM,
+
+
+
+como observamos..

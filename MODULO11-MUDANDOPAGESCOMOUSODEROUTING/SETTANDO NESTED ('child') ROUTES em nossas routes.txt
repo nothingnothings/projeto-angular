@@ -1,0 +1,1616 @@
+ 
+
+
+
+
+
+
+
+
+
+
+ OK....  MELHORAMOS NOSSO APP UM BOCADO...
+
+
+
+
+
+ --> MAS UM 'PROBLEMA' 
+
+ QUE TEMOS É QUE 
+
+ QUANDO 
+
+
+
+ 1 DE NOSSOS USER/server 
+
+
+
+ na lista de 
+
+
+
+ 'users/servers'
+
+
+
+ é clicado,
+
+
+
+
+ NÓS __ 'CARREGAMOS UMA PÁGINA'
+
+
+
+
+ nova, independente, que some com a 'página' antiga...  
+
+
+
+
+
+
+
+
+
+ ------> SERIA BEM  MAIS NICE SE __ ESSE COMPONENT DE 'user single' e 'server single'
+
+ FOSSE 
+
+ CARREGADO _ AO LADO __ DO MENU PRINCIPAL/servers/users...
+
+
+
+
+
+
+
+
+
+
+ -> PARA ISSO, PRECISAREMOS DE 'NESTED ROUTING'...
+
+
+
+
+
+
+
+
+
+
+ --> COMO SINTOMA DESSE PROBLEMA DAS 'PAGES AUTÔNOMAS',
+
+
+ é possível observar 
+
+
+
+ QUE 
+
+ LÁ EM 
+
+ 'app.module.ts'
+
+
+
+
+ TEMOS 
+
+
+
+
+ __ UM BOCADO DE DUPLICATION...
+
+
+
+
+
+
+
+ VEJA O CÓDIGO:
+
+
+
+ const appRoutes: Routes = [
+  {
+    path: '', ////localhost:4200/   (É O _ DEFAULT, A HOME PAGE, PQ É o domain.com SEM O PATH depois)...
+    component: HomeComponent,
+  },
+
+  {
+    /////é a nossa primeira route... cada object nesse array é uma ROUTE, que é governada por um 'PAGE-COMPONENT' (o page-component é a ROUTE/page, no caso)...
+    path: 'users', ///   localhost:4200/users
+    component: UsersComponent, ///users.component.html
+  },
+  {
+    path: 'users/:userId', ////exemplo de DYNAMIC SEGMENTS (carregar user específico, dentro de list de users.... mesma coisa vista no NODEJS)...
+    component: UserComponent,
+  },
+
+  // {
+  //   path: 'users/:userId/:name',   ////PODEMOS TER MÚLTIPLOS SEGMENTOS DINÂMICOS NAS NOSSAS URLS...
+  //   component: UserComponent
+  // },
+
+  {
+    path: 'servers', //localhost:4200/servers
+    component: ServersComponent, //servers.component.html
+  },
+
+  {
+    path: 'servers/:id',
+    component: ServerComponent,
+  },
+
+  {
+    path: 'servers/:id/edit',
+    component: EditServerComponent,
+  },
+];
+
+
+
+
+
+
+
+
+
+
+
+
+--> COMO VOCê PODE VER,
+
+
+
+várias dessas routes 
+
+aí 
+
+
+
+COMEÇAM COM 
+
+'/servers',
+
+
+
+
+comoo visto aqui:
+
+
+
+  {
+    path: 'servers', //localhost:4200/servers
+    component: ServersComponent, //servers.component.html
+  },
+
+  {
+    path: 'servers/:id',
+    component: ServerComponent,
+  },
+
+  {
+    path: 'servers/:id/edit',
+    component: EditServerComponent,
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> também temos o mesmo problema com as  routes de USERS,
+
+
+
+  que se repetem:
+
+
+
+
+
+  
+  {
+   
+    path: 'users', ///   localhost:4200/users
+    component: UsersComponent, ///users.component.html
+  },
+  {
+    path: 'users/:userId', ////exemplo de DYNAMIC SEGMENTS (carregar user específico, dentro de list de users.... mesma coisa vista no NODEJS)...
+    component: UserComponent,
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> SERIA BOM, PORTANTO,
+
+  TER 'NESTED ROUTES',
+
+
+
+  TER CHILD ROUTES,
+
+
+
+  routes nesteadas 
+
+
+
+
+que sempre terão 
+
+'servers' ou 'users' 
+
+
+como PARTE INICIAL...
+
+
+
+
+
+
+
+
+
+
+
+
+--> VAMOS ADICIONAR ROUTES COMO ESSAS...
+
+
+
+
+
+
+
+
+--> para fazer isso,
+
+O 
+
+
+
+PROFESSOR VAI ATÉ O 
+
+
+
+
+
+app.module.ts 
+
+
+
+
+E AÍ __ VAI ADICIONAR _ OUTRA 
+
+
+
+
+
+
+
+__ PROPRIEDADE __ A UMA DE NOSSAS ROUTES..
+
+
+
+
+
+
+
+
+- ou seja,
+
+ele vai escrever assim:
+
+
+
+
+
+
+
+
+
+
+
+
+  {
+    path: 'servers', 
+    component: ServersComponent, 
+    novaPropriedade: 
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> ESSA NOVA PROPRIEDADE TERÁ O NOME DE 'children'...
+
+
+
+
+
+
+
+
+
+  fica tipo assim:
+
+
+
+
+  
+  {
+    path: 'servers', 
+    component: ServersComponent, 
+    children: 
+  },
+
+
+
+
+
+
+
+
+-----------> O 'children'
+
+EXIGE _ UM OUTRO ARRAY DE ROUTES,
+
+
+ 
+ ROUTES QUE REALMENTE TERÃO AQUELE FORMATO DE 
+
+ {
+   path: 'xxx',
+   component: 'yyyy'
+ }
+
+
+
+
+
+
+
+
+ --> É POR ISSO QUE O PROFESSOR VAI NESTEAR AQUELAS 2 ROUTES DE 
+
+
+
+ 'servers/:id' 
+
+
+ 'servers/:id/edit' 
+
+
+
+
+ DENTRO 
+
+
+ DESSA ROUTE AÍ...
+
+
+
+
+
+
+
+
+
+
+
+
+ TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+ 
+  { ///COM NESTED ROUTES...
+    path: 'servers', //localhost:4200/servers
+    component: ServersComponent, //servers.component.html
+    children: [
+      {
+        path: 'servers/:id',
+        component: ServerComponent,
+      },
+    
+      {
+        path: 'servers/:id/edit',
+        component: EditServerComponent,
+      }
+    ]
+  },
+
+
+
+
+
+---------------------------------
+
+
+
+
+
+
+
+
+
+
+ok... colocamos 
+
+essas ROUTES dentro desse array, como CHILDREN...
+
+
+
+
+
+
+
+
+
+-> mas DENTRO DE CADA ROUTE,
+
+o path de '/servers'
+
+DEVERÁ SER __REMOVIDO_,
+
+
+
+pq 
+
+
+isso já é implícito,
+já é adicionado automaticamente 
+
+
+
+
+por parte 
+
+da 
+
+ROUTE QUE 
+
+
+
+AS NESTEOU (a route que já possui 'path: servers')..
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+  { ///COM NESTED ROUTES...
+    path: 'servers', //localhost:4200/servers
+    component: ServersComponent, //servers.component.html
+    children: [
+      {
+        path: ':id',
+        component: ServerComponent,
+      },
+    
+      {
+        path: ':id/edit',
+        component: EditServerComponent,
+      }
+    ]
+  },
+
+
+
+
+
+
+
+
+
+
+
+  -------> ok,
+
+   ISSO QUER DIZER QUE AGORA NOSSAS ROUTES 
+
+
+   __NESTEADAS_ 
+
+   SERÃOO 
+
+
+   realmente 
+
+
+   '/servers/:id' 
+
+
+   e
+    
+
+
+    '/servers/:id/edit'....
+
+
+
+
+
+
+
+
+
+
+
+  ok, mas isso vai QUEBRAR O FLOW DE NOSSO APP...
+
+
+
+
+
+
+
+  -> PRECISAMOS REFORMATAR NOSSO APP,
+
+  FAZER COM QUE 
+
+
+
+  ESSAS ROUTES 
+
+  REALMENTE 
+
+  TENHAM RESULTADOS 
+
+
+
+  sobre o component de 'servers', que é o local em que 
+
+
+  temos o 
+
+  'server' item e o 'edit-server'...
+
+
+
+
+
+
+
+
+
+
+  ok... 
+
+
+
+
+
+  
+  
+  A DIFERENÇA DISSO PARA O SETUP ANTERIOR, NO CASO,
+
+  É QUE ISSO _IMEDIATAMENTE _ NOS DÁ UM 
+
+
+ 
+
+
+
+  AGRUPAMENTO MELHOR, UM FEEDBACK VISUAL MELHOR...
+
+
+
+
+
+
+
+
+
+
+
+  --> MAS NÃO É SÓ ESSE AGRUPAMENTO QUE FICA MELHOR,
+
+
+  O COMPORTAMENTO DA PAGE TAMBÉM MUDA...
+
+
+
+
+
+
+
+
+
+
+  ----->  NESSE SETUP AÍ,
+
+
+
+PODEMOS PERCEBER QUE O COMPONET DE ' 
+
+
+servers'
+AINDA É 
+
+
+
+O COMPONENT _ 
+
+CARREGADO PRIMARIAMENTE... -------->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+A PERGUNTA QUE INTERESSA, AGORA,É 
+
+'em que lugar 
+
+
+serão renderizados os SERVER COMPONENTs?'
+
+
+
+
+
+
+
+
+
+(
+
+  pq o 'server componnet', agora, é um CHILD 
+
+  do component de 'servers'...
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+----> E ISSO SERÁ UM PROBLEMA,
+
+ 
+ VOCÊ PERCEBERÁ ISSO SE 
+
+ RECARREGAR O AP..
+
+
+
+
+
+
+
+
+ ----->  quando clicarmos em algum dos 'server',
+
+ o 
+
+ CONSOLE.LOG VAI NOS DIZER QUE 
+ 'não encontrou um outlet para CARREGAR NOSSO SERVER COMPONNEt'...
+
+
+
+
+
+
+ -> E ELE NÃO DEVE DIZER, MESMO, PQ O 
+
+
+ ÚNICO LUGAR EM QUE 
+
+ PODEMOS CARREGAR COMPONENTS, NO NOSSO APP,
+
+
+ é o component de 
+
+
+
+ 'router-outlet'..
+
+
+
+
+
+
+
+
+
+
+e o 'router-outlet'
+
+
+fica lá em 'app.component.html':
+
+
+
+
+
+
+
+
+
+<div class="container"> <!-- COM ROUTING-->
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="nav nav-tabs">
+        <!-- <li role="presentation" class="active"><a href="#">Home</a></li>  ///LINKS _ COM PERDA _ DE STATE, pq um NOVO HTML É ENVIADO QUANDO É EXECUTADA ESSA ANCHOR TAG..., OU SEJA, SEM O USO DO ATTRIBUTE DE 'routerLink'....
+
+        <li role="presentation" class="active"><a href="#">Servers</a></li>
+        <li role="presentation" class="active"><a href="#">Users</a></li> -->
+        <!-- <li role="presentation" class="active"><a routerLink="/">Home</a></li> USAMOS 'routerLink' para conseguir DEFINIR LINKS NO NOSSO APP__ QUE NÃO VÃO FAZER O USER PERDER O STATE.... -->
+        <!-- options é usado para CONSERTAR O PROBLEMA DO STYLING NO 'LINK PARA O HOME/STARTPAGE', pq não queremos que o style active sempre esteja ativado nesse link (que nos dá esse problema pq '/' faz parte de todos os links)-->
+        <li role="presentation" routerLinkActive="active"
+        [routerLinkActiveOptions]="{exact: true}"
+        
+        ><a routerLink="/">Home</a></li>
+        <!-- 'routerLinkActive' é uma directive que ATIVA o style que vocÊ definiu no value dela, se detectar que estamos no mesmo component/page descrito em 'routerLink'...--> 
+        <!-- <li role="presentation" class="active"><a routerLink="/servers">Servers</a></li>  versão SIMPLIFICADA DO WRITE DE 'routerLink'.... é MELHOR USAR ESSA VERSÃO VISTA LOGO ABAIXO, com essa sintaxe de 'property binding', pq ela te deixa EDITAR COM _ MAIOR CONTROLE__ TODOS _OS SEGMENTS DE SEU PATH/url/route... -->
+
+         <!-- 'routerLinkActive' é uma directive que ATIVA o style que vocÊ definiu no value dela, se detectar que estamos no mesmo component/page descrito em 'routerLink'...--> 
+         <!-- NO CASO DO BOOSTRAP, você coloca essa directive NO _ LIST ELEMENT QUE SEGURA A ANCHOR TAG, e não na anchor tag, pq a anchor tag não será estilizada/não terá o style de 'active'-->
+        <li role="presentation" routerLinkActive="active"><a [routerLink]="['/servers']" >Servers</a></li>
+        <li role="presentation" routerLinkActive="active"><a [routerLink]="['/users']" >Users</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <!-- <app-home></app-home> --> 
+      <router-outlet></router-outlet><!-- É NESSE SLOT DE 'router-outlet' em que SERÃO OUTPUTTADOS/RENDERIZADOS os page-components de nossas ROUTES, a partir do path/route digitado na URL... -->
+    </div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> para conseguirmos fazer render 
+
+
+
+dessas 'child routes'
+
+
+
+
+EM ALGUM DE NOSSOS COMPONENTS (Tanto em 'servers' como em 'users'),
+
+
+
+
+
+
+
+PRECISAMOS DE AINDA OUTRO 
+
+'router-outlet',
+
+talvez um 
+
+
+MINI 'router-outlet',
+
+
+que 
+
+faça com que 
+
+child routes existam...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ESSES SÃO OS HOOKS ABSOLUTAMENTE INDISPENSÁVEIS 
+
+
+para 
+
+
+
+renderizar os components de nossas routes..
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> mas o problema de 'router-outlet'
+
+É QUE 
+
+ELE _- É RESERVADO_ 
+
+
+A 
+
+TODAS 
+
+AS 
+
+
+
+ROUTES _NOSSAs_ QUE EXISTEM NO 'top-level',
+
+
+
+
+
+
+
+QUE NO NOSSO CASO SÃO:
+
+
+
+
+
+
+'' (slash nothing)
+
+
+/users 
+
+
+/users/:id/:name
+
+
+/servers 
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> MAS AS CHILD ROUTES DE 'servers',
+
+que são 
+
+
+
+
+':id' 
+
+
+e 
+
+
+':id/edit',
+
+
+
+
+
+
+
+
+PRECISAM DE UM OUTLET _ SEPARADO_... ----> precisam de um OUTLET 
+
+SEPARADO 
+
+
+
+PQ _ ELES NÃO QUEREM 'OVERWRITTAR'
+
+
+
+
+ 
+ O __ COMPONENT DE 'servers'... ---> em vez disso,
+
+
+
+
+ ELES DEVEM SER CARREGADOS DE FORMA 'NESTED'
+
+ nesse 
+
+ component 
+
+ de 
+
+ 'servers'...
+
+
+
+
+
+
+
+
+
+
+ -> E É EXATAMENTE ESSE O BEHAVIOR QUE ESTAMOS PROCURANDO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> PARA CONSEGUIRMOS FAZER ISSO,
+
+
+ DEVEMOS IR ATÉ O COMPONENT DE 
+
+
+ 'servers.component.html'
+
+
+
+
+
+
+
+ E AÍ _ 
+
+ ,
+
+
+O CÓDIGO  É ESTE:
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12 col-sm-4">
+    <div class="list-group">
+      <a href="#" 
+      class="list-group-item" 
+      *ngFor="let server of servers; let index=index"
+      [routerLink]="['/servers', server.id]"
+      [queryParams]="{allowEdit: '1'}"
+      [fragment]="'loading'"
+      
+      >
+        {{ server.name }}
+      </a>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4">
+   
+    <a routerLink="/servers">Reload Page</a> <!-- ABSOLUTE PATH, substitui o PATH INTEIRO -->
+    <button class="btn btn-primary" (click)="onReload()">Reload Page - programmatic navigation, with relative paths (will error out, intended behavior)</button> 
+    <app-edit-server></app-edit-server>
+    <hr />
+
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+-> LOGO NO FINAL,
+
+NAQUELE TRECHO EM QUE 
+
+
+
+CARREGAMOS 
+
+
+OU 
+
+o 
+
+
+
+
+'app-edit-server' page
+
+
+
+ou o 
+
+'app-server' page,
+
+
+
+
+
+
+
+
+
+_ O PROFESSOR _ VAI _ COMENTAR TODO ESSE CÓDIGO PARA FORA,
+
+E AÍ 
+
+
+
+
+VAI USAR __  OUTRO __ 'router-outlet',
+
+
+
+
+
+O SEGUNDO 'router-outlet'
+
+DE NOSSO CÓDIGO...
+
+
+
+
+
+
+
+
+
+
+
+
+-----> ISSO QUER DIZER QUE _ MÚLTIPLOS 'router-outlet'
+
+
+PODEM VIVER EM NOSSOS PROJETOS,
+
+
+PODEM VIVER DE FORMA 
+
+'nested' 1 
+
+
+dentro do outro...
+
+
+
+
+
+
+--> O CÓDIGO FICA ASSIM:
+
+
+
+
+<div class="row">
+  <div class="col-xs-12 col-sm-4">
+    <div class="list-group">
+      <a href="#" 
+      class="list-group-item" 
+      *ngFor="let server of servers; let index=index"
+      [routerLink]="['/servers', server.id]"
+      [queryParams]="{allowEdit: '1'}"
+      [fragment]="'loading'"
+      
+      > <!-- [queryParams] É UMA _ PROPRIEDADE __ DE 'routerLink', e não uma NOVA DIRECTIVE... queryparams são ?allowEdit=1, na sua URL...-->
+      <!-- FRAGMENT É O '#' que Às vezes pode aparecer/ser parseado nas suas urls.... OBS: só é possível ter 1 ÚNICO FRAGMENT por 'link'/route.... -->
+        {{ server.name }}
+      </a>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4">
+    <router-outlet></router-outlet> <!-- ESSE OUTLET é o segundo outlet de nosso projeto, e é um NESTED OUTLET, pq existe outro (o 'global', 'topmost level'); É CLARO QUE USAREMOS ESSE 'NESTED OUTLET' para fazer o render de nossas NESTED ROUTES, as nested routes do component 'servers'... -->
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+-----------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+E ISSO _ REALMENTE FUNCIONOU..
+
+
+
+
+
+
+
+
+
+
+
+--> QUANDO CLICAMOS EM ALGUNS 
+
+DOS 'buttons' de nossos 'server',
+
+
+vamos até a aroute de 
+
+
+
+'      [routerLink]="['/servers', server.id]"''',
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ISSO VAI ADICIONAR UM NOVO 'HOOK',
+
+
+O QUAL SERÁ 
+
+
+UTILIZADO POR TODAS AS 'CHILD ROUTES' 
+
+
+__ QUE SÃO CARREGADAS NESSE COMPONENT ESPECÍFICO,
+
+QUE  NO CASO 
+
+É O 
+
+
+
+COMPONENTT 
+
+
+
+'servers.component.ts/html',
+
+
+que 
+
+
+
+
+foi 
+
+descrito como 'tem child routes' lá no 
+
+
+
+'app.module.ts',
+
+
+
+
+conforme o código de 
+
+
+
+
+
+''''''''''''''''
+
+
+
+  { ///COM NESTED ROUTES...
+    path: 'servers', //localhost:4200/servers
+    component: ServersComponent, //servers.component.html
+    children: [ ///child routes...
+      {
+        path: ':id',
+        component: ServerComponent,
+      },
+    
+      {
+        path: ':id/edit',
+        component: EditServerComponent,
+      }
+    ]
+  }
+
+
+
+
+''''''
+
+
+
+
+  ---->  TODAS 
+
+
+  ESSAS CHILD ROUTES 
+
+
+
+  SERÃO RENDERIZADAS NESSE SLOT DE 
+
+
+  'router-outlet'
+
+
+
+  em 
+  'servers',
+
+
+
+  essencialmente...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> OK, NÃO VEREMOS NADA 
+
+
+
+
+  NA DIREITA INICIALMENTE,
+
+  MAS SE 
+
+  CLICARMOS EM ALGUM ITEM,
+
+  VEREMOS 
+
+
+
+  O 
+
+  ITEM DISPLAYADO NA DIREITA..
+
+
+
+
+
+
+
+
+
+
+
+  --> e mais:
+
+
+  eu posso adicionar um button de 
+
+
+
+  'edit' 
+
+
+
+  em cada 'server item',
+
+
+
+  para 
+
+  aí 
+
+  carregar o 
+
+
+
+
+  'EDIT-SERVER' 
+
+  na direita (que é a feature que está faltando)...
+
+
+
+  
+
+
+
+
+  -> adicionei um button, funcionou...
+
+
+
+
+
+
+
+
+
+
+  --> AGORA VOU FAZER A MESMA COISA COM O 'users',
+
+  vou nestear a route 
+
+
+
+  de 
+
+  ':id/:name'...
+
+
+
+
+
+
+
+
+
+  FICA TIPO ASSIM O NOSSO CÓDIGO:
+
+
+
+  
+
+  {
+    /////é a nossa primeira route... cada object nesse array é uma ROUTE, que é governada por um 'PAGE-COMPONENT' (o page-component é a ROUTE/page, no caso)...
+    path: 'users', ///   localhost:4200/users
+    component: UsersComponent, ///users.component.html
+    children: [
+      {
+        path: '/:userId',    //localhost:4200/users/:userId
+        component: UserComponent,
+      },
+    ]
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E AÍ, ISSO FEITO,
+
+PRECISAMOS 
+
+ADICIONAR 
+
+
+
+'<router-outlet>'
+
+
+lá no component de 
+
+'users.component.html'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok, isso está funcionando, e o código html ficou assim:
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12 col-sm-4"></div>
+  <div class="list-group">
+    <a [routerLink]="['/users', user.id ]" 
+    class="list-group-item" 
+    *ngFor="let user of users"
+    
+    >
+    
+    
+    {{ user.name }}</a>
+  </div>
+</div>
+<div class="col-xs-12 col-sm-4">
+  <!-- <app-user></app-user> -->
+  <router-outlet></router-outlet>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> É POR ISSO QUE É SUPER IMPORTANTE 
+
+'UPDATAR DINAMICAMENTE O ID'
+
+e assim por diante,
+
+
+
+
+
+PQ O COMPONENT AQUI NÃO FOI SUBSTITUÍDO,
+
+
+E SIM 
+
+
+CONSEGUIMOS 
+
+
+só trocar o conteúdo no interior dele...
+
+
+
+
+
+
+
+
+--> E É ASSIM QUE PODEMOS IMPLEMENTAR 'CHILD ROUTING', 'NESTED ROUTES',
+
+
+
+
+com essa 
+
+PROPRIEDADE DE 'children',
+que aí 
+
+VAI 
+
+
+
+SEGURAR SUAS NESTED ROUTES...

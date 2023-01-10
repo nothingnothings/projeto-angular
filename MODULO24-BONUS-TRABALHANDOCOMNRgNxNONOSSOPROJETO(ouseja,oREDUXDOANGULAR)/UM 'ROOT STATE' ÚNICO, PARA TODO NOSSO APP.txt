@@ -1,0 +1,1305 @@
+
+
+
+
+
+
+
+
+
+
+
+
+-> AGORA QUE TRABALHAMOS NA SHOPPINGLIST,
+
+
+
+
+poderíamos ir para a 'recipeBook',
+
+
+
+MAS APARENTEMENTE O PROFESSOR QUER SALVAR ISSO PARA DEPOIS...
+
+
+
+
+
+
+
+
+
+
+
+EM VEZ DISSO, ELE QUER IMPLEMENTAR 'NGRX'
+
+
+
+NA SEÇÃO DE 'AUTH' ...
+
+
+
+
+
+
+
+----> OK, PARA IMPLEMENTARMOS ISSO, PRECISAMOS DE UM NOVO REDUCER,
+
+
+E UMA NOVA SÉRIE DE ACTIONS E TYPES..
+
+
+
+
+
+
+
+
+
+-> VOU COMEÇAR...
+
+
+
+
+
+
+
+
+
+
+
+A PARTE DA DÚVIDA É:
+
+
+
+
+
+
+
+
+
+
+'''podemos usar APENAS O NGRX PARA 
+
+
+fazer todas as actions que fazíamos no service,
+
+como 'autoLogin' e 'autoLogout''''?
+
+
+
+
+
+
+
+
+
+
+
+--> acho que sim, mas será bem mais complexo...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> as actions que coloquei foram estas:
+
+
+
+
+
+
+
+
+
+
+export const AUTH_START = 'AUTH_START';
+
+export const AUTH_FAIL = 'AUTH_FAIL';
+
+export const AUTH_SUCCESS = 'AUTH_SUCCESS';
+
+export const LOGOUT_USER = 'LOGOUT_USER';
+
+
+
+
+
+
+
+
+
+
+-> só não sei se serão apenas estas..
+
+
+
+
+
+
+
+
+
+
+
+
+--> agora é hora de criar o reducer...
+
+
+
+
+
+
+
+e as actions propriamente ditas...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... MEU REDUCER FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+import * as AuthActions from '../store/authActions';
+
+import { updateObject } from 'src/app/utility/updateObject';
+
+export interface AuthState {
+  token: string | null;
+  userId: string | null;
+  error: string | null;
+  isLoading: boolean;
+  email: string | null;
+}
+
+export interface AppState {
+  auth: AuthState;
+}
+
+const initialState: AuthState = {
+  token: null,
+  userId: null,
+  error: null,
+  isLoading: false,
+  email: null,
+};
+
+export function AuthReducer(
+  state: AuthState = initialState,
+  action: AuthActions.AuthActions
+) {
+  switch (action.type) {
+    case AuthActions.AUTH_START:
+      return authStart(state, action as AuthActions.AuthStart);
+    case AuthActions.AUTH_SUCCESS:
+      return authSuccess(state, action as AuthActions.AuthSuccess);
+    case AuthActions.AUTH_FAIL:
+      return authFail(state, action as AuthActions.AuthFail);
+    case AuthActions.AUTH_LOGOUT:
+      return authLogout(state, action as AuthActions.AuthLogout);
+      default:
+        return state;
+  }
+}
+
+const authStart = (
+  state: AuthState,
+  action: AuthActions.AuthStart
+): AuthState => {
+  return updateObject(state, { isLoading: true });
+};
+
+const authSuccess = (
+  state: AuthState,
+  action: AuthActions.AuthSuccess
+): AuthState => {
+  const { token, email, id } = action.userData;
+
+  return updateObject(state, {
+    isLoading: false,
+    token: token,
+    email: email,
+    userId: id,
+  });
+};
+
+const authFail = (
+  state: AuthState,
+  action: AuthActions.AuthFail
+): AuthState => {
+  return updateObject(state, {
+    isLoading: false,
+    token: null,
+    email: null,
+    userId: null,
+  });
+};
+
+const authLogout = (
+  state: AuthState,
+  action: AuthActions.AuthLogout
+): AuthState => {
+  return updateObject(state, {
+    token: null,
+    email: null,
+    userId: null,
+  });
+};
+
+
+
+
+
+
+
+
+E 
+
+
+
+
+AS ACTIONS:
+
+
+
+
+
+
+
+
+
+import { Action } from '@ngrx/store';
+import { User } from '../user.model';
+
+export const AUTH_START = 'AUTH_START';
+
+export const AUTH_FAIL = 'AUTH_FAIL';
+
+export const AUTH_SUCCESS = 'AUTH_SUCCESS';
+
+export const AUTH_LOGOUT = 'AUTH_LOGOUT';
+
+export class AuthStart implements Action {
+  type = AUTH_START;
+
+  constructor() {}
+}
+
+export class AuthFail implements Action {
+  type = AUTH_FAIL;
+
+  constructor(private payload: string) {} ////vai segurar 'error', que será uma STRING (ou um object error).
+}
+
+export class AuthLogout {
+  type = AUTH_LOGOUT;
+  ///temos que remover os items no localStorage, por meio de algum helper method, no reducer...
+}
+
+export class AuthSuccess implements Action {
+  type = AUTH_SUCCESS;
+
+  constructor(public userData: User) {}
+}
+
+export type AuthActions = AuthStart | AuthFail | AuthLogout | AuthSuccess;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> agora tenho que vincular esse reducer no meu 'general state',
+
+que acaba sendo incorporado ao 
+
+
+
+
+StoreModule.forRoot(),
+
+
+
+lá 
+
+
+
+no app.module.ts...
+
+
+
+
+
+
+
+
+
+
+---> vou até o arquivo index.ts e escrevo:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { ActionReducerMap } from '@ngrx/store';
+import { AuthReducer, AuthState } from 'src/app/auth/store/auth.reducer';
+import {
+  recipeBookReducer,
+  RecipeBookState,
+} from 'src/app/recipeBook/store/recipeBook.reducer';
+import {
+  shoppingListReducer,
+  ShoppingListState,
+} from './ShoppingList/store/shoppingList.reducer';
+
+export const rootReducer = {};
+
+export interface AppState {
+  //// 'AppState' é usado para DEFINIR O 'APPLICATION WIDE STATE'...
+  shoppingList: ShoppingListState;
+  recipeBook: RecipeBookState;
+  auth: AuthState
+}
+
+export const reducers: ActionReducerMap<AppState, any> = {
+  shoppingList: shoppingListReducer,
+  recipeBook: recipeBookReducer,
+  auth: AuthReducer
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA O QUE ME RESTA FAZER É 
+
+
+
+
+ESCREVER A LÓGICA DE 'autoLogin' e 'autoLogout',
+
+
+
+
+além
+
+
+de escrever 
+
+
+
+
+TODA A LÓGICA 'ASYNC',
+
+
+como uma vez fiz com meu burger builder:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export const authStart = () => {
+  return {
+    type: authActionTypes.AUTH_START,
+  };
+};
+
+// export const authSuccess = (authData) => {
+export const authSuccess = (token, userId, email) => {
+  return {
+    type: authActionTypes.AUTH_SUCCESS,
+    // authData: authData
+    token: token,
+    userId: userId,
+    email: email
+  };
+};
+
+export const authFail = (error) => {
+  return {
+    type: authActionTypes.AUTH_FAIL,
+    error: error,
+  };
+};
+
+export const authLogout = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('expirationDate');
+  localStorage.removeItem('email');
+  localStorage.removeItem('userId');
+  return {
+    type: authActionTypes.AUTH_LOGOUT,
+  };
+};
+
+export const checkAuthTimeout = (expirationTime) => {
+  return (dispatch) => {
+    setTimeout(() => {
+      dispatch(authLogout());
+    }, expirationTime * 1000);
+  };
+};
+
+export const authAttempt = (email, password, isSignup) => {
+  return (dispatch) => {
+    dispatch(authStart());
+    const authData = {
+      email: email,
+      password: password,
+      returnSecureToken: true, ///propriedade obrigatória para FUNCIONAMENTO DO 'REST API' do firebase... ---> deve sempre estar settada como 'true'...
+    };
+    let url =
+      'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCy31S56NPNXlXSSCTRdE5TccY_QYmtZe4'; /// url usada para SIGNUP/CADASTRO....
+    if (!isSignup) {
+      url =
+        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCy31S56NPNXlXSSCTRdE5TccY_QYmtZe4'; ///url/endpoint usado para ___SIGNIN/LOGIN...
+    }
+    axios
+      .post(url, authData) ///ESSA 'key' ([API_KEY]) FOI OBTIDA LÁ DO SITE DO GOOGLE FIREBASE, na engrenagem, e depois em 'Configurações do Projeto' > 'Chave de API da web'...
+      .then((response) => {
+        console.log(response);
+        const expirationDate = new Date(new Date().getTime() + response.data.expiresIn * 1000); ////lembre-se de adicionar '* 1000', pois o JAVASCRIPT SEMPRE CONSIDERA 'TEMPO' EM MILISSEGUNDOS, E NÃO EM SEGUNDOS.... (só o 'expiresIn' que é mostrado em segundos....)
+        console.log(expirationDate);
+        localStorage.setItem('token', response.data.idToken);
+        localStorage.setItem('expirationDate', expirationDate);
+        localStorage.setItem('userId', response.data.localId);
+        localStorage.setItem('email', response.data.email )
+        dispatch(authSuccess(response.data.idToken, response.data.localId, response.data.email));
+        dispatch(checkAuthTimeout(response.data.expiresIn));
+      })
+      .catch((error) => {
+        console.log(error);
+        dispatch(authFail(error.response.data.error));
+      });
+  };
+};
+
+
+export const authCheckState = () => {
+  return dispatch => {
+      const token = localStorage.getItem('token');
+      if(!token) {
+        // console.log('test');
+        dispatch(authLogout())
+      } else {
+        const expirationDate = new Date(localStorage.getItem('expirationDate'));
+        if (expirationDate <= new Date()) {
+          dispatch(authLogout());
+        } 
+        else {
+          const userId = localStorage.getItem('userId');
+          const email = localStorage.getItem('email');
+          dispatch(authSuccess(token, userId, email)); ///////// esse userId é aquele 'gettado' logo acima....
+          // dispatch(checkAuthTimeout(expirationDate.getSeconds() - new Date().getSeconds()));  ////este código NÃO VAI FUNCIONAR... vai introduzir um PROBLEMA NO NOSSO CÓDIGO: nosso código vai sempre executar 'auth_logout'... ---------> ao usar 'getTime()' em vez de 'getSeconds()', nós vamos obter A DIFERENÇA ENTRE O 'FUTURO' E O 'PRESENTE' (que é o tempo até a token expirar, basicamente) EM __MILISSEGUNDOS___, que é exatamente o que queremos (pq a unidade de tempo usada GERALMENTE no javascript é MILISSEGUNDOS.... os timers/setTimeouts também funcionam com ms, e é por isso que vamos utilizar '.getTime()' aqui....)
+          dispatch(checkAuthTimeout((expirationDate.getTime() - new Date().getTime()) / 1000 ));  ////devemos WRAPPAR essa expressão em parênteses PARA PODER ENTÃO A DIVIDIR por 1000... ---> e dividimos por 1000 pq LOGO DEPOIS ELA SERÁ MULTIPLICADA por '1000', lá na action de checkAuthTimeout()...
+        }
+  
+      }
+  }
+}
+
+
+
+
+
+export const setAuthRedirectPath = (path) => {
+    return {
+      type: authActionTypes.SET_AUTH_REDIRECT_PATH,
+      path: path
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> para isso, vou precisar de um ARQUIVO ADICIONAL,
+
+
+
+TALVEZ 
+
+'authAsync',
+
+ou algo assim,
+
+
+em que ficarão 
+
+
+
+
+
+as functions que executam 
+
+código async...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok...
+
+
+
+
+
+
+
+
+hmm agora que pensei melhor... talvez ainda seja necessário usar um SERVICE, MAS DESSA VEZ UM SERVICE 
+
+
+
+PARA 
+
+COISAS ASYNC, E NÃO SYNC...
+
+
+
+
+
+
+
+
+
+
+--> BEM, VOU ASSISTIR A AULA DO PROFESSOR....
+
+
+
+
+
+
+
+
+
+
+
+
+--> ele começa com o authReducer.... 
+
+
+
+
+
+
+
+
+
+
+-> o professor explica que por enquanto vamos ignorar os http requests...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> o professor explica que o state de nosso 'auth' está relacionado com 
+
+o 
+
+
+
+'USER' object...
+
+
+
+
+
+
+-> bem, foi exatamente isso que fiz, o defini como meu 'initialState':
+
+
+
+
+
+
+
+
+
+
+
+
+
+export interface AuthState {
+  token: string | null;
+  userId: string | null;
+  error: string | null;
+  isLoading: boolean;
+  email: string | null;
+}
+
+export interface AppState {
+  auth: AuthState;
+}
+
+const initialState: AuthState = {
+  token: null,
+  userId: null,
+  error: null,
+  isLoading: false,
+  email: null,
+};
+
+
+
+
+
+
+
+
+--------------------------------
+
+
+
+
+
+
+
+
+
+
+
+O professor escreveu a interface um pouco diferente, pq ele usou o user model...
+
+
+
+
+
+
+
+
+
+
+
+ficou assim:
+
+
+
+
+
+
+
+
+
+export interface State {
+    user: User;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+--> O professor então diz que devemos adicionar o 'AUTH STATE SLICE'
+
+
+ao nosso app.module.ts...
+
+
+
+
+
+
+
+
+-> ele escreveu assim:
+
+
+
+
+
+
+
+
+
+
+
+StoreModule.forRoot(
+    {
+        shoppingList: shoppingListReducer,
+        auth: authReducer
+    }
+)
+
+
+
+
+
+
+
+
+
+--> mas é claro que minha sintaxe é melhor, pq agrupei tudo naquela const de 'reducers'..
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+    StoreModule.forRoot(
+      reducers
+    ),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA O PROFESSOR NOS EXPLICA QUE DEVEMOS TIRAR O 'AppState' 
+
+
+
+
+lá 
+
+
+de 
+
+'shoppingListReducer',
+
+
+
+
+pq 
+
+
+
+AGORA TEMOS MAIS DE 1 
+
+
+
+
+
+'REDUCER',
+
+
+
+
+por isso o professor cria um folder de 'store' global...
+
+
+
+
+
+
+(
+
+    posso fazer isso no arquivo 'index.ts'
+
+    que criei no root..
+
+
+
+)
+
+
+
+
+e dentro dele ele escreve assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { ActionReducerMap } from '@ngrx/store';
+import { recipeBookReducer, RecipeBookState } from 'src/app/recipeBook/store/recipeBook.reducer';
+import { AuthReducer, AuthState } from './auth/store/auth.reducer';
+import { shoppingListReducer, ShoppingListState } from './ShoppingList/store/shoppingList.reducer';
+
+export const rootReducer = {};
+
+export interface AppState { //// 'AppState' é usado para DEFINIR O 'APPLICATION WIDE STATE'... 
+  shoppingList: ShoppingListState;
+  recipeBook: RecipeBookState;
+  auth: AuthState;
+
+}
+
+
+
+export const reducers: ActionReducerMap<AppState, any> = {
+  shoppingList: shoppingListReducer,
+  recipeBook: recipeBookReducer,
+  auth: AuthReducer
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> vamos ter esse conjunto de reducers lá em 'StoreModule.forRoot()'..
+
+
+
+
+
+TODAS ESSAS SLICES INDIVIDUAIS FORMAM NOSSO STATE GLOBAL....
+
+
+
+
+
+
+
+
+
+
+
+PROFESSOR FALA DESTA CONST AQUI:
+
+
+
+
+
+export const reducers: ActionReducerMap<AppState, any> = {
+  shoppingList: shoppingListReducer,
+  recipeBook: recipeBookReducer,
+  auth: AuthReducer
+};
+
+
+
+
+---> ele explica que 
+
+'ActionReducerMap'
+
+É UM GENERIC TYPE,
+
+
+
+E POR ISSO PRECISAMOS DEFINIR 'QUAL TIPO DE OVERALL STATE SERÁ O RESULTADO DESSE MAP',
+
+
+que no caso será aquele 
+
+
+'AppState'...
+
+
+
+
+
+
+
+
+
+--> isso feito,
+
+apontamos aos 
+
+NOSSOS REDUCERS, 
+
+
+COM SUAS SLICES...
+
+
+
+
+
+
+--> certo, agora temos nosso 'app Reducer',
+
+
+
+
+que vamos 
+
+
+COLOCAR LÁ EM 
+
+'StoreModule.forRoot()',
+
+exatamente como eu já havia feito....
+
+
+
+
+
+
+
+
+
+
+-_> AGORA TEMOS UM SETUP BEM MAIS CLEAN...
+
+
+
+
+
+
+
+
+--> DEVEMOS SUBSTITUIR TODAS AS PARTES DO APP QUE ANTES 
+APONTAVAM 
+
+AO AppState 
+
+do 
+
+
+'ShoppingList'...
+
+
+
+
+
+
+
+
+
+-> ok, isso é bom 
+
+
+PQ NOS CONSTRUCTORS DOS COMPONENTS AGORA TEREMOS ACESSO AO 'OVERALL STATE'
+
+
+de nosso app,
+
+e não só a um 'SLICE' dele....
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnDestroy, OnInit } from '@angular/core';
+
+import { Store } from '@ngrx/store';
+
+import { Observable, Subscription } from 'rxjs';
+
+import { LoggingService } from '../logging.service';
+import { Ingredient } from '../shared/ingredient.model';
+
+import * as ShoppingListActions from './store/shoppingListActions';
+
+import * as fromShoppingList from './store/shoppingList.reducer';
+
+import { AppState } from '..';
+
+@Component({
+  selector: 'app-shopping-list',
+  templateUrl: './shoppingList.component.html',
+  styleUrls: ['./shoppingList.component.css'],
+})
+export class ShoppingListComponent implements OnInit {
+  ingredients: Observable<{ ingredients: Ingredient[] }>;
+
+  constructor(
+    private loggingService: LoggingService,
+
+    private store: Store<AppState>
+  ) {}
+
+  ngOnInit(): void {
+    this.ingredients = this.store.select('shoppingList');
+  }
+
+  onShopListItemClick(index: number) {
+    this.store.dispatch(new ShoppingListActions.StartEdit(index));
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo...
+
+
+
+
+
+
+
+
+
+
+
+
+isso pq agora temos 2 state slices no reducer/store,
+
+
+
+
+shoppingList 
+
+
+e 
+
+
+auth....
+
+
+
+
+
+
+
+
+
+OK...
+
+
+
+
+
+
+
+
+
+ESSE SETUP É UM POUCO DIFERENTE, MAS É BEM MELHOR...
+
+
+
+
+
+
+
+--> COM ISSO, FICAMOS 
+
+
+COM UM CÓDIGO MAIS CLEAN,
+
+
+
+E 
+
+COM UMA STORE QUE FUNCIONA 'FINE' COM MÚLTIPLOS 
+
+STATE SLICES...
+
+
+
+
+
+
+
+
+
+
+--> DEVEMOS CONTINUAR O TRABALHO COM A PARTE DE AUTH, NO ENTANTO...

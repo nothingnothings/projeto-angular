@@ -1,0 +1,396 @@
+
+
+
+
+
+
+
+
+
+ACABAMOS COM ESSE MÓDULO...
+
+
+
+
+
+
+
+
+
+
+
+ADICIONAMOS UM SERVICE DE 'auth.service.ts',
+
+
+
+
+
+
+
+
+
+
+E ELE MANAGEIA TODA A LÓGICA DE AUTHENTICATION DE NOSSO APP,
+
+
+
+
+
+E ISSO 
+
+INCLUÍ:
+
+
+
+
+
+
+
+
+1) SIGN USER UP 
+
+
+
+
+2) LOGIN USER 
+
+
+
+
+
+3) SHOW DE ERROR MESSAGES 
+
+
+
+
+4) STORE DE TOKEN QUE GANHAMOS DEPOIS DE UM 'SUCCESSFUL LOGIN/SIGNUP'...
+
+
+
+
+
+
+
+
+
+
+também TEMOS A LÓGICA DE 'STORE TOKENS NO LOCAL STORAGE':
+
+
+
+
+
+
+
+
+  private storeUserToken(responseData: AuthResponseData) {
+
+    const expirationDate = new Date(new Date().getTime() + +responseData.expiresIn * 1000); ////lembre-se de adicionar '* 1000', pois o JAVASCRIPT SEMPRE CONSIDERA 'TEMPO' EM MILISSEGUNDOS, E NÃO EM SEGUNDOS.... (só o 'expiresIn' que é mostrado em segundos....)
+    // localStorage.setItem('token', responseData.idToken); ///versão que usei no REACT.
+    // localStorage.setItem('expirationDate', expirationDate.toString());
+    // localStorage.setItem('userId', responseData.localId);
+    // localStorage.setItem('email', responseData.email );
+
+
+      ///versão que uso no ANGULAR
+    const userObject = {
+      token: responseData.idToken,
+      expirationDate: expirationDate.toString(),
+      userId: responseData.localId,
+      email: responseData.email
+      
+    }
+
+
+    localStorage.setItem('userData', JSON.stringify(userObject))
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> isso tudo no service de 'auth'...
+
+
+
+
+
+
+
+
+
+
+
+--> AÍ USAMOS ESSA TOKEN PARA 
+
+
+
+
+FAZER FETCH/SEND DE DATA 
+
+
+AO 
+
+FIREBASE API..
+
+
+
+
+
+
+
+
+-->  É CLARO QUE 
+
+FIREBASE API 
+
+É SÓ UM EXEMPLO,
+
+
+
+MAS A LÓGICA GERAL DE 'COMO VOCÊ FAZ EXCHANGE DE TOKENS' 
+
+
+
+
+GERALMENTE É SEMPRE A MESMA ..
+
+
+
+
+
+
+
+
+
+
+
+
+---> TAMBÉM APRENDEMOS QUE 
+
+
+
+
+
+
+
+''''
+
+HÁ MAIS 
+
+SOBRE O LOGIN 
+
+DO QUE 
+
+
+LOGGING IN E AÍ 
+
+
+
+FAZER GET DA TOKEN' ''  -----------> ISSO PQ 
+
+
+
+VOCÊ QUER 
+
+
+
+ARMAZENAR ESSA TOKEN 
+
+
+NO LOCAL STORAGE, O LOCAL QUE 
+
+
+FAZ COM QUE A DATA SOBREVIVA A PARTIR DE PAGE RELOADS ...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> TAMBÉM APRENDEMOS QUE DEVEMOS 'CLEAR' ESSE STORAGE SEMPRE QUE 
+
+
+NOSSA TOKEN 
+
+
+EXPIRAR/FICAR INVÁLIDA..
+
+
+
+
+
+
+
+
+
+
+6) TAMBÉM USAMOS UM ROUTER GUARD PARA 
+
+PROTEGER 
+
+
+
+
+ROUTES CONTRA ACESSOS NÃO AUTORIZDOS (routes de 'recipe-book' e 'auth'),
+
+
+
+
+
+TUDO COM  A AJUDA DO AUTH-SERVICE 
+
+
+
+
+
+
+e 
+
+
+a guard de 'authGuard'...
+
+
+
+
+
+
+
+
+
+
+--> por fim,
+
+
+ASSEGURAMOS QUE 
+
+O 
+
+HEADER É ATUALIZADO CORRETAMETNE,
+
+
+
+
+
+
+
+
+
+
+
+
+
+7) 
+
+
+
+
+HEADER ATUALIZADO COM BASE NO NOSSO AUTH STATUS,
+
+
+QUE POR SUA VEZ É DERIVADO DO NOSSO 'AUTH SERVICE'
+
+
+
+
+E DO _ USER_ QUE 
+
+
+
+ARMAZENAMOS LÁ,
+
+naquele 'behavior subject'...
+
+
+
+
+
+
+
+
+
+8) USAMOS UM 'BEHAVIOR SUBJECT' pq ele tem um pseudomecanismo de 'persist data/state',
+
+
+
+
+PQ ELE __ SEMPRE VAI CONSIDERAR THE 'LAST EMITTED DATA/user',
+
+
+
+E ISSO SIMPLESMENTE 
+
+
+
+NOS AJUDA 
+
+A 
+
+ASSEGURAR QUE 
+
+
+
+
+CONSIGAMOS 
+
+
+ACESSO AO USER __ MESMO __ QUE 
+
+
+'TENHAMOS PERDIDO O USER UPDATE ANTERIOR'..
+
+
+
+
+
+
+
+
+
+
+--> ok, aprendemos bastante sobre authentication,
+
+
+
+e agora 
+
+
+podemos adicionar auth a nossos apps, também...
+
+
+
+
+
+
+
+
+
+
+Useful Docs:
+
+Firebase Auth REST API Docs: https://firebase.google.com/docs/reference/rest/auth
+
+More on JWT: https://jwt.io
+

@@ -1,0 +1,1481 @@
+
+
+
+
+
+
+
+
+
+
+
+-> AGORA QUE TEMOS O INITIALSTATE E TEMOS NOSSA FUNCTION 'REDUCER',
+
+
+estamos assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Ingredient } from "../shared/ingredient.model";
+
+
+let ingredients: Ingredient[] = [];
+
+
+
+const initialState = { ////queremos ter esse 'INITIALSTATE' de nosso app, que antes existia lá no SERVICE DE 'shoppingList.service.ts', CONSIDERADO NESSE NOSSO REDUCER/SISTEMA DO CENTRAL STORE...
+
+ingredients: ingredients,
+
+
+
+}
+
+
+
+////POR MEIO DA FEATURE typescript (next gen javascript) de 'state = initialState', DEFINIMOS O 'initial state' considerado no nosso reducer _cOMO _ SENDO O MESMO STATE QUE DEFINIMOS LOGO ACIMA, NAQUELA CONST...
+export function shoppingListReducer(state = initialState, action) {  ///////ESSES 2 ARGUMENTOS SÃO SEMPRE 'PASSED IN' pelo próprio angular 'NGRX', contanto que vocÊ defina esse reducer como REDUCER DE SEU APP 
+
+                        ///state --> é o APPLICATION-WIDE STATE DE SEU APP...
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, MAS O QUE ACONTECE DENTRO DESSA FUNCTION 'REDUCER',
+
+no caso?
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, O PROFESSOR HAVIA MENCIONADO QUE 
+
+
+'PRECISAMOS DESCOBRIR _ QUAL _ TIPO DE ACTION FOI DISPATCHEADA',
+
+
+
+
+
+
+
+
+TUDO PARA QUE 
+
+ENTAÕ 
+
+CONSIGAMOS SABER 'COMO EDITAR O NOSSO STATE'...
+
+
+
+
+
+
+
+
+
+--> NO REACT,
+
+NÓS TIPICAMENTE USAMOS UM SWITCH-CASE STATEMENT,
+
+
+
+
+
+
+
+COM CHECKS POR 'action.type'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE AINDA NÃO ESTAMOS FAZENDO O DISPATCH DE ACTIONS,
+
+
+ISSO 
+DEVERÁ SER FEITO MAIS TARDE...
+
+
+
+
+
+
+
+
+
+
+--> PARA CHECAR DIFERENTES TIPOS DE POSSÍVEIS ACTIONS,
+PODERÍAMOS 
+
+
+ADICIONAR MÚLTIPLOS IF STATEMENTS,
+
+MAS É RUIM...
+
+
+
+
+
+
+
+
+
+
+-> MELHOR USAR UM SWITCH CASE STATEMENT... 
+
+
+
+
+
+
+
+EXATAMENTE COMO NO REACT,
+
+
+
+ESCREVEMOS UMA LÓGICA COMO 
+
+
+
+
+
+
+
+
+
+switch(action.type) {
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+--> MAS PARA CONSEGUIRMOS MELHOR TYPESCRIPT SUPPORT,
+
+
+PODEMOS AINDA 
+
+
+
+
+COLOCAR UM 'TYPE' no nosso argumento 'action',
+
+
+O TYPE DE 
+
+'Action'... -----> E ESSE TYPE É IMPORTADO 
+
+
+
+
+LÁ DE 'ngrx/store'...
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+import { Ingredient } from "../shared/ingredient.model";
+
+
+import { Action } from '@nrgx/store';
+
+
+let ingredients: Ingredient[] = [];
+
+
+
+const initialState = { ////queremos ter esse 'INITIALSTATE' de nosso app, que antes existia lá no SERVICE DE 'shoppingList.service.ts', CONSIDERADO NESSE NOSSO REDUCER/SISTEMA DO CENTRAL STORE...
+
+ingredients: ingredients,
+
+
+
+}
+
+
+
+////POR MEIO DA FEATURE typescript (next gen javascript) de 'state = initialState', DEFINIMOS O 'initial state' considerado no nosso reducer _cOMO _ SENDO O MESMO STATE QUE DEFINIMOS LOGO ACIMA, NAQUELA CONST...
+export function shoppingListReducer(state = initialState, action: Action) {  ///////ESSES 2 ARGUMENTOS SÃO SEMPRE 'PASSED IN' pelo próprio angular 'NGRX', contanto que vocÊ defina esse reducer como REDUCER DE SEU APP 
+
+                        ///state --> é o APPLICATION-WIDE STATE DE SEU APP...
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO VAI IMPORTAR ESSA INTERFACE DE 'ACTION',
+
+
+QUE É SIMPLESMENTE UMA INTERFFACE _ QUE 
+
+
+
+FORÇA TODAS AS 'ACTIONS'
+
+A TER UMA 
+
+
+PROPRIEDAED DE 'type',
+
+
+
+
+
+QUE É CHECADA AQUI....
+
+
+
+
+
+
+
+
+OK, NOSSO CÓDIGO VAI FICANDO ASSIM:
+
+
+
+
+
+
+
+
+
+import { Ingredient } from "../shared/ingredient.model";
+
+
+import { Action } from '@nrgx/store';
+
+
+let ingredients: Ingredient[] = [];
+
+
+
+const initialState = { ////queremos ter esse 'INITIALSTATE' de nosso app, que antes existia lá no SERVICE DE 'shoppingList.service.ts', CONSIDERADO NESSE NOSSO REDUCER/SISTEMA DO CENTRAL STORE...
+
+ingredients: ingredients,
+
+
+
+}
+
+
+
+////POR MEIO DA FEATURE typescript (next gen javascript) de 'state = initialState', DEFINIMOS O 'initial state' considerado no nosso reducer _cOMO _ SENDO O MESMO STATE QUE DEFINIMOS LOGO ACIMA, NAQUELA CONST...
+export function shoppingListReducer(state = initialState, action: Action) {  ///////ESSES 2 ARGUMENTOS SÃO SEMPRE 'PASSED IN' pelo próprio angular 'NGRX', contanto que vocÊ defina esse reducer como REDUCER DE SEU APP 
+
+                        ///state --> é o APPLICATION-WIDE STATE DE SEU APP...
+
+
+
+
+
+switch(action.type) {
+
+    case
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> JÁ PODEMOS IR REGISTRANDO DIFERENTES 'CASES' aqui....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+switch(action.type) {
+
+    case 
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+-> É CLARO QUE DEPENDE DE NÓS QUAIS 
+
+
+
+'TYPES' NOSSO APP TERÁ...
+
+
+
+
+
+
+--> vamos começar com coisas simples...
+
+
+
+
+
+
+
+
+
+
+--> o 'get' de ingredients, como em 
+
+
+
+
+'getIngredients() {
+
+}
+'
+
+
+
+
+
+NÃO ALTERA O NOSSO STATE,
+
+
+
+
+
+
+
+
+por isso é melhor começarmos por algo como 
+
+
+
+'add an ingredient'...
+
+
+
+
+
+
+
+
+
+
+
+
+o method de addIngredient antigo, no nosso service,
+
+
+tem este código:
+
+
+
+
+
+addIngredient(ingredient: Ingredient) {
+    this.ingredients.push(ingredient);
+    this.ingredientsChanged.next(this.ingredients.slice());
+}
+
+
+
+
+
+
+
+
+
+
+-----> VAMOS QUERER 
+
+
+
+EXECUTAR ALGO ASSIM NO NOSSO REDUCER, É CLARO...
+
+
+
+
+
+
+
+
+
+--> o state será alterado  
+
+
+
+por meio dessa action, é claro...
+
+
+
+
+
+
+
+
+
+
+
+
+-> O VALUE DE 'action.type' SERÁ UMA STRING..
+
+
+
+
+
+
+
+
+
+--> podemos colocar assim:
+
+
+
+
+
+case 'ADD_INGREDIENT' 
+
+
+
+
+
+
+
+
+
+
+
+
+--> A CONVENÇÃO É USAR UPPERCASE_TEXT__,
+
+
+
+que deixe bem claro o que esse negócio faz...
+
+
+
+
+
+
+
+--> fica bem claro que essa action vai adicionar um ingredient...
+
+
+
+
+
+
+
+
+-> COM ESSE CASE REGISTRADO,
+
+AGORA VAMOS QUERER 
+
+FAZER.. -> 
+
+
+
+
+
+
+
+VAMOS QUERER FAZER __ O RETURN__ 
+
+
+DE 
+
+
+
+1
+ 
+
+ 'NEW STATE',
+
+
+ 1 NEW STATE QUE 
+
+
+ SEJA 
+
+ _ UMA CÓPIA _ DO ANTERIOR,
+
+
+ MAS COM 
+
+
+
+ AS MODIFICAÇÕES QUE QUEREMOS IMPLEMENTAR (
+
+    ou seja,
+
+    'immutable copy'...
+ )
+
+
+
+
+
+
+
+
+
+
+ --> LÁ NO REDUX DO 'react',
+
+
+ eu havia escrito um method de 'updateState', ou algo assim,
+
+
+ que fazia o update do STATE AUTOMATICAMENTE PARA NÓS,
+
+ DE FORMA IMMUTABLE...
+
+
+
+
+
+
+
+
+
+
+
+ --> vou ver se encontro essa function:
+
+
+
+
+
+
+
+
+
+
+ ERA ALGO ASSIM:
+
+
+
+
+
+
+
+
+
+
+ export const updateObject = (oldObject, updatedValues) => {
+    return {
+        
+        ...oldObject,
+        ...updatedValues
+    }
+};
+
+
+
+
+
+
+
+
+ou seja,
+
+basta colocar o 'old state' como primeiro argumento,
+
+e aí 
+
+OS VALUES QUE VÃO UPDATAR ESSE STATE 
+
+
+
+como segundo argumento..
+
+
+
+
+
+(
+
+    acho que como o negócio é um update de forma 'IMMUTABLE',
+
+    ele vai automaticamente misturar o 'OLD STATE'
+
+
+    com esses values 'novos' aí...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK...
+ 
+ MAS NO CASO DO PROFESSOR, ELE começa escrevendo assim:
+
+
+
+
+
+
+
+
+
+
+
+ switch(action.type) {
+
+    case 'ADD_INGREDIENT':
+
+        return state.ingredients.push(NOVOINGREDIENT)
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> o professor diz que você PODERIA _ PENSAR__ QUE 
+
+
+ ISSO SERIA POSSÍVEL... -->  
+
+
+
+
+ _ MAS ISSO _ ESTARIA_ _ TOTALMENTE ___ _____ ERRADO_________....
+
+
+
+
+
+
+ ERRADO PQ _ STATE CHANGES, COM O 'NGRX',
+
+
+
+ SEMPRE PRECISAM SER 'IMMUTABLE'... --> ISSO QUER DIZER QUE 
+
+
+
+ __ NÃO PODEMOS_ EDIT O EXISTING/PREVIOUS STATE... --->  isso é TOTALMENTE PROIBIDO,
+
+
+
+ E SE VOCÊ FIZER ISSO, É UMA BAD PRACTICE...
+
+
+
+
+
+
+
+
+
+
+
+ -----> OK, NUNCA TOQUE O 'EXISTING STATE'... --> EM VEZ DISSO,
+
+
+
+ RETORNE UM 'NEW OBJECT',
+
+ QUE VAI __ SUBSTITUIR O VELHO STATE,
+
+
+
+
+ E PARA __ NÃO PERDER TODA A 
+
+ DATA ANTIGA,
+
+
+ USE O SPREAD OPERATOR,
+
+ tipo assim:
+
+
+
+
+
+
+
+
+ switch(action.type) {
+
+    case 'ADD_INGREDIENT':
+
+        return {
+            ...state
+        }
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO VAI 'PULL OUT' TODAS AS PROPRIEDADES DO OLD STATE 
+
+
+
+
+
+E VAI AS ADICIONAR A ESSE NOVO OBJECT... --> O QUE QUER DIZER QUE FICAMOS COM 
+
+
+'UM NOVO OBJECT, MAS COM A DATA VELHA' (
+
+    ou seja,
+
+    ficamos com uma IMMUTABLE COPY DO STATE  ANTIGO...
+)
+
+
+
+
+--> E SE TENTARMOS EDITAR ESSA CÓPIA AQUI, 'IT WILL STILL BE OK'...
+
+
+
+
+
+
+
+
+--> ok...
+
+COPIAMOS O 'OLD STATE',
+
+
+
+
+E AGORA QUEREMOS 'OVERWRITE THE INGREDIENTS'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> até agora, o código de 
+
+'''
+
+
+
+
+
+ export const updateObject = (oldObject, updatedValues) => {
+    return {
+        
+        ...oldObject,
+        ...updatedValues
+    }
+};
+
+
+
+
+
+
+
+'''
+
+
+está totalmente certo; poderíamos usá-lo aqui 
+
+normalmente,
+
+sem problemas...
+
+
+
+
+
+
+
+
+
+
+----> OK...
+
+
+
+
+
+
+
+
+TEMOS UMA CÓPIA DO 'OLD STATE',
+
+
+
+E AÍ 
+QUEREMOS 
+
+
+'OVERWRITE THE INGREDIENTS' --> para fazer isso,
+
+
+
+
+o professor escreve assim:
+
+
+
+
+
+
+
+
+case 'ADD_INGREDIENT':
+    return {
+        ...state,
+        ingredients: NOVOVALOR...
+    }
+
+
+
+
+
+
+
+
+
+    -----> CORRETAMENTE, VOCÊ PODERIA DIZER QUE 
+
+
+    '''O OLD STATE ERA APENAS 1 OBJECT COM A PROPRIEDADE 
+    DE INGREDIENTS''''... 
+
+
+
+
+
+
+
+
+    --> isso quer dizer que 
+
+
+
+    SE COPIARMOS TODO O 'OLD STATE'
+
+    E AÍ __ SÓ ALTERARMOS 
+
+    OS 
+
+    'INGREDIENTS',
+
+
+    fica meio redundante  
+
+
+
+    fazermos 
+
+    overwrite desses 'ingredients',
+
+    pq 
+
+
+     
+
+     essa é a única propriedade desse state...
+
+
+
+
+
+
+
+
+
+
+
+
+     -> AINDA ASSIM,
+
+
+     É UMA BOA PRACTICE SEMPRE COPIAR O OLD STATE COM 
+
+
+     '...state',
+
+
+     PQ __MAIS TARDE __ 
+
+
+     ,
+
+     EM OUTROS APPS,
+
+
+     VOCÊ 
+
+
+     __CERTAMENTE TERÁ 
+
+
+     STATES 
+
+
+     QUE VÃO TER MAIS DO QUE 
+
+
+     APENAS 1 ÚNICA PROPRIEDADE,
+
+
+     e se você 
+
+     então fizer change de 
+
+
+
+
+     APENAS 1 PROPRIEDADE E AÍ ESQUECER 
+
+     DE 
+
+
+     COPIAR AS OUTRAS PROPRIEDADES,
+
+
+     VOCê 
+
+
+
+     VAI ACABAR 'OVERWRITING' o old state com o new state,
+
+     mas aí 
+
+
+     todos os values antigos, das propriedades antigas,
+
+     terão sido DUMPADOS (
+
+        o que é péssimo...
+     )
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE A RULE OF THUMB É:
+
+
+
+'SEMPRE COPIE O OLD STATE,
+
+AÍ _ OVERWRITE_ APENAS AS COISAS QUE VOCÊ QUER QUE MUDEM'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... --> E OS INGREDIENTS TERÃO DE SER UM ARRAY,
+
+SIM,
+
+
+
+MAS 
+É CLARO QUE 
+
+NÃO VAMOS QUERER _ PERDER _ OS 
+
+
+
+INGREDIENTS VELHOS...
+
+
+
+
+
+
+
+
+
+--> para conseguirmos adicionar um  novo ingredient,
+
+
+precisamos, obviamente , de um PAYLOAD na nossa action... ( com o 'ingredientData' ou algo assim)...
+
+
+
+
+
+
+
+
+
+
+
+
+PARA FAZER ISSO,
+
+precisamos de um código como aquele de 'burgerbuilder', tipo assim:
+
+
+
+
+const ingredientAdd = (state, action) => {
+  const updatedBurger = {
+    ...state.burger
+  }
+  const updatedBurgerIngredients = {
+    ...updatedBurger
+  }
+  //console.log(updatedBurgerIngredients)
+  const insideUpdatedBurgerIngredients = updatedBurgerIngredients.ingredients;
+  return updateObject(state, {
+    burger: {totalPrice: state.burger.totalPrice + INGREDIENT_PRICES[action.ingredientName],
+      ingredients: {
+        ...insideUpdatedBurgerIngredients,
+        [action.ingredientName]: state.burger.ingredients[action.ingredientName] + 1
+      }
+    }
+  }
+  )
+  
+
+}
+
+
+
+
+
+
+
+
+------------------------------
+
+
+
+
+
+
+
+
+OU SEJA,
+
+VAMOS PRECISAR DE ALGUM HELPER METHOD 
+DE 
+
+
+'add_ingredient',
+
+
+que 
+
+
+UTILIZE ESSE 'updateObject' method outsourceado,
+
+para 
+
+
+
+AÍ 
+
+
+ATUALIZAR 
+
+
+
+O ARRAY DE 'ingredients'
+
+
+da maneira que queremos (
+
+
+    o velho 
+
+
+
+    array de ingredients, mas com um novo ingredient sendo addado...
+
+
+
+
+
+)
+
+
+
+
+
+
+
+
+I was watching the same tutorial, and it's likely that your angular/ngrx versions are newer. In the latest version of NgRx (currently v12.2.0 as of July 2021), there are factory methods for creating actions and reducers.
+
+
+
+
+
+https://stackoverflow.com/questions/67484545/property-payload-is-missing-in-type-action-but-required-in-type-additemacti
+
+
+
+
+
+
+
+
+TALVEZ O CÓDIGO FICARÁ ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Action } from '@ngrx/store';
+import { Ingredient } from '../shared/ingredient.model';
+
+import { updateObject } from '../../app/utility/updateObject';
+
+
+
+let ingredients: Ingredient[] = [];
+
+const initialState = {
+  ////queremos ter esse 'INITIALSTATE' de nosso app, que antes existia lá no SERVICE DE 'shoppingList.service.ts', CONSIDERADO NESSE NOSSO REDUCER/SISTEMA DO CENTRAL STORE...
+
+  ingredients: ingredients,
+};
+
+
+
+
+
+
+
+
+
+const addIngredient = (state: {ingredients: Ingredient[]}, action: {type: string, ingredient: Ingredient}) => {
+
+    const updatedIngredients = {
+        ...state.ingredients
+    }
+
+
+    updatedIngredients.push(action.ingredient)
+
+
+    return updateObject(state, {
+
+        ingredients: updatedIngredients
+
+    })
+
+
+}
+
+
+
+
+
+////POR MEIO DA FEATURE typescript (next gen javascript) de 'state = initialState', DEFINIMOS O 'initial state' considerado no nosso reducer _cOMO _ SENDO O MESMO STATE QUE DEFINIMOS LOGO ACIMA, NAQUELA CONST...
+export function shoppingListReducer(state = initialState, action: any) {
+  ///////ESSES 2 ARGUMENTOS SÃO SEMPRE 'PASSED IN' pelo próprio angular 'NGRX', contanto que vocÊ defina esse reducer como REDUCER DE SEU APP
+
+  ///state --> é o APPLICATION-WIDE STATE DE SEU APP...
+
+  switch (action.type) {
+    case 'INGREDIENT_ADD':
+      return addIngredient(state, action);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> até agora tudo bem, sim, 
+
+mas o problema é o type safety 
+
+
+
+da minha 'action', que não está funcionando direito (talvez usar FACTORIES DE ACTIONS E REDUCERS...)....
+
+
+
+
+
+
+
+
+
+ok, mas devo continuar com a aula do professor..
+
+
+
+
+
+
+
+o código vai ficando assim:
+
+
+
+
+
+
+export function shoppingListReducer(state = initialState, action: Action) {
+
+  switch (action.type) {
+    case 'INGREDIENT_ADD':
+      return {
+
+        ...state,
+        ingredients: [
+          ...state.ingredients,
+
+        ]
+      }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> vamos querer copiar  todo o 'state velho',
+
+aí todos os 'ingredients' antigos, do array de ingredients antigo,
+
+para 
+
+
+AÍ __ ADICIONAR _ UM NOVO INGREDIENT, POR MEIO DO 'PAYLOAD' DA 
+
+ACTION QUE VAMOS QUERER 
+
+
+
+USAR NESSE REDUCER...
+
+
+
+
+
+
+
+
+
+---------> MAS O PROFESSOR ADICIONA UM NOVO ELEMENTO, SIM....
+
+
+
+
+TEM QUE FAZER PARTE DA ACTION...
+
+
+
+
+
+
+
+---> tipo 
+
+
+'action.payloadName'...
+
+
+
+
+
+
+
+
+
+--->
+NA PRÓXIMA AULA, VEREMOS MELHOR ESSAS ACTIONS, PARA VER COMO FAZEMOS 'CREATE' E 'DISPATCH' DE ACTIONS...

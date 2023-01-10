@@ -1,0 +1,392 @@
+
+
+
+
+
+agora que 
+
+
+estudamos 
+
+
+
+as partes importantes 
+
+
+dos module types 
+
+
+
+
+
+
+
+
+do angular,
+
+
+
+
+
+COM:
+
+
+
+
+
+1) FEATURE MODULES 
+
+
+
+2) SHARED MODULES 
+
+
+
+3) CORE MODULES (inúteis)
+
+
+
+
+
+
+
+
+
+
+
+
+DEVEMOS PARTIR PARA NOSSO PRIMEIRO 'OPTIMIZATION CONCEPT',
+
+
+
+
+PQ ATÉ AGORA 
+
+
+
+ESSA SEPARAÇÃO DE NOSSO APP EM MODULES SEPARADOS FOI MAJORITARIAMETNE 
+
+COSMÉTICA,
+
+
+
+
+
+
+APENAS _ FAZIA NOSSO CÓDIGO FICAR MAIS 'LEAN',
+
+
+e nos ajuda com o maintain,
+
+
+
+mas 
+
+NÃO INFLUENCIA EM NADA 
+
+A 
+
+
+PERFORMANCE DE NOSSO APP...
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS AGORA ISSO MUDARÁ, PQ APRENDEREMOS O 'LAZY LOADING'..
+
+
+
+
+
+
+
+-> E O USO DE MÚLTIPLOS MÓDULOS,
+
+
+
+PARA SERMOS MAIS PRECISOS,
+
+'Feature modules',
+
+
+
+É UM PREREQUISITO PARA 
+
+O 
+
+USO DE LAZY LOADING...
+
+
+
+
+
+
+
+
+
+--> MAS O QUE É LAZY LOADING?
+
+
+
+
+
+
+
+
+
+
+
+
+--> CONSIDERE  ESTE APP:
+
+
+
+
+
+
+
+
+
+
+
+                                    USER (que visita a page)
+
+
+
+
+
+
+
+ROUTE 1: /        ROUTE 2: /products          ROUTE 3: /admin 
+
+
+
+
+
+
+
+
+
+
+--> 
+
+
+
+
+
+                        E CADA ROUTE É ASSOCIADA A UM 'MODULE',
+
+
+
+
+                        como 
+
+
+
+
+
+
+
+        'AppModule'    'ProductsModule'       'AdminModule' 
+components,directives       ....                    ....
+        pipes
+
+
+
+
+
+
+
+
+
+
+------> OK....-->  E AÍ, NO NOSSO APP,
+
+
+QUANDO O USER VISITA 
+
+
+'/',
+
+
+
+
+
+ELE ACESSA A ROOT ROUTE,
+
+
+NÓS CARREGAMOS AQUELE 'PRIMEIRO MODULE',
+
+
+
+E É CLARO QUE SUPOSTAMENTE 
+
+
+ACONTECE A MESMA COISA,
+
+
+QUANDO VISITAMOS QUALQUER OUTRA PAGE...
+
+
+
+
+
+
+
+
+
+
+-----> E É CLARO, SEM O LAZY LOADING,
+
+
+
+_ NÓS SEMPRE VAMOS TER QUE CARREGAR 'TUDO DA PÁGINA MAIS UMA VEZ'
+
+
+quando 
+acessamos/acessarmos as outras routes...
+
+
+
+
+
+
+
+
+-> MAS SERIA BEM MELHOR SE 
+
+
+
+
+
+APENAS CARREGÁSSEMOS 
+
+
+'admin' 
+
+e 
+
+'products'
+
+
+
+__ QUANDO ACTUALLY VISITÁSSEMOS ESSAS PAGES,
+
+E NUNCA ANTES DISSO(
+
+
+
+    aí o código que pertence a essas áreas de nosso app 
+
+    APENAS QUANDO REALMENTE PRECISÁSSEMOS...
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ESSA É A IDEIA DO LAZY LOADING:
+
+
+
+
+
+
+
+
+NÓS INICIALMENTE SÓ RENDERIZAMOS/LOAD 
+
+
+
+
+
+NOSSO CONTEÚDO DO 'APP MODULE', DA ROOT ROUTE (E DE TODOS OS COMPONENTS REGISTRADOS NELE),
+
+
+
+
+
+
+
+
+E AÍ __ SÓ QUANDO VISITAMOS OS OUTROS MODULES/ROUTES 
+
+
+CARREGAMOS O CÓDIGO DESSA PÁGINA 
+
+E
+ 
+
+ DE TODOS OS COMPONENTS QUE PERTENCEM A ELA..
+
+
+
+
+
+
+
+
+
+
+
+
+ --> A VANTAGEM DISSO É QUE INICIALMENTE acabamos baixando um 'code bundle' __ MENOR_,
+
+
+
+ E QUE 
+
+
+
+  
+
+  __ AÍ BAIXAMOS __ APENAS MAIS CÓDIGO QUANDO REALMENTE PRECISAMOS (
+
+
+
+
+      isso faz com que nosso app 
+
+
+      carregue mais rápido,
+      pq 
+
+
+
+      fica com menos coisas para baixar no startup....
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> VAMOS VER COMO IMPLEMENTAR O LAZY LOADING, E O SEU EFEITO NO NOSSO PROJETO....

@@ -1,0 +1,66 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <input type="text" [(ngModel)]="filteredStatus">
+      <label for="text">Filter by Server Status (type server status):</label>
+      <br>
+      <h2>App Status: {{appStatus}}</h2>
+      <h2>App Status: {{appStatus | async }}</h2>
+      <button class="btn btn-primary" (click)="onAddServer()">Add Server</button>
+      <ul class="list-group">
+        <li class="list-group-item"
+        *ngFor="let server of servers"
+        [ngClass]="getStatusClasses(server)"
+        >
+          <span class="badge" >{{ server.status }}</span> <!-- `shorten` É UM EXEMPLO DE CUSTOM PIPE, PIPE CRIADO POR NÓS MESMOS..-->
+          <strong>{{ server.name | shorten
+             }}
+
+             {{ server.name | shortenSpecific: 5
+             }}
+            
+            </strong> || {{ server.instanceType | uppercase }} ||
+          {{ server.started }} ||
+          {{ server.started | date }} ||
+          {{server.started | date: 'fullDate' }}  ||
+          {{server.started | date: 'fullDate' | uppercase }} ||
+       
+        </li> <!-- AQUI CONSTATAMOS O USO DE ALGUNS PIPES (uppercase e DATE... Aug 9, 1920)-->
+            <!-- PIPES _ TAMBÉM ACEITAKM PARÂMETROS, E ELES SÃO PASSADOS COM ESTA SINTAXE, de ':' :  '''{{ server.started | date: 'xxx' }}'''' -->
+      
+      
+        <!--     {{server.started | uppercase | date: 'fullDate' }}   - ISSO NÃO FUNCIONA -- NÃO FUNCIONA PQ A 'ORDER' DOS PIPES, ORDER DE TRANSFORMAÇÃO DE SUA DATA PELOS PIPES, SEMPRE IMPORTA...  E NÃO É POSSÍVEL CONVERTER UMA DATA DE TYPE 'DATE' EM UPPERCASE, pq só strings permitem essa conversão..-->
+          </ul>
+
+
+
+
+          <ul class="list-group"> <!-- EXEMPLO DE USO DE 'PIPE' dentro de nossos NGFOR LOOPS... pq isso também funciona, aparentemente....-->
+            <li class="list-group-item"
+            *ngFor="let server of servers | filter: filteredStatus"
+            [ngClass]="getStatusClasses(server)"
+            >
+              <span class="badge" >{{ server.status }}</span> <!-- `shorten` É UM EXEMPLO DE CUSTOM PIPE, PIPE CRIADO POR NÓS MESMOS..-->
+              <strong>{{ server.name | shorten
+                 }}
+    
+                 {{ server.name | shortenSpecific: 5
+                 }}
+                
+                </strong> || {{ server.instanceType | uppercase }} ||
+              {{ server.started }} ||
+              {{ server.started | date }} ||
+              {{server.started | date: 'fullDate' }}  ||
+              {{server.started | date: 'fullDate' | uppercase }} ||
+           
+            </li> <!-- AQUI CONSTATAMOS O USO DE ALGUNS PIPES (uppercase e DATE... Aug 9, 1920)-->
+                <!-- PIPES _ TAMBÉM ACEITAKM PARÂMETROS, E ELES SÃO PASSADOS COM ESTA SINTAXE, de ':' :  '''{{ server.started | date: 'xxx' }}'''' -->
+          
+          
+            <!--     {{server.started | uppercase | date: 'fullDate' }}   - ISSO NÃO FUNCIONA -- NÃO FUNCIONA PQ A 'ORDER' DOS PIPES, ORDER DE TRANSFORMAÇÃO DE SUA DATA PELOS PIPES, SEMPRE IMPORTA...  E NÃO É POSSÍVEL CONVERTER UMA DATA DE TYPE 'DATE' EM UPPERCASE, pq só strings permitem essa conversão..-->
+              </ul>
+
+
+    </div>
+  </div>
+</div>

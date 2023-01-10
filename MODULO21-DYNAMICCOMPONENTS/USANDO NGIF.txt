@@ -1,0 +1,962 @@
+
+
+
+
+
+
+
+
+
+
+
+ACHO QUE JÁ SEI COMO FAZER ISSO...
+
+
+
+
+
+
+
+
+CÓDIGO ATUAL, NO MOMENTO:
+
+
+
+
+import { Component, Input } from '@angular/core';
+
+@Component({
+  selector: 'app-alert',
+  templateUrl: './alert.component.html',
+  styleUrls: ['./alert.component.css'],
+})
+
+export class AlertDynamicComponent {
+
+
+
+
+   @Input() message: string;  ////Colocamos 'Input()' PQ QUEREMOS QUE ESSA MESSAGE DESSA BOX CONSIGA SER SETTADA DO LADO DE FORA....
+
+
+
+
+
+  constructor() {}
+}
+
+
+
+
+
+
+
+
+
+
+
+E ISTO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="backdrop"></div>
+<div class="alert-box">
+  <p>{{ message }}</p>
+  <div class="alert-box-actions">
+    <button class="btn btn-primary">Close</button>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> DEVO COLOCAR UM CLICK LISTENER QUE CHAMARÁ UM METHOD DE 'close'
+
+LÁ 
+
+
+NO 
+
+
+'alert.component.ts',
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="backdrop"></div>
+<div class="alert-box">
+  <p>{{ message }}</p>
+  <div class="alert-box-actions">
+    <button class="btn btn-primary" (click)="onModalClose()">Close</button>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E AÍ,
+
+
+EU USO UM EVENT EMTITER PARA 
+
+AÍ 
+
+DISPARAR UM METHOD LÁ EM 
+
+'authPage'
+
+que 
+
+TROCA O STATE DE 'error: mensagemblablabla'
+
+
+para 
+
+'error: null',
+
+
+o que 
+
+faz com que 
+
+
+O 
+
+COMPONENT DO 'ALERT'
+
+S
+ER REMOVIDO DO DOM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+CÓDIGO COMPLETO:
+
+
+
+
+
+
+ALERT:
+
+
+
+
+<div class="backdrop"></div>
+<div class="alert-box">
+  <p>{{ message }}</p>
+  <div class="alert-box-actions">
+    <button class="btn btn-primary" (click)="onModalClose()">Close</button>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+ALERT:
+
+
+
+
+import { Component, Input, Output } from '@angular/core';
+import { AuthService } from 'src/app/auth.service';
+import { EventEmitter } from '@angular/core';
+
+@Component({
+  selector: 'app-alert',
+  templateUrl: './alert.component.html',
+  styleUrls: ['./alert.component.css'],
+})
+
+export class AlertDynamicComponent {
+
+    @Input() message: string;  ////Colocamos 'Input()' PQ QUEREMOS QUE ESSA MESSAGE DESSA BOX CONSIGA SER SETTADA DO LADO DE FORA....
+
+
+    @Output() closeModal = new EventEmitter<boolean>()
+
+
+  constructor(private authService: AuthService) {}
+
+
+
+
+
+  onModalClose() {
+        
+
+    this.closeModal.emit(true);
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+AUTHPAGE:
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <app-alert [message]="error" *ngIf="error" (closeModal)="onModalClose($event)"></app-alert>
+    <form
+      (ngSubmit)="onAuthFormSubmit(localFormReference)"
+      #localFormReference="ngForm"
+    >
+
+
+
+
+
+
+
+
+AUTHPAGE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { AuthResponseData, AuthService } from '../auth.service';
+
+@Component({
+  selector: 'app-auth-page',
+  templateUrl: './auth-page.component.html',
+  styleUrls: ['./auth-page.component.css'],
+})
+export class AuthPageComponent implements OnInit {
+  isSignup: boolean = true;
+
+  isLoading: boolean = false;
+
+  error: string | null = null; ////vai segurar nossas mensagens de error...
+
+  constructor(private authService: AuthService, private router: Router) {}
+
+  ngOnInit(): void {}
+
+
+
+
+  onModalClose(boolean: boolean) {
+
+    if (boolean) {
+      this.error = null;
+    }
+
+  }
+
+
+
+  onAuthFormSubmit(form: NgForm) {
+    if (!form.valid) {
+      ///extra validaton, bem básica (caso em que o user hackeia nossos form controls; nesse caso, mesmo assim teremos essa step extra de validation)...
+      return;
+    }
+
+    const email = form.form.get('email')?.value;
+    const password = form.form.get('password')?.value;
+
+    const userData = {
+      email: email,
+      password: password,
+      returnSecureToken: true,
+    };
+
+    let authObs: Observable<AuthResponseData>;
+
+    this.isLoading = true;
+
+    if (!this.isSignup) {
+      authObs = this.authService.onLogin(userData);
+    } else {
+      authObs = this.authService.onCreateAccount(userData);
+
+    }
+
+    authObs.subscribe(
+      (responseData) => {
+        this.isLoading = false;
+        this.router.navigate(['/recipe-book']);
+      },
+
+      (errorMessage) => {
+        console.log(errorMessage);
+        this.isLoading = false;
+        this.error = errorMessage;
+      }
+    );
+
+    form.reset();
+  }
+
+  onSwitchAuth() {
+    console.log('test');
+    this.isSignup = !this.isSignup;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK....
+
+O CÓDIGO QUE INTERESSA:
+
+
+
+
+
+
+
+
+
+  error: string | null = null; ////vai segurar nossas mensagens de error...
+
+
+
+  onModalClose(boolean: boolean) {
+
+    if (boolean) {
+      this.error = null;
+    }
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> A VANTAGEM DE 
+
+
+
+
+  "ngIf"
+
+
+
+
+  é que 
+
+
+
+
+  NÃO PRECISAMOS __ CRIAR NOSSO COMPONENT __ DINÂMICO MANUALMENTE,
+
+
+
+
+
+
+  E TAMBÉM QUE PODEMOS PASSAR DATA PARA DENTRO DOS NEGÓCIOS POR MEIO DE 
+
+
+  'PROPERTY BINDING'....
+
+
+
+
+
+
+
+
+
+
+
+  --> isso também significa que o 'listen to events'
+
+
+  É SUPER SIMPLE E STRAIGHTFORWARD..
+
+
+
+
+
+
+
+
+
+
+
+  -> como assim, simples?
+
+
+
+
+
+
+
+
+  ----> SE QUEREMOS 
+
+  NOS LIVRAR DAQUELE ALERT A PARTIR DE UM CLICK,
+
+
+
+  tudo que precisamos fazer é 'emit um event'
+
+
+
+
+
+
+
+
+
+
+,
+
+E AÍ 
+
+ FAZER ESSE EVENT 'listenable from outside',
+
+
+
+
+
+ tudo por meio 
+
+ dessa escrita  aqui:
+
+
+
+
+
+
+
+
+ export class AlertDynamicComponent {
+
+
+
+    @Input() message: string;
+
+
+    @Output() closeModal = new EventEmitter<string>();
+
+
+
+
+
+
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> EU FIZ EXATAMENTE ISSO ANTES, MAS A DIFERENÇA É QUE AQUI O PROFESSOR FEZ UM EMIT DE 'void',
+
+ PARA NÃO EMITIR QUALQUER DATA... (pq só queremos sinalizar que esse modal deverá ser 'closed')..
+
+
+
+
+
+
+
+ ex:
+
+
+
+ 
+
+
+
+
+
+ export class AlertDynamicComponent {
+
+
+
+    @Input() message: string;
+
+
+    @Output() closeModal = new EventEmitter<void>();
+
+
+
+
+
+
+ }
+
+
+
+
+
+
+
+
+
+-----> 
+
+
+
+
+aí usamos um method de 'onClose()"...
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+ export class AlertDynamicComponent {
+
+
+
+    @Input() message: string;
+
+
+    @Output() closeModal = new EventEmitter<void>();
+
+
+
+
+
+
+  onClose() {
+
+    this.closeModal.emit();  
+  }
+
+
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+----> certo....
+
+
+NO NOSSO CÓDIGO HTML, FICAMOS COM ISTO:
+
+
+
+
+<div class="backdrop" (click)="onClose()"></div>
+<div class="alert-box">
+  <p>{{ message }}</p>
+  <div class="alert-box-actions">
+    <button class="btn btn-primary" (click)="onClose()">Close</button>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> certo... 
+
+
+
+
+AÍ VAMOS QUERER DISPARAR AQUELE METHOD DE 
+
+'onClose()'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DEPOIS DISSO,
+
+VAMOS ATÉ O COMPONENT DE 'auth.component.html',
+
+
+
+EM QUE COLOCAMOS UM LISTENER DE 
+
+
+
+'(closeModal)'
+
+
+
+
+
+NO NOSSO COMPONENT '<app-alert>',
+
+
+TIPO ASSIm:
+
+
+
+  <app-alert [message]="error" *ngIf="error" (closeModal)="onModalClose($event)"></app-alert>
+
+
+
+
+
+
+
+
+
+
+
+
+  -> AÍ ISSO VAI DISPARAR UM METHOD LÁ 
+
+
+  no 'authPage.component.ts',
+
+
+
+
+
+
+
+  o method de 'onModalClose',
+
+
+
+
+  COMO VISTO AQUI:
+
+
+
+
+
+
+
+
+
+
+
+  
+  error: string | null = null; 
+
+  constructor(private authService: AuthService, private router: Router) {}
+
+  ngOnInit(): void {}
+
+
+
+
+  onModalClose() {
+
+      this.error = null;
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+  --> aí, nessa function, 
+
+  retornamos o 'error' de volta a NULL, O QUE VAI FAZER COM QUE O NOSSO ALERT SUMA, PQ ELE DEPENDE DO STATE DE 'error'... (se estiver como null, ele negócio some)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ok....... ESSE É O FLOW __ TERMINADO_ COM 'ngIF'...
+
+
+
+
+
+
+
+
+
+  ------> E O PROFESSOR __ RECOMENDA__ FORTEMENTE __ QUE
+
+  
+
+
+
+  CONTINUEMOS A UTILIZAR ESSE APPROACH DO NGIF...
+
+
+
+
+
+  --> AS SITUAÇÕES EM QUE O APPROACH ALTERNATIVO É SUPERIOR ( de 'create e manage do component dentro do códiog ts')
+
+
+
+
+
+  SÃO _ MUITO RARAS,
+
+
+
+
+
+
+
+
+
+  ESSE APPROACH ALTERNATIVO É O 'IMPERATIVE APPROACH',
+
+
+
+
+  e ele é bem menos prático...
+
+
+
+
+
+
+
+
+
+  ESSE APPROACH DO NGIF É MT MAIS FÁCIL,
+
+
+  E POR ISSO É O APPROACH QEU VOCê DEVE 
+
+  USAR 
+
+
+
+
+  ''QUANDO VOCê TEM QUE MOSTRAR ALGUM COMPONENT DINAMICAMENTE,
+
+  QUANDO ALGUMA CONDITION PRECISA SER MET''...s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -----> AINDA ASSIM, AGORA DEVEMOS VER COMO PODEMOS CRIAR 
+
+  ESSE COMPONENT 'ALERT' INTEIRAMENTE A PARTIR DE NOSSO CÓDIGO TS,
+
+
+
+
+
+  e 
+
+
+
+
+  como podemos O CONTROLAR DE LÁ,
+  também....
+
+
+
+
+
+
+
+
+
+
+
+  --> para isso, vou copiar meu código, e criar o 'alert-versaoNGIf'...
+
+
+
+
+
+
+
+
+  

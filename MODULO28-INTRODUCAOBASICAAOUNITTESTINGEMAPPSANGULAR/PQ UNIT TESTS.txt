@@ -1,0 +1,429 @@
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> TEMOS OS SEGUINTES COMPONENTS>:
+
+
+  
+
+
+
+
+
+  1) USER COMPONENT 
+
+
+
+
+ELE TEM O SEGUINTE INPUT BINDING:
+
+
+
+
+  [user]="selectedUser" 
+
+
+
+
+
+
+
+
+
+
+
+
+  2) USER DETAIL COMPONENT 
+
+
+
+
+
+TEM A SEGUINTE PROPRIEDADE (usada com O PROPERTY BINDING/INPUT BINDING do component 'user'):
+
+
+
+
+
+@Input() user;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+3) REVERSEPIPE 
+
+
+
+
+
+
+4) USERSERVICE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> A PERGUNTA QUE FAZEMOS É SEMPRE A MESMA:
+
+
+
+
+
+
+''O COMPONENT/PIPE/SERVICE ESTÁ FUNCIONANDO COMO O ESPERADO?'''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO É O QUE QUEREMOS RESPONDER COM UNIT TESTS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AS PERGUNTAS MAIS ESPECÍFICAS, NESSE CASO, SÃO:
+
+
+
+
+
+
+
+
+
+
+'''POR ACASO O __Input__ FUNCIONA COMO O DESEJADO?'''
+
+
+
+
+
+
+
+''POR ACASO A INJECTION em user FUNCIONA COMO O DESEJADO?'''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E É CLARO QUE ESSAS SÃO PERGUNTAS QUE QUEREMOS RESOLVER COM UNIT TESTS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM TESTS EFETIVOS,
+
+GANHAMOS RESPOSTAS 'SIM' OU 'NÃO' PARA ESSAS PERGUNTAS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E ESCREVER O TEST DE FORMA CORRETA É 
+
+
+NECESSÁRIO PARA CONSEGUIR AS RESPOSTAS CORRETAS...
+
+
+
+
+
+
+
+
+
+
+
+--> O WRITE DE 
+
+
+
+BONS TESTS É ALGO 
+
+PRÓPRIO DE UM CURSO INTEIRO....  -> É UM CURSO FOCADO EM TESTING..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS AQUI NÃO QEUREMOS FAZER ISSO,
+
+
+
+
+
+O PROFESSOR QUER MOSTRAR COMO USAR TESTING EM UM ANGULAR APP,
+
+
+E NÃO FILOSOFAR SOBRE 
+
+
+
+
+COMO UM APP DEVE FUNCIOANR OU SER ESCRITO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... COM AS RESPOSTAS ÀS NOSSAS PERGUNTAS, A COISA LEGAL É QUE 
+
+
+UNIT TESTS 
+
+
+
+
+NOS DEIXAM FAZER 'GUARD'
+
+
+
+
+
+CONTRA 'BREAKING CHANGES'... --> 
+
+
+
+
+
+
+
+
+
+
+OK.. QUANDO UPDATAMOS NOSSO ANGULAR 2 APP,
+
+
+
+
+SE ELE QUEBRAR,
+
+PODEMOS VER QUAIS LOCAIS DE NOSSO APP DEIXARAM DE FUNCIONAR DEVIDO AO UPDATE....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS TAMBÉM ANALIZAR NOSSO 'CODE BEHAVIOR' PARA DETECTAR RESULTADOS 
+
+
+
+'EXPECTED' 
+
+E 
+
+'UNEXPECTED'..
+
+
+
+
+
+
+
+
+
+--> POR FIM,
+
+
+O TESTING PODE REVELAR 'DESIGN MISTAKES'...
+
+
+
+
+
+
+
+
+
+(
+
+
+
+    ISSO PQ, QUANDO ESCREVEMOS NOSSOS TESTS,
+
+
+    PODEMOS EXPERIENCIAR ALGUM PROBLEMA 
+
+
+    NO SEU WRITE,
+
+    TALVEZ PQ 
+
+
+
+    ACABAMOS ENCONTRANDO UM ERRO 
+
+
+    NO NOSSO GENERAL DESIGN, 
+
+    OU DEVIDO A UMA UNEXPECTED RESPONSE DURANTE 
+
+    O NOSSO TEST...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E É NESSE ASPECTO QUE 
+
+
+TESTS PODEM NOS AJUDAR...
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, AGORA VEREMOS COMO PODEMOS CRIAR TESTS NO NOSSO ANGULAR 2 APP.. 

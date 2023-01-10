@@ -1,0 +1,508 @@
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> 
+ O PROFESSOR MENCIONOU UMA MANEIRA DE 'OPTIMIZAR'
+
+
+ O LAZY LOADING (que já é uma optimização)...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> por isso,
+
+
+
+O PROFESSOR QUER DIZER 'HOW THE LAZY LOADED CODE IS LOADED'..
+
+
+
+
+
+
+
+
+
+
+
+
+--> até agora,
+
+
+nós carregamos código 'QUANDO PRECISAMOS',
+
+
+
+
+
+
+
+
+como por exemplo 
+
+
+
+
+
+
+quando entramos na page de 'recipe-book' diretamente -->  O CONTEÚDO APENAS É BAIXADO 
+
+
+
+QUANDO ENTRAMOS NESSA PAGE... --> O DOWNSIDE 
+
+
+
+É QUE 
+
+
+
+_ ISSO DÁ UM PEQUENO DELAY NO NOSSO APP (
+
+
+    isso não é visto no devserver,
+
+    mas o quão maior for 
+
+    o 
+
+    module, e quão pior for a conexão de internet,
+
+
+    mais longo será esse delay...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> UMA SOLUÇÃO É COMUNICAR AO ANGULAR 
+
+QUE 
+
+ELE 
+
+DEVE 
+
+'PRE-LOAD'
+
+
+
+
+
+
+'LAZILY-LOADED MODULES'
+
+
+
+
+
+
+DE MODO QUE 
+
+ESSE DELAY _ SEJA_ EVITADO...
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+DEVEMOS IR ATÉ O NOSSO 
+
+
+
+
+
+
+
+
+
+
+''ROOT ROUTING MODULE'''
+
+
+
+E ENTÃO 
+
+
+PASSAR UM ARGUMENTO 
+
+
+
+LÁ EM 
+
+
+'@NgModule({})'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> TEMOS ESTE CÓDIGO:
+
+
+
+
+
+@NgModule({
+  imports: [RouterModule.forRoot(appRoutes)],
+
+  exports: [RouterModule],
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK... VAMOS QUERER PASSAR UM _ SEGUNDO ARGUMENTO A ESSE METHOD DE 
+
+
+'.forRoot()',
+
+
+
+
+
+
+QUE _ SERÁ _ UM  __ OBJECt__ EM QUE _ CONFIGURAREMOS _ 
+
+ESSE 
+
+'ROOT ROUTER'...
+
+
+
+
+
+
+
+
+--> TIPO ASSIM:
+
+
+
+
+
+@NgModule({
+  imports: [RouterModule.forRoot(appRoutes), { }],
+
+  exports: [RouterModule],
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK... DENTRO DELE, PODEMOS SETTAR UMA 'PRELOADING STRATEGY'...
+
+
+
+
+
+
+
+
+
+
+preloadingStrategy...
+
+
+
+
+
+
+
+
+
+
+
+-> O DEFAULT DE 'preloadingStrategy'  é 'NoPreloading',
+
+
+
+
+
+
+
+
+
+
+
+MAS AQUI PODEMOS DEFINIR 'PreloadAllModules',
+
+
+
+
+
+
+QUE É ESSA OPÇÃO QUE 
+
+
+
+
+
+pode nos ajudar com a optmization do lazy loading...
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+@NgModule({
+  imports: [RouterModule.forRoot(appRoutes, {
+    // preloadingStrategy: NoPreload  //// esse é o DEFAULT (não faz o preload de nada; sem optimização para o LAZY LOADING)
+    preloadingStrategy: PreloadAllModules   /////ESSA É A OPTION USADA PARA 'OPTIMIZAR O LAZY LOADING', pq teremos um pre-load para cada route, essencialmente...
+  })],
+
+  exports: [RouterModule],
+})
+export class AppRoutingModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK... 'preloadingStrategy' ---> O 'PreloadAllModules',
+
+
+
+QUE É UMA CONSTANT QUE VOCê IMPORTA DO 
+
+
+
+ANGULAR/ROUTER,
+
+
+
+
+
+e aí, quando voccÊ 
+
+
+
+deixa isso aí,
+
+vocÊ estará comunicando:
+
+
+
+
+
+
+'''GERALMENTE USAREMOS LAZY-LOADING,
+
+MAS 
+
+O ANGULAR DEVERÁ _ PRE-LOAD__ NOSSOS BUNDLES 
+
+_ ASSIM QUE POSSÍVEL'''' (
+
+
+  isso quer dizer que QUANDO ESTIVERMOS NA 'AUTH PAGE',
+
+
+
+  JÁ ESTARÃO SENDO PRELOADADOS OS 
+
+
+  'recipe-book' e 'shop-list 'pages..
+)
+
+
+
+
+
+
+
+
+
+
+-> A VANTAGEM, COM ISSO,
+
+É QUE 
+
+
+O STARTUP DA PÁGINA INICIAL SERÁ REALMENTE MAIS RÁPIDO,
+
+
+
+
+
+
+E 
+
+
+OS SUBSEQUENTES NAVIGATION REQUESTS TAMBÉM FICAM MAIS RÁPIDOS,
+
+
+
+
+o que 
+
+
+NOS DÁ 'O MELHOR DOS 2 MUNDOS'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ASSIM QUE 
+
+
+
+
+
+REINICIARMOS NOSSO APP,
+
+
+VEREMOS QUE AS ROUTES EM QUE NÃO ESTAMOS/MODULES EM QUE NÃO ESTAMOS SAÕ REALMENTE PRE-LOADADOS...
+
+
+
+
+
+
+
+
+----> É POR ISSO QUE 
+
+
+
+O DEFINE DESSA OPTION DE 'preloadingStrategy'
+
+
+é uma ótima opção, 
+
+
+
+
+
+
+VALE A PENA CONSIDERAR ISSO 
+
+SE VOCÊ 
+
+
+
+
+
+PENSAR QUE VAI QUERER LAZY LOADING NO SEU CÓDIGO..
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE VOCê PODE DEFINIR 'STRATEGIES' ESPECÍFICAS DE PRE-LOADING (carregar só alguns modules por meio de pre-load, e outros não),
+
+
+MAS ISSO É ALGO BEM ESPECÍFICO, E QUE VAI ALÉM DESSE NOSSO CURSO...

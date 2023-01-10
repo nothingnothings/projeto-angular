@@ -1,0 +1,1234 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK.... NÓS APRENDEMOS _ QUE PODEMOS USAR 'PROPERTY BINDING' 
+
+PARA 
+
+FAZER 
+
+
+
+BIND __ A NOSSAS PRÓPRIAS PROPRIEDADES,
+
+
+
+PROPRIEDADES __ DE NOSSOS PRÓPRIOS COMPONENTS..
+
+
+
+
+
+--> o professor começará com esse objetivo,
+
+
+e com o  código de 
+
+
+
+
+
+
+
+''
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <app-server-cockpit></app-server-cockpit>
+  <hr />
+  <div class="row">
+    <div class="col-xs-12">
+      <app-server-item *ngFor="let element of serverElements"></app-server-item>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+-----> ELE VAI TEMPORARIAMENTE PREVENIR MEU APP DE CRASHAR... ---> 
+
+
+
+
+
+
+
+ELE COMENTA A LÓGICA DOS METHODS PARA FORA DO CÓDIGO..........
+
+
+
+
+
+
+
+
+
+
+--> LÁ NO COMPONENT DE 'server-item',
+
+
+
+VEREMOS ISTO:
+
+
+
+
+    <div class="panel panel-default">
+      <div class="panel-heading">{{ server.name }}</div>
+      <div class="panel-body">
+        <p>
+          <strong *ngIf="element.type === 'server'" style="color: red">{{
+            server.content
+          }}</strong>
+          <em *ngIf="element.type === 'blueprint'">{{ element.content }}</em>
+        </p>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+    'element.type' -------> POR MEIO DESSE CÓDIGO,
+
+
+    ESTAMOS TENTANDO ACESSAR 
+
+
+    'THE SINGLE ELEMENT/SERVER ELEMENT' .... --> mas isso ainda INEXISTE 
+
+    NESSE COMPONENT..
+
+
+
+
+
+
+
+    --> É POR ISSO QUE O PROFESSOR DIZ QUE DEVEMOS __ CRIAR UMA PROPERTY NESSE ARQUIVO TYPESCRIPT DE 'server-item',
+
+
+    UMA 
+
+
+    PROPERTY __ QUE VENHA A REPRESENTAR NOSSO 'SERVERITEM'...
+
+
+
+
+
+
+    --> É UM ELEMENT QUE REPRESENTARÁ NOSSO SERVER....
+
+
+
+
+
+
+
+
+
+
+    VAMOS ESCREVER ASSIM:
+
+
+
+
+
+
+
+
+
+    import { Component, Input, OnInit } from '@angular/core';
+
+
+
+@Component({
+  selector: 'app-server-item',
+  templateUrl: './server-item.component.html',
+  styleUrls: ['./server-item.component.css']
+})
+export class ServerItemComponent implements OnInit {
+
+
+
+    element: {} = ...;
+
+
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------
+
+
+
+
+
+
+OK, POR MEIO DA ESCRITA DE 
+
+'element: {}' 
+
+DEFINIMOS QUE O TYPE DEVERÁ SER DE UM _ _OBJECT...
+
+
+
+
+
+
+
+
+
+
+
+----> OK... -> AÍ SABEMOS QUE UM ELEMENT 
+
+VAI TER 
+
+
+
+as coisas QUE TENTAMOS ACESSAR EM 'server-item.html'... ----> sabemos que terá um:
+
+
+
+1) TYPE 
+
+
+2) NAME 
+
+
+
+3) CONTENT...
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+import { Component, Input, OnInit } from '@angular/core';
+
+
+
+@Component({
+  selector: 'app-server-item',
+  templateUrl: './server-item.component.html',
+  styleUrls: ['./server-item.component.css']
+})
+export class ServerItemComponent implements OnInit {
+
+
+  element: {
+    name: string,
+    type: string,
+    content: string
+  } = {}
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> esse é o NOSSO 'TYPE DEFINITION', 
+
+
+
+A
+ TYPE DEFINITION PARA ESSA PROPERTY 
+
+ de 
+
+
+ 'element',
+
+ QUE VAMOS USAR EM TODOS OS LUGARES DO HTML :
+
+
+
+
+
+
+
+
+     <div class="panel panel-default">
+      <div class="panel-heading">{{ element.name }}</div>
+      <div class="panel-body">
+        <p>
+          <strong *ngIf="element.type === 'server'" style="color: red">{{
+            element.content
+          }}</strong>
+          <em *ngIf="element.type === 'blueprint'">{{ element.content }}</em>
+        </p>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, MAS A QUESTÃO É QUE ESSE 'element' POR ENQUANTO SÓ FAZ PARTE DESSE COMPONENT DE 
+
+'server-item'...
+
+
+
+
+
+
+
+
+--> ISSO SIGNIFICA QUE NÃO É POSSÍVEL ACESSAR ESSE 'element' EM ARQUIVOS EXTERNOS, DO LADO DE FORA 
+
+
+DELE....
+
+
+
+
+
+
+--> É CLARO QUE SERIA NICE SE LÁ NO NOSSO COMPONENT 'App',
+
+EM QUE 
+
+FAZEMOS 
+
+
+
+MANAGE DE NOSSO ARRAY DE 'serverElements',
+
+
+PUDESSEMOS DE CERTA FORMA __ ACESSAR __ ESSA PROPRIEDAE...
+
+
+
+
+
+
+
+
+
+
+
+--. O PROFESSOR, A TÍTULO DE EXEMPLO, CRIA UM SERVER NO INTERIOR 
+
+DESSE ARRAY,
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  serverElements: any[] = [{type: 'server', name: 'TestServer', content: 'Just a test!'}]
+  newServerName = '';
+  newServerContent = '';
+
+}
+
+
+
+
+
+
+
+
+
+-----> --. lá NO ELEMENMTO 
+
+
+DE 
+
+
+
+
+'app-server-item',
+
+ESTAMOS LOOPANDO POR DENTRO DESSE 
+
+
+ARRAY.... -----> 
+
+
+
+
+
+
+E É NO NOSSO ELEMENTO 'app-server-item'
+
+QUE TEMOS 
+
+ESSA PROPRIEDADE DE 'element'...
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+import { Component, Input, OnInit } from '@angular/core';
+
+
+
+@Component({
+  selector: 'app-server-item',
+  templateUrl: './server-item.component.html',
+  styleUrls: ['./server-item.component.css']
+})
+export class ServerItemComponent implements OnInit {
+
+
+  element: {
+    name: string,
+    type: string,
+    content: string
+  } = {}
+
+
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+    
+
+
+
+
+
+
+
+
+    ---> BEM...  temos essa propriedade de 'element' 
+
+    dentro 
+
+    do component de 
+
+    'app-server-item'.. -> BEM, E NÓS QUEREMOS _ ACESSAR__ 
+
+
+
+    ESSE COMPONENT DE 'app-server-item' 
+
+
+
+    __ DO LADO_ _ DE FORA... ----> 
+
+
+
+
+
+
+
+
+
+    e seria mt BOM SE FOSSE POSSÍVEL FAZER 
+
+
+
+    __ BIND_ A ESSE 'app-server-item',
+
+    EXATAMENTE COMO 
+
+
+PODÍAMOS FAZER 'BIND' a propriedades como 'disabled'...
+
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE O PROFESSRO TENTA ESCREVER O BIND DE UMA PROPRIEDADE em 
+
+
+'app-server-item', 
+
+
+LÁ EM 'app.component.html',
+
+
+
+TIPO ASSIM:
+
+
+
+
+<div class="container">
+  <app-server-cockpit></app-server-cockpit>
+  <hr />
+   <div class="row">
+    <div class="col-xs-12">
+      <app-server-item 
+      *ngFor="let element of serverElements"
+      [element]=
+      
+      
+      
+      ></app-server-item>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+ OU SEJA,
+
+
+ '[element]=' 
+
+
+
+
+
+
+ ( O NOME DA PROPRIEDADE A QUE VOCÊ QUER BINDAR ESSE ELEMENT...)
+
+
+
+
+
+
+
+
+
+
+ --> AÍ, NO VALOR DESSE '[element]',
+
+
+
+
+ VOCÊ VAI __ COLOCAr__ A VARIABLE QUE REPRESENTA CADA ITEM NA ITERATION DE 'serverElements',
+
+ TIPO ASSIM:
+
+
+
+
+
+
+
+ 
+<div class="container">
+  <app-server-cockpit></app-server-cockpit>
+  <hr />
+   <div class="row">
+    <div class="col-xs-12">
+      <app-server-item 
+      *ngFor="let element of serverElements"
+      [element]="element"
+      
+      
+      
+      ></app-server-item>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+  <div class="row">
+    <div class="col-xs-12">
+      <app-server-item 
+      *ngFor="let serverElement of serverElements"
+      [element]="serverElement"  
+      ></app-server-item>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS AÍ GANHO O MESMO ERROR QUE EU JÁ HAVIA VISTO ANTERIORMENTE...
+
+
+
+
+
+
+
+
+--> É O ERROR DE 'CANNOT BIND TO 'element' SINCE IT ISNT A KNOWN PROPERTY OF 'app-server-item'...
+
+
+
+
+
+
+
+
+--> PARA CONSERTAR ESSE ERRO, __TALVEZ_ A SOLUÇÃO SEJA USAR '@Input'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ué, mas eu ACHAVA QUE 'element' HAVIA SE TORNADO UMA PROPERTY de 'app-server-item',
+
+
+COMO VISTO AQUI:
+
+
+
+import { Component, Input, OnInit } from '@angular/core';
+
+
+
+@Component({
+  selector: 'app-server-item',
+  templateUrl: './server-item.component.html',
+  styleUrls: ['./server-item.component.css']
+})
+export class ServerItemComponent implements OnInit {
+
+
+  element: {  ####AQUi...
+    name: string,
+    type: string,
+    content: string
+  };
+
+
+  @Input() serverName: string = '';
+
+  @Input() serverContent: string = '';
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK, ENTÃO PQ 
+ __ NAÕ PODEMOS __ ACESSAR ESSA PROPRIEDAE,
+
+
+ SE ELA JÁ ESTÁ ESCRITA ALI?
+
+
+
+
+
+
+
+
+ -> RESPOSTA SIMPLES:
+
+
+
+
+
+
+ É PQ, POR DEFAULT,
+
+
+ __ TODAS AS _ PROPERTIES_ DE COMPONENTS 
+
+
+
+
+
+
+
+ __ SÓ _ SÃO 'ACESSIBLE'  __ DE  __ DENTRO__ DESSES COMPONENTS,
+
+
+
+ E __ NÃO __ DO LADO_ DE FORA... ------> E ISSO __ GERALMENTE__ É UMA COISA 
+
+ BOA... 
+
+
+
+
+
+
+
+
+ ---> É UMA COISA BOA __ PQ _  VOCè __ NÃO QUER/NUNCA VAI QUERER QUE TODAS SUAS PROPERTIES SEJAM 'BINDABLE'
+
+
+ DO LADO DE FORA... ---> É POR ISSO QUE 
+
+
+ VOCÊ PRECISA SER _ BEM__ EXPLÍCITO __ ACERCA 
+
+
+
+ DE _ QUAIS __ PROPERTIES VOCÊ QUER 
+
+ 'expor' ao mundo,
+
+
+
+ ASSIM POR DIZER...
+
+
+
+
+
+
+
+
+
+
+
+
+ ----> SE VOCÊ QUER PERMITIR que 'parent components' 
+
+
+ SEJAM CAPAZES DE __ BINDAR _ DATA _a ESSA PROPRIEDADE 
+
+ de 
+
+
+ 'element',
+
+
+
+
+ VOCê __ PRECISA_ OBRIGATORIAMENTE__ 
+
+
+
+
+ ADICIONAR ALGUMA COISINHA A ESSA PROPRIEDADE DE 
+
+ 'property',
+
+
+ PARA PERMITIR QUE 
+
+ ELA SEJA 'BINDABLE' pelos parent components (Que são parents, sim, mas não deixam de ser EXTERNOS...)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> PARA FAZER ISSO FUNCIONAR, VOCê _ __ PRECISA_ ADICIONAR UM DECORATOR...
+
+
+
+
+
+
+
+
+
+
+ -_> PROVAVELMENTE É O DECORATOR '@Input'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> LEMBRE-SE: O PROFESSOR HAVIA DITO QUE __ DECORATORS NÃO FICAM DISPONÍVEIS _ SOMENTE_ A CLASSES.. --> 
+
+
+
+
+ AQUI VAMOS ADICIONAR UM DECORATOR NESSA PROPERTY DE 'element',
+
+
+ por meio de '@Input'..
+
+
+
+
+
+
+
+
+
+ FICARIA TIPO ASSIM:
+
+
+import { Component, Input, OnInit } from '@angular/core';
+
+
+
+@Component({
+  selector: 'app-server-item',
+  templateUrl: './server-item.component.html',
+  styleUrls: ['./server-item.component.css']
+})
+export class ServerItemComponent implements OnInit {
+
+
+  @Input() element: {
+    name: string,
+    type: string,
+    content: string
+  } = {
+    name: '',
+    type: '',
+    content: ''
+  }
+
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+----------------------------
+
+
+
+
+
+
+
+
+
+
+
+O DECORATOR DE QUE PRECISAMOS, COMO EU JÁ ESPERAVA,
+
+É 
+
+
+'@Input'..
+
+
+
+
+
+
+
+
+E PRECISAMOS __ EXECUTAR ESSE DECORATOR,
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+@Input() 
+
+
+
+
+
+
+
+
+
+-> COLOQUE-O ANTES DA PROPERTY QUE VOCÊ QUER 'EXPOR AO MUNDO':
+
+
+
+
+
+
+
+
+import { Component, Input, OnInit } from '@angular/core';
+
+
+
+@Component({
+  selector: 'app-server-item',
+  templateUrl: './server-item.component.html',
+  styleUrls: ['./server-item.component.css']
+})
+export class ServerItemComponent implements OnInit {
+
+
+  @Input() element: { ///por meio de '@Input' fazemos o _ 'EXPOSE' de sua given property '''' AO MUNDO''' (o que quer dizer que podemos PASSAR DATA A ESSA PROPRIEDADE de 'eleemnt' _ DO LADO_ DE FORA de seu element, tipo um react-props, pq VAMOS PODER PASSAR DATA LÁ DE UM 'PARENT COMPONENT' para esse nosso component de 'app-server-item', basta usar aquele PROPERTY BINDING de '[element]="yourValue/object"' ao COMPONENT DE 'app-server-item'....)
+    name: string,
+    type: string,
+    content: string
+  } = {
+    name: '',
+    type: '',
+    content: ''
+  }
+
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+------------------------------------
+
+
+
+
+
+
+
+
+
+---> ISSO QUER DIZER QUE _ AGORA _ QUALQUER PARENT COMPONENT,
+
+
+
+_ QUALQUER COMPONENT HOSTEANDO/NESTEANDO NOSSO 'SERVER-ITEM' component,
+
+
+
+
+IMPLEMENTANDO-O POR SEU SELECTOR,
+
+
+fica capaz de 
+
+'BIND' 
+
+
+
+a essa propriedade de 'element'..
+
+
+
+
+
+
+
+
+--> BASTA SALVARMOS TUDO ISSO E RECARREGARMOS A PÁGINA... -> 
+
+
+
+
+
+
+
+AGORA NOSSA PAGE ESTARÁ FUNCIONANDO, SEM ERRORS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ISSO ACONTECE PQ __ AGORA_ ESTAMOS __ REPLICANDO COM SUCESSO 'CADA ELEMENT NO ARRAYa',
+
+ 
+ E AÍ 
+
+ PODEMOS _ SUCCESSFULLY PASSAR A PROPRIEDADE/data 
+
+
+
+
+ ÀQUELE COMPONENT, E ENTÕA BINDAR À PROPRIEDADE 'element' escrita naqueel component (
+
+
+     como visto em:
+
+
+
+
+
+
+import { Component, Input, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-server-item',
+  templateUrl: './server-item.component.html',
+  styleUrls: ['./server-item.component.css'],
+})
+export class ServerItemComponent implements OnInit {
+  @Input() element: {
+    ///por meio de '@Input' fazemos o _ 'EXPOSE' de sua given property '''' AO MUNDO''' (o que quer dizer que podemos PASSAR DATA A ESSA PROPRIEDADE de 'eleemnt' _ DO LADO_ DE FORA de seu element, tipo um react-props, pq VAMOS PODER PASSAR DATA LÁ DE UM 'PARENT COMPONENT' para esse nosso component de 'app-server-item', basta usar aquele PROPERTY BINDING de '[element]="yourValue/object"' ao COMPONENT DE 'app-server-item'....)
+    name: string;
+    type: string;
+    content: string;
+  } = {
+    name: '',
+    type: '',
+    content: '',
+  };
+
+  constructor() {}
+
+  ngOnInit(): void {}
+}
+
+
+
+
+ )
+
+
+
+
+
+
+
+
+
+
+ ->  É ASSIM QUE 
+
+
+
+ VOCÊ PODE 'SETUP CUSTOM PROPERTY BINDING',
+
+
+ nos seus próprios events,
+
+
+
+
+ e aí 
+
+
+ expondo suas próprias properties aos components 
+
+
+
+
+ EM QEU 
+
+ VOCê IMPLEMENTA ESSES 'CHILD COMPONENTS' através dos selectors....
+
+
+
+
+
+
+
+
+
+
+
+ --> OK, MAS OS METHODS DO COCKPIT CONTINUAM _ QUEBRADOS....
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 

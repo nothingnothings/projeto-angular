@@ -1,0 +1,383 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... 
+
+
+
+
+NESSA COURSE SECTION, VEREMOS PIPES...
+
+
+
+
+
+
+
+
+
+
+--> VAMOS COMEÇAR PELA PERGUNTA:
+
+
+
+
+
+
+
+
+
+
+
+
+
+''' O QUE SÃO PIPES?''''
+
+
+
+
+
+
+
+
+
+
+
+PIPES SÃO UMA FEATURE DO ANGULAR 2,
+
+
+
+
+
+QUE BASICAMENTE 
+
+
+
+TE DEIXAM 
+
+
+
+___TRANSFORMAR_ O OUTPUT __ 
+
+
+
+
+
+NO SEU TEMPLATE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE É O PRINCIPAL PROPÓSITO DE UM PIPE:
+
+
+
+ELE __ TRANSFORMA __ O OUTPUT..
+
+
+
+
+
+
+
+
+-> É CLARO QUE EXISTEM __ PIPES _ PARA DIFERENTES TIPOS DE OUTPUT,
+
+
+
+E TAMBÉM 
+
+
+PARA TANTO SYNC COMO ASYNC DATA... --> MAS O TEMA GERAL 
+
+
+
+
+É SEMPRE O MESMO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1 EXEMPLO BÁSICO SERIA ESTE:
+
+
+
+'''TEMOS UM USERNAME,
+
+ 
+ QUE É UMA PROPRIEDADE NO SEU COMPONENT'''.. -> 
+
+
+
+
+
+ nesse nosso exemplo,
+
+
+
+
+ ele segurará uma string,
+
+ tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+ username  = 'Max';
+
+
+
+
+
+
+
+
+
+
+
+
+ --------> ok.,.. ------> MAS QUEREMOS OUTPUTTAR ESSE USER EM UM TEMPLATE,
+
+
+
+
+
+
+ E, ATÉ AGORA,
+
+
+ SEMPRE FIZEMOS ASSIM:
+
+
+
+
+
+<p>{{username}}</p>
+
+
+
+
+
+
+
+
+
+--> VOCê GERALMENTE USA STRING INTERPOLATION... --> ISSO É ALRIGHT,
+
+SIM,
+
+
+
+
+MAS SERIA NICE _ 
+
+
+SE O OUTPUT _ 
+
+
+
+FOSSE 
+
+
+__TODO _ UPPERCASE,
+
+
+
+
+
+MAS FICASSE _ UPPERCASE_____ sOMENTE__ NO MOMENTO DO OUTPUT EFETIVO (antes disso, a data restaria INALTERADA)...
+
+
+
+
+
+
+
+
+
+
+----> ISSO QUER DIZER QUE 
+
+VOCÊ 
+NÃO QUER TROCAR A PROPERTY EM SI EM UPPERCASE (tvz pq você a utilizará ao longo do seu curso, e aí isso não seria proveitoso)...
+
+
+
+
+
+
+
+
+
+
+
+
+---------> VOCÊ SÓ QUER QUE ISSO SEJA TRANSFORMADO NO MOMENTO EM QUE 
+
+É OUTPUTTADO à TELA...
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+VOCÊ 
+
+USA _ UM PIPE__,
+
+
+
+
+NESSE CASO ESPECÍFICO O PIPE DE 
+
+
+
+' | uppercase' ,
+
+
+
+
+
+o UPPERCASE PIPE,
+
+
+
+
+
+
+
+
+
+QUE É ESCRITO TIPO ASSIM:
+
+
+
+
+
+{{ username | uppercase }}
+
+
+
+
+
+
+
+
+
+
+
+
+--> VEREMOS QUAIS BUILT-IN PIPES EXISTEM, LOGO LOGO....
+
+
+
+
+
+
+
+
+
+
+
+
+-> CERTO... E SE UTILIZÁSSEMOS ESSE PIPE NO 
+
+
+NOSSO TEMPLATE,
+
+
+
+
+VERÍAMOS 
+
+
+
+'MAX'
+
+imediatamente,
+
+
+
+PQ O VALUE TERIA SIDO TRANSFORMADO NO MOMENTO DE SEU OUTPUT...
+
+
+
+
+
+
+
+
+
+
+
+-> ESSE É O PRINCIPAL PROPÓSITO DE PIPES,
+
+
+
+FAZER TRANSFORM DE VALUES,
+
+
+
+
+
+
+POR ISSO DEVEMOS OS ESTUDAR UM POUCO MAIS..
+
+
+
+
+
+
+
+
+
+-->  DEVEMOS VER COMO PIPES FUNCIONAM, E AÍ DEVEMOS CONSTRUIR NOSSOS PRÓPRIOS PIPES...

@@ -1,0 +1,1299 @@
+
+
+
+
+
+
+NOSSAS ACTIONS E REDUCER ESTÃO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Action } from '@ngrx/store';
+import { User } from '../user.model';
+
+export const AUTH_START = 'AUTH_START';
+
+export const AUTH_FAIL = 'AUTH_FAIL';
+
+export const AUTH_SUCCESS = 'AUTH_SUCCESS';
+
+export const AUTH_LOGOUT = 'AUTH_LOGOUT';
+
+export class AuthStart implements Action {
+  readonly type = AUTH_START;
+
+  constructor() {}
+}
+
+export class AuthFail implements Action {
+  readonly type = AUTH_FAIL;
+
+  constructor(private payload: string) {} ////vai segurar 'error', que será uma STRING (ou um object error).
+}
+
+export class AuthLogout {
+  readonly type = AUTH_LOGOUT;
+  ///temos que remover os items no localStorage, por meio de algum helper method, no reducer...
+}
+
+export class AuthSuccess implements Action {
+  readonly type = AUTH_SUCCESS;
+
+  constructor(public payload: User) {}
+}
+
+export type AuthActions = AuthStart | AuthFail | AuthLogout | AuthSuccess;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import * as AuthActions from '../store/authActions';
+
+import { updateObject } from 'src/app/utility/updateObject';
+
+export interface AuthState {
+  token: string | null;
+  userId: string | null;
+  error: string | null;
+  isLoading: boolean;
+  email: string | null;
+}
+
+// export interface AppState {
+//   auth: AuthState;
+// }
+
+const initialState: AuthState = {
+  token: null,
+  userId: null,
+  error: null,
+  isLoading: false,
+  email: null,
+};
+
+export function AuthReducer(
+  state: AuthState = initialState,
+  action: AuthActions.AuthActions
+) {
+  switch (action.type) {
+    case AuthActions.AUTH_START:
+      return authStart(state, action as AuthActions.AuthStart);
+    case AuthActions.AUTH_SUCCESS:
+      return authSuccess(state, action as AuthActions.AuthSuccess);
+    case AuthActions.AUTH_FAIL:
+      return authFail(state, action as AuthActions.AuthFail);
+    case AuthActions.AUTH_LOGOUT:
+      return authLogout(state, action as AuthActions.AuthLogout);
+      default:
+        return state;
+  }
+}
+
+const authStart = (
+  state: AuthState,
+  action: AuthActions.AuthStart
+): AuthState => {
+  return updateObject(state, { isLoading: true });
+};
+
+const authSuccess = (
+  state: AuthState,
+  action: AuthActions.AuthSuccess
+): AuthState => {
+  const { token, email, id } = action.payload;
+
+  return updateObject(state, {
+    isLoading: false,
+    token: token,
+    email: email,
+    userId: id,
+  });
+};
+
+const authFail = (
+  state: AuthState,
+  action: AuthActions.AuthFail
+): AuthState => {
+  return updateObject(state, {
+    isLoading: false,
+    token: null,
+    email: null,
+    userId: null,
+  });
+};
+
+const authLogout = (
+  state: AuthState,
+  action: AuthActions.AuthLogout
+): AuthState => {
+
+
+
+    localStorage.removeItem('userData'); ///REMOVE A DATA DO USER DE SUA 'LOCALSTORAGE', aquela 'cookie' que fica lá....
+
+  return updateObject(state, {
+    token: null,
+    email: null,
+    userId: null,
+  });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> estamos usando a STORE de 'auth' 
+
+
+LÁ 
+
+NO SERVICE DE 'auth.service.ts',
+
+
+
+
+
+
+MAS AINDA NÃO está bem clara a utilização da 'slice'
+
+
+de 
+
+'auth'
+
+
+
+NO NOSSO APP (
+
+
+    em que partes do app vamos usar, como vamos usar,
+
+
+    etc...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+--> se bem me lembro, um local em que 
+
+
+
+
+o user era CHECADO 
+
+
+
+,
+
+
+com os subjects,
+
+era lá em 'app.component.ts'...
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from './auth/auth.service';
+import { LoggingService } from './logging.service';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent implements OnInit {
+
+
+  constructor(private authService: AuthService, private loggingService: LoggingService) {}
+
+  ngOnInit(): void {  
+
+
+    this.authService.autoLogin(); ////vai tentar realizar o 'AUTO LOGIN' de nosso user (vai tentar FAZER O EMIT DO 'USER JÁ ARMAZENADO NO LOCAL STORAGE' a outros COMPONENTS DE NOSSO APP)...
+
+
+
+
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> sim, é verdade....
+
+
+
+
+
+
+
+esse method do nosso service era chamado, para então tentar fazer 'autologin' de nosso user...
+
+
+
+
+
+
+
+
+
+o código de autoLogin estava assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+autoLogin() {
+
+
+    const userData = JSON.parse(localStorage.getItem('userData')!); 
+
+    if (!userData) { ///case em que NÃO TEMOS TOKEN ALGUMA/token inválida no local storage..
+      return; 
+    }
+
+
+
+    const loadedUser = new User(userData.email, userData.userId, userData.token!, new Date(userData.expirationDate));
+
+
+  
+
+    if(loadedUser.token) { 
+
+      const expirationDuration = Date.parse(userData.expirationDate) - new Date().getTime();  ///coloquei o '/1000' pq esse value deve entrar COMO SECONDS, lá nessa nossa function de 'authLogout()'..
+
+    this.user.next(loadedUser);  
+
+
+    this.autoLogout(expirationDuration/1000);
+    }
+
+  }
+
+
+
+
+
+
+
+
+
+OK... ANALISANDO ESSE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+autoLogin() {
+
+
+    const userData = JSON.parse(localStorage.getItem('userData')!); 
+
+    if (!userData) { //// FICA A MESMA COISA....
+      return; 
+    }
+
+
+
+    const loadedUser = new User(userData.email, userData.userId, userData.token!, new Date(userData.expirationDate)); ////FICA A MESMA COISA..
+
+
+  
+
+    if(loadedUser.token) { 
+
+      const expirationDuration = Date.parse(userData.expirationDate) - new Date().getTime();  ///coloquei o '/1000' pq esse value deve entrar COMO SECONDS, lá nessa nossa function de 'authLogout()'..
+
+    this.user.next(loadedUser);  ////VAMOS TER DE TROCAR ISSO...
+
+
+    this.autoLogout(expirationDuration/1000); ///NÃO SEI COMO ISSO FICA...
+    }
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO, PORTANTO, FICARÁ ASSIm:
+
+
+
+
+
+
+
+
+
+autoLogin() {
+
+
+    const userData = JSON.parse(localStorage.getItem('userData')!); 
+
+    if (!userData) { //// FICA A MESMA COISA....
+      return; 
+    }
+
+
+
+    const loadedUser = new User(userData.email, userData.userId, userData.token!, new Date(userData.expirationDate)); ////FICA A MESMA COISA..
+
+
+  
+
+    if(loadedUser.token) { 
+
+      const expirationDuration = Date.parse(userData.expirationDate) - new Date().getTime();  ///coloquei o '/1000' pq esse value deve entrar COMO SECONDS, lá nessa nossa function de 'authLogout()'..
+
+    this.store.dispatch(new xxxxx.AuthStart/AuthSuccess())....
+
+
+    this.autoLogout(expirationDuration/1000); ///NÃO SEI COMO ISSO FICA...
+    }
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TIPO ALGO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  autoLogin() { ///COM O USO DE NGRX...
+
+
+    const userData = JSON.parse(localStorage.getItem('userData')!); ///O VALUE QUE VAMOS RETRIEVAR LÁ DO LOCAL STORAGE DEFINITIVAMENTE SERÁ UMA STRING, por isso usamos 'JSON.parse()' para converter essa string (json data) em um OBJECT JAVASCRIPT 
+
+
+    if (!userData) { ///case em que NÃO TEMOS TOKEN ALGUMA/token inválida no local storage..
+      return; 
+    }
+
+
+
+    const loadedUser = new User(userData.email, userData.userId, userData.token!, new Date(userData.expirationDate));
+
+
+  
+
+    if(loadedUser.token) { ////com isso, através do GETTER de 'loadedUser.token' (pq nosso model de 'User' tem esse getter), _ CHECAMOS _ SE EXISTE UM VALID TOKEN DENTRO DESSE NOSSO USER (caso não exista, o getter retornará 'null' --> isso pq NULL É UM FALSY VALUE, e tiramos vantagem disso nesse if block aqui...)...
+
+
+      console.log(typeof userData.expirationDate);
+      const expirationDuration = Date.parse(userData.expirationDate) - new Date().getTime();  ///coloquei o '/1000' pq esse value deve entrar COMO SECONDS, lá nessa nossa function de 'authLogout()'..
+       
+    this.store.dispatch(new fromAuthActions.AuthSuccess(loadedUser)) //// VERSÃO DO NGRX
+
+
+    console.log(expirationDuration / 1000);
+
+    this.autoLogout(expirationDuration/1000);
+    }
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> CLARO QUE NÃO SEI SE ISSO ESTÁ CERTO..
+
+
+
+
+
+
+
+
+--> O PROFESSOR, POR ENQUANTO, QUER FAZER 
+
+
+O DISPATCH DE ACTIONS _ DE DENTRO_ _DE NOSSO SERVICE DE 'AUTH'..
+
+
+
+
+
+
+
+
+
+--> ANTERIORMENTE,
+
+
+COM O 'shoppingList',
+
+
+
+nós, NA GRANDE MAIORIA DOS CASOS,
+
+FIZEMOS 
+
+DISPATCH DE DENTRO DO COMPONENT DE 'shoppingList',
+
+
+
+e não no service de shoppingList (Que basicamente aposentamos)...
+
+
+
+
+
+
+
+
+---> EM GERAL, VOCÊ PODE FAZER DISPATCH 
+
+'''DE QUALQUER LUGAR QUE VOCÊ QUER,
+
+DE ONDE VOCÊ PRECISA'''....
+
+
+
+
+
+
+--> MESMO ASSIM, O PROFESSOR MENCIONA QUE _ MAIS TARDE__ 
+
+
+
+VAMOS REESTRUTURAR ESSE SERVICE DE 
+
+'auth.service.ts',
+
+
+DE MODO QUE 
+
+
+
+
+SERÁ POSSÍVEL HANDLAR AQUELES ASYNC REQUESTS (como o de 'signup')
+
+
+COM O NGRX...
+
+
+
+
+
+
+
+
+
+--> entretanto, por enqaunto,
+
+
+
+
+COMO _ESTAMOS _ FAZENDO __ O HANDLE DESSE CÓDIGO ASYNC 
+
+
+no service em si,
+
+
+SÓ VAMOS 
+
+FAZER O DISPATCH 
+
+
+DE ACTIONS DEPOIS QUE ESTAMOS 'DONE' com os http requests (que serão handlados pelo service em si)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR INJETA A NOSSA STORE DENTRO DO 'service' de 'auth.service.ts',
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+  constructor(private http: HttpClient, private router: Router, private store: Store<AppState>) {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  COMO ESSE É UM GENERIC TYPE,
+
+
+
+  COLOCAMOS O 'AppState' (overall) 
+
+
+
+  COMO SEU TYPE..
+
+
+
+
+
+
+
+
+
+  OK... COM O STORE INJETADO,
+
+
+
+  O PROFESSOR VAI ATÉ TODOS OS LUGARES EM QEU CHAMAMOS 
+
+
+
+  'this.user.next(user)'
+
+
+  ,
+
+  EXATAMENTE COMO EU HAVIA FEITO..
+
+
+
+
+
+
+
+
+
+
+
+  ---> EM 'autoLogin()',
+
+
+  por exemplo,
+
+  ele substitui esse 
+
+  código por 
+
+
+
+
+
+
+
+
+
+  this.store.dispatch(new Action())...
+
+
+
+
+
+
+
+
+
+
+  ----> professor fala do block de 'if loadedUser.token':
+
+
+
+
+
+
+
+       if(loadedUser.token) { 
+
+      const expirationDuration = Date.parse(userData.expirationDate) - new Date().getTime();  ///coloquei o '/1000' pq esse value deve entrar COMO SECONDS, lá nessa nossa function de 'authLogout()'..
+       
+    this.store.dispatch(new fromAuthActions.AuthSuccess(loadedUser)) 
+
+
+    console.log(expirationDuration / 1000);
+
+    this.autoLogout(expirationDuration/1000);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> EU FIZ O DISPATCH DESSA ACTION AÍ....
+
+
+
+
+
+
+
+
+
+    --> o professor usou a action de 'auth_success'/'auth_login'....
+
+
+
+
+
+
+
+
+
+
+    --> até agora, fez exatamente o que eu fiz...
+
+
+
+
+
+
+
+
+
+
+    --> ANTES DE TESTARMOS TUDO ISSO,
+
+
+
+
+    FAZEMOS A MESMA COISA COM O logout,
+
+
+
+    em que 
+
+
+    colocamos 
+
+
+
+
+    isto:
+
+
+
+
+
+
+
+
+
+
+
+
+      logoutUser() {
+
+    this.handleUser(null);
+
+    this.router.navigate(['/auth']);
+
+
+    if (this.tokenExpirationTimer) {   ///'cleanup' de nosso timer de 'autologout' (em caso de tokens expiradas), CUJO TIMER NÃO VAI DEIXAR DE EXISTIR SOZINHO.. (precisamos limpar manualmente, com 'clearTimeout()')....
+
+      clearTimeout(this.tokenExpirationTimer);
+    }
+
+    this.tokenExpirationTimer = null; ///resettamos o state de nosso 'tokenExpirationTimer' property...
+
+
+  
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -->   this.handleUser(null);
+ 
+
+
+
+ ISSO TRIGA ISTO:
+
+
+
+ 
+  private handleUser(responseData: AuthResponseData | null) {  ///VERSÃO _ COM NGRX (deixamos nosso behavior subject de lado) --> aqui, vamos fazer o DISPATCH DE UMA ACTION, ACTION QUE VAI ALTERAR NOSSO 'STATE' DE 'auth', o QUE POR SUA VEZ VAI INFFLUENCIAR TODOS OS LUGARES DE NOSSO APP VINCULADOS A ESSE STATE (handlando nossa authentication, em outras palavras)...
+    
+    if (responseData === null)  {
+
+    //  return  this.user.next(null);
+
+    this.store.dispatch(new fromAuthActions.AuthLogout());
+    } else {
+
+
+
+    const { email, localId, expiresIn, idToken } = responseData;
+
+          const expirationDate = new Date( /// vai nos dar um object 'Date'...
+            new Date().getTime() + +expiresIn * 1000
+          );
+
+          const newUser = new User(email, localId, idToken, expirationDate);
+
+          // this.user.next(newUser); 
+
+          this.store.dispatch(new fromAuthActions.AuthSuccess(newUser))
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ----> ok... agora essas actions estão sendo dispatcheadas corretamente...
+
+
+
+
+
+
+  --> POR FIM,
+
+  O PROFESSOR COMENTA 
+  QUE EM 
+
+  'login'
+
+  ESTAMOS ARMAZENANDO O OBJECT 'USER'
+
+  dentro de nossa storage, conforme este códigO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    onLogin(authData: {
+    email: string;
+    password: string;
+    returnSecureToken: boolean;
+  }) {
+    const requestHeaders = new HttpHeaders();
+
+    requestHeaders.append('Content-Type', 'application/json');
+
+    return this.http
+      .post<AuthResponseData>(
+        `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`,
+        authData,
+
+        {
+          headers: requestHeaders,
+        }
+      )
+      .pipe(
+        catchError((errorRes) => {
+          console.log(errorRes);
+
+          let errorMessage = 'An unknown error has occured.';
+
+          switch (errorRes.error.error.message) {
+            case 'EMAIL_NOT_FOUND':
+              errorMessage = 'No user found for the entered email!';
+              break;
+            case 'INVALID_PASSWORD':
+              errorMessage = 'Invalid password, please try again.';
+          }
+
+          return throwError(() => errorMessage);
+        }),
+
+        tap(
+          (responseData) => {
+            console.log(+responseData.expiresIn);
+     
+            // this.emitUser(responseData);  //trocamos pelo method que altera o STATE DO NGRX... (method de baixo)
+            this.handleUser(responseData);
+            this.storeUserToken(responseData);
+            this.autoLogout(+responseData.expiresIn);
+          }
+        )
+      );
+
+
+
+
+
+
+
+
+
+
+      EX:
+
+
+
+
+
+
+
+
+      
+        tap(
+          (responseData) => {
+            console.log(+responseData.expiresIn);
+            
+            this.handleUser(responseData);
+            this.storeUserToken(responseData);
+            this.autoLogout(+responseData.expiresIn);
+          }
+        )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... O PROFESSOR ENTÃO NOS FALA DE ALGO:
+
+
+
+*** VOCÊ _ NÃO _ _DEVE ACESSAR O LOCAL STORAGE DE 
+
+DENTRO DO SEU REDUCER... -->  MAS PQ?
+
+
+
+
+
+
+
+--> É __ PQ _ APESAr__ DE NÃO SER CÓDIGO ASYNC,
+
+O 
+
+STORE DE DATA EM 'LOCAL STORAGE'
+
+É __ AQUILO QUE CHAMAMOS DE 'SIDE EFFECT',
+
+
+
+O QUE 
+
+QUER DIZER QUE 
+É 
+
+__ ALGO _ QUE 
+
+
+
+__ NÃO É __ DIRETAMENTE CONECTADO AO SEU STATE...
+
+
+
+
+
+
+
+
+
+
+--> COMO É ALGO QUE 'NÃO TEM CONEXÃO DIRETA AO SEU STATE',
+
+
+
+o store de coisas no localStorage é _ ALGO QUE _ NÃO DEVE SER FEITO DE DENTRO DO REDUCER...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------> É CONSIDERADA UMA 'BAD PRACTICE' colocar esse código de 'localStorage' dentro do reducer...
+
+
+
+
+
+
+
+--> isso significa que meu código, com os helper methods tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+const authSuccess = (
+  state: AuthState,
+  action: AuthActions.AuthSuccess
+): AuthState => {
+  const { token, email, id } = action.payload;
+
+  return updateObject(state, {
+    isLoading: false,
+    token: token,
+    email: email,
+    userId: id,
+  });
+};
+
+
+
+
+
+
+
+
+
+
+
+-> nesse meu código, eu não havia feito o setItem no localStorage,
+
+
+pq eu 
+
+
+
+,
+
+como neste código do professor,
+
+
+estava fazendo isso no service...
+
+
+
+
+
+
+
+
+
+-> entretnato, o professor diz que mais tarde veremos um 
+
+
+approach/sintaxe 
+
+
+
+em que 
+
+
+NÃO 
+
+FAZEMOS ESSE MANAGE do localStorage
+
+
+NEM EM 1 SERVICE,
+
+NEM 
+
+NO PRÓPRIO REDUCER,
+
+
+ou seja,
+
+é 
+
+
+o APPROACH MAIS OPTIMAL DE TODOS... (veremos isso quando estudarmos o 'handle de side effects com o ngrx', mais tarde)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK, COM ISSO NÓS FIZEMOS O DISPATCH DE TODAS ESSAS ACTIONS, MAS É CLARO QUE AINDA TEMOS 
+
+QUE 
+
+'USAR' nosso state de auth no nosso app,
+
+
+de alguma forma... (pq isso não é feito automaticamente)...
+
+
+
+
+
+--> DEEVMOS USAR O AUTH STATE,
+
+NA PRÓXIMA AULA...

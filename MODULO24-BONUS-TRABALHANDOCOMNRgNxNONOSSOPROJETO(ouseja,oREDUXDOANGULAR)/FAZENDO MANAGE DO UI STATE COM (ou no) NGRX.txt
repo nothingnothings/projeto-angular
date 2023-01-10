@@ -1,0 +1,1332 @@
+
+
+
+
+
+OK.. O PROBLEMA QUE TEMOS EXISTE AQUI:
+
+
+
+
+
+
+  onAuthFormSubmit(form: NgForm) {
+    if (!form.valid) {
+      return;
+    }
+
+    const email = form.form.get('email')?.value;
+    const password = form.form.get('password')?.value;
+
+    const userData = {
+      email: email,
+      password: password,
+      returnSecureToken: true,
+    };
+
+    let authObs: Observable<AuthResponseData>;
+
+    this.isLoading = true;
+
+    if (!this.isSignup) {
+      // authObs = this.authService.onLogin(userData);
+
+      this.store.dispatch(new AuthActions.AuthStart(email, password));   ///OBS: 'DISPATCH' não vai 'give back' um OBSERVABLE A NÓS... --> é exatamente por isso que não podemos o armazenar em 'authObs' (cujo type é de observable)...
+            ////além disso, como ESSE DISPATCH NÃO É UM OBSERVABLE, ELE NÃO _ NOS ENTREGA INFO SOBRE SE O __ SEND DE DATA FOI BEM SUCEDIDO, O QUE NOS IMPEDE DE DEFINIR COISAS COMO 'isLoading' e o NAVIGATE AWAY, Pq não sabemos o status de nosso request (se fosse um observable, conseguiríamos saber)...
+    } else {
+      // authObs = this.authService.onCreateAccount(userData);
+    }
+
+    authObs.subscribe( ////substituído pela lógica de 'EFFEC
+      (responseData) => {
+        this.isLoading = false;
+        this.router.navigate(['/recipe-book']);
+      },
+
+      (errorMessage) => {
+        console.log(errorMessage);
+        this.isLoading = false;
+
+        this.showErrorAlert(errorMessage);
+      }
+    );
+
+    form.reset();
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> O PROBLEMA É QUE 
+
+  SUBSTITUÍMOS O CALL DE um '.subscribe()'
+
+
+
+
+
+  PELO _ DISPATCH_ DE UMA ACTION,
+
+
+
+
+
+  E O DISPATCH DE ACTIONS NÃO DIZEM NADA SOBRE O 'CURRENT STATE'
+
+
+
+  do send de nosso request (se o request está AWAITING, SE FOI SUCCESSFUL, ou se foi FAIL/ERROR)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -->  A SOLUÇÃO A ESSE PROBLEMA É  SIMPLES:
+
+
+
+
+
+
+
+  PRECISAMOS _ FAZER __ MAIS MANAGE DO NOSSO 'AUTH-RELATED STATE'..
+
+
+
+
+
+
+
+
+
+
+  --> NOSSO STATE DE AUTH, ATUALMENTE, ESTÁ ASSIM:
+
+
+
+
+
+
+
+
+  const initialState: AuthState = {
+  token: null,
+  userId: null,
+  email: null,
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO.... MAS O QUE SERIA REALMENTE UTIL,
+
+AQUI, SERIA 
+
+
+TER AS PROPRIEDADES DE 
+
+
+'isLoading' 
+
+
+
+e 
+
+
+
+'error'...
+
+
+
+(
+
+
+    que vão nos ajudar com o HANDLE DO SEND-RECEIVE DE HTTP REQUESTS,
+
+
+
+    A PARTIR 
+
+
+
+
+    DOS EFFECTS 
+
+
+    DO NGRX/EFFECTS...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... 
+
+
+
+
+
+
+--> ISSO SIGNIFICA QUE 
+
+QUANDO 
+
+
+
+'authStart'
+
+FOR 
+
+
+
+_DISPATCHED_,
+
+ 
+
+ PRECISAMOS __ 
+
+
+
+
+ ESCREVER UM SET DE 'isLoading' COMO SENDO TRUE,
+
+
+ PARA INDICAR/ATUALIZAR A NOSSA UI DE ACORDO COM ESSA MUDANÇA...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> acho que o código ficará assim (helper methods das actions de 'auth'):
+
+
+
+
+
+const authStart = (
+  state: AuthState,
+  action: AuthActions.AuthStart
+): AuthState => {
+  return updateObject(state, { isLoading: true });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... ISSO VAI ATUALIZAR NOSSO STATE COMO 'isLoading',
+
+é verdade....
+
+
+
+
+
+
+
+
+
+-> MAS ISSO ESTÁ CERTO?
+
+
+
+
+
+
+
+
+
+
+--> BEM, O CASE DE 'SUCCESS' DE NOSSO LOGIN 
+
+é feito com 
+
+
+
+
+esta action aqui:
+
+
+
+
+
+export class AuthSuccess implements Action {
+  readonly type = AUTH_SUCCESS;
+
+  constructor(public payload: User) {}
+}
+
+
+
+
+
+
+
+
+
+
+
+--> HELPER METHOD:
+
+
+
+
+
+
+const authSuccess = (
+  state: AuthState,
+  action: AuthActions.AuthSuccess
+): AuthState => {
+  const { token, email, id } = action.payload;
+
+  return updateObject(state, {
+    isLoading: false,
+    token: token,
+    email: email,
+    userId: id,
+  });
+};
+
+
+
+
+-> ISSO LEVA A NOSSA DATA DE 'user', lá no STATE, ser 
+
+atualizada...
+
+
+
+
+--> E ESSA ACTION SÓ DEVE SER 'DISPATCHED'
+
+
+
+
+se 
+
+
+
+o nosso código realmente foi bem sucedido no send de nossa request...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR AGORA FAZ A MESMA COISA,
+
+MAS COM UMA ACTION DE LOGIN_FAIL:
+
+
+
+
+
+
+const authFail = (
+  state: AuthState,
+  action: AuthActions.AuthFail
+): AuthState => {
+  return updateObject(state, {
+    isLoading: false,
+    token: null,
+    email: null,
+    userId: null,
+    error: payload
+  });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+E O CÓDIGO DA ACTION:
+
+
+
+
+
+
+
+
+export class AuthFail implements Action {
+  readonly type = AUTH_FAIL;
+
+  constructor(private payload: string) {} ////vai segurar 'error', que será uma STRING (ou um object error).
+}
+
+
+
+
+
+
+
+
+
+
+
+
+--> COLOQUEI O PAYLOAD DE 'string' pq assumo que 
+
+
+
+
+O PAYLOAD SERÁ A _ MENSAGEM DE ERROR, ou algo assim....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK.... ESSES CASES SÃO ADICIONADOS NO NOSSO REDUCER, É CLARO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, ATÉ AÍ, TUDO BEM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> COM ESSA ACTION ADICIONADA AÍ,
+
+TAMBÉM PRECISAMOS TRABALHAR COM NOSSO REDUCER,
+
+E COM 
+
+
+O QUE 
+
+
+FAZEMOS MANAGE NO STATE...
+
+
+
+
+
+
+
+
+
+-> um LOGIN ERROR EM POTENCIAL DEVE SER 
+
+MANAGEADO 
+
+
+
+NO NOSSO REDUCER,
+
+para encaixar 
+
+
+
+
+
+com a action de 'authError'..
+
+
+
+
+
+
+
+
+
+
+
+
+--> o professor escreve algo tipo assim:
+
+
+
+
+
+
+
+
+
+  const initialState: AuthState = {
+  token: null,
+  userId: null,
+  email: null,
+  error: null
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS NO CASE DE UM 'AUTH_SUCCESS',
+
+
+VAMOS QUERER REDEFINIR 'error' COMO 'nuLL'...
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+const authStart = (
+  state: AuthState,
+  action: AuthActions.AuthStart
+): AuthState => {
+  return updateObject(state, { isLoading: true, error: null });
+};
+
+const authSuccess = (
+  state: AuthState,
+  action: AuthActions.AuthSuccess
+): AuthState => {
+  const { token, email, id } = action.payload;
+
+  return updateObject(state, {
+    isLoading: false,
+    error: null, //resetta o nosso state...
+    token: token,
+    email: email,
+    userId: id,
+  });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO..
+
+
+
+
+
+
+
+ATÉ AÍ, TUDO BEM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+O PROFESSOR TAMBÉM BOTA O LOGIN FAIL CASE:
+
+
+
+
+
+
+const authFail = (
+  state: AuthState,
+  action: AuthActions.AuthFail
+): AuthState => {
+  return updateObject(state, {
+    isLoading: false,
+    token: null,
+    email: null,
+    userId: null,
+    error: action.payload
+    
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> OK, FOI EXATAMENTE O QUE EU FIZ..
+
+
+
+
+
+
+  O REDUCER FICOU ASSIM:
+
+
+
+
+
+
+  export function AuthReducer(
+  state: AuthState = initialState,
+  action: AuthActions.AuthActions
+) {
+  switch (action.type) {
+    case AuthActions.AUTH_START:
+      return authStart(state, action as AuthActions.AuthStart);
+    case AuthActions.AUTH_SUCCESS:
+      return authSuccess(state, action as AuthActions.AuthSuccess);
+    case AuthActions.AUTH_FAIL:
+      return authFail(state, action as AuthActions.AuthFail);
+    case AuthActions.AUTH_LOGOUT:
+      return authLogout(state, action as AuthActions.AuthLogout);
+      default:
+        return state;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-. OK....
+
+
+
+
+
+
+
+
+COM ISSO, PODEMOS SIMPLESMENTE FAZER SUBSCRIBE AO __ NOSSO STORE_,
+
+LÁ 
+EM 
+'AuthPage.component.ts',
+
+
+
+PARA FICARMOS INFORMADOS DE QUAISQUER 
+
+
+ERRORS que talvez ganhemos....
+
+
+
+
+
+
+
+
+
+
+-> VAMOS TIRAR AQUELE 'authObs.subscribe()',
+
+
+E AÍ COLOCAAR ESTE CÓDIGO:
+
+
+
+
+
+
+
+    this.store.select('auth').subscribe(
+      
+    )
+
+
+
+
+
+
+
+CERTO... VAMOS FAZER SUBSCRIBE A ESSA PARTE DE NOSSO 
+
+
+
+STate...
+
+
+
+
+
+
+
+-> dentro disso, 
+
+dentro desse subscribe,
+
+
+PODERÍAMOS USAR UM MAP OPERATOR PARA EXTRAIR A DATA DESEJADA POR NÓS,
+
+
+
+mas o professor faz no 'seco' mesmo..
+
+
+
+
+
+-> ele escreve 
+
+
+
+
+
+    this.store.select('auth').subscribe(
+        
+        (authState) => {
+
+        }
+    )
+
+
+
+
+
+
+
+
+
+
+-> A PARTIR DESSE STATE,
+
+VAMOS RECEBER:
+
+1) NOSSO USER 
+
+
+
+2) OU UM ERROR, SE TIVERMOS ALGUM ERROR..
+
+
+
+
+
+
+
+
+
+-> VAMOS COLOCAR ALGUNS IF CHECKS AQUI, PORTANTO, CHECANDO POR ERRORS..
+
+
+
+
+
+
+
+Ex:
+
+
+
+
+
+
+
+
+
+
+    this.store.select('auth').subscribe(
+
+      (authState) => {   ///vai retornar nosso state de auth integralmente... --> aí rodamos if checks a partir disso...
+
+
+        if (authState.error && !authState.isLoading) {
+            
+        }
+      }
+    )
+
+
+
+
+
+
+
+
+CERTO....
+
+
+
+
+
+
+
+MAS O PROFESSOR ENTÃO 
+
+
+NOS INFORMA DE QUE DEVEMOS FAZER SUBSCRIBE A ESSE SLICE DE NOSSO STATE __ JÁ 
+
+
+_ EM 
+
+'ngOnInit()",
+
+
+
+
+E NÃO 
+
+
+
+SOMENTE NESSE 
+
+
+
+
+lugar em que fazemos o submit de nossa form (tentativa de login/auth)...
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO, O CÓDIGO INTEIRO FICA ASSIM:
+
+
+
+
+
+
+
+  ngOnInit(): void {
+
+
+      this.store.select('auth').
+
+
+
+  }
+
+
+
+
+
+
+
+
+certo..
+
+
+
+
+
+
+
+
+
+dentro desse negócio settamos a subscription ao nosso store,
+
+
+
+
+e aí 
+
+
+DEIXAMOS 
+
+
+
+
+UM SET INICIAL DE 
+
+
+
+
+
+'this.isLoading = authState.loading',
+
+
+
+
+
+
+pq VAMOS SEMPRE QUERER TER 'THE LATEST LOADING STATE'...
+
+
+
+
+
+
+
+-> MESMA COISA COM O 'error' de nosso 'authPage Component'..
+
+
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+@Component({
+  selector: 'app-auth-page',
+  templateUrl: './auth-page.component.html',
+  styleUrls: ['./auth-page.component.css'],
+})
+export class AuthPageComponent implements OnInit, OnDestroy {
+  isSignup: boolean = true;  //state que manageia a user interface, mas que nÃO É MANAGEADO DENTRO DO NGRX/store, pq ele NÃO AFETA NENHUMA OUTRA PARTE DE NOSSO APP.. 
+
+  isLoading: boolean = false;
+
+  closeAlertBoxSubscription: Subscription;
+
+
+  error: string | null;
+
+  @ViewChild(PlaceholderDirective, { static: false })
+  dynamicAlertBoxHost: PlaceholderDirective;
+
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private store: Store<AppState>
+  ) {}
+
+  ngOnInit(): void {
+
+
+      this.store.select('auth').subscribe(
+        (authState) => {
+
+
+          this.isLoading = authState.isLoading;  ///com isso, usamos o state de 'auth' PARA ATUALIZAR O STATE DESSE NOSSO 'PAGE COMPONENT' de 'AuthPage'...
+          this.error = authState.error;  
+        }
+      )
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> certo... ESSE 'ngOnInit()'
+
+
+
+  É IMPORTANTE, PORTANTO,
+
+
+  PQ VAI 
+
+
+  DEFINIR 
+
+
+  LOGO DE CARA QUE 
+
+
+
+
+  O state desse page component estará VINCULADO ao state do 'ngrx'...
+
+
+
+
+
+
+
+
+
+
+
+  CERTO... e tiramos aquele 'this.store.select('auth')'
+
+
+
+  LÁ 
+
+
+
+
+
+  DO METHOD DE 'onAuthFormSubmit'...
+
+
+
+
+
+
+
+  -> APENAS FAZEMOS O DISPATCH DE 'this.store.dispatch(new AuthActions.AuthStart())'
+
+
+
+  LÁ EM 
+
+
+
+'onAuthFormSubmit'...
+
+
+
+
+
+
+
+--> E A IDEIA, AGORA, É QUE 
+
+
+
+_ VAMOS _ REDIRECIONAR O USER _ 
+
+
+
+
+APENAS _ QUANDO 
+
+ESTIVERMOS 
+
+
+LOGGED IN,
+
+
+O QUE QUER DIZER 
+
+
+
+
+
+
+
+
+
+QUE SÓ DEVEMOS REDIRECIONAR QUANDO POSSUIRMOS UM 'USER' NO NOSSO APP....
+
+
+
+
+
+ 
+
+
+--> OK, E EM QUE LUGAR PODERÍAMOS FAZER ESSE REDIRECT?
+
+
+
+
+
+
+
+
+
+--> BEM, O PROFESSOR ARGUMENTA QUE PODERÍAMOS SEMPRE REDIRECIONAR 
+
+
+
+QUANDO FOSSE CONSTATADO QUE 'UM USER EXISTE NO NOSSO STATE',
+
+
+
+
+
+bastaria escrever assim:
+
+
+
+
+
+
+
+ ngOnInit(): void {
+
+
+      this.store.select('auth').subscribe(
+        (authState) => {
+
+
+          this.isLoading = authState.isLoading;  ///com isso, usamos o state de 'auth' PARA ATUALIZAR O STATE DESSE NOSSO 'PAGE COMPONENT' de 'AuthPage'...
+          this.error = authState.error;  
+
+
+
+          if (authState.user) {
+            this.router.navigate(['url'])
+          }
+        }
+      )
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> MAS COM ISSO PODERÍAMOS ACABAR COM _ CENÁRIOS ESTRANHJOS,
+
+
+
+  EM QUE 
+
+
+
+
+
+  NÓS 'KIND OF VISIT THE PAGE WITH A USER',
+
+
+
+  MESMO QUE ISSO REALMENTE NÃO 
+
+
+DEVERIA SER POSSÍVEL (
+
+
+    aí vocÊ teria uma redirection estranha...
+)
+
+
+
+
+
+
+
+
+
+
+
+-----> E VOCÊ PODERIA, AINDA, VER A NAVIGATION COMO UM SIDE EFFECT (
+
+pq a navigation 
+
+
+IMPACTA SEU APP,
+
+
+MAS NÃO IMPACTA 
+
+SEU STATE... --> NÃO IMPACTA SEUS 
+
+
+DATA STATES..
+
+)
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE VAMOS QUERER FAZER 'REDIRECTS'
+
+
+
+como parte do NGRX effects, também...

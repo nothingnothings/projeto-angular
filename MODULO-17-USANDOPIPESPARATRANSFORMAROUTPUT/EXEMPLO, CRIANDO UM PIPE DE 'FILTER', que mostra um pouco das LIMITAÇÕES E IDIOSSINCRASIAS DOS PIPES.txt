@@ -1,0 +1,2023 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NA ÚLTIMA LIÇÃO,
+
+CRIAMOS UM PIPE INTEIRAMENTE NOSSO,
+
+
+E TAMBÉM
+
+
+
+
+CODAMOS O USO DE 'PARAMETERS' COM ESSE PIPE,
+
+TIPO ASSIM:
+
+
+
+
+
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'shortenSpecific',
+})
+export class ShortenSpecificPipe implements PipeTransform {
+  transform(value: any, limit: number) { ////user será OBRIGADO a passar 1 PARAMETER ao nosso pipe, que será esse 'limit' aí... a usage do pipe ficará tipo {{ string | shortenSpecific: '5'}}
+    if (value.length > limit) {
+      return value.substr(0, limit) + ' ...';
+    }
+
+    return value;
+  }
+}
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> MAS AGORA QUEREMOS CRIAR UM NOVO PIPE,
+
+  PQ O PROFESSOR QUER 
+
+  MOSTRAR ALGO 
+
+
+
+  ___ QUE PODE __ PARECER_ ESTRANHO, AO INÍCIO...
+
+
+
+
+
+
+
+
+  -> PARA ISSO,
+
+
+
+  ELE ADICIONA UM NOVO ELEMENTO NO NOSSO ARQUIVO HTML....
+
+
+
+
+
+
+
+
+  --> SERÁ UM INPUT DE TYPE TEXT.. ->  O PROFESSOR QUER QUE 
+
+
+  DEIXEMOS QUE O USER 
+
+  CONSIGA 'FILTER' OS NOSSOS 
+
+
+
+
+
+
+  SERVERS,
+
+
+  FILTAR POR 'STATUS '-->  ISSO FARÁ COM QUE,
+
+
+
+  QUANDO O USER DIGITAR 'stable', por exemploO,
+
+
+
+
+  ELE 
+
+  VERÁ APENAS OS USERS COM STATUS DE 'STABLE'
+
+
+  na nossa página...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> o código vai ficando assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <input type="text">
+      <ul class="list-group">
+        <li class="list-group-item"
+        *ngFor="let server of servers"
+        [ngClass]="getStatusClasses(server)"
+        >
+          <span class="badge" >{{ server.status }}</span> <!-- `shorten` É UM EXEMPLO DE CUSTOM PIPE, PIPE CRIADO POR NÓS MESMOS..-->
+          <strong>{{ server.name | shorten
+             }}
+
+             {{ server.name | shortenSpecific: 5
+             }}
+            
+            </strong> || {{ server.instanceType | uppercase }} ||
+          {{ server.started }} ||
+          {{ server.started | date }} ||
+          {{server.started | date: 'fullDate' }}  ||
+          {{server.started | date: 'fullDate' | uppercase }} ||
+       
+        </li> <!-- AQUI CONSTATAMOS O USO DE ALGUNS PIPES (uppercase e DATE... Aug 9, 1920)-->
+            <!-- PIPES _ TAMBÉM ACEITAKM PARÂMETROS, E ELES SÃO PASSADOS COM ESTA SINTAXE, de ':' :  '''{{ server.started | date: 'xxx' }}'''' -->
+      
+      
+        <!--     {{server.started | uppercase | date: 'fullDate' }}   - ISSO NÃO FUNCIONA -- NÃO FUNCIONA PQ A 'ORDER' DOS PIPES, ORDER DE TRANSFORMAÇÃO DE SUA DATA PELOS PIPES, SEMPRE IMPORTA...  E NÃO É POSSÍVEL CONVERTER UMA DATA DE TYPE 'DATE' EM UPPERCASE, pq só strings permitem essa conversão..-->
+          </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK... 
+
+
+
+
+
+
+
+USAMOS ESSE INPUT DE 'text'..
+
+
+
+
+
+
+-> AÍ O PROFESSOR VAI QUERER _ USAR__ TWO-WAY DATABINDING,
+
+
+PARA BINDAR 
+
+
+
+O VALOR DISSO...
+
+
+
+
+
+
+
+-> por isso ele escreve 
+
+
+
+
+
+
+[(ngModel)]="filteredStatus"
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK, AÍ VAMOS PRECISAR DE UMA PROPRIEDADE ASSIM, LÁ NO 
+
+NOSSO COMPONENT DE 'app.component.ts'....
+
+
+
+
+
+
+
+
+
+--> CERTO...
+
+
+
+
+
+O CÓDIGO VAI FICANDO ASSIM:
+
+
+
+
+
+
+
+
+
+  <div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <input type="text" [(ngModel)]="filteredStatus">
+      <ul class="list-group">
+        <li class="list-group-item"
+        *ngFor="let server of servers"
+        [ngClass]="getStatusClasses(server)"  
+        >
+          <span class="badge" >{{ server.status }}</span> <!-- `shorten` É UM EXEMPLO DE CUSTOM PIPE, PIPE CRIADO POR NÓS MESMOS..-->
+          <strong>{{ server.name | shorten
+             }}
+
+             {{ server.name | shortenSpecific: 5
+             }}
+            
+            </strong> || {{ server.instanceType | uppercase }} ||
+          {{ server.started }} ||
+          {{ server.started | date }} ||
+          {{server.started | date: 'fullDate' }}  ||
+          {{server.started | date: 'fullDate' | uppercase }} ||
+       
+        </li> <!-- AQUI CONSTATAMOS O USO DE ALGUNS PIPES (uppercase e DATE... Aug 9, 1920)-->
+            <!-- PIPES _ TAMBÉM ACEITAKM PARÂMETROS, E ELES SÃO PASSADOS COM ESTA SINTAXE, de ':' :  '''{{ server.started | date: 'xxx' }}'''' -->
+      
+      
+        <!--     {{server.started | uppercase | date: 'fullDate' }}   - ISSO NÃO FUNCIONA -- NÃO FUNCIONA PQ A 'ORDER' DOS PIPES, ORDER DE TRANSFORMAÇÃO DE SUA DATA PELOS PIPES, SEMPRE IMPORTA...  E NÃO É POSSÍVEL CONVERTER UMA DATA DE TYPE 'DATE' EM UPPERCASE, pq só strings permitem essa conversão..-->
+          </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+Ex:
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+
+
+
+  filteredStatus: string = '';
+
+
+
+
+  servers = [
+    {
+      instanceType: 'medium',
+      name: 'Production Server',
+      status: 'stable',
+      started: new Date(15, 1, 2017),
+    },
+
+    {
+      instanceType: 'large',
+      name: 'User Database',
+      status: 'stable',
+      started: new Date(15, 1, 2017),
+    },
+
+    {
+      instanceType: 'small',
+      name: 'Development Server',
+      status: 'offline',
+      started: new Date(15, 1, 2017),
+    },
+
+    {
+      instanceType: 'medium',
+      name: 'Production Server',
+      status: 'offline',
+      started: new Date(15, 1, 2017),
+    },
+  ];
+
+  getStatusClasses(server: {
+    instanceType: string;
+    name: string;
+    status: string;
+    started: Date;
+  }) {
+    return {
+      'list-group-item-success': server.status === 'stable',
+      'list-group-item-warning': server.status === 'offline',
+      'list-group-item-danger': server.status === 'critical ',
+    };
+  }
+}
+
+
+
+
+
+
+
+
+
+-> É CLARO QUE O VALUE DISSO SERÁ UMA __ EMPTY STRING, AO INÍCIO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SALVAMOS TUDO ISSO..
+
+
+
+
+
+
+AÍ VEREMOS UM INPUT FIELD 
+
+
+
+
+
+no iniício de nossa página..
+
+
+-> aí adicionamos uma 'hr',
+
+
+SÓ PARA FINS DE STYLING...
+
+
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS ADICIONAR ALGO NESSE INPUT FIELD,
+
+
+
+SIMM,
+
+
+
+
+
+INPUTTAR UM VALUE,
+
+MAS ISSO NÃO FARÁ NADA, PELO MENOS POR ENQUANTO... --> 
+
+
+
+
+
+MAS NÓS QUEREMOS CONSTRUIR UM _ _PIPE__ , PIPE _ QUE PODEREMOS __ 
+
+
+APLICAR A 
+
+
+
+
+
+
+ESSA __ LIST___ de 'servers',
+
+  
+
+
+
+  UM PIPE QUE 
+
+  ENTÃO VAI, SOMEHOW,
+
+
+
+  NOS DEIXAR VISUALIZAR/RENDERIZAr_ __ APENAS_ OS SERVERS QUE 
+
+  DE FATO _ CONSIGAM __ 
+
+
+  SATISFAZER OS REQUIREMENTS 
+
+
+
+
+
+
+
+  DE NOSSO <input>,
+
+
+  INPUTTADOS DENTRO DELE....
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> PARA CONSEGUIR FAZER ISSO,
+
+  O PROFESSOR _ CRIA UM NOVO PIPE,
+
+
+
+  DE NOME 
+
+  'filter'....
+
+
+
+
+
+
+
+
+
+
+
+  -----------> MAS AGORA, EM VEZ DE ELE ESCREVER O PIPE à MÃO,
+
+
+
+  ele _ vai USAR O CLI_,
+
+
+  VAI ESCREVER 
+
+
+
+
+'ng g p'  (NG GENERATE PIPE),
+
+
+
+
+
+
+E AÍ COLOCA O NOME DO PIPE,
+'que será 
+
+
+
+'filter'...
+
+
+
+
+
+PS A:\projeto8-ANGULAR\MODULO-17-USANDOPIPESPARATRANSFORMAROUTPUT\projetoPipes> ng g p filter 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> CERTO...
+
+
+
+
+
+
+
+filter.pipe.ts...
+
+
+
+
+
+
+
+----> 
+
+
+
+
+
+
+
+
+
+O NOSSO CÓDIGO FICA TIPO ASSIM:
+
+
+
+
+
+
+
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'filter'
+})
+export class FilterPipe implements PipeTransform {
+
+  transform(value: unknown, ...args: unknown[]): unknown {
+    return null;
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+--> o código é bem similar Àquele que o professor recebeu, mas com algumas diferenças pequenas...
+
+
+
+
+
+(
+
+    o value e 'args' estão COMO 'unknown',
+
+
+    mesma coisa o return type...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DENTRO DESSE NEGÓCIO,
+
+
+VAMOS QUERER _ 
+
+DEIXAR _ QUE O 
+
+USER 
+
+
+
+FAÇA 
+'FILTER'...
+
+
+
+
+
+
+
+
+
+
+--> SUBSTITUÍMOS 'args?' 
+
+
+
+
+PELO PRIMEIRO PARÂMETRO, QUE SERÁ EFETIVAMENTE O QUE O USER VAI INPUTTAR COMO VALUE....
+
+
+
+
+
+
+
+
+
+
+--------> O PROFESSOR VAI CHAMAR ESSE PARÂMETRO DE 'filterString'...
+
+
+
+
+
+ex:
+
+
+
+
+export class FilterPipe implements PipeTransform {
+
+  transform(value: any, filterString: string ): unknown {
+    return null;
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DEPOIS DISSO,
+
+QUEREMOS IMPLEMENTAR UMA LÓGICA QUE 
+
+VAI 
+
+
+
+FORÇAR O RETRIEVE __ DE '''APENAS __ OS ELEMENTS DO ARRAY 
+
+
+QUE CONSIGAM _ SATISFAZER ESSA STRING AÍ''''
+
+
+(
+
+
+    OU SEJA,
+
+
+    ELEMENTS DO ARRAY QUE TENHAM 'status' 
+
+    EQUIVALENTE A ESSE 'filterString'...
+)
+
+
+
+
+
+
+
+
+
+
+----> OK, MAS COMO ESCREVER ISSO?
+
+
+
+
+
+
+
+
+
+
+-> BEM, PARA FAZER ISSO, PRIMEIRAMENTE VAMOS CHECAR  (if check) 
+
+
+
+se 
+
+'value.length' 
+,
+
+
+
+
+
+SENDO QUE 
+
+'VALUE' 
+
+
+
+
+
+
+AQUI ___ NÃO PRECISARÁ __ SER OBRIGATORIAMENTE UMA STRING,
+
+
+
+PQ PODERÁ _ TAMBÉM SER UM ARRAY.....  (
+
+    pode ser _ QUALQUER TIPO DE DATA QUE VOCÊ OUTPUTTA, NO FINAL DAS CONTAS.. -> ISSO PQ _ TANTO 'strings' como 'arrays' POSSUEM '.length'
+)
+
+
+
+
+
+
+
+
+
+
+
+---> QUEREMOS CHECAR SE 'value.length' É EQUIVALENTE A 0......... -------> SE ESSE FOR O CASE,
+
+VAMOS QUERER _ APENAS _ FAZER O RETURN DE NOSSO 'value'
+
+ASSIM MESMO,
+
+
+PQ NÃO 
+
+EXISTIRÁ NADA A FAZER 'DISPLAY' efetivo...
+
+
+
+
+
+
+
+
+
+O CÓDIGO VAI FICANDO ASSIM:
+
+
+
+
+
+
+
+export class FilterPipe implements PipeTransform {
+
+  transform(value: any, filterString: string ): unknown {
+      
+
+
+      if (value.length === 0) {
+          return value;
+      }
+
+
+
+
+    ....
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ENTRETANTO,
+
+
+É DEPOIS DISSO QUE A 'PARTE INTERESSANTE' acontece...
+
+
+
+
+
+
+
+
+
+----> ALI, DEPOIS DO IF CHECK,
+
+
+
+O PROFESSOR VAI QUERER 
+
+
+
+
+_ LOOPAR_, POR MEIO DE UM FOR OF LOOP,
+
+
+
+POR DENTRO 
+
+
+DE TODOS 
+
+
+
+
+OS 'item' 
+
+
+DENTRO DE NOSSO 'value'...  (E o 'value' SERÁ UM ARRAY) ->  
+
+
+
+
+
+
+e aí,
+
+
+
+dentro 
+
+DE CADA 
+
+
+'item',
+
+
+VAMOS QUERER __ CHECAR__ SE O 'status' 
+
+
+
+DE CADA _ 'SERVER'
+
+
+
+
+_MATCHEIA__ O VALUE _ 
+
+
+
+
+
+
+DE NOSSA 'filterString'
+
+
+QUE O 
+
+
+USER DEFINIU ATRAVÉS DO INPUT FIELD....
+
+
+
+
+
+
+eX:
+
+
+
+
+
+export class FilterPipe implements PipeTransform {
+
+  transform(value: any, filterString: string ): unknown {
+      
+
+
+      if (value.length === 0) {
+          return value;
+      }
+
+
+
+    for (const item of value) {
+
+        if (item.status === filterString) {
+
+        }
+    }
+
+
+
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+-> NESSE CASE, NO  CASE Do 'status' de nosso VALUE 
+
+
+
+
+
+SER EQUIVALENTE AO 'filterString',
+
+
+__ E SÓ NESSE CASE ESPECÍFICo,
+
+
+
+VAMOS QUERER 
+
+FAZER RETURN 
+
+
+DE NOSSO 
+
+
+
+VALUE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO, O PROFESSOR CRIA UM NOVO ARRAY, 'resultArray = []' ,
+
+
+ARRAY 
+
+EM QUE SERÃO 'PUSHED'
+
+
+
+
+
+OS ITEMS QUE PASSAREM ESSE CHECK de 'item.STATUS === filterString'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> OK... professor escreverá 'resultArray.push(item)'............
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> AO FINAL, O PROFESSOR FARÁ RETURN DE 'resultArray'...
+
+
+
+
+
+
+
+-> ISSO QUER DIZER QUE, NO FINAL,
+
+O resultArray
+
+
+VAI SEGURAR __ SÓ OS ITEMS EM QUE 
+
+
+
+
+o 'item.value' FOR EQUIVALENTE à STRING DE 'filterString'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> obs: se vocÊ CRIOU SUA PIPE POR MEIO DO CLI,
+
+
+A DECLARATION DELE JÁ TERÁ SIDO ADICIONADA EM 'app.module.ts'....
+
+
+
+
+
+
+
+
+
+
+Ex:
+
+
+
+
+
+
+
+
+
+
+
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'filter',
+})
+export class FilterPipe implements PipeTransform {
+  transform(value: any, filterString: string): any {
+    if (value.length === 0) {
+      return value;
+    }
+
+    for (const item of value) {
+      const resultArray = [];
+
+      if (item.status === filterString) {
+        resultArray.push(item);
+      }
+
+      return resultArray;
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> CERTO.... O PIPE ESTÁ 'FINISHED',
+
+
+
+
+
+MAS AGORA A QUESTÃO É:
+
+
+
+
+
+
+
+__ EM QUE LOCAL_ _ VAMOS 
+
+APLICAR ESSE 
+
+
+
+
+PIPE..? 
+
+
+
+
+
+
+
+
+--> BEM, PARECE QUE O LOCAL EM QUE O PROFESSOR QUER O  APLICAR É 
+
+
+DETNRO DE NOSSO 
+
+
+
+
+'ngFor' 
+
+LOOP,
+
+
+
+LÁ NO TEMPLATE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <input type="text">
+      <ul class="list-group">
+        <li class="list-group-item"
+        *ngFor="let server of servers"
+        [ngClass]="getStatusClasses(server)"
+        >
+          <span class="badge" >{{ server.status }}</span> <!-- `shorten` É UM EXEMPLO DE CUSTOM PIPE, PIPE CRIADO POR NÓS MESMOS..-->
+          <strong>{{ server.name | shorten
+             }}
+
+             {{ server.name | shortenSpecific: 5
+             }}
+            
+            </strong> || {{ server.instanceType | uppercase }} ||
+          {{ server.started }} ||
+          {{ server.started | date }} ||
+          {{server.started | date: 'fullDate' }}  ||
+          {{server.started | date: 'fullDate' | uppercase }} ||
+       
+        </li> 
+          </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Ex:
+
+
+
+
+
+
+
+
+
+
+
+<ul class="list-group">
+        <li class="list-group-item"
+        *ngFor="let server of servers"
+        [ngClass]="getStatusClasses(server)"
+        >
+          <span class="badge" >{{ server.status }}</span> <!-- `shorten` É UM EXEMPLO DE CUSTOM PIPE, PIPE CRIADO POR NÓS MESMOS..-->
+          <strong>{{ server.name | shorten
+             }}
+
+             {{ server.name | shortenSpecific: 5
+             }}
+            
+            </strong> || {{ server.instanceType | uppercase }} ||
+
+
+
+
+
+
+
+
+
+
+
+
+->>>> CERTO,
+
+E ISSO _ PODE PARECER ESTRANHO,
+
+PQ _ ATÉ AGORA_ SÓ USAMOS 
+
+PIPES 
+
+
+_ COM STRING INTERPOLATION,
+
+
+com '{{}}' .... ---------->>>>>>>>>>>>> ENTRETANTO,
+
+
+
+
+SE NOS LEMBRARMOS BEM,
+
+
+
+
+LEMBRAREMOS 
+
+QUE O PROFESSOR HAVIA DITO QUE 
+
+
+
+'''PIPES TRANSFORM YOUR OUTPUT'''' -----> ou seja,
+
+
+
+
+ELES TRANSFORMAM MAIS DO QUE SIMPLES 'string interpolation',
+
+
+
+
+
+
+
+PQ ELES __ PODEM _ ALTERAR QUALQUER COISA QUE FAZ PARTE 
+
+
+
+
+
+DO SEU AOUTPUT..
+
+
+
+
+
+
+
+
+------> ISSO SIGNIFICA QUE ELES PODEM ALTERAR 'ngFor',
+
+
+
+PQ ISSO _ NÃO DEIXA_ _DE SER UM OUTPUT..
+
+
+
+
+
+
+
+
+
+---> É POR ISSO QUE PODEMOS 
+
+
+
+
+
+
+
+ADICIONAR UM 'PIPE' de 'filter'
+
+
+
+
+AO MEU CÓDIGO DE 'ngFor',
+
+
+
+
+
+
+
+PARA QUE NOSSOS 'servers' SEJAM EFETVAMENTE    MANIPULADOS/shown/rendererd
+
+
+
+
+
+
+
+
+
+
+
+A PARTIR DA COISA QUE FOI INPUTTADA NO 'input' (do value desssa string)..
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+<ul class="list-group">
+        <li class="list-group-item"
+        *ngFor="let server of servers | filter:"   ///////EIS O CÓDIGO EM QUESTÃO.
+        [ngClass]="getStatusClasses(server)"
+        >
+          <span class="badge" >{{ server.status }}</span> <!-- `shorten` É UM EXEMPLO DE CUSTOM PIPE, PIPE CRIADO POR NÓS MESMOS..-->
+          <strong>{{ server.name | shorten
+             }}
+
+             {{ server.name | shortenSpecific: 5
+             }}
+            
+            </strong> || {{ server.instanceType | uppercase }} ||
+
+
+
+
+
+
+
+
+
+
+
+---> ok.... agora COLOCAMOS ESSE FILTER __ DENTRO__ DO NGFOR LOOp...
+
+
+
+
+
+
+
+
+
+
+-> E ISSO PODE PARECER ESTRANHO, SIM, PQ ANTES DISSO  SÓ HAVÍAMOS 
+
+COLOCADO
+ 
+
+
+ PIPES DENTRO DE STRING INTERPOLATIOPN,
+
+
+
+
+
+
+
+
+
+
+
+ MAS DEVEMOS NOS LEMBRAR QUE 
+
+
+
+
+
+ ''''PIPES TRANSFORMAM NOSSO OUTPUT''' -> como 
+
+
+
+ ngFor loops SÃO _ PARTe__ DE NOSSO 'OUTPUT',
+
+
+
+
+
+
+
+
+
+
+É CLARO QUE PODEMOS ADICIONAR UM PIPE AOS ELEMENTOS 'servers',
+
+
+PARA LIMITAR QUAIS DELES VAMOS QUERER RETRIEVAR....
+
+
+
+
+
+
+
+
+
+
+
+-> MAS É _ CLARO QUE _ NESSE NOSSO 
+
+
+
+
+'filter'
+VAMOS PRECISAR 
+
+
+PASSAR O  PARÂMETRO...
+
+
+
+
+
+
+ parâmetro --> é 'filteredStatus', QUE REPRESENTA O _ _VALUE_ DE NOSSO INPUT FIELD (two way binding),
+
+e que será colocado como primeiro (e único
+) parâmetro pq será o parâmetro 'value' do method 'transform()'...
+
+
+
+
+
+
+
+
+
+-> CERTO... 
+
+
+
+
+
+O CÓDIGO DO FILTER FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'filter',
+})
+export class FilterPipe implements PipeTransform {
+
+
+
+  transform(value: any, filterString: string): any {
+    console.log(value);
+    if (value.length === 0) {
+      return value;
+    }
+
+    for (const item of value) {
+      const resultArray = [];
+
+      if (item.status === filterString) {
+        resultArray.push(item);
+      }
+
+      return resultArray;
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------> e o código html, assim:
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <input type="text" [(ngModel)]="filteredStatus">
+      <ul class="list-group">
+        <li class="list-group-item"
+        *ngFor="let server of servers"
+        [ngClass]="getStatusClasses(server)"
+        >
+          <span class="badge" >{{ server.status }}</span> <!-- `shorten` É UM EXEMPLO DE CUSTOM PIPE, PIPE CRIADO POR NÓS MESMOS..-->
+          <strong>{{ server.name | shorten
+             }}
+
+             {{ server.name | shortenSpecific: 5
+             }}
+            
+            </strong> || {{ server.instanceType | uppercase }} ||
+          {{ server.started }} ||
+          {{ server.started | date }} ||
+          {{server.started | date: 'fullDate' }}  ||
+          {{server.started | date: 'fullDate' | uppercase }} ||
+       
+        </li> <!-- AQUI CONSTATAMOS O USO DE ALGUNS PIPES (uppercase e DATE... Aug 9, 1920)-->
+            <!-- PIPES _ TAMBÉM ACEITAKM PARÂMETROS, E ELES SÃO PASSADOS COM ESTA SINTAXE, de ':' :  '''{{ server.started | date: 'xxx' }}'''' -->
+      
+      
+        <!--     {{server.started | uppercase | date: 'fullDate' }}   - ISSO NÃO FUNCIONA -- NÃO FUNCIONA PQ A 'ORDER' DOS PIPES, ORDER DE TRANSFORMAÇÃO DE SUA DATA PELOS PIPES, SEMPRE IMPORTA...  E NÃO É POSSÍVEL CONVERTER UMA DATA DE TYPE 'DATE' EM UPPERCASE, pq só strings permitem essa conversão..-->
+          </ul>
+
+
+
+
+          <ul class="list-group"> <!-- EXEMPLO DE USO DE 'PIPE' dentro de nossos NGFOR LOOPS... pq isso também funciona, aparentemente....-->
+            <li class="list-group-item"
+            *ngFor="let server of servers | filter: filteredStatus"
+            [ngClass]="getStatusClasses(server)"
+            >
+              <span class="badge" >{{ server.status }}</span> <!-- `shorten` É UM EXEMPLO DE CUSTOM PIPE, PIPE CRIADO POR NÓS MESMOS..-->
+              <strong>{{ server.name | shorten
+                 }}
+    
+                 {{ server.name | shortenSpecific: 5
+                 }}
+                
+                </strong> || {{ server.instanceType | uppercase }} ||
+              {{ server.started }} ||
+              {{ server.started | date }} ||
+              {{server.started | date: 'fullDate' }}  ||
+              {{server.started | date: 'fullDate' | uppercase }} ||
+           
+            </li> <!-- AQUI CONSTATAMOS O USO DE ALGUNS PIPES (uppercase e DATE... Aug 9, 1920)-->
+                <!-- PIPES _ TAMBÉM ACEITAKM PARÂMETROS, E ELES SÃO PASSADOS COM ESTA SINTAXE, de ':' :  '''{{ server.started | date: 'xxx' }}'''' -->
+          
+          
+            <!--     {{server.started | uppercase | date: 'fullDate' }}   - ISSO NÃO FUNCIONA -- NÃO FUNCIONA PQ A 'ORDER' DOS PIPES, ORDER DE TRANSFORMAÇÃO DE SUA DATA PELOS PIPES, SEMPRE IMPORTA...  E NÃO É POSSÍVEL CONVERTER UMA DATA DE TYPE 'DATE' EM UPPERCASE, pq só strings permitem essa conversão..-->
+              </ul>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> MAS AQUI FICAMOS COM UM PROBLEMA... -> 
+
+
+
+
+nosso pipe SÓ ESTÁ FILTRANDO _ O PRIMEIRO ITEM DO ARRAY (o primeiro server, com 'stable')...
+
+
+
+
+
+
+
+
+
+
+--> O PROBLEMA NO CASO, ERA UM ERRO LÓGICO QUE O PROFESSOR HAVIA FEITO... -> 
+
+
+
+
+
+ele 
+
+deixou o return statement de 'return resultArray' NO INTERIOR DO FOR LOOP,
+
+
+o que significa que 
+
+o for loop sempre estava retornando esse negócio aí (em vez de retornar 1 única vez, ao final)...
+
+
+
+
+
+
+
+
+
+
+o código corrigido ficou assim:
+
+
+
+
+
+
+
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'filter',
+})
+export class FilterPipe implements PipeTransform {
+
+
+
+  transform(value: any, filterString: string): any {
+    console.log(value);
+    if (value.length === 0) {
+      return value;
+    }
+
+
+
+    const resultArray = [];
+    for (const item of value) {
+ 
+
+      if (item.status === filterString) {
+        resultArray.push(item);
+      }
+
+  
+    }
+
+    return resultArray;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> certo... .agora testo...
+
+
+
+
+
+
+
+
+
+
+----> funcionou....
+
+
+
+
+
+
+
+
+
+
+
+
+
+FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <input type="text" [(ngModel)]="filteredStatus">
+      <label for="text">Filter by Server Status (type server status):</label>
+      <ul class="list-group">
+        <li class="list-group-item"
+        *ngFor="let server of servers"
+        [ngClass]="getStatusClasses(server)"
+        >
+          <span class="badge" >{{ server.status }}</span> <!-- `shorten` É UM EXEMPLO DE CUSTOM PIPE, PIPE CRIADO POR NÓS MESMOS..-->
+          <strong>{{ server.name | shorten
+             }}
+
+             {{ server.name | shortenSpecific: 5
+             }}
+            
+            </strong> || {{ server.instanceType | uppercase }} ||
+          {{ server.started }} ||
+          {{ server.started | date }} ||
+          {{server.started | date: 'fullDate' }}  ||
+          {{server.started | date: 'fullDate' | uppercase }} ||
+       
+        </li> <!-- AQUI CONSTATAMOS O USO DE ALGUNS PIPES (uppercase e DATE... Aug 9, 1920)-->
+            <!-- PIPES _ TAMBÉM ACEITAKM PARÂMETROS, E ELES SÃO PASSADOS COM ESTA SINTAXE, de ':' :  '''{{ server.started | date: 'xxx' }}'''' -->
+      
+      
+        <!--     {{server.started | uppercase | date: 'fullDate' }}   - ISSO NÃO FUNCIONA -- NÃO FUNCIONA PQ A 'ORDER' DOS PIPES, ORDER DE TRANSFORMAÇÃO DE SUA DATA PELOS PIPES, SEMPRE IMPORTA...  E NÃO É POSSÍVEL CONVERTER UMA DATA DE TYPE 'DATE' EM UPPERCASE, pq só strings permitem essa conversão..-->
+          </ul>
+
+
+
+
+          <ul class="list-group"> <!-- EXEMPLO DE USO DE 'PIPE' dentro de nossos NGFOR LOOPS... pq isso também funciona, aparentemente....-->
+            <li class="list-group-item"
+            *ngFor="let server of servers | filter: filteredStatus"
+            [ngClass]="getStatusClasses(server)"
+            >
+              <span class="badge" >{{ server.status }}</span> <!-- `shorten` É UM EXEMPLO DE CUSTOM PIPE, PIPE CRIADO POR NÓS MESMOS..-->
+              <strong>{{ server.name | shorten
+                 }}
+    
+                 {{ server.name | shortenSpecific: 5
+                 }}
+                
+                </strong> || {{ server.instanceType | uppercase }} ||
+              {{ server.started }} ||
+              {{ server.started | date }} ||
+              {{server.started | date: 'fullDate' }}  ||
+              {{server.started | date: 'fullDate' | uppercase }} ||
+           
+            </li> <!-- AQUI CONSTATAMOS O USO DE ALGUNS PIPES (uppercase e DATE... Aug 9, 1920)-->
+                <!-- PIPES _ TAMBÉM ACEITAKM PARÂMETROS, E ELES SÃO PASSADOS COM ESTA SINTAXE, de ':' :  '''{{ server.started | date: 'xxx' }}'''' -->
+          
+          
+            <!--     {{server.started | uppercase | date: 'fullDate' }}   - ISSO NÃO FUNCIONA -- NÃO FUNCIONA PQ A 'ORDER' DOS PIPES, ORDER DE TRANSFORMAÇÃO DE SUA DATA PELOS PIPES, SEMPRE IMPORTA...  E NÃO É POSSÍVEL CONVERTER UMA DATA DE TYPE 'DATE' EM UPPERCASE, pq só strings permitem essa conversão..-->
+              </ul>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, AGORA PODEMOS FILTRAR NOSSOS SERVERS 
+
+
+POR 
+
+
+'status', tudo com a ajuda desse pipe DE 'FILTER'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COLOCAMOS UM CASE DE 'O FILTRO ESTÁ COMO EMPTY',
+
+case em que vamos querer RETORNAR O 'VALUE INALTERADO' ( ou seja, todos os server items):
+
+
+
+
+
+
+
+
+
+
+
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'filter',
+})
+export class FilterPipe implements PipeTransform {
+
+
+
+  transform(value: any, filterString: string): any {
+    console.log(value);
+    if (value.length === 0 || filterString === '') {
+      return value;
+    }
+
+
+
+    const resultArray = [];
+    for (const item of value) {
+ 
+
+      if (item.status === filterString) {
+        resultArray.push(item);
+      }
+
+  
+    }
+
+    return resultArray;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+-_> ISSO ESTÁ FUNCIONANDO BEM, SIM, MAS 
+
+
+
+HÁ 1 PROBLEMA QUE 
+
+
+ENFRENTAREMOS,
+
+QUE 
+
+SERÁ 
+
+ESTUDADO NO PRÓXIMO VÍDEO..

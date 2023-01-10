@@ -1,0 +1,840 @@
+
+
+
+
+
+
+
+
+
+
+
+
+--> NA ÚLTIMA AULA,
+
+
+vimos que 
+
+
+QUANDO IMPORTAMOS UM 'MODULE MENOR'
+
+
+
+
+PARA 
+
+DENTRO DE UM 'MODULE GRANDE',
+
+
+
+
+
+COMO O module de 'recipeBook' 
+
+
+
+sendo importaod 
+
+para dentro de 
+
+
+
+'app.module.ts',
+
+
+
+
+
+
+
+
+__NÓS NÃO GANHAMOS AUTOMATICAMENTE ACESSO 
+àS COISAS/MODULES/COMPONENTS 
+
+QUE 
+
+
+FORMA
+
+
+
+IMPORTADOS/INTEGRADOS AO 
+
+
+
+MODULE MAIOR... 
+
+
+(
+
+    ou seja,
+
+    o recipeBook
+
+
+    não vai 'absorver'
+
+
+
+    o 
+
+    'FormsModule'
+
+
+    e 
+
+
+    'Routing module' 
+
+
+    que 
+
+    foram 
+
+
+    IMPORTADOS PARA DENTRO DO 'app.module.ts.'...
+)
+
+
+
+
+
+
+
+
+
+
+
+--> PARA CONSERTAR ESSA INCONVENIÊNCIA E ENTÃO 
+
+
+GANHAR 
+
+
+
+ACESSO 
+
+A ESSAS FEATURES 
+
+
+
+
+NOS NOSSOS MODULES MENORES,
+
+
+
+
+
+
+
+TEMOS ALGUMAS DIFERENTES MANEIRAS:
+
+
+
+
+
+
+
+
+
+
+
+1a maneira) ---> SIMPLESMENTE  IMPORTAR OS MODULES NECESSÁRIOS,
+
+ 
+
+
+ tipo 
+
+
+
+
+
+ com um '
+
+
+
+
+
+ import { RouterModule } from '@angular/router';
+
+
+
+
+
+
+
+
+
+ e aí 
+
+
+
+ escrever 
+
+
+ imports: [
+     RouterModule
+ ]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> hmmm ... ---> ISSO FUNCIONA, SIM,
+
+
+
+
+  MAS AINDA É BOTHERSOME,
+
+
+  PQ TERÍAMOS DE FAZER ISSO  COM  TODAS AS FEATURES DO ANGULAR 
+
+
+
+  QUE GOSTARÍAMOS DE USAR NESSE LUGAR... (Até mesmo com 'ngIf')...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NOS OUTROS MODULES VOCÊ NÃO TERÁ COISAS BÁSICAS,
+
+
+
+ATÉ MESMO COISAS COMO 'ngIf',
+
+
+
+PQ 
+
+
+
+
+NESSES MODULES NÃO TEREMOS IMPORTADO COISAS COMo 
+
+
+'BrowserModule',
+
+
+'FormsModule',
+
+
+'ReactiveFormsModule',
+
+
+'HttpClientModule',
+
+
+etc etc...
+
+
+
+
+
+
+
+
+
+
+--> OU SEJA,
+
+ESSE PRIMEIRO APPROACH AÍ É UMA BOSTA,
+
+
+E NÃO FUNCIONA NADA BEM... (mt imprático)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok, entaõ o que podemos fazer?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> PARA SERMOS CAPAZES DE USAR 'ngFor'
+
+ 
+
+
+ E OUTRAS COISAS COMO 'forms'
+
+
+
+ NO MODULE DE 
+
+
+
+ 'recipeBookmODULE',
+
+
+
+ teríamos de escrever 
+
+
+
+
+ imports: [RouterModule, BrowserModule]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> CERTO... MAS AQUI TEMOS UM PORÉM:
+
+
+
+
+
+
+
+ VOCÊ NÃO PODE ESCREVER O 'BrowserModule'
+
+
+ dentro desse array de 'imports',
+
+
+
+
+
+
+ pq 
+
+ o 
+
+
+ 'BrowserModule'
+
+
+
+
+
+ SÓ PODE SER IMPORTADO LÁ NO 'app.module.ts',
+
+
+
+ PQ ELE FAZ COISAS RELACIOANDAS COM O 'GENERAL APPLICATION STARTUP WORK,'
+
+
+
+
+ e por isso só precisa 
+
+
+ ser executado 1 única vez..
+
+
+
+
+
+
+ -> PARA CONSERTAR ESSE PROBLEMA DE 'ngIF,'
+
+
+
+ PORtanto,
+
+
+ VOCÊ DEVE USAR O 'CommonModule' no lugar de 'BrowserModule'...
+
+
+
+
+
+
+
+
+
+
+
+
+ ATÉ AGORA, O CÓDIGO DE 
+
+
+ 'recipeBookModule'
+
+
+
+
+ ESTÁ FICANDO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ import { CommonModule } from "@angular/common";
+import { NgModule } from "@angular/core";
+import { RouterModule } from "@angular/router";
+import { RecipeBookComponent } from "./recipe-book.component";
+import { RecipeDetailComponent } from "./recipe-detail/recipe-detail.component";
+import { RecipeEditComponent } from "./recipe-edit/recipe-edit.component";
+import { RecipeItemComponent } from "./recipe-list/recipe-item/recipe-item.component";
+import { RecipeListComponent } from "./recipe-list/recipe-list.component";
+import { SelectARecipeComponent } from "./select-a-recipe/select-a-recipe.component";
+
+
+
+
+@NgModule({
+
+    declarations: [
+        RecipeDetailComponent,
+        RecipeBookComponent,
+        SelectARecipeComponent,
+        RecipeEditComponent,
+        RecipeListComponent,
+        RecipeItemComponent,
+
+    ],
+    providers: [],
+    imports: [
+        RouterModule,
+        CommonModule
+    ],
+     exports: [
+        RecipeDetailComponent,
+        RecipeBookComponent,
+        SelectARecipeComponent,
+        RecipeEditComponent,
+        RecipeListComponent,
+        RecipeItemComponent
+    ],
+
+})
+
+export class RecipeBookModule {
+
+    
+} 
+
+
+
+
+
+
+
+
+--------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... mas isso ainda não me parece 'certo',
+
+
+
+
+
+
+
+ainda me parece que isso é mt cumbersome,
+
+
+
+
+
+e meio imprático....
+
+
+
+
+
+
+
+
+--> mas enfim,
+
+
+
+
+
+é assim que você 
+
+
+
+
+
+FAZ O UNLOCK DE 'NGFOR' E 'NGIF'
+
+
+
+
+
+
+
+
+
+
+
+EM MODULES 'FILHOS' de seu module 'PAI' (que é o app.module.ts)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok, mas assim que fizermos isso, AINDA GANHAREMOS UM ERROR,
+
+
+DESSA VEZ 
+
+
+
+POR CAUSA DO 
+
+
+MODULE DE 'FormsModule',
+
+
+pq dentro 
+
+desse module de 'recipeBookModule'
+
+
+nós TAMBÉM USAMOS 
+
+
+
+SUAS FEATURES...
+
+
+
+
+
+
+
+
+
+-> NA VERDADE, NESSE RecipeBookModule
+
+
+
+
+ESTAMOS USANDO O 'ReactiveFormsModule',
+
+
+
+
+que é um pouco diferente,
+
+por isso o importamso:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { CommonModule } from "@angular/common";
+import { NgModule } from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
+import { RouterModule } from "@angular/router";
+import { RecipeBookComponent } from "./recipe-book.component";
+import { RecipeDetailComponent } from "./recipe-detail/recipe-detail.component";
+import { RecipeEditComponent } from "./recipe-edit/recipe-edit.component";
+import { RecipeItemComponent } from "./recipe-list/recipe-item/recipe-item.component";
+import { RecipeListComponent } from "./recipe-list/recipe-list.component";
+import { SelectARecipeComponent } from "./select-a-recipe/select-a-recipe.component";
+
+
+
+
+@NgModule({
+
+    declarations: [
+        RecipeDetailComponent,
+        RecipeBookComponent,
+        SelectARecipeComponent,
+        RecipeEditComponent,
+        RecipeListComponent,
+        RecipeItemComponent,
+
+    ],
+    providers: [],
+    imports: [
+        RouterModule,
+        CommonModule,
+        ReactiveFormsModule  ///esses 3 modules são necessários, aqui, pq usamos essas 3 features dentro dos componnets/código de 'recipeBookMOdule', esse SUBMODULE de nosso app (que é representado por 'app.module.ts', o module em que esse 'recipeBookMOdule' é importado) ------> 
+        ///A RAZÃO PARA TERMOS DE 'REPETIR' ESSES IMPORTS, AQUI, É QUE __ IMPORTS REALIZADOS LÁ EM 'app.module.ts' NÃO SÃO TRANSFERIDOS/INHERITED AUTOMATICAMENTE PELOS 'child modules' importados nele...
+    ],
+     exports: [
+        RecipeDetailComponent,
+        RecipeBookComponent,
+        SelectARecipeComponent, 
+        RecipeItemComponent
+    ],
+
+})
+
+export class RecipeBookModule {
+
+    
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> SALVAMOS TUDO ISSO,
+
+E AGORA NOSSO APP FINALMENTE CARREGA SEM PROBLEMAS...
+
+
+
+
+
+
+
+
+-----> FINALMENTE CONSEGUIMOS OUTSOURCEAR 
+
+
+
+UMA FEATURE DE NOSSO APP A UM 
+
+'MODULE' separado..
+
+
+
+
+
+
+
+
+
+
+
+
+-> E O CORE TAKEAWAY, AQUI, É QUE:
+
+
+'''TUDO QUE VOCÊ DECLARA EM 'declarations' e que 
+
+USA ALGUMA FEATURE ESPECÍFICA DO ANGULAR (como forms, BrowserModule, ReactiveFormsModule, ou o router, features do router),
+
+
+''''',
+
+
+
+
+
+tudo que você declara lá que 
+
+
+USA ___ ESSAS FEATURES _ 
+
+
+
+
+DEVE __ 
+
+
+
+FAZER O 'IMPORT' DA FEATURE CORRESPONDENTE, LÁ NO ARRAY DE 'imports'
+
+desse module...
+
+
+
+
+
+
+
+
+
+------------> A ÚNICA EXCEÇÃO A ESSA REGRA DOS 'IMPORTS'
+
+
+
+SÃO OS SERVICES,
+
+
+
+
+PQ SERVICES SÓ PRECISAM SER DEFINIDOS 1 ÚNICA VEZ,
+
+
+LÁ NO 'app.module.ts',
+
+
+
+E AÍ VOCÊ 
+
+JÁ PODE 
+
+
+OS USAR 
+
+
+
+NO APP INTEIRO..
+
+
+
+
+
+
+
+
+
+--> MAS TODAS AS OUTRAS COISAS,
+
+
+
+COMPONENTS, DIRECTIVES, PIPES,
+
+
+
+TODOS ELES PRECISAM 
+
+
+SER DECLARADOS/IMPORTADOS NO MODULE
+
+
+
+EM QUE VOCÊ PLANEJA OS UTILIZAR...
+
+
+
+
+
+
+
+
+
+
+
+-> para usar essas coisas em OUTRO MODULE,
+
+É NECESSÁRIO TAMBÉM FAZER 'EXPORT' DELES... (e coisas como MODULES importados dentro de 1 module específico _ NÃO __ SÃO AUTOMATICAMENTE TRANSFERIDAS AOS OUTROS MODULES)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> O ANGULAR ''TREATS'' E 'PARSEIA'
+
+
+
+CADA 'NGMODULE'
+
+DE MANEIRA _ STANDALONE,
+
+
+
+E É EXATAMENTE POR ISSO QUE PRECISAMOS 'REPETIR IMPORTS'...

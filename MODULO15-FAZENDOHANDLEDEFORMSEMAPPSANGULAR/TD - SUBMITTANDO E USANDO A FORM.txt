@@ -1,0 +1,1636 @@
+
+
+
+
+
+
+
+
+
+
+
+--> O NOSSO CÓDIGO DE FORMS ATUAL ESTÁ ASSIM>:
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form>
+        <!-- NO ANGULAR, VOCÊ NUNCA COLOCA 'action=xxx' na sua tag de FORM, pq sua form vai ser handldada PELO ANGULAR EM SI... é por isso que não temos 'action' APONTANDO A ALGUMA ROUTE DE NOSSO APP.. NÓS TAMBÉM NÃO VAMOS COLOCAR 'method=POST', esse outro attribute famoso...-->
+        <div id="user-data">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              class="form-control"
+              ngModel
+              name="username"
+            />
+          </div>
+          <button class="btn btn-default" type="button">
+            Suggest an Username
+          </button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              ngModel
+              name="email"
+            />
+            <!-- o angular vai RECONHECER ESSE INPUT FIELD como um dos 'CONTROLS' da REPRESENTAÇAÕ TYPÉSCRIPT DA FORM SE VOCê ADICIONAR 'ngModel' como directive-->
+            <!-- VOCÊ TAMBÉM PRECISA DE 'name', essa directive/attribute que vai dizer ao ANGULAR __ como _ deverá ser o nome desse control/input na REPRESENTAÇÃO TYPESCRIPT DESSA FORM.. .-->
+          </div>
+          <div class="form-group">
+            <label for="secret">Secret Questions</label>
+            <select id="secret" class="form-control" name="secret" ngModel>
+              <option value="pet">Your first Pet?</option>
+              <option value="teacher">Your first teacher?</option>
+            </select>
+          </div>
+          <button class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> na última aula, definimos vários desses inputs como 'INPUTS DE NOSSA REPRESENTAÇÃO ANGULAR, TYPESCRIPT',
+
+
+
+
+por meio 
+
+do add de 
+
+
+'ngModel' 
+
+
+e 
+
+'name=xxx' (identificador de cada input)
+
+
+
+
+
+EM CADA 1 DE NOSSOS INPUTS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------> AGORA DEVEMOS FAZER ESSE FORM FICAR 'SUBMITTABLE',
+
+
+
+PARA QUE CONSIGAMOS ACTUALLY VER O QUE O USER INPUTTOU..
+
+
+
+
+
+
+
+
+
+
+
+-----> para isso,
+
+o prof vai até 'app.component.ts',
+
+
+
+
+E AÍ 
+
+
+
+ELE 
+
+
+
+
+JÁ TEM UM METHOD, de 'suggestedName',
+
+
+
+MAS ELE O IGNORA, POR ENQUANTO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR ADICIONA UM NOVO METHOD, CHAMADO DE 'onSubmit()'..
+
+
+
+
+
+
+
+
+
+
+--> ESSE METHOD DEVERÁ SER TRIGGADO SEMPRE QUE 
+
+ESSA FORM FOR SUBMITTADA PELO USER..
+
+
+
+
+
+
+
+
+
+------> em 'onSubmit()",
+
+
+
+
+O PROFESSOR QUER OUTPUTTAR A COISA QUE O USER TIVER INPUTTADO...
+
+
+
+
+
+
+
+
+
+
+
+--> para isso, antes de mais nada,
+
+
+
+PRECISAMOS _ CHAMAR ESSE METHOD DE 'onSubmit()"..
+
+
+
+
+
+
+
+
+
+
+
+
+--> A PRIORI,
+
+VOCÊ PODERIA PENSAR QUE UM LUGAR BOM SERIA UM CLICK LISTENER NO NOSSO BUTTON,
+QUE FICA LÁ PARA BAIXO:
+
+
+
+
+
+          <button class="btn btn-primary">Submit</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> isso pq esse button é o button que apertamos quando queremos submittar a form...
+
+
+
+
+
+
+
+
+
+--> MAS É _ ÓBVIO QUE __ ESSE LUGAR, ESSE BUTTON AÍ,
+
+NÃO É O MELHOR LUGAR PARA 
+
+
+ENFIAR ESSE METHOD AÍ...
+
+
+
+
+
+
+
+
+
+
+
+RAZÕES:
+
+
+
+
+
+1) ESSE BUTTON TEM UM TYPE DE 'submit' -------> TODOS OS BUTTONS DE TYPE 'submit' posicionados 
+
+
+DENTRO DE UMA FORM __ fazem com que A PÁGINA SEJA RECARREGADA 
+
+
+
+
+-> O COMPORTAMENTO DEFAULT DO HTML 
+
+SERÁ TRIGGADO---> SE VOCÊ TIVER UM BUTTON EM UMA FORM ELEMENT,
+
+ELE __ VAI: 
+
+
+A) SUBMITTAR A FORM, VAI ENVIAR 1 REQUEST, NORMALMENTE..
+
+B) ALÉM DISSO, VAI TRIGGAR UM 'JAVASCRIPT EVENT', QUE É O 'SUBMIT'...
+
+
+
+
+
+
+
+--> o evento 'submit' É UM EVENT __ BUILTIN NO JAVASCRIPT,
+
+BUILTIN NO HTML...  ------> 
+
+
+
+
+
+
+
+
+
+É **ÓBVIO** QUE O ANGULAR TIRA VANTAGEM 
+
+
+DO TRIGGER DESSE EVENT AÍ,
+
+
+
+E AÍ NOS DÁ UMA DIRECTIVE QUE 
+
+PODEMOS 
+
+
+__-COLOCAR NESSA DIRECTIVE, COMO UM TODO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> o nome da directive é 
+
+
+
+
+
+'ngSubmit'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> E 'ngSubmit'
+
+ACTUALLY __ SÓ __ NOS DÁ 
+
+
+
+1 ÚNICO 'event'
+
+A QUE PODEMOS FAZER 'LISTEN TO',
+
+
+
+
+
+
+
+por isso o WRAPPAMOS EM PARÊNTESES...
+
+
+
+
+
+
+
+O CÓDIGO FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+<form (ngSubmit)>
+<..>
+</form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------> ESSe event ,
+
+ 
+
+
+ DE 'ngSubmit',
+
+
+
+ DISPONIBILIZADO PELA 
+
+ DIRECTIVE DE 
+
+
+ 'ngSubmit',
+
+
+
+
+ _ SERÁ __ DISPARADO _ SEMPRE QUE 
+
+
+
+ESSA SUA FORM FOR SUBMITTADA... ------------> OU SEJA,
+
+SEMPRE QUE 
+
+ESSE 
+
+'BEHAVIOR DEFAULT'
+
+
+
+
+
+
+de 
+
+sua form 
+
+
+FOR TRIGGADO...
+
+
+
+
+
+
+
+
+----->  no caso, vinculamos nosso method de 'onSubmitForm()',
+
+
+
+
+que escrevemos lá em 'app.component.ts":
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+ <form (ngSubmit)="onSubmitForm()">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> CÓDIGO COMPLETO:
+
+
+
+
+
+
+
+
+
+
+ <div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+
+
+      <form (ngSubmit)="onSubmitForm()">  <!-- ESSA DIRECTIVE VAI CAPTURAR O 'TRIGGER DO SUBMIT' de sua form e então vai o utilizar para RODAR OS METHODS QUE VOCê DEFINIU LÁ NO ARQUIVO '.ts'..-->
+        <!-- NO ANGULAR, VOCÊ NUNCA COLOCA 'action=xxx' na sua tag de FORM, pq sua form vai ser handldada PELO ANGULAR EM SI... é por isso que não temos 'action' APONTANDO A ALGUMA ROUTE DE NOSSO APP.. NÓS TAMBÉM NÃO VAMOS COLOCAR 'method=POST', esse outro attribute famoso...-->
+        <div id="user-data">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              class="form-control"
+              ngModel
+              name="username"
+            />
+          </div>
+          <button class="btn btn-default" type="button">
+            Suggest an Username
+          </button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              ngModel
+              name="email"
+            />
+            <!-- o angular vai RECONHECER ESSE INPUT FIELD como um dos 'CONTROLS' da REPRESENTAÇAÕ TYPÉSCRIPT DA FORM SE VOCê ADICIONAR 'ngModel' como directive-->
+            <!-- VOCÊ TAMBÉM PRECISA DE 'name', essa directive/attribute que vai dizer ao ANGULAR __ como _ deverá ser o nome desse control/input na REPRESENTAÇÃO TYPESCRIPT DESSA FORM.. .-->
+          </div>
+          <div class="form-group">
+            <label for="secret">Secret Questions</label>
+            <select id="secret" class="form-control" name="secret" ngModel>
+              <option value="pet">Your first Pet?</option>
+              <option value="teacher">Your first teacher?</option>
+            </select>
+          </div>
+          <button class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> salvamos tudo isso e recompilamos,
+
+abrimos o devtools,
+
+e aí vemos 
+
+'submitted',
+
+
+por causa deste código:
+
+
+
+
+
+  onSubmitForm() {
+    console.log('submitted!')
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> MAS AGORA SERIA NICE SE CONSEGUISSEMOS VER OS 'ACTUAL VALUES' inputtados pelo user..
+
+
+
+
+
+
+
+  -- para vê-los,
+
+
+
+  devemos 
+
+
+
+  VOLTAR AO TEMPLATE (pq estamos usando o 'template-driven approach',
+  
+  por isso,
+  
+  AS A RULE OF THUMB,
+  
+
+
+
+tudo que você faz, 
+
+VOCÊ FAZ NO TEMPLATE.... --> 
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> ISSO SIGNIFICA QUE NO TEMPLATE-DRIVEN APPROACH TODAS AS COISAS QUE 
+
+  VOCÊ QUER ALTERAR 
+
+
+
+  SOBRE A FORM 
+
+
+  ,
+
+
+  TODAS AS ALTERAÇÕES,
+
+
+  ELAS SÃO 
+
+  ESCRITAS DIRETAMENTE NO TEMPLATE DA FORM.. ------> 
+
+
+
+
+
+
+
+
+
+
+  NESSE 'FORM OBJECT',
+
+   
+
+
+   QUEREMOS 
+
+
+   '''TER ACESSO à FORM CRIADA PELO ANGULAR'''...
+
+
+
+
+
+
+------> VOCê DEVE SE LEMBRAR DISSO:
+
+
+
+
+
+
+
+
+
+NÓS _ APRENDEMOS __ SOBRE 'LOCAL REFERENCES',
+
+e sobre COMO 
+
+VOCÊ POED 
+
+POSICIONAR LOCAL REFERENCES NOS SEUS TEMPLATES E 
+
+
+
+DEPOIS 
+
+
+
+
+
+
+AS REFERENCIAR/CITAR NO CÓDIGO TYPESCRIPT,
+
+
+
+ATRAVÉS 
+
+
+
+
+dos decorators de 'viewChild()'
+
+
+
+e 
+
+
+
+'contentChild()'...
+
+
+
+
+
+
+
+
+
+
+
+----> É POR ISSO QUE PODEMOS 
+
+
+COLOCAR 
+
+
+'#form' 
+
+
+LÁ NA NOSSA FORM,
+
+PARA AÍ 
+
+
+
+
+
+__________ PASSAR__ ESSE 'form'
+
+
+
+
+COMO __ O PARÂMETRO DE 'onSubmit()' chamado nesse próprio elemento 'form',
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+<form (ngSubmit)="onSubmitForm(formReference)"    #formReference > 
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------
+
+
+
+
+OK...
+
+
+
+
+
+
+ISSO PODE FUNCIONAR, ACHO...
+
+
+
+
+
+
+
+
+
+
+-> AÍ LÁ NO NOSSO CÓDIGO TYPESCRIPT, FICARÍAMOS/FICAMOS COM ALGO ASSIM:
+
+
+
+
+
+  onSubmitForm(formReference: any) {
+    console.log('submitted!')
+  }
+
+
+
+
+
+
+
+
+
+  ----->  MAS É CLARO QUE É MELHOR TIRAR ESSE 'any' e deixar um type de 'ElementRef',
+
+
+  pq 
+
+
+  esse é o elemento que será ACTUALLY passado, aqui...
+
+
+
+
+
+  ex:
+
+
+
+
+    onSubmitForm(formReference: ElementRef) {  ///aqui será passado o ACTUAL FORM element, com todos seus input fields e <selects> (os controls de sua form, essencialmente)..
+    console.log(formReference);
+    console.log('submitted!')
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  ----------------------------
+
+
+
+
+
+
+CERTO, MAS GANHEI UM ERROR:
+
+
+
+
+
+
+
+Error: src/app/app.component.html:6:38 - error TS2345: Argument of type 'HTMLFormElement' is not assignable to parameter of type 'ElementRef<any>'.
+  Property 'nativeElement' is missing in type 'HTMLFormElement' but required in type 'ElementRef<any>'.
+
+6       <form (ngSubmit)="onSubmitForm(formReference)" #formReference >  <!-- ESSA DIRECTIVE VAI CAPTURAR O 'TRIGGER DO SUBMIT' de sua form e então vai o utilizar para RODAR OS METHODS QUE VOCê DEFINIU LÁ NO ARQUIVO '.ts'..-->    
+                                       ~~~~~~~~~~~~~
+
+  src/app/app.component.ts:5:16
+    5   templateUrl: './app.component.html',
+                     ~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component AppComponent.
+
+
+
+
+× Failed to compile.
+
+
+
+
+
+----------------
+
+
+
+
+
+
+
+é por isso que devemos colocar o type de 'HTMLFormElement'...
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+    onSubmitForm(formReference: HTMLFormElement) { 
+    console.log(formReference);
+    console.log('submitted!')
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ok.... AGORA 
+
+
+  SE SALVARMOS TUDO ISSO E CHECARMOS NOSSO CONSOLE AO PRESSIONAR AQUELE BUTTON DE 'submit',
+
+
+  VEREMOS ISTO:
+
+
+
+
+
+
+
+
+
+
+<form _ngcontent......></form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OU SEJA,
+
+VEMOS O FORM ELEMENT, SIM...
+
+
+
+
+
+
+
+
+
+-> TAMBÉM VEMOS ALGUMAS CLASSES ESTRANHAS NA NOSSA 'FORM',
+
+
+
+MAS ISSO _ AINDA NAÕ 
+
+
+
+
+É AQUILO QUE QUEREMOS,
+
+
+
+
+
+
+
+__ PQ __ ISSO AINDA _ NÃO É O 'JAVASCRIPT OBJECT CRIADO PELO ANGULAr' a partir 
+
+
+de nosso 
+
+
+HTML FORM ELEMENT com aquele 'ngModel' e 'name=xxx'
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS ESSE OBJECT 
+
+
+
+JÁ ESTÁ LÁ,
+
+JÁ ESTÁ NO NOSSO CÓDIGO TYPESCRIPT/TEMPLATE,
+
+
+
+SÓ FALTA 
+
+
+CHEGARMOS ATÉ ELE...
+
+
+
+
+
+
+
+
+
+
+
+--> PARA CONSEGUIR FAZER ISSO, CONSEGUIR ACESSO à NOSSA FORM,
+
+
+
+HÁ UMA ESPÉCIE DEF 'TRUQUE' (trick),
+
+
+
+MAS NÃO É A TRICK,
+
+
+
+
+E SIM É A MANEIRA DEFAULT DE GANHAR ACESSO 
+
+
+
+A ESSE OBJECT QUE É CRIADO AUTOMATICMAENTE  A PARTIR DO FORM ELEMENt...
+
+
+
+
+
+
+
+
+
+
+
+
+---> O 'TRUQUE'
+
+
+é __ definir _ AQUELA LOCAL REFERENCE,
+
+QUE ATÉ AGORA
+
+SEMPRE ESCREVEMOS DE FORMA ESTÁTICA (tipo '#form'),
+
+
+
+
+COMO _ SENDO _ IGUAL _ A UM VALOR...
+
+
+
+
+
+
+
+--> tipo assim:
+
+
+<form (ngSubmit)="onSubmitForm(formReference)"    #formReference="" > 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK, 
+
+MAS IGUAL A O QUE, NO CASO?
+
+
+
+
+
+
+
+
+
+
+---> IGUAL _ A _ ALGUMA COISA '''EXPOSTA PELO FORM ELEMENT'' 
+
+(
+    pq o FORM ELEMENT É KINDOF 
+
+    UM  SELECTOR__ PARA 
+
+    UMA DIRECTIVE BUILTIN NO ANGULAR,
+
+    DIRECTIVE QUE 
+
+    VAI CRIAR 
+
+    ESSE 'JAvascript object' AUTOMATICAMENTE...
+)
+
+
+
+
+
+
+
+
+
+-> E ESSA FORM ELEMENT VAI NOS EXPOR ALGUMA COISA.... ---> 
+
+
+
+
+
+
+
+E PODEMOS GANHAR ACESSO A 'ESSA COISA'
+POR MEIO DO WRITE DE 
+
+ 
+
+ '#nomeDeSuaLocalReference="ngForm" "
+
+
+
+
+
+
+
+
+
+
+
+
+ -----> OU SEJA,
+
+ VOCÊ TEM QUE ESCREVER QUE O VALOR DESSA LOCAL REFERENCE É 
+ '#ngForm',
+
+
+ esse é o valor especial...
+
+
+
+
+
+
+
+
+
+
+
+ --> ISSO PODE PARECER SUPER ESTRANHO, MAS O QUE ISSO FAZ É:
+
+ '''DIZ AO ANGULAR: 
+
+ POR FAVOR ME Dê ACESSO 
+
+ A ESSA FORM QUE VOCÊ CRIOU AUTOMATICAMENTE''' 
+
+
+
+
+
+
+
+
+
+
+
+ --> OU SEJA, O FORMATO COMPLETO É 
+
+
+ <form (ngSubmit)="onSubmitForm(formReference)"    #formReference="ngForm" >
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+ exemplo, com outro nome de 'local reference':
+
+
+
+
+  <form (ngSubmit)="onSubmitForm(fReference)"    #fReference="ngForm" >
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+ -----> ISSO É ALGO QUE VOCÊ DEVE TER EM MENTE:
+
+
+
+ É ASSIM QUE 
+
+ VOCê _'GANHA ACESSO' 
+
+
+ À FORM,
+
+ A ESSE _ JAVASCRIPT_ OBJECT__ 
+ QUE É 
+
+ CRIADO AUTOMATICMAENTE PELO ANGULAR 
+
+
+ PARA MANAGEAR SUA FORM..
+
+
+
+
+
+ ---> é por isso que vamos escrever exatamente isso  aí,
+
+
+
+ o código fica assim:
+
+
+
+
+
+
+
+ <form (ngSubmit)="onSubmitForm(formReference)"    #formReference="ngForm" >
+ 
+
+
+
+
+
+
+
+
+
+
+
+ CÓDIGO COMPLETO:
+
+
+
+
+
+
+
+
+
+
+
+
+ <div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+
+
+      <form (ngSubmit)="onSubmitForm(formReference)" #formReference="ngForm" >  <!-- ESSA DIRECTIVE VAI CAPTURAR O 'TRIGGER DO SUBMIT' de sua form e então vai o utilizar para RODAR OS METHODS QUE VOCê DEFINIU LÁ NO ARQUIVO '.ts'..-->
+        <!-- NO ANGULAR, VOCÊ NUNCA COLOCA 'action=xxx' na sua tag de FORM, pq sua form vai ser handldada PELO ANGULAR EM SI... é por isso que não temos 'action' APONTANDO A ALGUMA ROUTE DE NOSSO APP.. NÓS TAMBÉM NÃO VAMOS COLOCAR 'method=POST', esse outro attribute famoso...-->
+
+        <!-- VOCÊ TAMBÉM PRECISA DEFINIR O VALOR DE SUA LOCAL REFERENCE COMO EQUIVALENTE A 'ngForm', para CONSEGUIR PASSAR A _ ACTUAL_ REPRESENTAÇÃO JAVASCRIPT DE SUA FORM AO seu method em 'xxx.ts', ao código typescript-->
+        <div id="user-data">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              class="form-control"
+              ngModel
+              name="username"
+            />
+          </div>
+          <button class="btn btn-default" type="button">
+            Suggest an Username
+          </button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              ngModel
+              name="email"
+            />
+            <!-- o angular vai RECONHECER ESSE INPUT FIELD como um dos 'CONTROLS' da REPRESENTAÇAÕ TYPÉSCRIPT DA FORM SE VOCê ADICIONAR 'ngModel' como directive-->
+            <!-- VOCÊ TAMBÉM PRECISA DE 'name', essa directive/attribute que vai dizer ao ANGULAR __ como _ deverá ser o nome desse control/input na REPRESENTAÇÃO TYPESCRIPT DESSA FORM.. .-->
+          </div>
+          <div class="form-group">
+            <label for="secret">Secret Questions</label>
+            <select id="secret" class="form-control" name="secret" ngModel>
+              <option value="pet">Your first Pet?</option>
+              <option value="teacher">Your first teacher?</option>
+            </select>
+          </div>
+          <button class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ok.. --> É CLARO QUE ISSO TEM UM REFLEXO LÁ EM 'app.component.ts',
+
+
+
+
+QUE É 
+
+ONDE VAMOS TROCAR AQUELE type de 'HTMLFormElement'
+
+
+
+
+por 
+
+
+'NgForm',
+
+
+PARA QUE O CÓDIGO FIQUE ASSIM:
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+
+
+  suggestedUserName() {
+    const suggestedName = 'Superuser';
+  }
+
+
+
+  onSubmitForm(formReference: NgForm) {  ///aqui será passado o ACTUAL FORM element, com todos seus input fields e <selects> (os controls de sua form, essencialmente)..
+    console.log(formReference);
+    console.log('submitted!')
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> Certo....
+
+
+
+
+
+
+
+
+
+
+
+-> COMO RESULTADO DESSE PASS DE 'ngForm',
+
+
+
+
+dessa REPRESENTAÇÃO JAVASCRIPT DE NOSSA FORM,
+
+
+TEMOS UM OBJECT JAVASCRIPT 
+
+
+
+
+BEM GRANDE,
+
+QUE É CONSOLE.LOGGADO 
+
+
+
+com aquele console.log...
+
+
+
+
+
+
+
+
+
+
+---> ELE TEM VARIAS PROPRIEDADES, como 'controls',
+
+
+e 'status' (que diz 'valid')...
+
+
+
+
+
+
+
+
+
+------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> 'ngForm' --> esse é o TYPE DA REPRESENTAÇÃO DA FORM QUE É CRIADA AUTOMATICAMENTE PARA NÓS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> certo...
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS EM QUE LOCAL DE NOSSO OBJECT TEMOS OS 'VALUES'?
+
+
+
+
+
+
+
+
+
+----> O PROFESSOR VAI EXPLICAR AS PROPERTIES MAIS TARDE...
+
+
+
+
+
+
+
+
+
+--> MAS O QUE INTERESSA É A PROPRIEDADE DE 'value',
+
+
+
+
+EM QUE TEMOS UM PUNHADO DE KEY-VALUE PAIRS,
+
+
+EM QUE TEMOS OS NAMES DOS CONTROLS (username, email, secret, etc),
+
+
+
+E AÍ SEUS VALUES..., os values que o user inputtou...
+
+
+
+
+
+
+
+
+
+
+
+--> É ASSIM QUE PODEMOS _ SUBMIT NOSSAS FORMS,
+
+E COMO PODEMOS GANHAR ACESSO 
+
+
+}à FORM _ criada pelo ANGULAR.. ----> TAMBÉM
+
+
+
+
+OBSERVAMOS QUE NOSSO SETUP DE CONTROLS TAMBÉM FUNCIONA/FUNCIONOU...

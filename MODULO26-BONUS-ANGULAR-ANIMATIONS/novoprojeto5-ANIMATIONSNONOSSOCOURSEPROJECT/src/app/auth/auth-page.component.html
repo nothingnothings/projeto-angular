@@ -1,0 +1,86 @@
+<div class="row" [@authPage]>
+  <div
+    class="col-xs-12 col-md-6"
+    [ngStyle]="{ 'display': 'flex' }"
+  >
+    <form
+      (ngSubmit)="onAuthFormSubmit(localFormReference)"
+      #localFormReference="ngForm"
+    >
+      <ng-template appPlaceholder></ng-template>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          required
+          email
+          name="email"
+          ngModel
+          placeholder="email@example.com"
+          #emailReference="ngModel"
+        />
+        <span *ngIf="!emailReference.value && emailReference.touched"
+          >Email is required</span
+        >
+        <span
+          *ngIf="
+            !emailReference.valid &&
+            emailReference.value &&
+            emailReference.touched
+          "
+          >Invalid email entered</span
+        >
+      </div>
+
+      <div class="form-group" [ngStyle]="{ 'margin-top': '12px' }">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          class="form-control"
+          id="password"
+          required
+          name="password"
+          ngModel
+          minlength="6"
+          placeholder="Your Password"
+          #passwordReference="ngModel"
+        />
+        <span *ngIf="!passwordReference.value && passwordReference.touched"
+          >Password is required</span
+        >
+        <span
+          *ngIf="
+            !passwordReference.valid &&
+            passwordReference.value &&
+            passwordReference.touched
+          "
+          >Password must have at least 6 characters</span
+        >
+      </div>
+
+      <div
+        [ngStyle]="{ display: 'flex', 'justify-content': 'center' }"
+        *ngIf="!isLoading"
+      >
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="!localFormReference.valid"
+        >
+          {{ isSignup ? "SIGN UP" : "LOGIN" }}
+        </button>
+        <button
+          class="textBtn"
+          (click)="onSwitchAuth()"
+          [ngStyle]="{ cursor: 'pointer' }"
+          type="button"
+        >
+          {{ isSignup ? "Switch to Login" : "Switch to Signup" }}
+        </button>
+      </div>
+      <app-spinner *ngIf="isLoading"></app-spinner>
+    </form>
+  </div>
+</div>

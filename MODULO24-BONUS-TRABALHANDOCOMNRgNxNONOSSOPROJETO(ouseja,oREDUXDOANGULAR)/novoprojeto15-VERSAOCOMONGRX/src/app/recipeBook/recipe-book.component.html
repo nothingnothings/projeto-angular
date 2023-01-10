@@ -1,0 +1,20 @@
+<!-- <app-recipe-list>
+    <app-recipe-item></app-recipe-item>
+    <app-recipe-detail></app-recipe-detail>
+</app-recipe-list> -->
+
+
+
+
+<div class="row" >
+    <div class="col-md-5">
+
+        <app-recipe-list>
+
+        </app-recipe-list>
+    </div>
+    <div class="col-md-7" [ngStyle]="{'margin-top': '36px'}">
+        <!-- <app-recipe-detail></app-recipe-detail> -->
+        <router-outlet></router-outlet>
+    </div>
+</div>

@@ -1,0 +1,980 @@
+
+
+
+
+
+
+
+
+
+
+OK... VAMOS COMEÇAR COM 'NG GENERATE'...
+
+
+
+
+
+
+
+
+
+
+
+
+-> NÓS JÁ CONHECEMOS ESSE COMANDO, E ELE É USADO MT,
+
+
+
+PQ VAMOS O UTILIZAR 
+
+
+
+EM QUALQUER PROJECT ANGULAr... (
+
+
+
+
+    isos pq 
+
+
+
+
+'angular' 
+
+e o 
+
+'angular cli' 
+
+
+
+
+JÁ POSSUEM ALGUNS 'DEFAULT BLUEPRINTS'
+
+
+incluídos no seu código....
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> como exemplo de 'blueprints' incluídas no angular,
+
+
+temos 
+
+os components,
+
+
+ 
+
+ o pipe, services, etc,
+
+
+ tudo isso que pode ser criado com 'generate'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> OK, todas essas coisas (pipe, services, components) 
+
+
+ SÃO ESSENCIALMENTE 
+
+
+
+ 'SCHEMATICS',
+
+ OU 
+
+
+ 'SUPORTE PARA AS SCHEMATICS DE NG GENERATE',
+
+
+
+
+
+
+QUE É UMA SCHEMATIC QUE _ JÁ _ ESTÁ 'BUILTIN' 
+
+desde o começo....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> 
+
+MAS É CLARO QUE PODERÍAMOS ADICIONAR NOSSA PRÓPRIA 'schematic',
+
+
+__ E 
+
+
+
+THIRD PARTY PACAKGES__ PODEM _ TAMBÉM ADICIONAR 
+
+
+
+
+
+_ SCHEMATICS DELAS MESMAS,
+
+
+
+
+
+
+
+e isso TANTO PARA 'ng generate' como para 'ng add'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> POR EXEMPLO,
+
+
+COM O INSTALL DO 'angular material',
+
+
+
+
+
+PODEMOS 
+
+
+
+
+
+ESCREVER ALGO COMO 
+
+ 
+
+
+
+ 'ng generate @angular/material' ... --> 
+
+
+
+
+
+
+
+
+
+
+
+
+ SÓ PODEMOS ESCREVER ISSO DAÍ 
+
+ SE TIVERMOS 
+
+
+
+ ESSA PACKAGE INSTALADA (a package de 'angular material')...
+
+
+
+
+
+
+
+
+
+
+ --> POR EXEMPLO, NO 'CLI',
+
+
+
+
+
+ QUANDO TEMOS ESSE 'angular material' INSTALADO,
+
+
+
+ PODEMOS 
+
+ RODAR 
+
+
+
+
+
+'ng generate @angular/material ' (é o nome do SCHEMATIC PROVIDER... por default, 
+
+SE VOCÊ DEIXA ISSO EM BRANCO, É O 'default CLI/default ANGULAR SETUP 
+
+------> FAREMOS ISSO PQ _ QUEREMOS ESENCIALMENTE O 'NAME DO SCHEMATIC PROVIDER'...
+
+
+
+
+
+
+
+
+SE VOCÊ DEIXA NORMAL, são usados os SCHEMATICS COMUNS/setup comum/cli comum  DO ANGULAR( sem nada de mais)..
+
+
+
+
+
+
+
+-> MAS SE VOCÊ ESPECIFICA UMA 'package especial' 
+
+
+
+
+
+
+como  SCHEMATIC A SER USADA, CONFORME ESTE MODELO:
+
+
+
+
+
+ng generate <schematic>    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo..
+
+
+
+
+
+
+
+
+ESCREVO TIPO ASSIM:
+
+
+PS A:\projeto8-ANGULAR\MODULO29-OANGULARCOMOPLATAFORMAEUMAOLHADAMAISAPROFUNDADANACLI\exemploAngularMaterial> ng generate @angular/material  
+
+
+
+
+
+
+
+
+
+
+
+
+-> CERTO, MAS ISSO AINDA FALHOU:
+
+
+Error: A collection and schematic is required during execution.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR EXPLICA QUE É NECESSÁRIO ESCREVER UM ':"
+
+
+
+DEPOIS DO NAME DA PACKAGE,
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+ng generate @angular/material: 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE ISSO AÍ _ SERÁ EXECUTADO NO PRÓPRIO TERMINAL..
+
+
+
+
+
+
+
+
+
+
+--> certo..E, DEPOIS DO ':',
+
+
+VAMOS ESPECIFICAR _ 
+
+
+
+
+
+'QUAL É A SCHEMATIC QUE SERÁ USADA' (
+
+    você deve colocar o name...
+)
+
+
+
+
+
+
+
+
+-> no nosso case, o name será de 'nav'...  (pq esse schematic será usado para nosso NAVIGATION SETUP, COISAS COMO O 'HEADER')...
+
+
+
+
+
+
+
+
+
+)
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+ng generate @angular/material:nav main-nav
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> fazemos isso pq queremos USAR _ UM _ SCHEMATIC,
+
+
+
+
+pq dentro da """collection""" que é angular/material,
+
+
+
+
+
+
+encontramos _ VÁRIOS SCHEMATICS,
+
+sendo um deles esse 'nav main-nav'... (é um elemento que já virá 'PRONTO')...
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+PS A:\projeto8-ANGULAR\MODULO29-OANGULARCOMOPLATAFORMAEUMAOLHADAMAISAPROFUNDADANACLI\exemploAngularMaterial> ng generate @angular/material:nav
+
+
+ What should be the name of the component? 
+
+
+
+
+
+
+
+
+
+ 'main-nav':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ COM ISSO, FOI CRIADO UM ELEMENTO DE TIPO 'nav' INTEIRAMENTE, PRONTO PARA NOSSO USO...:
+
+
+
+
+
+
+
+
+
+
+
+
+ import { Component } from '@angular/core';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { Observable } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
+
+@Component({
+  selector: 'app-main-nav',
+  templateUrl: './main-nav.component.html',
+  styleUrls: ['./main-nav.component.css']
+})
+export class MainNavComponent {
+
+  isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
+    .pipe(
+      map(result => result.matches),
+      shareReplay()
+    );
+
+  constructor(private breakpointObserver: BreakpointObserver) {}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+E ISTO:
+
+
+
+
+
+
+
+
+
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #drawer class="sidenav" fixedInViewport
+      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+      [mode]="(isHandset$ | async) ? 'over' : 'side'"
+      [opened]="(isHandset$ | async) === false">
+    <mat-toolbar>Menu</mat-toolbar>
+    <mat-nav-list>
+      <a mat-list-item href="#">Link 1</a>
+      <a mat-list-item href="#">Link 2</a>
+      <a mat-list-item href="#">Link 3</a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawer.toggle()"
+        *ngIf="isHandset$ | async">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      <span>exemploAngularMaterial</span>
+    </mat-toolbar>
+    <!-- Add Content Here -->
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ISTO:
+
+
+
+
+
+
+
+
+
+
+
+
+.sidenav-container {
+  height: 100%;
+}
+
+.sidenav {
+  width: 200px;
+}
+
+.sidenav .mat-toolbar {
+  background: inherit;
+}
+
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok.... impressionante...
+
+
+
+
+
+
+
+
+
+
+ (
+    ISSO QUER DIZER QUE, POR TRÁS DAS CENAS,
+
+    ELE PROVAVELMENTE USA 'ng generate' para gerar um novo component
+ )
+
+
+
+
+
+
+
+
+
+
+
+ --> COM ISSO, ELE GEROU UM 'NEW COMPONENT' que NÃO ficou vazio,,
+
+ e sim ficou cheio de 
+
+ coisas, ficou com um 'DEFAULT BLUEPRINT'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+esse blueprint temos um side navigation controller,
+
+
+
+
+
+
+uma toolbar, um button,
+e aí um local que diz ''insert content here'' (podemos inserir conteúdo lá dentro, para testar)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo... 
+
+
+
+
+
+
+
+
+
+mas aqui já temos um problema....
+
+
+
+
+
+
+
+
+
+checando o código html do component recém criado:
+
+
+
+
+
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #drawer class="sidenav" fixedInViewport
+      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+      [mode]="(isHandset$ | async) ? 'over' : 'side'"
+      [opened]="(isHandset$ | async) === false">
+    <mat-toolbar>Menu</mat-toolbar>
+    <mat-nav-list>
+      <a mat-list-item href="#">Link 1</a>
+      <a mat-list-item href="#">Link 2</a>
+      <a mat-list-item href="#">Link 3</a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawer.toggle()"
+        *ngIf="isHandset$ | async">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      <span>exemploAngularMaterial</span>
+    </mat-toolbar>
+    <!-- Add Content Here -->
+    <h1>Exemplo</h1>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> temos outros COMPONENTS que estão ali, e que 
+
+
+
+não temos no nosso project,
+
+
+como 'mat-sidenav', 
+
+
+'mat-toolbar',
+
+
+etc etc...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O QUE O PROFESSOR FALA SOBRE ISSO?
+
+
+
+
+
+
+
+
+
+
+
+
+---> acho que 
+esses components devem ser escritos por NÓS MESMOS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> mentira.... essa navigation vai funcionar OUT OF THE BOX,
+
+
+
+
+TUDO GRAÇAS AOS 'ANGULAR MATERIAL COMPONENTS',
+
+
+e esse custom schematic 
+
+
+(adicioando pelo angular material package)
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> e você PODERIA ESCREVER UM DESSES 'COLLECTION/SCHEMATICS'
+por conta própria,
+
+
+
+mas é um trabalhão.. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> mas estávamos com um error pq não é 'main-nav',
+e sim 
+
+
+'app-main-nav'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> wow... isso é bem legal... e ajuda bastante...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> ok... ESSE É O SCHEMATIC DE 
+
+
+
+'NG GENERATE',
+
+
+
+
+
+
+
+E O QUE VOCÊ TEM 'BUILT-IN' no CLI 
+
+
+
+
+
+
+
+em um default project,
+
+
+e como 
+
+
+
+
+THIRD PARTY PACKAGES PODEM ADICIONAR _ NOVAS BLUEPRINTS AO SEU PROJECT...

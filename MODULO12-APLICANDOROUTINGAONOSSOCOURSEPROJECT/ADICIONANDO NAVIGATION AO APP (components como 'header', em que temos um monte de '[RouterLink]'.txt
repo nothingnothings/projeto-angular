@@ -1,0 +1,406 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> NA ÚLTIMA AULA,
+
+ADICIONAMOS ROUTING...
+
+
+
+
+
+
+
+
+
+-> SETTAMOS NOSSAS ROUTES PARA ESSE APP:
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { GenericErrorPageComponent } from './generic-error-page/generic-error-page.component';
+import { HomePageComponent } from './home-page/home-page.component';
+import { RecipeBookComponent } from './recipeBook/recipe-book.component';
+import { RecipeDetailComponent } from './recipeBook/recipe-detail/recipe-detail.component';
+import { ShoppingListComponent } from './ShoppingList/shoppingList.component';
+
+const appRoutes: Routes = [
+  // {   ///approach que USA UMA HOME PAGE COMO ROUTE DE '/'...
+  //   path: '',
+  //   component: HomePageComponent,
+  // },
+
+  {
+    path: '',
+    redirectTo: '/recipe-book',
+    pathMatch: 'full'  /// (COMMON GOTCHA) evita o error de 'SEMPRE VAI REDIRECIONAR PARA ESSA ROUTE DE recipe-book' (pq o padrão é 'prefix' em vez de 'full'; ou seja, é o MESMO COMPORTAMENTO DEFAULT DO REACT ROUTER)...
+  },
+  {
+    path: 'recipe-book',
+    component: RecipeBookComponent,
+    children: [
+      {
+        path: ':id',
+        component: RecipeDetailComponent,
+      },
+
+      // {
+      //     path: 'new-recipe',
+      // }
+    ],
+  },
+
+  {
+    path: 'shop-list',
+    component: ShoppingListComponent,
+  },
+
+  {
+    path: 'not-found',
+    component: GenericErrorPageComponent,
+    data: {
+      message: 'The requested page could not be found.',
+    },
+  },
+  {
+    path: '**',
+    redirectTo: '/not-found',
+  },
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(appRoutes)],
+
+  exports: [RouterModule],
+})
+export class AppRoutingModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> PODEMOS CARREGAR ESSAS ROUTES, SIM,
+
+ATRAVÉS 
+
+DA URLBAR,
+
+
+MAS OS LINKS AINDA NÃO FUNCIONAM COMO O ESPERADO (precisamos colocar 'RouterLink' nos nossos 'links' da página)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> devemos ir até o COMPONENT DE 'HEADER',
+
+
+
+E LÁ 
+
+VAMOS QUERER MUDAR A MANEIRA PELA QUAL FAZEMOS 'NAVIGATE'..
+
+
+
+
+
+
+
+--> O PROFESSOR TIRA TODOS OS CLICK LISTENERS E 'hrefs',
+
+
+pq NÃO SÃO MAIS NECESSÁRIOS....
+
+
+
+
+O CÓDIGO FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <nav class="navbar navbar-default"> <!-- COM O USO DE ROUTING -->
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" (click)="collapsed = !collapsed">
+            <span class="icon-bar" *ngFor="let iconBar of [1, 2, 3]"></span>
+          </button>
+          <a routerLink="/" class="navbar-brand" (click)="collapsed = !collapsed">Recipe Book</a>
+      </div>
+      <!-- <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true"> -->
+        <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true">
+        <ul class="nav navbar-nav">
+          <!-- <li (click)="onRecipeBook()"><a href="#">Recipes</a></li>
+          <li (click)="onShopList()"><a href="#">Shopping List</a></li> -->
+          <li routerLinkActive="active"><a [routerLink]="['/recipe-book']" (click)="collapsed = !collapsed">Recipes</a></li>
+          <li routerLinkActive="active"><a [routerLink]="['/shop-list']"(click)="collapsed = !collapsed" >Shopping List</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown" appDropdown #dropdown>
+                <a class="dropdown-toggle" role="button">Manage<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Save Data</a></li>
+                    <li><a href="#">Fetch Data</a></li>
+                </ul>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> QUEREMOS TIRAR OS 'href='#'' 
+
+
+  PQ 
+
+
+  SE CLICAMOS EM 'hrefs'
+
+  EM APPS ANGULAR,
+
+
+  ISSO LEVA AO RELOAD DE NOSSA PAGE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> CERTO... -> TAMBÉM REMOVEMOS O EVENT EMITTER 
+
+  DE 
+
+
+  NOSSO COMPONENT 'HEADER',
+
+
+  pq não vamos mais depender disso para ativar aqueles 'ngIf' 
+
+
+  e
+   etc..
+
+
+
+
+
+
+
+
+   ----> OK...
+
+
+
+
+
+
+
+
+   --> O PROFESSOR DIZ QUE 
+
+
+
+   VAI QUERER ADICIONAR ROUTERLINK 
+
+
+
+   nos nossos 
+
+   links,
+
+
+
+   E AÍ 
+
+
+   CRIAR 
+
+
+   LINKS PARA AS PAGES DE NOSSO APP...
+
+
+
+
+
+
+
+
+   --> eu usei a sintaxe de 
+
+
+   '[routerLink]='['/xxxx', 'yyy']',
+
+
+
+
+
+
+
+
+
+
+
+   PQ ESSA SINTAXE É MELHOR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   -> OK, NOSSA NAVIGATION ESTÁ FUNCIONANDO MAIS UMA VEZ....
+
+
+
+
+
+
+
+
+
+
+   -> O PROFESOR EXPLICA QUE NA PRÓXIMA AULA VAI TRABALHAR NO 
+
+
+   'ACTIVATE DO STYLE DE "active" 
+
+   NOS NOSSOS NAVLINKS (routerLink)'....
+
+
+
+
+
+
+
+
+
+
+
+   --->
+
+   MAS EU JÁ FIZ ISSO,
+
+
+   COMO VOCÊ PODE PERCEBER POR ESTE CÓDIGO:
+
+
+             <li routerLinkActive="active"><a [routerLink]="['/recipe-book']" (click)="collapsed = !collapsed">Recipes</a></li>
+          <li routerLinkActive="active"><a [routerLink]="['/shop-list']"(click)="collapsed = !collapsed" >Shopping List</a></li>
+        </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        --> PARA ISSO, USEI 
+
+
+
+        A DIRECTIVE DE 'routerLinkActive'..
+
+
+
+
+        

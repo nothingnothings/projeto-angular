@@ -1,0 +1,1082 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> JÁ APRENDEMOS MUITO AO LONGO DESSE MÓDULO...
+
+
+
+
+
+
+
+
+
+--. APRENDEMOS A PASSAR DATA POR AÍ,
+
+
+
+
+como 
+
+
+
+'get access to elements in our dom',
+
+
+
+
+
+
+
+COMO USAR LOCAL REFERENCES,
+
+
+
+
+
+
+
+
+
+
+
+
+
+O QUE REALMENTE FACILITOU NOSSA VIDA..
+
+
+
+
+
+
+
+
+
+
+
+--> NOSSO APP AGORA ESTA´BEM MAIS DINÂMICO,
+
+
+
+
+TEMOS MT MAIS FERRAMENTAS PARA 
+
+INTERAGIR ENTRE 
+
+OS DIFERENTES PEDAÇOS DE NOSSO APp....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS HÁ MAIS 1 MANEIRA DE FAZER 'PASS DE DATA'
+
+por aí...
+
+
+
+
+
+
+
+
+------> É A ÚLTIMA MANEIRA DE 'PASS DATA AROUND',
+
+por enquanto...
+
+
+
+
+
+
+
+--> NO NOSSO ELEMENTO 
+
+
+'app-server-item',
+
+
+
+NÓS TEMOS UM CHECKZINHO,
+
+UM CHECK 
+
+
+
+
+QUE CHECA _ SE TEMOS 
+
+
+
+
+
+um 'type'
+
+
+DE SERVER OU DE BLUEPRINT..
+
+
+
+
+
+eX:
+
+
+
+
+
+
+    <div class="panel panel-default">
+      <div class="panel-heading">{{ element.name }}</div>
+      <div class="panel-body">
+        <p>
+          <strong *ngIf="element.type === 'server'" style="color: red">{{
+            element.content
+          }}</strong>
+          <em *ngIf="element.type === 'blueprint'">{{ element.content }}</em>
+        </p>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+---> NÃO HÁ NADA DE ERRADO COM ESSE CHECK...
+
+
+
+
+
+
+
+
+--------> MAS EXISTIRÃO CASOS EM QUE VOCê TERÁ CÓDIGO HTML COMPLEXO,
+
+
+
+
+
+
+
+
+COMPLEXO COMO ESSAS LINHAS:
+
+
+
+        <p>
+          <strong *ngIf="element.type === 'server'" style="color: red">{{
+            element.content
+          }}</strong>
+          <em *ngIf="element.type === 'blueprint'">{{ element.content }}</em>
+        </p>
+
+
+
+
+
+        ,
+    
+
+
+    CÓDIGO QEU 
+
+
+ 
+
+
+
+ VOCÊ VAI QUERER 'PASS' PARA DENTRO 
+
+
+ DE 
+
+ 1 
+
+
+
+GIVEN COMPONENT, 
+
+
+VAI QUERER FAZER PASS, SIM, MAS 
+
+FAZER PASS DO 
+
+_ LADO _ DE FORA__ DESSE COMPONENT... (De fora para dentro)...
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+DEVEMOS IMAGINAR 
+
+
+
+
+
+QUE 
+
+
+
+NÃO VAMOS QUERER 
+
+SETTAR 
+
+ESSAS 2 LINHAS, ESSES 2 '<p>',
+
+
+
+
+POR MEIO DO LADO DE DENTRO DO COMPONENT 'app-server-item',
+
+
+
+
+
+
+
+
+
+
+
+
+E SIM  VAMOS QUERER _ PASSAR_ _ESSA INFO/LINHAS __ 
+
+
+
+
+
+
+POR MEIO DE SUA ESCRITA _ EM OUTRO COMPONENT, 
+
+
+POR MEIO DO USO 
+
+
+
+de 
+
+'ng-content'....
+
+
+
+
+
+
+
+
+
+
+
+------->  O QUE O PROFESSOR QUER FAZER É ADICIONAR ESSES '<p>'
+
+
+
+
+DENTRO DO CÓDIGO DE 
+
+
+
+'app-server-item>'
+
+
+
+ESCRITO _ LÁ EM 
+
+
+
+'app.component.html',
+
+
+ou seja,
+
+
+NESSAS LINHAS:
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <app-server-cockpit (serverCreated2)="onServerAdded($event)"
+  (blueprintCreated2)="onBlueprintAdded($event)"></app-server-cockpit>
+  <hr />
+
+
+
+  <div class="row">
+    <div class="col-xs-12">
+      <app-server-item      ////////////////////////////////NESSA LINHA AQUI, dentro do conteúdo desse 'app-server-item'...
+      *ngFor="let serverElement of serverElements"
+      [srvElement]="serverElement"  
+      ></app-server-item>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+-----------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+ou seja, nós GOSTARÍAMOS DE ADICIONAR 
+
+
+
+ESSES 2 <p>
+
+
+DENTRO DESSA ESCRITA DE 'app-server-item',
+
+quase como se fosse assim:
+
+
+
+
+<div class="container">
+  <app-server-cockpit (serverCreated2)="onServerAdded($event)"
+  (blueprintCreated2)="onBlueprintAdded($event)"></app-server-cockpit>
+  <hr />
+
+
+
+  <div class="row">
+    <div class="col-xs-12">
+      <app-server-item      ////////////////////////////////NESSA LINHA AQUI, dentro do conteúdo desse 'app-server-item'...
+      *ngFor="let serverElement of serverElements"
+      [srvElement]="serverElement"  
+
+
+            
+        <p>
+          <strong *ngIf="element.type === 'server'" style="color: red">{{
+            element.content
+          }}</strong>
+          <em *ngIf="element.type === 'blueprint'">{{ element.content }}</em>
+        </p>
+
+
+      ></app-server-item>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK... MAS ISSO É POSSIVEL? 
+
+
+
+
+
+
+
+
+
+
+
+o PROFESSOR dá uma ajustadinha, e pensa que __ ISSO TALVEZ PODE FUNCIONAR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <app-server-cockpit (serverCreated2)="onServerAdded($event)"
+  (blueprintCreated2)="onBlueprintAdded($event)"></app-server-cockpit>
+  <hr />
+
+
+
+  <div class="row">
+    <div class="col-xs-12">
+      <app-server-item      ////////////////////////////////NESSA LINHA AQUI, dentro do conteúdo desse 'app-server-item'...
+      *ngFor="let serverElement of serverElements"
+      [srvElement]="serverElement">
+      
+
+                    
+        <p>
+          <strong *ngIf="serverElement.type === 'server'" style="color: red">{{
+            element.content
+          }}</strong>
+          <em *ngIf="serverElement.type === 'blueprint'">{{ serverElement.content }}</em>
+        </p>
+
+
+
+
+      
+      </app-server-item>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK.. ELE DIZ QUE NÓS PODEMSO 'EXPECT' QUE ISSO FUNCIONARIA,
+
+
+
+MAS ISO __ NÃO VAI FUNCIONAR... --> NÃO VAI FUNCIONAR PQ 
+
+
+
+
+
+
+
+_______o  CONTEÚDO DE 'serverElement' (variable criada através daquele loop)
+
+
+
+
+NÃO SERÁ INSERIDO /NÃO TERÁ SIDO INSERIDO 
+
+
+
+
+
+
+DENTRO DESSES '<p>' 
+
+QUE ESCREVEMOS NO INTERIOR DOS OPENING E CLOSING BRACKETS DE '<app-server-item>'....
+
+
+
+
+
+
+
+
+------> O PROFESSOR NOS EXPLICA QUE __ ESSE É O COMPORTAMENTO default
+
+
+
+ DO ANGULAR,
+
+
+
+
+ DO 'PLACE DE COISAS DENTRO DE OPENING E CLOSING TAGS DE SEUS COMPONENTS.'.
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ----> issoo quer dizer que 
+
+ SE VOCê TENTA COLOCAR ALGUM CONTEÚDO DENTRO 
+
+
+ DE OPENING E CLOSING 
+
+ TAGS DE SEUS _ PRÓPRIOS COMPONETS,
+
+
+ ESSA _ DATA (jogada 'solta')
+ SERÁ _ 
+
+ PERDIDA _ PARA SEMPRE... ------> ESSE É O COMPORTAMENTO _ _DEFAULT DO ANGULAR,
+
+
+ ELE _ VAI SIMPLESMENTE __ REMOVER ESSE SEU CÓDIGO/CONTEÚDO,
+
+
+ VAI SIMPLESMENTE 
+
+
+ 'NOT TAKE CARE ABOUT IT'...
+
+
+
+
+
+
+
+
+
+
+ ----> ENTRETANTO, O FATO É QUE '''PODEMOS MUDAR ISSO'''...
+
+
+
+
+
+
+
+ --> EXISTE UMA DIRECTIVE ESPECIAL,
+
+  
+
+  UMA DIRECTIVE QUE REALMENTE É UMA DIRECTIVE,
+
+  APESAR 
+
+
+  __ DE POSSUIR A _ APARÊNCIA DE UM COMPONENT (mas não aparece/tem reflexos no DOM,  NÃO TEM SEU PRÓPRIO 'TEMPLATE', por isso é uma directive),
+
+
+
+
+
+
+
+É UMA DIRECTIVE QUE PODEMOS __ ADICIONAR__ 
+
+
+
+NO TEMPLATE 
+
+de 
+
+
+'app-server-item',
+
+
+
+QUE POSSUI ESTE CÓDIGO:
+
+
+
+
+
+
+    <div class="panel panel-default">
+      <div class="panel-heading">{{ element.name }}</div>
+      <div class="panel-body">
+        <p>
+          <strong *ngIf="element.type === 'server'" style="color: red">{{
+            element.content
+          }}</strong>
+          <em *ngIf="element.type === 'blueprint'">{{ element.content }}</em>
+        </p>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------> MAS O QUE É A COISA/DIRECTIVE QUE VOU QUERER 
+
+
+INSERIR DENTRO 
+
+
+
+DO TEMPLATE DESSE COMPONENT?
+
+
+
+
+
+
+--> o professor diz que devemos adicionar 'ng-content',
+
+
+
+
+
+<ng-content></ng-content>,
+
+
+
+
+
+
+
+
+DENTRO DO LOCAL EM QUE __ VAMOS QUERER _ 
+
+
+
+QUE SEJA 
+
+INSERIDO ESSE 'CONTENT'
+
+
+
+proveniente do LADO DE FORA DO SEU COMPONENT (
+
+
+
+    no caso,
+
+
+    o 
+
+
+    código de 
+
+
+
+
+
+''
+
+        <p>
+          <strong *ngIf="serverElement.type === 'server'" style="color: red">{{
+            element.content
+          }}</strong>
+          <em *ngIf="serverElement.type === 'blueprint'">{{ serverElement.content }}</em>
+        </p>
+
+
+
+
+'''
+
+
+
+
+
+
+
+
+
+QUE ENFIAMOS NO MEIO DO 'app-server-item',
+
+dessa forma:
+
+
+
+
+
+
+
+
+
+
+
+
+
+'''''''''''
+
+<app-server-item      ////////////////////////////////NESSA LINHA AQUI, dentro do conteúdo desse 'app-server-item'...
+      *ngFor="let serverElement of serverElements"
+      [srvElement]="serverElement">
+       
+        <p>
+          <strong *ngIf="serverElement.type === 'server'" style="color: red">{{
+            element.content
+          }}</strong>
+          <em *ngIf="serverElement.type === 'blueprint'">{{ serverElement.content }}</em>
+        </p>
+
+      </app-server-item>
+
+
+''''''''''''''''
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+---> OK, O CÓDIGO DE 'app-server-item' fica assim:
+
+
+
+
+
+
+
+
+    <div class="panel panel-default">
+      <div class="panel-heading">{{ element.name }}</div>
+      <div class="panel-body">
+            <ng-content></ng-content>   ////EIS O CÓDIGO EM QUESTÃO.
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+      <div class="row">
+    <div class="col-xs-12">
+      <app-server-item 
+      *ngFor="let serverElement of serverElements"
+      [srvElement]="serverElement"  
+      >
+        <!-- ESTES 2 '<p>' FORAM INSERIDOS ENTRE A OPENING E ECLOSING TAGS DE 'app-server-item', e só conseguiram ser inseridos PQ ESCREVEMOS '<ng-content>' lá no CÓDIGO DE 'app-server-item', NO LOCAL EM QUE AUTORIZAMOS O 'INSERT' dessas 2 linhas '<p>'....'-->
+      <p>
+        <strong *ngIf="serverElement.type === 'server'" style="color: red">{{   
+          element.content
+        }}</strong>
+        <em *ngIf="serverElement.type === 'blueprint'">{{ serverElement.content }}</em>
+      </p>
+  
+    </app-server-item>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+    <div class="panel panel-default">
+      <div class="panel-heading">{{ element.name }}</div>
+      <div class="panel-body">
+        <ng-content></ng-content>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+    OK, MAS RECEBI UM ERRO:
+
+
+
+    Error: src/app/server-cockpit/server-cockpit.component.ts:47:5 - error TS2322: Type 'string' is not assignable to type 'ElementRef<any>'.
+
+47     this.serverContentInput = '';
+       ~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+
+
+
+
+
+
+
+
+
+-------> naõ sei como consertá-lo...
+
+
+
+
+
+
+
+
+-> CONSERTEI COM O ADD DESSA CONFIG LÁ EM 'tsconfig.json':
+
+
+
+
+
+
+
+    "strictPropertyInitialization": false,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ------> OK, MAS AGORA CONSEGUI DEIXAR ESSA DIRECTIVE DE 'ng-content' no lugar... ---> QUALQUER CONTEÚDO/TAGS QUE ENCONTRAR NO MEIO DAS OPENING E CLOSING TAGS DE SEU COMPONENT 
+
+
+
+    _ SERÁ __ ADICIONADO __ 
+
+
+
+    NESSE 
+
+
+    local em que você escreveu 'ng-content' no component.....
+
+
+
+
+
+
+
+
+
+
+    --> COM ESSA PEQUENA ADIÇÃO, SE VOCê SALVAR TUDO E  RECARREGAR,
+
+
+
+    vocÊ verá que o CONTEÚDO ESTARÁ DE VOLTA...
+
+
+
+
+
+
+
+
+    --> O CÓDIGO SE PARECE EXATAMENTE COMO O CÓDIGO ANTIGO,
+
+    MAS AGORA ALGO TOTALMENTNE 
+
+    DIFERENTE ESTÁ ACONTECENDO...
+
+
+
+
+
+
+
+
+    --> AGORA ESTAMOS ADICCIONANDO ESSE CONTEÚDO POR MEIO DO HOOK DE 
+
+
+    'ng-content',
+
+
+
+
+
+
+ISSOQ UER DIZER QUE 
+
+
+NOSSO CONTEÚDO ACABAA '''''PROJECTED''' (projetado) 
+
+
+
+PARA DENTRO 
+
+
+DE NOSSO COMPONENT 
+
+'app-server-item'... ---> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO... --> ESSA É UMA FEATURE MT BOA,
+
+
+
+AINDA MAIS SE VOCÊ PENSA EM CONSTRUIR 'REUSABLE WIDGETS',
+
+
+COMO UM 
+
+WIDGET DE 'TAB',
+
+em que 
+
+
+CADA 'TAB' 
+
+
+TERÁ UM CONTENT QUE 
+
+PROVAVELMENTE VEM DE 'OUTRO SOURCE',
+
+
+
+UM 
+
+CONTENT QUE VOCÊ NÃO VAI QUERER PASSAR ATRAVÉS DE PROPERTY BINDING (que é uma alternativa, só uma não tão boa nesse case)...
+
+
+
+
+
+
+
+
+
+---> PROPERTY BINDING é uma solução, mmas se vocÊ tiver 
+
+UM CÓDIGO HTML MAIS COMPLEXO,
+
+
+
+ESSA NÃO É A MELHRO SOLUÇÃO,
+
+PQ 
+O 
+
+ANGULAR VAI 
+
+
+DAR 'ESCAPE'
+
+
+em HTML tags lá 
+
+PARA __ EVITAR__ CROSS-SITE SCRIPTING ATTACKS... ----> E VOCê PODE FAZER UM WORKAROUND,
+
+MAS 
+
+NG-CONTENT É BEM SUPERIOR, NESSES CASES...

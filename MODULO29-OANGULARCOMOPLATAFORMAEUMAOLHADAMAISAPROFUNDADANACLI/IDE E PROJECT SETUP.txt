@@ -1,0 +1,198 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK...
+
+
+
+
+
+
+
+EXAMINAMOS O PROJECT QUE CRIAMOS...
+
+
+
+
+
+
+
+--> USAMOS O VISUAL STUDIO CODE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> professor instalou o 'angular essentials extension'..
+
+
+
+
+
+
+
+
+
+
+
+
+esse essentials é um PACK 
+
+de 
+
+
+diferentes extensions..
+
+
+
+
+
+já tenho várias delas:
+
+
+
+1) prettier
+
+
+2) editorConfig (não tinha)...
+
+
+3) angular language service (não tinha).
+
+
+
+4) winter is coming theme (mt ruim)...
+
+
+5) angular snippets( não tinha)...
+
+
+
+
+
+
+
+
+6) peacock (diferencia melhor entre múltiplas instancias do visual studio code)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+O PEACOCK É BEM ÚTIL...
+
+
+
+
+
+
+
+TE DEIXA DEFINIR BORDAS PARA OS DIFERENTES TIPOS DE PROJETOS QUE VOCÊ ESTÁ CODANDO...
+
+
+
+
+ex: ANGULAR RED,
+
+
+
+REACT BLUE,
+
+
+JAVASCRIPT YELLOW.... (vanilla javascript, projetos SEM CÓDIGO ANGULAR/REACT)....
+
+
+
+
+
+
+
+-> também temos 'node green'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+mais alguma coisa...?
+
+
+
+
+
+
+
+
+acho que não...
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA VAMOS VER MAIS ASPECTOS DO PROJETO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+NOSSO PROJETO TEM UM MONTE DE CONFIG FILES....
+
+
+
+
+
+
+
+
+
+VAMOS EXAMINAR CADA UMA DELAS, PARA VER O QUE O CLI NOS ENTREGOU, QUANDO RODAMOS 'ng new'...

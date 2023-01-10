@@ -1,0 +1,425 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MINHA FEATURE DE LOGOUT FICOU ASSIM:
+
+
+
+
+
+
+
+
+  logoutUser() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('expirationDate');
+    localStorage.removeItem('email');
+
+    this.emitUser(null)
+
+    this.router.navigate(['/auth']);
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> com isso, acabo REMOVENDO O TOKEN E TAMBÉM EMITINDO UM USER DE 'null',
+
+
+
+  o que fará com que o 'STATE' do meu app 
+
+  seja RESETTADO....
+
+
+
+
+
+
+
+
+
+  --> também faço navigate até a page de 'auth',
+
+
+  para que o 
+
+
+
+user faça 
+
+login dnv..
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR COMENTA 
+
+
+SOBRE A NECESSIDADE DE 'PERSIST OUR STATE' no nosso app,
+
+
+QUE É ALGO QUE DEVE SER FEITO POR MEIO DO 
+
+'LOCAL STORAGE'...
+
+
+
+
+
+
+
+
+
+
+--> ELE TAMBÉM FALA QUE DEVEMOS 'PROTECT' algumas routes,
+
+
+
+CERTIFICAR QUE ALGUMAS ROUTES DE NOSSO APP SÓ PODERÃO SER ACESSADAS 
+
+
+
+SE 
+
+ESTIVERMOS 'UNAUTH'/'AUTh'... (ou seja, a adiçaõ de GUARDS por meio de RESOLVERS, eu acho)..
+
+
+
+
+
+
+
+
+
+
+----> coisas como 'CanActivate'
+
+
+
+
+
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+import {
+  ActivatedRouteSnapshot,
+  CanActivate,
+  RouterStateSnapshot,
+} from '@angular/router'; //precisamos de 'CanActivate' PARA __ DEFINIR ROUTE GUARDS NO NOSSO PROJECT...
+
+export class AuthGuard implements CanActivate {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------> MAS ANTES DE TUDO ISSO,
+
+
+PRECISAMOS 
+
+ASSEGURAR QUE O 'LOGOUT' FUNCIONA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------> PARA ISSO,
+
+VOLTAMOS AO AUTHSERVICE,
+
+
+e aí adicioanmos o method de logout..
+
+
+
+
+
+
+
+
+
+--> o logout é super simples,
+
+
+SÓ VAMOS QUERER 
+
+
+USAR 
+
+
+
+O 
+
+USER SUBJECT E ENTÃO FAZER O EMIT DE UM VALUE DE 'null',
+
+
+
+
+EXATAMENTE COMO EU FIZ:
+
+
+
+
+
+
+
+
+
+
+ logoutUser() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('expirationDate');
+    localStorage.removeItem('email');
+
+    this.emitUser(null); ////////////EIS O CÓDIGO EM QUESTÃO.
+
+    this.router.navigate(['/auth']);
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ------> ISSO VAI REINICIAR NOSSO STATE,
+
+
+  VOLTAR AO INITIAL STATE --> ISSO VAI ASSEGURAR QUE NOSSO APP 
+
+  INTEIRO 
+
+
+  VAI 
+
+
+  TRATAR O USER COMO 'UNAUTHENTICATED'
+
+
+
+
+
+
+
+
+
+
+
+  -----> ISSO QUER DIZER QUE
+
+  NOSSA UI 
+VAI SER ATUALIZADA,
+
+
+E NOSSOS INTERCEPTORS NÃO VAO MAIS FUNCIONAR PARA OS REQUESTS QUE PRECISAM DE AUTHENTICATION (o que é bom)...
+
+
+(
+
+    ESSE É EXATAMENTE O COMPORTAMENTO QUE DESEJAMOS,
+
+    PQ 
+    NÃO VAMOS MAIS PODER 'AUTHENTICATE OURSELVES'...
+)
+
+
+
+
+
+
+
+
+
+
+ok, isso é bem simples, e é o que eu fiz...
+
+
+
+
+
+
+
+
+
+
+
+
+--> UMA COISA LEGAL SERIA O REDIRECT,
+
+
+
+
+
+
+E FAREMOS ISSO NO SERVICE MESMO, PROGRAMMATIC NAVIGATION...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> O PROFESSOR USARÁ PROGRAMMATIC NAVIGATION PARA FAZER 
+
+O LOGOUT JUSTAMENTE PQ EXISTIRÃO MÚLTIPLAS MANEIRAS DE FAZER O LOGOUT DO USER, NO NOSSO APP.... 
+
+
+
+
+
+
+
+
+--> vamos adicionar lógica para 'AUTOMATICALLY LOG US OUT'
+
+
+em outras partes de nosso app,
+
+
+por isso vamos usar bastante esse method de 'logoutUser' (por isso que não usarei o approach de 'RouterLink', pq não será prático)...
+
+
+
+
+
+
+
+
+
+
+ok.... O PROFESSOR VAI REDIRECIONAR à '/auth',
+
+
+
+EXATAMETNE COMO EU FIZ:
+
+
+
+
+
+
+
+
+
+ logoutUser() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('expirationDate');
+    localStorage.removeItem('email');
+
+    this.emitUser(null); ////////////EIS O CÓDIGO EM QUESTÃO.
+
+    this.router.navigate(['/auth']);
+
+  }
+
+
+
+
+
+
+
+
+
+
+--> OK, TUDO ISSO ESTÁ FUNCIONANDO, SIM, E TUDO ESTÁ NICE...
+
+
+
+
+

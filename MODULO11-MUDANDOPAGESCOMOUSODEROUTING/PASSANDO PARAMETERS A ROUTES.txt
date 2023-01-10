@@ -1,0 +1,720 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM OS BASICS ACERCA DE 
+
+
+ROUTING 
+já definidos,
+
+
+
+DEVEMOS MELHORAR UM POUCO NOSSO APP,
+
+
+
+
+
+basta 
+
+
+
+IR ATÉ  
+
+
+o 
+
+
+'app.module.ts'
+
+
+
+
+
+
+E __ ADICIONAR __ MAIS ALGUMAS _ ROUTES_ 
+
+A ELE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DIGAMOS QUE 
+
+ALÉM DAQUELAS 3 ROUTES LÁ,
+
+que são:
+
+
+
+
+const appRoutes: Routes = [
+
+  {
+    path: '', ////localhost:4200/   (É O _ DEFAULT, A HOME PAGE, PQ É o domain.com SEM O PATH depois)...
+    component: HomeComponent
+
+  },
+
+  {  /////é a nossa primeira route... cada object nesse array é uma ROUTE, que é governada por um 'PAGE-COMPONENT' (o page-component é a ROUTE/page, no caso)...
+    path: 'users', ///   localhost:4200/users
+    component: UsersComponent  ///users.component.html
+  },
+
+  {  
+    path: 'servers',  //localhost:4200/servers
+    component: ServersComponent //servers.component.html
+  }
+]
+
+
+
+
+
+
+
+
+
+
+
+
+ALÉM DESSAS 3 ROUTES,
+
+
+
+QUEREMOS _ SER CAPAZES DE CARREGAR 'A SINGLE USER',
+
+
+
+O COMPONENT QUE É 1 USER ÚNICo,
+
+
+
+
+
+GIVES US OUR SINGLE USER...
+
+
+
+
+
+
+
+
+
+
+
+---> PARA ISSO,
+
+
+
+VAMOS QUERER __ CARREGAR__ 1 
+
+USER DE FORMA __ DINÂMICA (
+
+    carregá-lo a partir 
+
+    de uma LISTA DE USERS, que é carregada em 'users'...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok, temos 3 users,
+
+'max', 'chris' 
+
+e 
+
+'anna'..
+
+
+
+
+
+
+
+
+
+-> são elementos DINÂMICOS,
+
+e quando eles são CLICADOS,
+QUEREMOS 
+
+QUE 
+SEJA 
+
+
+_ EXECUTADO/NAVIGATE 
+
+
+
+até 
+
+
+
+
+uma route 
+
+
+de 
+
+
+'localhost:4200/user/numId'...
+
+
+
+
+(
+
+    lá no node.js isso era escrito assim:
+
+
+'localhost:4200/user/:numId' 
+
+
+)
+
+
+
+
+--> SERIA NICE SE CONSEGUÍSSEMOS PASSAR 
+
+
+'THE ID OF THE USER WE WANT TO LOAD'
+
+
+
+dentro
+
+
+
+DO PATH DESSA ROUTE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> É CLARO QUE PODERÍAMOS HARD CODAR TODAS AS 
+
+
+
+ROUTES POSSÍVEIS..
+
+
+
+
+
+
+
+
+tipo 
+
+
+
+'users/1',
+
+
+'users/2',
+
+
+'users/3',
+
+
+
+MAS __ ISSO É UM LIXo...
+
+
+
+
+
+
+
+
+é nada dinâmico,
+
+
+e temos um problema:
+
+
+
+
+
+''''COMO  SABERÍAMOS, DENTRO DESSE COMPONENT,
+
+
+
+QUAL __ ROUTE _ FOI CARREGADA?''' (é claro que poderíamos parsear o path manualmente, mas esse approach NÃO É BOM)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> EM VEZ DISSO,
+
+
+EM VEZ DE ESSE APPROACH,
+
+
+
+PODEMOS ADICIONAR 'PARAMETERS' 
+
+
+
+
+
+àS NOSSAS ROUTES....
+
+
+
+
+
+-> PARAMETERS SÃO _ SEGMENTOS DINÂMICOS NOS NOSSOS PATHS....
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA FAZER ISSO, SEGUIMOS A SINTAXE DO NODEJS,
+
+que é 
+
+adicionar 
+
+
+':' 
+
+
+
+DO LADO 
+
+DO SEGMENTO QUE QUEREMOS QUE SEJA DINÂMICO...
+
+
+
+
+
+
+
+
+
+fica tipo assim:
+
+
+
+
+
+
+const appRoutes: Routes = [
+
+  {
+    path: '', ////localhost:4200/   (É O _ DEFAULT, A HOME PAGE, PQ É o domain.com SEM O PATH depois)...
+    component: HomeComponent
+
+  },
+
+  {  /////é a nossa primeira route... cada object nesse array é uma ROUTE, que é governada por um 'PAGE-COMPONENT' (o page-component é a ROUTE/page, no caso)...
+    path: 'users', ///   localhost:4200/users
+    component: UsersComponent  ///users.component.html
+  },
+
+  {
+      path: 'users/:userId',
+      component: 'UserComponent'
+  }
+
+  {  
+    path: 'servers',  //localhost:4200/servers
+    component: ServersComponent //servers.component.html
+  }
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+  {
+      path: 'users/:userId',
+      component: UserComponent
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------> DEPOIS SEREMOS CAPAZES DE 'RETRIEVAR'
+ 
+
+
+ esse parameter 
+
+
+ LÁ 
+
+
+ DE DENTRO DO 'LOADED COMPONENT',
+
+
+
+
+ POR MEIO DO NOME QUE VOCÊ ESPECIFICAR AÍ...
+
+
+(
+    e aí vamos carregar a data 
+
+
+    de nossos 'user' no component de 'UserComponent',
+
+
+
+    a partir 
+
+    desse id,
+
+
+
+    retrievado o elemento correspodente lá no array de 'users.service.ts', ou algo assim...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+ ----->  certo...
+
+
+
+
+
+
+
+
+ e o 
+
+ ':'
+
+
+
+ SIMPLESMENTE 
+
+
+
+
+
+
+
+
+
+ SINALIZA AO ANGULAR QUE ESSA É A 'PARTE DINÂMICA DO PATH'...
+
+
+
+
+
+
+
+ -> 
+
+
+
+ o path será 
+
+
+ 'localhost:4200/users/2',
+
+
+
+ ou 
+
+ 'localhost:4200/users/5',
+
+
+ etc..
+
+
+
+
+
+
+
+
+
+
+ --> OK... AGORA SEREMOS CAPAZES DE CARREGAR ESSE USER COMPONENT COM ESSA 
+
+ 'DYNAMIC PIECE'
+
+ enviada a ele...
+
+
+
+
+
+
+
+
+
+ -> 
+ LÁ 
+
+ EM 
+
+ 'user.component.html',
+
+
+
+ temos este código:
+
+
+
+
+
+
+
+
+
+ <p>User with ID _ID_ loaded.</p>
+<p>User name is _NAME_</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> vamos querer OUTPUTTAR 
+
+
+
+
+o id e o nome do user...
+
+
+
+
+
+
+
+
+
+
+
+---> MAS, POR ENQUANTO,
+
+NÃO TOCAREMOS  
+
+NISSO... (não usaremos esse id, ainda)... -------> 
+
+
+
+
+
+
+
+
+
+
+
+MAS AINDA ASSIM,
+
+DEVEMOS VER ''COMO PODEMOS ALCANÇAR 
+
+
+
+ESSA ROUTE COM SUCESSO'...
+
+
+
+
+
+
+
+
+
+
+---> basta escrever 
+
+
+localhost:4200/users/xxxx ( qualquer coisa)...
+
+
+
+
+
+
+
+
+
+
+PODEMOS COLOCAR QUALQUER VALUE NESSE SEGMENT AÍ,
+
+que não receberemos erro,
+
+pq 
+
+será considerado como um 
+
+'DYNAMIC SEGMENT'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NÃO TEREMOS UNKNOWN ROUTES,
+
+
+pq 
+
+
+todas as routes que 
+
+
+tiverem 
+
+esse segment aí dinâmico vao CARREGAR 
+
+
+
+
+
+DATA...
+
+
+
+
+
+
+
+
+A PRÓXIMA PERGUNTA É 
+
+
+
+
+'''''COMO PODEMOS _ CONSEGUIR ACESSO A ESSA DATA__ DENTRO _ DO LOADED COMPONENT'''',
+
+
+pq essa é outra KEY QUESTION...

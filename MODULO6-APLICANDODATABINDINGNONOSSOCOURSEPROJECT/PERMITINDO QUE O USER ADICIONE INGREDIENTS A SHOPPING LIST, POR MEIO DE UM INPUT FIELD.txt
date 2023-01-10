@@ -1,0 +1,2325 @@
+
+
+
+
+
+
+JÁ ADICIONAMOS UM MONTE DE FUNCIONALIDADES NESSA COURSE SECTION...
+
+
+
+
+
+
+
+--> NOSSO RECIPE BOOK ESTÁ FICANDO MELHOR...
+
+
+
+
+
+
+
+
+
+--> MAS É CLAOR QUE FALTAM FEATURES, QUE ADICIONAREMOS MAIS TARDE...
+
+
+
+
+
+
+
+
+
+
+--> O QUE O PROFESSOR QUER FAZER, AGORA,
+
+É 
+
+
+
+
+
+CONSERTAR AQUELES BUTTONS EM 'shopping list',
+
+
+
+
+também 
+
+os 
+
+INPUT FIELDS,
+
+
+
+PARA QUE 
+
+ _ SEJA __ POSSÍVEL _ ADICIONAR NOVOS ITEMS 
+
+
+ A NOSSA 'SHOPPING LIST'  (ingredients)...
+
+
+
+
+
+
+
+ ----> OVERWRITTAREMOS ESSA LÓGICA MAIS TARDE,
+
+ QUANDO 
+
+ APRENDERMOS SOBRE 
+ 'FORMS',
+
+ 
+
+
+
+
+
+
+ mas o professor diz que 
+
+
+
+ ESSE 
+
+
+ 'INPUT FIELD'
+
+ é um 
+ ótimo 
+
+
+
+
+
+ EXERÍCIO PARA TREINAR 
+
+ 'LOCAL REFERENCES' 
+
+ E 
+
+ '@ViewChild()'...
+
+
+
+
+
+
+
+
+
+ ------> O QUE O PROFESSOR QUER FAZER,
+
+ NO CASO,
+
+
+ É 
+
+
+
+
+ __ TRABALHAR__ NAQUELE COMPONENT DE 
+
+ 'shopping-list-edit',
+
+
+ QUE TEM ESTA LÓGICA:
+
+
+
+
+
+
+ <div class="row">
+  <div class="col-xs-12">
+    <form>
+      <div class="row">
+        <div class="col-sm-5 form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" class="form-control" />
+        </div>
+        <div class="col-sm-2 form-group">
+          <label for="amount">Amount</label>
+          <input type="number" id="amount" class="form-control" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <button class="btn btn-success" type="submit">Add</button>
+          <button class="btn btn-danger" type="submit">Delete</button>
+          <button class="btn btn-primary" type="button">Clear</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----->  TEMOS UM PUNHADO DE INPUT FIELDS,
+
+E AÍ 
+
+
+
+O 
+
+BUTTON DE 
+
+'add',
+
+
+ 
+
+
+QUE DEVERÁ, NO FUTURO,
+
+SUBMITTAR NOSSA FORM...
+
+
+
+
+
+
+
+
+--> também temos 'delete' e 'clear'... 
+
+
+
+
+
+
+
+
+
+
+
+-_> QUEREMOS PERMITIR AO USER FAZER O ADD DE NOVOS ITEMS, por meio desse  button de 'add'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ''@ViewChild()''' --> é um decorator que nos permite 
+
+GANHAR ACESSO A ELEMENTOS 
+
+
+DE NOSSO TEMPLATE__ ANTES __ MESMO 
+
+
+
+DE UM METHOD SER DISPARADO (sem passar esses elements como PARÂMETROS de methods)...
+
+
+
+
+
+
+
+
+--> para isso,
+
+
+provavelmente teremos de CRIAR UMA PROPRIEDADE e colocar o decorator de "@ViewChild()"
+
+
+antes de seu nome...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> o código atualmente está assim:
+
+
+
+        <input type="text" id="name" class="form-control" />
+
+
+
+
+
+
+
+
+
+
+
+--> talvez o que seja necessário fazer é 
+
+
+colocar uma 
+
+
+
+REFERENCE DENTRO DESSE COMPONENT, 
+
+tipo assim:
+
+
+
+
+
+    <input type="text" id="name" class="form-control" #ingredientName />
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> lá no nosso component (arquivo .ts),
+
+
+
+PROVAVELMENTE 
+
+
+VAMOS 
+
+ESCREVER,
+
+dentro dele:
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-shop-list-edit',
+  templateUrl: './shop-list-edit.component.html',
+  styleUrls: ['./shop-list-edit.component.css']
+})
+export class ShopListEditComponent implements OnInit {
+
+
+    @ViewChild('ingredientName') ingredientName: string;
+
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo... tenho que testar esse código...
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+import { Component, OnInit, ViewChild } from '@angular/core';
+
+@Component({
+  selector: 'app-shop-list-edit',
+  templateUrl: './shop-list-edit.component.html',
+  styleUrls: ['./shop-list-edit.component.css'],
+})
+export class ShopListEditComponent implements OnInit {
+  @ViewChild('ingredientName') ingredientName: HTMLInputElement;
+
+  constructor() {}
+
+  ngOnInit(): void {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO....
+
+
+
+
+
+por meio do elemento button de 'add',
+
+provavelmente vamos querer 
+
+
+
+TESTAR ESSE NEGÓCIO, testar se esse add do ingredient está funcionando...
+
+
+
+
+
+---> talvez fazer PUSH do 'ingredientName'
+
+para 
+dentro 
+
+
+de 
+
+um ARRAY DE OBJECTS 'ingredient',
+
+para aí 
+
+
+ver se realmente 
+
+
+
+esse negócio está sendo representado/carregado no nosso component...
+
+
+
+
+
+
+
+escrevo um código assim:
+
+
+
+
+
+import { Component, OnInit, ViewChild } from '@angular/core';
+
+@Component({
+  selector: 'app-shop-list-edit',
+  templateUrl: './shop-list-edit.component.html',
+  styleUrls: ['./shop-list-edit.component.css'],
+})
+export class ShopListEditComponent implements OnInit {
+  @ViewChild('ingredientName') ingredientName: HTMLInputElement;
+
+
+  @ViewChild('ingredientAmount') ingredientAmount: HTMLInputElement;
+
+
+
+    ingredients
+
+
+  constructor() {}
+
+  ngOnInit(): void {}
+
+
+
+
+  onAddIngredient() {
+
+
+
+
+
+
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo, mas a questão é que os 'ingredients' estão ACTUALLY SENDO REPRESENTADOS 
+
+
+NO COMPONENT DE 'shoppingList',
+
+
+e não 
+
+em 
+
+
+'shopedit'....
+
+
+
+
+--> tenho que ajustar isso no meu código...
+
+
+
+
+
+
+
+
+
+
+
+OK, CONSEGUI, FUNCIONOU PERFEITAMENTE,
+
+E O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+SHOPLISTEDIT:
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-10">
+    <app-shop-list-edit (ingredientEmitter)="ingredientAdded($event)"></app-shop-list-edit>
+    <hr />
+    <ul class="list-group">
+      <!-- <a class="list-group-item" 
+      style="cursor: pointer"
+      *ngFor="let ingredient of ingredients"
+      > {{ingredient.name}} ({{ingredient.amount}})
+      </a> -->
+      <app-shopping-list-item
+      
+      *ngFor="let ingredient of ingredients"
+
+      [name]="ingredient.name"
+      [amount]="ingredient.amount"
+      ></app-shopping-list-item>
+    </ul>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+E:
+
+
+
+
+
+
+
+
+
+import { Component, ElementRef, OnInit, Output, ViewChild } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+import { Ingredient } from 'src/app/shared/ingredient.model';
+
+@Component({
+  selector: 'app-shop-list-edit',
+  templateUrl: './shop-list-edit.component.html',
+  styleUrls: ['./shop-list-edit.component.css'],
+})
+export class ShopListEditComponent implements OnInit {
+  @ViewChild('ingredientName') ingredientName: ElementRef;
+
+
+  @ViewChild('ingredientAmount') ingredientAmount: ElementRef;
+
+
+
+  @Output() ingredientEmitter = new EventEmitter<Ingredient>()
+
+
+  constructor() {}
+
+  ngOnInit(): void {}
+
+
+  
+  onAddIngredient() {
+
+    console.log(this.ingredientName)
+    console.log(this.ingredientAmount)
+    const name = this.ingredientName.nativeElement.value;
+    const amount = this.ingredientAmount.nativeElement.value;
+
+    const newIngredient = new Ingredient(name, amount)
+
+  
+    this.ingredientEmitter.emit(newIngredient);
+
+
+
+
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SHOPPINGLIST:
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { Ingredient } from '../shared/ingredient.model';
+
+@Component({
+  selector: 'app-shopping-list',
+  templateUrl: './shoppingList.component.html',
+  styleUrls: ['./shoppingList.component.css'],
+})
+export class ShoppingListComponent implements OnInit {
+  ingredients: Ingredient[] = [
+
+    new Ingredient('Potato', 1),
+    new Ingredient('Tomato', 3),
+    new Ingredient('Banana', 5)
+
+  ];
+
+  constructor() {}
+
+  ngOnInit(): void {}
+
+
+  ingredientAdded(ingredient: Ingredient) {
+
+    this.ingredients.push(ingredient);
+    console.log(this.ingredients);
+
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+E:
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-10">
+    <app-shop-list-edit (ingredientEmitter)="ingredientAdded($event)"></app-shop-list-edit>
+    <hr />
+    <ul class="list-group">
+      <!-- <a class="list-group-item" 
+      style="cursor: pointer"
+      *ngFor="let ingredient of ingredients"
+      > {{ingredient.name}} ({{ingredient.amount}})
+      </a> -->
+      <app-shopping-list-item
+      
+      *ngFor="let ingredient of ingredients"
+
+      [name]="ingredient.name"
+      [amount]="ingredient.amount"
+      ></app-shopping-list-item>
+    </ul>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> Certo... hora de ver o vídeo do professor, analisar se ele fez a mesma coisa que eu...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> seria bom fazer o button de 'delete' 
+
+
+também funcionar..
+
+
+
+
+
+
+
+acho que posso fazer isso...
+
+
+
+
+
+
+
+
+
+
+
+
+-> o botão de delete provavelmente funciona assim:
+
+
+
+
+
+
+
+1) quando ALGUM LIST ITEM/INGREDIENT for clicado,
+
+
+AS INFORMAÇÕES SOBRE AQUELE 'item'/ingredient DEVERÃO SER OUTPUTTADAS 
+
+
+naqueles input fields de 'name' e 'amount'...
+
+
+
+
+
+
+2) QUANDO O BUTTON 'delete' é clicado,
+
+esse elemento/ingredient DEVE SER REMOVIDO DO COMPONENT 'shoppingList' (
+
+    e, com isso,
+
+    do DOM...
+)
+
+
+
+3) os input fields também devem SER __ LIMPOs__ quando esse delete ocorre...
+
+
+
+
+
+
+
+
+
+
+--> vou tentar fazer isso....
+
+
+
+
+
+
+
+
+
+
+
+
+--> fiz um monte de coisas,
+
+
+
+
+
+
+mas ainda não consegui fazer a data ser carregada nos 'input fields'... 
+
+
+
+
+
+
+--> pq os input fields precisam que a propriedade native 'value' seja afetada pela propriedade 
+
+
+'ingredientToBeRemoved' que tenho lá em 'shop-list-edit.ts'...
+
+
+
+
+
+
+
+
+
+
+
+--> o problema agora é DELETAR ESSE INGREDIENT, quando ele é loadado no component.. --. talvez uma solução seja 
+
+ADICIONAR UM ID A CADA 
+
+
+INGREDIENT,
+
+
+
+um id criado com 
+
+
+'Math.random() + new Date()',
+
+ou algo assim,
+
+só para ser unique mesmo....
+
+
+
+ex:
+
+
+
+
+
+
+
+Date.now() + Math.random()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo, agora temos que cada 
+
+
+Ingredient tem um id, oq é nice e vai nos ajudar com o delete de cada um deles com o button de 'Delete'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> encontrei um conflito bizarro entre 
+
+a propriedade 'value' 
+
+
+e 
+
+LOCAL REFERENCES (
+
+
+    coisas como #reference...
+)
+
+
+
+
+ex:
+
+
+
+
+
+          <input type="text" id="name" class="form-control" 
+          
+          #ingredientName 
+          
+          value="{{ingredientToBeRemoved.name}}"/>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> essas 2 coisas não estão funcionando conjuntamente....
+
+
+
+
+
+
+
+
+
+
+--> consegui fazer funcionar, por meio de uma TERNARY EXPRESSION:
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <form>
+      <div class="row">
+        <div class="col-sm-5 form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" class="form-control" 
+          
+          #ingredientName 
+          
+          value="{{!ingredientToBeRemoved ? '' : ingredientToBeRemoved.name }}"/>
+        </div>
+        <div class="col-sm-2 form-group">
+          <label for="amount">Amount</label>
+          <input type="number" id="amount" class="form-control" #ingredientAmount value="{{!ingredientToBeRemoved ? '' : ingredientToBeRemoved.amount}}" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <button class="btn btn-success" (click)="onAddIngredient()">Add</button>
+          <button class="btn btn-danger" (click)="onDeleteIngredient()">Delete</button>
+          <button class="btn btn-primary" type="button">Clear</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O CÓDIGO INTEIRO FICOU ASSIM:
+
+
+
+
+
+
+
+
+SHOPLISTEDIT:
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <form>
+      <div class="row">
+        <div class="col-sm-5 form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" class="form-control" 
+          
+          #ingredientName 
+          
+          value="{{!ingredientToBeRemoved ? '' : ingredientToBeRemoved.name }}"/>
+        </div>
+        <div class="col-sm-2 form-group">
+          <label for="amount">Amount</label>
+          <input type="number" id="amount" class="form-control" #ingredientAmount value="{{!ingredientToBeRemoved ? '' : ingredientToBeRemoved.amount}}" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <button class="btn btn-success" (click)="onAddIngredient()">Add</button>
+          <button class="btn btn-danger" (click)="onDeleteIngredient()">Delete</button>
+          <button class="btn btn-primary" type="button">Clear</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+SHOPLISTEDIT ts:
+
+
+
+
+
+
+import { Component, ElementRef, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+import { Ingredient } from 'src/app/shared/ingredient.model';
+
+@Component({
+  selector: 'app-shop-list-edit',
+  templateUrl: './shop-list-edit.component.html',
+  styleUrls: ['./shop-list-edit.component.css'],
+})
+export class ShopListEditComponent implements OnInit {
+  @ViewChild('ingredientName') ingredientName: ElementRef;
+
+
+  @ViewChild('ingredientAmount') ingredientAmount: ElementRef;
+
+
+
+  @Output() ingredientEmitter = new EventEmitter<Ingredient>()
+
+
+  @Output() deleteIngredientEmitter = new EventEmitter<number>();
+
+
+  @Input() ingredientToBeRemoved: Ingredient;
+
+
+  constructor() {}
+
+  ngOnInit(): void {}
+
+
+
+  onAddIngredient() {
+
+    console.log(this.ingredientName)
+    console.log(this.ingredientAmount)
+    const name = this.ingredientName.nativeElement.value;
+    const amount = this.ingredientAmount.nativeElement.value;
+    const id = Date.now() + Math.random();
+
+    const newIngredient = new Ingredient(name, amount, id)
+
+  
+    this.ingredientEmitter.emit(newIngredient);
+
+  }
+
+
+  onDeleteIngredient() {
+
+
+    const ingredientIndex = this.ingredientToBeRemoved.id;
+    this.deleteIngredientEmitter.emit(ingredientIndex);
+
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SHOPLIST:
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { Ingredient } from '../shared/ingredient.model';
+
+@Component({
+  selector: 'app-shopping-list',
+  templateUrl: './shoppingList.component.html',
+  styleUrls: ['./shoppingList.component.css'],
+})
+export class ShoppingListComponent implements OnInit {
+
+
+
+  ingredients: Ingredient[] = [
+
+    new Ingredient('Potato', 1, 1651882246336.7927),
+    new Ingredient('Tomato', 3, 1651882348842.3665),
+    new Ingredient('Banana', 5, 1651882373138.5793)
+
+  ];
+
+
+  selectedIngredient: Ingredient;
+
+  constructor() {}
+
+  ngOnInit(): void {}
+
+
+  ingredientAdded(ingredient: Ingredient) {
+
+    this.ingredients.push(ingredient);
+    console.log(this.ingredients);
+
+  }
+
+  ingredientSelect(index: number) {
+      this.selectedIngredient = this.ingredients[index];
+  }
+
+
+  ingredientRemoved(ingredientIndex: any) {
+
+
+    this.ingredients.splice(ingredientIndex, 1);
+
+    console.log(this.ingredients);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+SHOP LIST HTML:
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-10">
+    <app-shop-list-edit (ingredientEmitter)="ingredientAdded($event)" 
+    (deleteIngredientEmitter)="ingredientRemoved($event)"
+    [ingredientToBeRemoved]="selectedIngredient"
+    
+    ></app-shop-list-edit>
+    <hr />
+    <ul class="list-group">
+      <!-- <a class="list-group-item" 
+      style="cursor: pointer"
+      *ngFor="let ingredient of ingredients"
+      > {{ingredient.name}} ({{ingredient.amount}})
+      </a> -->
+      <app-shopping-list-item
+      
+      *ngFor="let ingredient of ingredients; let index=index"
+      (click)="ingredientSelect(index)"
+      [name]="ingredient.name"
+      [amount]="ingredient.amount"
+      ></app-shopping-list-item>
+    </ul>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> agora a única coisa/feature que faltou foi 'apagar os input fields'
+
+
+
+quando 
+
+
+
+o delete de um ingredient ocorrer...
+
+
+
+
+
+-> certo....
+
+
+
+
+
+
+
+
+não consegui... vou salvar todo o código e seguir o exemplo do professor....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> professor começa com 
+
+
+
+
+o 
+
+
+
+
+COMPONENT DE 'SHOPEDIT'....
+
+
+
+
+
+
+
+
+
+
+-> ele adiciona uma LOCAL REFERENCE ao input de name...
+
+
+
+
+
+          <input type="text" id="name" class="form-control" 
+          
+          #nameInput
+            />
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+        ELE DÁ O NOME DE 'nameInput'...
+
+
+
+
+
+
+
+
+
+
+
+  NO SEGUNDO INPUT,
+
+  ele dá o nome de 
+
+
+  'amountInput'...
+
+
+
+
+
+
+
+
+
+
+
+----> O PROFESSOR DIZ QUE NOSSO DESAFIO É 
+
+'USAR ESSE 
+
+
+ADD BUTTON PARA KIND OF USAR ESSAS LOCAL REFERENCES' 
+
+
+
+(
+
+
+  preferivelmente 
+
+
+  as utilizar 
+
+  POR MEIO DO 'PASS DE UM ARGUMENTO' 
+) -------> OU,
+
+
+MAIS AVANÇADO,
+
+
+POR MEIO 
+
+DO SELECT COM UMA '@ViewChild()' (que é o que fiz)...
+
+
+
+
+
+
+
+
+
+
+
+---------> FAÇA ISSO PARA QUE QUANDO O BUTTON É CLICADO,
+
+
+
+SEJA __ CRIADO_ UM NOVO INGREDIENT,
+
+
+
+QUE DEVE SER ADICIONADO AO ARRAY DE INGREDIENTS...
+
+
+
+
+
+
+
+
+
+
+--> quase consegui implementar todas as funcionalidades, faltou 
+
+
+pouca coisa (refresh do dom e clear dos input fields a partir de delete/add de ingredients)...
+
+
+
+
+
+
+
+
+O PROFESSOR ENTÃO COLOCA UM CLICK LISTENER 
+
+em 
+
+
+'add ingredient',
+
+naquele button...
+
+
+
+
+o código vai ficando assim:
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <form>
+      <div class="row">
+        <div class="col-sm-5 form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" class="form-control" 
+          
+          #inputName
+          
+          value="{{!ingredientToBeRemoved ? '' : ingredientToBeRemoved.name }}"/>
+        </div>
+        <div class="col-sm-2 form-group">
+          <label for="amount">Amount</label>
+          <input type="number" id="amount" class="form-control" #inputAmount />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <button class="btn btn-success" type="submit" (click)="onAddItem()">Add</button>
+          <button class="btn btn-danger" >Delete</button>
+          <button class="btn btn-primary" type="button">Clear</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+-> AÍ ELE DIZ QUE PODERÍAMOS 
+
+ADICIONAR JÁ UMA LOCAL REFERENCE A ESSE 
+
+
+'''
+
+
+       <button class="btn btn-success" type="submit" (click)="onAddItem()">Add</button>
+
+       '',
+
+
+
+
+
+       ou então 
+
+       um 
+
+       'localreference.value',
+
+
+
+       nesse local aí,
+
+       como parametro/argumento,
+
+
+
+
+
+
+
+
+       MAS __  O PROFESSOR NOS DIZ QUE PREFERE USAR O APPROACH DO VIEWCHILD...
+
+
+
+
+
+
+
+
+
+
+
+    --> ele vai até o 
+
+
+
+    'ShopListEditComponent',
+
+
+
+
+
+    E ESCREVE ASSIm:
+
+
+
+
+
+
+
+
+
+    import {
+  Component,
+  ElementRef,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+import { Ingredient } from 'src/app/shared/ingredient.model';
+
+@Component({
+  selector: 'app-shop-list-edit',
+  templateUrl: './shop-list-edit.component.html',
+  styleUrls: ['./shop-list-edit.component.css'],
+})
+export class ShopListEditComponent implements OnInit {
+  @ViewChild('ingredientName') nameInputRef: ElementRef;
+
+  @ViewChild('ingredientAmount') amountInputRef: ElementRef;
+
+
+
+  constructor() {}
+
+  ngOnInit(): void {}
+
+  onAddItem() {
+
+  }
+
+
+}
+ 
+
+
+
+
+
+
+
+
+ ------> OU SEJA,
+
+
+
+ ELE ESCREVE:
+
+
+
+
+  ''''''' @ViewChild('ingredientName') nameInputRef: ElementRef;'''''
+
+
+
+
+
+
+
+
+
+
+
+  -> ELE NOS ENSINA, TAMBÉM, QUE 
+
+
+
+  esse '@ViewChild'
+
+
+  deve, no angular 8,
+
+  ser escrito com um segundo parâmetro de 
+
+
+
+  '{static: false}' 
+
+
+
+
+
+
+
+
+
+  --> é por isso que escrevo assim:
+
+
+
+
+
+
+
+  
+    import {
+  Component,
+  ElementRef,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+import { Ingredient } from 'src/app/shared/ingredient.model';
+
+@Component({
+  selector: 'app-shop-list-edit',
+  templateUrl: './shop-list-edit.component.html',
+  styleUrls: ['./shop-list-edit.component.css'],
+})
+export class ShopListEditComponent implements OnInit {
+  @ViewChild('ingredientName', {static: false}) nameInputRef: ElementRef;
+
+  @ViewChild('ingredientAmount') amountInputRef: ElementRef;
+
+
+
+  constructor() {}
+
+  ngOnInit(): void {}
+
+  onAddItem() {
+
+  }
+
+
+}
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ VAI FICANDO TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+ <div class="row">
+  <div class="col-xs-12">
+    <form>
+      <div class="row">
+        <div class="col-sm-5 form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" class="form-control" 
+          
+          #nameInput
+            />
+        </div>
+        <div class="col-sm-2 form-group">
+          <label for="amount">Amount</label>
+          <input type="number" id="amount" class="form-control" #amountInput 
+          
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <button class="btn btn-success" (click)="onAddIngredient()">Add</button>
+          <button class="btn btn-danger" (click)="onDeleteIngredient()">Delete</button>
+          <button class="btn btn-primary" type="button">Clear</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> COM ESSES 2 INPUTS ADICIONADOS,
+
+
+O PROFESSOR VAI QUERER EMITIR UM NOVO EVENT LA´EM 
+
+
+
+
+'onAddItem()',
+
+
+
+
+
+
+EM QUE 
+
+ELE VAI PASSAR ESSA DATA AO PARENT COMPONENT,
+
+QUE É 
+
+O 
+SHOPLIST COMPONENT,
+
+QUE 
+
+FAZ MANAGE 
+
+
+DE NOSSA LIST DE INGREDIENTS, AQUELE ARRAY..
+
+
+
+
+
+
+
+
+
+
+--> 
+
+
+
+PARA EMITIR EVENTS,
+
+
+
+PRECISAMOS DE 
+
+'@Output'
+
+e 
+de 
+
+'EventEmitter()'...
+
+
+
+
+
+
+
+
+
+
+-------> nesse 'EventEMitter',
+
+
+
+
+VAMOS 
+
+
+COLOCAR UM OBJECT COMO PARÂMETRO emitido... --> 
+
+
+
+
+
+SERÁ 
+
+
+UM OBJECT COM UM 'NAME' E UMA 'STRING' (
+
+  será que não é possível 
+
+  passar 
+
+
+
+
+  a interface/type de 
+
+  'Ingredient'?
+
+
+
+
+  -> acho que não, pq 
+
+
+
+
+
+  o que acontecerá é provavelmente a instanciação da class 'Ingredient' 
+
+  lá em 
+
+
+
+  'shopList', no method de 'ingredientAdded()',
+
+  ou algo assim...
+)
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE O CÓDIGO VAI FICANDO ASSIM:
+
+
+
+
+
+
+
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+import { Ingredient } from 'src/app/shared/ingredient.model';
+
+@Component({
+  selector: 'app-shop-list-edit',
+  templateUrl: './shop-list-edit.component.html',
+  styleUrls: ['./shop-list-edit.component.css'],
+})
+export class ShopListEditComponent implements OnInit {
+  @ViewChild('nameInput', { static: false }) nameInputRef: ElementRef;
+  @ViewChild('amountInput', { static: false }) amountInputRef: ElementRef;
+
+  @Output() ingredientAdded = new EventEmitter<{
+    name: string;
+    amount: number;
+  }>();
+
+  constructor() {}
+
+  ngOnInit(): void {}
+
+  onAddItem() {
+    this.ingredientAdded.emit({
+      name: this.nameInputRef.nativeElement.value,
+      amount: this.amountInputRef.nativeElement.value,
+    });
+  }
+}
+
+
+
+
+
+
+
+----------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+certo...
+
+
+
+
+
+
+MAS O PROFESSOR REALMENTE SUBSTITUIU 
+
+ESSE OBJECT POR NOSSA 
+TYPE DEFINITION DE 
+
+
+'Ingredient', que temos em 'ingredient.model.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+import { Ingredient } from 'src/app/shared/ingredient.model';
+
+@Component({
+  selector: 'app-shop-list-edit',
+  templateUrl: './shop-list-edit.component.html',
+  styleUrls: ['./shop-list-edit.component.css'],
+})
+export class ShopListEditComponent implements OnInit {
+  @ViewChild('nameInput', { static: false }) nameInputRef: ElementRef;
+  @ViewChild('amountInput', { static: false }) amountInputRef: ElementRef;
+
+  // @Output() ingredientAdded = new EventEmitter<{
+  //   name: string;
+  //   amount: number;
+  // }>();
+
+  @Output() ingredientAdded = new EventEmitter<Ingredient>();
+
+  constructor() {}
+
+  ngOnInit(): void {}
+
+  onAddItem() {
+    const newIngredient = new Ingredient(
+      this.nameInputRef.nativeElement.value,
+      this.amountInputRef.nativeElement.value
+    );
+
+    this.ingredientAdded.emit(newIngredient);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------> ok... mas isso é EXATAMENTE O QUE EU HAVIA FEITO ANTES...
+
+
+
+
+
+
+
+
+
+
+--> certo, aí ele faz o emit desse event....
+
+
+
+
+
+
+
+
+-. o professor usou 
+
+
+
+const pq não vamos usar essas constantes ao longo do tempo..
+
+
+
+
+--> só use 'let' se planeja mudar essa variable...
+
+
+
+
+
+
+
+
+
+-> OK..... AGORA SÓ FALTA FAZERMOS 'LISTEN TO'
+
+desse negócio lá em 'shoplist'...
+
+
+
+
+
+
+
+
+-----> O PROFESSOR ESCREVE ASSIM:
+
+ 
+
+ <div class="row">
+  <div class="col-xs-10">
+    <app-shop-list-edit (ingredientAdded)="onIngredientAdded($event)" 
+    
+    ></app-shop-list-edit>
+
+
+
+
+
+
+
+
+
+
+
+
+    --> OK, AGORA PRECISAMOS ESCREVER ESSE METHOD DE 'onIngredientAdded'
+
+    lá 
+
+
+    no component de 'shoppingList'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> ok, e meu method ficou funcionando:
+
+
+
+
+
+
+
+    import { Component, OnInit } from '@angular/core';
+
+import { Ingredient } from '../shared/ingredient.model';
+
+@Component({
+  selector: 'app-shopping-list',
+  templateUrl: './shoppingList.component.html',
+  styleUrls: ['./shoppingList.component.css'],
+})
+export class ShoppingListComponent implements OnInit {
+  ingredients: Ingredient[] = [
+    // new Ingredient('Potato', 1, 1651882246336.7927),
+    // new Ingredient('Tomato', 3, 1651882348842.3665),
+    // new Ingredient('Banana', 5, 1651882373138.5793)
+
+    new Ingredient('Potato', 1),
+    new Ingredient('Tomato', 3),
+    new Ingredient('Banana', 5),
+  ];
+
+  selectedIngredient: Ingredient;
+
+  constructor() {}
+
+  ngOnInit(): void {}
+
+  onIngredientAdded(ingredient: Ingredient) {
+    this.ingredients.push(ingredient);
+    console.log(this.ingredients);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> É CLARO QUE O RESTO DOS BUTTONS AINDA NÃO ESTÁ FUNCIONANDO,
+
+
+
+PQ SÓ VAMOS FAZER ISSO FUNCIONAR QUANDO APRENDERMOS SOBRE 'FORMS',
+
+
+na próxima section...
+
+
+
+
+
+
+
+
+
+
+--> MAS JÁ ADICIONAMOS UM KINDOF WORKING NAVIGATION,
+
+E JA´CONSEGUIMOS 
+
+
+
+
+
+SELECIONAR UMA RECIPE E DISPLAYAR NO 'RECIPE DETAIL',
+
+
+e também 
+ja´podemos 
+
+adicioanr 
+
+
+novos ingredients 
+
+a nossa 
+
+list de ingredients...
+
+
+
+
+
+
+
+
+-> ESSES BEHAVIORS SERÃO OVERWRITTADOS NO CURSO,
+
+MAS 
+
+
+ESSE É UM BOM COMEÇO...
+
+
+
+
+
+
+
+
+
+> AGORA DEVEMOS APRENDER SOBRE DIRECTIVES,
+
+PARA QUE 
+
+NA PRÓXIMA VEZ QUE VOLTEMOS AO NOSSO PROJECT,
+
+
+CONSIGAMOS FAZER AQUELES 'DROPDOWN BUTTONS' funcionarem...

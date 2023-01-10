@@ -1,0 +1,48 @@
+<hr>
+
+    <button class="btn btn-primary" (click)="onButtonClick($event)">
+      {{ !showParagraph ? "Show" : "Hide" }} Details
+    </button>
+    <hr>
+    <p *ngIf="showParagraph === true">Secret Password: 'Busted'</p>
+
+
+    <!-- VERSÃO SEM O TRUQUE QUE O PROFESSOR NOS MOSTROU (do indexador, 'i', em cada iteration de nosso array, que é então referenciado no PRÓPRIO TEMPLATE...)-->
+    <!-- <ul
+      [ngStyle]="{
+        listStyle: 'none'
+      }"
+    >
+      <li
+        *ngFor="let timestamp of buttonClicks"
+        [ngStyle]="{
+          backgroundColor:
+            buttonClicks.indexOf(timestamp) >= 5 ? 'blue' : 'transparent'
+        }"
+        [ngClass]="{
+          whiteColor: buttonClicks.indexOf(timestamp) >= 5
+        }"
+      >
+        <p>Timestamp: {{ timestamp }}</p>
+      </li>
+    </ul> -->
+
+    <!-- VERSÃO CCOM O TRUQUE QUE O PROFESSOR NOS MOSTROU (do indexador, 'i', em cada iteration de nosso array, que é então referenciado no PRÓPRIO TEMPLATE...)-->
+    <ul
+    [ngStyle]="{
+      listStyle: 'none'
+    }"
+  >
+    <li
+      *ngFor="let timestamp of buttonClicks; let i = index"
+      [ngStyle]="{
+        backgroundColor:
+          i >= 4 ? 'blue' : 'transparent'
+      }"
+      [ngClass]="{
+        whiteColor: i >= 4
+      }"
+    >
+      <p>Timestamp: {{ timestamp }}</p>
+    </li>
+  </ul>

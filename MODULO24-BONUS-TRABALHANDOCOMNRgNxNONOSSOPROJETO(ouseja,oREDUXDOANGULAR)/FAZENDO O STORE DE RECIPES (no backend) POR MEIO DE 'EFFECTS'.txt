@@ -1,0 +1,1128 @@
+
+
+
+
+
+
+
+
+
+ACHO QUE JÁ CONSEGUI FAZER ISSO...
+
+
+
+
+
+
+
+
+
+
+-> O MEU CÓDIGO DE EFFECTS, RELATIVO A 'STORE RECIPES',
+
+
+
+
+
+
+É ESTE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  saveRecipes$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(RecipeBookActions.SAVE_RECIPES_START),
+
+        switchMap((savedRecipeData: RecipeBookActions.SaveRecipesStart) => {
+          return this.http
+              'https://recipebookdeployproject-default-rtdb.firebaseio.com/recipes.json', //VERSÃO DEPLOY, com o uso de AUTHENTICATE RULES no firebase api (restrição de acesso a contas com email)...
+              savedRecipeData.payload
+            )
+            .pipe(
+              map((data) => {
+                return new RecipeBookActions.SaveRecipesSuccess();
+              }),
+
+              catchError((errorRes: any) => {
+                let errorMessage = 'An unknown error has occured.';
+
+                if (!errorRes.error || !errorRes.error.error) {
+                  return of(
+                    new RecipeBookActions.SaveRecipesFail(errorMessage)
+                  );
+                }
+
+                return of(new RecipeBookActions.SaveRecipesFail(errorMessage));
+              })
+            );
+        })
+      );
+    },
+    { dispatch: true }
+  );
+
+
+
+
+
+
+
+----> no meu caso, isso está funcionando...
+
+
+
+
+
+
+
+--> está salvando recipes no server...
+
+
+
+
+
+
+
+
+
+
+
+-> O CÓDIGO DO PROFESSOR, POR SUA VEZ, FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+storeRecipes$ = createEffect(
+
+    () => {
+        return this.actions$.pipe(
+            ofType()
+        )
+    }
+)
+
+
+
+
+
+
+
+
+
+
+
+
+--> A ACTION QUE COLOQUEI FOI 'SAVE_RECIPES_START'..
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+storeRecipes$ = createEffect(
+
+    () => {
+        return this.actions$.pipe(
+            ofType(recipeBookActions.SAVE_RECIPES_START);
+        )
+    }
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, É CLARO QUE ESSA ACTION NÃO TEM PAYLOAD, PQ 
+
+
+
+
+AS RECIPES NECESSÁRIAS JÁ ESTARÕA PRESENTES NO NOSSO STORE DO NGRX...
+
+
+
+
+
+ex:
+
+
+
+
+
+
+export class SaveRecipesStart implements Action {
+  readonly type = SAVE_RECIPES_START;
+
+  constructor() {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> COLOCAMOS ESSA ACTION NO UNION TYPE, É CLARO:
+
+
+
+
+
+
+
+
+
+
+export type RecipeBookActions =
+  | AddRecipe
+  // | SelectRecipe
+  | SendIngredientsToShopList
+  | DeleteRecipe
+  | EditRecipe
+  | StartFetchRecipes
+  | RecipesFetchSuccess
+  | RecipesFetchFail
+  | SaveRecipesStart
+  | SaveRecipesSuccess
+  | SaveRecipesFail
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO FEITO,
+
+
+o professor vai escrevendo assim:
+
+
+
+
+storeRecipes$ = createEffect(
+
+    () => {
+        return this.actions$.pipe(
+            ofType()
+        )
+    }
+)
+
+
+
+
+
+-> AÍ ELE COLOCA O CLÁSSICO 'switchMap()'..
+
+
+
+
+
+
+
+
+
+exc:
+
+
+
+
+
+
+
+
+
+storeRecipes$ = createEffect(
+
+    () => {
+        return this.actions$.pipe(
+            ofType(recipeBookActions.SAVE_RECIPES_START),
+
+
+            switchMap(
+                () => {
+
+                }
+            )
+        )
+    }
+)
+
+
+
+
+
+--> NÃO VAMOS QUERER USAR NENHUMA DATA DA ACTION, PQ 
+
+ELA NÃO TEM PAYLOAD...
+
+
+
+
+
+
+
+
+
+
+
+
+O PROFESSOR COLOCA O CÓDIGO DO NOSSO PUT REQUEST,
+
+
+COMO EU FIZ...
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+storeRecipes$ = createEffect(
+
+    () => {
+        return this.actions$.pipe(
+            ofType(recipeBookActions.SAVE_RECIPES_START),
+
+
+            switchMap(
+                () => {
+                    
+                    return this.http.put(
+                        url,
+                        recipes
+                    )
+                }
+            )
+        )
+    }
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS AGORA VAMOS PRECISAR DESSE 'RECIPES', O QUE É UM PROBLEMA, PQ NÃO TEMOS ELE, AQUI...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok.... -----> ISSO É UM GRANDE PROBLEMA, SIM, 
+
+
+PQ __ NA MINHA _ VERSÃO DO CÓDIGO EU FUI FORÇADO A TER 1 PAYLOAD COM ESSAS 'RECIPES'
+
+para conseguir 
+
+
+
+
+
+enviar esse post request...
+
+
+(
+
+
+
+
+    ou seja,
+
+    o formato de minha 
+
+    ACTION de 'START_FETCH_RECIPES'
+
+
+    ERA ASSIM:
+
+
+
+
+
+
+export class StartFetchRecipes implements Action {
+  readonly type = START_FETCH_RECIPES;
+
+  constructor() {}
+}
+
+
+
+
+
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> É CLARO QUE A VERSÃO DO PROFESSOR SERÁ DIFERENTE, PQ NÃO TEM NENHUM 'PAYLOAD'
+
+ANEXADO A ESSA ACTION...
+
+
+
+
+
+
+
+
+
+----> OK, MAS ISSO NOS TRAZ A PERGUNTA:
+
+
+
+
+
+
+
+'''COMO VAMOS CONSEGUIR AS RECIPES VINDAS DO STORE, SEM SER NO PAYLOAD DESSA ACTION?????''''
+
+
+
+
+
+
+
+
+
+
+
+--> bem, talvez será por meio do SUBSCRIBE A NOSSA STORE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ERREI... ----> O PROFESSOR EXPLICA QUE 
+
+
+
+O 'get' 
+
+
+
+DESSE STATE, DESSE 'recipes' DENTRO DE NOSSA STORE 
+
+É _ RELATIVAMENTE 
+
+
+
+FÁCIL, LÁ NO ARQUIVO DOS 
+
+EFFECTS.... -----> PARA CONSEGUIR ESSA DATA,
+
+
+
+
+
+
+
+
+
+O PROFESSOR USA um __ OPERATOR __ ESPECIAL,
+
+
+
+CHAMADO DE 
+
+
+'withLatestFrom()',
+
+
+
+
+
+QUE É IMPORTADO LÁ DO 'rxjs/operators'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> ESSE 'withLatestFrom' 
+
+
+
+
+NOS _ DEIXA__ 
+
+
+
+
+
+'MERGE' 
+
+
+1 VALUE DE __ OUTRO __ OBSERVABLE_ 
+
+
+
+
+
+
+PARA DENTRO DE OUTRA 'OBSERVABLE STREAM'...
+
+
+
+
+
+
+
+
+
+--> COMO QUEREMOS NOSSA _______STORE___,
+
+
+pq ela é o observable que nos interessa,
+
+
+
+INJETAMO-NA 
+
+dentro do CONSTRUCTOR DE 'effects',
+
+
+PARA ENTAÕ 
+ACESSAR ESSA DATA DENTRO DO STATE GLOBAL DE NOSSO APP...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ESCREVE-SE ASSIM:
+
+
+
+
+
+
+storeRecipes$ = createEffect(
+
+    () => {
+        return this.actions$.pipe(
+            ofType(recipeBookActions.SAVE_RECIPES_START),
+
+            withLatestFrom(
+
+            ),
+
+            switchMap(
+                () => {
+                    
+                    return this.http.put(
+                        url,
+                        recipes
+                    )
+                }
+            )
+        )
+    }
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CLARO QUE AINDA NÃO ESCREVI A 'STORE'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VAMOS ESCREVER ESSENCIALMENTE:
+
+
+
+
+
+
+
+
+withLatestFrom(
+    
+    
+    this.store.select('recipeBook')
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO VAI _ REALMENTE__ NOS ENTREGAR O 'STATE SLICE' das recipes...
+
+
+
+
+
+
+--> AÍ EM SWITCHMAP VAMOS USAR ESSA DATA, o 'recipeBookState',
+
+
+PARA AÍ RETRIEVAR AS RECIPES, TIPO ASSIM:
+
+
+
+
+
+
+
+
+storeRecipes$ = createEffect(
+
+    () => {
+        return this.actions$.pipe(
+            ofType(recipeBookActions.SAVE_RECIPES_START),
+
+            withLatestFrom(
+                this.store.select('recipeBook');
+            ),
+
+            switchMap(
+                (recipeBookState) => {
+                    
+                    return this.http.put(
+                        url,
+                        recipes
+                    )
+                }
+            )
+        )
+    }
+)
+
+
+
+
+
+
+
+
+
+
+
+------> OK, MAS AQUI TEMOS UM INCONVENIENTE... --> O QUE 
+
+SERÁ 
+
+
+RECEBIDO LÁ NO ARGUMENTO DE 'switchMap'
+
+
+NÃO SERÁ O SIMPLES 'recipeBookState',
+
+
+
+
+
+
+
+
+
+E __ SIM __ VAMOS GANHAR __ UM ARRAY...
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+storeRecipes$ = createEffect(
+
+    () => {
+        return this.actions$.pipe(
+            ofType(recipeBookActions.SAVE_RECIPES_START),
+
+            withLatestFrom(
+                this.store.select('recipeBook');
+            ),
+
+            switchMap(
+                ([]) => {
+                    
+                    return this.http.put(
+                        url,
+                        recipes
+                    )
+                }
+            )
+        )
+    }
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO.... MAS O QUE ESSE ARRAY VAI SEGURAR?
+
+
+
+
+
+
+ELE SEMPRE VAI SEGURAR:
+
+
+
+
+1) 'A DATA PROVIDENCIADA PELO _ OFTYPE,
+
+
+QUE É NOSSA ACTION DATA' (A QUE NÃO TEMOS INTERESSE, NO MOMENTO),
+
+
+
+
+
+
+
+
+2) MAS TAMBÉM VAI NOS _ DAR A DATA VINDA LÁ DE 'latestFrom',
+
+
+
+
+
+QUE SERÁ JUSTAMENTE o 'recipesBookState'...
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+          ///o que acaba dentro desse 'switchMap', se existirem múltiplas coisas antes dele, será um ARRAY com OS 'OBSERVABLES' em __ ORDEM...
+        switchMap(([actionData, recipeBookState]) => { //////O RXJS (method de 'withLatestFrom') VAI _NOS DAR ESSE ARRAY AÍ, que terá TANTO A DATA DE 'ofType' (que é 'actionData', que contém a DATA QUE EXISTIA NA ACTION) como TAMBÉM O 'recipeState', que TERÁ SIDO RETRIEVADO POR 'withLatestFrom()', e que é a coisa QUE REALMENTE NOS INTERESSA, NESSE METHOD DE 'storeREcipes'...
+          return this.http
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> ok...
+
+
+
+
+
+
+
+
+ESSA SINTAXE DE 
+
+
+
+([termo1, termo2]) => {
+
+}
+
+
+
+
+
+
+
+
+
+QUE USAMOS AGORA 
+
+
+
+___ É CHAMADA DE 'ARRAY DESTRUCTURING'... ----> ISSO SIMPLESMENTE SIGNIFICA QUE 
+
+
+USAMOS 
+
+'[]' NA LISTA DE ARGUMENTOS,
+
+
+
+E QUE 
+
+
+__ ___ AÍ __ 
+
+ARMAZENAMOS OS 2 ELEMENTS QUE ESSE ARRAY_ TERÁ 
+
+
+
+__ EM _ VARIABLES DISTINTAS,
+
+
+
+VARIABLES __ QUE _ 
+
+
+
+
+AGORA UTILIZAREMOS DENTRO DE 'switchMap()'...
+
+
+
+
+
+
+
+
+--> O PROFESSOR ADMITE QUE VOCÊ PODERIA 
+
+
+TER ACEITO APENAS 1 ARGUMENTO, MAS ESSE ARGUMENTO 
+
+
+TBM TERIA ESSE FORMATO DE 
+
+'[termo1, termo2]' ,
+
+
+
+
+
+
+
+no caso '[actionData, recipeBookState]' 
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO,
+
+
+GANHAMOS ACESSO AO RECIPEBOOKSTATE,
+
+
+
+E AÍ JÁ PODEMOS ACESSAR AS RECIPES DENTRO DO recipeBookState,
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+  
+  saveRecipes$ = createEffect(  ///////VERSÃO DO PROFESSOR, MELHOR, que USA O OPERATOR DE 'withLatestFrom()' PARA PEGAR AS LATEST RECIPES NO NOSSO STATE, para aí as utilizar para FAZER ESSE SAVE DELAS NO BACKEND... (deixa de se valer de um PAYLOAD na action de 'AUTH_sAVE_sTART')...
+    () => {
+      return this.actions$.pipe(
+        ofType(RecipeBookActions.SAVE_RECIPES_START),
+        withLatestFrom(
+          this.store.select('recipeBook') ///QUEREMOS RETORNAR A 'LATEST DATA' desse slice, para ser usado naquele METHOD QUE VAI FAZER 'SAVE' das recipes no nosso backend...
+        
+        
+          ),
+
+          ///o que acaba dentro desse 'switchMap', se existirem múltiplas coisas antes dele, será um ARRAY com OS 'OBSERVABLES' em __ ORDEM...
+        switchMap(([actionData, recipeBookState]) => { //////O RXJS (method de 'withLatestFrom') VAI _NOS DAR ESSE ARRAY AÍ, que terá TANTO A DATA DE 'ofType' (que é 'actionData', que contém a DATA QUE EXISTIA NA ACTION) como TAMBÉM O 'recipeState', que TERÁ SIDO RETRIEVADO POR 'withLatestFrom()', e que é a coisa QUE REALMENTE NOS INTERESSA, NESSE METHOD DE 'storeREcipes'...
+          return this.http
+            .put(
+              //////a url de cima é a versão DE DUMMY DO NOSSO PROJETO, SEM AUTHENTICATION RULES NO FIREBASE API..
+              // 'https://recipebookdummyproject-default-rtdb.firebaseio.com/recipes.json', ////será um request de PUT, e não de 'POST'... --> ISSO PQ QUEREMOS SEMPRE OVERWRITTAR O VALUE ANTIGO DE 'recipes' com o nosso NOVO value...
+              'https://recipebookdeployproject-default-rtdb.firebaseio.com/recipes.json', //VERSÃO DEPLOY, com o uso de AUTHENTICATE RULES no firebase api (restrição de acesso a contas com email)...
+              // savedRecipeData.payload
+
+              
+              recipeBookState.recipes
+            )
+            .pipe(
+              map((data) => {
+                return new RecipeBookActions.SaveRecipesSuccess();
+              }),
+
+              catchError((errorRes: any) => {
+                let errorMessage = 'An unknown error has occured.';
+
+                if (!errorRes.error || !errorRes.error.error) {
+                  return of(
+                    new RecipeBookActions.SaveRecipesFail(errorMessage)
+                  );
+                }
+
+                return of(new RecipeBookActions.SaveRecipesFail(errorMessage));
+              })
+            );
+        })
+      );
+    },
+    { dispatch: true }
+  );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> NA VERSÃO DO PROFESSOR, ELE NÃO COLOCOU 'dispatch: true',
+
+
+
+  PQ 
+
+
+  ELE __ NÃO QUERIA FAZER O DISPTACH DE ACTIONS DE 'SUCCESS//FAIL',
+
+
+
+  o que pode levar a uma user experience pior,
+
+
+  mas é claro que ele não achou necessário passar essas informações...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  OK... NOSSO CÓDIGO FUNCIONOU...
+
+
+
+
+
+
+
+
+
+
+  NOSSA LÓGICA INTEIRA FOI REESTRUTURADA,
+
+  E AGORA SÓ USAMOS 'NGRX E NGRX/EFFECTS'
+  NESSE APP...

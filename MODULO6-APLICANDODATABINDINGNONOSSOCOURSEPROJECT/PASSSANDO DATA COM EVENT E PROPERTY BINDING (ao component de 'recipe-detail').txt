@@ -1,0 +1,1892 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK... --> COM TODAS ESSAS FEATURES ADICIONADAS,
+
+AGORA QUEREMOS ASSEGURAR QUE 
+
+
+
+
+
+
+1) ''QUANDO UM LIST ITEM É CLICADO, SEU CONTNET É CARREGADO NO RECIPE-DETAIL COMPONENT'''...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> é um desafio para nós...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> consegui, de certa forma... -> os details são comunicados ao component de 'recipe-detail',
+
+que é RENDERIZADO CONDICIONALMENTE...
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO ATUAL FICOU ASSIM:
+
+
+
+
+
+
+
+(RECIPE-ITEM):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+
+
+import { Input } from '@angular/core';
+
+@Component({
+  selector: 'app-recipe-item',
+  templateUrl: './recipe-item.component.html',
+  styleUrls: ['./recipe-item.component.css']
+})
+export class RecipeItemComponent implements OnInit {
+
+
+  // @Input() recipeImagePath: string = '';
+  // @Input() recipeName: string = '';
+  // @Input() recipeDescription: string = '';
+
+  @Output() recipeDetailEmitter = new EventEmitter<number>()
+
+  @Input() name: string;
+  @Input() description: string;
+  @Input() imagePath: string;
+
+
+  constructor() { }
+
+
+
+
+
+  ngOnInit(): void {
+  }
+
+
+  onRecipeItemClick(index: number) {
+
+      this.recipeDetailEmitter.emit(index)
+
+  }
+
+
+}
+
+
+
+
+
+
+
+
+  <a href="#" class="list-group-item clearfix" >
+    <div class="pull-left">
+      <h4 class="list-group-item-heading">{{ name }}</h4>
+      <p class="list-group-item-text">{{ description }}</p>
+    </div>
+    <span class="pull-right">
+      <!-- <img src="{{recipe.imagePath}}" alt="{{recipe.name}}" class="img-responsive" style="max-height: 50px" /> -->
+      <img
+        src="{{imagePath}}"
+        alt="{{ name }}"
+        class="img-responsive"
+        style="max-height: 50px;"
+      >
+    </span>
+  </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> RECIPE LIST:
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <button class="btn btn-success">New Recipe</button>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-xs-12">
+    <app-recipe-item *ngFor="let recipe of recipes; let index=index"
+    (click)="onRecipeItemClick(index)"
+    [name]="recipe.name"
+    [description]="recipe.description"
+    [imagePath]="recipe.imagePath"></app-recipe-item>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, Input, OnInit, Output } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+import { Recipe } from '../recipe.model';
+
+@Component({
+  selector: 'app-recipe-list',
+  templateUrl: './recipe-list.component.html',
+  styleUrls: ['./recipe-list.component.css'],
+})
+export class RecipeListComponent implements OnInit {
+  @Output() listItemDetail = new EventEmitter<Recipe>();
+
+  recipes: Recipe[] = [
+    new Recipe(
+      'Chicken Wings',
+      'Delicious chicken wings.',
+      'https://www.farmfor.com.br/wp-content/uploads/2022/02/coxinha-da-asa-superbowl.jpg'
+    ),
+    new Recipe(
+      'Pork Chops',
+      'Tasty pork chops, check them out.',
+      'http://t2.gstatic.com/licensed-image?q=tbn:ANd9GcQsRbNYL4S-Noacb27Vi-sbWzURFRjW9YN8VOScbiJ0DxTAiGxTyqlNdG1TWHKN1xWqOV4UhHaFef-fBD8-PGo'
+    ),
+    new Recipe(
+      'Caesar Salad',
+      'Fresh and healthy salad',
+      'https://www.confeiteiradesucesso.com/wp-content/uploads/2019/06/ceasarsalad-fb.jpg'
+    ),
+  ];
+
+  constructor() {}
+
+  ngOnInit(): void {}
+
+  onRecipeItemClick(index: number) {
+    console.log('TEST');
+    // console.log(index)
+
+    const selectedRecipe: Recipe = this.recipes[index];
+
+    this.listItemDetail.emit(selectedRecipe);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> RECIPEBOOK:
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit, Output } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+import { Recipe } from './recipe.model';
+
+@Component({
+  selector: 'app-recipe-book',
+  templateUrl: './recipe-book.component.html',
+  styleUrls: ['./recipe-book.component.css'],
+})
+export class RecipeBookComponent implements OnInit {
+  constructor() {}
+
+  loadedRecipe: Recipe;
+
+  ngOnInit(): void {}
+
+  loadedRecipeDetail(recipe: any) {
+    console.log(recipe, 'AA');
+    this.loadedRecipe = recipe;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+    <div class="col-md-5">
+        <app-recipe-list (listItemDetail)="loadedRecipeDetail($event)"></app-recipe-list>
+    </div>
+    <div class="col-md-7">
+        <app-recipe-detail [loadedRecipe]="loadedRecipe"></app-recipe-detail>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+-> vamos ver se o professor fez o que fizemos...
+
+
+
+
+--. ele diz que precisamos emitir um event no component de 'recipe-item',
+
+
+aí 
+
+
+
+
+PEGAR ESSE EVENT LÁ NO COMPONENT DE 'recipeBook' (que também segura 'recipe-detail')
+
+PARA ENTÃO 
+
+
+'PASS DOWN' a eventData  DE QUAL _ ELEMENT/RECIPE FOI SELECIONADO,
+
+
+PARA AÍ 
+
+'PASS DOWN' isso aí 
+
+ao 
+
+component de 
+
+'recipe-item'...
+
+
+
+
+
+
+
+
+
+
+--> tudo isso pode ser solucionado com as coisas que o professor já nos mostrou ao longo do curso....
+
+
+
+
+
+
+
+
+
+
+
+-> o professor esclarece que esse approach que seguiremos agora é 
+
+
+'''APENAS UM APPROACH TEMPORÁRIO'''....  ---> MAIS TARDE VEREMOS __ COMO FAZER 
+
+ISSO __ DE FORMA MAIS __ ELEGANTE__ E FÁCIL (provavelmennte com ROUTING)....
+
+
+
+
+
+
+
+
+-> MAS ESTA APPROACH É ÓTIMA PQ USA AS COISAS QUE 
+
+APRENDEMOS ATÉ AGORA,
+
+
+
+E NOS DÁ UMA 'IMPRESSION'
+
+de quando 
+
+
+UM APPROACH DIFERENTE PODE SER ÚTIL...
+
+
+
+
+
+
+
+
+
+
+-> ok, temos o código de 'recipe-item',
+
+
+tipo assim:
+
+
+
+ 
+
+
+ 
+  <a href="#" class="list-group-item clearfix" >
+    <div class="pull-left">
+      <h4 class="list-group-item-heading">{{ name }}</h4>
+      <p class="list-group-item-text">{{ description }}</p>
+    </div>
+    <span class="pull-right">
+      <!-- <img src="{{recipe.imagePath}}" alt="{{recipe.name}}" class="img-responsive" style="max-height: 50px" /> -->
+      <img
+        src="{{imagePath}}"
+        alt="{{ name }}"
+        class="img-responsive"
+        style="max-height: 50px;"
+      >
+    </span>
+  </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> QUEREMOS QUE QUANDO ESSE LINK DE 'A' for clicado,
+
+  SEJA EMITIDO UM EVENT _ INFORMANDO _ 
+
+
+  O PARENT COMPONENT 
+
+
+  QUE 
+  'ESSE ELEMENT FOI SELECIONADO'... 
+
+
+
+
+  (
+
+      E EU FIZ ISSO,
+
+      realmente,
+
+      mas 
+
+
+      no output do 
+
+
+      component '<recipe-item>'
+
+
+      que 
+
+      EXISTE LÁ EM 'recipe-list',
+
+      como você observa aqui:
+
+
+
+
+
+          <app-recipe-item *ngFor="let recipe of recipes; let index=index"
+    (click)="onRecipeItemClick(index)"
+    [name]="recipe.name"
+    [description]="recipe.description"
+    [imagePath]="recipe.imagePath"></app-recipe-item>
+
+
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -----> acho que dá na mesma, na verdade.... --> A ÚNICA DIFERENÇA É QUE ESSE METHOD de 
+
+
+
+
+
+
+  'onRecipeItemClick'
+
+
+  vai existir 
+
+
+
+
+  _ LÁ NO COMPONENT DE 'recipeList',
+
+  e não propriamente dentro do 'recipeItem'...
+
+
+
+
+
+
+
+
+
+
+
+
+  a versão do professor ficou tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  export class RecipeItemComponent implements OnInit {
+
+
+
+      @Input() recipe: Recipe;
+
+
+
+      @Output recipeSelected = new EventEmitter<void>();
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> COMO NÃO VAMOS PASSAR DATA ALGUMA 
+
+
+  POR MEIO DESSE EVENT EMITTER DE 'recipeSelected',
+
+
+  O professor deixa o pass de um parâmetro 'void' (não vamos passar nada)..
+
+
+
+
+
+
+
+
+  ex:
+
+
+
+    export class RecipeItemComponent implements OnInit {
+
+
+
+      @Input() recipe: Recipe;
+
+
+
+      @Output recipeSelected = new EventEmitter<void>();
+
+
+
+      constructor() {
+
+      }
+
+
+      ngOnInit() {
+
+      }
+
+
+
+
+      onSelected() {
+          this.recipeSelected.emit();
+      }
+  }
+
+
+
+
+
+
+
+
+
+
+--> OK, ISSO VAI EMITIR ESSE EVENT LÁ EM 
+
+
+'recipe-list'...
+
+
+
+
+
+
+
+
+
+----> o professor já pega a info 
+
+
+
+
+de 
+
+'QUAL INDEX FOI CLICADO' 
+
+
+por meio 
+
+daquele for loop de 
+
+
+'ngFor'...
+
+
+
+
+
+
+
+
+
+fica tipo assim:
+
+
+    <app-recipe-item *ngFor="let recipe of recipes; let index=index"
+    (click)="onRecipeItemClick(index)"
+    [name]="recipe.name"
+    [description]="recipe.description"
+    [imagePath]="recipe.imagePath"></app-recipe-item>
+
+
+
+
+
+
+
+
+
+
+
+--> MAS A VERSÃO DO PROFESSOR FICOU ASSIM:
+
+
+
+
+
+
+
+    <app-recipe-item *ngFor="let recipe of recipes; let index=index"
+    [name]="recipe.name"
+    [description]="recipe.description"
+    (recipeSelected)="
+    [imagePath]="recipe.imagePath"></app-recipe-item>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> A PARTIR DESSAS OPERAÇÕES TODAS, VOCÊ PODE OBSERVAR/CONSTATAR 
+
+
+QUE O 
+
+SIMPLES 'INFORM' DE QUE 'CLICAMOS EM ALGUMA COISA'
+
+
+a COMPONENTS DISTANTES é algo _ DIFÍCIL DE SE FAZER NO ANGULAR.... 
+
+
+
+
+
+
+(
+
+    por enquanto,
+    é o 
+
+    único approach que temos, mas vamos melhorar isso no futuro...
+)
+
+
+
+
+
+
+
+
+
+PROFESSOR ESCREVE ASSIm:
+
+
+
+
+
+
+    <app-recipe-item *ngFor="let recipe of recipes; let index=index"
+    [name]="recipe.name"
+    [description]="recipe.description"
+    (recipeSelected)="onRecipeSelected()" 
+    [imagePath]="recipe.imagePath"></app-recipe-item>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ESSE METHOD DE 'onRecipeSelected'
+
+
+vai existir 
+
+DENTRO DE 
+
+
+
+
+'recipeList'...
+
+
+
+
+
+
+
+--> E DEVEMOS PASSAR 'O ELEMENTO RECIPE ADEQUADO/GIVEN RECIPE'
+
+
+a esse 
+
+
+call do method de 'onRecipeSelected()',
+
+
+
+
+
+que o professor fará POR MEIO DO CALL DA VARIABLE DO LOOP (ele nem mesmo usou o 'index' do 'ngFor'...)
+
+
+
+
+
+
+
+
+
+eX:
+
+
+
+
+
+
+
+    <app-recipe-item *ngFor="let recipe of recipes; let index=index"
+    [name]="recipe.name"
+    [description]="recipe.description"
+    (recipeSelected)="onRecipeSelected(recipe)" 
+    [imagePath]="recipe.imagePath"></app-recipe-item>
+
+
+
+
+
+
+
+O CÓDIGO DO PROFESSOR VAI FICANDO ASSIM, lá em 'recipeList':
+
+
+
+
+
+
+
+
+
+
+
+import { Component, Input, OnInit, Output } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+import { Recipe } from '../recipe.model';
+
+@Component({
+  selector: 'app-recipe-list',
+  templateUrl: './recipe-list.component.html',
+  styleUrls: ['./recipe-list.component.css'],
+})
+export class RecipeListComponent implements OnInit {
+  @Output() listItemDetail = new EventEmitter<Recipe>();
+
+  recipes: Recipe[] = [
+    new Recipe(
+      'Chicken Wings',
+      'Delicious chicken wings.',
+      'https://www.farmfor.com.br/wp-content/uploads/2022/02/coxinha-da-asa-superbowl.jpg'
+    ),
+    new Recipe(
+      'Pork Chops',
+      'Tasty pork chops, check them out.',
+      'http://t2.gstatic.com/licensed-image?q=tbn:ANd9GcQsRbNYL4S-Noacb27Vi-sbWzURFRjW9YN8VOScbiJ0DxTAiGxTyqlNdG1TWHKN1xWqOV4UhHaFef-fBD8-PGo'
+    ),
+    new Recipe(
+      'Caesar Salad',
+      'Fresh and healthy salad',
+      'https://www.confeiteiradesucesso.com/wp-content/uploads/2019/06/ceasarsalad-fb.jpg'
+    ),
+  ];
+
+  constructor() {}
+
+  ngOnInit(): void {}
+
+  onRecipeItemClick(index: number) {
+    console.log('TEST');
+    // console.log(index)
+
+    const selectedRecipe: Recipe = this.recipes[index];
+
+    this.listItemDetail.emit(selectedRecipe);
+  }
+}
+
+
+
+
+
+
+---------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+PROFESSOR DIZ ALGO IMPORTANTE:
+
+
+
+
+
+
+
+---> CUSTOM EVENTS NÃO FAZEM 'PROPAGATE UP' ( o que significa uqe é IMPOSSÍVEL 
+
+FAZER O 'LISTEN TO' 
+
+
+A UM _ EVENT_ 'DE UMA CHILD DE UMA CHILD'....
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+------> professor vai escrevendo assim:
+
+
+
+
+
+
+
+
+
+
+import { Component, Input, OnInit, Output } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+import { Recipe } from '../recipe.model';
+
+@Component({
+  selector: 'app-recipe-list',
+  templateUrl: './recipe-list.component.html',
+  styleUrls: ['./recipe-list.component.css'],
+})
+export class RecipeListComponent implements OnInit {
+  @Output() listItemDetail = new EventEmitter<Recipe>();
+
+  recipes: Recipe[] = [
+    new Recipe(
+      'Chicken Wings',
+      'Delicious chicken wings.',
+      'https://www.farmfor.com.br/wp-content/uploads/2022/02/coxinha-da-asa-superbowl.jpg'
+    ),
+    new Recipe(
+      'Pork Chops',
+      'Tasty pork chops, check them out.',
+      'http://t2.gstatic.com/licensed-image?q=tbn:ANd9GcQsRbNYL4S-Noacb27Vi-sbWzURFRjW9YN8VOScbiJ0DxTAiGxTyqlNdG1TWHKN1xWqOV4UhHaFef-fBD8-PGo'
+    ),
+    new Recipe(
+      'Caesar Salad',
+      'Fresh and healthy salad',
+      'https://www.confeiteiradesucesso.com/wp-content/uploads/2019/06/ceasarsalad-fb.jpg'
+    ),
+  ];
+
+  constructor() {}
+
+  ngOnInit(): void {}
+
+  onRecipeItemClick(index: number) {
+    console.log('TEST');
+    // console.log(index)
+
+    const selectedRecipe: Recipe = this.recipes[index];
+
+    this.listItemDetail.emit(selectedRecipe);
+  }
+}
+
+
+
+
+
+
+
+
+
+PROFESSOR ESCREVE ISTO:
+
+
+
+
+
+
+  @Output() listItemDetail = new EventEmitter<Recipe>();
+
+
+
+
+
+
+
+
+  -> O PROFESOR TAMBE´M ESCREVE UM CÓDIGO que emite A RECIPE COMO DATA,
+
+  TIPO ASSIM:
+
+
+
+
+    onRecipeItemClick(index: number) {
+    console.log('TEST');
+    // console.log(index)
+
+    const selectedRecipe: Recipe = this.recipes[index];
+
+    this.listItemDetail.emit(selectedRecipe);
+  }
+
+
+
+
+
+
+
+
+
+
+  --> só que o do professor 'RECEBEU O OBJECT INTEIRO'... (e não só um 'number', como eu fiz)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ------> na list, o professor coloca 
+
+  aquela propreidade de 
+
+
+
+  'selectedRecipes'..
+
+
+
+
+
+
+
+
+  -> INICIALMENTE, ESSE 'selectedRecipe' será definido como _ UNDEFINED,
+
+
+  PQ O PROFESSOR NÃO ESTARÁ 'ASSIGNING A VALUE'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> EM GERAL, É SEMPRE IDEAL __ 
+
+
+
+  COLOCAR O MÍNIMO POSSÍVEL DE LÓGICA NOS SEUS TEMPLATES...
+
+
+
+
+
+
+
+
+FICOU + OU - ASSIM:
+
+
+
+
+
+<div class="row">
+    <div class="col-md-5">
+        <app-recipe-list (listItemDetail)="loadedRecipeDetail($event)"></app-recipe-list>
+    </div>
+    <div class="col-md-7">
+        <app-recipe-detail [loadedRecipe]="loadedRecipe"></app-recipe-detail>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+---> o professor coloca um ngIf aí, exatamente como eesrevi..
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK... E SE 
+
+
+ O 
+
+
+ NEGOCIO NÃO ESTÁ SETTADO,
+
+
+ O PROFESSOR 
+
+
+
+ 
+
+ VAI QUERER COLCAR UMA MESSAGE COMO 'Please select a recipe'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... O PROFESSOR TAMBÉM ADICONA um '<ng-template>''
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> o nosso if check funciona...
+
+
+
+
+
+
+
+
+
+-> devemos pensar u m pouco mais sobre nomes...
+
+
+
+
+
+
+
+PROFESSOR TAMBÉM USOU UM CÓDIGO CONDICIONAL... 
+
+
+
+
+
+MAS
+
+
+EU USEI ASSIM:
+
+
+
+
+
+
+ISSO FOI ESCRITO LÁ EM 'recipeDetail'...
+
+
+
+
+
+
+
+
+
+
+
+<div *ngIf="loadedRecipe">  --> EIS O CÓDIGO EM QUESTAÕ.
+<div class="row">
+  <div class="col-xs-12">
+    <img src="{{loadedRecipe.imagePath}}" alt="" class="img-responsive" />
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <h1>{{ loadedRecipe.name }}</h1>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <div class="btn-group"> <!--será tipo o nosso DROPDOWN de options..-->
+      <ul class="dropdown-menu">
+          <li><a href="#">Add to Shopping List</a></li>
+          <li><a href="#">Edit Recipe</a></li>
+          <li><a href="#">Delete Recipe</a></li> 
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <h2>{{loadedRecipe.description}}</h2>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        Ingredients
+    </div>
+</div>
+<button type="button" class="btn btn-primary dropdown-toggle">
+  Manage Recipe <span class="caret"></span>
+</button>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> MAS O PROFESSOR ESCREVEU ESSE CÓDIGO CONDICIONAL 
+
+lá em 
+
+
+'recipeBook',
+
+
+na referência de '<app-recipe-detail>'...
+
+
+
+
+--> dá na mesma,
+
+a única diferença 
+
+
+
+é que 
+
+esse código estará escrito dentro do template de 
+
+
+
+
+'recipe-detail'...
+
+
+
+
+--> se o 
+
+
+TEMPLATE NÃO ESTIVER SETTADO,
+
+
+PROFESSOR VAI QUERER DISPLAYAR UM DUMMY '<p>',
+
+
+dizendo 
+
+
+'Please select a Recipe!'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA CONSEGUIR ESCREVER UM 'IF-ELSE'
+
+
+
+
+entre esse component de 'recipe-detail'
+
+e 
+o 
+
+
+'<p>Please select a Recipe!</p>',
+
+
+
+
+PROFESSOR VAI USAR AQUELA SINTAXE BIZARRA DE 
+
+'ng-template',
+
+
+
+com um 
+
+REFERENCE...
+
+
+
+
+
+
+--> fica tipo algo assim:
+
+
+
+
+
+<div *ngIf="loadedRecipe; else noRecipeLoaded">
+<div class="row">
+  <div class="col-xs-12">
+    <img src="{{loadedRecipe.imagePath}}" alt="" class="img-responsive" />
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <h1>{{ loadedRecipe.name }}</h1>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <div class="btn-group"> <!--será tipo o nosso DROPDOWN de options..-->
+      <ul class="dropdown-menu">
+          <li><a href="#">Add to Shopping List</a></li>
+          <li><a href="#">Edit Recipe</a></li>
+          <li><a href="#">Delete Recipe</a></li> 
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <h2>{{loadedRecipe.description}}</h2>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        Ingredients
+    </div>
+</div>
+<button type="button" class="btn btn-primary dropdown-toggle">
+  Manage Recipe <span class="caret"></span>
+</button>
+</div>
+<ng-template #noRecipeLoaded>
+<p>Please select a Recipe!</p>
+</ng-template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--->  ou seja, o formato é tipo:
+
+
+
+
+
+
+
+
+
+
+<seu-component *ngIf="loadedRecipe; else exemplo">
+
+<ng-template #exemplo>
+<p>TEXTO ALTERNATIVO</p>
+</ng-template>
+
+
+
+
+
+
+
+
+
+
+---------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+ok... ---> SE SALVAMOS ISSO,
+
+
+
+nosso código funciona...
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA PODEMOS CLICAR ALI E ENTÃO 
+
+
+VER O 'RECIPE DETAILS',
+
+
+que aparecem ASSIM:
+
+
+
+
+
+
+
+<div *ngIf="loadedRecipe; else noRecipeLoaded">
+<div class="row">
+  <div class="col-xs-12">
+    <img src="{{loadedRecipe.imagePath}}" alt="" class="img-responsive" />
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <h1>{{ loadedRecipe.name }}</h1>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <div class="btn-group"> <!--será tipo o nosso DROPDOWN de options..-->
+      <ul class="dropdown-menu">
+          <li><a href="#">Add to Shopping List</a></li>
+          <li><a href="#">Edit Recipe</a></li>
+          <li><a href="#">Delete Recipe</a></li> 
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <h2>{{loadedRecipe.description}}</h2>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        Ingredients
+    </div>
+</div>
+<button type="button" class="btn btn-primary dropdown-toggle">
+  Manage Recipe <span class="caret"></span>
+</button>
+</div>
+<ng-template #noRecipeLoaded>
+<p>Please select a Recipe!</p>
+</ng-template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE A 'RECIPE-DETAIL'
+
+ainda não está 100%,
+
+PQ AINDA NÃO 
+
+ESTAMOS PASSANDO A RECIPE DE FORMA 
+
+TOTALMENTE SATISFATÓRIA...
+
+
+
+
+
+
+
+
+
+
+
+----> COMO ETAPA FINAL
+O PROFESSOR 
+
+
+
+PASSA  
+
+o 
+
+'selectedRecipe'
+
+
+
+AO 
+
+
+
+COMPONENT DE 
+
+'app-recipe-detail'...
+
+
+
+
+
+
+--> PARA ISSO,
+
+TEMOS QUE IR ATÉ 
+
+
+ESSE COMPONENT E ADICIONAR UMA PROPRIEDADE PARA ISSO,
+
+TIPO ASSIM:
+
+
+
+
+import { Component, OnInit, Input } from '@angular/core';
+
+import { Recipe } from '../recipe.model';
+
+@Component({
+  selector: 'app-recipe-detail',
+  templateUrl: './recipe-detail.component.html',
+  styleUrls: ['./recipe-detail.component.css']
+})
+export class RecipeDetailComponent implements OnInit {
+
+
+  @Input() loadedRecipe: Recipe;
+
+
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, FOI EXATAMENTE ISSO QUE EU FIZ...
+
+
+
+
+
+
+
+-> nós fizemos bind da propriedade de 
+
+
+'loadedRecipe' 
+LÁ 
+
+
+
+
+
+
+NO NOSSO 'recipeBook',
+
+como observamos neste template:
+
+
+
+
+
+
+
+
+<div class="row">
+    <div class="col-md-5">
+        <app-recipe-list (listItemDetail)="loadedRecipeDetail($event)"></app-recipe-list>
+    </div>
+    <div class="col-md-7">
+        <app-recipe-detail [loadedRecipe]="loadedRecipe"></app-recipe-detail>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK... --> AÍ AGORA NOSSO 
+
+
+
+COMPONENT 
+
+
+
+
+
+
+DE 'RECIPE-DETAIL'
+
+está funcionando...
+
+
+
+
+
+
+
+
+a image também está sendo carregada..
+
+
+
+
+
+
+
+
+
+
+
+--> a description também está 'fine'...
+
+
+
+
+
+
+
+
+-> O ÚNICO PROBLEMA É OS 'INGREDIENTS',
+
+que ainda não codamos...
+
+
+
+
+
+-> PROFESSOR DIZ QUE A IMAGEM IFCOU MEIO GRANDE,
+
+
+
+
+
+
+POR ISSO ELE COLOCA UM 'max-height'
+
+de 
+
+300px....
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+<div *ngIf="loadedRecipe; else noRecipeLoaded">
+<div class="row">
+  <div class="col-xs-12">
+    <img src="{{loadedRecipe.imagePath}}" alt="" class="img-responsive" style="max-height: 300px; max-width: 400px;" />
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <h1>{{ loadedRecipe.name }}</h1>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <div class="btn-group"> <!--será tipo o nosso DROPDOWN de options..-->
+      <ul class="dropdown-menu">
+          <li><a href="#">Add to Shopping List</a></li>
+          <li><a href="#">Edit Recipe</a></li>
+          <li><a href="#">Delete Recipe</a></li> 
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <h2>{{loadedRecipe.description}}</h2>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        Ingredients
+    </div>
+</div>
+<button type="button" class="btn btn-primary dropdown-toggle">
+  Manage Recipe <span class="caret"></span>
+</button>
+</div>
+<ng-template #noRecipeLoaded>
+<p>Please select a Recipe!</p>
+</ng-template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... ISSO ESTÁ MELHOR..
+
+
+
+
+
+
+
+--> ok, tudo isso está funcionando...

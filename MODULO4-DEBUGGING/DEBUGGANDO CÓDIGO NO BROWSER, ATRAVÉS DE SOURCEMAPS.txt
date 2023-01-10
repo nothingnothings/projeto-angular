@@ -1,0 +1,339 @@
+
+
+
+
+
+
+
+
+
+
+
+
+ÀS VEZES A LEITURA DE ERROR MESSAGES NÃO BASTA..
+
+
+
+
+
+
+
+
+
+
+--> quando clicamos em um server,
+
+
+
+
+PARECE DELETAR,
+
+
+
+MAS 
+
+
+
+
+
+ISSO DÁ PROBLEMA QUANDO CLICAMOS EM 1 DOS ÚLTIMOS ITEMS,
+
+
+
+OU SE TENTAMOS 
+
+DELETAR 
+
+O ÚLTIMO QUE SOBROU (
+
+
+    o delete do último server não está funcioanndo...
+
+
+
+
+
+ 
+)
+
+
+   ->  SE OLHARMOS O NOSSO CÓDIGO, TEMOS ISTO:
+
+    
+
+
+
+
+
+
+    import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  servers;
+
+  onAddServer() {
+    this.servers.push('Another Server');
+  }
+
+  onRemoveServer(id: number) {
+    const position = id + 1;
+    this.servers.splice(position, 1);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <h2>My Servers</h2>
+      <button class="btn btn-primary" (click)="onAddServer()">Add Server</button>
+      <br><br>
+      <ul class="list-group">
+        <li
+          class="list-group-item"
+          *ngFor="let server of servers; let i = index"
+          (click)="onRemoveServer(i)">{{ server }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+-------------------------------
+
+
+
+
+
+
+
+
+
+
+
+O PROBLEMA PROVAVELMENTE ESTÁ NESTE CÓDIGO AQUI:
+
+
+
+
+  onRemoveServer(id: number) {
+    const position = id + 1;
+    this.servers.splice(position, 1);
+  }
+
+
+
+
+
+
+JÁ RESOLVI, O CÓDIGO FICA ASSIM:
+
+
+
+
+
+
+
+
+  onRemoveServer(id: number) {
+    this.servers.splice(id, 1);
+  }
+
+
+
+
+
+
+
+
+
+  --> ok, mas o que o professor nos diz quanto a isso?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ESSE PROBLEMA NÃO É TÃO FÁCIL DE SER DEBUGGADA, PQ NÃO HÁ MENSAGEM DE ERRO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> O IDEAL É CHECAR DURANTE O RUNTIME A RAZÃO DE ISSO NÃO ESTAR FUNCIONANDO,...
+
+
+
+
+
+
+
+--> VÁ ATÉ 'sources' no CHROME,
+
+e aí 
+
+
+procure o 'main.bundle.js' ----> ISSO NÃO É MT FÁCIL DE DEBUGGAR, MT CÓDIGO...
+
+
+
+
+
+
+
+----> É POR ISSO QUE USAMOS __ SOURCEMAPS_...
+
+
+
+
+
+
+
+--> BREAKPOINT.... 
+
+
+
+
+
+
+
+
+
+-> OS ARQUIVOS TYPESCRIPT NÃO SÃO 
+
+CARREGADOS ´NO BROWSER.... --- >MAS AINDA ASSIM, ELES PODEM SER EDITADOS/ANALISADOS 
+
+NAS DEVTOOLS 
+
+PQ 
+
+
+
+_ OS __ ARQUIFVOS__ JAVASCRIPT _ PRODUZIDOS A PARTIR DELES (com a angular-cli )
+
+
+
+CONTÊM SOURCEMAPS EMBUTIDOS...
+
+
+
+
+
+
+
+
+
+-> ESSES SOURCEMAPS SÃO STRIPPED OUT DURANTE A PRODUCTION..
+
+
+
+
+
+
+
+
+
+-> ok, com isso podemos colocar BREAKPOINTS NO NOSSO TYPESCRIPT CODE... (
+
+
+    mas isso também funciona no visual studio code,
+
+    eu acho....
+)
+
+
+
+
+
+
+
+
+
+
+
+-> é um erro  lógico.. -> podemos debuggar isso com o sourcemap..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK... ISSO É BOM, MAS SE EU TIVER QUE SCANNEAR 
+
+
+O MEU 'MAIN BUNDLE' PARA ACHAR 
+ESSE CÓDIGO AÍ,
+
+ISSO SERÁ UM SACO.... --> É POR ISSO QUE 
+
+PODEMOS 
+
+ACESSAR 
+
+DIRETAMENTE 
+
+
+NOSSOS ARQUIVOS TYPESCRIPT,
+
+
+BASTA ABRIR O FOLDER DE 'webpack > src> app' ---> 
+
+
+DENTRO DALI VOCÊ VÊ TODOS OS TYPESCRIPT FILES,
+PARA FACILMENTE ENCONTRAR A FILE QUE VOCÊ QUER DEBUGGAR COM O 
+
+CHROME DEVTOOLS....
+
+
+
+
+
+
+
+-> DEBUGGER COM SOURCEMAPS AJUDAM MT...

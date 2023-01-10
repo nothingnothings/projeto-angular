@@ -1,0 +1,1942 @@
+
+
+
+
+
+
+DE VOLTA AO NOSSO APP,
+
+
+
+
+DEVEMOS CRIAR UM NOVO 'DUMMY SERVICE,'
+
+
+
+PARA 
+
+
+ 
+
+DAR HIGHLIGHT 
+
+
+
+
+
+
+
+
+NAQUELA QUESTÃO APONTADA PELO PROFESSOR;
+
+
+
+A QUESTÃO DE QUE 
+
+
+
+
+'''SERVICES COLOCADOS NO ARRAY DE 'providers' de MODULES 
+
+
+carregados por lazy-loading __ SÓ FICAM COMO INSTANCES DESSES PRÓPRIOS MODULES,
+
+SENDO INDEPENDENTES DO RESTO DO NOSSO APP/MODULES RESTANTES'''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------> PARA MOSTRAR ISSO,
+
+O PROFESSOR CRIA UM NOVO SERVICE, DE NOME 'logging.service.ts'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--. tipo assim:
+
+
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+
+@Injectable()
+export class LoggingService {
+
+
+
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------> OK... 
+
+
+
+
+
+
+
+AÍ VAMOS QUERER __ 
+
+
+
+
+providenciar esse service em algum de nossos modules,
+
+
+como 
+
+
+'recipeBookModule',
+ 
+ por exemplo...
+
+
+
+
+
+
+ --> TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { CommonModule } from "@angular/common";
+import { NgModule } from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
+// import { RouterModule } from "@angular/router";
+import { RecipeBookRoutingModule } from "./recipe-book-routing.module";
+import { RecipeBookComponent } from "./recipe-book.component";
+import { RecipeDetailComponent } from "./recipe-detail/recipe-detail.component";
+import { RecipeEditComponent } from "./recipe-edit/recipe-edit.component";
+import { RecipeItemComponent } from "./recipe-list/recipe-item/recipe-item.component";
+import { RecipeListComponent } from "./recipe-list/recipe-list.component";
+import { SelectARecipeComponent } from "./select-a-recipe/select-a-recipe.component";
+
+
+
+import { SharedModule } from "../shared/shared.module"; ///features compartilhadas entre vários modules, como 'CommonModule', spinning loader, directives, etc...
+import { LoggingService } from "../logging.service";  ///exemplo de SERVICE PROVIDENCIADO DENTRO DE 1 LAZILY-LOADED COMPONENT --> essa instance desse service será SCOPADA APENAS A ESSE MODULE ESPECÍFICO, NÃO VAI 'VAZAR' PARA O RESTO DOS MODULES, será realmente exclusiva essa instance (instance separada do resto de nosso app, no caso... não é application-wide, ela)...
+
+@NgModule({
+
+    declarations: [
+        RecipeBookComponent,
+        RecipeDetailComponent,
+        RecipeBookComponent,
+        SelectARecipeComponent,
+        RecipeEditComponent,
+        RecipeListComponent,
+        RecipeItemComponent,
+
+    ],
+    providers: [
+
+        LoggingService
+    ],
+    imports: [
+       
+       SharedModule, ////DEVE SER IMPORTADO AQUI E TAMBÉM EM 'app.module.ts' (todos shared modules são assim)....
+        // CommonModule,
+        ReactiveFormsModule,  ///esses 3 modules são necessários, aqui, pq usamos essas 3 features dentro dos componnets/código de 'recipeBookMOdule', esse SUBMODULE de nosso app (que é representado por 'app.module.ts', o module em que esse 'recipeBookMOdule' é importado) ------> 
+        ///A RAZÃO PARA TERMOS DE 'REPETIR' ESSES IMPORTS, AQUI, É QUE __ IMPORTS REALIZADOS LÁ EM 'app.module.ts' NÃO SÃO TRANSFERIDOS/INHERITED AUTOMATICAMENTE PELOS 'child modules' importados nele...
+        RecipeBookRoutingModule  ////assim fazemos o ACTUAL IMPORT DAS  _ROUTES_ RELATIVAS_ A ESSA FEATURE DE 'recipeBook' dentro do nosso module de 'recipeBook' (ou seja, aqui há um outsourcing bem absurdo, que deixa nossos components bem mais 'lean')...
+    ],
+     exports: [
+
+        ///não PRECISAMOS IMPORTAR NENHUM DESSES COMPONENTS AO RESTO DAS FEATURES/MODULES DE NOSSO APP, justamente pq ELES SÓ SÃO/SERÃO USADOS INTERNAMENTE, com ESSE PRÓPRIO 'MODULE' de 'RecipeBookModule' que criamos.... 
+        //  RecipeBookComponent,
+        // RecipeDetailComponent,
+        // RecipeBookComponent,
+        // SelectARecipeComponent, 
+        // RecipeItemComponent
+    ],
+
+})
+
+export class RecipeBookModule {
+
+    
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--. CERTO, MAS QUAL SERÁ A LÓGICA DESSE SERVICE?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------> BEM, O PROFESSOR PRIMEIRAMENTE VAI QUERER 
+
+
+
+
+
+
+
+
+
+
+definir {providedIn: 'root'}',
+
+
+
+
+
+
+
+
+PQ ELE VAI QEURER 
+
+
+
+
+PROVIDENCIAR 
+
+ESSE 
+
+SERVICE A NOSSO 
+
+APP INTEIRO...
+
+
+
+
+
+
+
+
+
+
+
+--> 
+
+
+QUANTO À LÓGICA DO SERVICE, ELE ESCREVE ASSIm:
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+
+@Injectable({providedIn: 'root'})
+export class LoggingService {
+
+
+
+    lastLog: string;
+
+
+
+
+
+
+
+
+    printLog(message: string) {
+
+        console.log(message);
+        console.log(this.lastLog);
+        this.lastLog = message;
+    }
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+
+@Injectable({ providedIn: 'root' }) ///queremos fazer provide desse dummy service TANTO EM UM 'MODULE CARREGADO LAZILY' (um submodule do module-chefe 'app') --> ISSO FARÁ COM QUE ESSA INSTANCE DESSE SERVICE EXISTA DE FORMA 'AUTÔNOMA'/INDEPENDENTE DO RESTO DO NOSSO APP; o resto do nosso app, por sua vez, vai contar com UMA OUTRA INSTANCE DESSE SERVICE,JUSTAMENTE POR CONTA DESSE CÓDIGO de 'providedIn: 'root' ' (e as 2 instances serão totalmente distintas e separadas)....
+export class LoggingService {
+  lastLog: string;
+
+  printLog(message: string) {
+    console.log(message);
+    console.log(this.lastLog);
+    this.lastLog = message;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE ISSO É SÓ UM DEMO,
+
+
+
+
+mas é interessante, e imporatnte para entender 
+
+
+ 
+
+ OS 
+
+
+
+ DIFERENTES 
+
+
+
+ 'SERVICE INSTANCE THINGS'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> OK... VAMOS QUERER USAR ESSE 
+
+ SERVICE 
+
+
+ EM ALGUM DE NOSSOS COMPONENTS,
+
+ NO CASO O COMPONENT DE 
+
+
+
+ 'app.component.ts',
+
+
+ TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+ --> BASTA INJETAR O SERVICE, E AÍ 
+
+
+ USAR ISSO EM 'NgOnInit()',
+
+ para fins de teste:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ import { Component, OnInit } from '@angular/core';
+import { AuthService } from './auth/auth.service';
+import { LoggingService } from './logging.service';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent implements OnInit {
+  // selectedPage: string = 'recipeBook';  ////NAVIGATION _ SEM ROUTING_...
+
+
+
+  constructor(private authService: AuthService, private loggingService: LoggingService) {}
+
+  // pageSwitcher(page: string) {  ///navigation SEM ROUTING...
+  //   this.selectedPage = page;
+  // }
+
+
+
+  ngOnInit(): void {  
+
+
+
+
+    this.loggingService.printLog('Hello From Auth AppComponent NgOnInit!');
+
+    
+    console.log('AUTOLOGIN');
+      ////isso é BEM IMPORTANTE, sempre coloque-o no component que faz 'startup' do seu app...
+    this.authService.autoLogin(); ////vai tentar realizar o 'AUTO LOGIN' de nosso user (vai tentar FAZER O EMIT DO 'USER JÁ ARMAZENADO NO LOCAL STORAGE' a outros COMPONENTS DE NOSSO APP)...
+
+
+
+
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK... AÍ VAMOS FAZER A MESMA COISA NO COMPONENT DE 'ShoppingList',
+
+
+
+
+
+
+
+
+QUE, NO MOMENTO, JÁ VAI TER 
+
+
+ESSA 'INSTANCE' APP-WIDE 
+
+
+
+
+DO 
+
+
+
+'loggingService'..
+
+
+
+
+
+
+
+
+
+
+
+------> É POR ISSO QUE O PROFESSOR ESCREVE ASSIm:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { LoggingService } from '../logging.service';
+
+import { Ingredient } from '../shared/ingredient.model';
+import { ShoppingListService } from '../shoppingList.service';
+
+@Component({
+  selector: 'app-shopping-list',
+  templateUrl: './shoppingList.component.html',
+  styleUrls: ['./shoppingList.component.css'],
+})
+export class ShoppingListComponent implements OnInit, OnDestroy {
+  // ingredients: Ingredient[] = [
+  //   // new Ingredient('Potato', 1, 1651882246336.7927),
+  //   // new Ingredient('Tomato', 3, 1651882348842.3665),
+  //   // new Ingredient('Banana', 5, 1651882373138.5793)
+
+  //   new Ingredient('Potato', 1),
+  //   new Ingredient('Tomato', 3),
+  //   new Ingredient('Banana', 5),
+  // ];
+
+
+  ingredients: Ingredient[] = [];
+
+  // selectedIngredient: Ingredient;
+
+
+  private ingredientsChangedSubscription: Subscription;
+
+
+
+  constructor(private shoppingListService: ShoppingListService, private loggingService: LoggingService) {
+    
+   
+  }
+
+  ngOnInit(): void {
+    // this.ingredients = this.shoppingListService.ingredients;
+
+    // this.ingredients = this.shoppingListService.getIngredients();
+
+
+    this.loggingService.printLog('Hello from ShopListComponent!')
+    
+    this.ingredients = this.shoppingListService.getIngredients(); ////define o array inicial...
+
+   this.ingredientsChangedSubscription = this.shoppingListService.ingredientsChanged.subscribe(
+      (ingredients) => {
+        this.ingredients = ingredients;
+      }
+    )
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+AGORA TEMOS 2 PLACES EM QUE USAMSO ESSE SERVICE...
+
+
+
+
+
+
+
+
+
+--> AÍ 
+
+
+
+
+
+
+
+
+
+
+VEMOS O NOSSO APP...
+ 
+
+
+
+
+
+
+
+
+ --> O OUTPUT DO CONSOLE, NO NOSSO APP,
+
+ TERÁ FICADO ASSIM:
+
+
+
+
+
+
+
+ Hello from AppComponent  ngOnInit
+
+
+ undefined
+
+
+
+
+
+
+
+
+
+
+
+--> OK, ATÉ AÍ TUDO BEM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS SE ENTRARMOS NA ROUTE DE 
+
+
+'ShoppingList',
+
+
+
+que é UMA DAS ROUTES 
+
+CARREGADAS 
+
+
+D
+E 
+
+FORMA 
+
+
+'LAZY',
+
+
+veremos 
+
+
+
+ESTE OUTPUT AQUI:
+
+
+
+
+
+
+
+'Hello from ShoppingListComponent ngOnInit!' 
+
+
+
+
+'Hello from AppComponent ngOnInit!' 
+
+
+
+
+
+
+
+
+
+
+
+
+
+OU SEJA,
+
+
+
+
+
+
+
+
+AQUI 
+
+CONSEGUIMOS OBSERVAR QUE 
+
+
+
+
+
+
+
+'''A MESMA INSTANCE DE loggingService''''
+
+
+
+
+ESTÁ SENDO USADA EM NOSSO APP INTEIRO (app-wide),
+
+
+
+
+
+
+
+
+JUSTAMENTE PQ A STRING DE CIMA É ''''O VALUE QUE EXISTIA ANTES, NESSE SERVICE'''
+
+
+
+
+
+
+
+e a string de baixo é 
+
+
+''''O VALUE QUE EXISTE AGORA, NESSE SERVICE (na propriedade do service, na verdade)''''...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO PROVA QUE 
+
+
+
+NÓS 
+
+ESTAMOS USANDO 1 MESMA INSTANCE 
+
+
+
+
+
+
+
+
+EM 
+
+NOSSO APP INTEIRO,
+
+
+
+
+
+_ JUSTAMENTE PQ ESTAMOS USANDO ESSE SERVICE EM 2 DIFERENTES COMPONENTS,
+
+
+
+E AINDA ASSIM ESTAMOS USANDO O MESMO 'OBJECT',
+
+
+
+PQ 
+
+CASO CONTRÁRIO O 'lastLog'
+
+
+
+ESTARIA COMO undefined
+
+
+
+NESSA NOSSA VISITA à PAGE DE 'Shop-list'
+
+
+DEPOIS 
+
+
+DE 
+
+TERMOS VISITADO 
+
+
+
+O 
+
+'recipe-book'....
+
+
+
+
+
+
+
+
+
+
+
+---> OK, TEMOS PROVA DE QUE É O MESMO OBJECT DE ANTES, E QEU 
+
+
+
+A MESMA INSTANCE ESTÁ SOBREVIVENDO NO APP INTEIRO....
+
+
+
+
+
+
+
+
+
+
+
+
+--. OK ... MAS AGORA DEVEMOS MUDAR TUDO ISSO;
+
+DEVEMOS TIRAR O 'providedIn: root'
+
+
+
+
+
+LÁ DO NOSSO SERVICE,
+
+PARA QUE AÍ SEJA POSSÍVEL 
+
+
+
+
+
+FAZER  'PROVIDE' DESSE SERVICE APENAS EM 1 MODULE, lazily-loaded,
+
+
+ESPECÍFICO.. (e não no app inteiro))....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+
+// @Injectable({ providedIn: 'root' }) ///fazer provide desse dummy service DE FORMA 'APP-WIDE' (tanto a modules normais como LAZILY-LOADED)...
+@Injectable()
+export class LoggingService {
+  lastLog: string;
+
+  printLog(message: string) {
+    console.log(message);
+    console.log(this.lastLog);
+    this.lastLog = message;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--->  ok....
+
+
+
+
+
+
+
+
+
+
+
+
+O PROFESSOR TAMBÉM MOSTRA UM EAGERLY LOADED MODULE, como 
+
+
+
+'core.module.ts',
+
+
+
+
+EM QUE COLOCAMOS O 'LoggingModule.ts'...
+
+
+
+(
+    E, AÍ, GANHAMOS O MESMO COMPORTAMENTO DE ANTES, 
+
+    SERVICE INSTANCE PROVIDENCIADA APP-WIDE...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS AGORA DEVEMOS MUDAR TUDO ISSO... --> 
+
+
+
+
+VAMOS FAZER PROVIDE 
+
+
+
+DESSE 
+
+
+
+
+
+service TANTO 
+
+
+
+NO 'app.module.ts',
+
+
+LÁ EM 'providers',
+
+
+
+
+
+
+COMO TAMBÉM 
+
+
+
+
+NO MODULE DE 'shopping-list.module.ts',
+
+
+
+
+EM QUE 
+
+COLOCAREMOS O loggingService
+
+
+
+
+COMO UM DOS PROVIDERS (
+
+
+
+
+    ISSO QUER DIZER QUE AGORA ESTAMOS 
+
+
+    FAZENDO 'PROVIDE'
+
+
+    DESSE 
+
+
+    SERVICE EM 2 DIFERENTES LUGARES:
+
+
+
+
+
+
+    1) NOSSO 'EAGERLY LOADED MODULE' de app.module.ts,
+
+
+
+
+
+    2) NOSSO 'LAZILY LOADED MODULE', de 'ShoppingListModule'...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... O RESULTADO DISSO,
+
+NO CONSOLE,
+
+É UM OUTPUT ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hello from AppComponent NgOnInit! 
+
+undefined
+
+
+
+
+
+Hello from recipeBookModule!
+
+undefined
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... ISSO PROVOU O PONTO DO PROFESSOR....
+
+
+
+
+
+
+
+
+
+
+
+
+-> AS INSTANCES DE NOSSO SERVICES DE 'LAZILY LOADED 
+
+
+
+MODULES'
+
+
+
+
+ficam independentes do resto de nosso app (
+
+
+
+
+
+
+    AQUI FICAMOS COM UMA 'APP-WIDE' INSTANCE 
+
+
+    E COM UMA 
+
+
+    INSTANCE 'privada',
+
+
+
+    A INSTANCE PRIVADA 
+
+
+
+    DO MODULE LAZILY LOADED DE 'recipe-book' ( ou shoplist, tanto faz)...
+)
+
+
+
+
+
+
+
+
+
+
+
+--> ESSA INSTANCE 'PRIVADA' É PROVIDENCIADA PELO CHILD 
+
+
+
+
+
+INJECTOR...
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS SE VOCÊ PRECISAR DESSE 
+
+
+
+COMPORTAMENTO, 
+
+UTILIZE-O -------->  MAS ISSO É BEM SITUACIONAL --------> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+É POR ISSO QUE VOCê PRECISA PENSAR MT ANTES DE FAZER PROVIDE DE ALGUM SERVICE EM QUALQUER 
+
+
+MODULE QUE 
+
+
+NAÕ FOR O 'app.module.ts' -------> PQ VOCê PODE ACABAR  COM ESSE COMPORTAMENTO TRASH AÍ,
+
+
+O QUE PODE LEVAR A BUGS 
+
+
+
+
+NO SEU APPP --------> 
+
+
+
+
+
+
+
+
+
+
+
+PODE USAR ESSA FEATURE,
+
+
+
+
+
+
+
+MAS _ ESTEJA GERALMENTE 'AWARE' DAS INSTANCES QUE VOCÊ CONSEGUE 
+
+
+
+
+
+QUANDO VOCÊ FAZ PROVIDE DE SERVICES EM LAZILY-LOADED MODULES...
+
+
+
+
+
+
+
+
+
+(
+
+
+
+
+
+    e isso também INCLUI 
+
+
+    __MODULES__ QUE VOCÊ IMPORTA PARA 
+
+
+
+    __ DENTRO _  
+
+
+
+
+    DE LAZILY-LOADED MODULES,
+
+
+
+
+    COMO, NESSE EXEMPLO,
+
+
+
+O 
+
+
+
+MODULE DE 
+
+
+'SharedModule'...
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+EXEMPLO DE 'SharedModule':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> O SHAREDMODULE,
+
+É CLARO,
+
+
+TAMBÉM É CAPAZ DE 
+
+
+
+
+
+
+FAZER ADD DE 'PROVIDERS',
+
+
+
+
+no caso,
+
+
+
+
+fazemos o provide de 'LoggingService'..
+
+
+
+
+
+
+
+
+
+
+
+-> 
+
+
+
+
+
+CERTO... --> 
+
+
+
+
+
+E O SHAREDMODULE É IMPORTADO PELO 'app.module.ts',
+
+
+
+
+
+O QUE FAZ COM QUE ELE MESMO SEJA UM 'EAGERLY LOADED MODULE'.... (contrário de lazily-loaded)...
+
+
+
+
+
+
+
+
+----> MAS O PROBLEMA, AQUI, É QUE 'SharedModule'
+
+
+
+TAMBÉM É/FOI IMPORTADO LÁ PELO 'ShoppingListModule'...
+
+
+
+
+
+
+
+
+
+
+
+
+-----> COMO OBSERVADO NESTE CÓDIGo:
+
+
+
+
+
+// import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { LoggingService } from '../logging.service';
+import { SharedModule } from '../shared/shared.module';
+// import { RouterModule } from '@angular/router';
+import { ShopListEditComponent } from './shop-list-edit/shop-list-edit.component';
+import { ShoppingListItemComponent } from './shopping-list-item/shopping-list-item.component';
+import { ShoppingListRoutingModule } from './shoppingList-routing.module';
+import { ShoppingListComponent } from './shoppingList.component';
+
+@NgModule({
+  declarations: [
+    ShoppingListComponent,
+    ShoppingListItemComponent,
+    ShopListEditComponent,
+  ],
+  providers: [
+    LoggingService  ///ver aula 'carregando services de forma diferente'.... esse é um dummy module...
+  ],
+  imports: [
+    // CommonModule, 
+    FormsModule, 
+    ShoppingListRoutingModule,
+    SharedModule/// isso deve ser importado aqui e TAMBÉM EM 'app.module.ts'....
+  
+  ]
+
+
+
+})
+export class ShoppingListModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK... 
+
+
+
+
+
+
+
+ISSO QUER DIZER QUE O 'SHARED MODULE',
+
+
+
+
+
+EM RELAÇAÕ AO 'shoplist module',
+
+
+
+
+TAMBÉM FOI/É 'EAGERLY LOADED'.. ---> entretnato,
+
+
+
+O shoppingList 
+
+
+
+em SI _ NÃO DEIXA DE SER LAZILY-LOADED,
+
+
+
+
+O QUE 
+TORNA ESSE 'SHAREDMODULE',
+
+
+
+NESSE __ LUGAR ESPECÍFICO,
+
+
+
+
+
+
+__ TAMBÉM _ UM 'LAZILY-LOADED MODULE'....
+
+
+
+(
+
+
+
+
+
+    isso quer dizer que 
+
+
+
+NESSE EXEMPLO O 'ShoppingListModule' É 
+
+
+
+
+AS 2 COISAS:
+
+
+
+
+1) É LAZILY-LOADED, 
+
+
+ATRAVÉS DA SHOPPINGLISTMODULE,
+
+
+
+
+
+
+2) É EAGERLY-LOADED,
+
+DENTRO DO 
+
+
+'App.module.ts'...
+
+
+
+
+
+)
+
+
+
+
+
+
+
+--. O EFEITO DISSO É QUE SE NÓS RECARREGARMOS A PAGE,
+
+ 
+
+
+
+
+
+ O NEGÓCIO VAI FUNCIOANR,
+
+
+MAS FICAREMOS COM AQUELE MESMO COMPORTAMENTO DE '2 DIFERENTES INSTANCES'...
+
+
+
+
+
+
+
+
+-> E ESSE É O BUG MAIS COMUM QUANDO FALAMOS DE 'PROVIDE SERVICES EM OUTROS MODULES,
+
+DISTINTOS DE APP.MODULE.TS'..
+
+
+
+
+
+
+
+
+
+
+--> ESSE BUG:
+
+
+
+
+
+
+
+
+''VOCÊ PODE ESTAR FAZENDO PROVIDE DE 1 SERVICE DETERMINADO EM 
+
+ALGUM SHARED MODULE,
+
+
+
+MODULE EM QUE 
+
+VOCê 
+
+
+PENSA ''' sim, vou colocar todos meus shared services DENTRO DESSE SHARED MODULE''' --> 
+
+
+
+
+
+
+
+
+mas mesmo nesses casos, você 
+
+talvez TENHA 'SHARED SERVICES'
+que 
+
+
+devem/deverão USAR A MESMA INSTANCE AO LONGO DO SEU APP INTEIRO,
+
+
+
+
+algo que vai OBSTAR O USO DESSE SHARED MODULE PARA 
+
+
+
+
+COMPARTILHAR ESSES SERVICES COM SEUS OUTROS MODULES,
+
+
+
+
+PQ 
+
+
+ASSIM QUE VOCê IMPORTAR ESSE SHARED MODULE 
+
+
+
+EM 1    'lazy loaded module',
+
+
+
+
+
+
+OS SERVICES PROVIDENCIADOS DENTRO DO 'SHARED MODULE'
+
+SERÃO RECRIADOS _ ESPECIFICAMENTE (exclusivamente )
+
+ 
+ PARA 
+
+ O 
+
+
+ LAZY LOADED MODULE EM QUE VOCê O INSERIU,
+
+
+ E AÍ 
+
+
+ DO NADA VOCÊ TERÁ UM BEHAVIOR QUE VOCÊ NÃO VAI QEURER...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> É POR ISSO QUE 
+
+
+
+ O PROVIDE DE 1 SERVICE DIRETAMENTE NO 'LAZY LOADED MODULE'
+
+ É ALGO QUE 
+
+
+
+
+ VOCÊ 
+
+
+
+
+
+ PODERÁ 'CONTROL DELIBERATELY',
+
+
+
+
+
+
+
+ MAS O PROVIDE DE 1 SERVICE EM 1 SHARED MODULE É 
+
+ UM 
+
+ 'COMMON GOTCHA',
+
+
+
+GOTCHA EM QEU VOCê 
+
+'PENSA QUE VOCê VAI USAR A MESMA SERVER INSTANCE AO LONGO DOS SEUS MODULES, DO SEU APP INTEIRO',
+
+
+
+
+QUANDO ISSO NÃO ACONTECE..
+
+
+
+
+
+
+
+
+
+
+
+
+-> ESSA PODE PARECER UMA NOÇÃO DIFÍCIL DE COMPREENDER,
+
+MAS É IMPORTANTE,
+
+PQ 
+É UMA 
+
+FONTE COMUM DE BUGS...
+
+
+
+
+
+
+
+
+
+
+
+--> RULE OF THUMB: 
+
+
+
+
+
+
+
+
+-> PROVIDENCIE SERVICES LÁ NO 'app.module.ts',
+
+
+
+ou por 
+
+@Injectable(providedIn: 'root' )
+
+
+
+
+
+
+
+
+
+
+SE VOCÊ DESEJAR 
+
+
+
+PROVIDENCIAR SERVICES EM MODULES ESPECÍFICOS,
+
+assegure:
+
+
+
+
+'QUE O MODULE EM QUE VOCê ESTÁ PROVIDENCIANDO ESSE SERVICE NÃO É LAZY LOADED''..
+
+
+
+
+
+
+
+
+
+OU 
+
+
+''QUE  VOCê DELIBERADAMENTE QUER MÚLTIPLAS INSTANCES''...       

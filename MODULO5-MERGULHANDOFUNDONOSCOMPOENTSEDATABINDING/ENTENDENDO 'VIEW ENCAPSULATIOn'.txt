@@ -1,0 +1,983 @@
+
+
+
+
+
+
+
+
+
+
+
+
+----> O PROFESOR NÃO TEM CERTEZA SE NÓS PERCEBEMOS NAS ÚLTIMAS LECTURES,
+
+
+
+COM NOSSA WORKING APPLICATION,
+
+
+
+
+
+__ SE NÓS ADICIONAMOS 
+
+
+SERVERS E BLUEPRINTS,
+
+
+
+
+ALGO MUDOU...
+
+
+
+
+
+
+
+
+
+
+-> O QUE MUDOU FOI:
+
+
+
+
+1) os nossos blueprints NÃO ESTÃO MAIS FICANDO COM UMA 
+
+'BLUE COLOR' 
+
+
+(SEUS DIZERES FICAVAM EM AZUL, NO PASSADO)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> isso estava colorido como azUl anteriormente 
+
+
+  
+  PQ _ LÁ 
+
+  NO 'app.component.css'
+
+
+  HAVÍAMOS DEFINIDO 
+
+  ISTO:
+
+
+
+
+
+
+
+
+
+  .container {
+    margin-top: 30px;
+  }
+  
+  p {
+    color: blue;
+  }
+  
+
+
+
+
+
+
+
+  --> OS PARAGRAPHS DEVERIAM TER UMA 
+
+  'BLUE TEXT COLOR'.... ----> MAS COMO _ 
+
+
+  AMBOS 
+
+  OS 
+
+
+  '<p>' 
+
+
+
+
+
+COMPONENT 'SERVER LIST ITEM' 
+
+
+
+_ foram movidos 
+
+
+
+LÁ DE 
+
+'app.component.html'
+
+PARA UM COMPONENT PRÓPRIO, DE NOME 
+
+'app-server-item',
+
+
+
+
+
+
+
+
+
+NÓS DEIXAMOS DE TÊ-LOS NESSE ARQUIVO... ----> MAS O PROFESSOR DIZ QUE 
+
+
+
+
+ISSO É MT ESTRANHO,
+
+PQ 
+O 
+
+CÓDIGO DE 
+
+
+'p {
+    color: blue
+}' 
+
+
+lá em 
+
+'app.component.css'
+
+
+
+
+_ DEVERIA_ AFETAR___ TODOS OS PARAGRAPHS,
+
+
+
+
+NO NOSSO APP INTEIRO... ------------>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+HÁ OUTARS PESSOAS QUE PODEM ARGUMENTAR:
+
+
+'''não, como isso está no arquivo de app.component.css,
+
+ESSE STYLE SÓ DEVE PERTENCER AO template de app.component.html,
+
+e não aos outros templates dos outros components....'' -------> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS  ____ESSA NÃO É A RESPOSTA COMPLETA.... ------> PQ 
+
+
+
+
+__ PELA MANEIRA QUE O 'CSS' FUNCIONAO ORDINARIAMENTE,
+
+
+
+
+ELE _ NÃO DÁ A MÍNIMA  SOBRE 
+
+
+
+''''ON WHICH CSS FILE YOU DEFINED A RULE'',
+
+
+
+
+
+
+
+E SIM 
+
+
+UM CSS SELECTOR É SIMPLESMENTE 'APPLIED TO THE WHOLE DOCUMENT'''',
+
+
+normalmente....
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK... --> ISSO SIGNIFICA QUE 
+
+
+O 
+
+FATO DE 
+
+
+'p {color: blue}' não ser INCORPORADO A TODOS OS '<p>' DE NOSSO PROJETO (em todos os components)
+
+
+
+
+É _ ACTUALLY_ ALGO 
+
+
+
+__ 'ENFORCED'  
+
+
+
+
+
+
+pelo _ ANGULAR,
+
+
+
+
+
+UM COMPORTAMENTO QUE NÃO _ É O BEHAVIOR DEFAULT DO BROWSER,
+
+
+
+
+
+
+E SIM UM behavior alterado... ---------->  ISSO SIGNIFICA QUE 
+
+
+ALÉM DE esses css files 
+
+
+
+terem esse 
+
+
+'GOAL' de 'ENCAPSULATING STYLES' 
+
+
+PARA O COMPONENT EM QUE PERTENCEM (como fiz anterioremnte),
+
+
+
+
+
+
+_ ISSO,
+ 
+ NOVAMENTE,
+
+
+
+ __ NÃO É UM COMPORTAMENTO DEFAULT, E SIM UM __ COMPORTAMENTO ENTREGUE A NÓS _ POR MEIO DO ANGULASr....
+
+
+
+
+ (
+
+     é semelhante a 'css modules'...
+ )
+
+
+
+
+
+
+
+
+
+
+ --> É UM COMPORTAMENTO MT BOM, 
+
+
+ PQ __ COM ISSO,
+
+ PODEMOS 
+
+ ASSEGURAR QUE 
+
+ QUAISQUER ESTILOS QUE DEFINIMOS EM UM ARQUIVO CSS 
+
+   
+   VÃO ACABAR APLICADOS  
+
+
+
+
+
+
+
+
+   __ SOMENTE__ AO COMPONENT __ A QUE PERTENCEM....
+
+
+
+
+
+
+
+
+
+
+
+----> BEM.... ISSO TEORICAMENTE É BOM,
+
+
+
+MAS ISSO SIGNFICIA QUE 
+
+
+
+
+
+AGORA SERÍAMOS/SEREMOS FORÇADOS A COPIAR ESSE 
+
+
+
+SELECTOR 
+
+de 
+
+
+p {
+    color: blue 
+}
+
+
+
+E 
+
+COLAR 
+
+
+
+
+LÁ 
+
+
+
+
+
+NOS NOSSOS COMPONENTS EM QUE 
+DESEJAMOS O UTILIZAR..... ------> O COMPONENT,
+
+NO CASO, 
+
+É 
+
+
+
+'server-item-component'...
+
+
+
+
+
+
+
+
+
+
+
+------->  e isso realmente funciona...
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS SE EXECUTARMOS NOSSO CÓDIGO E ABRIRMOS AS DEV TOOLS,
+
+
+AÍ 
+
+
+SE _ EXAMINARMOS UM ELEMENTO 'SERVER BLUEPRINT' 
+
+
+
+
+
+que é adicionado na nossa página,
+
+
+
+VEREMOS QUE 
+O 
+
+ESTILO CSS de 'blue' 
+
+APLICADO 
+
+
+
+TERÁ 
+
+
+
+UM SELECTOR DE 
+
+
+
+
+
+
+
+
+
+p [_ng_content-ejo-2] {
+    color :blue
+}
+
+
+
+
+
+
+
+
+
+--> ISSO QUER __ DIZER_ QUE _ O SELECTOR DESSE STYLE __ MUDOU COMPLETAMENTE.. --->
+
+
+
+
+
+
+
+
+
+
+
+anteriormente, no código 'original',
+
+tínhamos apenas 
+
+'p {}',
+
+
+
+
+
+
+MAS PARECE 
+QUE 
+
+
+O COMPORTAMENTO/BUILD WORKFLOW 
+
+DO 
+
+
+ANGULAR __ ALTERA TOTALMENTE _ 
+
+
+
+O SELECTOR QUE ACABA APLICADO AOS NOSSOS ELEMENTOS...
+
+
+
+
+
+
+
+
+
+
+
+--> é por isso que o negócio acabou como 
+
+
+p[_averystrangeattribute_],
+
+
+
+
+
+
+
+
+
+
+COMO 
+
+p[_ngcontent-ejo-2] {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> O QUE DIABOS ISSO SIGNIFICA? 
+
+
+
+
+
+
+
+
+
+-> SE EXAMINAMOS NOSSOS ELEMENTS CÓDIGO HTML,
+
+
+PODEMOS ENCONTRAR 
+
+ESSE 
+
+ATTRIBUTE DE 
+
+
+''_ngcontent-ejo-2 ''
+
+
+
+
+
+
+
+lá na nossa tag de <p>,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+<p _ngcontent-ejo-2>  <------------------------
+    <!--template bindings= {
+        "ng-reflect-ng-if":null
+    }-->
+    <!--template bindings= {
+        "ng-reflect-ng-if": "true"
+    }-->
+    <em _ngcontent_ejo-2>Test</em>
+
+
+
+
+
+
+
+
+
+
+
+
+----> por que isso? 
+
+
+
+
+
+
+É POR CONTA DE '<p _ngcontent-ejo-2> '
+
+
+
+
+
+
+QUE NOSSO STYLE ACABOU SENDO APLICADO,
+
+
+TUDO PQ 
+
+esse style definition nos 
+
+disse 
+
+''TRANSFORME TODO 
+
+TEXT EM UM 
+
+PARAGRAPH EM BLUE, 
+
+ISSO SE __ ESSE TEXT ESTIVER EM UM PARAGRAPH 
+
+
+
+QUE POSSUI ESSE ATTRIBUTE DE 
+
+
+'_ngcontent-ejo-2' ... --- É CLARO QUE ISSO SE APLICA PARA 
+
+
+
+_ ESSE '<p>' 
+
+QUE ESTÁ _ SEGURNADO 
+
+
+
+
+ESSE TEXT ESPECÍFICO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS O OUTRO PARAGRAPH QUE TEMOS, lá em 'app.cockpit.html',
+
+
+
+ESSE __ COCKPIT 
+
+
+
+
+TERÁ __ DIFERENTES ATTRIBUTES, COMO PODEMOS OBSERVAR:
+
+
+
+
+
+
+
+<input _ngcontent-ejo-1 class="form-control ng-valid ng-dirty ng-touched" type="text>
+
+
+
+
+
+
+
+
+
+----> 
+ou seja,
+
+AQUI TIVEMOS UM ATTRIBUTE DIFERENTE,
+
+DE 
+
+
+
+'_ngcontent-ejo-1'....
+
+
+
+
+
+
+
+
+
+
+
+
+------------> CABE RESSALTAR QUE AGORA JÁ TEMOS 2 'ATTRIBUTES ESTRANHOS',
+
+
+1 que é 
+
+
+'ejo-1' 
+
+
+
+e
+ outro que é 
+ 'ejo-2'...
+
+
+
+
+
+
+
+2 ATTRIBUTES DIFERENTES....
+
+
+
+
+ -----> E É POR ISSO QUE O STYLING 
+
+ DE 'BLUE' NAÕ ACABA APLICADO AO PARAGRAPH DE 'ejo-1'..
+
+
+
+
+
+
+
+
+
+
+
+ ---> A QUESTÃO É QUE ''TODOS ESSES ATTRIBUTES ESTRANHOS''',
+
+ que estão por toda parte,
+
+
+
+
+ TODOS ESSES STRANGE ATTRIBUTES _ _SÃO APLICADOS_ AOS SEUS 'ESPECÍFICOS ELEMENTOS'
+
+
+ por meio do ANGULAR... -------> 
+
+
+
+
+
+
+
+
+
+
+ ISSO QUER DIZER QUE O _ ANGULAR__ 'FORÇA' esse 'STYLE ENCAPSULATION'... --> E É CLARO QUE 
+
+
+ O ANGULAR_ _ NÃO CONSEGUE FAZER ISSO MAGICAMENTE ... -->  A MAENIRA UQE ELE 
+
+
+ ENCONTRA/ENCONTROU É 
+
+
+
+ '''SIMPLESMENTE GIVE THE SAME ATTRIBUTE _ TO __ ALL ELEMENTS IN A COMPONENT'''.... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+ - ISSO QUER DIZER, NESSE EXEMPLO, QUE 
+
+
+
+ O 'ng-content-ejo-1'
+
+
+
+
+É APLICADO A _ __ 
+
+ TODOS OS ELEMENTOS DENTRO DE UM _ _COMPONENT_ SEU...
+
+
+
+
+
+  __ _ isso quer 
+
+
+
+
+
+  dizer que 
+
+
+  todos 
+  
+   elementos no component 'cockpit' __ JA´_ TERÃO __ 
+   
+   
+   
+   
+
+   O
+   
+   
+   ngcontent-ejo-1' 
+
+
+
+
+
+
+
+
+   _ APLICADOS A ELES....
+
+
+
+
+
+
+
+
+
+
+
+--> E A QUESTÃO É QUE O _ ANGULAR _ VAI _ 'DO THIS FOR EACH COMPONENT, for each of the components' elements',
+
+
+
+(vai adicionando UNIQUE ATTRIBUTE-NAMES, como  'ejo-1' 'ejo-2', 'ejo-3'...),
+
+
+
+
+
+
+E COM ISSO VAI ASSEGURAR 
+
+
+
+
+
+
+
+
+   --> COM ISSO, O ANGULAR PODE __ ASSEGURAR_ QUE _ QUANDO ele troca __ seu 
+   style selector NAME, esse 
+
+   attribute selector acaba adicioNADO A 
+
+
+    TODOS OS STYLES DEFINIDOS 
+
+    PARA 1 COMPONENT.... --> faz isso para qeu esses styles apenas acabem adicionados a elements desse component específico...
+
+
+
+
+
+   o _ ANGULAR _ diz que a frazqeza do view-encapsuation  É QUE O CÓDIGO CSS DE UMA COMPONNET BASICAMENTE 
+   será APENAS APLICADO A ELEMENTS _ DESSE COMPONENT ESPECÍFOC...
+
+
+
+
+
+
+
+
+
+   -> ESSE COMPORTAMENTO DO ANGULAR 'KINDOF'
+
+   emula o _ SHADOW DOM.. -> O SHADOW DOM É 
+
+   UMA TECNOLOGIA QUE NÃO E´SUPORTADA POR TODOS OS BROWSERS, EM QUE 
+
+
+   _ CADA _ ELEMENT_ TEM SEU PRÓPRIO 
+
+
+
+   'SHADOW DOM' 
+
+   por trás de si,
+
+   EM QEU VOCÊ PODERIA FAZER COIASAS COMO '''ASSIGN STYLES TO EACH ELEMENT''' ( como estamos fazendo)... 
+
+
+
+
+
+
+
+
+
+   -> MAS COMO ESSA  TECNOLOGIA DE 'COMPONENTS AUTÔNOMOS AINDA NÃO FUNCIONA EM TODOS OS BROWSERS,
+
+
+
+
+É ASSIM QUE O ANGUALAR 'EMULATES' esse comportmanet.
+
+
+
+
+
+
+
+
+-> OK, ESSE É O EXEMPLO DA 'VIEW ENCAPSULATION' NO ANGULAR....

@@ -1,0 +1,294 @@
+
+
+
+
+
+
+
+
+
+
+
+-> JÁ VIMOS COMO __ CRIAR 
+
+
+__ FORMS __ 
+
+
+
+
+POR MEIO DO 'TEMPLATE-DRIVEN' APPROACH DO 
+
+
+ANGULAr...
+
+
+
+
+
+
+
+
+
+-> O TD 
+
+era o approach 
+
+
+que 
+
+
+'PARTIA DO TEMPLATE, DE COISAS DIGITADAS NO TEMPLATE, PARA AÍ 
+
+CODAR COISAS LÁ NO 
+
+
+ARQUIVO TYPESCRIPT'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-_> certo....
+
+
+
+
+
+
+
+
+
+ENTRETANTO,
+
+
+
+COM O 
+
+
+REACTIVE APPROACH,
+
+
+
+
+
+
+O CAMINHO É JUSTAMENTE O INVERSO:
+
+
+
+
+
+
+COMEÇAMOS A DIGITAR A REPRESENTAÇÃO 
+
+DA 
+
+FORM 
+LÁ 
+
+
+NO CÓDIGO TYPESCRIPT,
+
+
+
+E SOMENTE __ DEPOIS_ 
+
+
+
+é que 
+
+vamos 
+
+
+
+escrever essa representação no código HTML/TEMPLATE (pelo menos eu ACHO que é assim)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TWO APPROACHES:
+
+
+
+
+
+
+
+
+
+
+
+
+
+1) TEMPLATE-DRIVEN --> '''ANGULAR INFERS THE FORM OBJECT FROM _ THE __ DOM''...
+
+
+
+
+
+
+
+
+
+
+
+
+
+2) REACTIVE APPROACH -----> ''''FORM IS CREATED PROGRAMMATICALLY AND SYNCHRONIZED WITH THE DOM''''...
+
+
+
+
+
+
+
+
+
+
+
+
+-> o approach n2 
+
+TE DEIXA 
+
+CONFIGURAR 
+
+SUA FORM 
+
+
+COM BEM MAIS DETALHES,
+
+
+
+
+
+
+
+
+
+E VOCÊ 
+
+
+__CRIA_  A FORM PROGRAMATICAMENTE,
+
+
+
+NO TYPESCRIPT,
+
+
+
+
+e embora 
+
+ISSO 
+
+
+
+__ PARECA __ MAIS 
+COMPLICADO,
+
+
+
+NAÕ 
+
+
+
+ 
+ É TÃO MAIS DIFÍCIL,
+
+ NA VERDAED,
+
+
+
+
+
+
+ E TALVEZ 
+
+ SEJA 
+
+
+
+ A COISA 
+
+QUE 
+
+VOCÊ 
+
+VAI 
+
+QEURER USAR 
+
+
+
+NO SEU PROJETO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-_> VAMOS VER AGORA COMO ISSO FUNCIONA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+

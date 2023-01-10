@@ -1,0 +1,597 @@
+
+
+
+
+
+
+
+
+O QUE SÃO DYNAMIC COMPONENTS?
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É IMPORTANTE ENTENDER QUE 
+
+
+
+DYNAMIC COMPONENTS, EM GERAL,
+
+
+
+QUE 
+
+
+VOCÊ 
+
+SÓ QUER FAZER 'DISPLAY'
+
+
+DE ALGUM COMPONENT,
+
+DE FORMA DINÂMICA... -> ISSO QUER DIZER QUE 
+
+
+
+
+
+SEU COMPONENT 
+
+
+NÃO FICA SEMPRE 
+
+ALI,
+
+
+MAS QUE 
+
+PASSA A EXISTIR,
+
+
+QUANDO 
+
+
+ALGUM 
+
+EVENTO/COISA OCORRE NO SEU CÓDIGO... -------> 
+
+
+
+É POR ISSO QUE 
+
+VOCÊ 
+
+VAI QUERER 
+
+
+
+
+TIPICAMENTE 
+
+
+
+__CONTROLAR__ PROGRAMATICAMENTE _ O 'LOAD' DESSE COMPONENT AÍ,
+
+
+
+O RENDER DESSE COMPONENT --> 
+
+
+
+
+E JÁ APRENDEMOS 
+
+
+UMA MANEIRA 
+
+DE FAZER 
+
+
+ESSE 
+
+
+RENDER CONDICIONAL,
+
+
+
+
+
+
+QUE É 
+
+JUSTAMENTE O 
+
+
+'ngIf',
+
+
+QUE USAMOS ATÉ AGORA NO CURSO...
+
+
+
+
+
+
+
+
+------>
+
+
+
+
+O NGIF ------> É MT BOM,
+
+
+
+PQ TE DEIXA USAR UM __ DECLARATIVE APPROACH (
+
+
+TE DEIXA 
+
+ADICIONAR 
+
+
+
+AQUELE COMPONENT SELECTOR EM ALGUM LUGAR DE SEU APP, COISAS COMO 
+
+'app-modal',
+
+
+
+
+
+
+
+E AÍ 
+
+
+USAR o 'ngIf'
+
+PARA 
+
+
+APENAS 
+
+RENDERIZAR 
+
+
+
+
+AQUELE COMPONENT DE ACORDO COM CERTA CONDIÇÃO....
+)
+
+
+
+
+
+
+
+
+
+
+
+--> OU SEJA, VOCÊ CONTROLA SE 
+
+O DOM REALMENTE TERÁ AQUELE COMPONENT OU NÃO ---. É POR ISSO QUE 
+
+ 
+ O NGIF É UM ÓTIMO APPROACH PARA 
+
+
+
+
+
+
+
+
+ _ RENDERIZAR__ UM COMPONENT DINAMICAMENTE --> TE SALVA UM MONTE DE 
+
+ TRABALHO 
+
+ EXTRA,
+
+
+
+
+
+ TRABALHO QUE VEREMOS AGORA, COM O __ APPROACH ALTERNATIVO_ QUE VEREMOS AGORA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> CARACTERÍSTICAS:
+
+
+
+
+ COMPONENT EMBEDDED VIA SELECTOR (declaratively)...
+
+
+
+
+
+
+ *ngIf controls WHETHER COMPONENT IS ADDED TO THE DOM...
+
+
+
+
+
+
+
+
+
+ --> O  NGIF NÃO TEM NENHUM 'MAJOR DOWNSIDE'..
+
+
+
+
+
+
+
+
+ --> ESTAMOS USANDO NGIF EM UM MONTE DE LUGARES,
+
+
+
+
+ E ESTAMOS TAMBÉM O UTILIZANDO PARA ESSA 'ALERT-BOX'...
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR VAI NOS MOSTRRAR 
+
+
+
+COMO 
+'FINISH THE WHOLE 
+
+
+ALERT FLOW',
+
+
+
+ANTES 
+
+
+
+DE 
+
+
+EXAMINARMOS A ___ ALTERNATIVA_ A ESSE RENDER...
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS QUAL SERIA A ALTERNATIVA?
+
+
+
+
+
+
+
+
+
+
+--> A ALTERNATIVA, NO CASO,
+
+É ALGO QUE, NO PASSADO,
+
+
+ERA CHAMADO DE 
+
+
+'Dynamic Component Loader'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O DCL 
+
+
+
+
+__ERA UMA __ HELPER __ UTILIY,
+
+
+UTILITY_  QUE NÃO EXISTE MAIS....
+
+
+
+
+
+(
+
+    OU QUE __ VOCê NAÕ DEVE MAIS USAR_...
+)
+
+
+
+
+
+
+
+--> MAS O DYNAMIC COMPONENT LOADER AGORA SE TORNOU 
+
+UM 
+
+'GENERAL CONCEPT'
+
+
+
+
+DE CRIAÇAÕ 
+
+
+
+DE COMPONENTS NO CÓDIGO,
+
+
+
+
+
+
+
+
+CREATE DE COMPONENTS NO CÓDIGO E ENTÃO  __ A REALIZAÇÃO 
+
+
+DE UM 
+
+'APPLY'
+
+
+
+___ MANUAL___ 
+
+
+DESSE 
+
+
+COMPONENT _ NO SEU CÓDIGO... -------> OU SEJA,
+
+
+
+VOCÊ 
+
+
+
+TEM DE __ CONTROLAR,
+
+
+NO SEU CÓDIGO,  POR CONTA PRÓPRIA,
+
+
+
+COMO _ ESSE 
+
+COMPONENT _ É INSTANCIADO,
+
+
+
+COMO A DATA NECESSÁRIA A ELE É INSERIDA NELE,
+
+
+
+
+
+
+E TAMBÉM SOBRE COMO É 'REMOVED'..
+
+
+
+
+
+
+
+
+
+1) COMO É INSTANCIADO 
+
+
+2) COMO A DATA É PASSADA A ELE 
+
+
+
+3) COMO ELE É REMOVED...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OU SEJA,
+
+TUDO QUE O NGIF 
+
+FAZ 
+
+
+POR VOCÊ ,
+
+
+
+VOCê 
+
+
+TEM DE FAZERR POR CONTA PRÓPRIA,
+
+
+COM ESSE APPROACH 
+
+DE 
+
+'DYNAMIC COMPONENT LOADEr'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-_> AINDA ASSIM,
+
+ESSE APPROACH __ PODE SER ÚTIL,
+
+SIM,
+
+
+PQ 
+
+É CLARO QUE 
+ELE 
+
+TE 
+
+DEIXA 
+
+
+
+
+
+''''CONTROLAR 
+
+
+
+SEU COMPONENT __ INTEIRAMENTE _ DE DENTRO DE SEU CÓDIGO TS''',
+
+
+
+E
+ _ AÍ  VOCê 
+
+ NEM MESMO 
+
+ PRECISA 
+
+ TOCAR NO TEMPLATE -- -------------> HÁ 
+
+
+ CASOS 
+
+
+
+ EM QUE ISSO É ÚTIL,
+
+
+ CASOS EM QUE 
+ VOCÊ 
+
+ NÃO VAI QUERER ENCOSTAR 
+
+ NO TEMPLATE,
+
+  
+
+  ou entaõ 
+
+
+  'WILL HAVE NO REAL WAY OF 
+  ADDING THE COMPONENT  TO THE TEMPLATE',
+
+
+
+  E, PORTANTO,
+
+
+
+  ESSA TAMBÉM É UMA APPROACH INTERESSANTE...
+
+
+
+
+
+
+
+
+
+
+
+  --> VEREMOS AMBAS AS APPROACHES AGORA..
+
+
+
+
+
+
+
+
+
+  --> VAMOS TERMINAR COM O NGIF,
+
+
+  VER COMO 
+
+
+
+
+PODEMOS FAZER OPEN E CLOSE DO MODAL COM ELE,
+
+
+
+
+
+
+
+ANTES DE ENTÃO PASSARMOS Ao  'CREATE DE COMPONENTS E MANAGE DE COMPONENTS ATRAVÉS DE CÓDIGO TS'..
+
+
+

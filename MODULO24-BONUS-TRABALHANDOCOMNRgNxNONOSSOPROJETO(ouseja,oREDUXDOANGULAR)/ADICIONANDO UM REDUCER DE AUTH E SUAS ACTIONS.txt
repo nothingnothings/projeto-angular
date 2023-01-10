@@ -1,0 +1,1397 @@
+
+
+
+
+
+
+
+
+
+
+ACHO QUE JÁ CONSEGUI FAZER ISSO...
+
+
+
+
+
+
+
+FICOU TIPO ASSIM:
+
+
+
+
+
+import * as AuthActions from '../store/authActions';
+
+import { updateObject } from 'src/app/utility/updateObject';
+
+export interface AuthState {
+  token: string | null;
+  userId: string | null;
+  error: string | null;
+  isLoading: boolean;
+  email: string | null;
+}
+
+// export interface AppState {
+//   auth: AuthState;
+// }
+
+const initialState: AuthState = {
+  token: null,
+  userId: null,
+  error: null,
+  isLoading: false,
+  email: null,
+};
+
+export function AuthReducer(
+  state: AuthState = initialState,
+  action: AuthActions.AuthActions
+) {
+  switch (action.type) {
+    case AuthActions.AUTH_START:
+      return authStart(state, action as AuthActions.AuthStart);
+    case AuthActions.AUTH_SUCCESS:
+      return authSuccess(state, action as AuthActions.AuthSuccess);
+    case AuthActions.AUTH_FAIL:
+      return authFail(state, action as AuthActions.AuthFail);
+    case AuthActions.AUTH_LOGOUT:
+      return authLogout(state, action as AuthActions.AuthLogout);
+      default:
+        return state;
+  }
+}
+
+const authStart = (
+  state: AuthState,
+  action: AuthActions.AuthStart
+): AuthState => {
+  return updateObject(state, { isLoading: true });
+};
+
+const authSuccess = (
+  state: AuthState,
+  action: AuthActions.AuthSuccess
+): AuthState => {
+  const { token, email, id } = action.userData;
+
+  return updateObject(state, {
+    isLoading: false,
+    token: token,
+    email: email,
+    userId: id,
+  });
+};
+
+const authFail = (
+  state: AuthState,
+  action: AuthActions.AuthFail
+): AuthState => {
+  return updateObject(state, {
+    isLoading: false,
+    token: null,
+    email: null,
+    userId: null,
+  });
+};
+
+const authLogout = (
+  state: AuthState,
+  action: AuthActions.AuthLogout
+): AuthState => {
+  return updateObject(state, {
+    token: null,
+    email: null,
+    userId: null,
+  });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+E AS ACTIONS FICARAM ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+import { Action } from '@ngrx/store';
+import { User } from '../user.model';
+
+export const AUTH_START = 'AUTH_START';
+
+export const AUTH_FAIL = 'AUTH_FAIL';
+
+export const AUTH_SUCCESS = 'AUTH_SUCCESS';
+
+export const AUTH_LOGOUT = 'AUTH_LOGOUT';
+
+export class AuthStart implements Action {
+  type = AUTH_START;
+
+  constructor() {}
+}
+
+export class AuthFail implements Action {
+  type = AUTH_FAIL;
+
+  constructor(private payload: string) {} ////vai segurar 'error', que será uma STRING (ou um object error).
+}
+
+export class AuthLogout {
+  type = AUTH_LOGOUT;
+  ///temos que remover os items no localStorage, por meio de algum helper method, no reducer...
+}
+
+export class AuthSuccess implements Action {
+  type = AUTH_SUCCESS;
+
+  constructor(public userData: User) {}
+}
+
+export type AuthActions = AuthStart | AuthFail | AuthLogout | AuthSuccess;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> na verdade, há algo que não fiz aqui, e que deveria fazer,
+
+que é 
+
+
+'LIMPAR A LOCAL STORAGE DO USER, TIRAR TUDO  QUANDO OCORRER 
+
+AQUELE 
+
+
+'auth_logout'...
+
+
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+const authLogout = (
+  state: AuthState,
+  action: AuthActions.AuthLogout
+): AuthState => {
+
+
+
+    localStorage.removeItem('userData'); ///REMOVE A DATA DO USER DE SUA 'LOCALSTORAGE', aquela 'cookie' que fica lá....
+
+  return updateObject(state, {
+    token: null,
+    email: null,
+    userId: null,
+  });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR FALA QUE, POR ENQUANTO, VAMOS IGNORAR QUAISQUER 
+
+
+
+
+
+HTTP REQUESTS QUE
+
+
+SÃO EFETUADOS POR NOSSO CÓDIGO..
+
+
+
+
+
+
+
+(
+
+
+    ISSO PQ OS REDUCERS NÃO SÃO COMPATÍVEIS COM CÓDIGO 
+
+    ASYNC, apenas rodam código SYNC... ---> é por isso que usamos 'helper methods', para os manipular...
+)
+
+ 
+
+
+
+
+
+--> 
+
+OK.,.... --> ISSO QUER DIZER QUE, PELO MENOS INICIALMENTE,
+
+
+
+AS 
+
+ACTIONS DE 'auth.service.ts'
+
+
+
+VÃO CONTINUAR NO LUGAR,
+
+
+OS HTTP REQUESTS AINDA SERÃO 
+
+EXECUTADOS 
+
+PELOS METHODS NO INTERIOR 
+
+
+
+DESSE SERVICE,
+
+
+
+
+
+_O  QUE QUER DIZER QUE A ÚNICA COISA QUE FAREMOS É O 'DISPATCH' DE ACTIONS _ DE DENTRO _DESSES METHODS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... ERA O QUE EU HAVIA IMAGINADO, VAMOS USAR OS SERVICES COMO 'MEDIADORES' ENTRE OS REDUCERS E AS ACTIONS (as aactions só serão dispatcheadas a partir DOS METHODS EXECUTADOS PELOS SERVICES)..
+
+
+
+
+
+
+
+
+
+--> OK... ISSO QUER DIZER QUE QUANDO CONSEGUIRMOS UMA 'RESPONSE DE AUTH,'
+
+
+nesse código aqui:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+onCreateAccount(authData: {
+    email: string;
+    password: string;
+    returnSecureToken: boolean;
+  }) {
+    const requestHeaders = new HttpHeaders();
+
+    requestHeaders.append('Content-Type', 'application/json');
+    
+
+    return this.http
+      .post<AuthResponseData>(
+        
+        
+        `https:
+
+        authData,
+        {
+          headers: requestHeaders,
+        }
+      )
+      .pipe(
+        catchError(
+          
+          (errorRes) => {
+            console.log(errorRes);
+            let errorMessage = 'An unknown error has occured.';
+
+            if (!errorRes.error || !errorRes.error.error) {
+              
+              return throwError(() => errorMessage); 
+            }
+
+            switch (errorRes.error.error.message) {
+              case 'EMAIL_EXISTS':
+                errorMessage = 'This email already exists.';
+            }
+
+            return throwError(() => errorMessage);
+          }
+        ),
+
+        tap(
+          
+        
+        
+
+        
+
+        
+        
+        
+
+        
+
+        
+        
+        
+        (responseData) => {
+    
+          this.storeUserToken(responseData); 
+          this.emitUser(responseData);
+          this.autoLogout(+responseData.expiresIn);
+        }
+        
+        )
+      );
+
+    
+    
+
+    
+  }
+
+  onLogin(authData: {
+    email: string;
+    password: string;
+    returnSecureToken: boolean;
+  }) {
+    const requestHeaders = new HttpHeaders();
+
+    requestHeaders.append('Content-Type', 'application/json');
+
+    return this.http
+      .post<AuthResponseData>(
+        
+
+        
+        
+
+        `https:
+        authData,
+
+        {
+          headers: requestHeaders,
+        }
+      )
+      .pipe(
+        catchError((errorRes) => {
+          console.log(errorRes);
+
+          let errorMessage = 'An unknown error has occured.';
+
+          switch (errorRes.error.error.message) {
+            case 'EMAIL_NOT_FOUND':
+              errorMessage = 'No user found for the entered email!';
+              break;
+            case 'INVALID_PASSWORD':
+              errorMessage = 'Invalid password, please try again.';
+          }
+
+          return throwError(() => errorMessage);
+        }),
+
+        tap(
+          (responseData) => {
+            
+            
+            
+            
+            
+            
+            console.log(+responseData.expiresIn);
+            this.storeUserToken(responseData);
+            this.emitUser(responseData);
+            this.autoLogout(+responseData.expiresIn);
+          }
+        )
+      );
+    
+    
+        
+        
+        
+        
+        
+        
+
+    
+    
+    
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -. quando isso acontecer, vamos querer FAZER UMA DISPATCH DE UMA ACTION DE 'SUCCESS',
+
+
+
+
+  com essa data aí ( e isso, essa data, será utilizada para UPDATE O NOSSO STATE,  QUE SERÁ ENTÃO USADO PARA 'HANDLE AUTHENTICATION')..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> ANTIGAMENTE,
+
+
+  NÓS USÁVAMOS 
+
+
+OS METHOD NO SERVICE PARA FAZER DO 'USER' object AO NOSSO APP INTEIRO,
+
+
+
+POR MEIO DAQUELE 'SUBJECT':
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+  user = new BehaviorSubject<User | null>(null);
+
+
+
+
+
+
+
+
+
+
+
+
+
+  METHOD:
+
+
+
+
+
+
+
+
+
+
+  
+  private emitUser(responseData: AuthResponseData | null) {
+
+
+
+    if (responseData === null)  {
+
+     return  this.user.next(null);
+    }
+
+
+
+    const { email, localId, expiresIn, idToken } = responseData;
+
+          const expirationDate = new Date( /// vai nos dar um object 'Date'...
+            new Date().getTime() + +expiresIn * 1000
+          );
+
+          const newUser = new User(email, localId, idToken, expirationDate);
+
+          this.user.next(newUser); 
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK... AGORA 
+
+
+
+COMO 
+
+ESTAMOS USANDO O NGRX,
+
+
+
+
+
+VAMOS QUERER 
+
+
+
+
+, EM VEZ DE USAR ESSE 'SUBJECT' 
+
+PARA 
+
+
+
+
+'ESPALHAR' MEU OBJECT USER AO LONGO DO APP,
+
+
+
+
+USAR O 
+
+'this.store.dispatch()'
+
+
+
+PARA _ DISPATCHEAR_ UMA ACTION _ QUE ACEITA ESSE PAYLOAD DO USER,
+
+PARA AÍ 
+
+
+
+ENTÃO 
+
+
+
+MODIFICAR O NOSSO STATE DE 'auth' do app,
+
+
+PARA ENTÃO FINALMENTE _ 
+
+
+ATUALIZAR AS PARTES DE NOSSO APP QUE DEPENDEM DESSA DATA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok.. vou começar assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  private handleUser(responseData: AuthResponseData | null) {  
+
+
+    if (responseData === null)  {
+
+    this.store.dispatch(new fromAuthActions.AuthLogout());
+    } else {
+
+
+
+    const { email, localId, expiresIn, idToken } = responseData;
+
+          const expirationDate = new Date( /// vai nos dar um object 'Date'...
+            new Date().getTime() + +expiresIn * 1000
+          );
+
+          const newUser = new User(email, localId, idToken, expirationDate);
+
+          this.store.dispatch(new fromAuthActions.AuthSuccess(newUser))
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+  --> ou seja, esse method vai OU _ DISPATCHEAR_ UMA ACTION DE 'logout' se a data passada a ele 
+
+
+  tiver sido de 'null',
+
+
+  ou 
+
+  vai 
+
+
+  DISPATCHEAR UMA ACTION _ DE 'AUTH_SUCCESS',
+
+
+
+  mudando o 
+
+
+  STATE 
+
+
+
+  DE NOSSO APP 
+
+  DE 
+
+
+  ''unauth'' (com 
+  
+  {
+
+    email: null,
+    token: null,
+    userId: null
+  }
+
+
+
+  
+  )
+
+
+
+
+
+
+
+  para 'auth'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> O PROFESOR ENTAÕ FALA DO CREATE DE ACTIONS..
+
+
+
+  ELE CRIA ACTIONS ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  export const LOGIN = 'LOGIN';
+
+
+  export const LOGOUT = 'LOGOUT';
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> isso é parecido com o que fizemos, mas eu fiz 'AUTH_SUCCESS',
+
+
+  'AUTH_FAIL'
+
+
+
+  'AUTH_LOGOUT'...
+
+
+
+
+
+
+
+  -> mas as actions do professor vão ficando como as nossas...
+
+
+
+
+
+
+
+
+  QUANDO FAZEMOS 'LOGIN/AUTH_SUCCESS',
+
+
+
+  VAMOS QUERER _ CRIAR _UM NOVO USER...
+
+
+
+
+
+
+
+
+  --> é por isso QUE VAMOS QUERER ANEXAR UM USER À NOSSA ACTION...
+
+
+
+
+
+
+
+
+
+
+
+  --> na verdade, o professor diz que temos 2 opções/approaches possíveis;
+
+
+
+
+
+
+
+  1)  CRIAR O USER _ ANTES_ DE FAZERMOS 'DISPATCH',
+
+
+  E AÍ APENAS __ ANEXAR O 'FINISHED USER OBJECT'
+
+
+  como um payload 
+
+  na action..
+
+
+
+
+
+  2) ou, alternativamente,
+
+
+  podemos 
+
+  colocar as 4 partes que formam o user (email, userId, token, expirationDate)
+
+
+
+  E ENTÃO 
+
+
+  AS HANDLAR NO REDUCER...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -----> O PROFESSOR DIZ QUE TUDO ISSO DEPENDE DE NÓS,
+
+
+  MAS QUE 
+  ELE 
+
+
+
+ É MAIS FÃ DE 
+
+
+
+ MOVER TODA ESSA LÓGICA PARA DENTRO DO REDUCER,
+
+
+ por isso 
+
+
+
+ ele escreve assim:
+
+
+
+
+
+
+
+
+
+ export class AuthSuccess implements Action {
+  type = AUTH_SUCCESS;
+
+  constructor(public payload: {email: string, userId: string, token: string, expirationDate: Date}) {}
+}
+
+
+
+
+
+
+
+
+--> O professor diz que 
+
+
+
+essa será a aparência para ele,
+
+
+
+
+
+MAS ENTÃO 
+
+ELE ADMITE QUE PODERÍAMOS FAZER DE FORMA DIFEERNTE;
+
+
+
+COLOCAR 
+
+
+APENAS O USER (object user) COMO 'PAYLOAD'
+
+
+
+
+
+DA ACTION,
+
+e aí 
+
+
+CRIAR ESSE USER OBJECT ANTES DE DISPATCHEAR ESSA ACTION, que foi exatamente o que eu fiz:
+
+
+
+
+
+
+
+export class AuthSuccess implements Action {
+  type = AUTH_SUCCESS;
+
+  constructor(public payload: User) {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK... MAS O QUE INTERESSA É QUE ESSA 
+
+SERÁ A ACTION QUE VAMOS USAR..
+
+
+
+
+
+
+
+
+
+
+
+
+-> o professor também coloca uma 
+
+
+propriedade de 
+
+
+'LOGOUT'...
+
+
+
+
+--> essa action não vai precisar de nenhum payload, é completa assim mesmo...
+
+
+
+
+
+
+
+
+
+
+--> SE FAZEMOS LOGOUT, QUEREMOS DAR CLEAR NA USER DATA,
+
+
+MAS NÃO PRECISAMOS DE NENHUMA EXTRA DATA PARA ISSO,
+
+BASTA DEFINIR TODA USER DATA COMO 'NULL'....
+
+
+
+
+
+
+
+
+
+
+
+---> ok... O PROFESSOR ENTÃO FAZ EXPORT DE TODAS ACTIONS EM UM TYPE, TIPO ASSIM:
+
+
+
+
+
+export type AuthActions = AuthStart | AuthFail | AuthLogout | AuthSuccess;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O MEU REDUCER FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+import * as AuthActions from '../store/authActions';
+
+import { updateObject } from 'src/app/utility/updateObject';
+
+export interface AuthState {
+  token: string | null;
+  userId: string | null;
+  error: string | null;
+  isLoading: boolean;
+  email: string | null;
+}
+
+// export interface AppState {
+//   auth: AuthState;
+// }
+
+const initialState: AuthState = {
+  token: null,
+  userId: null,
+  error: null,
+  isLoading: false,
+  email: null,
+};
+
+export function AuthReducer(
+  state: AuthState = initialState,
+  action: AuthActions.AuthActions
+) {
+  switch (action.type) {
+    case AuthActions.AUTH_START:
+      return authStart(state, action as AuthActions.AuthStart);
+    case AuthActions.AUTH_SUCCESS:
+      return authSuccess(state, action as AuthActions.AuthSuccess);
+    case AuthActions.AUTH_FAIL:
+      return authFail(state, action as AuthActions.AuthFail);
+    case AuthActions.AUTH_LOGOUT:
+      return authLogout(state, action as AuthActions.AuthLogout);
+      default:
+        return state;
+  }
+}
+
+const authStart = (
+  state: AuthState,
+  action: AuthActions.AuthStart
+): AuthState => {
+  return updateObject(state, { isLoading: true });
+};
+
+const authSuccess = (
+  state: AuthState,
+  action: AuthActions.AuthSuccess
+): AuthState => {
+  const { token, email, id } = action.payload;
+
+  return updateObject(state, {
+    isLoading: false,
+    token: token,
+    email: email,
+    userId: id,
+  });
+};
+
+const authFail = (
+  state: AuthState,
+  action: AuthActions.AuthFail
+): AuthState => {
+  return updateObject(state, {
+    isLoading: false,
+    token: null,
+    email: null,
+    userId: null,
+  });
+};
+
+const authLogout = (
+  state: AuthState,
+  action: AuthActions.AuthLogout
+): AuthState => {
+
+
+
+    localStorage.removeItem('userData'); ///REMOVE A DATA DO USER DE SUA 'LOCALSTORAGE', aquela 'cookie' que fica lá....
+
+  return updateObject(state, {
+    token: null,
+    email: null,
+    userId: null,
+  });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------
+
+
+
+
+
+
+
+ 
+ ok... aí no auth reducer
+
+
+
+ O PROFESSOR DECIDE CRIAR O NOVO USER.... (
+
+    mas fiz isso 
+
+
+    lá 
+
+    no código 
+
+
+
+    do service, acho mais conveniente...
+ )
+
+
+
+
+
+
+
+
+
+ bem, no caso, meu 
+
+
+ negócio ficou assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ const authSuccess = (
+  state: AuthState,
+  action: AuthActions.AuthSuccess
+): AuthState => {
+  const { token, email, id } = action.payload;
+
+  return updateObject(state, {
+    isLoading: false,
+    token: token,
+    email: email,
+    userId: id,
+  });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO, TUDO ESTÁ FUNCIONANDo...
+
+
+
+
+
+PARA O LOGOUT, EU ESCREVI ASSIM:
+
+
+
+
+
+
+const authLogout = (
+  state: AuthState,
+  action: AuthActions.AuthLogout
+): AuthState => {
+
+
+
+    localStorage.removeItem('userData'); ///REMOVE A DATA DO USER DE SUA 'LOCALSTORAGE', aquela 'cookie' que fica lá....
+
+  return updateObject(state, {
+    token: null,
+    email: null,
+    userId: null,
+  });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR DIZ, AGORA, QUE DEVEMOS FAZER O DISPATCH DESSAS ACTIONS EM ALGUNS LUGARES DE NOSSO 
+
+APP,
+
+
+E TAMBÉM _ DEVEMOS _ USAr__ ESSA STORE_ EM ALGUM LUGAR DE NOSSO APP _ QUE 
+
+
+DEPENDA DELA.... (pq ainda não estamos a utilizando)..
+
+
+
+
+
+(
+    ISSO PQ AINDA ESTMAOS USANDO O NOSSO 'SUBJECT'...,
+
+
+    nosso subject de 'user', BehaviorSubject, lá 
+
+
+    no service de 'auth.service.ts'...
+)
+
+
+
+
+
+
+
+VEREMOS ISSO NA PRÓXIMA AULA...

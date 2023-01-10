@@ -1,0 +1,3195 @@
+
+
+
+
+
+
+
+
+
+
+
+
+OK... ESTAMOS CHEGANDO PERTO DE UM 'WORKING SETUP'
+
+
+
+com o ngrx/effects 
+
+
+
+sendo usado para 
+
+
+
+AUTHENTICATIOn.... 
+
+
+
+
+
+
+
+
+
+
+
+---> COMO SEMPRE COM O NGRX,
+
+
+
+
+
+
+É BEM MAIS 'HEAVY' QUANDO VOCÊ ESTÁ FAZENDO O INITIAL SETUp,
+
+
+
+
+MAS DEPOIS DISSO 
+
+
+
+AS OUTRAS PARTES PODEM SER FACILMENTE ADICIONADAS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA QUEREMOS REDIRECIONAR ASSIM QUE ESTIVERMOS 'DONE'
+
+
+COM O AUTHENTICATE,
+
+
+E 
+
+ESSE 
+
+REDIRECT 
+
+DEVERÁ 
+
+SER FEITO DO LADO DE DENTRO DE 
+
+
+
+'AUTH.effects' ( dos effects de nosso app, basicamente)...
+
+
+
+
+
+
+
+
+
+
+
+--> OS REDIRECTS SERÃO FEITOS NOS 'EFFECTS'
+
+
+PQ VOCê 
+
+
+
+
+PODE/DEVE _ CONSIDERAR 'NAVIGATION' COMO UM _ SIDE EFFECT 
+
+
+DAS ALTERAÇÕES 
+
+
+
+NO SEU STATE,
+
+E NÃO ALGO QUE ALTERA A DATA NO SEU STATE POR CONTA PRÓPRIA/por si só..
+
+
+
+
+
+
+
+
+
+
+
+-_> É POR ISSO QUE O PROFESSOR ADICIONA UMA NOVA PROPRIEDADE 
+
+
+em 
+
+'auth.effects.ts',
+
+
+
+QUE 
+
+
+SERÁ UM NOVO EFFECT,
+
+
+E TERÁ UM NAME DE 
+
+
+'authSuccess'...
+
+
+
+
+
+
+
+
+
+
+
+
+COMEÇAMOS ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+  authSuccess$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(AuthActions.AUTH_SUCCESS),
+
+    
+      
+      )
+    }
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS EM VEZ DE USARMOS 'switchMap'  ( que faz o RETURN DE UM NOVO OBSERVABLE, COM BASE NA DATA DE UM OBSERVABLE PRÉVIO)
+
+
+COMO SEGUNDO OPERATOR NESSE PIPE,
+
+
+
+
+
+VAMOS USAR 'tap()',
+
+
+
+
+
+
+QUE É OUTRO OPERATOR IMPORTADO DE 'rxjs'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> dentro do 'tap' (Que nunca altera data),
+
+
+VAMOS QUERER SIMPLESMENTE 
+
+
+
+
+USAR O 
+
+ROUTER DO 
+
+
+ANGULAR _ PARA _ NOS REDIRECIONAR...
+
+
+
+
+
+
+
+
+--> ok, o código vai ficando assim:
+
+
+
+
+
+
+
+  authSuccess$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(AuthActions.AUTH_SUCCESS),
+
+        tap(
+          () => {
+
+          }
+        )
+
+    
+      
+      )
+    }
+  )
+
+
+
+
+
+
+
+
+certo... mas como escrevemos isso no 'tap'?
+
+
+
+
+
+
+
+
+
+
+-> bem, vamos usar o angular router para redirecionar...
+
+
+
+
+
+
+
+o código inteiro fica assim:
+
+
+
+
+
+
+
+///todos seus effects serão organizados em CLASSES, esse é o ngrx effects... npm install --save @ngrx/effects
+
+import { Actions, createEffect, Effect } from '@ngrx/effects'; /// é diferente de 'Action' lá de @ngrx/store....
+
+import { ofType } from '@ngrx/effects'; //'ofType 'é um _ OPERATOR _ _FORNECIDO PELO NGRX (e não pelo rxjs)... --> é usado para 'FILTRAR' as actions que interessam/triggam cada 1 de nossos effects...
+import { AuthStart } from './authActions';
+
+import * as AuthActions from '../store/authActions';
+import { catchError, map, of, switchMap, tap } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { AuthResponseData } from '../auth.service';
+import { environment } from 'src/environments/environment';
+import { User } from '../user.model';
+import { Injectable } from '@angular/core';   ////precisamos disso, pq vamos injetar coisas diversas nesses nossos effects, como 'http', o HttpClient service...
+import { Router } from '@angular/router';
+                                                ///também fazemos inject das 'Actions'...
+
+
+
+
+@Injectable()
+export class AuthEffects {
+  //aqui vamos definir os possíveis effects dessa feature de nosso app... (side-effects, como send de http requests, etc)...
+
+  //     /esse é nosso PRIMEIRO EFFECT...  -> essa é a versão 'DEPRECADA' desse código...
+
+  // @Effect()  /////DECORATOR USADO PELO 'NGRX/EFFECTS' para IDENTIFIAR UM EFFECT em nosso app... (é obrigatório) --> foi deprecado, e hoje o method de 'createEffect()' é usado no seu lugar...
+  // authLogin = this.actions$.pipe(   ///'actions$'é um observable, mas O NGRX _ NOS DEIXA _ FICAR 'SEM FAZER SUBSCRIBE A ELE', PQ O SUBSCRIBE É AUTOMÁTICO com ele...
+
+  // ofType(AuthActions.AUTH_START),  ////com isso, dizemos que 'APENAS AS ACTIONS DE TYPE AUTH_START DISPATCHEADAS' é que vão __TRIGGAR_ ESSE NOSSO EFFECT DE 'Authlogin'...
+
+  // switchMap(  ////nos deixa CRIAR UM NOVO OBSERVABLE, A PARTIR DA DATA DE UM OBSERVABLE ANTERIOR (que, no caso, será o observable que segurará a DATA ENVIADA, COMO PAYLOAD, por nossa action de 'AuthActions.AUTH_START')...
+
+  //     (authData: AuthActions.AuthStart) => {  ////data contida dentro de nosso object 'action' de 'AUTH_START' (com o payload e etc)... --> sempre coloque o 'type' desse argumetno como sendo EQUIVALENTE À CLASS/action que você definiu lá no arquivo de class, que também será a action que vai triggar esse effect específico....
+
+  //                     ////dentro desse operator, vamos retornar a MESMA LÓGICA DE LOGIN QUE TÍNHAMOS NO NOSSO SERVICE DE 'LOGIN'...
+
+  //                     const requestHeaders = new HttpHeaders();
+
+  //                     requestHeaders.append('Content-Type', 'application/json');
+
+  // const httpAuthData = {
+  //     email: authData.payload.email,
+  //     password: authData.payload.password
+  // }
+
+  //             return this.http
+  // .post<AuthResponseData>(
+
+  //   `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`,
+  //   httpAuthData,
+
+  //   {
+  //     headers: requestHeaders,
+  //   }
+  // )
+  // }
+  // )
+  // )
+
+  authLogin$ = createEffect(() => {
+    return this.actions$.pipe( ///pipe call no nosso OUTER OBSERVABLE, que é this.actions$....
+      ofType(AuthActions.AUTH_START),
+      switchMap((authData: AuthActions.AuthStart) => {
+        const requestHeaders = new HttpHeaders();
+        requestHeaders.append('Content-Type', 'application/json');
+
+        const httpAuthData = {
+          email: authData.payload.email,
+          password: authData.payload.password,
+        };
+
+        return this.http.post<AuthResponseData>(  //aqui temos um pipe call NO NOSSO INNER OBSERVABLE, que é 'this.http.post()'...
+          `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`,
+          httpAuthData,
+
+          {
+            headers: requestHeaders,
+          }
+        ).pipe(  ///AQUI, ESTAMOS CHAMANDO '.pipe()' NO NOSSO INNER OBSERVABLE, em 'this.http.post()' (ao contrário do OUTER OBSERVABLE, que é 'this.actions$.post()' )...
+        map(  // 1 ////  executa código e faz dispatch de uma action de 'AUTH_SUCCESS' caso não ocorra nenhum error com esse http request observable...
+        (resData: AuthResponseData) => {
+
+            const expirationDate = new Date( 
+            new Date().getTime() + +resData.expiresIn * 1000
+          );
+
+            of(new AuthActions.AuthSuccess(new User(resData.email, resData.localId, resData.idToken, expirationDate)))
+        }
+      ),
+        catchError( /// 2 //// executa código e faz dispatch de uma action de 'AUTH_FAIL' CASO OCORRA UM ERROR NO SEND DESSE HTTP REQUEST/RESPONSE recebida por ele..
+            (error) => {  
+                ////usamos o 'of()' para CRIAR UM NOVO OBSERVABLE, OBSERVABLE QUE NÃO SEJA DE 'ERROR', pq queremos MANTER A 'OBSERVABLE STREAM' de this.actions$.pipe()' SEMPRE VIVA...
+                
+                
+                of()
+            }
+          ),
+
+        )
+      })
+    );
+  });
+
+
+
+
+  authSuccess$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(AuthActions.AUTH_SUCCESS),
+
+        tap(
+          () => {
+
+            this.router.
+          }
+        )
+        
+      
+      )
+    }
+  )
+
+
+
+  constructor(private actions$: Actions, private http: HttpClient, private router: Router) {
+    //// a naming convention é realmente usar 'actions$' ($ ao final)  ---> uma das naming conventions é nomear TODOS OS OBSERVABLES DO ANGULAR Com '$' AO FINAL...
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> ok... vamos 'navigate',
+
+
+e aí 
+
+vamos NAVIGATE ATÉ A ROUTE DE 'root'...
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+  authSuccess$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(AuthActions.AUTH_SUCCESS),
+
+        tap(
+          () => {
+
+            this.router.navigate(['/']);
+          }
+        )
+        
+      
+      )
+    }
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+-> É CLARO QUE VOCÊ PODERIA ARGUMENTAR QUE A ROUTE A QUE VOCÊ VAI QUERER 'REDIRECT'
+
+
+
+
+vai SER DIFERENTE DEPENDENDO DO CASE... -->  CASES EM QUE VOCê NÃO VAI QEURER 'SEMPRE IR DE VOLTA AO 
+
+
+
+'/'.....
+
+
+
+
+
+
+
+
+
+--> nesses cases, vocÊ poderia 
+
+
+aceitar 
+
+
+a info de 'A QUE CAMINHO SER REDIRECIONADO'
+
+
+
+DENTRO DA PRÓPRIA ACTION A QUE VOCê ESTÁ REAGINDO, NO PAYLOAD DELA...
+
+
+
+
+
+
+
+
+
+
+
+
+-> mas o que é importante,
+
+
+aqui,
+
+É QUE 
+
+
+
+
+
+
+____ ESSE É UM EFFECT (effect de 'authSuccess')
+
+
+
+
+QUE __ NÃO VAI _ '''DISPATCH UMA NOVA ACTION'''
+
+
+ao final 
+
+
+
+
+do seu run...
+
+
+
+
+
+
+
+
+
+
+
+--> isso pq o professor havia mencionado que 
+
+
+'''OS EFFECTS TIPICAMENTE FAZEM ISSO;
+
+TIPICAMENTE RODAM UMA LÓGICA E DEPOIS _ RETORNAM UM OBSERVABLE 
+
+___ COM UM NOVO EFFECT, QUE DEVERÁ SER DISPATCHED''... 
+
+
+
+
+
+
+
+
+
+
+
+
+--> como exemplo disso, temos o próprio effect de 'authLogin':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+authLogin$ = createEffect(() => {
+    return this.actions$.pipe( ///pipe call no nosso OUTER OBSERVABLE, que é this.actions$....
+      ofType(AuthActions.AUTH_START),
+      switchMap((authData: AuthActions.AuthStart) => {
+        const requestHeaders = new HttpHeaders();
+        requestHeaders.append('Content-Type', 'application/json');
+
+        const httpAuthData = {
+          email: authData.payload.email,
+          password: authData.payload.password,
+        };
+
+        return this.http.post<AuthResponseData>(  //aqui temos um pipe call NO NOSSO INNER OBSERVABLE, que é 'this.http.post()'...
+          `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`,
+          httpAuthData,
+
+          {
+            headers: requestHeaders,
+          }
+        ).pipe(  ///AQUI, ESTAMOS CHAMANDO '.pipe()' NO NOSSO INNER OBSERVABLE, em 'this.http.post()' (ao contrário do OUTER OBSERVABLE, que é 'this.actions$.post()' )...
+        map(  // 1 ////  executa código e faz dispatch de uma action de 'AUTH_SUCCESS' caso não ocorra nenhum error com esse http request observable...
+        (resData: AuthResponseData) => {
+
+            const expirationDate = new Date( 
+            new Date().getTime() + +resData.expiresIn * 1000
+          );
+
+            of(new AuthActions.AuthSuccess(new User(resData.email, resData.localId, resData.idToken, expirationDate)))
+        }
+      ),
+        catchError( /// 2 //// executa código e faz dispatch de uma action de 'AUTH_FAIL' CASO OCORRA UM ERROR NO SEND DESSE HTTP REQUEST/RESPONSE recebida por ele..
+            (error) => {  
+                ////usamos o 'of()' para CRIAR UM NOVO OBSERVABLE, OBSERVABLE QUE NÃO SEJA DE 'ERROR', pq queremos MANTER A 'OBSERVABLE STREAM' de this.actions$.pipe()' SEMPRE VIVA...
+                
+                
+                of()
+            }
+          ),
+
+        )
+      })
+    );
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> ao final, ele faz um RETURN DAQUELE DISPATCH DE 'authSuccess', uma nova action...
+
+
+
+
+
+
+
+
+  -> MAS ESSE NOSSO NOVO 'EFFECT',
+
+
+  EFFECT DE 'SUCCESS',
+
+
+
+
+  authSuccess,
+
+
+
+
+  ELE _ NÃO VAI FAZER ISSO... -->  E PARA DEIXAR O 'NGRX/effects'
+
+
+
+
+  _SABER_ SOBRE 
+
+   
+
+
+   esse fato,
+   o  fato de que 
+
+
+   ELE NÃO VAI RETORNAR O 'DISPATCH DE UMA NOVA ACTION/OBSERVABLE',
+
+
+
+   e para 
+
+
+
+   EVITAR_ ERRORS,
+
+
+
+   VOCÊ É OBRIGADO A PASSAR UM __ OBJECt__ 
+
+
+
+
+
+
+
+
+
+   AO DECORATOR DE '@Effect()',
+
+
+
+   em qeu 
+
+
+
+   VOCê 
+
+   DEFINE 
+
+
+   'dispatch'  COMO EQUIVALENTE A FALSE,
+
+
+   TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+   
+  @Effect({dispatch: false}) ///EIS O CÓDIGO EM QUESTÃO.
+  authSuccess$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(AuthActions.AUTH_SUCCESS),
+
+        tap(
+          () => {
+
+            this.router.navigate(['/']);
+          }
+        )
+        
+      
+      )
+    }
+  )
+
+
+
+
+
+
+
+
+
+
+ISSO FAZ COM QUE O NGRX 
+SAIBA QUE '''ESSE É UM EFFECT QUE NÃO VAI _ YIELD_ A DISPATCHABLE ACTION'''' ao final..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA CONSEGUIRMOS FAZER A MESMA COISA COM A SINTAXE DE 'createEffect',
+
+
+
+é necessário 
+
+
+
+ESCREVER ISSO NO SEGUNDO PARÂEMTRO DESSE METHOD, em um '{}'
+
+
+que 
+
+terá um formato de 
+
+
+'{
+  dispatch: false
+}'
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+  authSuccess$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(AuthActions.AUTH_SUCCESS),
+
+        tap(
+          () => {
+
+            this.router.navigate(['/'])
+          }
+        )
+        
+      
+      )
+    },
+    {dispatch: false}
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+isso vai fazer com que o typescript não nos xingue, e que esse código seja aceito...
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+  authSuccess$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(AuthActions.AUTH_SUCCESS),
+
+        tap(
+          () => {
+
+            this.router.navigate(['/'])
+          }
+        )
+        
+      
+      )
+    },
+    {dispatch: false}
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É UM EFFECT QUE NÃO VAI YIELD UMA  DISPATCHABLE ACTION, AO FINAL...
+
+
+
+
+
+
+
+
+
+
+--> TAMBÉM PERCEBA QUE AQUI 
+
+
+
+ESTAMOS FAZENDO 'pipe' com 'ofType',
+
+
+
+e esse ofType,
+
+aqui,
+
+
+DITA QUE 
+
+
+
+ __ VAMOS REDIRECIONAR _ APENAS _ QUANDO 
+
+
+
+
+
+O TYPE DA ACTION 
+
+
+disparada no nosso app 
+
+
+FOR DO TIPO DE 
+
+'AuthActions.AuthSuccess'...
+
+
+
+(
+
+
+  ou seja, em casos de error, o user não é redirecionado, no exemplo do nosso app...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO.... SALVAMOS TUDO ISSO E TENTAMOS FAZER LOGIN...
+
+
+
+
+
+
+
+
+
+
+---> O PROFESSOR IMEDIATAMENTE GANHA UM ERROR:
+
+
+
+
+
+
+
+'''AuthEffects.authSuccess''' DISPATCHED AN INVALID ACTION,: 
+
+
+
+
+
+--> O PROFESSOR DIZ QUE ESSE É UM ERRO QUE É CULPA DELE...
+
+
+
+
+
+
+
+
+
+
+
+--> O ERRO 
+
+FOI CAUSADO PELO CÓDIGO DE 'AuthLogin':
+
+
+
+
+
+
+
+
+
+
+  authLogin$ = createEffect(() => {
+    return this.actions$.pipe( ///pipe call no nosso OUTER OBSERVABLE, que é this.actions$....
+      ofType(AuthActions.AUTH_START),
+      switchMap((authData: AuthActions.AuthStart) => {
+        const requestHeaders = new HttpHeaders();
+        requestHeaders.append('Content-Type', 'application/json');
+
+        const httpAuthData = {
+          email: authData.payload.email,
+          password: authData.payload.password,
+        };
+
+        return this.http.post<AuthResponseData>(  //aqui temos um pipe call NO NOSSO INNER OBSERVABLE, que é 'this.http.post()'...
+          `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`,
+          httpAuthData,
+
+          {
+            headers: requestHeaders,
+          }
+        ).pipe(  ///AQUI, ESTAMOS CHAMANDO '.pipe()' NO NOSSO INNER OBSERVABLE, em 'this.http.post()' (ao contrário do OUTER OBSERVABLE, que é 'this.actions$.post()' )...
+        map(  // 1 ////  executa código e faz dispatch de uma action de 'AUTH_SUCCESS' caso não ocorra nenhum error com esse http request observable...
+        (resData: AuthResponseData) => {
+
+            const expirationDate = new Date( 
+            new Date().getTime() + +resData.expiresIn * 1000
+          );
+
+            of(new AuthActions.AuthSuccess(new User(resData.email, resData.localId, resData.idToken, expirationDate)))
+        }
+      ),
+        catchError( /// 2 //// executa código e faz dispatch de uma action de 'AUTH_FAIL' CASO OCORRA UM ERROR NO SEND DESSE HTTP REQUEST/RESPONSE recebida por ele..
+            (error) => {  
+                ////usamos o 'of()' para CRIAR UM NOVO OBSERVABLE, OBSERVABLE QUE NÃO SEJA DE 'ERROR', pq queremos MANTER A 'OBSERVABLE STREAM' de this.actions$.pipe()' SEMPRE VIVA...
+                
+                
+                of()
+            }
+          ),
+
+        )
+      })
+    );
+  },
+  {dispatch: true}  ////é o default.. força o RETURN DE UMA NOVA ACTION/DISPATCHABLE ACTION/observable, ao final desse nosso effect...
+  
+  
+  );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> nesse código aí,
+
+
+o professor nos relata que o error foi causado 
+
+
+
+
+
+
+
+pelo uso errado de 'map()'..
+
+
+
+
+
+
+
+
+--> DENTRO DE 'map',
+
+SOMOS FORÇADOS A RETORNAR UM NOVO OBSERVABLE,
+
+
+
+E A QUESTÃO É QUE O 
+
+
+'''MAP'''
+
+
+
+JÁ FAZ, AUTOMATICAMENTE,
+
+
+O WRAP DAQUILO QUE VOCÊ RETORNAR _ EM UM _ OBSERVABLE... 
+
+
+
+
+
+
+
+
+
+
+
+
+------> ISSO QUER DIZER, EM OUTRAS PALAVRAS,
+
+
+
+
+
+
+
+
+QUE AQUI, QUANDO ESCREVEMOS 
+
+
+
+'return of (
+  new AuthActions.AuthSuccess(userData)
+)
+
+',
+
+
+
+
+
+
+NÓS 
+
+ACABAMOS RETORNANDO '''UM NOVO OBSERVABLE, COM UM NESTED OBSERVABLE QUE É NOSSO AUTHACTIONS.AUTHSUCCESS'...
+
+
+
+
+
+
+
+
+
+--> e isso é errado,
+
+
+
+PQ AQUI A ÚNICA COISA QUE PRECISAMOS RETORNAR É 'UMA NOVA ACTION/OBSERVABLE/ACTION QUE É UM OBSERVABLE',
+
+
+
+
+
+SEM __ FAZER _ O WRAP COM esse 'of()' (que cria um novo observable, mas que não vamos querer usar para criar um OBSERVABLE com um NESTED OBSERVABLE)...
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO FICA ASSIM, PORTANTO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ////effects __ PODEM __ OU NÃO_ RETORNAR 'NEW DISPATCHABLE ACTIONS' ao final de seus códigos... o 'authLogin' é um exemplo de EFFECT QUE FAZ DISPATCH DE UMA DESSAS ACTIONS (action de 'AuthSuccess') ... --> já o effect de 'AuthSuccess' NÃO FAZ ISSO; ELE _ NÃO _ FAZ O RETURN DE UMA NOVA 'DISPATCHABLE ACTION' ao final...
+  authLogin$ = createEffect(() => {
+    return this.actions$.pipe( ///pipe call no nosso OUTER OBSERVABLE, que é this.actions$....
+      ofType(AuthActions.AUTH_START),
+      switchMap((authData: AuthActions.AuthStart) => {
+        const requestHeaders = new HttpHeaders();
+        requestHeaders.append('Content-Type', 'application/json');
+
+        const httpAuthData = {
+          email: authData.payload.email,
+          password: authData.payload.password,
+        };
+
+        return this.http.post<AuthResponseData>(  //aqui temos um pipe call NO NOSSO INNER OBSERVABLE, que é 'this.http.post()'...
+          `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`,
+          httpAuthData,
+
+          {
+            headers: requestHeaders,
+          }
+        ).pipe(  ///AQUI, ESTAMOS CHAMANDO '.pipe()' NO NOSSO INNER OBSERVABLE, em 'this.http.post()' (ao contrário do OUTER OBSERVABLE, que é 'this.actions$.post()' )...
+        map(  // 1 ////  executa código e faz dispatch de uma action de 'AUTH_SUCCESS' caso não ocorra nenhum error com esse http request observable...
+        (resData: AuthResponseData) => {
+
+            const expirationDate = new Date( 
+            new Date().getTime() + +resData.expiresIn * 1000
+          );
+                  ///'of()' é um method que te AJUDA A CRIAR NOVOS OBSERVABLES.... --> MAS AQUI NÃO PRECISAMOS DELE, PQ O 'map()' JÁ FAZ AUTOMATICAMENTE O 'WRAP' de tudo que você retorna nele COMO _ UM _- OBSERVABLE...
+            // of(new AuthActions.AuthSuccess(new User(resData.email, resData.localId, resData.idToken, expirationDate)))
+
+
+            return new AuthActions.AuthSuccess(new User(resData.email, resData.localId, resData.idToken, expirationDate));  /////RETURN DE NOVO OBSERVABLE, essencialmente... essa nossa action NOVA será retornada como um OBSERVABLE, por meio do uso de 'map()'...
+        }
+      ),
+        catchError( /// 2 //// executa código e faz dispatch de uma action de 'AUTH_FAIL' CASO OCORRA UM ERROR NO SEND DESSE HTTP REQUEST/RESPONSE recebida por ele..
+            (error) => {  
+                ////usamos o 'of()' para CRIAR UM NOVO OBSERVABLE, OBSERVABLE QUE NÃO SEJA DE 'ERROR', pq queremos MANTER A 'OBSERVABLE STREAM' de this.actions$.pipe()' SEMPRE VIVA...
+                ///o uso de 'of()' é necessário, aqui, pq NÃO VAMOS USAR 'map()' nessa parte de nosso código (e é apenas o 'map()' que vai sempre CONVERTER AQUILO QUE VOCê RETORNOU AUTOMATICAMENTE EM UM OBSERVABLE)...
+                
+                of()
+            }
+          ),
+
+        )
+      })
+    );
+  },
+  {dispatch: true}  ////é o default.. força o RETURN DE UMA NOVA ACTION/DISPATCHABLE ACTION/observable, ao final desse nosso effect...
+  
+  
+  );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OU SEJA,
+
+
+  EVITAMOS DE USAR 'of()'
+
+
+
+  para wrappar nossa returned action, aqui,
+
+  PARA _- EVITAr__ 
+
+  DE CRIAR 
+
+  UM 'DOUBLE OBSERVABLE'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OK.. 
+
+
+
+  AGORA SE TENTAMOS FAZER LOGIN MAIS UMA VEZ,
+
+  CONSEGUIMOS ATINGIR O SPINNER,
+  TUDO CERTINHO...
+
+
+
+
+
+
+
+
+
+
+  MAS RECEBI UM ERROR:
+
+
+
+
+
+  Error: NG0203: inject() must be called from an injection context
+
+
+
+
+
+
+
+
+
+
+
+
+  --> era pq eu estava executando 'ng serve' no folder errado...
+
+
+
+
+
+
+
+
+
+  ok.. consertei os errors...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ok, rodei o código de 'login',
+
+
+
+  MAS AINDA RECEBI UM ERROR...
+
+
+
+
+
+
+
+
+
+
+
+  --> O ERROR DE:
+
+
+
+
+
+
+  GET https://recipebookdeployproject-default-rtdb.firebaseio.com/recipes.json?auth=eyJhbGciOiJSUzI1NiIsImtpZCI6InRCME0yQSJ9.eyJpc3MiOiJodHRwczovL2lkZW50aXR5dG9vbGtpdC5nb29nbGUuY29tLyIsImF1ZCI6InJlY2lwZWJvb2tkZXBsb3lwcm9qZWN0IiwiaWF0IjoxNjU1Njk2NDI4LCJleHAiOjE2NTY5MDYwMjgsInVzZXJfaWQiOiI2U282RlJqV0dGUkd6aEl3YnNLYmQ3eVdOVUwyIiwiZW1haWwiOiJleGVtcGxvQGV4ZW1wbG8uY29tIiwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIiwidmVyaWZpZWQiOmZhbHNlfQ.IwwUiAhqHRdcRw0-xhUgiQXrxGd4ZAbA77FawOD3S0eMxYpTZMXtRmXCpER5e5NU8LVbs3-XUpQCi-AlO9m_vyWyXyNGUOOLZobILEzZlMC_5-6gGh_DWjK1ogNsM_zTqGps1NgRYHaAwxnnDm3V7LmJrYT3aG8U7bkfhqIS-crjJ4hZoMjdfuV6iG8ltFfT6bQ5xz4hMm_1PNYp9EvrBYkDrWz3tCgfx998AmDu2beenmQk6qnjlH3gdWtJbDKs-M8JkzugZ8GYmuJUaHcFVUlgqq-e0_PDtIymWK7FpPqIgvjYj01jSKkMx9LC2WA9M92Raphsk_UmCFmxw2acCg&recipeBy=6So6FRjWGFRGzhIwbsKbd7yWNUL2 401 (Unauthorized)
+
+
+
+
+
+
+
+  certo...
+
+
+
+
+
+
+
+
+
+
+
+
+  bem estranho...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  o professor tenta loggar com um password incorreto, mas nunca recebe uma mensagem de erro...
+
+
+
+
+
+
+
+
+
+
+  --> a mesma coisa ocorre comigo....
+
+
+
+
+
+  RECEBO ESTES ERRORS:
+
+
+
+
+
+
+
+
+
+  zone.js:2680          POST https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBK3AXsu9Gn0fqLmA0zOdUAknDM48Nwk_o&auth=eyJhbGciOiJSUzI1NiIsImtpZCI6InRCME0yQSJ9.eyJpc3MiOiJodHRwczovL2lkZW50aXR5dG9vbGtpdC5nb29nbGUuY29tLyIsImF1ZCI6InJlY2lwZWJvb2tkZXBsb3lwcm9qZWN0IiwiaWF0IjoxNjU1Njk2NDI4LCJleHAiOjE2NTY5MDYwMjgsInVzZXJfaWQiOiI2U282RlJqV0dGUkd6aEl3YnNLYmQ3eVdOVUwyIiwiZW1haWwiOiJleGVtcGxvQGV4ZW1wbG8uY29tIiwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIiwidmVyaWZpZWQiOmZhbHNlfQ.IwwUiAhqHRdcRw0-xhUgiQXrxGd4ZAbA77FawOD3S0eMxYpTZMXtRmXCpER5e5NU8LVbs3-XUpQCi-AlO9m_vyWyXyNGUOOLZobILEzZlMC_5-6gGh_DWjK1ogNsM_zTqGps1NgRYHaAwxnnDm3V7LmJrYT3aG8U7bkfhqIS-crjJ4hZoMjdfuV6iG8ltFfT6bQ5xz4hMm_1PNYp9EvrBYkDrWz3tCgfx998AmDu2beenmQk6qnjlH3gdWtJbDKs-M8JkzugZ8GYmuJUaHcFVUlgqq-e0_PDtIymWK7FpPqIgvjYj01jSKkMx9LC2WA9M92Raphsk_UmCFmxw2acCg&recipeBy=6So6FRjWGFRGzhIwbsKbd7yWNUL2 400
+scheduleTask @ zone.js:2680
+scheduleTask @ zone.js:393
+onScheduleTask @ zone.js:283
+scheduleTask @ zone.js:386
+scheduleTask @ zone.js:221
+scheduleMacroTask @ zone.js:244
+scheduleMacroTaskWithCurrentZone @ zone.js:683
+(anônimo) @ zone.js:2713
+proto.<computed> @ zone.js:973
+(anônimo) @ http.mjs:1915
+_trySubscribe @ Observable.js:37
+(anônimo) @ Observable.js:31
+errorContext @ errorContext.js:19
+subscribe @ Observable.js:22
+source.subscribe.isComplete @ exhaustMap.js:19
+OperatorSubscriber._next @ OperatorSubscriber.js:13
+next @ Subscriber.js:31
+(anônimo) @ take.js:12
+OperatorSubscriber._next @ OperatorSubscriber.js:13
+next @ Subscriber.js:31
+(anônimo) @ distinctUntilChanged.js:14
+OperatorSubscriber._next @ OperatorSubscriber.js:13
+next @ Subscriber.js:31
+(anônimo) @ map.js:7
+OperatorSubscriber._next @ OperatorSubscriber.js:13
+next @ Subscriber.js:31
+_subscribe @ BehaviorSubject.js:12
+_trySubscribe @ Observable.js:37
+_trySubscribe @ Subject.js:74
+(anônimo) @ Observable.js:31
+errorContext @ errorContext.js:19
+subscribe @ Observable.js:22
+_subscribe @ Observable.js:64
+(anônimo) @ Observable.js:29
+errorContext @ errorContext.js:19
+subscribe @ Observable.js:22
+(anônimo) @ map.js:6
+(anônimo) @ lift.js:10
+(anônimo) @ Observable.js:26
+errorContext @ errorContext.js:19
+subscribe @ Observable.js:22
+(anônimo) @ distinctUntilChanged.js:9
+(anônimo) @ lift.js:10
+(anônimo) @ Observable.js:26
+errorContext @ errorContext.js:19
+subscribe @ Observable.js:22
+(anônimo) @ take.js:10
+(anônimo) @ lift.js:10
+(anônimo) @ Observable.js:26
+errorContext @ errorContext.js:19
+subscribe @ Observable.js:22
+(anônimo) @ exhaustMap.js:13
+(anônimo) @ lift.js:10
+(anônimo) @ Observable.js:26
+errorContext @ errorContext.js:19
+subscribe @ Observable.js:22
+doInnerSub @ mergeInternals.js:19
+outerNext @ mergeInternals.js:14
+OperatorSubscriber._next @ OperatorSubscriber.js:13
+next @ Subscriber.js:31
+(anônimo) @ innerFrom.js:51
+_trySubscribe @ Observable.js:37
+(anônimo) @ Observable.js:31
+errorContext @ errorContext.js:19
+subscribe @ Observable.js:22
+mergeInternals @ mergeInternals.js:50
+(anônimo) @ mergeMap.js:13
+(anônimo) @ lift.js:10
+(anônimo) @ Observable.js:26
+errorContext @ errorContext.js:19
+subscribe @ Observable.js:22
+(anônimo) @ filter.js:6
+(anônimo) @ lift.js:10
+(anônimo) @ Observable.js:26
+errorContext @ errorContext.js:19
+subscribe @ Observable.js:22
+(anônimo) @ map.js:6
+(anônimo) @ lift.js:10
+(anônimo) @ Observable.js:26
+errorContext @ errorContext.js:19
+subscribe @ Observable.js:22
+(anônimo) @ map.js:6
+(anônimo) @ lift.js:10
+(anônimo) @ Observable.js:26
+errorContext @ errorContext.js:19
+subscribe @ Observable.js:22
+source.subscribe.isComplete @ switchMap.js:14
+OperatorSubscriber._next @ OperatorSubscriber.js:13
+next @ Subscriber.js:31
+(anônimo) @ filter.js:6
+OperatorSubscriber._next @ OperatorSubscriber.js:13
+next @ Subscriber.js:31
+(anônimo) @ Subject.js:34
+errorContext @ errorContext.js:19
+next @ Subject.js:27
+(anônimo) @ ngrx-store.mjs:465
+next @ Subscriber.js:91
+_next @ Subscriber.js:60
+next @ Subscriber.js:31
+(anônimo) @ scanInternals.js:14
+OperatorSubscriber._next @ OperatorSubscriber.js:13
+next @ Subscriber.js:31
+(anônimo) @ withLatestFrom.js:26
+OperatorSubscriber._next @ OperatorSubscriber.js:13
+next @ Subscriber.js:31
+(anônimo) @ observeOn.js:6
+(anônimo) @ executeSchedule.js:3
+_execute @ AsyncAction.js:53
+execute @ QueueAction.js:20
+flush @ AsyncScheduler.js:18
+schedule @ QueueAction.js:14
+schedule @ Scheduler.js:8
+executeSchedule @ executeSchedule.js:2
+(anônimo) @ observeOn.js:6
+OperatorSubscriber._next @ OperatorSubscriber.js:13
+next @ Subscriber.js:31
+(anônimo) @ Subject.js:34
+errorContext @ errorContext.js:19
+next @ Subject.js:27
+next @ BehaviorSubject.js:24
+next @ ngrx-store.mjs:197
+dispatch @ ngrx-store.mjs:510
+onAuthFormSubmit @ auth-page.component.ts:120
+AuthPageComponent_Template_form_ngSubmit_2_listener @ auth-page.component.html:8
+executeListenerWithErrorHandling @ core.mjs:15019
+wrapListenerIn_markDirtyAndPreventDefault @ core.mjs:15057
+next @ Subscriber.js:91
+_next @ Subscriber.js:60
+next @ Subscriber.js:31
+(anônimo) @ Subject.js:34
+errorContext @ errorContext.js:19
+next @ Subject.js:27
+emit @ core.mjs:22467
+onSubmit @ forms.mjs:4141
+NgForm_submit_HostBindingHandler @ forms.mjs:4172
+executeListenerWithErrorHandling @ core.mjs:15019
+wrapListenerIn_markDirtyAndPreventDefault @ core.mjs:15057
+(anônimo) @ platform-browser.mjs:466
+invokeTask @ zone.js:406
+onInvokeTask @ core.mjs:25579
+invokeTask @ zone.js:405
+runTask @ zone.js:178
+invokeTask @ zone.js:487
+invokeTask @ zone.js:1648
+globalCallback @ zone.js:1679
+globalZoneAwareCallback @ zone.js:1712
+Mostrar mais 116 frames
+core.mjs:6485 ERROR HttpErrorResponse {headers: HttpHeaders, status: 400, statusText: 'OK', url: 'https://identitytoolkit.googleapis.com/v1/accounts…mCFmxw2acCg&recipeBy=6So6FRjWGFRGzhIwbsKbd7yWNUL2', ok: false, …}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ISSO AINDA NÃO ESTÁ FUNCIONANDO ADEQUADAMENTE,
+PQ O CERTO SERIA RECEBER UMA MENSAGEM DE ERROR AQUI...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O 'ERROR CASE', aqui,
+
+
+
+
+
+
+__ NÃO PODE FUNCIONAR AINDA,
+
+
+
+PQ _ NÓS NÃO ESTAMOS FAZENDO COISA ALGUMA LÁ NO 'catchError':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  authLogin$ = createEffect(() => {
+    return this.actions$.pipe( ///pipe call no nosso OUTER OBSERVABLE, que é this.actions$....
+      ofType(AuthActions.AUTH_START),
+      switchMap((authData: AuthActions.AuthStart) => {
+        const requestHeaders = new HttpHeaders();
+        requestHeaders.append('Content-Type', 'application/json');
+
+        const httpAuthData = {
+          email: authData.payload.email,
+          password: authData.payload.password,
+        };
+
+        return this.http.post<AuthResponseData>(  //aqui temos um pipe call NO NOSSO INNER OBSERVABLE, que é 'this.http.post()'...
+          `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`,
+          httpAuthData,
+
+          {
+            headers: requestHeaders,
+          }
+        ).pipe(  ///AQUI, ESTAMOS CHAMANDO '.pipe()' NO NOSSO INNER OBSERVABLE, em 'this.http.post()' (ao contrário do OUTER OBSERVABLE, que é 'this.actions$.post()' )...
+        map(  // 1 ////  executa código e faz dispatch de uma action de 'AUTH_SUCCESS' caso não ocorra nenhum error com esse http request observable...
+        (resData: AuthResponseData) => {
+
+            const expirationDate = new Date( 
+            new Date().getTime() + +resData.expiresIn * 1000
+          );
+                  ///'of()' é um method que te AJUDA A CRIAR NOVOS OBSERVABLES.... --> MAS AQUI NÃO PRECISAMOS DELE, PQ O 'map()' JÁ FAZ AUTOMATICAMENTE O 'WRAP' de tudo que você retorna nele COMO _ UM _- OBSERVABLE...
+            // of(new AuthActions.AuthSuccess(new User(resData.email, resData.localId, resData.idToken, expirationDate)))
+
+
+            return new AuthActions.AuthSuccess(new User(resData.email, resData.localId, resData.idToken, expirationDate));  /////RETURN DE NOVO OBSERVABLE, essencialmente... essa nossa action NOVA será retornada como um OBSERVABLE, por meio do uso de 'map()'...
+        }
+      ),
+        catchError( /// 2 //// executa código e faz dispatch de uma action de 'AUTH_FAIL' CASO OCORRA UM ERROR NO SEND DESSE HTTP REQUEST/RESPONSE recebida por ele..
+            (error) => {  
+                ////usamos o 'of()' para CRIAR UM NOVO OBSERVABLE, OBSERVABLE QUE NÃO SEJA DE 'ERROR', pq queremos MANTER A 'OBSERVABLE STREAM' de this.actions$.pipe()' SEMPRE VIVA...
+                ///o uso de 'of()' é necessário, aqui, pq NÃO VAMOS USAR 'map()' nessa parte de nosso código (e é apenas o 'map()' que vai sempre CONVERTER AQUILO QUE VOCê RETORNOU AUTOMATICAMENTE EM UM OBSERVABLE)...
+                
+                of()
+            }
+          ),
+
+        )
+      })
+    );
+  },
+  {dispatch: true}  ////é o default.. força o RETURN DE UMA NOVA ACTION/DISPATCHABLE ACTION/observable, ao final desse nosso effect...
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> ex:
+
+
+
+
+          catchError( 
+            (error) => {  
+            
+                of()
+            }
+          ),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OU SEJA, NADA ESTÁ ACONTECENDO JUSTAMENTE PQ AGORA ESTAMOS 'RETURNING AN EMPTY OBSERVABLE'...
+
+
+
+
+
+
+
+
+
+
+-> É POR ISSO QUE 
+
+ 
+ NADA ACONTECE, PQ 
+
+
+ NO MOMENTO 'NÃO ESTAMOS FAZENDO O DISPATCH DE NADA QUE PODERIA __ __''STORE'' O NOSSO ERROR''...
+
+
+
+
+
+
+
+
+
+
+
+ -> na verdade, podemos fazer o store do NOSSO ERROR NO STATE DO NGRX,
+
+
+
+
+
+
+ TUDO ATRAVÉS DA ACTION DE 'AUTH_FAIL',
+
+
+
+
+
+
+
+
+
+
+ que 
+
+
+ tem este formato,  E ESTE HELPER METHOD EXECUTADO NO REDUCER:
+
+
+
+
+
+
+
+
+
+
+
+
+ export class AuthFail implements Action {
+  readonly type = AUTH_FAIL;
+
+  constructor(public payload: string) {} ////vai segurar 'error', que será uma STRING (ou um object error).
+}
+
+
+
+
+
+
+
+
+E ISTO:
+
+
+
+
+
+
+
+const authFail = (
+  state: AuthState,
+  action: AuthActions.AuthFail
+): AuthState => {
+  return updateObject(state, {
+    isLoading: false,
+    token: null,
+    email: null,
+    userId: null,
+    error: action.payload
+    
+  });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK...
+
+
+
+
+
+
+ENTÃO BASTA USARMOS AQUELE 'of()'
+
+
+PARA_ CRIAR O NOVO DISPATCH _DE UMA ACTION DE 'AUTHFAIL',
+
+
+
+
+
+PARA AÍ TRIGGAR O NOSSO REDUCER E ACABAR 
+
+
+ARMAZENANDO ESSA MENSAGEM DE ERROR 
+
+
+DENTRO 
+
+
+
+DE NOSSO STATE...
+
+
+(
+
+  aí, no lugar de nosso app em que QUEREMOS USAR ESSA MESSAGE/STATE 
+
+
+  DE ERROR,
+
+  FAZEMOS 'subscribe'
+
+
+  A ESSA SLICE DO STATE, 
+
+
+
+
+
+  para então 
+
+  fazermos SHOW DE UMA MENSAGEM DE ERROR...
+
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+catchError(
+  (error) => {
+
+    return of(
+      this.store.dispatch(new AuthActions.AuthFail(error.message))
+    )
+  }
+)
+
+
+
+
+
+
+
+
+ACHO QUE SERÁ ALGO ASSIM, BASICAMENTE...
+
+
+
+
+
+
+
+
+
+
+
+
+-> O CÓDIGO VAI FICANDO ASSIM:
+
+
+
+
+
+                catchError( 
+            (error) => {  
+                return  of( ////VAMOS RETORNAR UM NOVO 'DISPATCH DE UMA ACTION', que será um observable, essencialmente... (por conta de 'of()', que cria NOVOS OBSERVABLES)....
+                  new AuthActions.AuthFail(error)
+                )
+            }
+          ),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          ----> ok...  ISSO VAI FAZER COM QUE 
+
+
+
+      A MENSAGEM DE ERROR SEJA _ 
+
+
+      DISPATCHEADA COM ESSA ACTION,
+
+
+      o que entaõ vai fazer com que 
+
+      NOSSO STATE 
+
+
+      DE 'auth'
+
+      SEJA ATUALIZADO, NA PARTE DE 'error',
+
+
+
+
+
+      COM ESSE ERROR, O QUE ENTAÕ SERÁ REFLETIDO NA PAGE 
+
+
+
+
+
+      DE 
+
+
+      'AuthPage Component',
+
+
+
+
+      EM QUE 
+
+
+
+      TEMOS 
+
+      AQUELE 
+
+
+
+      SUBSCRIBE AO STATE DE 
+
+
+      'this.store.select('auth')',
+
+
+
+
+      COMO OBSERVAMOS POR ESTE CÓDIGO AQUI:
+
+
+
+
+
+
+
+        ngOnInit(): void {
+
+
+      this.store.select('auth').subscribe(
+        (authState) => {
+
+
+          this.isLoading = authState.isLoading;  ///com isso, usamos o state de 'auth' PARA ATUALIZAR O STATE DESSE NOSSO 'PAGE COMPONENT' de 'AuthPage'...
+          this.error = authState.error;  
+        }
+      )
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OU SEJA,
+
+ATRAVÉS DESSE STATE VAMOS DEFINIR OS VALUES DE 'this.error'
+
+
+e 
+'this.isLoading'
+
+
+
+desse nosso LOCAL COMPONENT, O QUE POR SUA VEZ SERÁ REFLETIDO 
+
+
+NA PARTE DO HTML 
+
+
+QUE 
+
+
+DEPENDE DESSE STATE LOCAL/propriedades:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+})
+export class AuthPageComponent implements OnInit, OnDestroy {
+  isSignup: boolean = true;  //state que manageia a user interface, mas que nÃO É MANAGEADO DENTRO DO NGRX/store, pq ele NÃO AFETA NENHUMA OUTRA PARTE DE NOSSO APP.. 
+
+  isLoading: boolean = false;
+
+  closeAlertBoxSubscription: Subscription;
+
+
+  error: string | null;
+
+  @ViewChild(PlaceholderDirective, { static: false })
+  dynamicAlertBoxHost: PlaceholderDirective;
+
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private store: Store<AppState>
+  ) {}
+
+  ngOnInit(): void {
+
+
+      this.store.select('auth').subscribe(
+        (authState) => {
+
+
+          this.isLoading = authState.isLoading;  ///com isso, usamos o state de 'auth' PARA ATUALIZAR O STATE DESSE NOSSO 'PAGE COMPONENT' de 'AuthPage'...
+          this.error = authState.error;  
+        }
+      )
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+
+
+
+        <div
+        [ngStyle]="{ display: 'flex', 'justify-content': 'center' }"
+        *ngIf="!isLoading"
+      >
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="!localFormReference.valid"
+        >
+          {{ isSignup ? "SIGN UP" : "LOGIN" }}
+        </button>
+        <button
+          class="textBtn"
+          (click)="onSwitchAuth()"
+          [ngStyle]="{ cursor: 'pointer' }"
+          type="button"
+        >
+          {{ isSignup ? "Switch to Login" : "Switch to Signup" }}
+        </button>
+      </div>
+      <app-spinner *ngIf="isLoading"></app-spinner>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ok... 
+
+
+
+
+
+MAS O PROFESSOR NOS APONTA QUE 
+
+
+AINDA TEMOS 2 PEDAÇOS QUE ESTÃO FALTANDO..
+
+
+
+
+
+
+
+
+
+
+
+
+PEDAÇO 1) ----->  LÁ EM 'auth.component.ts',
+
+
+
+PARA_ FAZER O ACTUAL SHOW DE UM ERROR,
+
+
+
+
+
+
+
+
+
+_ DEVEMOS _USAR AQUELE METHOD DE 'showErrorAlert',
+
+
+
+
+AQUELE METHOD QUE FAZ O CREATE DE UM COMPONENT DINÂMICO (criado dentro do ts),
+
+
+
+
+E ENTAÕ FAZER ALGUNS LEVES AJUSTES,
+
+
+MAS SÃO COISAS PEQUENAS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+  ngOnInit(): void {
+
+
+      this.store.select('auth').subscribe(
+        (authState) => {
+
+
+          this.isLoading = authState.isLoading;  ///com isso, usamos o state de 'auth' PARA ATUALIZAR O STATE DESSE NOSSO 'PAGE COMPONENT' de 'AuthPage'...
+          this.error = authState.error; 
+          if (this.error) {
+            this.showErrorAlert(this.error);
+          }
+        }
+      )
+
+
+
+  }
+
+
+
+
+
+  SE TIVERMOS ESSE 'ERROR' presente no nosso state,
+
+
+
+
+  O QUE ACONTECERÁ SE ALGO 
+
+
+  MUDAR NO STATE DE 'AUTH',
+
+
+
+
+
+
+
+  VAMOS QUERER _ FAZER SHOW _ DESSA MENSAGEM DE ERROR,
+
+  por meio 
+
+
+  de 
+
+  'this.showErrorAlert(this.error)',
+
+
+  QUE EXECUTA ESTE METHOD AQUI:
+
+
+
+
+
+   private showErrorAlert(errorMessage: string) {
+    const alertComponentFactory =
+      this.componentFactoryResolver.resolveComponentFactory(
+        AlertDynamicComponent
+      );
+
+    const hostViewContainerRef = this.dynamicAlertBoxHost.viewContainerRef;
+
+    hostViewContainerRef.clear();
+
+    const componentReference = hostViewContainerRef.createComponent(
+      alertComponentFactory
+    );
+
+    componentReference.instance.message = errorMessage;
+
+    this.closeAlertBoxSubscription =
+      componentReference.instance.close.subscribe(() => {
+        this.closeAlertBoxSubscription.unsubscribe();
+        hostViewContainerRef.clear();
+      });
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OK.... CERTO...
+
+
+
+
+
+
+
+
+  --> MAS A COISA MAIS IMPORTANTE, AQUI,
+
+  É QUE 
+
+
+
+  e mais
+  'AuthEffects'
+
+
+
+
+  PRECISAMOS RETORNAR A ACTION APROPRIADA LÁ EM 'return of()',
+
+
+
+
+  EXATAMENTE COMO EU FIZ, POR MEIO DESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+                  catchError( 
+            (error) => {  
+                return  of( ////VAMOS RETORNAR UM NOVO 'DISPATCH DE UMA ACTION', que será um observable, essencialmente... (por conta de 'of()', que cria NOVOS OBSERVABLES)....
+                  new AuthActions.AuthFail(error)
+                )
+            }
+          ),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ok.... isso pq 'catchError',
+
+
+  AO CONTRÁRIO DE 'map()',
+
+
+  NÃO 
+
+
+  FAZ O RETURN AUTOMÁTICO DE UM OBSERVABLE,
+
+
+  POR ISSO VOCÊ PRECISA CRIAR SEU PRÓPRIO 
+
+
+  OBSERVABLE/ACTION DISPATCH,
+
+
+  POR MEIO DE 'of()'...
+
+
+
+
+
+
+
+
+
+  ok... -> o professor vai escrevendo assim:
+
+
+
+
+                    catchError( 
+            (error) => {  
+                return  of( ////VAMOS RETORNAR UM NOVO 'DISPATCH DE UMA ACTION', que será um observable, essencialmente... (por conta de 'of()', que cria NOVOS OBSERVABLES)....
+                  new AuthActions.AuthFail(error)
+                )
+            }
+          ),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O 'error' NÃO TERÁ UM FORMATO SIMPLES... 
+
+
+
+
+
+
+-. isso quer dizer que 'error', esse parâmetro aí,
+
+não será a MENSAGEM DE ERROR NATIVAMENTE...
+
+
+
+
+
+
+
+
+NÃO...- ->  PQ SE OLHARMOS O 'auth.service.ts',
+
+
+OBSERVAMOS QUE ANTIGMANETE NOSSA LÓGICA ERA ESTA:
+
+
+
+
+
+          //vamos usar esse operator para MANIPULAR NOSSAS 'ERROR RESPONSES', QUANDO OCORREREM..
+          (errorRes) => {
+            console.log(errorRes);
+            let errorMessage = 'An unknown error has occured.';
+
+            if (!errorRes.error || !errorRes.error.error) {
+              //conserta o choro do typescript..
+              return throwError(() => errorMessage); /////vai dar throw da message de 'An unknown error occurred!'
+            }
+
+            switch (errorRes.error.error.message) {
+              case 'EMAIL_EXISTS':
+                errorMessage = 'This email already exists.';
+            }
+
+            return throwError(() => errorMessage);
+          }
+        ),
+
+
+
+
+
+
+
+
+
+
+
+
+    --> OK...
+
+
+
+
+
+
+    -> A ERROR RESPONSE 'COMPLETA'
+
+
+
+PEDE QUE VOCÊ ENTRE EM 'errorRes.error.error.message'
+
+
+PARA _ 
+
+
+CONSEGUIR A ACTUAL 
+
+ERROR 
+
+MESSAGE...
+
+
+
+
+
+
+
+
+
+
+
+
+-> ALÉM DISSO,
+
+VOCÊ DEVE SE LEMBRAR 
+
+
+
+
+QUE _ 
+
+NÓS ESSENCIALMENTE CRIAMOS NOSSO PRÓPRIO CÓDIGO 'CONVERSOR DE ERROR MESSAGES',
+
+
+
+com esta lógica:
+
+
+
+
+      .pipe(
+        catchError((errorRes) => {
+          console.log(errorRes);
+
+          let errorMessage = 'An unknown error has occured.';
+
+          switch (errorRes.error.error.message) {
+            case 'EMAIL_NOT_FOUND':
+              errorMessage = 'No user found for the entered email!';
+              break;
+            case 'INVALID_PASSWORD':
+              errorMessage = 'Invalid password, please try again.';
+          }
+
+          return throwError(() => errorMessage);
+        }),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ok... isso quer dizer que 
+
+VAMOS PRATICAMENTE COPIAR ESSA LÓGICA,
+
+E A COLOCAR DENTRO DE 'authEffects',
+
+
+
+naquele 
+
+
+
+catchError lá..
+
+
+
+
+
+
+-> TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+      catchError( 
+            (errorRes) => {  
+
+
+
+              let errorMessage = 'An unknown error has occured.';
+
+              if (!errorRes.error || !errorRes.error.error) {
+                return of(new AuthActions.AuthFail(errorMessage))
+              }
+
+              switch (errorRes.error.error.message) { //lógica reutilizada, lá de 'auth.service.ts'...
+                case 'EMAIL_NOT_FOUND':
+                  errorMessage = 'No user found for the entered email!';
+                  break;
+                case 'INVALID_PASSWORD':
+                  errorMessage = 'Invalid password, please try again.';
+              }
+    
+                return  of( ////VAMOS RETORNAR UM NOVO 'DISPATCH DE UMA ACTION', que será um observable, essencialmente... (por conta de 'of()', que cria NOVOS OBSERVABLES)....
+                  new AuthActions.AuthFail(errorMessage)
+                )
+            }
+          ),
+
+
+
+
+
+
+
+
+
+
+
+
+
+          É CLARO QUE VAMOS SUBSTITUIR O 'THROW DAQUELE ERROR'
+
+
+
+          por esse código de 'return of()',
+
+
+
+JUSTAMENTE DE ACORDO COM AQUILO QUE O PROFESSOR NOS COMENTOU,
+
+
+
+QUE 
+
+
+''NOSSOS EFFECTS NUNCA DEVEM 
+
+RETORNAR __ERRORS/DAR THROW DE ERRORS QUE 
+
+
+__QUEBREM_ O OBSERVABLE FLOW''... ------> 
+
+
+
+
+
+
+É POR ISSO QUE 
+
+RETORNAMOS ESSE OBSERVABLE de 
+
+
+
+'of(new AuthActions.AuthFail(errorMessage))'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... AGORA  TEMOS UM CÓDIGO DE ERROR HANDLING_ SUPERIOR-
+
+
+
+
+no nosso projeto..
+
+
+
+
+
+
+
+
+
+
+-> SE TENTAMOS LOGAR COM 
+
+
+
+CREDENTIALS INCORRETAS,
+
+
+RECEBEMOS NOSSO MODAL,
+
+
+MODAL DE ERROR... ---> ISSO SIGNIFICA QUE NOSSO 'MAIN OBSERVABLE'
+
+
+NÃO ESTÁ MORTO,
+
+
+
+
+
+o que é ótimo...
+
+
+
+
+
+
+
+
+
+--> E SE INPUTTAMOS OS CREDENTIALS CORRETOS, CONSEGUIMOS ENTRAR NO 
+
+
+NOSSO APP, LOGAR NELE...
+
+
+
+
+
+
+
+
+
+
+
+
+-> MENTIRA..
+
+
+
+
+NÃO CONSEGUIMOS ISSO...
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO DE ERROR FOI ESTE:
+
+
+
+
+
+
+zone.js:2680          GET https://recipebookdeployproject-default-rtdb.firebaseio.com/recipes.json?auth=eyJhbGciOiJSUzI1NiIsImtpZCI6InRCME0yQSJ9.eyJpc3MiOiJodHRwczovL2lkZW50aXR5dG9vbGtpdC5nb29nbGUuY29tLyIsImF1ZCI6InJlY2lwZWJvb2tkZXBsb3lwcm9qZWN0IiwiaWF0IjoxNjU1NzAwNTk4LCJleHAiOjE2NTY5MTAxOTgsInVzZXJfaWQiOiI2U282RlJqV0dGUkd6aEl3YnNLYmQ3eVdOVUwyIiwiZW1haWwiOiJleGVtcGxvQGV4ZW1wbG8uY29tIiwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIiwidmVyaWZpZWQiOmZhbHNlfQ.Chb6eGCyv2-Px-OdUWSSF0oLsRHgF5W9l9XmXUvPYXH9z3vTPvdM3PiRZQDUsEDpTk0-0RSD_WG7R9VZnHzejUAjvaxSXuTxuimRoZMC854qvwrNLzgP8Lok4YjevuxG-Ib9UPT-x5eMDlNRk4dsXf1ArR88Jz8IjxQaJ0mJjbI0Ms7QZuTf0DRfTbM1LKlb8pxQKL-lsJS6CrxA3NsPIwuuLvKCFE2NETOgg2lUgcQuTYNbEFPI63zYM7a9Y6J-lxypy55Y0aARJWpA6vTrAGfD_wJgn6pL8nwNc8qdYdrpcKNFvQnQHlSwA07bVJgclTBON6uX4frS5-WeNz5ICg&recipeBy=6So6FRjWGFRGzhIwbsKbd7yWNUL2 401 (Unauthorized)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+qual é a razão disso?
+
+
+
+
+
+
+{error: "Invalid claim 'kid' in auth header: 'tB0M2A' with iat: '1655700598'"}
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+7
+
+Please use returnSecureToken: true, with correct Spellings I hope it will solve the problem of Invalid claim 'kid' in the auth header.
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> esqueci esse returnSecureToken mesmo....
+
+
+
+
+
+
+
+ex:
+
+
+
+
+        const httpAuthData = {
+          email: authData.payload.email,
+          password: authData.payload.password,
+        };
+
+
+
+
+
+
+
+
+
+
+
+DEVE FICAR ASSIM:
+
+
+
+
+
+
+
+
+
+        const httpAuthData = {
+          email: authData.payload.email,
+          password: authData.payload.password,
+          returnSecureToken: true
+        };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok, agora funcionou...
+
+
+
+
+
+
+
+
+
+
+--> o único problema é que agora estou recebendo um error de '
+
+
+
+
+ERROR TypeError: Cannot read properties of undefined (reading 'recipes')
+
+
+
+
+
+
+
+
+
+
+VEM DESTA LINHA:
+
+
+
+
+
+
+
+
+
+
+  ngOnInit(): void {
+
+
+
+
+    this.subscription = this.store.select('recipeBook').subscribe(
+      (recipeBookState) => {
+        this.recipes = recipeBookState.recipes;
+
+      }
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> mas é claro que isso está acontecendo pq AINDA NÃO ESTRUTURAMOS O CÓDIGO PARA FETCH DE RECIPES NA ÁREA DE 'RECIPEBOOK'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK, TUDO ISSO FOI BASTANTE TRABALHO,
+
+BASTANTE INITIAL SETUP, MAS AGORA 
+
+
+
+O 
+
+NGRX ESTÁ SENDO USADO PARA O LOGIN...
+
+
+
+
+
+
+
+
+
+--> É ALGO QUE VOCê DEVE 'WRAP YOUR HEAD AROUND',
+
+
+
+
+MAS DEPOIS 
+
+
+QUE VOCÊ TEM O FLOW BEM ESTRUTURADO,
+
+
+
+
+
+VOCÊ 
+
+
+
+VAI CONSEGUIR 
+
+
+TIRAR UM MONTE DA LÓGICA PARA FORA DOS SERVICES DE 'auth.service.ts',
+
+
+
+
+E AGORA QUE ESTAMOS TOTALMENTE NO MUNDO DO NGRX,
+
+
+O ADD 
+
+
+
+DE NOVOS EFFECTS SERÁ BEM MAIS RÁPIDO 
+
+
+DO QUE 
+
+ESSE FIRST INITIAL SETUP...

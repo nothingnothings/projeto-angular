@@ -1,0 +1,448 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS COMO PODEMOS OPTIMIZAR NOSSO ANGULAR APP PARA DEPLOYMENT?
+
+
+
+
+
+
+
+
+
+
+
+
+--> UM PUNHADO DE ETAPAS QUE DEVEMOS SEGUIR:
+
+
+
+
+
+
+
+
+
+
+
+1) DEVEMOS 'USE' E 'CHECK' 
+
+ENVIRONMENT VARIABLES 
+
+
+
+DE NOSSO CÓDIGO -------> JÁ SEI O QUE SÃO, E QUAL SUA UTILIDADE...
+
+
+
+
+
+
+
+
+
+
+2) POLISH E TEST NOSSO CODE...
+
+
+
+--> NO COURSE SECTION DE 'OPTIMIZATIONS' E 'MODULES' 
+
+DE NOSSO 
+
+CÓDIGO,
+
+
+JÁ VIMOS COISAS COMO CODE LAZY LOADING (
+
+
+    são coisas assim que vocÊ deve implementar...
+)
+
+
+
+
+--> VOCê DEVE TESTAR SEU APP,
+
+COMO SE FOSSE UM USER..
+
+
+
+
+
+
+
+
+
+
+
+3) ISTO FEITO
+,
+ 
+
+ VOCê 
+ DEVE CONSTRUIR SEU APP PARA PRODUCTION,
+
+
+ O QUE SERÁ FEITO COM 
+
+ 'ng build'.
+
+ (
+    você roda um comando que pega TODO SEU CÓDIGO TYPESCRIPT,
+
+
+    COMPILA-LO COMO JAVASCRIPT,
+
+
+    AÍ 
+
+
+    _ PEGA_ TODO SEU CÓDIGO EM 1 BLOCO SÓ,
+
+
+
+
+
+    TRADUZ ESSE CÓDIGO PARA 'ANGULAR LANGUAGE'
+
+
+
+    PARA QUE 
+
+    O 
+
+
+
+    ANGULAR CONSIGA 
+
+    COMPREENDER ESSE CÓDIGO NO BROWSER... 
+
+ )
+
+
+
+
+
+
+
+
+
+
+ -> O OBJETIVO É DEIXAR O CÓDIGO 'O MENOR POSSÍVEL'
+
+
+
+
+
+
+
+
+ ISSO PQ 
+
+
+ A APPLICATION QUE VOCÊ VAI QUERER SHIPPAR _ PRECISA _ SER BAIXADA 
+
+
+
+ POR TODO E QUAQLUER USER QUE VISITA SEU WEBSITE,
+
+
+
+
+
+
+
+E É MELHOR QUE SEJA REALMENTE BEM PEQUENO....
+
+
+(
+
+e famzemos isso com 'ng build --prod'....
+)
+
+
+
+
+
+
+
+
+
+
+-> NÓS JÁ USAMOS ESSE COMNADO LÁ NO MÓDULO ANTERIOR,
+
+
+
+
+
+
+
+
+isso pq 
+
+
+precisamos desse comando também para implementar o 'ahead of time compilation',
+
+
+
+e 
+
+esse é apenas 1 
+
+das 
+
+
+
+muitas optimizações que o angular-cli faz para nós, por trás das cenas...
+
+
+
+
+
+
+
+
+
+
+
+ -> MAS ASSIM QUE VOCÊ 
+
+
+ TERMINOU COM ISSO,
+
+
+
+
+
+VOCê PODE _ DEPLOYAR 
+
+
+ESSES 'BUILD ARTIFACTS' (esses generated files)
+
+
+
+
+A UM STATIC HOST...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK, MAS O QUE É UM STATIC HOST?
+
+
+
+
+
+
+
+
+
+-> É UM WEBSERVER QUE É CAPAZ DE 
+
+
+
+
+__ FAZER SERVE DE 'HTML',
+
+'CSS'
+
+E 
+
+JAVASCRIPT ... -->  É CAPAZ DE FAZER ESSE SERVE AÍ,
+
+MAS NÃO É CAPAZ 
+
+
+DE RODAR QUALQUER 'SERVERSIDE LANGUAGE',
+
+
+
+
+como 'PHP' OU 'NODEJS'..
+
+
+
+
+
+
+
+-> mas pq isso?
+
+
+
+
+
+
+---> é JUSTAMENTE PQ NÓS APENAS PRECISAMOS DE HTML, JAVASCRIPT E CSS 
+
+PARA NOSSO FRONTEND,
+
+PQ UM ANGULAR APP É FEITO DE APENAS ISSO....
+
+
+
+
+
+
+
+
+
+---> MAS É CLARO QUE VOCÊ PODE TER UM POUCO DE 'BACKEND CODE'
+
+
+
+no seu app,
+
+
+
+como por exemplo 
+
+
+
+O USO DE 'FIREBASE',
+
+
+QUE É UM BACKEND API.... MAS PODERÍAMOS TER USADO, NO LUGAR DELE,
+
+NOSSO PRÓPRIO 
+
+
+BACKEND 
+
+NODEJS,
+
+
+
+
+
+
+
+
+
+E O PROFESSOR TEM UM CURSO DE  'MEAN'
+
+
+
+
+QUE NOS DÁ UM EXEMPLO DE COMO 
+
+
+
+
+INTEGRAR UM  BACKEND 
+
+
+
+NODEJS 
+
+
+COM UM FRONTEND...
+
+
+
+
+
+
+
+------> MAS SE VOCË ESTÁ TRABALHANDO SÓ COM  O ANGULAR,
+
+
+ESTÁ TRABALHANDO SÓ NO FRONTEND E NÃO ESTÁ TRABALHANDO NO BACKEND POR CONTA PRÓPRIA,
+
+
+
+NO FINAL DAS CONTAS VOCê TERÁ SÓ HTML JS E CSS...
+
+
+
+(
+
+
+
+    E AÍ,
+
+    TUDO QUE VOCê PRECISA PARA FAZER ISSO FUNCIONAR,
+
+    É UM 
+
+
+    SERVER 
+
+    QUE 
+
+    CONSIGA FAZER 'SERVE' DESSAS FILES DO SEU FRONTEND..
+)
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA VAMOS VER AS ETAPAS PARA O DEPLOYMENT,
+
+
+PARA VER COMO TUDO ISSO FUNCIONA....
+
+
+
+
+(
+
+
+    vamos ver coisas como 'env variables',
+
+
+    também 
+
+
+    o SET DOS HEADERS (mas isso é mais backend)
+
+
+
+
+    e 
+
+
+
+
+    O USO DE UM 
+
+
+
+    WEBSERVER, um hosting service de SINGLE PAGE APPLICATIONS,
+
+    OU SEJA,
+
+
+    UM 'STATIC HOST'...
+)

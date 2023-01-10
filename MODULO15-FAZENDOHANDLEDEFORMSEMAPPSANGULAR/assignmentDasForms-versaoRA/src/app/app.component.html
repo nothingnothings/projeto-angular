@@ -1,0 +1,34 @@
+<div class="row">
+  <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+    <form (ngSubmit)="onFormSubmit()" [formGroup]="projectForm">
+      <div class="form-group">
+        <label for="projectName">Project Name</label>
+        <input class="form-control" type="text" formControlName="projectName" />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input class="form-control" type="email" formControlName="mail" />
+      </div>
+
+      <div class="form-group">
+        <label for="Project Status"></label>
+        <select
+          class="form-control"
+          formControlName="projectStatus"
+          id="projectStatus"
+        >
+          <option value="stable">Stable</option>
+          <option value="critical">Critical</option>
+          <option value="finished">Finished</option>
+        </select>
+      </div>
+      <button type="submit" 
+      [disabled]="!projectForm.valid"
+      class="btn btn-primary"
+      
+      
+      >Submit</button>
+    </form>
+  </div>
+</div>

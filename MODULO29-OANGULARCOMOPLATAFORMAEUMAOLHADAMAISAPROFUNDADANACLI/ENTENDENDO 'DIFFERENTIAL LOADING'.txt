@@ -1,0 +1,1085 @@
+ 
+
+
+
+
+
+
+
+
+ AGORA QUE FALAMOS SOBRE DEPLOYMENT,
+
+ O PROFESSOR 
+
+
+
+ QUER VOLTAR AO TÓPICO DA 'BROWSERLIST'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> como o professor havia mencionado,
+
+
+ isso é importante para COMUNICAR AO BROWSER QUAIS BROWSERS VOCÊ QUER SUPPORTAR...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> o angular vai pegar essa info aí,
+
+
+
+ e ai vai utilizá-la para prefixar seu código adequadamente,
+
+
+
+
+ MAS TAMBÉM PARA QUE 
+ ELE SAIBA 
+
+ ''QUAIS POLYFILLS CARREGAR'',
+
+
+ e 
+
+
+
+ ''QUAIS VERSÕES DE BUNDLES ELE DEVE CARREGAR''..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --. BEM, O ANGULAR TEM UMA FEATURE ESPECIAL CHAMADA DE 
+
+ 
+
+
+
+
+ '''differential loading'''...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+BEM, NÓS TEMOS O ANGULAR APP,
+
+
+
+
+E NOSSO APP ESTÁ SENDO HOSTEADO EM QUALQUER 
+
+
+
+HOSTING PROVIDER (firebase, aws s3, githubPages, etc)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> NÃO INTERESSA SE ESTAMOS HOSTEANDO 
+
+
+
+
+NOSSO APP COM 'ng deploy' ou qualquer outra coisa,
+
+
+
+
+
+
+o que interessa é que estamos hosteando 
+
+
+
+
+esse app em algum lugar...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok... NOSSO SITE SERÁ VISITADO PELOS USERS...
+
+
+
+
+
+
+
+
+
+--> User A -----> USA UM BROWSER MODERNO 
+
+
+
+
+
+
+
+
+--> User B --> usa um browser ANTIGO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+FIREFOX/BROWSER USA POUCOS POLYFILLS 
+
+
+
+
+
+
+
+
+
+
+JÁ UM INTERNET EXPLORER PRECISA DE UM MONTE DE POLYFILLS (
+
+    as features modernas não funcionam tão bem..
+)
+
+
+
+
+
+
+
+
+
+
+
+-> ESSES POLYFILLS REQUEREM 
+
+
+BUNDLES MAIORES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE SEMPRE PODEMOS SHIPPAR 1 BUNDLE MAIOR,
+PARA 
+
+
+SUPPORTAR USER A E B...
+
+
+
+
+
+
+
+
+-> SE SEMPRE SHIPPAMOS O BUNDLE MENOR E MAIS OPTIMIZADO POSSÍVEL, O 
+
+USER B SERÁ IGNORADO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ENTRETANTO,
+
+
+COM 'DIFFERENTIAL LOADING',
+
+
+
+
+
+
+
+
+É POSSÍVEL FAZER AS DUAS COISAS:
+
+
+
+
+
+
+
+
+
+ISSO PQ O ANGULAR CLI PRODUZ ACTUALLY _ MÚLTIPLAS VERSIONS DO SEU APP PARA PRODUCTION...
+
+
+
+
+
+
+
+
+
+
+
+
+--> E O ANGULAR CLI PRODUZ UM 'SMALL CODE FILE', QUE RODA PRIMEIRO, QUANDO SEU USER 
+
+
+VISITA SUA PAGE PELA PRIMEIRA VEZ,
+
+PARA AÍ 
+
+
+
+_iDENTIFICAR__ QUAL BROWSER O USER 
+
+
+UTILIZA... -----> E AÍ,
+
+
+
+
+ESSE 'SMALL CODE FILE' INICIAL _ DETERMINA _ QUAL 
+
+
+BUNDLE 
+
+
+ACABA SHIPPADO AO END USER..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> por isso,
+
+
+com differential loading,
+
+
+
+
+
+
+
+
+
+
+um user USANDO UM BROWSER MODERNO TEM __ QUE 
+
+BAIXAR_ MENOS CÓDIGO DO QUE 
+
+
+UM USER 
+USANDO UM BROWSER VELHO ---------> EM OUTRAS PALAVRAS,
+
+
+
+ISSO TE DÁ O MELHOR DOS 2 MUNDOS:
+
+
+
+
+*** VOCÊ SUPORTA OS 2 TIPOS DE USERS,
+
+
+
+E CADA 
+
+
+
+USER _ GANHA EXATAMENTE O CÓDIGO DE QUE PRECISA..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> E ESSA FEATURE AÍ _ ESTÁ 'BUILT-IN' NO ANGULAR,
+
+
+
+EXISTE OUT OF THE BOX...
+
+
+
+
+
+
+
+
+
+
+
+--> para ver se essa feature está funcionando, basta abrir o folder de 'dist'
+
+
+
+e 
+
+constatar a organização de arquivos:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> se o DIFFERENTIAL LOADING REALMENTE ESTÁ LIGADO,
+
+
+
+
+VOCÊ VERÁ 
+
+
+2 
+
+
+
+
+cópias para cada tipo de arquivo (
+
+
+
+    2 'main-es5.js',
+
+
+
+    2 'polyfills'...
+
+
+
+    2 'runtime'
+)
+
+
+
+
+
+
+
+
+
+
+--> o que diferencia esses arquivos é o 
+
+NOME DE
+
+
+CADA UM DELES:
+
+
+
+
+
+
+
+
+
+
+
+vemos 
+
+
+
+
+
+
+
+
+
+
+
+main-es5 
+
+
+
+main-es2015      (diferenciação entre ECMASCRIPT 5 E ecmascript versão 2015)...
+
+
+
+
+
+
+
+~
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo.... mas o estranho, aqui, é que 
+
+
+
+
+
+NÃO ESTOU COM ESSE SETUP nos meus projects angular... será que essa feature foi integrada/deixou de existir?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+differential loading has been removed in version 13 since IE 11 is no longer supported which makes differential loading redundant.
+
+
+
+
+
+
+
+
+
+
+
+In my case, I need to support Firefox 50 and chrome49. So, differential loading matters for my case because they don't support script[type=module]. So, do we have a workaround or solution?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Unfortunately, the mentioned browsers are also not supported by Angular. See https://angular.io/guide/browser-support for a full list of supported browsers.
+
+The only viable workaround would be to use a 3rd party builder such as https://github.com/manfredsteyer/ngx-build-plus.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok... isso significa que 
+
+
+DIFFERENTIAL LOADING NÃO É MAIS SUPORTADO PELO ANGULAR 'out of the box'...
+
+
+
+
+
+
+
+
+
+
+
+--> somos forçados a usar 
+
+
+
+
+
+THIRD PARTY BUILDERS COMO 
+
+
+
+'ngx-build-plus' PARA CONSEGUIR RODAR NOSSOS 
+
+
+
+PROJECTS ANGULAR NO INTERNET EXPLORER 11 E mais antigos...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok... COMO O SUPORTE AO INTERNET EXPLORER 11 FOI DESCONTINUADO,
+
+
+
+
+
+
+
+
+
+NÃO HÁ MAIS ESsa feature no angular 13...
+
+
+
+
+
+
+
+--> A FEATURE DO DIFFERENTIAL LOADING 
+
+
+
+
+
+
+
+
+
+FAZ COM QUE UM SCRIPT IMPORT COM OS 2 ARQUIVOS 
+
+RESIDA NO INDEX.HTML,
+
+
+
+e aí 
+
+
+
+
+o angular determina se 
+
+
+
+
+
+
+
+
+
+
+
+
+
+usa a versão velha ou nova... (mais leve)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--->  E É CLARO QUE o uso dessa feature DEPENDE DAS CONFIGS do 
+
+
+
+
+'browserlist.src',
+
+
+
+
+
+
+
+
+que determina COMO DEVEM SER BUILT E OPTIMIZED SEUS 
+
+
+
+CODE BUNDLES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> em 'tsconfig.json' 
+
+
+
+
+
+
+
+TEMOS AQUELA OPTION DE PRODUCTION ,DE 
+
+
+
+
+'target',
+
+
+
+
+QUE ESCOLHE 'PARA QUAL VERSÃO DO JAVASCRIPT VOCÊ VAI QUERER COMPILAR SEU CÓDIGO'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> lá, o normal agora é 
+
+
+''    "target": "es2020", ''',
+
+
+
+
+
+
+
+
+
+
+
+
+E ANTIGAMENTE ERA 'es2015'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VOCê PODE DEFINIR UMA VERSÃO MAIS VELHA, E AÍ FORÇAR TODOS SEUS USERS 
+
+
+A USAR ESSA VERSÃO...
+
+
+
+
+
+
+
+
+
+
+
+-> DIFFERENTIAL LOADING É UMA FEATURE BUILT-IN, SIM,
+
+
+
+EM VERSÕES MAIS ANTIGAS DO ANGULAR.. (deprecado)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SOBRE POLYFILLS:
+
+
+
+
+
+
+
+
+
+
+
+1) POLYFILLS _ CRUCIAIS_ AO SEU CÓDIGO SÃO SIMPLESMENTE INCLUÍDOS POR DEFAULT,
+
+
+ATRAVÉS DAQUELE IMPORT DE  'import zone.js' ,
+
+
+
+
+lá no arquivo 
+
+
+'polyfills.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2) MAS SE VOCÊ ESTÁ USANDO CERTAS FEATURES COMO 'ANIMATIONS' e então PRECISA SUPORTAR 
+
+
+
+BROWSERS QUE NÃO POSSUEM SUPORTE NATIVO A ESSE RECURSO (como internet explorer, edge ou safari),
+
+
+
+
+
+
+
+
+
+VOCÊ SERIA FORÇADO A 
+
+
+
+
+
+
+
+
+
+LER O TRECHO DE 
+
+
+
+
+''
+
+
+
+
+
+
+
+/**
+ * This file includes polyfills needed by Angular and is loaded before the app.
+ * You can add your own extra polyfills to this file.
+ *
+ * This file is divided into 2 sections:
+ *   1. Browser polyfills. These are applied before loading ZoneJS and are sorted by browsers.
+ *   2. Application imports. Files imported after ZoneJS that should be loaded before your main
+ *      file.
+ *
+ * The current setup is for so-called "evergreen" browsers; the last versions of browsers that
+ * automatically update themselves. This includes recent versions of Safari, Chrome (including
+ * Opera), Edge on the desktop, and iOS and Chrome on mobile.
+ *
+ * Learn more in https://angular.io/guide/browser-support
+ */
+
+/***************************************************************************************************
+ * BROWSER POLYFILLS
+ */
+
+/**
+ * By default, zone.js will patch all possible macroTask and DomEvents
+ * user can disable parts of macroTask/DomEvents patch by setting following flags
+ * because those flags need to be set before `zone.js` being loaded, and webpack
+ * will put import in the top of bundle, so user need to create a separate file
+ * in this directory (for example: zone-flags.ts), and put the following flags
+ * into that file, and then add the following code before importing zone.js.
+ * import './zone-flags';
+ *
+ * The flags allowed in zone-flags.ts are listed here.
+ *
+ * The following flags will work for all browsers.
+ *
+ * (window as any).__Zone_disable_requestAnimationFrame = true; // disable patch requestAnimationFrame
+ * (window as any).__Zone_disable_on_property = true; // disable patch onProperty such as onclick
+ * (window as any).__zone_symbol__UNPATCHED_EVENTS = ['scroll', 'mousemove']; // disable patch specified eventNames
+ *
+ *  in IE/Edge developer tools, the addEventListener will also be wrapped by zone.js
+ *  with the following flag, it will bypass `zone.js` patch for IE/Edge
+ *
+ *  (window as any).__Zone_enable_cross_context_check = true;
+ *
+ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> ou seja, browsers 'evergreen' não precisam desse recurso,
+
+
+
+
+
+ mas eventualmente vocÊ pode ter algum use case QUE DEMANDA O ADJUST DESSE ARQUIVO 'polyfills.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ok.... sempre depende de QUAIS BROWSERS VOCÊ QUER SUPPORTAR...
+
+
+
+
+
+
+
+
+
+
+
+ --> É ASSIM QUE FAZEMOS NOSSO APP FUNCIONAR PARA TODAS AS PESSOAS,
+
+
+
+
+
+
+ e como tiramos vantagem do differential loading'...

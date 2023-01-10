@@ -1,0 +1,2167 @@
+
+
+
+
+
+
+
+
+
+
+
+---> DEVEMOS 
+
+
+
+CRIAR A FORM QUE O PROFESSOR PEDIU..
+
+
+
+
+
+
+
+
+
+
+CREATE A FORM WITH THE FOLLOWING CONTROLS AND VALIDATORS:
+
+
+
+
+1) PROJECT NAME (should not be empty)  
+
+2) MAIL (SHOULD NOT BE EMPTY AND A VALID EMAIL) 
+
+
+
+3) PROJECT STATUS DROPDOWN, WITH THREE VALUES: 'Stable', 'Critical', 'Finished'
+
+
+
+4) SUBMIT BUTTON 
+
+
+
+
+
+ADD YOUR OWN VALIDATOR WHICH DOESNT ALLOW 'TEST' AS A PROJECT ANME 
+
+
+
+ALSO IMPLEMENT THAT VALIDATOR AS AN ASYNC VALIDATOR (replace the other one)
+
+
+
+
+
+UPON SUBMITTING THE FORM, SIMPLY PRINT THE VALUE TO THE CONSOLE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO FOI FICANDO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+    <form
+      #localFormReference="ngForm"
+      (submit)="onFormSubmit(localFormReference)"
+    >
+      <div class="form-group">
+        <label for="projectName">Project Name</label>
+        <input class="form-control" 
+        ngModel 
+        name="projectName" 
+        id="projectName"
+        
+        required />
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input class="form-control" 
+        ngModel 
+        name="projectName" 
+        required 
+        id="projectName"
+        
+        email />
+      </div>
+      <div class="form-group">
+        <label for="projectStatus">Secret Questions</label>
+        <select class="form-control" 
+        name="projectStatus" 
+        id="pStatus"
+        [ngModel]="'projectStatus[0]'">
+          <option value="projectStatus[0]">Stable</option>
+          <option value="projectStatus[1]">Critical</option>
+          <option value="projectStatus[2]">Finished</option>
+        </select>
+      </div>
+      <hr>
+
+      <button
+        class="btn btn-primary"
+        [disabled]="!localFormReference.valid"
+        type="submit"
+      >
+        Submit
+      </button>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> agora falta o código ts:
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+
+    projectStatus = ['stable', 'critical', 'finished'];
+
+
+
+    onFormSubmit(form: NgForm) {
+
+      console.log(form);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> agora deixe ver o resto das instruções:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE A FORM WITH THE FOLLOWING CONTROLS AND VALIDATORS:
+
+
+
+
+1) PROJECT NAME (should not be empty)  
+
+2) MAIL (SHOULD NOT BE EMPTY AND A VALID EMAIL) 
+
+
+
+3) PROJECT STATUS DROPDOWN, WITH THREE VALUES: 'Stable', 'Critical', 'Finished'
+
+
+
+4) SUBMIT BUTTON 
+
+
+
+
+
+ADD YOUR OWN VALIDATOR WHICH DOESNT ALLOW 'TEST' AS A PROJECT NAME ///// NÃO FIZ ISSO AINDA...
+
+
+
+ALSO IMPLEMENT THAT VALIDATOR AS AN ASYNC VALIDATOR (replace the other one)
+
+
+
+
+
+UPON SUBMITTING THE FORM, SIMPLY PRINT THE VALUE TO THE CONSOLE...
+
+
+
+
+
+
+
+---------------
+
+
+
+
+encontrei um artigo 
+
+sobre isso... (pq o professor não explicou sobre como fazer os async custom validators com o approach template-driven):
+
+
+
+
+
+
+
+
+
+
+
+https://www.netjstech.com/2020/11/custom-async-validator-angular-template-driven-form.html
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> o que acontecerá, aqui, na verdade,
+
+
+
+é o uso de uma DIRECTIVE COMO 
+
+
+
+SE FOSSE UM ASYNC VALIDATOR...
+
+
+
+
+ex:
+
+
+
+
+
+
+Directive as Async Validator (email.directive.ts)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CONSEGUI....
+
+
+
+
+
+
+
+
+CONSEGUI FAZER ISSO ATRAVÉS DO USO DE UMA DIRECTIVE, TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+import { Directive } from '@angular/core';
+import {
+  AsyncValidator,
+  FormControl,
+  NG_ASYNC_VALIDATORS,
+  ValidationErrors,
+} from '@angular/forms';
+import { Observable } from 'rxjs';
+
+@Directive({
+  selector: '[forbiddenUsernameValidator]',
+  providers: [
+    {
+      provide: NG_ASYNC_VALIDATORS,
+      useExisting: forbiddenUsernameDirective,
+      multi: true,
+    },
+  ],
+})
+export class forbiddenUsernameDirective implements AsyncValidator {
+  constructor() {}
+
+  validate(control: FormControl): Promise<any | null> | Observable<any | null> {
+    const promise = new Promise((resolve, reject) => {
+      setTimeout(
+        () => {
+          if (control.value === 'TEST') {
+            console.log('ENTERED');
+            resolve({
+              usernameIsForbidden: true,
+            });
+          }
+          console.log(control);
+          resolve(null);
+        },
+
+        1500
+      );
+    });
+
+    return promise;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---. é uma directive que SIMULA UM COMPORTAMENTO ASYNC...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, CONSEGUI TODOS OS COMPORTAMENTOS QUE O PROFESSOR PEDIU....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CÓDIGO DO TEMPLATE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+    <form
+      #localFormReference="ngForm"
+      (submit)="onFormSubmit(localFormReference)"
+    >
+      <div class="form-group">
+        <label for="projectName">Project Name</label>
+        <input class="form-control" 
+        forbiddenUsernameValidator
+        placeholder="Your Project Name"
+        ngModel 
+        name="projectName" 
+        id="projectName"
+        
+        required />
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input class="form-control" 
+        placeholder="example@test.com" 
+        ngModel 
+        name="email" 
+        required 
+        id="email"
+        
+        email />
+      </div>
+      <div class="form-group">
+        <label for="projectStatus">Secret Questions</label>
+        <select class="form-control" 
+        name="projectStatus" 
+        id="pStatus"
+        [ngModel]="'projectStatus[0]'">
+          <option value="projectStatus[0]">Stable</option>
+          <option value="projectStatus[1]">Critical</option>
+          <option value="projectStatus[2]">Finished</option>
+        </select>
+      </div>
+      <hr>
+
+      <button
+        class="btn btn-primary"
+        [disabled]="!localFormReference.valid"
+        type="submit"
+      >
+        Submit
+      </button>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO...
+
+
+
+
+
+
+
+AGORA A PRÓXIMA TAREFA É REPLICAR ISSO AÍ,
+
+
+MAS COM 
+
+
+A VERSÃO 
+
+
+
+'REACTIVE'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DEVEMOS CRIAR UM NOVO PROJETO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> mesmo setup do bootstrap inicial...
+
+
+
+
+
+
+
+--> espere... esqueci de adicionar algum styling na minha form 'TD'... (mas o professor não havia pedido isso)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> QUANTO AO DEFINE NO REACTIVE APPROACH, ESCREVO ASSIm:
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent implements OnInit {
+  signupForm: FormGroup;
+
+  projectStatus: string[] = ['stable', 'critical', 'finished'];
+
+  ngOnInit(): void {
+    this.signupForm = new FormGroup({
+      projectName: new FormControl('Your Project Name', [Validators.required]),
+
+      mail: new FormControl('Your Email', [Validators.required]),
+
+      projectStatus: new FormControl(this.projectStatus[0], [
+        Validators.required,
+      ]),
+    });
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CLARO QUE FALTAM ALGUMAS COISAS (
+
+    falta o sync com o template 
+
+    de nosso 
+
+
+
+app,
+
+
+
+E TAMBÉM 
+
+
+
+FALTA 
+
+
+
+CRIAR AQUELA 'CUSTOM ASYNC VALIDATOR'...
+
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+-_> MAS GANHEI UM ERROR:
+
+
+
+FOI POR CAUSA DO BOOTSTRAP...
+
+
+
+
+
+
+
+-->  reiniciei meu app....
+
+
+--> o style de 
+
+
+'dropdown' ainda está quebrado...
+
+
+
+
+
+
+
+
+
+--> CONSERTEI..
+
+
+
+
+
+
+
+
+agora só falta consertar 
+
+
+
+
+algumas coisinhas....
+
+
+
+
+
+
+
+
+
+
+--> MAS AINDA ESTÁ TUDO ERRADO,
+
+pq 
+
+MEUS INPUT FIELDS ESTÃO COMO VALID,
+
+MAS AINDA NÃO ESCREVI NADA NELES....
+
+
+
+
+
+
+
+
+
+--> ERA PQ MEUS VALIDATORS NÃO ESTAVAM BEM CONFIGURADOS (eu havia esquecido de colocar 'Validators.email')....
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO VAI FICANDO ASSIM:
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+    <form (ngSubmit)="onFormSubmit()" [formGroup]="projectForm">
+      <div class="form-group">
+        <label for="projectName">Project Name</label>
+        <input class="form-control" type="text" formControlName="projectName" />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input class="form-control" type="email" formControlName="mail" />
+      </div>
+
+      <div class="form-group">
+        <label for="Project Status"></label>
+        <select
+          class="form-control"
+          name="projectStatus"
+          formControlName="projectStatus"
+          id="projectStatus"
+        >
+          <option value="stable">Stable</option>
+          <option value="critical">Critical</option>
+          <option value="finished">Finished</option>
+        </select>
+      </div>
+      <button action="submit" 
+      [disabled]="!projectForm.valid"
+      class="btn btn-primary"
+      
+      
+      >Submit</button>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent implements OnInit {
+  projectForm: FormGroup;
+
+  projectStatus: string[] = ['stable', 'critical', 'finished'];
+
+  forbiddenNames: string[] = ['TEST'];
+
+  ngOnInit(): void {
+    this.projectForm = new FormGroup({
+      projectName: new FormControl('Your Project Name', [Validators.required]),
+
+      mail: new FormControl('Your Email', [
+        Validators.required,
+        Validators.email,
+      ]),
+
+      projectStatus: new FormControl(this.projectStatus[0], [
+        Validators.required,
+      ]),
+    });
+  }
+
+  onFormSubmit() {
+    console.log(this.projectForm);
+  }
+
+  forbiddenNamesValidator() {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> AGORA FALTOU O CÓDIGO/LÓGICA DE 
+
+'forbiddenNames'...
+
+
+
+
+
+
+
+
+
+
+--> tenho que 
+
+CHECAR OS VALUES 
+
+DE MINHA FORM,
+
+
+PARA VER SE SÃO 
+EQUIVALENTES 
+
+
+ÀQUELES 
+
+VALUES 
+
+
+
+em 'forbiddenNames'...
+
+
+
+
+
+
+
+
+
+
+
+
+FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import {
+  AsyncValidatorFn,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
+import { Observable } from 'rxjs';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent implements OnInit {
+  projectForm: FormGroup;
+
+  projectStatus: string[] = ['stable', 'critical', 'finished'];
+
+  forbiddenNames: string[] = ['TEST'];
+
+  ngOnInit(): void {
+    this.projectForm = new FormGroup({
+      projectName: new FormControl(
+        'Your Project Name',
+        [Validators.required],
+        this.forbiddenNamesValidator.bind(this) as AsyncValidatorFn
+      ),
+
+      mail: new FormControl('Your Email', [
+        Validators.required,
+        Validators.email,
+      ]),
+
+      projectStatus: new FormControl(this.projectStatus[0], [
+        Validators.required,
+      ]),
+    });
+  }
+
+  onFormSubmit() {
+    console.log(this.projectForm);
+  }
+
+  forbiddenNamesValidator(
+    control: FormControl
+  ): Promise<any> | Observable<any> {
+    const promise = new Promise((resolve, reject) => {
+      setTimeout(
+        () => {
+          if (this.forbiddenNames.indexOf(control.value) !== -1) {
+            resolve({ isForbiddenName: true });
+          } else {
+            resolve(null);
+          }
+        },
+
+        1500
+      );
+    });
+
+    return promise;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA DEVO TESTAR ESSE CÓDIGO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK...
+
+
+
+
+
+
+
+
+CONSEGUI... ATÉ MESMO O CUSTOM ASYNC VALIDATOR..
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO COMPLETO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+    <form (ngSubmit)="onFormSubmit()" [formGroup]="projectForm">
+      <div class="form-group">
+        <label for="projectName">Project Name</label>
+        <input class="form-control" type="text" formControlName="projectName" />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input class="form-control" type="email" formControlName="mail" />
+      </div>
+
+      <div class="form-group">
+        <label for="Project Status"></label>
+        <select
+          class="form-control"
+          name="projectStatus"
+          formControlName="projectStatus"
+          id="projectStatus"
+        >
+          <option value="stable">Stable</option>
+          <option value="critical">Critical</option>
+          <option value="finished">Finished</option>
+        </select>
+      </div>
+      <button action="submit" 
+      [disabled]="!projectForm.valid"
+      class="btn btn-primary"
+      
+      
+      >Submit</button>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import {
+  AsyncValidatorFn,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
+import { Observable } from 'rxjs';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent implements OnInit {
+  projectForm: FormGroup;
+
+  projectStatus: string[] = ['stable', 'critical', 'finished'];
+
+  forbiddenNames: string[] = ['TEST'];
+
+  ngOnInit(): void {
+    this.projectForm = new FormGroup({
+      projectName: new FormControl(
+        'Your Project Name',
+        [Validators.required],
+        this.forbiddenNamesValidator.bind(this) as AsyncValidatorFn
+      ),
+
+      mail: new FormControl('Your Email', [
+        Validators.required,
+        Validators.email,
+      ]),
+
+      projectStatus: new FormControl(this.projectStatus[0], [
+        Validators.required,
+      ]),
+    });
+  }
+
+  onFormSubmit() {
+    console.log(this.projectForm);
+  }
+
+  forbiddenNamesValidator(
+    control: FormControl
+  ): Promise<any> | Observable<any> {
+    const promise = new Promise((resolve, reject) => {
+      setTimeout(
+        () => {
+          if (this.forbiddenNames.indexOf(control.value) !== -1) {
+            resolve({ isForbiddenName: true });
+          } else {
+            resolve(null);
+          }
+        },
+
+        1500
+      );
+    });
+
+    return promise;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+
+apliquei tudo que o professor me explicou....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O PROFESSOR, PARA NOS MOSTRAR QUE PODEMOS 'MIX IT UP'
+
+
+
+,
+
+
+DECIDE CCOLOCAR NOSSO 'CUSTOM VALIDATOR'
+
+
+EM UM ARQUIVO PRÓPRIO,
+
+
+
+
+
+um
+
+
+ARQUIVO CHAMADO DE 
+
+'custom-validators.ts'...
+
+
+
+
+
+
+
+
+
+----> aí ele vai QUERER EXPORTAR UMA CLASS, QUE VAI CHAMAR DE 
+
+
+'CustomValidators'...
+
+
+
+
+
+
+
+
+
+-> POR MEIO DESSA HELPER _ CLASS_,
+
+
+TEREMOS UM MONTE DE 
+
+
+__ VALIDATORS DISPONÍVEIS....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DENTRO DESSA CLASS,
+
+
+VAMOS QUERER TER UMA __ STATIC_ FUNCTION,
+
+
+QUE VAMOS CHAMAR 
+
+
+DE 
+
+
+
+
+'invalidProjectName'..
+
+
+
+
+
+
+
+
+
+
+---> PROFESSOR DIZ QUE ESSE 
+
+
+
+VALIDATOR NÃO É MT ÚTIL,
+
+
+
+
+
+MAS QUE 
+
+
+
+EM GRANDES PROJETOS VOCÊ PODE ACABAR COM UMA GRANDE LISTA 
+
+
+
+DE 
+
+
+
+VALIDATORS (repositórios)..
+
+
+
+
+
+
+
+
+
+--> ESCREVEMOS ALGO ASSIM:
+
+
+
+
+
+
+
+import { FormControl } from "@angular/forms";
+import { Observable } from "rxjs";
+
+export class CustomValidators {
+  forbiddenNamesValidator(
+    control: FormControl
+  ): Promise<any> | Observable<any> {
+    const promise = new Promise((resolve, reject) => {
+      setTimeout(
+        () => {
+          if (this.forbiddenNames.indexOf(control.value) !== -1) {
+            resolve({ isForbiddenName: true });
+          } else {
+            resolve(null);
+          }
+        },
+
+        1500
+      );
+    });
+
+    return promise;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> EU COMECEI ESCREVENDO ISSO DESSA FORMA, SIM,
+
+
+
+MAS AÍ O PROFESSOR DO NADA _ DECIDE UTILIZAR A VERSÃO 'SYNCHRONOUS'
+
+do meu 
+
+CUSTOM VALIDAT0R,
+
+E NÃO A ASYNC...
+
+
+
+
+
+
+
+
+--> por isso o código fica diferente, fica tipo assim:
+
+
+
+
+
+
+
+
+import { FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
+
+export class CustomValidators {
+  //   static forbiddenNamesValidator(   ////VERSÃO ASYNC...
+  //     control: FormControl
+  //   ): Promise<any> | Observable<any> {
+  //     const promise = new Promise((resolve, reject) => {
+  //       setTimeout(
+  //         () => {
+  //           if (this.forbiddenNames.indexOf(control.value) !== -1) {
+  //             resolve({ isForbiddenName: true });
+  //           } else {
+  //             resolve(null);
+  //           }
+  //         },
+
+  //         1500
+  //       );
+  //     });
+
+  //     return promise;
+  //   }
+
+  static invalidProjectName(
+    control: FormControl
+  ): { [s: string]: boolean } | null {
+    if (control.value === 'Test') {
+      return { isForbiddenName: true };
+    }
+
+    return null;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK.... DE VOLTA AO APP COMPONENT,
+
+PODEMOS ASSIGNAR 
+
+
+
+ESSE CUSTOM VALIDATOR 
+
+
+AOS NOSSOS CONTROLS/INUPTS,
+
+
+
+basta IMPORTAR 
+
+
+
+ELE....
+
+
+
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ngOnInit(): void {
+    this.projectForm = new FormGroup({
+      projectName: new FormControl(
+        'Your Project Name',
+        [Validators.required, CustomValidators.invalidProjectName.bind(this)],
+        // this.forbiddenNamesValidator.bind(this) as AsyncValidatorFn
+      ),
+
+      mail: new FormControl('Your Email', [
+        Validators.required,
+        Validators.email,
+      ]),
+
+      projectStatus: new FormControl(this.projectStatus[0], [
+        Validators.required,
+      ]),
+    });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ------------> OK...
+
+
+
+
+
+
+  LEMBRE-SE QUE 'this'
+
+  VAI BUGAR SE VOCê NÃO CHAMAR ESSE 'bind' ao this, no call desse custom validator..
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> ISSO AÍ VAI FUNCIONAR, VAI FUNCIONAR COM O CÓDIGO DO PROFESSOR..
+
+
+
+
+
+
+
+  --> CERTO, MAS AGORA É HORA DE ADICIOANR AQUELE NOSSO 'ASYNC CUSTOM VALIDATOR'...
+
+
+
+
+
+
+
+
+
+
+  -> USAMOS AUQELE METHOD QUE EU COMENTEI PARA FORA, O STATIC METHOD DE 'CustomValidators'...
+
+
+
+
+
+
+
+  ex:
+
+
+
+
+
+
+
+
+
+  import { FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
+
+export class CustomValidators {
+    static forbiddenNamesValidator(   ////VERSÃO ASYNC...
+      control: FormControl
+    ): Promise<any> | Observable<any> {
+      const promise = new Promise((resolve, reject) => {
+        setTimeout(
+          () => {
+            if (this.forbiddenNames.indexOf(control.value) !== -1) {
+              resolve({ isForbiddenName: true });
+            } else {
+              resolve(null);
+            }
+          },
+
+          1500
+        );
+      });
+
+      return promise;
+    }
+
+//   static invalidProjectName(
+//     control: FormControl
+//   ): { [s: string]: boolean } | null {
+//     if (control.value === 'Test') {
+//       return { isForbiddenName: true };
+//     }
+
+//     return null;
+//   }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO....
+
+
+
+MAS NESSE CUSTOM ASYNC VALIDATOR SERIA BOM SE CONSEGUÍSSEMOS ACESSAR AQUELE 'ARRAY DE COISAS PROIBIDAS'... -> é por isso que preciso fazer certo tweaking...
+
+
+
+
+
+
+
+
+O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
+
+export class CustomValidators {
+
+
+
+   static forbiddenNames: string[] = ['TEST'];
+
+
+
+
+
+
+    static forbiddenNamesValidator(   ////VERSÃO ASYNC...
+      control: FormControl,
+    ): Promise<any> | Observable<any> {
+      const promise = new Promise((resolve, reject) => {
+        setTimeout(
+          () => {
+            if (this.forbiddenNames.indexOf(control.value) !== -1) {
+              resolve({ isForbiddenName: true });
+            } else {
+              resolve(null);
+            }
+          },
+
+          1500
+        );
+      });
+
+      return promise;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIm:
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import {
+  AsyncValidatorFn,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
+import { Observable } from 'rxjs';
+
+import { CustomValidators } from './custom-validators';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent implements OnInit {
+  projectForm: FormGroup;
+
+  projectStatus: string[] = ['stable', 'critical', 'finished'];
+
+  // forbiddenNames: string[] = ['TEST'];
+
+  
+
+
+
+
+  constructor() {
+
+  }
+
+
+  ngOnInit(): void {
+
+     
+
+
+    this.projectForm = new FormGroup({
+      projectName: new FormControl(
+        'Your Project Name',
+        [Validators.required, 
+          // CustomValidators.invalidProjectName.bind(this)
+        ],
+        // this.forbiddenNamesValidator.bind(this) as AsyncValidatorFn
+        CustomValidators.forbiddenNamesValidator.bind(this) as AsyncValidatorFn
+      ),
+
+      mail: new FormControl('Your Email', [
+        Validators.required,
+        Validators.email,
+      ]),
+
+      projectStatus: new FormControl(this.projectStatus[0], [
+        Validators.required,
+      ]),
+    });
+  }
+
+  onFormSubmit() {
+    console.log(this.projectForm);
+  }
+
+  forbiddenNamesValidator(
+    control: FormControl
+  ): Promise<any> | Observable<any> {
+    const promise = new Promise((resolve, reject) => {
+      setTimeout(
+        () => {
+          // if (this.forbiddenNames.indexOf(control.value) !== -1) {
+          if (CustomValidators.forbiddenNames.indexOf(control.value) !== -1) {
+            resolve({ isForbiddenName: true });
+          } else {
+            resolve(null);
+          }
+        },
+
+        1500
+      );
+    });
+
+    return promise;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+------------
+
+
+
+
+
+
+
+
+CERTO.... COM ISSO, CONFIGURAMOS 
+
+
+
+VÁRIOS VALIDATORS,
+
+
+tanto sync como async, todos custom..
+
+
+
+
+
+
+
+-> ok, mas eu RECEBI UM ERROR:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS CONSERTEI TUOD, E FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import {
+  AsyncValidatorFn,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
+import { Observable } from 'rxjs';
+
+import { CustomValidators } from './custom-validators';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent implements OnInit {
+  projectForm: FormGroup;
+
+  projectStatus: string[] = ['stable', 'critical', 'finished'];
+
+  // forbiddenNames: string[] = ['TEST'];
+
+  
+
+
+
+
+  constructor() {
+
+  }
+
+
+  ngOnInit(): void {
+
+     
+
+
+    this.projectForm = new FormGroup({
+      projectName: new FormControl(
+        'Your Project Name',
+        [Validators.required, 
+          // CustomValidators.invalidProjectName.bind(this)
+        ],
+        // this.forbiddenNamesValidator.bind(this) as AsyncValidatorFn
+        CustomValidators.forbiddenNamesValidator.bind(this) as AsyncValidatorFn
+      ),
+
+      mail: new FormControl('Your Email', [
+        Validators.required,
+        Validators.email,
+      ]),
+
+      projectStatus: new FormControl(this.projectStatus[0], [
+        Validators.required,
+      ]),
+    });
+  }
+
+  onFormSubmit() {
+    console.log(this.projectForm);
+  }
+
+  // forbiddenNamesValidator(
+  //   control: FormControl
+  // ): Promise<any> | Observable<any> {
+  //   const promise = new Promise((resolve, reject) => {
+  //     setTimeout(
+  //       () => {
+  //         // if (this.forbiddenNames.indexOf(control.value) !== -1) {
+  //         if (CustomValidators.forbiddenNames.indexOf(control.value) !== -1) {
+  //           resolve({ isForbiddenName: true });
+  //         } else {
+  //           resolve(null);
+  //         }
+  //       },
+
+  //       1500
+  //     );
+  //   });
+
+  //   return promise;
+  // }
+}
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
+
+export class CustomValidators {
+
+
+
+
+
+
+
+    static forbiddenNamesValidator(   ////VERSÃO ASYNC...
+      control: FormControl,
+    ): Promise<any> | Observable<any> {
+
+      const promise = new Promise((resolve, reject) => {
+        setTimeout(
+          () => {
+            if (control.value === 'TEST') {
+              resolve({ 'isForbiddenName': true });
+            } else {
+              resolve(null);
+            }
+          },
+
+          1500
+        );
+      });
+
+      return promise;
+    }
+
+//   static invalidProjectName(
+//     control: FormControl
+//   ): { [s: string]: boolean } | null {
+//     if (control.value === 'Test') {
+//       return { isForbiddenName: true };
+//     }
+
+//     return null;
+//   }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> ATÉ MESMO NOSSO PRÓPRIO 'ASYNC EVALUATOR'
+
+ESTÁ FUNCIONANDO......
+
+
+
+
+
+
+
+
+-> praticamos mt mais essa matéria...
+
+
+
+
+
+
+
+
+
+
+--> AGORA VAMOS APLICAR TUDO QUE APRENDEMOS SOBRE FORMS,
+
+LÁ NO NOSSO RECIPE BOOK...

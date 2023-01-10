@@ -1,0 +1,949 @@
+
+
+
+
+EIS O ASSIGNMENT:
+
+
+
+
+
+
+
+1)  CRIE 3 NOVOS COMPONENTS, 
+
+
+'GameControl'
+
+
+
+
+'Odd' 
+
+
+'Even'...
+
+
+
+
+
+
+
+
+
+
+
+2) O GAMECONTROL COMPONENT DEVE TER BUTTONS PARA COMEÇAR E PARAR O JOGO...
+
+
+
+
+
+
+
+3) QUANDO O JOGO COMEÇA,
+
+UM EVENT (segurando um número que incrementa) 
+
+DEVE SER __ EMITIDO _ A CADA _ SEGUNDO....  (
+
+    'ref=setInterval()'
+)
+
+
+
+
+
+
+
+4) O EVENT DEVE SER 'LISTENABLE' 
+
+
+do lado de fora do component... (por algum outro component)...
+
+
+
+
+
+
+
+5) QUANDO O GAME FOR 'PARADO', 
+
+nenhum 
+
+
+outro event deve ser EMITIDO (
+
+
+    por meio do uso de 
+
+    'clearInterval(ref)'....
+)
+
+
+
+
+
+
+6) UM NOVO COMPONENT 'OOD' 
+
+DEVE SER CRIADO __ PARA __ CADA __ 
+
+
+'odd number' que é emitido... 
+
+
+O MESMO 
+
+DEVE 
+
+ACONTECER PARA O 
+
+
+COMPONENT 'EVEN'... (em números 'even')...
+
+
+
+
+7) SIMPLESMENTE FAÇA O OUTPUT DE 
+
+'Odd - NUMBER' 
+
+'Even - NUMBER' 
+
+
+nos 2 components...
+
+
+
+
+
+
+
+8) estilize o ELEMENT (ex: 'paragraph') 
+
+
+que segura seu texto de output, DE FORMA DIFERENTE, NOS 2 COMPONENTS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O LAYOUT INICIAL FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="column">
+    <app-game-control>
+    </app-game-control>
+    <ul>
+      <app-even></app-even>
+    </ul>
+    <ul>
+      <app-odd></app-odd>
+    </ul>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+---> fiz um app que se quebra sozinho... --> o emit de 
+
+
+
+
+events fica ocorrendo mt rápido, e isso quebra o app...
+
+
+
+
+
+
+
+
+-> a solução é trocar o 'while loop' pelo 'setInterval', provavelmente...
+
+
+
+
+
+
+EX:
+
+
+
+
+Examples
+Display "Hello" every second (1000 milliseconds):
+
+setInterval(function () {element.innerHTML += "Hello"}, 1000);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MEU CÓDIGO ESTAVA TODO ERRADO...
+
+
+
+
+
+
+
+
+
+O PROFESSOR NOS MOSTRA COMO DEVEMOS DEIXAR NOSSO CÓDIGO, DE CERTA FORAM:
+
+
+
+
+
+
+import { Component, OnInit, Output } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+@Component({
+  selector: 'app-game-control',
+  templateUrl: './game-control.component.html',
+  styleUrls: ['./game-control.component.css'],
+})
+export class GameControlComponent implements OnInit {
+  constructor() {}
+
+  interval: any;
+
+  lastNumber: number = 0;
+
+  @Output() intervalFired = new EventEmitter<number>();
+
+  ngOnInit(): void {}
+
+  onStartGame() {
+    this.interval = setInterval(() => {
+      this.intervalFired.emit(this.lastNumber + 1);
+    }, 1000);
+  }
+
+  onStopGame() {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ok... vamos querer armazenar esse 'emitter' em 'intervalFired',
+
+e aí 
+
+
+
+DISPARAR ISSO CONSTANTEMENTE, ATRAVÉS de 'intervalFired'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+VAI FICANDO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit, Output } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+@Component({
+  selector: 'app-game-control',
+  templateUrl: './game-control.component.html',
+  styleUrls: ['./game-control.component.css'],
+})
+export class GameControlComponent implements OnInit {
+  constructor() {}
+
+  interval: any;
+
+  lastNumber: number = 0;
+
+  @Output() intervalFired = new EventEmitter<number>();
+
+  ngOnInit(): void {}
+
+  onStartGame() {
+    this.interval = setInterval(() => {
+      this.intervalFired.emit(this.lastNumber + 1);
+    }, 1000);
+  }
+
+  onStopGame() {
+
+    clearInterval(this.interval);
+
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS A PERGUNTA É:
+
+COMO VAMOS RECEBER ESSE NEGÓCIO NOS NOSSOS OUTROS COMPONENTS?
+
+
+
+
+
+
+
+
+
+
+
+
+-> BEM, EU CONSEGUI FAZER O CÓDIGO FUNCIONAR,
+
+
+
+
+
+
+
+MAS FICOU ESTRANHO..
+
+
+
+
+
+
+O OUTPUT NO CONSOLE FICOU ASSIM:
+
+
+
+[]
+app.component.ts:15 [1]
+app.component.ts:15 (2) [1, 1]
+app.component.ts:15 (3) [1, 1, 1]
+app.component.ts:15 (4) [1, 1, 1, 1]
+app.component.ts:15 (5) [1, 1, 1, 1, 1]
+app.component.ts:15 (6) [1, 1, 1, 1, 1, 1]
+app.component.ts:15 (7) [1, 1, 1, 1, 1, 1, 1]
+app.component.ts:15 (8) [1, 1, 1, 1, 1, 1, 1, 1]
+app.component.ts:15 (9) [1, 1, 1, 1, 1, 1, 1, 1, 1]
+app.component.ts:15 (10) [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ou seja,
+
+
+os NUMBERS ESTÃO SENDO ADICIONADOS 'EM FILA',
+
+e não 'adicionados 1 em cima do outro'....
+
+
+
+
+
+
+
+-. meu código atual está assim:
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <app-game-control (intervalFired)="onNumberAdded($event)">
+    </app-game-control >
+    <ul>
+      <app-even *ngFor="let number of evenNumbers;"
+      [number]="number"
+      ></app-even>
+    </ul>
+    <ul>
+      <app-odd *ngFor="let number of oddNumbers"  [number]="number"></app-odd>
+    </ul>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  oddNumbers: number[] = [];
+
+  evenNumbers: number[] = [];
+
+  onNumberAdded(number: number) {
+
+    console.log(this.oddNumbers)
+
+
+    if (!!(number % 2)) {
+      this.oddNumbers.push(number);
+    } else {
+      this.evenNumbers.push(number);
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM;
+
+
+
+
+
+
+import { Component, OnInit, Output } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+@Component({
+  selector: 'app-game-control',
+  templateUrl: './game-control.component.html',
+  styleUrls: ['./game-control.component.css'],
+})
+export class GameControlComponent implements OnInit {
+  constructor() {}
+
+  interval: any;
+
+  lastNumber: number = 0;
+
+  @Output() intervalFired = new EventEmitter<number>();
+
+  ngOnInit(): void {}
+
+  onStartGame() {
+    this.interval = setInterval(() => {
+      this.intervalFired.emit(this.lastNumber + 1);
+    }, 1000);
+  }
+
+  onStopGame() {
+
+    clearInterval(this.interval);
+
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> isso aconteceu pq EU DEIXEI DE INCREMENTAR O 'lastNumber' 
+
+de verdade a CADA CICLO DE 'setInterval'...
+
+por isso escrevo assim:
+
+
+
+
+
+
+  onStartGame() {
+    this.interval = setInterval(() => {
+      this.intervalFired.emit(this.lastNumber + 1);
+      this.lastNumber++;
+    }, 1000);
+  }
+
+
+
+
+
+
+
+
+
+
+
+  OK, CONSEGUI, ISSO FUNCIONOU, FICOU ASSIM:
+
+
+
+
+
+
+
+
+  import { Component, OnInit, Output } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+@Component({
+  selector: 'app-game-control',
+  templateUrl: './game-control.component.html',
+  styleUrls: ['./game-control.component.css'],
+})
+export class GameControlComponent implements OnInit {
+  constructor() {}
+
+  interval: any;
+
+  lastNumber: number = 0;
+
+  @Output() intervalFired = new EventEmitter<number>();
+
+  ngOnInit(): void {}
+
+  onStartGame() {
+    this.interval = setInterval(() => {
+      this.intervalFired.emit(this.lastNumber + 1);
+      this.lastNumber++;
+    }, 1000);
+  }
+
+  onStopGame() {
+
+    clearInterval(this.interval);
+
+  }
+}
+
+
+
+
+
+
+--> na verdade, faltou uma parte da tarefa:
+
+
+
+
+8) estilize o ELEMENT (ex: 'paragraph') 
+
+
+que segura seu texto de output, DE FORMA DIFERENTE, NOS 2 COMPONENTS...
+
+
+
+
+
+
+
+
+
+
+
+--> talvez usar 'ngStyle' para isso...
+
+
+
+
+
+
+
+
+pronto, consegui:
+
+
+
+
+
+
+
+<p [ngStyle]="{ 'color': 'red'}">Even - {{ number }}</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> o professor fala que ele deve fazer a tarefa de  ser 'listeneable' do lado de fora....
+
+
+
+
+
+
+
+
+--> ele faz isso por meio de '@Output()' na frente de 'intervalFired'....
+
+
+
+
+
+FICOU TIPO ASSIM:
+
+
+
+
+
+  @Output() intervalFired = new EventEmitter<number>();
+
+
+
+
+
+
+
+
+
+
+
+
+  -> no 'app.component.html',
+
+
+  ele escreveu assim:
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <app-game-control (intervalFired)="onNumberAdded($event)">
+    </app-game-control >
+    <ul>
+      <app-even *ngFor="let number of evenNumbers;"
+      [number]="number"
+      ></app-even>
+    </ul>
+    <ul>
+      <app-odd *ngFor="let number of oddNumbers"  [number]="number"></app-odd>
+    </ul>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+-> colocou o 'intervalFired'...
+
+
+
+
+
+
+--> só os meus buttons ficaram meio vagabundos, tenho que colocar a class de 
+
+
+'alert-success' 
+
+e 
+
+'alert-danger'...  
+
+
+
+
+
+
+
+ok... o professor, de resto, fez quase a mesma coisa que eu....
+
+
+
+
+
+
+
+
+
+
+-> o professor colocou uma propriedade de 'number' em cada 
+
+component 'odd/even'....
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+import { Component, OnInit, Input } from '@angular/core';
+
+@Component({
+  selector: 'app-even',
+  templateUrl: './even.component.html',
+  styleUrls: ['./even.component.css']
+})
+export class EvenComponent implements OnInit {
+
+  constructor() { }
+
+  @Input() number: number;
+
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> EU USEI o 'input' para receber esse negócio;
+
+o professor também fez isso...
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR TAMBÉM CRIA UM ARRAY LÁ EM 
+
+
+'app.component.ts'....
+
+
+
+
+
+
+
+
+-> ele cria um array de 'oddNumbers'...
+
+
+
+
+
+
+--> acho que também vai criar de 'evenNumbers'.. ---> sim, ele também fez isso....
+
+
+
+
+-> o código dele ficou exatamente igual ao meu...
+
+
+
+
+
+
+
+
+
+
+quanto ao pass 
+
+
+do NUMBER como 
+
+
+
+
+
+input,
+
+professor escreveu assim:
+
+
+
+
+
+      <app-odd *ngFor="let number of oddNumbers"  [number]="number"></app-odd>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --------------
+
+
+
+
+
+
+
+
+
+
+  ok...
+
+
+
+
+
+
+
+  código ficou igual ao meu, essencialmente...
+
+
+
+
+
+  professor usa o method tradicional de styling para os elementos, mas dá na mesma...

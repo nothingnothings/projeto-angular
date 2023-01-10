@@ -1,0 +1,1099 @@
+
+---> ACHO QUE QUASE CONSEGUI FZER ISSO SOZINHO:
+
+
+
+
+
+
+
+
+
+
+
+EIS O CÓDIGO:
+
+
+
+
+
+
+
+
+
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
+
+import { NgForm } from '@angular/forms';
+import { Subscription } from 'rxjs';
+
+import { Ingredient } from 'src/app/shared/ingredient.model';
+
+import { ShoppingListService } from 'src/app/shoppingList.service';
+
+@Component({
+  selector: 'app-shop-list-edit',
+  templateUrl: './shop-list-edit.component.html',
+  styleUrls: ['./shop-list-edit.component.css'],
+})
+export class ShopListEditComponent implements OnInit, OnDestroy {
+  // @ViewChild('nameInput', { static: false }) nameInputRef: ElementRef;
+  // @ViewChild('amountInput', { static: false }) amountInputRef: ElementRef;
+
+  // @Output() ingredientAdded = new EventEmitter<{
+  //   name: string;
+  //   amount: number;
+  // }>();
+
+  // @Output() ingredientAdded = new EventEmitter<Ingredient>();
+
+  
+editMode = false;
+editedItemIndex: number;
+
+ingredients: Ingredient[] = [];
+
+
+
+
+@ViewChild('localFormReference') formReference: NgForm;
+
+
+
+
+ingredientSelectedSubscription: Subscription;
+
+
+
+
+  constructor(private shoppingListService: ShoppingListService) {}
+
+  ngOnInit(): void {
+
+    this.ingredients = this.shoppingListService.getIngredients();
+
+
+   this.ingredientSelectedSubscription = this.shoppingListService.ingredientSelected.subscribe(
+      // (ingredient) => {
+      //     this.formReference.form.setValue(
+      //       {
+      //         'name': ingredient.name,
+      //         'amount': ingredient.amount
+      //       }
+      //     )
+      // }
+      (index: number) => {
+            this.editedItemIndex = index;
+            this.editMode = true; //teremos entrado no modo de edit, e logo abaixo, com essa subscription, carregamos a data do shop list item que foi clicado...
+
+            const selectedIngredient = this.ingredients[index];
+
+
+            this.formReference.form.setValue(
+              {
+                'name': selectedIngredient.name,
+                'amount': selectedIngredient.amount
+              }
+            )
+    } 
+    )
+
+  }
+
+  // onAddItem() {
+  //   const newIngredient = new Ingredient(
+  //     this.nameInputRef.nativeElement.value,
+  //     this.amountInputRef.nativeElement.value
+  //   );
+
+  //     this.shoppingListService.onIngredientAdd(newIngredient);
+  //     // console.log(this.shoppingListService.getIngredients());
+
+
+  //   // this.ingredientAdded.emit(newIngredient);
+  // }
+
+
+
+
+
+
+  onFormSubmit(form: NgForm) {
+
+
+    console.log(form);
+    const newIngredient = new Ingredient(
+      // this.nameInputRef.nativeElement.value,
+      // this.amountInputRef.nativeElement.value
+      form.value['name'],
+      form.value['amount']
+
+    );
+
+
+    this.shoppingListService.onIngredientAdd(newIngredient);
+
+  }
+
+
+
+  ngOnDestroy(): void {
+    this.ingredientSelectedSubscription.unsubscribe();
+  }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+E ESTE:
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-10">
+    <app-shop-list-edit 
+    
+    ></app-shop-list-edit>
+    <hr />
+    <ul class="list-group">
+      <!-- <a class="list-group-item" 
+      style="cursor: pointer"
+      *ngFor="let ingredient of ingredients"
+      > {{ingredient.name}} ({{ingredient.amount}})
+      </a> -->
+      <app-shopping-list-item
+  
+      *ngFor="let ingredient of ingredients; let index=index"
+      [name]="ingredient.name"
+      [amount]="ingredient.amount"
+      (click)="onShoplistItemClick(index)"
+      ></app-shopping-list-item>
+    </ul>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ESTE:
+
+
+
+
+<div class="row">
+  <div class="col-xs-10">
+    <app-shop-list-edit 
+    
+    ></app-shop-list-edit>
+    <hr />
+    <ul class="list-group">
+      <!-- <a class="list-group-item" 
+      style="cursor: pointer"
+      *ngFor="let ingredient of ingredients"
+      > {{ingredient.name}} ({{ingredient.amount}})
+      </a> -->
+      <app-shopping-list-item
+  
+      *ngFor="let ingredient of ingredients; let index=index"
+      [name]="ingredient.name"
+      [amount]="ingredient.amount"
+      (click)="onShoplistItemClick(index)"
+      ></app-shopping-list-item>
+    </ul>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+E ESTE:
+
+
+
+
+
+
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+
+import { Ingredient } from '../shared/ingredient.model';
+import { ShoppingListService } from '../shoppingList.service';
+
+@Component({
+  selector: 'app-shopping-list',
+  templateUrl: './shoppingList.component.html',
+  styleUrls: ['./shoppingList.component.css'],
+})
+export class ShoppingListComponent implements OnInit, OnDestroy {
+  // ingredients: Ingredient[] = [
+  //   // new Ingredient('Potato', 1, 1651882246336.7927),
+  //   // new Ingredient('Tomato', 3, 1651882348842.3665),
+  //   // new Ingredient('Banana', 5, 1651882373138.5793)
+
+  //   new Ingredient('Potato', 1),
+  //   new Ingredient('Tomato', 3),
+  //   new Ingredient('Banana', 5),
+  // ];
+
+
+  ingredients: Ingredient[] = [];
+
+  // selectedIngredient: Ingredient;
+
+
+  private ingredientsChangedSubscription: Subscription;
+
+
+
+  constructor(private shoppingListService: ShoppingListService) {
+    
+   
+  }
+
+  ngOnInit(): void {
+    // this.ingredients = this.shoppingListService.ingredients;
+
+    // this.ingredients = this.shoppingListService.getIngredients();
+    this.ingredients = this.shoppingListService.getIngredients(); ////define o array inicial...
+
+   this.ingredientsChangedSubscription = this.shoppingListService.ingredientsChanged.subscribe(
+      (ingredients) => {
+        this.ingredients = ingredients;
+      }
+    )
+
+  }
+
+  // onIngredientAdded() {
+  //   // this.ingredients.push(ingredient);
+  //   // console.log(this.ingredients);
+
+  //   this.shoppingListService.onIngredientAdded();
+  // }
+
+  onShoplistItemClick(index: number) {
+
+    this.shoppingListService.loadShopListItem(index);
+
+
+  }
+
+
+  ngOnDestroy(): void {
+
+    this.ingredientsChangedSubscription.unsubscribe();
+  }
+
+
+
+
+
+
+
+
+
+-------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+NO VÍDEO DO PROFESSOR, ELE COMEÇA ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+ELE DIZ QUE 
+
+
+PRECISAMOS FAZER 'GET'
+
+
+
+DO 
+
+
+__ ITEM_ QUE VAMOS EDITAR (e não do index, do item em si mesmo),
+
+
+
+
+
+
+
+
+E PARA ISSO VAMOS PRECISAR DE UM NOVO METHOD LÁ EM 
+
+'SHOPPING-LIST.service.ts'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É O METHOD DE 'getIngredient()',
+
+
+QUE 
+
+VAI 
+
+
+
+EXPECT UM 
+
+
+INDEX,
+
+
+E AÍ VAI RETORNAR O ITEM COM ESSE INDEX NO NOSSO ARRAY DE INGREDIENTS..
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK, ISSO SIGNIFICA QUE O PROFESSOR FARÁ 
+
+
+
+
+QUASE A MESMA COISA QUE EU FIZ,
+
+
+
+
+MAS 
+
+
+COM O GET DE APENAS  1 INGREDIENT ITEM (menor transferência de dados)...
+
+
+
+
+
+
+
+
+
+
+O ´CODIGO FICA ASSIM:
+
+
+
+
+
+
+
+
+(SERVICE):
+
+
+
+
+
+
+
+
+
+  loadShopListItem(index: number) {
+
+    // const selectedIngredient = this.getIngredients()[index]
+
+    this.ingredientSelected.next(index);
+    
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+(shop-list-edit.component.ts):
+
+
+
+
+
+
+
+
+
+
+
+editedItem: Ingredient;
+
+
+
+
+
+  ngOnInit(): void {
+
+
+
+   this.ingredientSelectedSubscription = this.shoppingListService.ingredientSelected.subscribe(
+      (index: number) => {
+            this.editedItemIndex = index;
+            this.editMode = true; //teremos entrado no modo de edit, e logo abaixo, com essa subscription, carregamos a data do shop list item que foi clicado...
+
+
+            const selectedIngredient = this.shoppingListService.getIngredient(index);
+
+
+            this.formReference.form.setValue(
+              {
+                'name': selectedIngredient.name,
+                'amount': selectedIngredient.amount
+              }
+            )
+    } 
+    )
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  CERTO.... E ISSO REALMENTE FUNCIONOU...
+
+
+
+
+
+
+
+
+
+
+
+MAS FALTOU UM NEGÓCIO, FALTOU ARMAZENAR 
+
+
+
+ESSE 
+
+
+
+'ITEM' que conseguimos lá do service __ nessa __ propriedade de 'editedItem'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ngOnInit(): void {
+
+
+
+   this.ingredientSelectedSubscription = this.shoppingListService.ingredientSelected.subscribe(
+      // (ingredient) => {
+      //     this.formReference.form.setValue(
+      //       {
+      //         'name': ingredient.name,
+      //         'amount': ingredient.amount
+      //       }
+      //     )
+      // }
+      (index: number) => {
+            this.editedItemIndex = index;
+            this.editMode = true; //teremos entrado no modo de edit, e logo abaixo, com essa subscription, carregamos a data do shop list item que foi clicado...
+
+
+            this.editedItem = this.shoppingListService.getIngredient(index);
+
+
+            this.formReference.form.setValue(
+              {
+                'name': this.editedItem.name,
+                'amount': this.editedItem.amount
+              }
+            )
+    } 
+    )
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... 
+
+
+ASSUMO QUE DEPOIS DISSO O PROFESSOR 
+
+VAI UPDATAR A FORM, COM setValue...
+
+
+
+
+
+
+
+
+
+
+--. ele ganha acesso a form com 
+
+
+
+
+a LOCAL REFERENCE E a VIEWCHILD,
+
+
+para aí usar 
+
+
+
+'form.form.setValue({})'
+
+
+
+
+
+
+
+
+
+
+
+--> COM O 'reset' (que faz CLEAR), provavelmente teremos um código similar...
+
+
+
+
+
+---> SEMPRE QUE ESCOLHEMOS UM NOVO ITEM,
+
+
+A FORM SERÁ POPULADA POR NOVOS VALUES....
+
+
+
+
+
+
+
+
+--> É CLARO QUE 
+
+O BUTTON DE 'add' precisa ser renomeado/dinÂmico, para que REFLITA QUE ESTAMOS 'EDITANDO'
+
+
+ESSE ITEM, e não ADDANDO UM NOVO ITEM... 
+
+
+(E TAMBÉM PRECISAMOS DO CMOPORTAMENTO DE UM NOVO ADD)
+
+
+
+
+
+
+
+
+
+
+
+
+-> se estivermos UPDATING ('editMode=True'),
+
+
+
+QUEREMOS 
+
+
+
+
+QUE O BUTTON TROQUE PARA 
+
+'Edit',
+
+
+e que 
+
+
+SUA FUNÇÃO TAMBÉM MUDE...
+
+
+
+
+
+
+
+
+
+
+
+
+CONSERTEI ESSE SHOW DE 'add/edit',
+
+
+ficou assim:
+
+
+
+
+
+
+      <div class="row">
+        <div class="col-xs-12">
+          <button class="btn btn-success" type="submit" [disabled]="!localFormReference.valid" > {{editMode ? 'Edit' : 'Add'}}</button>
+          <button class="btn btn-danger" type="button">Delete</button>
+          <button class="btn btn-primary" type="button" >Clear</button>
+        </div>
+      </div>
+
+
+
+
+
+foi só usar string interpolation com esse state dinâmico...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+agora só tenho que fazer com que a function executada realmemnte seja de EDIT, e não de ADD..
+
+
+
+
+
+
+
+
+
+
+
+
+escrevi um pouco de código, e ele realmente edita um item no nosso array de ingredients, mas o probelma é que 
+
+meu ARRAY VISUAL DE INGREDIENTS EM 'recipe-detail' NÃO ESTÁ SENDO UPDATADO...
+
+
+
+
+
+
+
+
+
+-> para consertar isso, provavelmente vou precisar de outra subscription....
+
+
+
+
+
+
+
+
+
+--> NA VERDADE, FOI SÓ RECICLAR O CÓDIGO DO MEU 'Subject' antigo,
+
+aquele Subject de 
+
+'''
+
+
+
+  ingredientsChanged = new Subject<Ingredient[]>();
+
+
+'''
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SERVICE:
+
+
+
+
+
+
+
+
+import {
+  // EventEmitter, ///AGORA VAMOS USAR UM 'SUBJECT' no lugar de 'EVENTEMITTER', pq a cross-component communication com ele é SIMPLESMENTE MELHOR..
+
+  Injectable,
+  Output,
+} from '@angular/core';
+import { Subject } from 'rxjs';
+import { Ingredient } from './shared/ingredient.model';
+
+@Injectable()
+export class ShoppingListService {
+  // @Output() ingredientsChanged = new EventEmitter<Ingredient[]>();
+
+  ingredientsChanged = new Subject<Ingredient[]>();
+
+  ingredientSelected = new Subject<number>();
+
+  //   ingredients: Ingredient[] = [  ///versão SEM O USO DE 'private' e 'getIngredients'...
+  private ingredients: Ingredient[] = [
+    // new Ingredient('Potato', 1, 1651882246336.7927),
+    // new Ingredient('Tomato', 3, 1651882348842.3665),
+    // new Ingredient('Banana', 5, 1651882373138.5793)
+
+    new Ingredient('Potato', 1),
+    new Ingredient('Tomato', 3),
+    new Ingredient('Banana', 5),
+  ];
+
+  getIngredients() {
+    return [...this.ingredients];
+  }
+
+  onIngredientAdd(ingredient: Ingredient) {
+    console.log('RECEIVED');
+    this.ingredients.push(ingredient);
+    // this.ingredientsChanged.emit([...this.ingredients]);  ///será captado por 'shoppingListComponent', no 'ngOnInit', por meio de 'subscribe'...
+    this.ingredientsChanged.next([...this.ingredients]);
+
+    // console.log(this.ingredients);
+  }
+
+  loadShopListItem(index: number) {
+    // const selectedIngredient = this.getIngredients()[index]
+
+    this.ingredientSelected.next(index);
+  }
+
+  getIngredient(index: number) {
+    return this.ingredients[index];
+  }
+
+  editIngredient(index: number, ingredient: Ingredient) {
+    this.ingredients[index] = ingredient;
+
+    this.ingredientsChanged.next([...this.ingredients]);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PARTE IMPORTANTE:
+
+
+
+  ingredientsChanged = new Subject<Ingredient[]>();
+
+
+
+  editIngredient(index: number, ingredient: Ingredient) {
+    this.ingredients[index] = ingredient;
+
+    this.ingredientsChanged.next([...this.ingredients]);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COMPONENT 'shop-list-edit':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ngOnInit(): void {
+
+
+
+   this.ingredientSelectedSubscription = this.shoppingListService.ingredientSelected.subscribe(
+      (index: number) => {
+            this.editedItemIndex = index;
+            this.editMode = true; 
+            this.editedItem = this.shoppingListService.getIngredient(index);
+
+            this.formReference.form.setValue(
+              {
+                'name': this.editedItem.name,
+                'amount': this.editedItem.amount
+              }
+            )
+    } 
+    )
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  onFormSubmit(form: NgForm) {
+
+    const yourIngredient = new Ingredient(
+
+      form.value['name'],
+      form.value['amount']
+
+    );
+
+
+    if (this.editMode) {
+      console.log(form);
+
+      this.shoppingListService.editIngredient(this.editedItemIndex, yourIngredient);
+
+   
+    } else {
+
+      this.shoppingListService.onIngredientAdd(yourIngredient);
+    }
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO.... ISSO REALMENTE FUNCIONOU...

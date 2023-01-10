@@ -1,0 +1,2020 @@
+
+
+
+
+
+
+
+
+
+
+
+NA ÚLTIMA LIÇÃO,
+
+APRENDEMOS 
+
+
+
+A RETRIEVAR NOSSOS 'ROUTE PARAMS'...
+
+
+
+
+
+
+
+
+
+--> ISSO É MT BOM,
+
+SUPER IMPORTANTE,
+
+
+
+E ALGO QUE VOCê USARÁ MT..
+
+
+
+
+
+
+
+
+
+
+--> MAS HÁ MAIS UMA COISA QUE 
+
+
+
+
+
+_ VOCÊ 
+
+
+PODE 
+
+
+ADICIONAR A SUA URL...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VOCÊ PODE DEFINIR 'query parameters',
+
+que 
+
+são 
+
+ccoisas como 
+
+
+
+?user=xxx&password=yyyy
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> A PERGUNTA AGORA É:
+
+
+
+
+
+
+
+
+__ COMO PODEMOS FAZER 'PASS' DESSES QUERY PARAMS 
+USANDO 
+
+
+
+'routerLink',
+
+
+
+
+E __ COMO PODEMOS OS RETRIEVAR? 
+
+
+
+
+
+
+
+
+
+
+
+
+
+------->  VOCÊ TAMBÉM TALVEZ TENHA UM 'HASH FRAGMENT',
+
+
+OU SEJA,
+
+
+
+algo como 
+
+
+
+
+
+localhost:4200/users/10/Anna#mode=edit
+
+
+
+
+
+
+
+
+
+ou entaõ 
+
+localhost:4200/users/10/Anna#mode=loading 
+
+
+
+
+
+
+
+
+
+
+
+
+
+COISAS USADAS PARA 'Jump' 
+
+
+A ALGUMA PARTE DE NOSSO APp,
+
+
+
+
+hash fragments também são usados para isso...
+
+
+
+
+
+
+
+
+
+
+
+----> OU, ENTAÕ,
+
+TALVEZ VOCê NAÕ QUEIRA 
+
+
+
+
+__ USAR ESSE NEGÓCIO PARA 'JUMP' 
+
+
+
+a uma seção de seu app (o behavior de jump down tem que ser adicionado por suas próprias mãos)...
+
+
+
+
+
+
+
+
+
+-> TALVEZ VOCÊ SÓ QUEIRA RETRIEVAR ESSE HASH FRAGMENT,
+
+
+PARA O UTILIZAR COMO UMA 'EXTRA INFORMATION' (#edit, etc etc)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-->   VAMOS VER COMO 
+
+
+
+FAZER PASS DESSAS INFOS NO NOSSO CÓDIGO,
+
+
+
+
+
+TANTO ATRAVÉS DA DIRECTIVE de 
+
+
+'RouterLink'
+
+
+
+
+
+
+COMO 
+
+
+
+TAMBÉM 
+
+
+
+
+através 
+
+do 
+
+method 
+d
+e 
+
+'this.router.navigate()'....
+
+
+
+
+
+
+
+
+
+
+
+
+-> TAMBÉM COMO _ RETRIEVAR__ ESSA INFO,....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> VAMOS COMEÇAR PELO 'PASS' DESSA INFO...
+
+
+
+
+
+
+
+
+
+--> LÁ EM 'app.module.ts',
+
+
+
+DIGAMOS QUE  __ QUEREMOS TER MAIS ROUTES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA NOSSOS SERVERS,
+
+DIGAMOS QUE 
+
+
+
+QUEREMOS TER UMA OUTRA ROUTE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> SERÁ UMA ROUTE QUE VAI NOS 'ALLOW'
+
+
+
+
+__ ADICIONAR UM CERTO SERVER...
+
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE 
+
+ESCREVEMOS 
+
+
+assim:
+
+
+
+
+
+
+
+
+
+
+{
+    path: 'servers/:id/edit',
+    component: EditServerComponent 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+OU SEJA,
+
+
+NESSA URL 
+
+
+
+VAMOS 'CARREGAR 1 DE NOSSOS SERVER',
+
+
+
+
+para o editar,
+
+
+e aí 
+
+
+usamos aquele  '/edit' 
+
+ao final 
+
+PARA 
+
+
+
+DEIXAR BEM CLARO O QUE VAI ACONTECER NESSE 
+
+
+COMPONENT,
+
+
+a 
+
+esse 
+
+
+server...
+
+
+
+
+
+
+
+
+
+
+-> O CÓDIGO FICA ASSIM:
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule, Routes } from '@angular/router'; //USADO PARA DEFINIR ROUTES/ROUTING NO NOSSO APP...
+
+import { AppComponent } from './app.component';
+import { ServersComponent } from './servers/servers.component';
+import { UsersComponent } from './users/users.component';
+import { ServerComponent } from './servers/server/server.component';
+import { EditServerComponent } from './servers/edit-server/edit-server.component';
+import { HomeComponent } from './home/home.component';
+import { UserComponent } from './users/user/user.component';
+import { FormsModule } from '@angular/forms';
+import { ServersService } from './servers/servers.service';
+import { UsersService } from './users/users.service';
+
+const appRoutes: Routes = [
+  {
+    path: '', ////localhost:4200/   (É O _ DEFAULT, A HOME PAGE, PQ É o domain.com SEM O PATH depois)...
+    component: HomeComponent,
+  },
+
+  {
+    /////é a nossa primeira route... cada object nesse array é uma ROUTE, que é governada por um 'PAGE-COMPONENT' (o page-component é a ROUTE/page, no caso)...
+    path: 'users', ///   localhost:4200/users
+    component: UsersComponent, ///users.component.html
+  },
+  {
+    path: 'users/:userId', ////exemplo de DYNAMIC SEGMENTS (carregar user específico, dentro de list de users.... mesma coisa vista no NODEJS)...
+    component: UserComponent,
+  },
+
+  // {
+  //   path: 'users/:userId/:name',   ////PODEMOS TER MÚLTIPLOS SEGMENTOS DINÂMICOS NAS NOSSAS URLS...
+  //   component: UserComponent
+  // },
+
+  {
+    path: 'servers', //localhost:4200/servers
+    component: ServersComponent, //servers.component.html
+  },
+
+  {
+    path: 'servers/:id/edit',
+    component: EditServerComponent,
+  },
+];
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    ServersComponent,
+    UsersComponent,
+    ServerComponent,
+    EditServerComponent,
+    UserComponent,
+  ],
+  imports: [BrowserModule, FormsModule, RouterModule.forRoot(appRoutes)], ///vocÊ deve ESCREVER o 'RouterModule', declará-lo aqui, para o TER COMO __ FUNCIONALIDADE DE SEU APP (routing).. --> E PRECISAMOS DO METHOD DE '.forRoot(contComSuasRoutes)' PARA ACTUALLY REGISTRAR NOSSAS ROUTES NO NOSSO APp...
+  //// e aí você deve usar 'router-outlet' lá no seu 'app.component.html' para CARREGAR SUAS ROUTES a partir da url...
+  providers: [ServersService, UsersService],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO....
+
+
+
+
+
+
+
+
+
+
+ESSA ROUTE VAI LEVAR AO COMPONENT de 'edit-server.component.ts'... 
+
+
+
+
+
+
+
+
+
+
+--> PARA CONSEGUIRMOS CARREGAR 
+
+
+ESSA 
+
+ROUTE,
+
+
+O PROFESSOR DIZ QUE VAMOS QUERER 
+
+
+'HOOK UP ' 
+
+
+
+
+OS LINKS QUE 
+
+TEMOS LÁ 
+
+
+
+
+
+em 
+'servers',
+
+
+naquele 
+
+código de 'ngFor'
+
+
+que faz loop through 
+
+
+todos os 
+
+'server items' 
+
+
+
+
+e os transforma em 
+
+'server-items',
+
+como visto aqui:
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12 col-sm-4">
+    <div class="list-group">
+      <a href="#" class="list-group-item" *ngFor="let server of servers">
+        {{ server.name }}
+      </a>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+  -> OK..
+
+
+
+
+
+É POR ISSO QUE O PROFESSOR VAI ADICIONAR 
+
+'[routerLink]' 
+
+a cada um desses components dentro desse 'ngFor'...
+
+
+
+
+
+
+
+
+
+
+--> VAI FICAR TIPO ASSIM:
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12 col-sm-4">
+    <div class="list-group">
+      <a href="#" class="list-group-item" *ngFor="let server of servers; let index=index"
+      [routerLink]="['/servers', index, 'edit' ]"
+      
+      >
+        {{ server.name }}
+      </a>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OK...  EU USEI A SINTAXE 
+
+
+  do 
+
+  'let index=index'
+
+  para passar 
+
+
+
+  o index dinâmico ali no link...
+
+
+
+
+
+
+
+
+
+
+  -. OK, SE CLICARMOS EM ALGUM DE NOSSOS LINKS,
+
+
+
+
+
+  veremos...
+
+
+
+
+
+
+
+
+
+
+  -> A PAGE DE 'edit server'
+
+
+
+  SERÁ CARREGADA,
+
+
+   
+   COM INFOS ERRADAS, MAS FUNCIONANDO de certa forma....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   --> O PROFESSOR DIZ QUE AGORA 
+
+   DEVEMOS, DIGAMOS,
+
+
+   TER ALGUM QUERY PARAMETER 
+
+
+   _DECIDINDO 
+
+
+   SE 
+
+
+   'PODEMOS EDITAR OU NÃO'
+
+
+   esse server...
+
+
+
+
+
+
+
+
+
+
+   --> PARA ISSO,
+
+
+
+
+   PRECISAMOS ADICIONAR AQUELE ? dos query params,
+
+
+   e isso naõ é feito assim:
+
+    [routerLink]="['/servers', index, 'edit', '?' ]"...
+
+
+
+
+
+
+
+
+
+
+---->  NÃO DEVEMOS FAZER ASSIM, CERTAMENTE...
+
+
+
+
+
+
+
+
+
+--> EM VEZ DISSO,
+
+
+ 
+
+ QUANDO 
+
+
+
+ __ USAMOS 1 'LINK' 
+
+
+
+
+
+ EM 1 ARQUIVO TEMPLATE,
+
+ 
+
+
+
+ O QUE DEVEMOS FAZER __ É 
+
+
+
+
+ ADICIONAR _ UMA NOVA PROPRIEDADE _ 
+
+
+ A ESSA DIRECTIVE DE 
+
+ '[routerLink]',
+
+
+
+
+
+ que será 
+
+
+
+
+ A propriedade 
+
+
+
+ de 
+ '[queryParams]'...
+
+
+
+
+
+
+
+
+
+
+ -> ISSO QUER DIZER QUE NOSSO CÓDIGO TOMARÁ ESTE FORMATO:
+
+
+
+ 
+<div class="row">
+  <div class="col-xs-12 col-sm-4">
+    <div class="list-group">
+      <a href="#" class="list-group-item" 
+      *ngFor="let server of servers; let index=index"
+      [routerLink]="['/servers', index, 'edit' ]"
+      [queryParams]= "..." ///EIS O CÓDIGO EM QUESTÃO.
+      
+      >
+        {{ server.name }}
+      </a>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+--> OK.... MAS AÍ VOCÊ TEM QUE SE LIGAR EM UM NEGÓCIO:
+
+
+
+
+
+
+
+O '[queryParams]' 
+
+
+
+
+
+
+
+__ NÃO É UMA NOVA DIRECTIVE,
+
+E SIM _ 
+
+
+
+APENAS 
+
+
+
+__OUTRA_ _
+
+'bindable property'
+
+
+
+DENTRO DA DIRECTIVE DE 'RouterLink'...
+
+
+
+
+
+
+
+
+
+---->  ok... DENTRO DE 'queryParams',
+
+TEMOS QUE __ PASSAR 
+
+UM OBJECT JAVASCRIPT,
+
+
+
+UM OBJECT 
+
+
+EM QUE 
+
+_DEFINIMOS _ KEY-VALUE PAIRS 
+
+
+
+
+PARA _ OS 
+
+
+PARAMETERS QUE QUEREMOS ADICIONAR A NOSSA URL,
+
+
+como 
+
+
+
+'{
+  password="xxxx",
+
+  user="yyyy"
+}
+
+
+
+
+
+
+
+
+
+
+
+-> NO CASO,
+
+
+
+O PROFESSOR VAI QUERER 
+
+
+ESCREVER 
+
+
+
+
+[queryParams]={
+  allowEdit: '1'
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-_> AGORA, QUANDO CLICARMOS NESSE NOSSO LINK, O RESULTADO É QUE 
+
+NOSSA URL FICARÁ COMO 
+
+
+'localhost:4200/servers/5/edit?allowEdit=1'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12 col-sm-4">
+    <div class="list-group">
+      <a href="#" 
+      class="list-group-item" 
+      *ngFor="let server of servers; let index=index"
+      [routerLink]="['/servers', index, 'edit' ]"
+      [queryParams]="{allowEdit: '1'}"
+      
+      > <!-- [queryParams] É UMA _ PROPRIEDADE __ DE 'routerLink', e não uma NOVA DIRECTIVE...-->
+        {{ server.name }}
+      </a>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4">
+    <!-- <a routerLink="servers">Reload Page</a> EIS O CÓDIGO EM QUESTÃO... relative path, string é adicionada como segment AO LADO DE TODOS OS ANTECEDENTES, no final... -->
+    <a routerLink="/servers">Reload Page</a> <!-- ABSOLUTE PATH, substitui o PATH INTEIRO -->
+    <button class="btn btn-primary" (click)="onReload()">Reload Page - programmatic navigation, with relative paths (will error out, intended behavior)</button> 
+    <app-edit-server></app-edit-server>
+    <hr />
+    <!-- <app-server></app-server> -->
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------
+
+
+
+
+
+
+
+
+
+
+
+OK... 
+
+
+
+
+AGORA CONSEGUIMOS PASSAR 
+
+
+ESSES 'QUERY PARAMS'...
+
+
+
+
+
+
+
+--> se você tiver MÚLTIPLOS KEY VALUE PAIRS 
+
+
+para seus 'query params',
+
+
+
+eles serão separados sempre por um '&' na sua URL...
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK.... ALÉM DE 
+
+
+'queryParams',
+
+
+temos a propriedade de 
+
+
+
+
+
+
+'[fragment]',
+
+
+
+
+
+
+
+
+
+E A DISTINÇÃO DE 'fragment' em relação ao 'queryParams'
+
+
+
+É QUE 
+
+
+
+__ SÓ PODEMOS TER 1 FRAGMENT POR ROUTE/URL... 
+
+
+(
+
+  ou seja,
+
+  1 único '#'....
+
+)
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12 col-sm-4">
+    <div class="list-group">
+      <a href="#" 
+      class="list-group-item" 
+      *ngFor="let server of servers; let index=index"
+      [routerLink]="['/servers', index, 'edit' ]"
+      [queryParams]="{allowEdit: '1'}"
+      [fragment]=
+      
+      > <!-- [queryParams] É UMA _ PROPRIEDADE __ DE 'routerLink', e não uma NOVA DIRECTIVE... queryparams são ?allowEdit=1, na sua URL...-->]
+      <!-- FRAGMENT É O '#' que Às vezes pode aparecer/ser parseado nas suas urls.... OBS: só é possível ter 1 ÚNICO FRAGMENT por 'link'/route.... -->
+        {{ server.name }}
+      </a>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4">
+    <!-- <a routerLink="servers">Reload Page</a> EIS O CÓDIGO EM QUESTÃO... relative path, string é adicionada como segment AO LADO DE TODOS OS ANTECEDENTES, no final... -->
+    <a routerLink="/servers">Reload Page</a> <!-- ABSOLUTE PATH, substitui o PATH INTEIRO -->
+    <button class="btn btn-primary" (click)="onReload()">Reload Page - programmatic navigation, with relative paths (will error out, intended behavior)</button> 
+    <app-edit-server></app-edit-server>
+    <hr />
+    <!-- <app-server></app-server> -->
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> COMO VALUE DE 'fragment',
+
+
+vocÊ pode PASSAR :
+
+
+
+1) UMA STRING, COM QUOTATION MARKS..
+
+
+
+
+ex:
+
+[fragment]= "'exemplo'" 
+
+
+
+
+
+2) OU __ OMITIR__ O 
+
+
+
+'[]',
+
+e aí escrever SEM OS wrapping '',
+
+tipo assim:
+
+
+
+
+
+fragment="exemplo"...
+
+
+
+
+
+
+
+
+
+
+
+
+--> NO CASO,
+
+O PROFESSOR ESCREVE 
+
+
+'loading'
+
+
+
+como fragment,
+
+
+o que quer dizer que nosso código fica assim:
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12 col-sm-4">
+    <div class="list-group">
+      <a href="#" 
+      class="list-group-item" 
+      *ngFor="let server of servers; let index=index"
+      [routerLink]="['/servers', index, 'edit' ]"
+      [queryParams]="{allowEdit: '1'}"
+      [fragment]="'loading'"
+      
+      > <!-- [queryParams] É UMA _ PROPRIEDADE __ DE 'routerLink', e não uma NOVA DIRECTIVE... queryparams são ?allowEdit=1, na sua URL...-->]
+      <!-- FRAGMENT É O '#' que Às vezes pode aparecer/ser parseado nas suas urls.... OBS: só é possível ter 1 ÚNICO FRAGMENT por 'link'/route.... -->
+        {{ server.name }}
+      </a>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4">
+    <!-- <a routerLink="servers">Reload Page</a> EIS O CÓDIGO EM QUESTÃO... relative path, string é adicionada como segment AO LADO DE TODOS OS ANTECEDENTES, no final... -->
+    <a routerLink="/servers">Reload Page</a> <!-- ABSOLUTE PATH, substitui o PATH INTEIRO -->
+    <button class="btn btn-primary" (click)="onReload()">Reload Page - programmatic navigation, with relative paths (will error out, intended behavior)</button> 
+    <app-edit-server></app-edit-server>
+    <hr />
+    <!-- <app-server></app-server> -->
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+http://localhost:4200/servers/0/edit?allowEdit=1#loading
+
+
+
+
+
+
+
+
+
+------------------
+
+
+
+
+
+
+
+
+
+
+ok... --> é assim que podemos adicionar QUERY PARAMS NO NOSSO 
+
+
+'ROUTERLINK',
+
+
+algo super simples....
+
+
+
+
+
+
+
+
+
+
+MAS AGORA _- DEVEMOS _ VER COMO É POSSÍVEL FAZER ISSO __ DE FORMA PROGRAMÁTICA,
+
+
+COM O 'NAVIGATE PROGRAMMATICALLY'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> COMO EXEMPLO DE 'navigate programmatically',
+
+
+
+TINHAMOS/TEMOS O COMPONENT DE 
+
+'SERVERS':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export class ServersComponent implements OnInit {
+
+
+
+  public servers: {id: number, name: string, status: string}[] = [];
+
+  constructor(private serversService: ServersService, 
+    private router: Router, ///vamos usar o PACOTE de 'router' _ PARA CONSEGUIR 'NAVIGATE PROGRAMMATICALLY'...
+    private route: ActivatedRoute  ///você deve usar esse pacote de 'ActivatedRoute' __ SE VOCê ACHA _ QUE VAI PASSAR UM 'RELATIVE PATH' ao 'this.router.navigate()'...
+    ///'route: ActivatedRoute' representa a ROUTE em que o PAGE-CCOMPONENT 'servers' EXISTE, ou seja, a 'currently activated route', que é representada dentro desse nosso próprio código de 'servers.component.ts'....
+    
+    ) { }   
+
+  ngOnInit(): void {
+    this.servers = this.serversService.getServers();
+  }
+
+
+  onReload() {  //aqui mostramos como é o pass de um RELATIVE PATH a esse method de 'navigate', que faz o navigate programático...
+      this.router.navigate(['servers'], {
+          relativeTo: this.route   ///o default é o 'ROOT DOMAIN' de nosso app, que nesse caso é 'localhost:4200'...
+
+      })  // o segundo parâmetro é o CONFIG OBJECT desse method, que vai ALTERAR A MANEIRA PELA QUAL OCORRE O 'navigate'...
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> aquele method de 'onReload'
+ 
+ é o que nos INTERESSA:
+
+
+
+ 
+  onReload() {  
+      this.router.navigate(['servers'], {
+          relativeTo: this.route   
+
+      }) 
+  }
+
+
+
+
+
+
+  --> PROVAVELMENTE _ TEMOS UM 
+
+  ARGUMENTO 
+
+
+  NESSE 
+
+  'config object' 
+
+
+  de '.navigate()'
+
+
+  QUE _ VAI NOS DEIXAR __ DEFINIR _ 
+
+  'QUERY PARAMS'
+
+  para a route a que vamos querer 'navigate to'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  VAI FICAR PROVAVELMENTE ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+    onReload() { 
+      this.router.navigate(['servers'], { 
+          relativeTo: this.route,   
+
+          queryParams: { }
+      })    
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  -> DENTRO DESSE ARGUMENTO 'queryParams',
+
+
+  precisamos passar 
+
+
+  OS KEY-VALUE PAIRS 
+
+  das coisas que 
+
+  vamos querer 
+
+  passar dentro de nossa url....
+
+
+
+
+
+
+
+
+  ----> MAS É CLARO QUE 
+
+  O PROFESSOR 
+
+
+
+
+
+  NÃO VAI QUERER ALTERAR ESSE METHOD DE 'reload Server',
+
+
+
+  E SIM 
+
+
+  _ VAI QUERER _ _ALTERAR UM METHOD LÁ 
+
+
+
+
+
+
+
+
+
+
+
+  DO COMPONENT DE 'home.component.ts',
+
+
+
+
+
+
+
+  AQUELE METHOD DE 'onLoadServers()'..
+
+
+
+
+
+
+
+  ----> ELE VAI TROCAR O 'onLoadServers()'
+
+
+
+
+  por 
+
+  'onLoadServer()',
+
+
+  PARA QUE __ 
+
+
+
+
+  ESSE BUTTON CARREGUE __ APENAS 1 ÚNICO SERVER,
+
+  QUE 
+
+  SERÁ O 
+
+
+
+
+  SERVER _ DE NÚMERO 1 (
+
+
+    faremos isso através do query PARAM PASSADO PROGRAMATICAMENTE, É CLARO..
+
+
+
+
+
+  
+  )
+
+
+
+
+
+
+
+
+  O CÓDIGO FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+  import { Component, OnInit } from '@angular/core';
+
+import { Router } from '@angular/router';   //quando usamos nosso router dentro de component.ts, vamos fazer o NAVIGATE PROGRAMÁTICO DO USUÁRIO, através de METHODS... (E não através de links e 'routerLink', como é o comum)...
+
+
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent implements OnInit {
+
+  constructor(private router: Router) { }
+
+  ngOnInit(): void {
+  }
+
+  onLoadServers() {
+    this.router.navigate(['/servers']); /////É ASSIM QUE FAZEMOS 'NAVIGATE' programaticamente.... --> o argumento é o 'absolute path' (ou relative, se não tiver '/') a que VAMOS QUERER NAVIGATE O USER....
+  }
+
+
+  onLoadServer(number: number) {
+    this.router.navigate(
+      ['/servers'],  
+
+      {
+        queryParams: {
+            serverId: number
+        }
+      }
+    )
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> o 'onLoadServer':
+
+
+
+
+
+  onLoadServer(number: number) {
+    this.router.navigate(
+      ['/servers'],  
+
+      {
+        queryParams: {
+            serverId: number
+        }
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+  --> E ISSO REALMENTE FUNCIONOU/FUNCIONA, PQ 
+
+  QUANDO CLICAMOS 
+
+
+
+  NESSE BUTTON QUE DISPARA ESSE METHOD, NOSSA URL FICA ASSIM:
+
+
+
+
+
+  http://localhost:4200/servers?serverId=1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> certo, mas o código do professor ficou um pouquinho diferente...
+
+
+
+
+
+
+
+
+
+  ele deixou uma url mais longa,
+
+  pq 
+
+  quer 
+  usar a route de verdade de '/servers/:id/edit'...
+
+
+
+
+
+
+
+
+
+  --> é por isso que escreveu assim:
+
+
+
+
+
+
+  this.router.navigate(
+    [
+      '/servers', id, 'edit'
+    ]
+  )
+
+
+
+
+
+
+
+
+  E AÍ __ ADICIONOU _ OS QUERY PARAMS DEPOIS, COM 
+
+  '{}'...
+
+
+
+
+
+
+
+
+
+
+  --> PARA ISSO, O CÓDIGO FICOU ASSIM:
+
+
+
+
+    onLoadServer(id: number) {
+    this.router.navigate(
+      ['/servers', id, 'edit'],    ////localhost:4200/servers/4/edit      --> depois colocaremos os query params, tipo ?exemplo=true, e depois o FRAGMENT, que fica tipo    ?exemplo=true#diabrete....
+
+      {
+        queryParams: {
+            
+        }
+      }
+    )
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK.... NESSE QUERYPARAMS AÍ,
+
+O QUE PODEMOS COLOCAR COMO QUERY PARAM?
+
+
+
+
+
+
+----> o professor define 
+
+
+'allowEdit',
+
+e aí deixa isso como 1...
+
+
+
+
+
+-> TAMBE´M ADICIONA UM FRAGMNET,
+
+E O DEFINE COMO 'loading'...
+
+
+
+
+
+
+eX:
+
+
+
+
+
+    onLoadServer(id: number) {
+    this.router.navigate(
+      ['/servers', id, 'edit'],    ////localhost:4200/servers/4/edit      --> depois colocaremos os query params, tipo ?exemplo=true, e depois o FRAGMENT, que fica tipo    ?exemplo=true#diabrete....
+
+      {
+        queryParams: {
+            allowEdit: 1
+        },
+
+        fragment: 'loading' 
+      }
+    )
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> ok, isso realmente funcionou, e nossa url ficou assim:
+
+
+
+
+
+
+
+  http://localhost:4200/servers/1/edit?allowEdit=1#loading
+
+
+--> QUER DIZER QUE 
+
+
+
+NOSSOS 
+
+QUERY PARAMS E O FRAGMENT 
+
+
+ESTÃO SENDO ADICIOANDOS,
+
+
+
+TUDO ISSO NESSA PROGRAMATIC ROUTING APPROACH ,
+
+
+QUE É UMA ALTERNATIVA 
+
+
+
+AOS 'routerLinks'..
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS _ _AGORA_ TEMOS QUE _ APRENDER _ A FAZER 'RETRIEVE'
+
+DA DATA 
+
+
+QUE 
+
+
+
+
+ENVIAMOS POR MEIO DA URL, NO CASO...
+
+
+
+
+
+
+
+
+
+--> eu já consegui fazer o RETRIEVE, EU ACHO..
+
+
+
+
+
+
+
+
+-> errado, pq oq eu havia conseguido era 'PARAMS', e não 'QUERY PARAMS' ( que são os que tem '?', e não coisas simples como '/users/1', que são os PARAMS NORMAIS...)

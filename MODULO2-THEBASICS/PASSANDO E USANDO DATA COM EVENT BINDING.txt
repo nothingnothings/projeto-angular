@@ -1,0 +1,1179 @@
+
+
+
+
+
+
+
+
+
+
+
+--> na última lição, 
+
+DEMOS UMA OLHADA EM 'EVENT BINDING'... 
+
+
+
+
+
+
+
+--> MAS ANTES DE FOCARMOS EM 
+
+
+
+'TWO-WAY BINDING'
+
+e 
+
+entendermos do que se trata,
+
+
+
+
+
+
+TEM MAIS UMA COISA IMPORTANTE 
+
+
+
+QUE DEVEMOS SABER SOBRE 'EVENT BINDING'...
+
+
+
+
+
+
+
+
+
+---> O PROFESSOR VAI ATÉ O 
+
+'servers.component.html'
+
+
+
+E ADICIONA ALGUMAS TAGS AO TEMPLATE...
+
+
+
+
+
+
+
+adiciona 
+
+<label>Server Name</label>
+
+
+
+
+
+
+E:
+
+
+
+
+
+<input type="text" class="form-control">
+
+
+
+
+
+
+
+
+
+
+
+------> AQUI, O PROFESSOR QUER 
+
+
+
+DEIXAR QUE O USER INPUTTE 
+
+
+
+O  __NAME__ DO SERVER__ QUE DEVERÁ SER CRIADO...
+
+
+
+ex:
+
+
+
+
+<input 
+type="text" 
+class="form-control"
+placeholder="Server name"
+>
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+<label>Server Name</label>
+<input 
+type="text" 
+class="form-control"
+placeholder="Input your server name"
+>
+<button class="btn btn-primary" [disabled]="!allowNewServer" 
+(click)="toggleServer()"
+>Add Server</button>
+<!-- <button class="btn btn-primary" disabled="{{ !allowNewServer }}"> não funciona -->
+  <!-- Add Server -->
+<!-- </button> -->
+<p [innerText]="allowNewServer"></p>
+<p>User can edit: {{ allowNewServer ? "Yes" : "No" }}</p>
+<app-server></app-server>
+<app-server></app-server>
+<app-server></app-server>
+<p>{{ serverCreationStatus ? 'SERVER WAS CREATED' : 'Server still not created.'  }}</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> FICOU TIPO ASSIM...
+
+
+
+
+
+
+O PROFESSOR ENTÃO 
+
+COLOCA UM 
+
+'input event'
+
+
+DENTRO  
+
+
+DESSE input,
+
+PQ 
+
+
+ELE VAI QUERER 
+
+
+
+
+
+
+FAZER LISTEN TO AO EVENT DE 'input',
+
+
+
+
+
+
+PQ ESSE É UM DOM EVENT COMUM 
+FORNECIDO PELO 
+
+
+ELEMENT DE 'input',
+
+
+QUE É 
+DISPARADO 
+
+SEMPRE QUE 
+
+O 
+USER DIGITA... --> 
+
+
+
+
+
+
+
+DENTRO 
+
+
+
+
+desse event,
+
+VAMOs 
+
+QUERER DISPARAR 
+
+
+
+
+
+O METHOD DE 'onUpdateServerName',
+
+
+PQ 
+
+
+ESSE 
+
+
+
+
+
+
+EVENT 'input' SERÁ DISPARADO A PARTIR DE CADA KEYSTROKE do user...
+
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+<label>Server Name</label>
+<input 
+type="text" 
+class="form-control"
+placeholder="Input your server name"
+(input)="onUpdateServerName()"
+>
+<button class="btn btn-primary" [disabled]="!allowNewServer" 
+(click)="toggleServer()"
+>Add Server</button>
+<!-- <button class="btn btn-primary" disabled="{{ !allowNewServer }}"> não funciona -->
+  <!-- Add Server -->
+<!-- </button> -->
+<p [innerText]="allowNewServer"></p>
+<p>User can edit: {{ allowNewServer ? "Yes" : "No" }}</p>
+<app-server></app-server>
+<app-server></app-server>
+<app-server></app-server>
+<p>{{ serverCreationStatus ? 'SERVER WAS CREATED' : 'Server still not created.'  }}</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@Component({
+  // selector: 'app-servers', /// QUANDO VOCÊ ESCREVE ASSIM, ESTÁ SELECIONANDO O ELEMENTO NO 'servers.component.html' A PARTIR DA SUA TAG/ELEMENT...
+  selector: '[app-servers]', ////o selector do angular TEM COMPORTAMENTO SIMILAR A SELECTORS CSS... -> e nos selectors css, se você escreve '[attributeName] {}', você ACABA EDITANDO TODOS OS ELEMENTOS QUE POSSUEM ESSE ATTRIBUTE ATIVADO/ESCRITo...
+
+  // selector: '.app-servers' ////use essa sintaxe se vocÊ quer SELECIONAR UM ELEMENTO NO seu 'servers.component.html' POR MEIO DE _ CLASSES__...
+
+  ///ou seja, 3 approaches para SELECIONAR ELEMENTOS NO NOSSO CÓDIGO HTML ANGULAR, com o 'selector':
+
+  //  1) por ELEMENTo... -> selector: 'app-servers'
+  //  2) por ATTRIBUTE.... -> selector: '[app-servers]'
+  //  3) por CLASS --> selector: '.app-servers'
+
+  templateUrl: './servers.component.html',
+  styleUrls: ['./servers.component.css'],
+})
+export class ServersComponent implements OnInit {
+  allowNewServer = false;
+  serverCreationStatus = false
+
+  constructor() {
+    setTimeout(
+      () => {
+        this.allowNewServer = true;
+      },
+
+      2000
+    );
+  }
+
+
+
+  toggleServer() {
+    this.serverCreationStatus =  !this.serverCreationStatus
+  }
+
+
+  onInputServerName(input: string) {
+      
+  }
+
+  ngOnInit(): void {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> LÁ NO '.ts',
+
+
+
+
+EU COLOQUEI AQUELE METHOD DE 
+
+'onInputServerName',
+
+
+
+mas eu __ NÃO TENHO CERTEZA 
+
+SE 
+REALMENTE 
+
+
+RECEBEMOS UM 
+
+PARÂMETRO 'input'( ou o nome do event em questão)
+
+
+AQUI...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> parece que eu fiz errado,
+
+
+
+como o professor demonstra:
+
+
+
+
+
+
+
+
+-> VOCÊ TEM QUE IR 
+
+ATÉ 
+
+O 
+
+.html (template)
+
+
+E AÍ 
+
+
+
+
+
+
+ADICIONAR 
+
+
+'$event'
+
+COMO PARÂMETRO 
+
+
+
+
+DO METHOD QUE VOCê ESTÁ CHAMANDO COM 
+
+'input'...
+
+
+
+
+ex:
+
+
+
+
+
+(input)="onUpdateServerName($event)"
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO PQ 
+
+
+
+'$event'
+
+
+É __ KINDOF__ 
+UM 
+
+
+RESERVED NAME NO ANGULAR... -> É UM 'RESERVED VARIABLE NAMEE'
+
+
+
+
+QUE VOCê 
+
+
+_ PODE/DEVE USAR__ NO TEMPLATE,
+
+QUANDO 
+
+
+ESTÁ 
+
+
+
+
+FAZENDO EVENT BINDING...
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS PQ __ 
+
+
+'$event'
+
+DENTRO 
+
+
+
+
+DE NOSSO 
+
+" " em cada EVENT BINDING? 
+
+
+
+
+
+
+
+
+
+--> É PQ __ 
+
+
+___ APENAS__ DENTRO DESSAS QUOTATION MARKS 
+
+
+
+A KEYWORd 
+
+'$event'
+
+
+
+SERÁ __ A ''''DATA EMITIDA DE DENTRO DAQUELE EVENT ESPECÍFICO'''..
+
+
+
+
+
+
+
+
+
+-> ISSO QUER DIZER QUE, POR EXEMPLO:
+
+
+
+(click)="onCreateServer($event)">Add Server</button>
+
+
+
+
+
+
+
+
+
+--> DENTRO DO "" desse EVENT BINDING,
+
+
+
+__ esse 
+
+
+'$EVENT' VAI REPRESENTAR TODA A DATA EMITIDA PELO EVENT DE 'CLICK',
+
+que será 
+PASSADA 
+
+AO METHOD DE 
+
+
+'onCreateServer',
+
+
+nesse exemplo....
+
+
+
+
+
+
+
+
+
+
+
+
+--> INPUT E CLICK SÃO DEFAULT EVENTS PROVIDENCIADOS PELO DOM... ------> e ele nos SHIPPAM
+
+
+
+UM POUCO DE DATA QUANDO SÃO DISPARADOS (posição na tela, etc etc)...
+
+
+
+
+
+
+
+
+
+EVENTO 'CLICK'' --> segura 
+
+
+
+UM OBJECT COM PROPRIEDADES COM COISAS COMO 'COORDENADAS DO CLICK',
+
+
+
+
+
+
+
+E O INPUT EVENT TAMBÉM 
+
+NOS DÁ UM POUCO DE DATA,
+
+
+
+INFO ACERCA DO EVENT... -> E PODEMOS 
+
+
+CAPTURAR ESSA DATA POR MEIO DO WRITE DE 
+
+'
+$event'
+
+
+COMO PARÂMETRO 
+
+
+DE NOSSO METHOD...
+
+
+
+
+
+
+------> $EVENT --> É ALGO QUE SEMPRE DEVEMOS TER EM MENTE, É UMA RESERVED WORD QUE 
+
+
+NOS DÁ 
+
+ACESSO 
+
+
+
+A EVENT DATA EM GERAL...
+
+
+
+
+
+
+
+
+
+
+-> OK... EM 'onUpdateServerName'
+
+
+
+SABEMOS QUE VAMOS RECEBER ESSE EVENT....
+
+
+
+
+
+
+
+
+
+--> NOSSO CÓDIGO VAI FICNADO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+<label>Server Name</label>
+<input 
+type="text" 
+class="form-control"
+placeholder="Input your server name"
+(input)="onUpdateServerName($event)" 
+> <!--  É OBRIGATÓRIO ADICIONAR aquele '$event' como parâmetro quando você QUER PASSAR O VALOR/SEU EVENT __ A ALGUM METHOD EM SEU ARQUIVO '.ts'...-->
+<button class="btn btn-primary" [disabled]="!allowNewServer" 
+(click)="toggleServer()"
+>Add Server</button>
+<!-- <button class="btn btn-primary" disabled="{{ !allowNewServer }}"> não funciona -->
+  <!-- Add Server -->
+<!-- </button> -->
+<p [innerText]="allowNewServer"></p>
+<p>User can edit: {{ allowNewServer ? "Yes" : "No" }}</p>
+<app-server></app-server>
+<app-server></app-server>
+<app-server></app-server>
+<p>{{ serverCreationStatus ? 'SERVER WAS CREATED' : 'Server still not created.'  }}</p>
+
+
+
+
+--------------------------
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  // selector: 'app-servers', /// QUANDO VOCÊ ESCREVE ASSIM, ESTÁ SELECIONANDO O ELEMENTO NO 'servers.component.html' A PARTIR DA SUA TAG/ELEMENT...
+  selector: '[app-servers]', ////o selector do angular TEM COMPORTAMENTO SIMILAR A SELECTORS CSS... -> e nos selectors css, se você escreve '[attributeName] {}', você ACABA EDITANDO TODOS OS ELEMENTOS QUE POSSUEM ESSE ATTRIBUTE ATIVADO/ESCRITo...
+
+  // selector: '.app-servers' ////use essa sintaxe se vocÊ quer SELECIONAR UM ELEMENTO NO seu 'servers.component.html' POR MEIO DE _ CLASSES__...
+
+  ///ou seja, 3 approaches para SELECIONAR ELEMENTOS NO NOSSO CÓDIGO HTML ANGULAR, com o 'selector':
+
+  //  1) por ELEMENTo... -> selector: 'app-servers'
+  //  2) por ATTRIBUTE.... -> selector: '[app-servers]'
+  //  3) por CLASS --> selector: '.app-servers'
+
+  templateUrl: './servers.component.html',
+  styleUrls: ['./servers.component.css'],
+})
+export class ServersComponent implements OnInit {
+  allowNewServer = false;
+  serverCreationStatus = false
+
+  constructor() {
+    setTimeout(
+      () => {
+        this.allowNewServer = true;
+      },
+
+      2000
+    );
+  }
+
+
+
+  toggleServer() {
+    this.serverCreationStatus =  !this.serverCreationStatus
+  }
+
+
+  onInputServerName(input: string) {
+      
+  }
+
+  ngOnInit(): void {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK... MAS AQUILO ALI QUE RECEBEREMOS NÃO SERÁ 
+
+'input',
+
+e NÃO SERÁ DE TYPE STRING.... -> 
+
+
+
+será,
+
+SIM,
+
+um 
+
+
+EVENT,
+
+
+e ele será de TYPE ANY,
+
+NOS DIZ O PROFESSOR...
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  // selector: 'app-servers', /// QUANDO VOCÊ ESCREVE ASSIM, ESTÁ SELECIONANDO O ELEMENTO NO 'servers.component.html' A PARTIR DA SUA TAG/ELEMENT...
+  selector: '[app-servers]', ////o selector do angular TEM COMPORTAMENTO SIMILAR A SELECTORS CSS... -> e nos selectors css, se você escreve '[attributeName] {}', você ACABA EDITANDO TODOS OS ELEMENTOS QUE POSSUEM ESSE ATTRIBUTE ATIVADO/ESCRITo...
+
+  // selector: '.app-servers' ////use essa sintaxe se vocÊ quer SELECIONAR UM ELEMENTO NO seu 'servers.component.html' POR MEIO DE _ CLASSES__...
+
+  ///ou seja, 3 approaches para SELECIONAR ELEMENTOS NO NOSSO CÓDIGO HTML ANGULAR, com o 'selector':
+
+  //  1) por ELEMENTo... -> selector: 'app-servers'
+  //  2) por ATTRIBUTE.... -> selector: '[app-servers]'
+  //  3) por CLASS --> selector: '.app-servers'
+
+  templateUrl: './servers.component.html',
+  styleUrls: ['./servers.component.css'],
+})
+export class ServersComponent implements OnInit {
+  allowNewServer = false;
+  serverCreationStatus = false
+
+  constructor() {
+    setTimeout(
+      () => {
+        this.allowNewServer = true;
+      },
+
+      2000
+    );
+  }
+
+
+
+  toggleServer() {
+    this.serverCreationStatus =  !this.serverCreationStatus
+  }
+
+
+  onInputServerName(event: any) {
+      
+  }
+
+  ngOnInit(): void {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> POR ENQUANTO, VAMOS APENAS CONSOLE.LOGGAR 
+
+ESSE INPUT 
+
+
+
+NO CONSOLE:
+
+
+
+
+
+
+
+
+InputEvent {isTrusted: true, data: 's', isComposing: false, inputType: 'insertText', dataTransfer: null, …}
+isTrusted: true
+bubbles: true
+cancelBubble: false
+cancelable: false
+composed: true
+currentTarget: null
+data: "s"
+dataTransfer: null
+defaultPrevented: false
+detail: 0
+eventPhase: 0
+inputType: "insertText"
+isComposing: false
+path: (10) [input.form-control, div, div.col-xs-12, div.row, div.container, app-root, body, html, document, Window]
+returnValue: true
+sourceCapabilities: null
+srcElement: input.form-control
+target: input.form-control
+timeStamp: 5936.200000000186
+type: "input"
+view: null
+which: 0
+[[Prototype]]: InputEvent
+
+
+
+
+
+
+
+
+
+
+
+---> ok...
+
+
+
+
+
+--> O QUE NOS INTERESSA É 
+
+'event.target.value'...
+
+
+
+
+
+
+------------
+
+
+
+
+
+
+ESCREVI UM CÓDIGO QUE DEFINE A PROPRIEDADE 'server name' 
+
+
+
+de 
+
+
+
+nosso component como sendo o VALOR INPUTTADO PELO USER:
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  // selector: 'app-servers', /// QUANDO VOCÊ ESCREVE ASSIM, ESTÁ SELECIONANDO O ELEMENTO NO 'servers.component.html' A PARTIR DA SUA TAG/ELEMENT...
+  selector: '[app-servers]', ////o selector do angular TEM COMPORTAMENTO SIMILAR A SELECTORS CSS... -> e nos selectors css, se você escreve '[attributeName] {}', você ACABA EDITANDO TODOS OS ELEMENTOS QUE POSSUEM ESSE ATTRIBUTE ATIVADO/ESCRITo...
+
+  // selector: '.app-servers' ////use essa sintaxe se vocÊ quer SELECIONAR UM ELEMENTO NO seu 'servers.component.html' POR MEIO DE _ CLASSES__...
+
+  ///ou seja, 3 approaches para SELECIONAR ELEMENTOS NO NOSSO CÓDIGO HTML ANGULAR, com o 'selector':
+
+  //  1) por ELEMENTo... -> selector: 'app-servers'
+  //  2) por ATTRIBUTE.... -> selector: '[app-servers]'
+  //  3) por CLASS --> selector: '.app-servers'
+
+  templateUrl: './servers.component.html',
+  styleUrls: ['./servers.component.css'],
+})
+export class ServersComponent implements OnInit {
+  allowNewServer = false;
+  serverCreationStatus = false;
+  serverName = '';
+
+  constructor() {
+    setTimeout(
+      () => {
+        this.allowNewServer = true;
+      },
+
+      2000
+    );
+  }
+
+
+
+  toggleServer() {
+    this.serverCreationStatus =  !this.serverCreationStatus
+  }
+
+
+  onUpdateServerName(event: any) {
+      console.log(event.target.value)
+      this.serverName = event.target.value;
+  }
+
+  ngOnInit(): void {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É BEM PARECIDO COM O REACT, ESSE FRAMEWORK..
+
+
+
+
+
+
+
+
+----> 
+
+  onUpdateServerName(event: Event) {
+      // console.log(event.target.value)  ###sem DEFINIÇÃO TYPESCRIPT.
+      // this.serverName = event.target.value; 
+      console.log((<HTMLInputElement>event.target).value);  ///COM DEFINIÇÃO TYPESCRIPT.
+      this.serverName = (<HTMLInputElement>event.target).value;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  --> o professor coloca uma definição typescript para desbuggar a chatice do IDE...
+
+
+
+
+
+
+
+
+
+
+
+
+  OK, ESSA MUDANÇA DO 'server name'
+
+  É MOSTRADA NO TEMPLATE 
+
+
+  DE 
+
+
+  NOSSO PROJEOT,
+
+
+  TIPO ASSIM:
+
+
+
+
+
+
+  <label>Server Name</label>
+<input 
+type="text" 
+class="form-control"
+placeholder="Input your server name"
+(input)="onUpdateServerName($event)" 
+> <!--  É OBRIGATÓRIO ADICIONAR aquele '$event' como parâmetro quando você QUER PASSAR O VALOR/SEU EVENT __ A ALGUM METHOD EM SEU ARQUIVO '.ts'...-->
+<button class="btn btn-primary" [disabled]="!allowNewServer" 
+(click)="toggleServer()"
+>Add Server</button>
+<!-- <button class="btn btn-primary" disabled="{{ !allowNewServer }}"> não funciona -->
+  <!-- Add Server -->
+<!-- </button> -->
+<p [innerText]="allowNewServer"></p>
+<p>User can edit: {{ allowNewServer ? "Yes" : "No" }}</p>
+<app-server></app-server>
+<app-server></app-server>
+<app-server></app-server>
+<p>{{ serverCreationStatus ? 'SERVER WAS CREATED' : 'Server still not created.'  }}</p>
+<p>{{ serverName }}
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É ASSIM QUE VOCÊ PODE USAR 
+
+
+esse '$event'
+
+
+PARA FETCHEAR A EVENT DATA 
+
+de seu elemento....
+
+
+
+
+
+
+
+
+
+--> agora veremos TWO-WAY BINDING, PARA ACABARMOS COM ESSE PEQUENO EXEMPLO....

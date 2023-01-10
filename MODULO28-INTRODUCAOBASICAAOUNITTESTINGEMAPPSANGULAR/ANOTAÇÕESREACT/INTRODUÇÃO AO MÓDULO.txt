@@ -1,0 +1,160 @@
+
+
+
+
+TESTANDO APLICATIVOS REACT...
+
+
+
+
+
+
+
+
+--> módulo importante no nosso curso, 
+
+o testing 
+
+de 
+react apps..
+
+
+
+ 
+
+
+ --> com 'testing', professor não quer 
+ dizer 
+
+ nós 
+
+
+ 'clicando manualmente' 
+
+
+ no nosso aplicativo... ---> pq nós já fazemos isso constantemente 
+
+ enquanto 
+
+
+ desenvolvemos nosso app...
+
+
+
+
+
+
+
+ ----> o testing de que o professor 
+
+ fala é 
+
+ um feito 
+
+ PROGRAMATICAMENTE, PROVAVELMENTE 
+
+ POR MEIO 
+
+ DE 
+
+ JEST...
+
+
+
+
+
+ ----------> WRITE DE __'AUTOMATED TESTS'.... -----> aí o professor 
+
+ nos 
+
+ esclarece uma coisa: 
+
+
+
+
+ 'TESTING' 
+
+ é um 
+
+ tópico 
+
+
+ COMPLEXO... --> 
+
+ é um 
+
+ tópico 
+
+ tão gigante que poderíamos 
+
+ escrever um 
+
+ curso sobre isso..
+
+
+
+
+
+
+ ---> Não é uma introdução ao testing em geral, isso daqui; 
+
+
+ também 
+
+ não é um 
+
+
+ 'COMPLETE REACT TESTING GUIDE'... -----> 
+
+
+ EM 
+
+ VEZ DISSO,
+
+
+ professor 
+
+
+ VAI 
+
+ NOS 
+
+ INTRODUZIR (de novo) 
+
+
+ a arte 
+
+ de 
+
+ escrever 
+
+ 'unit tests' 
+
+ para 
+
+
+ REACT APPLICATIONS,
+
+ applications 
+
+
+ CONSTRUÍDAS COM 
+
+
+
+ 'create-react-app'...
+
+
+
+
+ ------------------------------
+
+
+
+ ----> VAMOS VER EXATAMENTE O QUE É 'TESTING', e aí 
+
+ entender 
+
+ como 
+
+ podemos escrever tests para nossos aplicativos react....

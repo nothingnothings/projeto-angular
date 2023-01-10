@@ -1,0 +1,485 @@
+
+
+
+
+
+
+
+
+O CÓDIGO DO NOSSO RESOLVER HAVIA FICADO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Injectable } from "@angular/core";
+
+import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
+import { Observable } from "rxjs";
+import { RecipeBookService } from "./recipeBook.service";
+import { Recipe } from "./recipeBook/recipe.model";
+
+
+@Injectable({providedIn: 'root'})
+export class RecipesResolverService implements Resolve<Recipe[]> {
+
+
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Recipe[] | Observable<Recipe[]> | Promise<Recipe[]> {
+        
+        console.log('TEST');
+   
+        return this.recipeBookService.loadRecipes();  // vai 'resolve' essa data ANTES DE NOSSOS COMPONENTS SEREM CARREGADOS, ANTES DA PAGE DE 'recipe-book' SER CARREGADA...
+    }
+
+    constructor(private recipeBookService: RecipeBookService) {
+
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O BUG É ESTE:
+
+
+
+
+
+
+
+QUANDO __ EDITAMOS 1 DE NOSSOS 'RECIPE ITEMS',
+
+
+
+
+
+
+o edit desse item NÃO É REFLETIDO NA NOSSA LISTA DE ITEMS IMEDIATAMENTE (
+
+
+    somos forçados a 'TROCAR DE PAGE', sem recarregar o app inteiro,
+    para ver 
+
+    essa mudança de values ser refletida na nossa 
+
+    'recipeList'...
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR NOS EXPLICA QUE _ ISSO OCORRE _ JUSTAMENTE _ POR CONTA DE
+
+
+
+NOSSO 'RESOLVER',
+
+
+
+pq o resolver __ SEMPRE _ É EXECUTADO BEM NO INÍCIO 
+
+
+da vida de nosso hook,
+
+
+
+e como o seu código é 
+de 
+
+'FETCHEAR AS RECIPES QUE TEMOS NO NOSSO BACKEND, NO PRESENTE',
+
+
+
+
+ele literalmente acaba pegando uma versão mais antiga de nossa list (
+
+    pq a nossa lista atual ainda não foi salva com 'save data', aquele 
+
+    link 
+
+    lá no nosso header...
+)
+
+
+
+
+
+
+
+
+
+
+-----> ISSO ACONTECE PQ O RESOLVER É _ USADO_ _ SEMPRE QUE 
+
+ 
+
+ _ VISITAMOS A ROUTE DE 'RECIPE-DETAIL' (
+
+
+     ele faz FETCH DE NOVAS RECIPES lá do server, e isso simplesmnte 
+
+
+     overwrittar nossas existing recipes,
+
+    INCLUSIVE AS NOSSAS CHANGES A ESSAS RECIPES...
+
+ )
+
+
+
+
+
+
+
+
+
+
+ -> ok.... tenho que implementar alguma coisa que consiga 
+
+
+ DEFINIR ESSA LIST 
+
+
+
+ COMO SENDO A 'OLD LIST'....
+
+
+
+
+
+
+
+ -. PARA ISSO,
+
+
+
+ PROVAVELMENTE PODEREI UTILIZAR 
+
+
+ UM DOS METHODS QUE TENHO LÁ EM 'recipeBookService',
+
+
+ como 
+
+ 'getRecipes()'... (que retorna o array ATUAL de recipes) --------> PROVAVELMENTE 
+
+
+ CHAMAREI ESSE METHOD NO PRÓPRIO 
+
+
+
+ resolver..
+
+
+
+
+
+
+
+
+
+
+
+ -> provavelmente o código-solução será 
+
+ 'um call de loadRecipes 
+
+ ANTES, PARA DEPOIS CHAMAR 
+
+ 'getRecipes' ' (que retorna nosso array atual de recipes, de nosso app)...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> hmmm mas isso não deu certo... (os items não foram carregados)...
+
+
+
+
+
+
+
+
+
+
+
+
+ -> A SOLUÇÃO, DIZ O PROFESSOR, É ESCREVER UM IF CHECK CHECANDO PELA EXISTÊNCIA 
+
+
+ DE 
+
+ RECIPES, E 
+
+
+
+
+
+ APENAS FETCHEAR NOVAS RECIPES SE 
+
+ NÃO TIVERMOS RECIPES atualmente...
+
+
+
+
+
+
+
+
+
+
+
+
+ O CÓDIGO FICOU TIPO,
+
+
+ CHECAMOS 
+
+ PARA VER SE 
+
+ RECIPES VELHAS EXISTEM,
+
+
+
+ se EXISTIREM,
+
+ QUEREMOS 
+
+ RODAR O 'loadRecipes',
+
+ para pegar só AS RECIPES DO SERVIDOR... E OVERWRITTAR O VALUE 'EMPTY' DE NOSSAS RECIPES...
+
+
+
+
+
+
+ - >caso conmtrário,
+
+ vamos querer retornar o 'getRecipes()" representado por 'recipe
+ 
+
+
+
+
+
+QUE SERÁ REALMENTE O STATE ATUAL DE NOSSAS RECIPES...salva
+
+
+
+
+
+
+
+
+
+
+
+-> AGORA NOSSAS CHANGES SÃO REALMENTE SALVAS, SEM PROBLEMA..
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+import { Injectable } from "@angular/core";
+
+import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
+import { Observable } from "rxjs";
+import { RecipeBookService } from "./recipeBook.service";
+import { Recipe } from "./recipeBook/recipe.model";
+
+
+@Injectable({providedIn: 'root'})
+export class RecipesResolverService implements Resolve<Recipe[]> {
+
+
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Recipe[] | Observable<Recipe[]> | Promise<Recipe[]> {
+        
+
+        const recipes = this.recipeBookService.getRecipes();
+        console.log('TEST');
+        ///aqui fazemos o RETURN DE UM OBSERVABLE, que vai essencialmente sofrer 'subscribe' automaticamente pelo typesccript por estar posicionado em 1 resolver....
+        
+        
+        if (recipes.length === 0) {
+            console.log('LINE')
+            return this.recipeBookService.loadRecipes();  // vai 'resolve' essa data ANTES DE NOSSOS COMPONENTS SEREM CARREGADOS, ANTES DA PAGE DE 'recipe-book' SER CARREGADA...
+        
+        } else {
+            console.log('LINE2')
+            console.log(recipes);
+            return recipes
+        }
+        
+
+    }
+
+    constructor(private recipeBookService: RecipeBookService) {
+
+    }
+
+}
+
+
+
+
+
+
+
+
+
+-. Certo, mas isso ainda NÃO FUNCIONOU, PARA MIM...
+
+
+
+
+
+--. o código de 'edit' não esta´funcioanndo
+
+
+
+
+
+
+
+
+
+-> acho que é pq faço um REDIRECT ou algo do gênero, lá nesse click no button de 'edit recipe'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CONSERTEI... ERA UM CÓDIGO EQUIVOCADO (eu estava tentando editar por '[index]', quando queria procurar por 'id' e então editar aquele elemento específico...) NO METHOD DE 'onRecipeEdited':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  onRecipeEdited(editedRecipe: Recipe, index: number) {
+    // this.recipes[index] = editedRecipe;
+
+   const recipeIndex =  this.recipes.findIndex(
+      (recipe) => {
+        return recipe.id === index;
+      }
+    )
+
+    this.recipes[recipeIndex] = editedRecipe;
+
+
+    console.log(this.recipes);
+
+    this.recipeItemsChanged.next([...this.recipes]);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ok, agora funcionou, finalmente...
+
+
+
+
+
+
+
+
+
+  --> com isso, evitamos bugs estranhos...

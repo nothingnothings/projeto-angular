@@ -1,0 +1,1026 @@
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ COM AS ENV VARIABLES ADICIONADAS,
+
+
+
+ É HORA 
+
+
+
+
+ DE 
+
+
+
+
+ FAZER 'BUILD' 
+
+ DE NOSSO PROJECT,
+
+ PARA AÍ O DEPLOYAR..
+
+
+
+
+
+
+
+
+
+ ESCREVA 
+
+
+
+
+
+ ng build --prod
+
+
+
+
+
+
+
+
+ --> ISSO BUILDA O APP ANGULAR INTEIRO PARA PRODUCTION,
+
+ OPTIMIZA TUDO E ENTÃO TE DÁ UM OUTPUT QUE VOCÊ PODE DEPLOYAR EM UM STATIC SERVER...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> 1) COMPILA SEU CÓDIGO TYPESCRIPT EM JAVASCRIPT 
+
+
+
+ 2) COMPILA TODOS SEUS TEMPLATES EM JAVASCRIPT INSTRUCTIONS, PARA QUE 
+
+ APENAS 
+
+ JAVASCRIPT CODE ACABE SENDO GERADO...
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> QUANDO VOCÊ RODA O NG BUILD --PROD,
+
+
+
+
+VOCÊ GANHA O FOLDER COM SEU PROJECTNAMEM
+
+
+
+
+,
+
+com todos os 
+
+assets 
+
+
+
+QEU VOCÊ TALVEZ TENHA USADO,
+
+
+E AÍ 
+
+
+
+O ARQUIVO 'main',
+
+o 'polyfill'
+
+
+
+e mais alguns arquivos...
+
+
+
+
+
+
+
+
+
+
+-_> um monte de arquivos javascript 
+
+que 
+
+
+
+
+segurarão seu código js --> é toda a lógica do 
+
+angular framework
+
+
+e 
+
+de seu 
+
+código... (tudo triturado)...
+
+
+
+
+
+
+
+
+
+-> SE VOCÊ CHECAR O 'index.html',
+
+
+VOCÊ VERÁ QUE 
+
+ELE TEM TODOS OS SCRIPT IMPORTS QUE COMPÕEM SEU 
+
+
+
+CÓDIGO, etc etc...
+
+
+
+EM 'styles'
+
+
+VOCÊ ENCONTRA DETALHES DE TODO O CÓDIGO DE STYLES DO SEU APP (no nosso caso, os styles BOOTSTRAP)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK... AGORA SÓ TEMOS QUE FAZER DEPLOY DESSE NEGÓCIO..
+
+
+
+
+
+
+
+
+
+
+
+COMO FAREMOS ISSO?
+
+
+
+
+
+PRECISAMOS  DE UM STATIC WEBSITE HOST..
+
+
+
+
+
+
+
+
+MTOS ARTIGOS E EXEMPLOS,
+
+
+
+
+TODOS VÁLIDOS PARA 
+
+
+
+HOSTEAR UM WEBSITE..
+
+
+
+
+
+
+
+
+--> TEMOS O AWS S3,
+
+
+
+que é usado 
+
+
+para 
+
+hostear sites.... --> é bem popular...
+
+
+
+
+
+
+
+
+--> firebase hosting--->
+
+
+
+
+
+VOCÊ NÃO PRECISA TER O RESTO  DO SEU BACKEND NO FIREBASE 
+
+
+
+PARA 
+
+
+
+UTILIZARMOS O STATIC WEBSITE HOSTING DO FIREBASE (é uma coincidência de termos usado o firebase database/auth api   AO MESMO TEMPO QUE USAMOS O STATIC WEBSITE HJOSTING DO FIREBASE)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK.. -----> NÓS JÁ FIZEMOS HOSTING NO FIREBASE UMA VEZ,
+
+HÁ TEMPOS ATRÁS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+
+
+PRECISAMOS DO 'FIREBASE CLI'...
+
+
+
+
+
+
+--> É SIMPLESMENTE UMA FERRAMENTA QUE VOCê INSTALA PARA PODER DEPLOYAR AUTOAMTICAMENTE
+
+
+
+
+SEU 
+
+
+
+APP FIREBASE...
+
+
+
+
+
+
+
+----> OK...
+
+
+
+
+
+
+
+
+
+--> AÍ RODE 
+
+'npm install -g firebase-tools'...
+
+
+
+
+
+
+
+
+
+--> NO TERMINAL,
+
+
+NÃO PRECISA SER SEU PROJECT TERMINAL,
+
+
+
+RODE 
+
+
+
+
+
+
+
+
+
+
+o comando,
+
+
+e depois 
+
+execute 
+
+
+'firebase'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> O FIREBASE PODE SER USADO EM QUALQUER PROJECT,
+
+
+
+É UJNIVERSAL...
+
+
+
+
+
+AÍ EXECCUTE 'firebase login'
+
+
+
+PARA 
+
+LOGGAR_ NA SUA _ CONTA DO FIREBASAE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ELE VAI PEDIR UM EMAIL E PASSWORD COMBINATION PARA 
+
+LOGGAR NO FIREBASE NO CLI... (
+
+
+    usamos a mesma conta 
+
+    usada para o backend do firebase...
+)
+
+
+
+
+
+EX:
+
+
+
+
+A:\projeto8-ANGULAR\MODULO23-FAZENDODEPLOYDEUMANGULARAPP>firebase login
+Already logged in as testestest20012@gmail.com
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... CONTINUAMOS COM O FIREBASE...
+
+
+
+
+
+FAZEMOS LOGIN,
+
+E A PRÓXIMA ETAPA 
+
+
+É 
+
+
+
+rodar 'firebase init' 
+
+
+__DENTRO _ DO NOSSO 
+
+
+
+'ANGULAR PROJECT FOLDER' (
+
+
+
+
+
+    por isso precisamos navegar até o folder em que temos todos os subfolders,
+
+
+
+como esse 'novoprojeto13'
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... AÍ EXECUTE 'firebase init' ---> 
+
+
+
+
+MAS AÍ O FIREBASE VAI TE PERGUNTAR 'QUAL FEATURE 
+
+
+
+FIREBASE VOCÊ QUER USAR'...
+
+
+
+
+
+
+
+
+
+
+-> COLOCAMOS 
+
+
+
+'HOSTING' ---> 
+
+
+
+
+
+
+
+
+ ( ) Firestore: Configure security rules and indexes files for Firestore
+ ( ) Functions: Configure a Cloud Functions directory and its files
+>( ) Hosting: Configure files for Firebase Hosting and (optionally) set up GitHub Action deploys
+ ( ) Hosting: Set up GitHub Action deploys
+ ( ) Storage: Configure a security rules file for Cloud Storage
+ ( ) Emulators: Set up local emulators for Firebase products
+(Move up and down to reveal more choices)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... É IMPORTANTE MENCIONAR QUE O 'STATIC HOSTING' DO FIREBASE , NA NOSSA MESMA CONTA,
+NÃO VAI INTERFERIR 
+
+
+COM 
+
+
+
+NOSSO REALTIME DATABASE E AUTH API...
+
+
+
+
+
+
+
+
+
+--> MAS PARA O HOSTING PRECISAMOS DO CLI,
+
+POR ISSO 
+ESCOLHA 'hosting'...
+
+
+
+
+
+
+
+
+--. aí ele pede 'use an existing project' 
+
+
+ou 
+
+'create a new project'...
+
+
+
+
+
+
+
+--> EU ESCOLHO O PROJETO DE 
+
+
+'RecipeBookDeployProject'..
+
+
+
+
+
+
+
+
+-> VOCÊ PRECISA DE 1 FIREBASE PROJECT (SE NÃO TIVER 1, TERÁ DE CRIAR AGORA)....
+
+
+
+
+
+
+
+
+
+-> ISSO FEITO,
+
+
+ELE 
+
+PEDE 
+
+
+
+
+'qual é seu PUBLIC DIRECTORY'...
+
+
+
+
+
+
+
+
+
+--> NO CASO,
+
+VOCÊ 
+
+NÃO 
+
+
+DEVE 
+
+
+ESCOLHER O DEFAULT (que é 'public'),
+
+
+E SIM 
+
+APONTAR 
+
+
+AO FOLDER QUE CONTÉM TODOS OS FILES QEU VOCÊ QUER DEPLOYAR,
+
+QUE É 
+
+
+O FOLDER DE 'dist'
+,
+
+
+
+
+
+no nosso caso... (
+
+
+
+    é o folder que contém todas as files que queremos deployar...
+)
+
+
+
+
+
+
+
+
+
+---. AÍ ELE TE PEDE SE 'VOCÊ QUER DEPLOYAR ISSO COMO UM SINGLE PAGE APP?'''
+
+
+
+
+--> DEFINITIVAMENTE COLOQUE 'sim',
+
+pq é isso que desejamos..
+
+
+
+
+
+(
+
+
+    VOCÊ PRECISA DEFINIR ISSO COMO 'SIM',
+
+    PQ ESSE É UM COMMON GOTCHA:
+
+
+    SEU SERVER _ PRECISA_ ESTAR CONFIGURADO PARA SEMPRE RETORNAR UM 'INDEX.HTML',
+
+
+    NÃO 
+
+    IMPORTANDO SE A URL QUE VOCÊ INPUTTOU NO BROWSER VALIDAMENTE OU NÃO ----> A RAZÃO PARA ISSO 
+
+    É QUE 
+    O 
+
+    SERVER 
+
+   TEM QUE FUNCIONAR COM O ANGULAR ROUTER QUE TEMOS NO 
+
+   FRONTEND,
+
+   E PARA QUE ESSE SISTEMA FUNCIONE, ELE ABSOLUTAMENTE NÃO 
+
+   PODE RETORNAR HTMLS DIFERENTES, PQ 
+
+   ISSO VAI BUGAR O NOSSO SISTEMA.. --->  todos os requests vão 
+
+   alcançar essa page html, de index.html,
+
+
+   que é o que permite o angular router carregar o conteúdo correto no seu angular app...
+     
+)
+
+
+
+
+
+--> AÍ ELE PEDE 
+
+
+
+
+'SET UP AUTOMATIC BUILDS AND DEPLOYS WITH GITHUB?"
+
+
+
+
+
+
+
+
+
+
+
+
+--> DEPOIS DE TODOS ESSES PASSOS
+
+
+digite 'firebase deploy'
+
+
+PARA DEPLOYAR SEU APP NA INTERNET...
+
+
+
+
+
+
+
+
+
+--> passos:
+
+
+
+
+1) firebase login 
+
+
+
+2) firebase init 
+
+
+2.5) define o folder de 'dist'...
+
+3) definir como 'single page app'..
+
+
+4) firebase deploy..
+
+
+
+
+
+
+
+
+
+
+-> ISSO VAI DEPLOY SEU CONTEÚDO, O CONTEÚDO DESSE FOLDER,
+
+
+LÁ NO FIREBASE..
+
+
+
+
+
+
+
+
+
+
+
+--> ELE NOS DEU UMA URL, EM QUE PODEMOS ENCONTRAR O NOSSO APP:
+
+
++  Deploy complete!
+
+Project Console: https://console.firebase.google.com/project/recipebookdeployproject/overview
+Hosting URL: https://recipebookdeployproject.web.app
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS FIQUEI COM ALGO INDESEJADO:
+
+
+
+
+
+Welcome
+Firebase Hosting Setup Complete
+You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!
+
+
+
+
+
+
+
+
+
+
+
+
+-> isso significa que NÃO DEPLOYEI DE FORMA CORRETA...
+
+
+
+
+
+
+
+
+ISSO FICOU ESTRANHO:
+
+
+
+
+
+
+
+  deploying hosting
+i  hosting[recipebookdeployproject]: beginning deploy...
+i  hosting[recipebookdeployproject]: found 18 files in dist
++  hosting[recipebookdeployproject]: file upload complete
+i  hosting[recipebookdeployproject]: finalizing version...
++  hosting[recipebookdeployproject]: version finalized
+i  hosting[recipebookdeployproject]: releasing new version...
++  hosting[recipebookdeployproject]: release complete
+
+
+
+
+
+
+
+
+--> é algum problema com o esquema dos nossos FOLDERS... (
+
+
+    ele não está encontrando o folder de nosso project,
+
+    talvez pq o name dele está como 
+
+
+    'novoprojeto5'...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+----> agora deu certo... foi só tirar todos os arquivos de dentro de 'novoprojeto5' 
+
+e então os colocar no root de 'novoprojeto5'...
+
+
+
+EX:
+
+
+
+
+
+
+Run firebase hosting:disable through the firebase-tools CLI first. 
+
+
+
+
+
+
+
+
+
+
+
+OK, MAS MINHA ROUTE DE 
+
+
+'AUTH' 
+
+NÃO ESTÁ FUNCIONANDO;
+
+
+
+message: "Http failure response for https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBK3AXsu9Gn0fqLmA0zOdUAknDM48Nwk_o: 400 OK"
+
+
+
+
+OK.. ESTOU REALMENTE RECEBENDO ESSE ERROR DE '400', AN UNKNOWN ERROR HAS OCCURRED...
+
+
+
+
+
+
+
+
+
+-> isso está ocorrendo no nosso projeto NORMAL (local), TAMBÉM..
+
+
+
+
+
+
+
+
+
+--> PROVAVELMENTE É ALGO DE ERRADO COM NOSSAS VARIABLES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... CONSERTEI.. AGORA ESTÁ FUNCIONADO, E O LINK É ESTE:
+
+
+
+
+https://recipebookdeployproject.web.app
+
+
+
+
+
+
+
+
+
+
+AS INTERAÇÕES COM O BACKEND CONTINUAM AS MESMAS, MAS AGORA COM ESSE NOSSO APP...
+
+
+
+
+
+
+
+
+
+
+When deploying your Angular app, it's really important to make sure that your server (like S3) is configured to always serve the index.html file.
+
+Here's why: https://academind.com/learn/angular/angular-q-a/#how-to-fix-broken-routes-after-deployment
+
+
+

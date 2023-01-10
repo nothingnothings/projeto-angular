@@ -1,0 +1,2114 @@
+
+
+
+
+
+
+
+
+
+
+
+
+--> VAMOS COMEÇAR A ARMAZENAR 'DATA SOBRE O USER',
+
+
+
+
+ou seja,
+
+
+
+DATA __ ACERCA _ _DO STATUS DE AUTHENTICATION DO USER ( se ele está autenticado ou não)...
+
+
+
+
+
+
+
+
+
+
+
+
+-----> PARA ISSO,
+
+
+FAZ SENTIDO 
+
+COMEÇARMOS 
+
+
+
+
+PELO __ 
+
+
+
+
+
+
+
+
+
+
+__ CREATE_ DE UM 'USER MODEL',
+
+
+
+UM MODELO PARA NOSSO USER...
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE NO  
+
+
+
+FOLDER  DE 'auth', 
+
+
+
+
+da 
+
+__PAGe__ DE AUTH,
+
+
+VAMOS CRIAR UM 
+
+NOVO ARQUIVO,
+
+
+
+ARQUIVO 
+
+'user.model.ts'..
+
+
+
+
+
+
+
+
+--> A IDEIA É QUE ESSE MODELO VAI _ ARMAZENAR 'TODA A CORE DATA QUE 
+
+COMPÕE UM USER',
+
+
+
+
+
+
+E ATÉ MESMO 
+
+VAI 
+
+
+NOS AJUDAR
+
+
+A VALIDATE A 'TOKEN',
+
+
+
+VALIDATE 
+
+
+SE 
+
+A TOKEN 
+
+ARMAZENADA NO BROWSER DO USER É VÁLIDA OU NÃO..
+
+
+
+(
+
+
+
+
+
+
+
+
+    UM DETALHE IMPORTANTE É 
+
+
+
+    O FATO DE QUE 
+
+
+    '''THE TOKEN WILL EXPIRE AFTER ONE HOUR''',
+
+
+    o que 
+
+    quer dizer que 
+
+    PRECISAMOS __ DESCOBRIR 
+
+
+
+    MAIS DO QUE 
+
+
+    ''THE TOKEN EXISTS''',
+
+
+
+
+
+    descobrir 'IF THE TOKEN IS STILL VALID',
+
+
+
+    e isso 
+
+
+
+    SERÁ 
+
+    FEITO 
+
+    JUSTAMNETE 
+
+
+    NESSE NOSSO MODEL AQUi....
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE EXPORTAMOS UMA CALSS,
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export class User {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> AÍ O PROFESSOR COLOCA UM CONSTRUCTOR,
+
+
+
+PQ 
+
+VAMOS CRIAR ESSES USERS COM 'new()'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AÍ O PROFESSOR VAI USAR O SHORTCUT TYPESCRIPT DE 'private/public',
+
+
+bem normal..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O USER DEVERÁ TER UM EMAIL,
+
+UM ID, 
+
+
+AMBOS DE TYPES 'string'...
+
+
+
+
+
+
+--> MAS O 
+
+
+
+USER TAMBÉM _ TERÁ UMA TOKEN_,
+
+QUE 
+
+
+SERÁ 
+
+
+
+DE 
+
+type string também,
+
+mas que 
+
+
+terá um nome de '_token'... (será uma PRIVATE PROPERTY),
+
+
+
+
+E FINALMENTE 
+
+TEREMOS UMA 
+
+
+
+
+outra private property,
+
+que será 
+
+
+_tokenExpirationDate,
+
+
+QUE SERÁ 
+
+
+
+UM _ OBJECT__ DE TIPO 'Date'...
+
+
+
+
+
+
+
+
+
+
+-> MAS PQ TOKEN E '_tokenExpirationDate'
+
+
+
+SERÃO PRIVATE? 
+
+
+
+
+
+
+
+-> É PQ 
+
+'TOKEN' 
+
+' '_tokenExpirationDate'
+
+
+NÃO DEVERÃO SER 'RETRIEVABLE' DIRETAMENTE DE NOSSO OBJECT ----> 
+
+
+EM VEZ disso,
+
+
+
+
+
+__ VOCê ( o desenvolvedor) 
+
+
+E 
+
+O USER,
+
+
+
+QUANDO DESEJAREM GANHAR ACESSO À TOKEN,
+
+
+ 
+ SEREMOS FORÇADOS A CONSEGUIR ESSE ACESSO 
+
+
+
+
+ '''ATRAVÉS DE UMA MANEIRA QUE  VAI 
+
+ AUTOMATICAMENTE CHECAR A VALIDADE 
+
+
+ DESSA TOKEN'''' -----> 
+
+
+
+
+
+
+
+
+
+ E ISSO PODE SER OBTIDO, AQUI,
+
+
+ JUSTAMENTE 
+
+ PELO USO DE UM 'GETTER' (que são coisas que nos deixam RETRIEVAR PROPRIEDADES DE NOSSAS CLASSES, MAS COM LÓGICA ADICIONAL EXECUTADA PARA RETRIEVAR A DATA)...
+
+
+
+
+
+
+
+
+
+
+ -> para definir um getter, usamos a keyword de '''get'''...
+
+
+
+
+
+
+
+
+
+
+
+ --> O CÓDIGO VAI FICANDO ASSIM:
+
+
+
+
+
+export class User {
+  constructor(
+    public email: string,
+    public id: string,
+    private _token: string,
+    private _tokenExpirationDate: Date
+  ) {}
+
+  get token() {}
+}
+
+
+
+
+
+
+
+
+
+
+
+ -----------
+
+
+
+
+
+
+
+
+
+ --> EX:
+
+
+
+
+
+
+
+ export class User {
+  constructor(
+    public email: string,
+    public id: string,
+    private _token: string,
+    private _tokenExpirationDate: Date
+  ) {}
+
+  get token() {  //aqui definimos um GETTER_... getters são acessados como PROPRIEDADES (sem o uso de '()' para os chamar), E SÃO USADOS PARA RETRIEVAREM DATA DE NOSSAS PROPREIDADES, MAS COM LÓGICA RODADA EM CIMA DESSE 'GET'... --> no caso, vamos checar, por meio do getter, se A __ TOKEN_ DE NOSSO USER_ REALMENTE É VÁLIDA... 
+
+
+  } 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo...
+
+
+
+
+
+
+
+
+
+--> O GETTER SE PARECE COMO UMA FUNCTION,
+
+MAS É ACESSADO COMO UMA PROPRIEDAED (user.token),
+
+
+
+
+
+
+
+
+
+
+
+E 
+
+É UM TIPO ESPECIAL DE PROPRIEDADE (
+    propriedade que 
+
+
+    roda CÓDIGO quando vocÊ 
+    TENTA ACESSAR ESSA PROPRIEDADE...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> UM GETTER TAMBÉM SIGNIFICA QUE 
+
+UM USER _ NAÕ PODE_ DAR 'OVERWRITE'
+
+
+
+
+NELE...
+
+
+
+
+
+
+
+
+--> ou seja,
+
+
+vocÊ é incapaz de escrever algo como 
+
+
+
+
+user.token = 'new VALUE';
+
+
+
+
+
+
+PQ 
+
+
+
+
+ISSO AÍ SERIA TENTAR OVERWRITTAR O VALUE DE UM 'GETTER'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ok... AQUI NÓS _ SETTAMOS UMA _ NOVA TOKEN _ QUANDO CRÍAMOS UM NOVO OBJECT USER,
+
+
+E ESSE 
+
+NOVO 
+
+
+OBJECT USER´E SEMPRE CRIADO QUANDO 
+
+
+
+UM USER FAZ LOGIN...
+
+
+
+
+
+
+
+
+
+
+
+-> ok, 
+
+temos esse getter de 'token',
+
+e a ideia 
+
+é que 
+
+
+AQUI 
+
+
+VAMOS RETORNAR 
+
+
+
+'this._token'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS _ ANTES DISSO,
+
+É CLARO,
+
+O PROFESSOR VAI QUERER __ RODAR_ UM CHECK... ---> 
+
+
+ELE VAI QUERER _ 
+CHECAR 
+
+
+
+
+SE 
+
+
+
+A '_tokenExpirationDate'
+
+
+JÁ FOI EXCEDIDA,
+
+
+
+
+
+ou seja,
+
+
+se 
+
+
+
+
+'new Date()' NÃO É EQUIVALENTE OU SUPERIOR AO '_tokenExpirationDate'...
+
+
+
+
+
+
+
+
+
+
+
+
+---> ELE __ TAMBÉM _ VAI CHECAR__ SE esse '_tokenExpirationDate'
+
+NÃO EXISTE... (o que sinalizaria que o object user seria inválido já de cara)..
+
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+ export class User {
+  constructor(
+    public email: string,
+    public id: string,
+    private _token: string,
+    private _tokenExpirationDate: Date
+  ) {}
+
+  get token() {  //aqui definimos um GETTER_... getters são acessados como PROPRIEDADES (sem o uso de '()' para os chamar), E SÃO USADOS PARA RETRIEVAREM DATA DE NOSSAS PROPREIDADES, MAS COM LÓGICA RODADA EM CIMA DESSE 'GET'... --> no caso, vamos checar, por meio do getter, se A __ TOKEN_ DE NOSSO USER_ REALMENTE É VÁLIDA... 
+
+
+    if (!this._tokenExpirationDate || new Date() >= this._tokenExpirationDate) {
+
+
+    }
+
+  } 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+SE ENTRAMOS NESSE IF BLOCK,
+ 
+
+ de 'fail',
+
+
+
+
+ ISSO SIGNIFICARÁ QUE 
+
+ A TOKEN NÃO SERÁ MAIS VÁLIDA,
+
+
+
+
+ E NESSE CASE VAMOS RETORNAR 'null',
+
+
+
+
+ MESMO QUE 
+
+
+ NÓS TENHAMOS UMA TOKEN (pq ela será INVÁLIDA)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ export class User {
+  constructor(
+    public email: string,
+    public id: string,
+    private _token: string,
+    private _tokenExpirationDate: Date
+  ) {}
+
+  get token() {
+    //aqui definimos um GETTER_... getters são acessados como PROPRIEDADES (sem o uso de '()' para os chamar), E SÃO USADOS PARA RETRIEVAREM DATA DE NOSSAS PROPREIDADES, MAS COM LÓGICA RODADA EM CIMA DESSE 'GET'... --> no caso, vamos checar, por meio do getter, se A __ TOKEN_ DE NOSSO USER_ REALMENTE É VÁLIDA...
+
+    if (!this._tokenExpirationDate || new Date() >= this._tokenExpirationDate) {   ///// POR MEIO DE NOSSO GETTER, checamos SE __ A DATE ATUAL NÃO EXCEDE A DATE DEFINIDA POR 'tokenExpirationDate'...
+   
+   
+        return null; ///ou seja, até podemos TER UMA 'TOKEN', mas ela já estará INVÁLIDA (ou nunca foi válida, pq a propriedade de 'tokenExpirationDate' não existia no interior desse nosso object 'user')....
+   
+    }
+
+
+
+    return this._token; //retornamos a nossa token...
+
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------
+
+
+
+
+
+
+
+
+
+
+
+OK.... A PARTIR DISSO,
+
+
+
+VAMOS QUERER FAZER__ 
+
+'STORE'
+
+
+
+
+DO NOSSO AUTHENTICATED USER...
+
+
+
+
+
+
+
+
+
+
+
+--> NO PASSADO, EU HAVIA ESCRITO AQUELE CÓDIGO VANILLA 
+
+de 
+'store de token' no local storage,
+
+
+que 
+
+era 
+
+este aqui:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        const expirationDate = new Date(
+          new Date().getTime() + +responseData.expiresIn * 1000
+        ); ////lembre-se de adicionar '* 1000', pois o JAVASCRIPT SEMPRE CONSIDERA 'TEMPO' EM MILISSEGUNDOS, E NÃO EM SEGUNDOS.... (só o 'expiresIn' que é mostrado em segundos....)
+        localStorage.setItem('token', responseData.idToken);
+        localStorage.setItem('expirationDate', expirationDate.toString());
+        localStorage.setItem('userId', responseData.localId);
+        localStorage.setItem('email', responseData.email);
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ENTRETANTO, APARENTEMENTE ISSO NÃO FUNCIONARÁ MAIS (
+    ou então funciona mal
+),
+
+
+
+
+PQ O PROFESSOR DIZ QUE AQUI DEVEMOS __ USAR_ UM  ___ SUBJECT__ PARA FAZER 'STORE' 
+
+
+
+
+DO AUTHENTICATED USER...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE LÁ EM 
+
+
+
+'auth.service.ts'
+
+
+
+
+NÓS ADICIONAMOS UMA NOVA PROPRIEDAED 
+
+
+
+'user',
+
+
+
+
+
+QUE 
+
+
+__ SEGURARÁ __ UM novo 'Subject'...
+
+
+
+
+
+
+
+
+--> FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export class AuthService {
+
+    user = new Subject();
+
+
+
+
+  constructor(private http: HttpClient, private router: Router) {}
+
+  onCreateAccount(authData: {
+    email: string;
+    password: string;
+    returnSecureToken: boolean;
+  }) {
+    const requestHeaders = new HttpHeaders();
+
+    requestHeaders.append('Content-Type', 'application/json');
+    // requestHeaders.append('Content-Type', 'application/json');
+
+    return this.http
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> CERTO...
+
+
+
+
+
+    E É CLARO QUE SUBJECTS SÃO GENERIC TYPES ('<>')...
+
+
+
+
+
+
+
+
+    -->  E O SUBJECT VAI __ NOS RETORNAR UM 'User',
+
+
+    um object de type 'User',
+
+
+    POR ISSO ESCREVEMOS ASSIM:
+
+
+
+
+
+        user = new Subject<User>();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> A IDEIA,
+ NO CASO,
+
+
+ É QUE 
+
+
+
+
+
+VAMOS QUERER 'NEXT' UM _ NOVO _ USER_ SEMPRE QUE 
+
+
+'TIVERMOS UM NOVO USER',
+
+
+ou seja,
+
+
+
+
+QUANDO 
+
+FIZERMOS 
+
+LOGIN __ OU QUANDO FIZERMOS LOGOUT (momento em que o user é 'cleared' de nosso app)...
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+export class AuthService {
+
+    user = new Subject();
+
+
+
+
+  constructor(private http: HttpClient, private router: Router) {}
+
+  onCreateAccount(authData: {
+    email: string;
+    password: string;
+    returnSecureToken: boolean;
+  }) {
+    const requestHeaders = new HttpHeaders();
+
+    requestHeaders.append('Content-Type', 'application/json');
+    // requestHeaders.append('Content-Type', 'application/json');
+
+    return this.http
+
+
+
+
+
+
+
+
+-----------------------
+
+
+
+
+-> OK... 
+
+
+
+
+
+
+
+
+QUANDO O USER FOR 'CLEARED' ( ou logout, ou token expirado, ou user inválido),
+
+
+
+
+TAMBÉM VAMOS QUERER CHAMAR ESSE 'Subject' aí...
+
+
+
+
+
+
+
+--> OK... AGORA AQUI,
+
+
+
+
+
+
+
+
+
+QUANDO 
+
+
+
+
+FAZEMOS 'signUp',
+
+
+
+
+
+
+
+
+NÓS TEREMOS _ CERTEZA 
+
+
+
+
+
+
+
+
+
+__ QUE _ 
+
+
+
+
+
+
+,
+
+
+SE NÃO TIVERMOS  UM ERRO,
+
+
+VAMOS 
+
+
+CONSEGUIR AQUELA 'AuthResponseData',
+
+
+
+
+
+AuthResponseData
+
+
+
+VÁLIDA,
+
+
+PADRONIZADA..
+
+
+
+
+
+
+
+
+
+
+--. isso estamos falando DESTE BLOCK AQUi:
+
+
+
+
+  onCreateAccount(authData: {
+    email: string;
+    password: string;
+    returnSecureToken: boolean;
+  }) {
+    const requestHeaders = new HttpHeaders();
+
+    requestHeaders.append('Content-Type', 'application/json');
+    // requestHeaders.append('Content-Type', 'application/json');
+
+    return this.http
+      .post<AuthResponseData>(
+        // 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg',  ///VERSÃO _ DUMMY__ (sem authentication rules no firebase)
+        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBK3AXsu9Gn0fqLmA0zOdUAknDM48Nwk_o', ////VERSÃO COM AUTHENTICATE, DEPLOY
+
+        authData,
+        {
+          headers: requestHeaders,
+        }
+      )
+      .pipe(
+        catchError(
+          //vamos usar esse operator para MANIPULAR NOSSAS 'ERROR RESPONSES', QUANDO OCORREREM..
+          (errorRes) => {
+            console.log(errorRes);
+            let errorMessage = 'An unknown error has occured.';
+
+            if (!errorRes.error || !errorRes.error.error) {
+              //conserta o choro do typescript..
+              return throwError(() => errorMessage); /////vai dar throw da message de 'An unknown error occurred!'
+            }
+
+            switch (errorRes.error.error.message) {
+              case 'EMAIL_EXISTS':
+                errorMessage = 'This email already exists.';
+            }
+
+            return throwError(() => errorMessage);
+          }
+        )
+      );
+
+
+
+
+
+
+
+
+
+
+
+
+      ESTE BLOCK:
+
+
+
+
+
+          return this.http
+      .post<AuthResponseData>(
+        // 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg',  ///VERSÃO _ DUMMY__ (sem authentication rules no firebase)
+        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBK3AXsu9Gn0fqLmA0zOdUAknDM48Nwk_o', ////VERSÃO COM AUTHENTICATE, DEPLOY
+
+        authData,
+        {
+          headers: requestHeaders,
+        }
+      )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      -----> ASSIM QUE CONSEGUIMOS ESSA 'VALID DATA',
+
+
+      VAMOS QUERER _ fAZER ALGO COM ELA...
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O QUE VAMOS QUERER FAZER?
+
+
+
+
+
+
+
+
+É BEM SIMPLES,
+
+
+VAMOS QUERER 
+
+
+
+
+EXECUTAR _ _LÓGICA__ em cima dela,
+
+PARA _ ENTÃO ARMAZENAR ESSA DATA NO BROWSER DO USEr (coisas como 'token'/'cookie de token')...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> ok, mas isso não deve ser feito no SUBSCRIBE(), depois do GET DESSA DATA e MANIPULAÇÃO NO '.pipe()'? 
+
+
+
+
+
+
+
+
+
+--> ERRADO.... -- >DEVE SER FEITO __ no PIPE, TAMBÉM... --> 
+
+
+
+
+
+O QUE O PROFESSOR DECIDE FAZER É USAR O OPERATOR DE '.tap()' (Que nos deixa executar lógica sobre essa data aí,
+
+MAS _ SEM __ ALTERAR O 'RETURN' DA RESPONSE DATA; OU SEJA, SEM AFETAR A DATA QUE VAI CHEGAR LÁ NO 'subscribe()" mais tarde)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PARA ISSO,
+
+
+
+O PROFESSOR ESCREVE O '.tap()' assim, LOGO DEPOIS DO OPERATOR DE 'catchError':
+
+
+
+
+
+
+
+
+.pipe(
+    catchError(
+        () => {
+            ...
+        }
+    ),
+
+    tap(
+        () => {
+
+        }
+    )
+)
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, O TAP OPERATOR NOS DEIXA 
+
+
+
+REALIZAR ALGUMA ACTION 
+
+SEM 
+
+
+
+
+_ 
+
+
+ALTERAR A NOSSA 'RESPONSE' QUE VAI SEGUIR AO SUBSCRIBE...
+
+
+
+
+
+-> é por isso que o profesosr 
+
+escreve assim:
+
+
+
+
+
+
+
+.pipe(
+    catchError(
+        () => {
+            ...
+        }
+    ),
+
+    tap(
+        (responseData) => {
+                ...
+        }
+    )
+)
+
+
+
+
+
+
+
+
+
+
+
+--> AÍ, DENTRO DE 'tap()',
+
+
+
+VAMOS 
+
+
+
+
+
+USAR O NOSSO USER MODEL PARA CRIAR UM NOVO USER,
+
+TIPO ASSIM:
+
+
+
+
+
+
+const newUser = new User(responseData.email, responseData.localId, responseData.expirationDate, responseData.idToken),
+
+
+
+
+
+
+
+
+
+TIPO ALGO ASSIM...
+
+
+
+
+
+
+
+
+
+EU TENTO ESCREVER ALGO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+      tap((responseData) => {
+          ////é aqui que fazemos o STORAGE de nossa 'user auth data' LÁ NO LOCAL STORAGE DO USER (storage de token e etc)....
+
+          const { email, localId, expiresIn, idToken } = responseData;
+
+          const expirationDate = new Date(
+            new Date().getTime() + +responseData.expiresIn * 1000
+          );
+
+          const newUser = new User(email, localId, idToken, expirationDate);
+        })
+
+
+
+
+
+
+
+
+
+
+
+
+-> ou seja, uso object destructuring para pegar as propriedades de 'responseData',
+
+que serão exatamente aquelas ali...
+
+
+
+
+
+--> depois,
+
+
+
+crio a expirationDate com aquela formula (que adiciona 1 hora, em milissegundos, ao current time)..
+
+
+
+
+--> POR FIM,
+
+crio um object 'newUser',
+
+QUE AGORA _ PROVAVELMENTE TEREI DE ARMAZENAR NO 'LOCAL STORAGE' do user/browser...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok... MAS EM VEZ DE ARMAZENAR O USER NA LOCAL STORAGE __ aQUI,
+
+
+
+
+faremos algo diferente;
+
+
+
+vamos 
+
+FAZER _ __NEXT__ DESSE NOSSO OBJECT 'user,'
+
+FAREMOS 
+
+
+NEXT 
+
+
+LÁ 
+NO SUBJECT DE 
+
+
+'this.user',
+
+
+aquele que criamos com 
+
+
+
+
+
+user = Subject<User>()
+
+
+
+
+
+
+
+
+
+
+---> FICA TIPO ASSIM:
+
+
+
+
+
+
+        tap((responseData) => {
+          ////é aqui que fazemos o STORAGE de nossa 'user auth data' LÁ NO LOCAL STORAGE DO USER (storage de token e etc)....
+
+          const { email, localId, expiresIn, idToken } = responseData;
+
+          const expirationDate = new Date( /// vai nos dar um object 'Date'...
+            new Date().getTime() + +expiresIn * 1000
+          );
+
+          const newUser = new User(email, localId, idToken, expirationDate);
+
+          this.user.next(newUser); ///fazemos NEXT de nosso user NO SUBJECT, para que essa mudança de user data SEJA _ TRANSMITIDA AO LOGNO DO NOSSO APP..
+        })
+      );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ---> OK.. --> ESSE SUBJECT VAI 'EMIT' essa data como nosso 
+
+
+
+      'NOW CURRENTLY LOGGED IN USER'
+
+      nesse nosso app..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... E COMO ANTES,
+
+COM O ERROR HANDLING,
+
+
+
+
+
+
+
+
+PRECISAMOS  DESSA _ EXATA MESMA __ LÓGICA PARA 
+
+
+
+O 
+
+
+
+'LOGIN' (
+
+
+    ou seja,
+
+
+    precisamos 
+
+
+
+    usar essa MESMA LÓGICA AÍ,
+
+
+    MAS 
+
+    NO LOGIN (pq 
+    
+    
+    só colocamos essa lógica no method de 'signup', e ainda não no de login)...)
+)
+
+
+
+
+
+
+
+
+
+-> PARA ISSO,
+
+
+DEVO CRIAR UM NOVO HELPER METHOD, PRIVADO,
+
+
+QUE 
+
+
+VAI FAZER ESSA TAREFA DE 'NEXT A NEW USER ALONG THE APPLICATION'...
+
+
+
+
+
+
+
+
+
+--> fica tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+  private emitUser(responseData: AuthResponseData) {
+    const { email, localId, expiresIn, idToken } = responseData;
+
+          const expirationDate = new Date( /// vai nos dar um object 'Date'...
+            new Date().getTime() + +expiresIn * 1000
+          );
+
+          const newUser = new User(email, localId, idToken, expirationDate);
+
+          this.user.next(newUser); 
+  }
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+      .pipe(
+        catchError((errorRes) => {
+          console.log(errorRes);
+
+          let errorMessage = 'An unknown error has occured.';
+
+          switch (errorRes.error.error.message) {
+            case 'EMAIL_NOT_FOUND':
+              errorMessage = 'No user found for the entered email!';
+              break;
+            case 'INVALID_PASSWORD':
+              errorMessage = 'Invalid password, please try again.';
+          }
+
+          return throwError(() => errorMessage);
+        }),
+
+        tap(
+          (responseData) => {
+            this.emitUser(responseData);
+          }
+        )
+      );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      CÓDIGO COMPLETO:
+
+
+
+
+
+
+
+
+
+
+        onLogin(authData: {
+    email: string;
+    password: string;
+    returnSecureToken: boolean;
+  }) {
+    const requestHeaders = new HttpHeaders();
+
+    requestHeaders.append('Content-Type', 'application/json');
+
+    return this.http
+      .post<AuthResponseData>(
+        // <{expiresIn: number, idToken: string, expirationDate: string, localId: string, email: string}>
+
+        // 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg', //VERSÃO DUMMY (sem authentication rules no firebase)
+        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBK3AXsu9Gn0fqLmA0zOdUAknDM48Nwk_o', ////VERSÃO COM AUTHENTICATE, DEPLOY
+        authData,
+
+        {
+          headers: requestHeaders,
+        }
+      )
+      .pipe(
+        catchError((errorRes) => {
+          console.log(errorRes);
+
+          let errorMessage = 'An unknown error has occured.';
+
+          switch (errorRes.error.error.message) {
+            case 'EMAIL_NOT_FOUND':
+              errorMessage = 'No user found for the entered email!';
+              break;
+            case 'INVALID_PASSWORD':
+              errorMessage = 'Invalid password, please try again.';
+          }
+
+          return throwError(() => errorMessage);
+        }),
+
+        tap(
+          (responseData) => {
+            this.emitUser(responseData);
+          }
+        )
+      );
+  }
+
+
+
+
+
+
+
+
+
+
+
+-------> 
+
+
+
+
+
+
+
+
+CERTO... COM ISSO, SÓ PRECISAMOS DE ALGUM LUGAR 
+
+
+EM NOSSO APP 
+
+
+
+
+
+_ 
+
+
+
+QUE 
+
+CONSIGA _ 
+
+
+FAZER 'FETCH'
+
+
+
+
+
+
+DESSE 'emit' 
+
+
+
+de dados que fizemos agora, por meio do 'Subject'...
+
+
+
+
+
+
+
+
+
+-> poderia ser o próprio component de 
+
+'auth.component.ts',
+
+
+
+
+
+OU ENTÃO UM 'RESOLVER/INTERCEPTOR' ( se bem que isso aí provavelmente será usado como um GUARD, e não como um 'negócio que faz subscribe ao nosso subject')...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+o código do professor ficou um pouco difernte, mas cumpre a mesma função...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR PROVAVELMENTE USARÁ 
+
+ESSE 
+
+
+
+'subject'
+
+PARA ATUALIZAR VÁRIAS PARTES DE NOSSO APP, NOSSA UI,
+
+para refletir o auth state do user...
+
+
+
+
+
+
+
+
+
+
+
+-> O PRÓXIMO PASSO SERÁ 'REDIRECT THE USER, IN THE USER INTERFACE',
+
+
+e ai´
+
+
+fazer 'navigate us away',
+
+
+
+
+E PARA 
+
+
+__ ATUALIZAR A UI 
+
+(
+
+    MOSTRAR UM BUTTON DE 'LOGOUT'
+
+
+    APENAS QUANDO NOSSO USER ESTIVER 'LOGGED IN'...
+
+
+)
+
+
+
+
+
+
+
+--> O BUTTON DE 'MANAGE', NO HEADER,
+TAMBÉM 
+
+SÓ DEVERÁ SER MOSTRADO SE ESTIVERMOS 'LOGGED IN'...
+
+
+
+
+
+
+
+
+
+
+
+--> OK... -> QUEREMOS SER FORWARDADOS QUANDO OCORRE O LOGIN, E QUEREMOS QUE 
+
+A UI TBM SEJA ATUALIZADA..

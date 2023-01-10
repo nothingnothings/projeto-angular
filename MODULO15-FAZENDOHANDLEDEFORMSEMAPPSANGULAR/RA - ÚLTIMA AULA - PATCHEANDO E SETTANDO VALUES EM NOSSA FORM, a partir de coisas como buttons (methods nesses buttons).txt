@@ -1,0 +1,58 @@
+
+
+
+
+
+
+
+
+
+VOCÊ PODE FAZER MAIS DO QUE 'LISTEN TO UPDATES'
+
+
+
+na sua form (statusChanges e valueChanges, 2 observablse)... -----> 
+
+
+
+
+
+
+
+
+
+VOCÊ PODE _ _TAMBÉM __ UPDATAR_ SUA 
+
+
+
+
+FORM __ POR CONTA PRÓPRIA,
+
+EXATAMENTE COMO FIZEMOS NO 
+
+'TEMPLATE-DRIVEN APPROACH'..
+
+
+
+
+
+
+
+
+
+
+
+
+--> ou seja,
+
+
+
+AQUI TAMBÉM PODEMOS USAR '.setValue()'
+
+
+
+
+e 
+
+
+'.patchValue()'...

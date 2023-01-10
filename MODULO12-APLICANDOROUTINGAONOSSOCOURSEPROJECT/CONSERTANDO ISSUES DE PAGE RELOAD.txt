@@ -1,0 +1,260 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ESSAS ISSUES EXISTEM POR CONTA DE CÓDIGOS COMO 
+
+'<a href>'
+
+
+
+
+
+NO SEU 
+
+
+
+PROJETO ANGULAR...
+
+
+
+
+
+
+
+ESSAS ANCHOR TAGS SEMPRE 
+
+VÃO FAZER COM QUE 
+
+SEU APP SEJA RELOADED...
+
+
+
+
+
+
+
+
+
+
+
+
+-----> BASTA VER O CÓDIGO DO
+
+
+'RECIPE-LIST',
+
+que é responsável pelo RELOAD DE NOSSA PAGE....
+
+
+
+
+
+
+
+
+
+
+
+--> O PROBLEMA RESIDIA NESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- <a href="#" class="list-group-item clearfix" 
+    *ngFor="let recipe of recipes">
+      <div class="pull-left">
+        <h4 class="list-group-item-heading">{{ recipe.name }}</h4>
+        <p class="list-group-item-text">{{ recipe.description }}</p>
+      </div>
+      <span class="pull-right"> -->
+        <!-- <img src="{{recipe.imagePath}}" alt="{{recipe.name}}" class="img-responsive" style="max-height: 50px" /> -->
+        <!-- <img
+          [src]="recipe.imagePath"
+          alt="{{ recipe.name }}"
+          class="img-responsive"
+          style="max-height: 50px;"
+        >
+      </span>
+    </a> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> COMO VOCÊ PODE VER,
+
+    AQUI TÍNHAMOS UM 
+
+    'href'
+
+
+    em 'a'
+
+
+    de 
+    '#'...
+
+
+
+
+
+
+
+
+
+    --> ISSO FORÇAVA NOSSO APP A RECARREGAR.... --> isso faz COM QUE 
+
+
+    UM REQUEST SEJA ENVIADO AO BROWSER,
+
+    O QUE CAUSA O RELOADE DE NOSSA PAGE....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> AGORA PODEMOS CLICAR EM NOSSO APP,
+
+
+
+    CLICAR 
+
+
+
+    NOS NOSSOS 
+
+    'RECIPE ITEMS',
+
+
+    MAS AÍ _ 
+
+
+    NÃO VAMOS MAIS TER AQUELE 'CURSOR QUE SE PARECIA COMO UMA MAOZINHA'...
+
+
+
+
+
+
+
+
+
+
+
+    --> podemos adicionar isso manualmente,
+
+    por meio do write de 
+
+
+    'style="cursor: pointer;"
+
+
+
+
+
+
+
+
+
+
+
+
+    ----> ISSO FARÁ COM QUE A MAOZINHA VOLTE...
+
+
+
+
+
+
+
+
+
+
+    --> AGORA NOSSA PAGE  NÃO VAI MAIS SER RECARREGADA...
+
+
+
+
+
+
+
+
+    --> 
+
+
+
+
+    TAMBÉM TEMOS QUE 
+
+
+    TIRAR OS 'a href='#' '
+
+
+
+
+    LÁ DO DROPDOWN DE 'manage recipe', em 'recipe-detail' component,
+
+
+
+    PQ ELES TAMBÉM VÃO RECARREGAR NOSSA PAGE..
+
+
+
+
+
+
+
+
+
+
+    O CÓDIGO FICA ASSIM:
+
+
+
+
+
+
+

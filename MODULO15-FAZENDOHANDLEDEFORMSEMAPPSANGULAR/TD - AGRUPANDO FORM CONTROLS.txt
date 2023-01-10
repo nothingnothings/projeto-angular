@@ -1,0 +1,1479 @@
+
+
+
+
+
+
+
+
+
+
+
+-->  nossa form JÁ EVOLUIU BASTANTE...
+
+
+
+
+
+
+
+SEU CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <!-- <form (ngSubmit)="onSubmitForm(formReference)" #formReference="ngForm" >  ESSA DIRECTIVE VAI CAPTURAR O 'TRIGGER DO SUBMIT' de sua form e então vai o utilizar para RODAR OS METHODS QUE VOCê DEFINIU LÁ NO ARQUIVO '.ts'.. -->
+      <form (ngSubmit)="onSubmitForm(formReference)" #formReference="ngForm">
+        <!-- NO ANGULAR, VOCÊ NUNCA COLOCA 'action=xxx' na sua tag de FORM, pq sua form vai ser handldada PELO ANGULAR EM SI... é por isso que não temos 'action' APONTANDO A ALGUMA ROUTE DE NOSSO APP.. NÓS TAMBÉM NÃO VAMOS COLOCAR 'method=POST', esse outro attribute famoso...-->
+
+        <!-- VOCÊ TAMBÉM PRECISA DEFINIR O VALOR DE SUA LOCAL REFERENCE COMO EQUIVALENTE A 'ngForm', para CONSEGUIR PASSAR A _ ACTUAL_ REPRESENTAÇÃO JAVASCRIPT DE SUA FORM AO seu method em 'xxx.ts', ao código typescript-->
+        <div id="user-data">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              class="form-control"
+              ngModel
+              placeholder="Your name"
+              name="username"
+              required
+              #nameReference="ngModel"
+              minlength="5"
+            />
+            <span class="help-block" 
+            [ngStyle]="{'color': 'red'}"
+            *ngIf="!nameReference.valid && 
+            
+            nameReference.value">
+            
+            Your name must have at least 5 characters!</span>
+            <!-- required É UM DEFAULT HTML ATTRIBUTE, mas quando você o escreve em código angular, É USADO COMO UM SELECTOR PARA UMA DAS DIRECTIVES BUILT-IN DO ANGULAR...-->
+          </div>
+          
+          <button class="btn btn-default" type="button">
+            Suggest an Username
+          </button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              ngModel
+              name="email"
+              required
+              placeholder="example@test.com"
+              email
+              #emailReference="ngModel"
+            />
+            <span class="help-block" 
+            [ngStyle]="{'color': 'red'}"
+            *ngIf="!emailReference.valid && 
+            
+            emailReference.value">
+            
+            Please enter a valid email!</span> <!--- essa é uma maneira de RENDERIZAR CONDICIONALMENTE MENSAGENS DE ERROR/AVISO AO USER, na sua UI.... basta usar as local referenecs de seus elementos, configuradas por 'ngModel'...-->
+            <!-- <p *ngIf="" [ngStyle]="{'color': 'red'}">Please enter a valid value!</p> -->
+            <!-- 'EMAIL' é outra DIRECTIVE DO ANGULAR, UMA DAS 'VALIDATOR DIRECTIVES', pq é algo que assegura a validation dos inputs do user, e que NÃO É UM DEFAULT HTML ATTRIBUTE, E SIM UMA DIRECTIVE...-->
+            <!-- o angular vai RECONHECER ESSE INPUT FIELD como um dos 'CONTROLS' da REPRESENTAÇAÕ TYPÉSCRIPT DA FORM SE VOCê ADICIONAR 'ngModel' como directive-->
+            <!-- VOCÊ TAMBÉM PRECISA DE 'name', essa directive/attribute que vai dizer ao ANGULAR __ como _ deverá ser o nome desse control/input na REPRESENTAÇÃO TYPESCRIPT DESSA FORM.. .-->
+          </div>
+          <div class="form-group">
+            <label for="secret">Secret Questions</label>
+            <select id="secret" 
+            
+            class="form-control" 
+            name="secret" 
+            [ngModel]="defaultQuestion"
+            
+            >
+              <option value="pet">Your first Pet?</option>
+              <option value="teacher">Your first teacher?</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <textarea
+            class="form-control" id="exampleFormControlTextarea1" rows="3"
+            [ngModel]="defaultTextValue"
+            required
+            type="text"
+            name="textValue"
+            >
+
+            </textarea>
+          </div>
+
+
+          <textarea
+          name="answer"
+          row="3"
+          [(ngModel)]="questionAnswer"
+          class="form-control"
+          required
+          minlength="5"
+          #textAreaReference="ngModel"
+          >
+
+          </textarea> <!-- exemplo DE TWO-WAY DATABINDING...-->
+          <p>{{questionAnswer}}</p>
+          <span class="help-block" 
+            [ngStyle]="{'color': 'red'}"
+            *ngIf="!textAreaReference.valid && textAreaReference.value"
+            >Textarea text too short, please input more than 4 characters.</span>
+          <button class="btn btn-primary" type="submit" [disabled]="!formReference.valid"> <!-- AQUI USAMOS A LOCAL REFERENEC DE '#formReference', para usar essa propriedade 'valid' de nosso object javascript de form, para aí enablar/disablar esse nosso button, dinamicamente (validation)..-->
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+
+  defaultQuestion: string = 'pet';  ////'pet' para a 'option' número 1, 'teacher' para a option número 2 (propriedade 'value' em cada 'option' é o que conta)...
+
+  defaultTextValue: string = `There was one occasion in which I wrote a very long text, it was very long and had multiple lines and...`
+
+  questionAnswer: string = 'TWO WAY DATABINDING';
+
+
+  suggestedUserName() {
+    const suggestedName = 'Superuser';
+  }
+
+
+  onSubmitForm(formReference: NgForm) { ///aqui será passado o ACTUAL FORM element, com todos seus input fields e <selects> (os controls de sua form, essencialmente)..
+    console.log(formReference);
+    console.log('submitted!');
+
+    console.log('ISDIRTY?', formReference.dirty);
+
+    console.log(formReference.value);
+    console.log('ISVALID?', formReference.valid);
+    console.log('ISTOUCHED?', formReference.touched);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA 
+
+
+
+
+
+
+____ DIGAMOS_ QUE
+
+
+
+
+NO 'VALUE OBJECT'
+
+que adquirimos 
+
+
+QUANDO 
+
+
+__ ENVIAMOS A FORM,
+
+OU SEJA,
+
+
+
+
+
+
+aquele 
+
+
+
+object de 
+
+
+
+
+'form.value',
+
+
+
+
+
+
+
+
+
+
+
+QUE É OBTIDO QUANDO SUBMITTAMOS A FORM,
+
+
+
+
+VAMOS QUERER 
+
+
+'GROUP SOME THINGS'...
+
+
+
+
+
+
+
+
+--> ISSO PQ ATÉ AGORA TEMOS OS SEGUINTES 
+
+
+
+INPUT FIELDS/SELECTS/TEXTAREAS:
+
+
+
+
+
+
+
+
+
+email: 
+questionAnswer:
+secret:
+username:
+textArea:
+
+
+
+
+
+
+
+
+
+------> DIGAMOS QUE QUEREMOS __ AGRUPAR__ 
+
+
+
+'secret' 
+
+e 
+
+'questionAnswer',
+
+
+
+
+
+
+
+E TAMBÉM 
+
+
+
+
+'username' 
+
+
+
+e 
+
+'email',
+
+
+
+deixando o 'textArea' sozinho...
+
+
+
+
+
+
+
+
+------> ISSO APENAS PARA TERMOS ALGUMA 'ESTRUTURA'
+
+
+
+
+NO NOSSO OBJECT... --> ISSO 
+
+
+
+
+PQ _ EM FORMS MUITO GRANDES,
+
+
+
+
+
+É BEM PROVÁVEL QUE SERÁ NECESSÁRIA UMA ESTRUTURA DESSAS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> TAMBÉM SERIA NICE SE 
+
+PUDÉSSEMOS 
+
+
+
+
+
+
+__'VALIDATE THE VALIDITY',
+
+
+
+
+VALIDAR O __ STATUS_ 
+
+
+DE CADA 1 
+
+DE NOSSOS 'GRUPOS INDIVIDUAIS'
+
+
+
+de 
+
+input fields...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR APONTA QUE ESSA TAREFA É __ FÁCIL _ COM 
+
+o 
+
+'TEMPLATE-DRIVEN APPROACH'...
+
+
+
+
+
+
+
+
+
+
+------> PARA FAZER ISSO,
+
+
+DEVEMOS IR ATÉ O 'PRIMEIRO GRUPO'
+
+de inputs,
+
+
+
+lá no template,
+
+
+
+o 'username' 
+e 'email',
+
+
+
+
+
+
+
+
+E AÍ __ 
+
+
+
+
+
+DEVEMOS __ SEMPRE TER UMA 'WRAPPING DIV'
+
+
+em volta 
+
+
+
+
+dos input fields/selects/textareas
+
+
+
+QUE QUEREMOS AGRUPAR...
+
+
+
+
+
+
+
+
+
+
+--> É A DIV DE 'user-data':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <div id="user-data">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              class="form-control"
+              ngModel
+              placeholder="Your name"
+              name="username"
+              required
+              #nameReference="ngModel"
+              minlength="5"
+            />
+            <span class="help-block" 
+            [ngStyle]="{'color': 'red'}"
+            *ngIf="!nameReference.valid && 
+            
+            nameReference.value">
+            
+            Your name must have at least 5 characters!</span>
+            <!-- required É UM DEFAULT HTML ATTRIBUTE, mas quando você o escreve em código angular, É USADO COMO UM SELECTOR PARA UMA DAS DIRECTIVES BUILT-IN DO ANGULAR...-->
+          </div>
+          
+          <button class="btn btn-default" type="button">
+            Suggest an Username
+          </button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              ngModel
+              name="email"
+              required
+              placeholder="example@test.com"
+              email
+              #emailReference="ngModel"
+            />
+            <span class="help-block" 
+            [ngStyle]="{'color': 'red'}"
+            *ngIf="!emailReference.valid && 
+            
+            emailReference.value">
+            
+            Please enter a valid email!</span>
+          </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> para conseguir AGRUPAR 
+
+
+
+ESSES 2 INPUT FIELDS EM 1 ÚNICO GROUP,
+
+
+
+VOCÊ 
+
+
+PODE USAR 
+
+
+
+_ UMA OUTRA DIRECTIVE,
+
+
+QUE É 
+
+
+
+
+'ngModelGroup',
+
+
+
+
+
+
+
+
+
+
+
+
+__ QUE É UMA DIRECTIVE __ QUE VAI __ AGRUPAr__ 
+
+
+ESSES INPUT ELEMENTS
+
+
+
+EM 1 GROUP..
+
+
+
+
+
+
+ngModelGroup
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ELA É POSICIONADA ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <div id="user-data" ngModelGroup> ////////////EIS O CÓDIGO EM QUESTAÕ.
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              class="form-control"
+              ngModel
+              placeholder="Your name"
+              name="username"
+              required
+              #nameReference="ngModel"
+              minlength="5"
+            />
+            <span class="help-block" 
+            [ngStyle]="{'color': 'red'}"
+            *ngIf="!nameReference.valid && 
+            
+            nameReference.value">
+            
+            Your name must have at least 5 characters!</span>
+            <!-- required É UM DEFAULT HTML ATTRIBUTE, mas quando você o escreve em código angular, É USADO COMO UM SELECTOR PARA UMA DAS DIRECTIVES BUILT-IN DO ANGULAR...-->
+          </div>
+          
+          <button class="btn btn-default" type="button">
+            Suggest an Username
+          </button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              ngModel
+              name="email"
+              required
+              placeholder="example@test.com"
+              email
+              #emailReference="ngModel"
+            />
+            <span class="help-block" 
+            [ngStyle]="{'color': 'red'}"
+            *ngIf="!emailReference.valid && 
+            
+            emailReference.value">
+            
+            Please enter a valid email!</span>
+          </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... MAS NÃO BASTA SÓ ESCREVER ASSIM...
+
+
+
+
+
+
+
+
+
+
+--> ESSA DIRECTIVE DE 
+
+
+
+'''ngModelGroup'''
+
+
+
+
+PRECISA QUE VOCê DEFINA UM VALUE,
+
+QUE SERÁ UMA __ STRING...
+
+
+
+
+
+
+-> no caso, definimos a string de 'userData'...
+
+
+
+
+----> AÍ, COM ISSO,
+
+
+'userData'
+
+SERÁ O VALUE, A STRING,
+
+QUE 
+
+SERÁ O IDENTIFICADOR __ PARA _ ESSE GROUP INTEIRO...
+
+
+
+
+
+
+
+
+   <div id="user-data" ngModelGroup="userData"> ////////////EIS O CÓDIGO EM QUESTAÕ.
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              class="form-control"
+              ngModel
+              placeholder="Your name"
+              name="username"
+              required
+              #nameReference="ngModel"
+              minlength="5"
+            />
+            <span class="help-block" 
+            [ngStyle]="{'color': 'red'}"
+            *ngIf="!nameReference.valid && 
+            
+            nameReference.value">
+            
+            Your name must have at least 5 characters!</span>
+            <!-- required É UM DEFAULT HTML ATTRIBUTE, mas quando você o escreve em código angular, É USADO COMO UM SELECTOR PARA UMA DAS DIRECTIVES BUILT-IN DO ANGULAR...-->
+          </div>
+          
+          <button class="btn btn-default" type="button">
+            Suggest an Username
+          </button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              ngModel
+              name="email"
+              required
+              placeholder="example@test.com"
+              email
+              #emailReference="ngModel"
+            />
+            <span class="help-block" 
+            [ngStyle]="{'color': 'red'}"
+            *ngIf="!emailReference.valid && 
+            
+            emailReference.value">
+            
+            Please enter a valid email!</span>
+          </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+  <div id="user-data" ngModelGroup="userData"> 
+    <input>
+    <input>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK... AGORA SE SALVARMOS TUDO ISSO E SUBMITTARMOS NOSSA FORM MAIS UMA VEZ,
+
+
+
+
+
+VEREMOS QUE 
+
+A PROPRIEDADE 
+
+
+
+
+
+DE 'value'
+
+
+
+AGORA TERÁ SUBDIVISÕES...
+
+
+
+
+
+
+
+
+
+
+
+----> TERÁ SIDO CRIADA A SUBDIVISÃO DE 
+
+
+'userData',
+
+
+
+o que quer dizer que ficou assim:
+
+
+
+
+
+
+
+
+value {
+    userData: {
+        username: ...,
+        email: ...
+    },
+
+    secret: ....,
+    questionAnswer: ...
+}
+
+
+
+
+
+
+
+
+
+
+----------------
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+É CLARO QUE PODEMOS FAZER A MESMA COISA COM 
+
+
+
+'secret questions'...
+
+
+
+
+
+
+
+
+
+
+
+
+-_> CERTO.... MAS OS EFEITOS DESSA ALTERAÇÃO SÃO SENTIDOS EM OUTROS LUGARES,
+
+ALÉM DE 
+
+'value'...
+
+
+
+
+
+
+
+--> NA PROPRIEDADE 'controls' de nossa form recebida pelo submit,
+
+
+
+
+TEREMOS 
+
+
+
+
+AGORA UM 
+
+
+CONTROL QUE 
+
+
+será 
+
+
+'userData: FormGroup' (em vez de 'FormControl'),
+
+
+
+
+
+COM TODAS AS PROPRIEDADES QUE CONHECEMOS 
+
+
+DE NOSSOS CONTROLS,
+
+como 
+
+'valid' e etc..
+
+
+
+
+
+
+
+
+
+
+
+
+---> O REFLEXO DISSO, NO NOSSO CÓDIGO, É QUE 
+
+
+
+se 
+
+nós INSPECIONARMOS O PRÓPRIO ELEMENTO 
+
+'<div>' 
+
+
+de 
+
+
+
+
+'<div id="user-data">',
+
+
+
+
+em que colocamos a DIRECTIVE DE 'ngModelGroup',
+
+
+
+
+
+
+
+
+
+VEREMOS QUE AQUELAS CLASSES 
+
+
+
+
+QUE VIMOS ANTES DIRETAMENTE NA NOSSA FORM E NOS INPUT ELEMENTS,
+
+
+
+aquelas classes 
+
+
+
+interativas como 'ng-dirty', 'ng-touched', 'ng-valid',
+
+
+
+TODAS ELAS 
+
+
+PASSARÃO 
+
+
+A FIGURAR _ _tAMBÉM __ 
+
+
+
+NESSA DIV QUE AGORA ESTÁ 'ENGLOBANDO' nossos controls, controls de 'username' e 'email', nesse caso....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ISSO QUER DIZER, EM OUTRAS PALAVRAS,
+
+QUE AGORA TAMBÉM __ PODEMOS 
+
+
+'CHECK THE VALIDITY OF THIS _ OVERALL CONTROL'',
+
+
+
+
+
+do 
+
+control de 'username + email',
+
+
+nesse caso aí...
+
+
+
+
+
+
+
+---> OS USE-CASES para isso 
+
+
+são BEM SITUACIONAIS,
+
+mas é uma feature nice,
+
+no final das contas...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> VOCÊ TAMBÉM PODE, NOVAMENTE,
+
+
+
+___CONSEGUIR __ ACESSO __À REPRESENTAÇÃO JAVASCRIPT 
+
+
+
+
+
+
+DESSE ELEMENTO 'div', esse elemento que agora tem os 2 'control' agrupados em si,
+
+
+
+
+POR MEIO 
+
+
+DO PASS DE UMA _ LOCAL__ REFERENCE __ 
+
+
+
+
+
+
+ao elemento ''div' em que 
+
+
+COLOCAMOS ESSA DIRECTIVE DE 
+
+
+'ngModelGroup',
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+   <div id="user-data" 
+   
+   ngModelGroup="userData"
+
+   #userData
+   
+   
+   
+   >
+
+
+
+
+
+
+
+
+
+
+
+
+   -> OK... --> 
+
+
+
+
+
+
+
+
+
+   MAS É CLARO QUE PRECISAMOS FAZER MAIS UMA COISINHA para CONSEGUIR A REPRESENTAÇÃO 
+
+   DESSES ELEMENTOS/DESSE ELEMENTO QUE SEGURA ESSES elementos.. ----> 
+
+
+
+   PRECISAMOS DEFINIR O VALUE 
+
+
+
+   dessa LOCAL REFERENCE como sendo de 'ngModelGroup'..
+
+
+
+
+
+   ex:
+
+
+
+
+
+
+
+
+   
+
+   <div id="user-data" 
+   
+   ngModelGroup="userData"
+
+   #userData="ngModelGroup"
+   
+   
+   
+   >
+
+   <input>
+
+   <input>
+   </div>
+
+
+
+
+
+
+
+
+
+   -----------------------
+
+
+
+
+
+
+
+
+
+   OU SEJA,
+
+   É EXATAMENTE 
+
+
+
+   IGUAL AO QUE FIZEMOS ANTERIORMENTE,
+
+
+   com 
+
+
+   '#emailReference="ngModel"' 
+
+
+
+
+   e 
+
+
+
+   '#usernameReference="ngModel",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   MAS AGORA ESTAMOS FAZENDO ISSO COM 'ngModelGroup',
+
+
+   pq 
+
+
+   vamos querer 
+
+   O JAVASCRIPT OBJECT DE 'ngModelGroup',
+
+
+
+   e NÃO 
+
+   'ngModel'
+
+
+   em si...
+
+
+
+
+
+
+
+
+
+   ------> como exemplo DE ALGO QUE PODEMOS FAZER ,
+
+
+
+
+   O PROFESSOR ESCREVE O OUTPUT 
+
+
+
+
+   CONDICIONAL DE um '<p>',
+
+
+
+   NO CASE 
+
+
+   DE ESSE GRUPO INTEIRO DE 
+
+
+
+   '''userData'''
+
+
+
+   NÃO ESTAR COMO 'VALID'....
+
+
+
+
+
+
+
+   ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+ <div id="user-data" ngModelGroup="userData" #userDataReference="ngModelGroup">  <!-- 'ngModelGroup' É UMA DIRECTIVE USADA PARA ORGANIZAR O OBJECT de 'value' dentro de 'form.value', quando é submittada a form .... isso quer dizer que VAMOS AGRUPAR múltiplos values de inputs em diferentes grupos, usando essa directive em DIVS QUE WRAPPAM NOSSOS INPUT FIELDS... , AQUI, os values dos input fields 'username' e 'email' SERÃO AGRUPADOS sob o grupo 'userData' -->
+          <div class="form-group"  
+          
+          
+          
+          >
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              class="form-control"
+              ngModel
+              placeholder="Your name"
+              name="username"
+              required
+              #nameReference="ngModel"
+              minlength="5"
+            />
+            <span class="help-block" 
+            [ngStyle]="{'color': 'red'}"
+            *ngIf="!nameReference.valid && 
+            
+            nameReference.value">
+            
+            Your name must have at least 5 characters!</span>
+            <!-- required É UM DEFAULT HTML ATTRIBUTE, mas quando você o escreve em código angular, É USADO COMO UM SELECTOR PARA UMA DAS DIRECTIVES BUILT-IN DO ANGULAR...-->
+          </div>
+          
+          <button class="btn btn-default" type="button">
+            Suggest an Username
+          </button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              ngModel
+              name="email"
+              required
+              placeholder="example@test.com"
+              email
+              #emailReference="ngModel"
+            />
+            <span class="help-block" 
+            [ngStyle]="{'color': 'red'}"
+            *ngIf="!emailReference.valid && 
+            
+            emailReference.value">
+
+           <p *ngIf="!userDataReference.valid && userDataReference.touched"> <!-- EXEMPLO DE USO DE UMA LOCAL REFERENCE EM UMA DIV QUE POSSUI DIRECTIVE DE 'ngFormGroup' ... -->
+          There is some user data that is still invalid.
+        </p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        -----> OK.. COM ISSO FICAMOS COM FINE-GRAIN CONTROL
+        SOBRE 
+
+        NOSSA 
+
+        FORM,
+
+
+        com a ajuda dessas tools...

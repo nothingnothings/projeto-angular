@@ -1,0 +1,388 @@
+
+
+
+
+
+
+
+
+
+--> NOSSO REDUCER VAI FICANDO ASSIM:
+
+
+
+
+export function shoppingListReducer(state: ShoppingListState = initialState, 
+  // action: ShoppingListActions.AddIngredient  //maneira errada (vai pegar o type de SÓ UMA DAS ACTIONS)
+  action: ShoppingListActions.ShoppingListActionTypes
+  
+  ): ShoppingListState {
+  switch(action.type){
+    case ShoppingListActions.ADD_INGREDIENT:
+      return addIngredient(state, action as ShoppingListActions.AddIngredient);
+      break;
+    case ShoppingListActions.ADD_INGREDIENTS:
+      return addIngredients(state, action as ShoppingListActions.AddIngredients);
+      break;
+    case ShoppingListActions.DELETE_INGREDIENT:
+      return removeIngredient(state, action as ShoppingListActions.RemoveIngredient);
+      break;
+    case ShoppingListActions.EDIT_INGREDIENT:
+      return editIngredient(state, action as ShoppingListActions.EditIngredient);
+        break;
+    default: ////é o case do INITIALIZE DE NOSSO STATE (pq no início de nosso app, será definido/passado o 'initialState', sem o pass de nenhuma actionType...) --> e é aí que entra em jogo esse return de 'state' como o DEFAULT, pq isso significa que nosso state NÃO TERÁ SIDO ALTERADO POR ACTION NENHUMA, MAS QUE AINDA SERÁ 'returned', pq isso será necessário...
+      return state;  
+  }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ----->  COMEÇAMOS PELO CASE DE 'EditIngredient':
+
+
+
+
+
+
+O MEU HELPER METHOD FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const editIngredient = (state: ShoppingListState, action: ShoppingListActions.EditIngredient): ShoppingListState => {
+
+
+  const updatedIngredients = [
+    ...state.ingredients
+  ]
+
+
+
+
+ const ingredientIndex = updatedIngredients.findIndex(
+    (ingredient) => {
+        return ingredient.recipeIndex === action.payload.index
+    }
+  );
+
+
+  updatedIngredients[ingredientIndex] = action.payload.ingredient;
+
+
+
+  return updateObject(state, {ingredients: updatedIngredients});
+
+
+  
+}
+
+
+
+
+
+
+
+
+LEMBRE-SE, FAÇA 'IMMUTABLE COPIES'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> FAZEMOS A MESMA COISA COM O 'DELETE_INGREDIENT':
+
+
+
+
+
+
+
+
+
+
+
+
+const removeIngredient = (state: ShoppingListState, action: ShoppingListActions.RemoveIngredient): ShoppingListState => {
+
+  const updatedIngredients = [
+    ...state.ingredients
+  ]
+
+
+
+
+  updatedIngredients.splice(action.payload, 1);
+
+ 
+
+  return updateObject(state, { ingredients: updatedIngredients})
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR FEZ O DISPATCH DIRETAMENTE 
+
+
+NO 'onFormSubmit()"
+
+
+
+
+em 'shopping-edit.component.ts',
+
+
+
+
+MAS EU USEI UM SERVICE 
+
+
+PARA ISSO...
+
+
+
+
+
+
+
+
+--> ex:
+
+
+
+
+
+
+
+
+
+
+
+
+  editIngredient(index: number, ingredient: Ingredient) {
+
+    this.store.dispatch(new ShoppingListActions.EditIngredient({index: index, ingredient: ingredient}))
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ---> OK, JÁ CONSEGUI FAZER TUDO ISSO..
+
+
+
+
+
+
+
+-> mas o professor, no código dele,
+
+
+NÃO ESTÁ USANDO 
+
+
+
+A STORE PARA 'ATUALIZAR O VALUE DENTRO 
+
+
+
+DOS FIELDS, QUANDO OCORRE O 'onClickShopListItem'
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+  onShoplistItemClick(index: number) {
+    this.shoppingListService.loadShopListItem(index);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  -> MAS AQUI TEMOS UM PROBLEMA:
+
+
+
+
+
+
+  SE NÓS ATUALIZAMOS UM DOS 'INGREDIENTS', O VALUE DE UM DELES (modificar o value)
+
+  E ENTÕA 
+
+
+  CLICAMOS 
+
+
+
+
+  NESSE ITEM NA LIST,
+
+
+  OS VALUES QUE SERÃO CARREGADOS SERÃO _ OS ANTIGOS_,
+
+  E NÃO OS NOVOS (ex: trocamos o value de '5' para '10', no amount... --> assim que clicarmos update e depois clicarmos nesse item, o amount ficará como '5')...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  VOU DAR UMA BREVE TESTADA NESSE CÓDIGO..
+
+
+
+
+
+
+
+
+
+
+
+  --> hmmm ... mas meu código _ NÃO ESTÁ FUNCIONANDO COMO O DO PROFESSOR..
+
+
+
+
+
+
+
+
+  --> quando clico em um ITEM,
+
+
+
+  NÃO ACONTECE COISA ALGUMA (
+
+
+    o item não é carregado,
+
+    nem nos inputs e 
+
+    nem no 'state' de 'shoppingListService'...
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> o código está todo errado... tenho que corrigir, na próxima aula....

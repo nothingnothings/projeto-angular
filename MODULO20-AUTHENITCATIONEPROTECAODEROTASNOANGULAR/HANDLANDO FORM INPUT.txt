@@ -1,0 +1,377 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O HANDLE DE FORM INPUT É ALGO QUE JÁ APRENDEMOS AO LONGO DO CURSO...
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR VAI USAR O APPROACH TD (template-driven),
+
+
+
+MAS ELE NOS APONTA QUE PODERÍAMOS USAR O OUTRO APPROACH,
+
+
+SE ASSIM O DESEJÁSSEMOS...
+
+
+
+
+
+
+
+
+
+aí ele escreve o clássico:
+
+
+
+
+
+
+
+
+<form    (ngSubmit)="onAuthFormSubmit(localFormReference)"         #localFormReference="ngForm"> 
+
+
+
+
+
+
+
+
+
+
+
+</form>
+
+
+
+
+
+
+->NOS INPUT FIELDS 
+
+
+ELE COLOCA OS CLÁSSICOS:
+
+
+
+
+
+
+
+<input 
+
+
+
+ngModel 
+name="email"
+required 
+email
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OBSSS:: A API DO FIREBASE REQUER QUE NOSSOS PASSWORDS TENHAM NO MÍNIMO 6 CARACTERES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> coloco um '[disabled]' 
+
+no button,
+
+usando a reference de 
+
+nossa form 
+
+
+
+como 
+
+
+referencia:
+
+
+
+
+
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="!localFormReference.valid"
+        >
+          {{ isSignup ? "SIGN UP" : "LOGIN" }}
+        </button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------
+
+
+
+
+
+
+
+
+
+
+
+ok...
+
+
+
+
+
+
+
+tudo isso funcionou..
+
+
+
+
+
+
+
+
+
+
+adicionei essa form, portanto...
+
+
+
+
+
+
+
+
+
+
+
+
+-> AGORA O PROFESSOR FALA DO SUBMIT DA FORM...
+
+
+
+
+
+
+
+
+
+MEU CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+    <form
+      (ngSubmit)="onAuthFormSubmit(localFormReference)"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      NO COMPONENT DE 'auth.component.ts':
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+      onAuthFormSubmit(form: NgForm) {
+    const email = form.form.get('email')?.value;
+
+    const password = form.form.get('password')?.value;
+
+    const userData = {
+      email: email,
+      password: password,
+      returnSecureToken: true,
+    };
+
+    if (this.isSignup) {
+      this.authService.onCreateAccount(userData)
+      .subscribe(
+        (responseData) => {
+
+          this.router.navigate(['/auth']);
+        }
+      )
+    } else {
+      this.authService.onLogin(userData)
+
+
+      
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+  --> faltou chamarmos 'form.reset()'
+
+  PARA RESETTAR A FORM, A PARTIR DESSE SEND...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> vamos usar a data dessa form para criar 1 user e loggar com 1 user 
+
+  no firebsae...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> LEMBREI: EU TAMBÉM PRECISO DE UMA 'MENSAGEM DE ERRO QUANDO O USER TENTA FAZER LOGIN E FALHA',
+
+
+
+
+  e
+   também de 
+
+
+   'MENSAGEM DE ERRO QUANDO AQUELE EMAIL/USER JÁ EXISTIR 
+
+
+
+   NO NOSSO APP/FIREBASE'...
+
+
+
+
+
+
+
+
+
+
+   --> para isso, PRECISO USAR _ O SEGUNDO PARÂMETRO DE 
+
+
+
+   'subscribe()'
+
+
+
+   nos meus methods de 'http.post()',
+
+
+
+   PQ ISSO VAI ME DEIXAR FAZER CONSOLE.LOG DE ERRORS E FAZER SHOW DE MENSAGENS DE ERRO, O QUE É ÓTIMO...
+
+
+
+
+
+   (
+
+       poderia colocar um 'confirm()' inicialmente, mas não sei se isso seria bom....
+   )

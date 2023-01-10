@@ -1,0 +1,2296 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> 
+EMIT DE NEW DATA É 
+
+A COISA MAIS IMPORTANTE QUE 
+
+'OBSERVABLES'
+
+
+fazem...
+
+
+
+
+
+
+
+
+
+--> EM 99% DOS CASOS 
+
+EM QUE VOCê FAZ SUBSCRIBE,
+
+
+
+
+VOCÊ VAI PASSAR ESSE PRIMEIRO ARGUMENTO,
+
+
+EM QUE 
+
+VOCê 
+
+
+
+
+
+ESTÁ INTERESSADO NA 'DATA' QUE VOCê VAI RECEBER...
+
+
+
+
+
+
+
+
+
+
+
+ou seja,
+
+exatamente como no código de 
+
+
+
+this.firstObsSubscription = customIntervalObservable.subscribe(
+    (data) => {
+        console.log(data)
+    }
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> BEM, ISSO É EM _ QUASE TODOS OS CASES,
+
+
+PQ 
+
+
+
+HÁ 
+
+1 OUTRO __ 
+
+
+USE-CASE 
+
+IMPORTANTE 
+
+
+
+
+
+NA ARTE DOS OBSERVABLES,
+
+
+E ESSE USE-CASE 
+
+É 
+
+
+O DO _ ERROR-HANDLING..
+
+
+
+
+
+
+
+
+
+
+
+-> QUANDO VOCê QUER FAZER ERROR HANDLING ATRAVÉS DE OBSERVABLES,
+
+
+
+
+VOCê _ NÃO USA_ O PRIMEIRO ARGUMENTO (a anon function, '() => {}' )
+
+
+
+
+
+
+
+DA SUBSCRIPTION...
+
+
+
+
+
+
+
+---->  O ERROR HANDLING COM OBSERVABLES É USADO PRINCIPALMENTE COM COISAS COMO 
+
+'HTTP REQUESTS'..
+
+
+
+
+
+
+
+
+
+
+
+-----> OK... ---> 
+
+
+
+
+
+A LÓGICA DE NOSSO 'COUNTER',
+
+
+daquele 
+
+
+observable que emite 1 event de 'count' a cada x milissegundos,
+
+ele NUNCA VAI FALHAR,
+
+NÃO HÁ ERRO POSSÍVEL PARA ESSE CODE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const customIntervalObservable = new Observable(
+        (observer) => {
+
+            //tudo isso faz parte da LÓGICA de nossA OBSERVABLE ( o objetivo é fazer com que um 'event' desse 'interval' seja emitido A CADA SEGUNDO, por meio de 'setInterval()')....
+            let count = 0;  ////pq esse é o VALUE que vamos querer que seja EMITIDO GRADUALMENTE (de 1 em 1 segundo, de acordo com aquele 'count++')..
+            setInterval(
+                () => {
+                    observer.next(count);
+                    //observer.error();  ///usado quando você quer 'EMIT A DATA PACKAGE' de error, dizendo que algo deu errado.... seu observable vai emitir essa info...
+                    //observer.complete();  ///usado quando você quer 'emit uma data package que diz que vocÊ ACABOU COM ESSE OBSERVABLE', o observable acabou sua tarefa (ex: http request, quando o tópico é o 'receive da response')...
+                },
+                1000 ///depois de 1 SEGUNDO INTEIRO vamos querer FAZER _ EMIT _ DO VALUE _ de nosso observable, que é aquele 'count' em 'observer.next(count)'...
+            )
+
+            count++;
+        },
+    );    
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS É CLARO QUE ESSA HISTÓRIA MUDA QUANDO O ASSUNTO É O SEND DE HTTP REQUESTS,
+
+
+
+QUE É ALGO QUE 
+
+MAIS TARDE FAREMOS.. --> COM O SEND DE HTTP REQUESTS,
+
+
+
+É CLARO QUE __ É POSSÍVEL__ QUE 
+
+
+
+ERRORS OCORRAM,
+
+
+
+
+
+
+
+
+E AI SE TORNA IMPORTANTE ESSE USE CASE....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> O PROFESSOR TAMBÉM EXPLICA QUE PODEMOS 'FAKE' um error,
+
+
+dentro 
+
+
+
+
+
+de nosso 
+
+
+
+OBSERVABLE -_> 
+
+
+
+
+
+
+
+
+para isso,
+
+podemos simplesmente dar THROW DE UM ERROR,
+
+
+
+
+E AÍ 
+
+
+
+__dEFINIR __ NOSSA CONDITION PARA QUANDO QUEREMOS FAZER ISSO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA FAZER ISSO,
+
+
+poderíamos, por exemplo,
+
+
+colocar um check de 
+
+
+
+
+
+
+
+
+'if (count > 3) {
+    observer.error(new Error('Count is greater than 3!'))
+}
+
+'
+
+
+
+
+
+
+
+
+
+
+
+
+
+FICARIA TIPO ASSIM:
+
+
+
+
+
+
+const customIntervalObservable = new Observable(
+        (observer) => {
+
+            //tudo isso faz parte da LÓGICA de nossA OBSERVABLE ( o objetivo é fazer com que um 'event' desse 'interval' seja emitido A CADA SEGUNDO, por meio de 'setInterval()')....
+            let count = 0;  ////pq esse é o VALUE que vamos querer que seja EMITIDO GRADUALMENTE (de 1 em 1 segundo, de acordo com aquele 'count++')..
+            setInterval(
+                () => {
+                    observer.next(count);
+                 
+                 if (count > 3) {
+                     observer.error(new Error('Count is greater than 3!'))
+                 }
+                },
+                1000 ///depois de 1 SEGUNDO INTEIRO vamos querer FAZER _ EMIT _ DO VALUE _ de nosso observable, que é aquele 'count' em 'observer.next(count)'...
+            )
+
+            count++;
+        },
+    );    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> certo, mas minha versão do código NÃO ESTÁ FUNCIONANDO (
+    os errors não 
+
+
+    estão sendo emitidos, por alguma razão..
+)
+
+
+
+
+
+
+
+
+
+->, ah, é pq estou usando o arquivo 'home2',
+
+e não o 'home 1'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> NO CÓDIGO DO PROFESSOR/HOME2,
+
+assim que chegamos a 
+
+
+'3',
+
+
+
+
+
+O ERROR 
+
+APARECE...
+
+
+
+
+
+
+
+
+
+
+
+
+--> O ERROR QUE DEFINIMOS __ APARECE,
+
+E AÍ _ IMEDIATAMENTE O 'COUNT'
+
+
+PARA_ 
+
+
+DE SER COUNTED....
+
+
+
+
+os console.logs param,
+
+
+pq a data PARA DE SER EMITIDA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> ISSO QUER DIZER QUE O NOSSO OBSERVABLE EMITIU/EMITE 4 
+
+
+
+'pulsos' de data 
+
+ANTES DE PARAR,
+
+que são os 
+
+3 
+
+'counts'
+
+E AÍ 
+
+O 
+
+ _ ERROR_...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -----> ISSO ACONTECE/ACONTECEU _ PQ __ SEMPRE QUE _ UM OBSERVABLE FIZER THROW DE UM ERROR,
+
+  
+
+
+
+  ELE VAI 'CANCEL',
+
+
+
+  ELE VAI ACABAR,
+
+  NÃO VAI FAZER O EMIT DE MAIS NENHUM VALUE... ------. ISSO QUER DIZER QUE,
+
+  QUANDO ISSO ACONTECE,
+
+  NÃO PRECISAMOS MAIS FAZER 'unsubscribe' algum...
+
+
+
+
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ngOnInit(): void {
+
+
+    ///será nosso CUSTOM OBSERVABLE, que criamos por conta própria, e que replica o comportamento do built-in observable/function de 'interval()'..
+    //NESSA CONST É _ CRIADA A NOSSA 'OBSERVABLE'...
+    const customIntervalObservable = new Observable(
+        (observer) => {
+
+            //tudo isso faz parte da LÓGICA de nossA OBSERVABLE ( o objetivo é fazer com que um 'event' desse 'interval' seja emitido A CADA SEGUNDO, por meio de 'setInterval()')....
+            let count = 0;  ////pq esse é o VALUE que vamos querer que seja EMITIDO GRADUALMENTE (de 1 em 1 segundo, de acordo com aquele 'count++')..
+            setInterval(
+                () => {
+                    observer.next(count);
+                    //observer.error();  ///usado quando você quer 'EMIT A DATA PACKAGE' de error, dizendo que algo deu errado.... seu observable vai emitir essa info...
+                    //observer.complete();  ///usado quando você quer 'emit uma data package que diz que vocÊ ACABOU COM ESSE OBSERVABLE', o observable acabou sua tarefa (ex: http request, quando o tópico é o 'receive da response')...
+
+                    if (count > 3) {
+                      observer.error(new Error('Count is greater than 3!')); ////// quando um ERROR é emitido por um OBSERVABLE, o observable 'MORRE', ele PARA__ DE EMITIR_ as próprias data packages.... --> isso significa que NÃO PRECISAMOS MAIS DAR 'UNSUBSCRIBE' nesse observable, pq ele  já terá cometido 'suicídio' por meio do emit do error....
+                  }
+
+
+                },
+                1000 ///depois de 1 SEGUNDO INTEIRO vamos querer FAZER _ EMIT _ DO VALUE _ de nosso observable, que é aquele 'count' em 'observer.next(count)'...
+            )
+
+            count++;
+        },
+    );    
+
+
+
+
+    customIntervalObservable.subscribe(
+        (count) => { //será um NUMBER...
+
+            console.log(count);
+        }
+    )
+    
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> É CLARO QUE VOCê PODE AINDA 'unsubscribe'
+
+
+  SE VOCê SAIR DA PÁGINA,
+
+
+  se aquele código de 
+
+
+
+  'subscriptionEmQuestao.unsubscribe' 
+
+
+
+  AINDA ESTIVER 
+
+
+  lá 
+
+
+
+  no seu hook de 'ngOnDestroy',
+
+
+
+
+  mas isso _ não é/não será necessário,
+  pq 
+
+  o 
+
+  OBSERVABLE ESTARÁ 'dead' DE QUALQUER MANEIRA...
+
+
+
+
+
+
+
+
+
+
+
+  --> mas a realizaçaõ de unsubscribes 
+
+
+  mesmo 
+
+
+  com emit de um  error por um observable 
+
+  NÃO É UM PROBLEMA,
+
+  VOCÊ PODE FAZER MESMO ASSIM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> OK... É ASSIM QUE PODEMOS FAZER 'THROW' DE NOSSOS PRÓPRIOS ERRORS....
+
+
+
+
+
+
+
+
+
+
+  -->  MAS É CLARO QUE FAZER O 'THROW'  DE ERRORS POR CONTA PRÓPRIA 
+
+
+  é algo que vocÊ raramente fará,
+
+  pq 
+
+
+
+  NA MAIOR PARTE DOS CASOS OS ERRORS SERÃO  THROWN __ PELO ANGULAR/
+
+
+  UMA PACKAGE DO ANGULAR ( uma built-in functionality do angular, como 'http request' )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  MAS O QUE INTERESSA, O QUE _ IMPORTA,
+
+
+  É SER CAPAZ DE 'HANDLE' 
+
+  esses emits de error,
+
+
+  lá 
+
+  nas suas SUBSCRIPTIONS...
+
+
+
+
+
+
+
+
+
+
+
+  ------> 
+
+
+
+
+
+
+  PARA __ FAZER HANDLE DE ERRORS 
+
+  LÁ NO '.subscribe()',
+
+
+
+
+  VOCÊ PRECISA PASSAR MAIS UM PARÂMETRO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> É O SEGUNDO PARÂMETRO,
+
+
+DIFERENTE DO PRIMEIRO (Que captura a data comum emitida pelo observable)....
+
+
+
+
+
+
+
+
+
+
+
+-_> o segundo parâmetro de nossos subscribes/subscriptions 
+
+
+
+
+
+É _ REALMENTE __ OUTRA_ _ANON FUNCTION, OUTRA FUNCTION QUE SERÁ CHAMADA 
+
+
+
+SEMPRE QUE 
+
+UMA 
+
+
+DATA DE 
+
+'error'
+
+for emitida...
+
+
+
+
+
+
+
+
+
+
+--> E O ERROR SERÁ OBTIDO _ COMO UM PARÂMETRO NESSA FUNCTION, TIPO ASSIM:
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+this.firstObsSubscription = customIntervalObservable.subscribe(
+    (data) => {
+                console.log(data);
+    },
+
+
+    (error) => {
+        console.log(error);
+    }
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+    customIntervalObservable.subscribe(
+        (count) => { //será um NUMBER...  ////// O PRIMEIRO PARÂMETRO DE '.subscribe()' (nossa subscription) é '''A LÓGICA QUE EXECUTAMOS SE FOR RECEBIDA UMA DATA PACKAGE COMUM, VINDA DE NOSSO OBSERVABLE''''...
+
+            console.log(count);
+        },
+        (error) => {  //O SEGUNDO PARÂMETRO DE '.subscribe()' (nossa subscription) é '''A LÓGICA QUE EXECUTAMOS SE FOR RECEBIDA UMA DATA PACKAGE __DE ERRO___ (que interrompe o emit de data da observable), VINDA DE NOSSO OBSERVABLE''''...
+          console.log(error);
+      }
+
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE 
+
+
+PODEMOS FAZER MUITO MAIS COM ESSE 
+
+
+ERROR DO QUE SÓ O CONSOLE.LOGGAR:
+
+
+
+
+
+
+
+PODEMOS _ ENVIAR ESSE ERROR 
+
+AO BACKEND,
+
+PARA QUE 
+
+SEJA ARMAZENADO EM UMA DATAABASE,
+
+
+
+OU ENTÃO 
+
+FAZER __ SHOW _ DE UM
+
+
+
+
+
+
+ALERT/MESSAGE AO USER,
+
+INFORMANDO ACERCA DO ERRO...
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR PROPÕE 
+
+
+
+FAZER O SHOW DE UM ALERT,
+TIPO ASSIM:
+
+
+
+
+
+
+
+    customIntervalObservable.subscribe(
+        (count) => { //será um NUMBER...  ////// O PRIMEIRO PARÂMETRO DE '.subscribe()' (nossa subscription) é '''A LÓGICA QUE EXECUTAMOS SE FOR RECEBIDA UMA DATA PACKAGE COMUM, VINDA DE NOSSO OBSERVABLE''''...
+
+            console.log(count);
+        },
+        (error) => {  //O SEGUNDO PARÂMETRO DE '.subscribe()' (nossa subscription) é '''A LÓGICA QUE EXECUTAMOS SE FOR RECEBIDA UMA DATA PACKAGE __DE ERRO___ (que interrompe o emit de data da observable), VINDA DE NOSSO OBSERVABLE''''...
+          console.log(error);
+          alert(error.message);
+      }
+
+    )
+
+
+
+
+---------------------------------
+
+
+
+
+
+
+
+OK.... ASSIM QUE EXCEDEMOS '3',
+
+
+
+recebemos esse alert... --> e aí 
+
+
+deixamos 
+
+
+
+
+de 
+
+
+ter 
+
+aquele THROW DO ERROR 
+
+
+
+
+no nosso app,
+
+
+
+o que quer dizer que fizemos HANDLE DO ERROR,
+
+
+
+o que é outra parte importante do nosso app.... ----> 
+
+
+
+
+
+
+
+
+O HANDLE DE errors
+
+
+
+
+
+é niCE,
+
+
+
+
+
+mas 
+
+
+
+
+
+
+
+
+
+
+E QUANTO __ AO TÓPICO DO 'COMPLETE' do observable?
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR HAVIA DITO QUE O 'THROW' DE UM ERROR 
+
+FAZ COM QUE 
+
+UM OBSERVABLE SEJA __ CANCELADO,
+
+O QUE FAZ ELE 'MORRER'...
+
+
+
+
+
+
+
+
+
+
+
+-> mas o 'complete' DE 
+
+
+
+
+UM OBSERVABLE __ É ALGO COMPLETAMENTE DIFERENTE.. ----> 
+
+
+
+
+
+
+
+
+
+O COMPLETE EM UM OBSERVABLE 
+
+
+
+__ PODE 
+
+
+
+SER UM __ PROCESSO NORMAL  ----> 
+
+
+
+
+
+
+
+
+
+EXEMPLO:
+
+
+
+
+
+
+NOSSO INTERVAL,
+ POR DEFAULT,
+
+
+ NUNCA VAI 'COMPLETE'... -----> ELE VAI EMITIR NOVOS VALUES ATÉ O 
+
+
+
+
+ FIM DOS TEMPOS... ->  JÁ 
+
+
+
+
+
+
+ UM HTTP REQUEST _ VAI __ 
+
+ COMPLETAR,
+
+
+
+ VAI COMPLETAR__ SEMPRE QUE 
+
+ UMA RESPONSE 
+
+
+
+ DO 
+
+
+ SERVER 
+
+
+
+
+ __ FICA PRESENTE/APARECE...
+
+
+
+
+
+
+
+ -> E É CLARO QUE  AQUI,
+
+
+ QUANDO 
+
+ ESTAMOS CRIANDO UM OBSERVABLE DO 0,
+
+
+
+
+
+ PODEMOS FAZER ESSE 'COMPLETE' MANUALMENTE..
+
+
+
+
+
+
+
+
+
+
+ --> NO FINAL DAS CONTAS,
+
+
+
+NÓS SOMOS AQUELES QUE DEFINEM COMO UM 'OBSERVABLE' DEVE SE COMPORTAR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> NOSSO 'EVENT/data SOURCE',
+
+
+
+
+no caso do 
+
+
+observable de 
+
+
+'customIntervalObservable',
+
+
+
+
+É 
+
+
+
+
+
+AQUELA FUNCTION DE 
+
+
+
+'setInterval()'
+
+
+
+QUE WRAPPAMOS 
+
+COM NOSSO OBSERVABLE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE PODEMOS MANIPULAR AINDA MAIS NOSSO OBSERVABLE,
+
+
+COLOCAR UM CHECK ADICIONAL,
+
+
+
+CHECANDO
+ 
+
+ '
+
+ if (count == 2) {
+     observer.complete()
+ }
+
+
+ '
+
+
+
+
+
+
+
+
+
+
+
+ EX:
+
+
+
+
+
+                  if (count == 2) {
+                    observer.complete();  ///QUANDO VOCÊ CHAMA 'observer.complete()', O _ _OBSERVABLE __ VAI REALMENTE 'PARAR'...
+                  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> QUANDO VOCÊ CHAMA 'observer.complete()',
+
+
+
+O 
+
+
+OBSERVABLE __ VAI __ REALMENTE_ _ PARAR,
+
+
+VAI PARAR O 
+
+'EMIT'
+
+DAQUELA DATA PACKAGE...
+
+
+
+
+
+
+
+
+--> E VOCÊ PODE VER ISSO NO NOSSO CÓDIGO,
+
+
+
+NO CONSOLE,
+
+
+
+
+em que 
+
+ele 
+
+
+vai console.loggar apenas 
+
+0
+1
+2
+ 
+
+
+
+
+
+
+ ----> OU SEJA,
+
+
+ ELE PAROU NO '2'
+
+ PQ A CONDIÇÃO PARA O 'complete' foi satisfeita ------> 
+
+
+
+
+
+
+ E A PARTIR DISSO,
+ NENHUMA MENSAGEM, 
+
+
+ NENHUM CONSOLE.LOG NEM NADA,
+
+
+ NADA APARECEU... pq ele está CONCLUÍDO...  ------> 
+
+
+
+
+ NEM MESMO A MENSAGEM DE ERROR DE ' if (count > 3)'
+
+
+
+
+
+
+
+
+ FOI CONSIDERADA, JUSTAMENTE PQ ELE (o observable)
+
+
+
+
+ FICOU TERMINADO/COMPLETED 
+
+
+
+ antes disso...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ CÓDIGO COMPLETO:
+
+
+
+
+
+
+
+
+
+
+
+
+ export class HomeComponent implements OnInit, OnDestroy {
+  customObservable: Subscription;
+
+  constructor() {}
+
+  ngOnInit(): void {
+
+
+    ///será nosso CUSTOM OBSERVABLE, que criamos por conta própria, e que replica o comportamento do built-in observable/function de 'interval()'..
+    //NESSA CONST É _ CRIADA A NOSSA 'OBSERVABLE'...
+    const customIntervalObservable = new Observable(
+        (observer) => {
+
+            //tudo isso faz parte da LÓGICA de nossA OBSERVABLE ( o objetivo é fazer com que um 'event' desse 'interval' seja emitido A CADA SEGUNDO, por meio de 'setInterval()')....
+            let count = 0;  ////pq esse é o VALUE que vamos querer que seja EMITIDO GRADUALMENTE (de 1 em 1 segundo, de acordo com aquele 'count++')..
+            setInterval(
+                () => {
+
+
+                  observer.next(count);
+                  //observer.error();  ///usado quando você quer 'EMIT A DATA PACKAGE' de error, dizendo que algo deu errado.... seu observable vai emitir essa info...
+                  //observer.complete();  ///usado quando você quer 'emit uma data package que diz que vocÊ ACABOU COM ESSE OBSERVABLE', o observable acabou sua tarefa (ex: http request, quando o tópico é o 'receive da response')...
+
+
+
+                  
+
+                  if (count == 2) {
+                    observer.complete();  ///QUANDO VOCÊ CHAMA 'observer.complete()', O _ _OBSERVABLE __ VAI REALMENTE 'PARAR'... --> não alcançaremos 'observer.error()', por exmeplo, nesse exemplo aqui....
+                  }
+
+
+
+
+              
+
+
+
+                    if (count > 3) {
+                      observer.error(new Error('Count is greater than 3!')); ////// quando um ERROR é emitido por um OBSERVABLE, o observable 'MORRE', ele PARA__ DE EMITIR_ as próprias data packages.... --> isso significa que NÃO PRECISAMOS MAIS DAR 'UNSUBSCRIBE' nesse observable, pq ele  já terá cometido 'suicídio' por meio do emit do error....
+                  }
+
+
+                },
+                1000 ///depois de 1 SEGUNDO INTEIRO vamos querer FAZER _ EMIT _ DO VALUE _ de nosso observable, que é aquele 'count' em 'observer.next(count)'...
+            )
+
+            count++;
+        },
+    );    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E ISSO É REALMENTE IMPORTANTE DE ENTENDER:
+
+
+
+
+
+
+
+
+
+
+SEMPRE QUE UM 
+
+OBSERVABLE CHAMAR 'complete()',
+
+por meio de seu 'observer',
+
+
+
+ELE _ ESTARÁ ____ DONE,
+
+
+
+
+
+
+NÃO EXISTIRÃO MAIS VALUES A SEREM EMITIDOS, TANTO normais (''observer.next()'') 
+
+
+
+como de errors (observer.error())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> CERTO.... E SE QUEREMOS __ REAGIR__ 
+
+
+A ESSE 'COMPLETE',
+
+
+
+
+
+
+
+REAGIR A ELE LÁ NA NOSSA SUBSCRIPTION/.subscribe(),
+
+
+
+
+DEVEMOS RECORRER 
+
+
+
+AO TERCEIRO PARÂMETRO 
+
+
+
+DESSE METHOD,
+
+
+
+
+que ficará tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    customIntervalObservable.subscribe(
+        (count) => { //será um NUMBER...  ////// O PRIMEIRO PARÂMETRO DE '.subscribe()' (nossa subscription) é '''A LÓGICA QUE EXECUTAMOS SE FOR RECEBIDA UMA DATA PACKAGE COMUM, VINDA DE NOSSO OBSERVABLE''''...
+
+            console.log(count);
+        },
+        (error) => {  //O SEGUNDO PARÂMETRO DE '.subscribe()' (nossa subscription) é '''A LÓGICA QUE EXECUTAMOS SE FOR RECEBIDA UMA DATA PACKAGE __DE ERRO___ (que interrompe o emit de data da observable), VINDA DE NOSSO OBSERVABLE''''...
+          console.log(error);
+      },
+
+      () => {  /////TERCEIRO PARÂMETRO DE '.subscribe()', é usado quando OCORRE O EMIT DE UMA DATA PACKET DE 'observer.complete()" POR NOSSO OBSERVABLE....
+          console.log('COMPLETED')
+      }
+
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+    EX:
+
+
+
+
+
+
+
+
+
+
+        customIntervalObservable.subscribe(
+        (count) => { //será um NUMBER...  ////// O PRIMEIRO PARÂMETRO DE '.subscribe()' (nossa subscription) é '''A LÓGICA QUE EXECUTAMOS SE FOR RECEBIDA UMA DATA PACKAGE COMUM, VINDA DE NOSSO OBSERVABLE''''...
+
+            console.log(count);
+        },
+        (error) => {  //O SEGUNDO PARÂMETRO DE '.subscribe()' (nossa subscription) é '''A LÓGICA QUE EXECUTAMOS SE FOR RECEBIDA UMA DATA PACKAGE __DE ERRO___ (que interrompe o emit de data da observable), VINDA DE NOSSO OBSERVABLE''''...
+          console.log(error);
+      },
+      () => {   /////COMO O 'observer.complete()' NÃO NOS PASSA NENHUM ARGUMENT, AQUI DEIXAMOS UM ARGUMENT VAZIO...
+        /////TERCEIRO PARÂMETRO DE '.subscribe()', é usado quando OCORRE O EMIT DE UMA DATA PACKET DE 'observer.complete()" POR NOSSO OBSERVABLE....
+        
+        console.log('COMPLETED')
+    }
+
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ------> OBS:::: COMO O 'observer.complete()'
+
+
+
+    NÃO NOS PASSA ARGUMENTO ALGUM,
+
+
+
+    DEIXAMOS 
+
+    O 
+
+
+    '()' 
+
+
+
+
+
+
+    nesse 
+
+
+    '() => {
+
+    }'
+
+
+
+
+,
+
+
+
+ESSE TERCEIRO PARÂEMTRO,
+
+
+
+
+__ DEIXAMOS 
+
+
+ESSE SLOT DE ARGUMENTO EM BRANCO,
+
+
+
+pq realmente não vamos receber coisa alguma a partir dele...
+
+
+
+
+
+
+
+
+
+
+
+--> POR ESSA RAZÃO, o 
+
+
+
+
+TERCEIRO PARÂMETRO DE NOSSAS FUNCTIONS DE 'subscribe' (subscriptions)
+
+
+
+FREQUENTEMENTE É USADO PARA 'CLEANUP WORK',
+
+e 
+
+
+
+coisas diversas que você tem de fazer....
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+    customIntervalObservable.subscribe(
+        (count) => { //será um NUMBER...  ////// O PRIMEIRO PARÂMETRO DE '.subscribe()' (nossa subscription) é '''A LÓGICA QUE EXECUTAMOS SE FOR RECEBIDA UMA DATA PACKAGE COMUM, VINDA DE NOSSO OBSERVABLE''''...
+
+            console.log(count);
+            console.log('DATA --  data package emitted by observable. We can run some logic for EACH data packet that is emitted.')
+        },
+        (error) => {  //O SEGUNDO PARÂMETRO DE '.subscribe()' (nossa subscription) é '''A LÓGICA QUE EXECUTAMOS SE FOR RECEBIDA UMA DATA PACKAGE __DE ERRO___ (que interrompe o emit de data da observable), VINDA DE NOSSO OBSERVABLE''''...
+          console.log(error);
+          console.log('ERROR -- "ERROR" data package emitted by observable. Observable data emissions stopped.')
+      },
+      () => {   /////COMO O 'observer.complete()' NÃO NOS PASSA NENHUM ARGUMENT, AQUI DEIXAMOS UM ARGUMENT VAZIO...
+        /////TERCEIRO PARÂMETRO DE '.subscribe()', é usado quando OCORRE O EMIT DE UMA DATA PACKET DE 'observer.complete()" POR NOSSO OBSERVABLE....
+        
+        console.log('COMPLETED -- "completed" data package emitted by observable. Observable data emissions stopped/killed.')
+    }
+
+    )
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK, POR FIM,
+
+
+OUTRO DETALHE:
+
+
+
+
+
+
+
+
+
+SE VOCÊ TIVER FEITO 'SUBSCRIBE' a algum observable,
+
+
+
+VOCê __ NÃO VAI PRECISAR CHAMAR 
+
+
+
+'.unsubscribe()'
+
+
+PARA _ 
+
+
+
+PARAR/INTERROMPER SEU OBSERVABLE,
+
+SE 
+
+ELE 
+
+
+
+__ JÁ TIVER EMITIDO A DATA DE 'COMPLETED'...
+
+
+
+
+
+
+
+
+
+
+
+---> mas é claro que vocÊ pode FAZER UNSUBSCRIBE DE 1 'subscription'
+
+SEM RECEBER ERRORS... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... AI O PROFESSOR RECARREGA NOSSO APP,
+
+e aí 
+
+
+
+depois 
+ed 
+
+
+
+
+0 
+
+1
+ 
+2,
+
+
+
+
+
+
+
+
+
+
+ELE VÊ 'COMPLETED'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... POR FIM,
+ 
+
+ há às vezes o engano de 
+
+
+
+
+
+
+
+
+
+
+ '''ah, a data packge de 
+
+
+ 'complete'
+
+
+ também é  emitida quando eu RECEBO UM ERROR EM MEU OBSERVABLE''... -----> 
+
+
+
+
+
+você pode pensar isso pq 
+
+
+
+OS 2 TIPOS DE 'DATA PACKAGE'
+
+
+RESULTAM 
+
+
+
+
+no _ STOP_ da emissão de data pelo observable,
+
+quando ocorrem...
+
+
+
+
+
+  
+
+
+
+
+
+
+----> BEM, MAS ESSE NÃO É O CASO..
+
+
+
+
+
+
+
+
+------>  DIGAMOS QUE 
+
+
+
+
+TROCAMOS 
+
+
+
+
+if (count === 2) {
+
+}
+
+
+
+PARA QUE 
+
+FIQUE COMO 
+
+
+'5'...
+
+
+
+
+O CÓDIGO FICA ASSIM:
+
+
+
+
+
+
+
+
+if (count === 5) {
+    observer.complete();
+}
+
+if (count > 3 ) {
+    observer.error(new Error('Count is greater than 3'))
+}
+
+
+
+
+
+
+
+
+
+---> SE FIZERMOS ISSO,  
+TEREMOS QUE A FUNCTION DE 
+
+'if (count > 3)
+'
+
+
+
+VAI RODAR ANTERIOMENTE,
+ 
+
+ VAI RODAR ANTES_ DE 'if (count === 5)',
+
+
+
+
+
+
+
+
+
+
+O QUE FARÁ, É CLARO,
+
+QUE SEJA __ LANÇADO UM ERROR. (call de 'observer.complete()' logo após  'observer.error()')..     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR EXPLICA QUE  O CALL DE 'observer.error()'
+
+
+
+
+
+FEZ COM QUE A EXECUÇÃO parasse,  
+
+
+o QUE, POR CONSEQUÊNCIA, FEZ COM QUE O CÓDIGO DE 
+
+
+
+
+
+'console.log('Complete!')
+'
+
+
+
+NUNCA FOSSE EXECUTADO...
+
+
+
+
+
+
+
+
+
+EIS O CÓDIGO COMPLETO:
+
+
+
+
+
+
+
+
+
+
+
+
+    const customIntervalObservable = new Observable(
+        (observer) => {
+
+            //tudo isso faz parte da LÓGICA de nossA OBSERVABLE ( o objetivo é fazer com que um 'event' desse 'interval' seja emitido A CADA SEGUNDO, por meio de 'setInterval()')....
+            let count = 0;  ////pq esse é o VALUE que vamos querer que seja EMITIDO GRADUALMENTE (de 1 em 1 segundo, de acordo com aquele 'count++')..
+            setInterval(
+                () => {
+
+
+                  observer.next(count);
+                  //observer.error();  ///usado quando você quer 'EMIT A DATA PACKAGE' de error, dizendo que algo deu errado.... seu observable vai emitir essa info...
+                  //observer.complete();  ///usado quando você quer 'emit uma data package que diz que vocÊ ACABOU COM ESSE OBSERVABLE', o observable acabou sua tarefa (ex: http request, quando o tópico é o 'receive da response')...
+
+
+
+
+
+                  if (count == 2) {
+                    observer.complete();  ///QUANDO VOCÊ CHAMA 'observer.complete()', O _ _OBSERVABLE __ VAI REALMENTE 'PARAR'... --> não alcançaremos 'observer.error()', por exmeplo, nesse exemplo aqui....
+                  }
+
+
+
+
+              
+
+
+
+                    if (count > 3) {
+                      observer.error(new Error('Count is greater than 3!')); ////// quando um ERROR é emitido por um OBSERVABLE, o observable 'MORRE', ele PARA__ DE EMITIR_ as próprias data packages.... --> isso significa que NÃO PRECISAMOS MAIS DAR 'UNSUBSCRIBE' nesse observable, pq ele  já terá cometido 'suicídio' por meio do emit do error....
+                  }
+
+
+                },
+                1000 ///depois de 1 SEGUNDO INTEIRO vamos querer FAZER _ EMIT _ DO VALUE _ de nosso observable, que é aquele 'count' em 'observer.next(count)'...
+            )
+
+            count++;
+        },
+    );    
+
+
+
+  
+
+    customIntervalObservable.subscribe(
+        (count) => { //será um NUMBER...  ////// O PRIMEIRO PARÂMETRO DE '.subscribe()' (nossa subscription) é '''A LÓGICA QUE EXECUTAMOS SE FOR RECEBIDA UMA DATA PACKAGE COMUM, VINDA DE NOSSO OBSERVABLE''''...
+
+            console.log(count);
+            console.log('DATA --  data package emitted by observable. We can run some logic for EACH data packet that is emitted.')
+        },
+        (error) => {  //O SEGUNDO PARÂMETRO DE '.subscribe()' (nossa subscription) é '''A LÓGICA QUE EXECUTAMOS SE FOR RECEBIDA UMA DATA PACKAGE __DE ERRO___ (que interrompe o emit de data da observable), VINDA DE NOSSO OBSERVABLE''''...
+          console.log(error);
+          console.log('ERROR -- "ERROR" data package emitted by observable. Observable data emissions stopped.')
+      },
+      () => {   /////COMO O 'observer.complete()' NÃO NOS PASSA NENHUM ARGUMENT, AQUI DEIXAMOS UM ARGUMENT VAZIO...
+        /////TERCEIRO PARÂMETRO DE '.subscribe()', é usado quando OCORRE O EMIT DE UMA DATA PACKET DE 'observer.complete()" POR NOSSO OBSERVABLE....
+        
+        console.log('COMPLETED -- "completed" data package emitted by observable. Observable data emissions stopped/killed.')
+    }
+
+    )
+    
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> E ESSA É UMA CARACTERÍSTICA QUE VOCÊ DEVE TER  EM MENTE SOBRE OBSERVABLES:
+
+
+
+
+
+
+
+
+  _ QUANDO UM OBSERVABLE _ É 'CANCELED'
+
+
+
+  por meio 
+
+
+  de __ O EMIT DE UM 'ERROR',
+
+
+  É ÓBVIO QUE _ ISSO É DIFERENTE 
+
+
+
+
+  do CANCEL _ por MEIO DO EMIT DE UM 'COMPLETE'..
+
+
+
+
+
+
+
+
+
+
+
+  -----> AQUI, NO CASO, 
+
+   
+
+   UM _ ERROR_ CANCELA_ O 
+
+   OBSERVABLE,
+   E TECNICAMENTE NÃO O COMPLETA.... 
+
+
+
+
+
+
+
+
+
+   -> EM AMBOS OS CASOS,
+
+
+   o 
+   'error' 
+
+   e o 
+
+'completed' 
+
+
+
+
+
+
+
+
+NÃO EMITEM NOVOS VALUES,
+
+
+MAS ACERCA DAS FUNCTIONS QUE SÃO CHAMADAS 
+
+
+nos nossos parâmetros de 'subscription' (3 parametros, uma para DATA, outro para O 'COMPLETE'.. ),
+
+
+hÁ UMA DIFERENÇA, SIM.. (e o call de um error pode INTERROMPER '.complete()')....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O INTERRUPT POR MEIO DE UM ERROR É DIFERENTE DO INTERRUPT DE UM COMPLETE,
+
+
+
+
+
+PQ AS FUNCTIONS QUE SÃO CHAMADAS NO 
+
+
+'subscribe'
+
+são diferentes (
+
+
+
+    o complete é mais cleanup,
+
+    o error é mais error handling...
+)

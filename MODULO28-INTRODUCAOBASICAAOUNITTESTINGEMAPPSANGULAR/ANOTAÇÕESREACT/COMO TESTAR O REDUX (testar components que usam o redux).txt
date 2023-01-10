@@ -1,0 +1,1172 @@
+
+
+
+
+
+
+NÓS APRENDEMOS SOBRE COMO TESTAR CONTAINERS.... ----> 
+
+
+e 
+o 
+
+professor 
+
+
+
+
+
+
+
+mencionou, no passado,
+
+
+que 
+
+
+
+A PARTE 
+
+IMPORTANTE 
+
+DE 
+
+TESTAR 
+
+CONTAINERS 
+
+É QUE 
+
+
+
+
+NÓS __NÃO __ DEVEMOS __TESTAR A CONEXÃO DO REDUX EM SI AOS NOSSOS CONTAINERS...
+
+
+
+
+
+
+
+
+
+
+
+---->ok, mas então,
+
+
+COMO 
+
+DEVEMOS TESTAR REDUX? DEVEMOS TESTAR 
+
+SEQUER ALGUMA PARTE DO REDUX, AFINAL DE CONTAS?
+
+
+
+
+
+
+
+---> 'do you test it at all?' ------> A RESPOSTA É QUE 
+
+TESTAMOS, SIM.
+
+
+
+
+MAS 
+
+
+NÓS 
+
+
+__DEVEMOS__ TER CUIDADO COM A COISA QUE VAMOS TESTAR.... --> nós 
+
+PROVAVELMENTE 
+
+
+NÃO VAMOS QUERER 
+
+TESTAR 
+
+
+
+
+CHAINS SUPER COMPLICADAS 
+
+DE 
+
+ACTIONS E REDUCERS 
+
+E 
+STATE.... --------> no final das contaS,
+
+
+OS 
+
+
+REDUCERS 
+
+
+SÃO 
+
+O 
+
+
+'MEAT' QUE QUEREMOS TESTAR.... ---> isso especialmente 
+
+
+
+
+se 
+
+SEGUIRMOS 
+
+O PADRÃO 
+
+
+DE NÃO COLOCAR MUITA 
+
+LÓGICA 
+
+
+
+
+
+DENTRO DOS ACTION CREATORS... -------> se fizermos 
+
+assim,
+
+
+
+se mantermos 
+
+os 
+
+action CREATORS 
+
+
+__SIMPLES___, 
+
+
+
+O TESTING DOS REDUCERS 
+
+É 
+
+ALGO SUPER SIMPLES... -------> 
+
+
+
+
+O TEST DOS REDUCERS É SUPER SIMPLES:
+
+
+
+
+É SIMPLES PQ:
+
+
+
+
+
+1) REDUCERS SÃO SÍNCRONOS... ----> não precisamos lidar com código assíncrono...
+
+
+
+
+
+
+2) REDUCERS SÃO SÓ PURE FUNCTIONS: NÓS PASSAMOS ALGO PARA DENTRO (input), RECEBEMOS ALGO DE VOLTA (change no STATE DO REDUX/STATE GLOBAL DO REDUX)...
+    ex: para autenticação.... ---> autenticação é algo que tipicamente 
+        é 'input in, output out'....
+
+
+
+------------------------------
+
+
+
+PARA 
+
+
+PRATICAR O WRITE 
+
+DE 
+
+TESTS 
+
+SOBRE 
+
+OS 
+
+NOSSOS 
+
+REDUCERS,
+
+
+
+podemos 
+
+
+
+
+
+SIMPLESMENTE 
+
+
+
+FAZER UM TEST 
+
+SOBRE 
+
+NOSSA 
+
+'AUTHENTICATION'... 
+
+
+
+
+
+
+
+
+
+
+--> para isso,
+ 
+ professor adiciona um arquivo 
+
+ 'auth.test.js'
+
+
+ LÁ 
+
+
+
+ NA PASTA 
+
+ de 
+
+ 'reducers'...
+
+
+
+
+ ----------------------------
+
+
+
+
+
+ --> DENTRO DESSE ARQUIVO, 
+
+ NÓS NEM VAMOS PRECISAR 
+
+ IMPORTAR 
+
+
+ 'enzyme',
+
+
+ PQ 
+
+
+
+ NÓS NÃO ESTAREMOS 
+
+ TESTANDO NENHUM 'REACT COMPONENT/CONTAINER'... --> basta 
+
+
+ lembrar 
+
+ da 
+ estrutura 
+
+ dos 
+
+ REDUCERS, e perceber que 
+
+
+ NENHUM DELES FAZIA O RENDER DE QUALQUER 
+
+ REACT COMPONENT...
+ (
+     ex:
+
+     import * as authActionTypes from '../actions/authActionTypes';
+
+
+import { updateObject } from '../../shared/utility';
+ )
+
+
+
+
+ --------------------------------
+
+
+
+
+
+ --> COMO 
+
+
+ NÓS NÃO FAZEMOS 
+
+ RENDER DE NADA,
+
+ E 
+
+
+ RODAMOS CÓDIGO JAVASCRIPT NORMAL NOS REDUCERS,
+
+
+ podemos 
+
+ SIMPLESMENTE 
+
+ TESTAR 
+
+ CÓDIGO 
+
+ JAVASCRIPT 
+
+ 
+
+ DESSES REDUCERS DE FORMA 'NORMAL', sem o enzyme...
+
+
+
+
+
+
+
+ --> TESTAREMOS 'FUNÇÕES', FUNÇÕES QUE SÃO OS __rEDUCERS__...
+
+
+
+
+
+
+
+
+ ---> no arquivo de tests,
+
+ professor 
+
+ importa 
+
+
+
+ a  
+
+ função 
+
+
+ 'reducer' (qualquer um dos reducers)
+
+ LÁ 
+
+
+
+
+DO ARQUIVO QUE QUEREMOS TESTAR (no caso, o arquivo 
+
+de 'authReducer.js'...)
+
+
+
+ex:
+
+
+import reducer from './authReducer';
+
+
+
+
+
+
+
+----------------------------------
+
+
+ISSO FEITO,
+
+VOU PRECISAR 
+
+IMPORTAR OS 
+
+'ACTIONTYPES', pq eles SERÃO NECESSÁRIOS....
+
+
+
+
+ex:
+
+
+
+
+import reducer from './authReducer';
+
+
+import * as actionTypes from '../actions/authActionTypes';
+
+
+
+-----------------------------------
+
+
+
+DEPOIS DISSO,
+
+SIMPLESMENTE 
+
+ESCREVEMOS NOSSOS TESTS...
+
+
+
+
+
+
+
+
+EX:
+
+
+import reducer from './authReducer';
+
+
+
+import * as actionTypes from '../actions/authActionTypes';
+
+
+
+
+
+
+
+
+describe();
+
+
+
+
+
+
+-------------------------------
+
+
+
+
+
+NO DESCRIBE,
+
+
+COLOCAMOS 
+
+UMA 
+
+DESCRIÇÃO BEM CLARA DO QUE 
+
+VAMOS QUERER 
+
+LER NO CONSOLE,
+QUANDO ESSE TEST FOR EXECUTADO...
+
+
+
+
+
+
+
+
+---> 
+
+
+
+ex:
+
+
+
+
+describe('auth reducer', () => {
+
+})
+
+
+
+
+
+--------------------------------
+
+
+
+
+CERTO, AÍ NESSE SEGUNDO PARÂMETRO VAMOS ESCREVER OS DIVERSOS TESTS QUE VAMOS QUERER EXECUTAR...
+
+
+
+
+
+
+
+
+
+--> de novo,
+
+
+podemos usar 
+
+
+'beforeEach' PARA 
+
+FAZER 
+
+UMA 
+
+CONFIGURAÇÃO GERAL DE CADA TEST/it case,
+
+caso precisemos...
+
+
+
+
+
+
+
+
+--> ok...
+
+
+
+
+
+ex:
+
+
+
+
+
+describe('auth reducer', () => {
+            it('')
+})
+
+
+
+
+
+
+-------------------------------
+
+
+
+
+VAMOS 
+
+
+TESTAR... ---> vamos testar 
+
+
+SE 
+
+
+
+
+__CONSEGUIMOS O 'INITIALSTATE' CORRETO _ SE PASSARMOS _ ALGUM 
+
+
+
+
+ACTIONTYPE INVÁLIDO A ESSE REDUCER...
+
+
+
+
+ex:
+
+
+it ('should return the initial state')
+
+
+
+
+
+-----------------------------------------
+
+
+
+
+descrito o objetivo,
+
+
+
+
+PROFESSOR 
+
+
+PASSA 
+
+A FUNÇÃO ARROW 
+
+
+DE 
+
+'ACTUAL TEST'...
+
+ex:
+
+
+
+
+
+describe('auth reducer', () => {
+            it('should return the initial state', () => {
+
+            })
+})
+
+
+
+
+----------------------------------
+
+
+
+
+DENTRO DISSO,
+
+PROFESSOR 
+ESCREVE UM 
+
+'expect' --> ele vai EXPECT que 
+
+o 
+
+
+
+'reducer()' (importado, e com essa grafia de EXECUTE, DE '()'... pois ele é uma FUNÇÃO.)
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+describe('auth reducer', () => {
+            it('should return the initial state', () => {
+                expect(reducer(undefined)); ////EIS O CÓDIGO EM QUESTÃO.
+            })
+})
+
+
+
+
+--------------------------------------------
+
+
+NESSE EXEMPLO AÍ,
+
+
+
+PROFESSOR 
+
+PASSA 
+'undefined'
+ 
+ como 
+
+ parâmetro 
+
+
+
+ DESSE REDUCER AÍ, DESSA EXECUÇAÕ DO REDUCER,
+
+
+ pq 
+
+
+ JUSTAMENTE ELE QUER TESTAR 
+
+
+ SE 
+ O REDUCER 
+
+ RETORNA 
+ 'initialState' 
+
+
+
+ quando 
+
+
+
+
+
+1) o initialSTATE estiver como 
+
+
+'undefined' (que é exatamente o que ACONTECE NA PRIMEIRA INICIALIZAÇÃO DO NOSSO 
+
+APP; O STATE passado é 'undefined', essencialmente...)
+
+
+
+
+ ex:
+
+
+
+
+
+
+
+
+
+describe('auth reducer', () => {
+            it('should return the initial state', () => {
+                expect(reducer(undefined)); ////EIS O CÓDIGO EM QUESTÃO.
+            })
+})
+
+
+
+
+
+--------------------------------
+
+
+
+
+
+CERTO,
+
+
+
+MAS FALTA ESPECIFICAR A 'ACTION'... --> para a action, o segundo parâmetro,
+
+professor 
+
+
+
+DEIXA UM OBJETO VAZIO,
+pq 
+
+aí 
+
+
+
+ESSA 
+
+
+action vai ser considerada 'UNCAUGHT'... ------> E É EXATAMENTE ISSO QUE QUEREMOS 
+
+TESTAR AQUI,
+
+QUEREMOS 
+
+
+TESTAR 
+
+SE 
+
+O REDUCER 
+
+REALMENTE 
+
+RETORNA 
+
+'initialState' 
+
+
+SE 
+
+
+
+UM STATE DE UNDEFINED E UMA ACTION 'UNCAUGHT' forem passados 
+
+a ele...
+
+
+
+ex:
+
+
+
+
+
+
+
+describe('auth reducer', () => {
+            it('should return the initial state', () => {
+                expect(reducer(undefined, {})); ////EIS O CÓDIGO EM QUESTÃO.
+            })
+})
+
+
+
+
+
+
+
+
+-------------------------------
+
+
+CERTO,
+
+mas 
+
+falta 
+
+o 
+
+
+
+'.xxxx', aquele 
+
+
+
+'toHaveLength',
+
+'toBeGreaterThan',
+
+etc etc.... -------> NO CASO 
+
+DO PROFESSOR, 
+
+
+ELE VAI QUERER 
+
+
+
+QUE 
+
+
+
+
+
+o STATE SEJA 
+
+'igual a' ('toEqual')
+ 
+
+
+
+IGUAL 
+
+AO 
+
+STATE INICIAL QUE TEMOS 
+
+LÁ 
+
+
+NO ARQUIVO 
+
+DE 
+'auth.js', no arquivo do reducer,
+
+
+aquele 
+
+
+
+
+STATE QUE TEM O SEGUINTE CÓDIGO:
+
+
+
+
+-------------------------------
+
+
+
+const initialState = {
+        token: null,
+        userId: null,
+        error: null,
+        loading: false,
+        email: null,
+        authRedirectPath: '/'
+}
+
+-------------------------------
+
+
+
+
+
+ENTÃO FICARÁ ASSIM:
+
+
+
+
+
+
+
+describe('auth reducer', () => {
+            it('should return the initial state', () => {
+                expect(reducer(undefined, {})) ////EIS O CÓDIGO EM QUESTÃO.
+                .toEqual({
+                            token: null,
+        userId: null,
+        error: null,
+        loading: false,
+        email: null,
+        authRedirectPath: '/'
+                })
+            })
+})
+
+
+-------------------------------------
+
+
+
+
+
+
+
+describe('auth reducer', () => {
+    it('should return the initial state', () => {
+        expect(reducer(undefined, {})) ////EIS O CÓDIGO EM QUESTÃO.
+        .toEqual(
+            {
+                token: null,
+                userId: null,
+                error: null,
+                loading: false,
+                email: null,
+                authRedirectPath: '/'
+            }
+        )
+    })
+})
+
+
+
+---------------------------------
+
+
+
+
+RODAMOS 
+
+
+
+ESSE TEST, 
+
+E ELE 
+
+
+
+
+DÁ 
+
+
+'SUCCESS'... ---> e é EXATAMENTE 
+
+ASSIM QUE 
+
+PODEMOS 
+
+TESTAR UM REDUCER,
+
+É BEM FÁCIL...
+
+
+
+
+
+
+
+
+--> E É CLARO QUE PODEMOS TESTAR 
+
+DIFERENTES 
+
+'CASES'...
+
+
+
+ex:
+
+
+
+
+'reducer should store the token upon login'... -----------> 
+
+
+
+
+NESSE SEGUNDO IT CASE,
+
+
+
+
+vamos escrever 
+
+um código 
+
+específico a esse test...
+
+
+
+
+ex:
+
+
+
+
+
+it('should store the token upon login', 
+
+() => {
+    expect(reducer(undefined, actionTypes.AUTH_LOGIN)).toEqual(
+        {
+                            token: action.token, //isso está errado...
+                userId: null,
+                error: null,
+                loading: false,
+                email: null,
+                authRedirectPath: '/'
+
+
+        }
+    )
+}
+
+
+)
+
+
+
+
+
+
+
+
+
+
+-------------------------------
+
+
+
+FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+import reducer from './authReducer';
+
+
+
+import * as actionTypes from '../actions/authActionTypes';
+
+
+
+
+
+describe('auth reducer', () => {
+    it('should return the initial state', () => {
+        expect(reducer(undefined, {})) 
+        .toEqual(
+            {
+                token: null,
+                userId: null,
+                error: null,
+                loading: false,
+                email: null,
+                authRedirectPath: '/'
+            }
+        )
+    });
+
+    it('should store the token upon login', 
+() => {
+    expect(reducer({
+        token: null,
+        userId: null,
+        error: null,
+        loading: false,
+        email: null,
+        authRedirectPath: '/'
+    },                      {type: actionTypes.AUTH_SUCCESS, 
+                             token: 'dummy',
+                            userId: 'dummyUserId',
+                        email: 'dummyEmail'       })).toEqual(
+        {
+                            token: 'dummy', ////TIPO ASSIM, CREIO EU...
+                userId: 'dummyUserId',
+                error: null,
+                loading: false,
+                email: 'dummyEmail',
+                authRedirectPath: '/'
+
+
+        }
+    )
+}
+    )
+})
+
+
+
+
+
+------------------------------
+
+
+
+
+IMPORTANTE --> 
+
+
+aquele 
+
+
+'token', 'userId' 
+
+e 
+
+'email', que foram preenchidos COM DUMMY DATA (dummy data já serve para testar 
+
+se aquela função funciona do jeito que desejamos...)
+
+
+
+
+
+
+a token (e outros valores) passados 
+
+
+PELA ACTION deverão ser os mesmos que aparecerão 
+
+
+naquele 
+
+'.toEqual()'... ----> 
+
+
+É ASSIM 
+
+
+QUE PODEMOS 
+
+TESTAR 
+REDUCERS... --> sÃO 
+
+PURE 
+FUNCTIONS, E JUSTAMENTE POR ISSO SÃO BEM FÁCEIS DE SE TESTAR...

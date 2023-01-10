@@ -1,0 +1,453 @@
+JÁ CONSEGUI IMPLEMENTAR UM 
+
+ERROR HANDLING DE LOGIN,
+
+
+ficou tipo assim:
+
+
+
+
+
+
+
+
+
+  onLogin(authData: {
+    email: string;
+    password: string;
+    returnSecureToken: boolean;
+  }) {
+    const requestHeaders = new HttpHeaders();
+
+    requestHeaders.append('Content-Type', 'application/json');
+
+    return this.http
+      .post<AuthResponseData>(
+        // <{expiresIn: number, idToken: string, expirationDate: string, localId: string, email: string}>
+
+        // 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg', //VERSÃO DUMMY (sem authentication rules no firebase)
+        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBK3AXsu9Gn0fqLmA0zOdUAknDM48Nwk_o', ////VERSÃO COM AUTHENTICATE, DEPLOY
+        authData,
+
+        {
+          headers: requestHeaders,
+        }
+      )
+      .pipe(
+        catchError((errorRes) => {
+          console.log(errorRes);
+
+          let errorMessage = 'An unknown error has occured.';
+
+          switch (errorRes.error.error.message) {
+            case 'EMAIL_NOT_FOUND':
+              errorMessage = 'No user found for the entered email!';
+              break;
+            case 'INVALID_PASSWORD':
+              errorMessage = 'Invalid password, please try again.';
+          }
+
+          return throwError(() => errorMessage);
+        })
+      );
+
+
+
+
+
+
+
+
+
+
+
+------------------------
+
+
+
+
+
+
+
+
+
+
+
+A LÓGICA DE ERROR HANDLING DE 'LOGIN', PORTNATO,
+
+
+NÃO É A MESMA 
+
+
+
+
+
+LÓGICA USADA 
+
+
+
+
+
+
+NO ERROR HANDLING 
+
+
+
+
+DE 'SIGNUP'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR DIZ QUE É UMA BOA COMPARTILHAR 
+
+
+
+AQUELA LÓGICA DE 
+
+
+
+''
+
+
+
+          switch (errorRes.error.error.message) {
+            case 'EMAIL_NOT_FOUND':
+              errorMessage = 'No user found for the entered email!';
+              break;
+            case 'INVALID_PASSWORD':
+              errorMessage = 'Invalid password, please try again.';
+          }
+
+
+
+
+
+''
+
+ENTRE 
+
+
+
+AS 2 ROUTES/FEATURES...
+
+
+
+
+
+
+
+
+
+
+
+--> para isso,
+
+
+
+O PROFESSOR DIZ QUE PODERÍAMOS CRIAR UM NOVO PRIVATE METHOD NO NOSSO SERVICE... SERÁ PRIVATE 
+
+PQ 
+
+
+
+SÓ VAMOS 
+
+
+USAR DENTRO DO NOSSO SERVICE..
+
+
+
+
+
+
+
+
+
+
+
+--> será a function 
+
+
+
+private handleError() {
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+--> ESSE HELPER METHOD VAI 
+
+
+
+
+
+ESPERAR COMO PARÂMETRO UM OBJECT DE TYPE 
+
+
+'HTTPErrorResponse'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DENTRO DESSE NEGÓCIO,
+
+
+
+
+queremos 
+
+
+
+
+
+
+FAZER:
+
+
+
+
+1) MERGULHAR NA NOSSA RESPONSE,
+
+
+
+2) ANALISAR A RESPONSE (CHECK THE RESPONSE)
+
+
+
+E,
+
+POR FIM,
+
+
+
+
+3) 'THROW A NEW ERROR OBSERVABLE'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+O PRIVATE METHOD FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+private handleError(errorRes: HttpErrorResponse) {
+
+
+
+let errorMessage = 'An unknwown error has occurred!';
+
+
+if (!errorRes.error || !errorRes.error.error) {
+
+    return throwError(errorMessage);
+}
+
+
+
+
+
+
+switch(errorRes.error.error.message) {
+    case 'EMAIL_EXISTS':
+        errorMessage = 'This email already exists';
+}
+
+
+return throwError(errorMessage); 
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-_> certo... A PARTIR DESSE METHOD DE 
+
+
+'handleError',
+
+
+
+
+
+
+substituímos o CÓDIGO QUE TÍNHAMOS LÁ 
+
+
+NOS NOSSOS 'catchError',
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+.pipe(
+    catchError(
+        this.handleError
+    )
+)
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok, mas isso parece realmente ser opcional,
+
+
+
+
+pq os 2 cases NÃO SÃO A MESMA COISA, na verdade (signup e login)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+o professor admite que poderíamos 'NÃO DAR NENHUM HINT' sobre o que está errado com o password/username,
+
+para ENHANCE SECURITY...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> com essas mudanças, não precisamos fazer mais coisa alguma...
+
+
+
+
+
+
+
+
+
+
+
+--> ok, nossa lógica DE ERROR HANDLING ESTÁ FUNCIONANDO, E JÁ TEMOS AS ROUTES DE SIGNUP E LOGIN...
+
+
+
+
+
+
+
+
+
+--. A ETAPA FINAL É:
+
+
+1) FINALMENTE COMEÇAR A USAR ESSA LOGIN DATA (token)
+
+
+
+
+2) COMEÇAR A ARMAZENAR NOSSO TOKEN NA 'LOCAL STORAGE'
+
+
+
+
+3) MUDAR NOSSA USER INTERFACE PARA REFLETIR O AUTHENTICATION STATUS ATUAL DO USER...
+
+
+
+
+
+
+
+
+--> VEREMOS ISSO NA PRÓXIMA AULA,
+
+
+
+'creating e storing the user data'...

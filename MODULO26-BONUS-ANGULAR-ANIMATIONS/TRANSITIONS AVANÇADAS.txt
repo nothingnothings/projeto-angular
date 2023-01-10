@@ -1,0 +1,1987 @@
+
+
+
+
+
+
+
+
+NOSSO CÓDIGO 'BÁSICO' FICOU ASSIM:
+
+
+
+
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  animations: [
+    trigger('divStateExample', [
+      state('normal', style({ /////queremos que o value desse 'starting state' SEJA IGUAL ao value do state ('normal', nesse caso) que temos ali embaixo, o starting state...
+
+        'background-color': 'red',
+        'transform': 'translateX(0px) '
+
+      })), 
+      state('highlighted', style({
+
+        'background-color': 'blue',
+        'transform': 'translateX(200px)'
+      })),
+
+      transition( ///////É UM METHOD SUPER INTUITIVO --> --> ELE NOS DEIXA 'DESCREVER COMO A TRANSITION DE UM STATE PARA OUTRO DEVE SE PARECER/acontecer''...
+      
+      'normal => highlighted',  ////com isso, especificamos que 'A TROCA DE VALUE DE NORMAL PARA HIGHLIGHTED DEVE....'
+
+     
+      animate( /////a coisa mais simples que você pode fazer é passar um NÚMERO, que será o NÚMERO DE ms até que essa transition ACABE..
+
+      300
+      )
+      ),
+
+      transition(
+      'highlighted => normal',
+      animate(
+      100
+      )
+      ) 
+    ]),
+  ],
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> A PRIMEIRA COISA QUE PODEMOS FAZER,
+
+
+AQUI,
+
+
+
+É REBUSCAR O CÓDIGO 
+
+
+
+
+
+
+
+
+
+DE 
+
+'transition()',
+
+
+particularmente aquele 'animate()'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> É POR ISSO QUE VAMOS REMOVER ESSAS 2 TRANSITIONS... ( o que vai retornar nosso código à versão 'HARD SWITCH' entre o STATE A e o STATE B)...
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  animations: [
+    trigger('divStateExample', [
+      state('normal', style({ /////queremos que o value desse 'starting state' SEJA IGUAL ao value do state ('normal', nesse caso) que temos ali embaixo, o starting state...
+
+        'background-color': 'red',
+        'transform': 'translateX(0px) '
+
+      })), 
+      state('highlighted', style({
+
+        'background-color': 'blue',
+        'transform': 'translateX(200px)'
+      })),
+    ]),
+  ],
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> CERTO... A PRIMEIRA COISA QUE O PROFESSOR QUER NOS MOSTRAR É ISTO AQUI:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+DIGAMOS QUE VOCÊ TEM UMA TRANSITION QUE VOCÊ PRETENDE USAR 'NOS 2 SENTIDOS' (
+
+    ou seja,
+
+    tanto para mover 1 cubo para a direita, como para a esquerda... ---> você quer 
+
+    que a ANIMATION nessa TRANSFORMATION 
+
+
+
+    ocorra _ COM A MESMA DURAÇÃO TANTO NA VERSÃO 'PARA A DIREITA' como 'PARA A ESQUERDA'...
+)
+
+
+
+
+
+
+
+
+em cases como esses, não é necessário ser um homem das cavernas e duplicar o código tipo assim:
+
+
+
+
+
+
+
+
+transition('normal => highlighted', animate(300)),
+transition('highlighted => normal', animate(300))
+
+
+
+
+
+
+
+
+
+
+
+NÃO, EM CASES COMO ESSES, VOCÊ PODE 
+
+
+
+
+
+USAR ___ APENAS 1 LINHA,
+
+
+MAS AÍ 
+
+
+
+ESCREVER 
+
+'<=>' 
+
+
+EM VEZ DE 
+
+só 
+
+'=>',
+
+
+
+
+
+PQ AÍ 
+
+
+ESSA '<=>'
+
+
+
+ARROW DE DUPLO SENTIDO VAI QUERER DIZER 
+
+
+
+
+
+''''BACK AND FORTH, A->B E B->A,
+
+
+AMBOS DEVERÃO ACONTECER COM A MESMA VELOCIDADE''''...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... ESSA É UMA DAS COISAS INTERESSANTES, UM SHORTHAND SINTÁTICO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> CERTO... ---> 
+
+
+
+
+
+
+
+MAS VOCê 
+
+
+
+
+
+TAMBÉM PODE TER UMA ___ ANIMATION _ MAIS COMPLEXA,
+
+
+
+
+
+
+
+
+
+UMA ANIMATION EM QUE, DIGAMOS,
+
+
+VOCÊ 
+
+
+QUER 
+
+
+
+__CONTROLAR__ O STYLING QUE ESSA DIV TEM 
+
+
+
+
+___ DURANTE_ O MOVIMENTO__  (
+
+
+    ou seja,
+
+
+    VOCÊ VAI QUERER ALTERAR 
+
+
+
+    NÃO SÓ O 'BEGINNING' E O 'END STATE'  
+
+
+    COMO ESTAMOS FAZENDO AGORA,
+
+
+    MAS TAMBÉM 
+
+
+
+    O STATE DE 'DURING', DURANTE A TRANSIÇAÕ...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OU SEJA,
+
+VOCÊ 
+
+PODE ACABAR DESEJANDO ALGUNS STYLES EXTRAS SOBRE ESSE ELEMENTO _______DURANTE__ 
+
+
+
+
+
+A TRANSITION...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, PARA SIMULAR ESSA 'TRANSITION MAIS ELABORADA',
+
+
+
+
+
+
+
+
+
+
+
+o professor COPIA O NOSSO TRIGGER 
+
+
+
+BÁSICO,
+
+
+
+de código 
+
+
+
+
+
+
+
+''
+
+
+
+
+trigger('divStateExample', [
+      state('normal', style({ /////queremos que o value desse 'starting state' SEJA IGUAL ao value do state ('normal', nesse caso) que temos ali embaixo, o starting state...
+
+        'background-color': 'red',
+        'transform': 'translateX(0px) '
+
+      })), 
+      state('highlighted', style({
+
+        'background-color': 'blue',
+        'transform': 'translateX(200px)'
+      })),
+    ]),
+  ],
+})
+
+
+
+
+
+
+
+
+
+
+''''''''
+
+
+
+
+
+
+
+
+
+
+
+ELE COPIA ESSE TRIGGER AÍ,
+
+
+PARA AÍ 
+
+CRIAR UM NOVO TRIGGER,
+
+
+
+
+
+QUE TERÁ UM IDENTIFIER DE 'wildState'....
+
+
+
+
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+trigger('wildStateExample', [
+      state('normal', style({ /////queremos que o value desse 'starting state' SEJA IGUAL ao value do state ('normal', nesse caso) que temos ali embaixo, o starting state...
+
+        'background-color': 'red',
+        'transform': 'translateX(0px) '
+
+      })), 
+      state('highlighted', style({
+
+        'background-color': 'blue',
+        'transform': 'translateX(200px)'
+      })),
+    ]),
+  ],
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE VAMOS PRECISAR DE:
+
+
+
+1) UM NOVO ELEMENTO NO HTML, UMA NOVA DIV QUE VINCULAREMOS A ESSE 'wildStateExample'....
+
+
+
+
+
+
+
+2) UM NOVO METHOD DE 'onAnimate', talvez 'onAnimateWild()'....
+
+
+
+
+
+
+
+3) UMA NOVA PROPRIEDADE NO STATE, TALVEZ 'wildAnimationState'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO VAI FICANDO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  animations: [
+    trigger('divStateExample', [
+      state('normal', style({ /////queremos que o value desse 'starting state' SEJA IGUAL ao value do state ('normal', nesse caso) que temos ali embaixo, o starting state...
+
+        'background-color': 'red',
+        'transform': 'translateX(0px) '
+
+      })), 
+      state('highlighted', style({
+
+        'background-color': 'blue',
+        'transform': 'translateX(200px)'
+      })),
+
+      transition( ///////É UM METHOD SUPER INTUITIVO --> --> ELE NOS DEIXA 'DESCREVER COMO A TRANSITION DE UM STATE PARA OUTRO DEVE SE PARECER/acontecer''...
+      
+      'normal => highlighted',  ////com isso, especificamos que 'A TROCA DE VALUE DE NORMAL PARA HIGHLIGHTED DEVE....'
+
+     
+      animate( /////a coisa mais simples que você pode fazer é passar um NÚMERO, que será o NÚMERO DE ms até que essa transition ACABE..
+
+      300
+      )
+      ),
+
+      transition(
+      'highlighted => normal',
+      animate(
+      100
+      )
+      ),
+
+      // transition( ////////USE ESTA VERSÃO SE VOCê QUER QUE '(STATE A) => (STATE B)'  e '(STATE B) => (STATE A)' OCORRAM COM A MESMA VELOCIDADE....
+      //   'normal <=> highlighted',
+      //   animate(
+      //   100
+      //   )
+      //   ),
+
+
+
+
+
+    ]),
+
+
+    trigger('wildStateExample',
+    
+    [
+
+
+      state('normal', style( ///STATE A
+        {
+          'background-color': 'green'
+        }
+      ))
+    ]
+    
+    
+    
+    )
+  ],
+})
+export class AppComponent {
+  animationState = 'normal'; ////vamos USAR ESSA PROPRIEDADE COMO 'CONDITION' para dar PLAY EM DIFERENTES ANIMATIONS, por meio do bind do nosso trigger de 'divStateExample' a essa propriedade....
+
+
+  wildAnimationState = 'normal';
+
+
+
+
+  items: string[] = ['Milk', 'Sugar', 'Bread'];
+
+  constructor() {}
+
+  onDeleteItem(item: string) {
+    console.log(item);
+  }
+
+  onAddItem(item: string) {
+    this.items.push(item);
+  }
+
+
+  
+
+
+  animateBox() {
+
+
+
+    switch(this.animationState) {
+
+      case 'normal':
+        this.animationState = 'highlighted';
+        break;
+      case 'highlighted':
+        this.animationState = 'normal';
+        break;
+
+    }
+
+
+}
+
+
+
+
+
+animateWildBox() {
+
+}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+e assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <h1>Animations</h1>
+      <button class="btn btn-primary" (click)="animateBox()">Animate!</button> |
+      <button class="btn btn-primary" (click)="animateWildBox()">Animate Wild Box!</button> |
+      <button class="btn btn-primary">Shrink!</button>
+      <hr />
+
+
+
+       <!-- ESSE É O ELEMENTO QUE SOFRERÁ AS 'ANIMATIONS'. OBS: o trigger sempre é colocado/posicionado em algum elemento, usando essa notation de [@nomeDoTrigger]   -->
+      <!-- QUEREMOS QUE ESSE TRIGGER DE 'divStateExample' FIQUE _ VINCULADO_  à PROPRIEDADE DE 'state' DE NOSSO COMPONENT.....--> 
+      <div [@divStateExample]="animationState"
+        style="width: 100px; height: 100px; margin-bottom: 16px"
+      ></div> 
+      
+      <div [@wildStateExample]="wildAnimationState"
+      style="width: 100px; height: 100px"
+    ></div> 
+
+    </div>
+  </div>
+<hr />
+<div class="row">
+  <div class="col-xs-12">
+    <input type="text" #input >
+    <button class="btn btn-primary" (click)="onAddItem(input.value)">
+      Add Item!
+    </button>
+    <hr />
+    <ul class="list-group">
+      <li
+        class="list-group-item"
+        (click)="onDeleteItem(item)"
+        *ngFor="let item of items"
+      >
+        {{ item }}
+      </li>
+    </ul>
+  </div>
+</div>
+<hr />
+<div class="row">
+  <div class="col-xs-12">
+    <ul class="list-group">
+      <li
+        class="list-group-item"
+        (click)="onDeleteItem(item)"
+        *ngFor="let item of items"
+      >
+        {{ item }}
+      </li>
+    </ul>
+  </div>
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO....
+
+
+
+
+
+
+EU CRIEI UMA NOVA PROPRIEDADE, O 
+
+
+
+
+
+
+
+
+PROFESSOR TAMBÉM FEZ ISSO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------> ok,
+
+
+
+MAS COMO O WILDSTATE FUNCIONA,
+
+COMO 
+
+PODEREI CONTROLAR 
+
+
+
+DE FORMA MAIS 'COMPLEXA' O meu state 
+
+PARA AÍ 
+
+
+
+
+
+OBTER ANIMATIONS MAIS COMPLEXAS NOS NOSSOS ELEMENTOS?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> BEM, O PROFESSOR EXPLICA QUE __ ELE VAI QUERER QUE O 'wildState'
+
+
+
+TENHA AQUELES MESMOS 2 STATES 
+
+
+
+
+
+de 
+
+
+'normal' e 'highlighted',
+
+
+
+
+
+MAS QUE AGORA ELE _ DEVERÁ _ TER UM STATE EXTRA,
+
+
+
+QUE SERÁ O 'shrunken'   STATE..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> EM OUTRAS PALAVRAS, O PROFESSOR QUER SER CAPAZ _ DE ENCOLHER __ ESSE QUADRADO vinculado ao trigger de 'wildStateExample'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    trigger('wildStateExample',
+    
+    [
+
+
+      state('normal', style( ///STATE A
+        {
+          'background-color': 'green',
+          'transform': 'translateX(0)'
+        }
+      )),
+      state('highlighted', style( ///STATE B
+      {
+        'background-color': 'blue',
+        'transform': 'translateX(100px)'
+      }
+    )),
+
+    state('shrunken', style( ///STATE C
+    {
+      'background-color': 'red',
+
+      'transform': 'translateX(0px) scale(0.5)' 
+    }
+  ))
+
+    ]
+    
+    
+    
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ------> OU SEJA,
+
+
+    VAMOS QUERER QUE ELE FIQUE VERMELHO
+    E QUE 
+
+    TAMBE´M
+
+
+
+    SEJA _ REDUZIDO POR '50%',
+
+
+    graçaas ao 'scale(0.5)'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ----> AGORA O PRÓXIMO PASSO É _ VINCULAR UM _ METHOD DE 
+
+    'onShrink' 
+
+
+    AO 
+
+    BUTTON DE 'shrink',
+
+
+    E AÍ,
+
+
+    DE ALGUMA FORMA,
+
+
+
+
+    RODAR ALGUMA LÓGICA QUE 
+
+
+
+
+
+    ATIVE ESSA TRANSFORMATION DE 'scale()'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO.. 
+
+
+
+
+
+
+
+
+MAS É CLARO QUE É BOM _ _DEFINIR um 'scale(1)'
+
+
+
+
+
+NOS CASES DE 'state' 'NORMAL' 
+
+
+
+
+
+
+e 'HIGHLIGHTED',
+
+
+
+
+para que 
+DEPOIS DE SER ENCOLHIDO O ITEM, ELE CONSIGA 'REVERTER PARA O TAMANHO ORIGINAL'...
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+    trigger('wildStateExample',
+    
+    [
+
+
+      state('normal', style( ///STATE A
+        {
+          'background-color': 'green',
+          'transform': 'translateX(0) scale(1)'
+        }
+      )),
+      state('highlighted', style( ///STATE B
+      {
+        'background-color': 'blue',
+        'transform': 'translateX(100px) scale(1)'
+      }
+    )),
+
+    state('shrunken', style( ///STATE C
+    {
+      'background-color': 'red',
+
+      'transform': 'translateX(0px) scale(0.5)' 
+    }
+  ))
+
+    ]
+    
+    
+    
+    )
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    trigger('wildStateExample',
+    
+    [
+
+
+      state('normal', style( ///STATE A
+        {
+          'background-color': 'green',
+          'transform': 'translateX(0) scale(1)'
+        }
+      )),
+      state('highlighted', style( ///STATE B
+      {
+        'background-color': 'blue',
+        'transform': 'translateX(100px) scale(1)'
+      }
+    )),
+
+    state('shrunken', style( ///STATE C
+    {
+      'background-color': 'red',
+
+      'transform': 'translateX(0px) scale(0.5)'  ///transformation mais complexazinha, queremos que o cubo diminua pela METADE..
+    }
+  )),
+
+  transition('normal <=> highlighted', animate(300))
+
+    ]
+    )
+  ],
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK ....... 
+
+
+
+
+
+CERTO, MAS 
+
+AGORA O METHOD DE 'onShrink'
+
+
+
+DEVERÁ FAZER ALGO DIFERENTE...
+
+
+
+
+
+
+
+
+--> QUEREMOS QUE O 'onShrink'
+
+ 
+
+
+
+ DEFINA O 'wildState' de nosso component, essa propriedade,
+
+
+ como tendo o value de 
+
+ 'shrunken'...
+
+
+
+
+
+
+
+
+
+
+ EX:
+
+
+
+
+
+
+
+ onShrink() {
+
+  this.wildAnimationState = 'shrunken';
+
+}
+
+
+
+
+
+
+
+
+
+
+
+CERTO.... JÁ naquele method de 
+
+
+
+'animateBox',
+
+
+
+
+
+
+o professor vai TAMBÉM QUERER 
+
+
+
+EDITAR O 'wildAnimationState',
+
+
+
+
+
+
+
+
+
+
+ele roda uma lógica para 
+
+
+
+
+
+TROCAR O STATE PARA 'HIGHLIGHTED' se ele estiver como 'normal',
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  animations: [
+    trigger('divStateExample', [
+      state('normal', style({ /////queremos que o value desse 'starting state' SEJA IGUAL ao value do state ('normal', nesse caso) que temos ali embaixo, o starting state...
+
+        'background-color': 'red',
+        'transform': 'translateX(0px) '
+
+      })), 
+      state('highlighted', style({
+
+        'background-color': 'blue',
+        'transform': 'translateX(200px)'
+      })),
+
+      transition( ///////É UM METHOD SUPER INTUITIVO --> --> ELE NOS DEIXA 'DESCREVER COMO A TRANSITION DE UM STATE PARA OUTRO DEVE SE PARECER/acontecer''...
+      
+      'normal => highlighted',  ////com isso, especificamos que 'A TROCA DE VALUE DE NORMAL PARA HIGHLIGHTED DEVE....'
+
+     
+      animate( /////a coisa mais simples que você pode fazer é passar um NÚMERO, que será o NÚMERO DE ms até que essa transition ACABE..
+
+      300
+      )
+      ),
+
+      transition(
+      'highlighted => normal',
+      animate(
+      100
+      )
+      ),
+
+      // transition( ////////USE ESTA VERSÃO SE VOCê QUER QUE '(STATE A) => (STATE B)'  e '(STATE B) => (STATE A)' OCORRAM COM A MESMA VELOCIDADE....
+      //   'normal <=> highlighted',
+      //   animate(
+      //   100
+      //   )
+      //   ),
+
+
+
+
+
+    ]),
+
+
+    trigger('wildStateExample',
+    
+    [
+
+
+      state('normal', style( ///STATE A
+        {
+          'background-color': 'green',
+          'transform': 'translateX(0) scale(1)'
+        }
+      )),
+      state('highlighted', style( ///STATE B
+      {
+        'background-color': 'blue',
+        'transform': 'translateX(100px) scale(1)'
+      }
+    )),
+
+    state('shrunken', style( ///STATE C
+    {
+      'background-color': 'red',
+
+      'transform': 'translateX(0) scale(0.5)'  ///transformation mais complexazinha, queremos que o cubo diminua pela METADE..
+    }
+  )),
+
+  transition('normal <=> highlighted', animate(300))
+
+
+
+    ]
+    )
+  ],
+})
+export class AppComponent {
+  animationState = 'normal'; ////vamos USAR ESSA PROPRIEDADE COMO 'CONDITION' para dar PLAY EM DIFERENTES ANIMATIONS, por meio do bind do nosso trigger de 'divStateExample' a essa propriedade....
+
+
+  wildAnimationState = 'normal';
+
+
+
+
+  items: string[] = ['Milk', 'Sugar', 'Bread'];
+
+  constructor() {}
+
+  onDeleteItem(item: string) {
+    console.log(item);
+  }
+
+  onAddItem(item: string) {
+    this.items.push(item);
+  }
+
+
+  
+
+
+  animateBox() {
+
+
+
+    switch(this.animationState) {
+
+      case 'normal':
+        this.animationState = 'highlighted';
+        break;
+      case 'highlighted':
+        this.animationState = 'normal';
+        break;
+
+    }
+
+
+
+    switch(this.wildAnimationState) {
+
+      case 'normal':
+        this.wildAnimationState = 'highlighted';
+        break;
+      case 'highlighted':
+        this.wildAnimationState = 'normal';
+        break;
+
+    }
+
+
+}
+
+
+
+
+
+// animateWildBox() {
+
+// }
+
+
+
+onShrink() {
+
+  this.wildAnimationState = 'shrunken';
+
+}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> OK... COM ISSO, NOSSA 'wildBox'
+
+
+TAMBÉM ESTÁ SENDO ANIMADA PARA IR PARA A DIREITA E ESQUERDA,
+
+
+
+
+
+PORÉM
+
+
+
+AINDA NÃO CONSEGUIMOS ATIVAR A TRANSITION PARA O 'SHRINK' DESSA BOX....
+
+
+
+
+
+
+
+
+
+
+
+
+-> O SHRINK AINDA NÃO ESTÁ SENDO ANIMADO.... ISSO É ALGO QUE QUEREMOS MUDAR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> DE VOLTA AO APP COMPONENT,
+
+
+
+NÓS PRECISAMOS DE UMA OUTRA TRANSITION PARA NOSSO 'TRIGGER' de 'wildBox',
+
+
+
+
+
+
+
+
+pq 
+
+queremos que exista uma transição gradual...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS COMO FAZEMOS ISSO?
+
+
+
+
+
+
+
+
+
+--> DEVEMOS, PRIMEIRAMENTE,
+
+
+
+
+USAR ESTA NOTAÇÃO AQUI:
+
+
+
+
+
+
+
+transition('shrunken <=> * ' )
+
+
+
+
+
+
+
+
+
+
+
+-> QUANDO COLOCAMOS '<=>'
+
+
+
+COM UMA ESTRELADO DO LADO (*),
+
+
+ESTAMOS BASICAMENTE DIZENDO 
+
+
+
+'''' NÃO INTERESSA A QUE STATE ESTAMOS TROCANDO,
+
+
+SEMPRE VAMOS QUERER _TOCAR _ESSA ANIMATION, 
+
+
+
+ESSE __ANDAMENTO__ PARA NOSSA ANIMATION DE SHRINK/enlarge desse elemento''...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'string xxx to ANY STRING',
+
+
+
+and 
+
+'ANY STRING TO string XXXX',
+
+
+
+
+
+
+
+
+
+É ESSENCIALMENTE ESSE AÍ O TRIGGER QUE ESTAMOS DEFININDO AQUI...
+
+
+
+
+
+
+fica tipo assim:
+
+
+
+
+    trigger('wildStateExample',
+    
+    [
+
+
+      state('normal', style( ///STATE A
+        {
+          'background-color': 'green',
+          'transform': 'translateX(0) scale(1)'
+        }
+      )),
+      state('highlighted', style( ///STATE B
+      {
+        'background-color': 'blue',
+        'transform': 'translateX(100px) scale(1)'
+      }
+    )),
+
+    state('shrunken', style( ///STATE C
+    {
+      'background-color': 'red',
+
+      'transform': 'translateX(0) scale(0.5)'  ///transformation mais complexazinha, queremos que o cubo diminua pela METADE..
+    }
+  )),
+
+  transition('normal <=> highlighted', animate(300)),
+  transition('shrunken <=> * ', animate(300))  ////////COM ISSO, ESSENCIALMENTE DEFINIMOS QUE ''SE SAÍMOS DO VALUE DA STRING DE SHRUNKEN PARA QUALQUER VALUE, OU SE TROCAMOS DE QUALQUER VALUE PARA ESSE  VALUE DA STRING DE SHRUNKEN', queremos que SEJA __ APLICADA_ ESSA VELOCIDADE DE ANIMATION/ESSA ANIMATION DEFINIDA EM 'animate()'...
+
+
+
+    ]
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+    VAMOS QUERER ANIMAR ESSE NEGÓCIO AO LONGO DE 3 SEGUNDOS...
+
+
+
+
+
+
+
+
+
+
+
+
+    ENTRETANTO, GANHEI UM ERROR:
+
+
+
+
+     NG03015: The provided transition expression "shrunken <=> * " is not supported
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     DEU ERRADO ANTES PQ EU HAVIA COLOCADO 1 mini espaço À direita...
+
+
+
+
+
+
+
+
+
+
+
+
+     A EXPRESSÃO CORRETA É ASSIM:
+
+
+
+
+
+
+
+       transition('normal <=> highlighted', animate(300)),
+  transition('shrunken <=> *', animate(300))  ////////COM ISSO, ESSENCIALMENTE DEFINIMOS QUE ''SE SAÍMOS DO VALUE DA STRING DE SHRUNKEN PARA QUALQUER VALUE, OU SE TROCAMOS DE QUALQUER VALUE PARA ESSE  VALUE DA STRING DE SHRUNKEN', queremos que SEJA __ APLICADA_ ESSA VELOCIDADE DE ANIMATION/ESSA ANIMATION DEFINIDA EM 'animate()'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO DE 'onShrink'
+
+
+ficou assim:
+
+
+
+
+
+
+onShrink() {
+
+  this.wildAnimationState !== 'shrunken' ? this.wildAnimationState = 'shrunken' : this.wildAnimationState = 'normal'; 
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... COM ISSO ESTAMOS ANIMANDO TUDO ISSO...
+
+
+
+
+
+
+
+
+
+
+--> BASICAMENTE,
+
+
+
+O caracter '*' (WILDCARD) 
+
+
+
+
+
+É MT IMPORTANTE,
+
+
+PQ __ NOS _ DÁ MT FLEXIBILIDADE,
+
+
+
+PQ NÃO PRECISAMOS ESPECIFICAR MANUALMENTE 'QUALQUER STATE POSSÍVEL'... --> 
+
+
+
+
+
+
+EM UM APP MT DINÂMICO,
+
+
+
+EM QUE O STATE É DERIVADO DINAMICAMENTE,
+
+
+É POSSÍVEL QUE VOCÊ VENHA A NEM MESMO SABER QUAL STATE SEU APP PODERÁ TER,
+
+
+
+
+
+
+E NESSE CASO O 'wildcard character' 
+
+SERÁ EXATAMENTE O RECURSO QUE VOCê VAI UTILIZAR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NO PRÓXIMO VÍDEO,
+
+VEREMOS 
+
+
+
+
+''''COMO MANIPULAR ESSE METHOD DE animate(),
+
+
+
+
+E COMO __ TER __ ALGUNS  'IN-BETWEEN STYLES' 
+
+DURANTE SUA ANIMATION'''...
+
+
+
+
+
+

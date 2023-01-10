@@ -1,0 +1,1245 @@
+
+
+
+
+
+
+
+
+
+
+
+---> CERTO... CONSEGUIMOS TRANSFORMAR NOSSA DATA, A DATA RECEBIDA POR MEIO DE 'FETCH POSTS',
+
+
+
+por meio do uso de 
+
+
+
+'.pipe()'
+
+
+
+E DE '''OBSERVABLE OPERATORS''' (como 'map', o mais útil de todos)...
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS ANTES DE PROSSEGUIRMOS COM O __ USO _ DESSA DATA __ PARA CARREGAR 
+
+POSTS NA NOSSA PAGE (
+    por meio da alteração do state de 'loadedPosts',
+
+    lá em 'app.component.ts',
+
+
+),
+
+
+
+
+
+
+
+
+
+
+
+O PROFESSOR QUER 
+
+
+
+CHAMAR A NOSSA ATENÇAÕ PARA _ UM PEQUENO PROBLEMA/SPOT EM QUE PODEMOS MELHROAR NOSSO CÓDIGO...
+
+
+
+
+
+
+
+
+
+
+------->  BEM, NO NOSSO IDE,
+
+SE COLOCAMOS O MOUSE EM CIMA DE 
+
+
+'posts',
+
+
+
+
+em 
+
+
+
+
+subscribe(
+    (posts) => {
+
+    }
+)
+
+,
+
+
+
+VEREMOS QUE  O 
+
+
+TYPE ESTÁ COMO 'ANY.'..
+
+
+
+
+
+
+
+--> ISSO SIGNIFICA QUE 
+
+O 
+
+
+
+TYPESCRIPT NÃO CONSEGUE DETERMINAR QUAL SERÁ O FORMATO DE NOSSO POST..
+
+
+
+
+
+
+
+--> ISSO ACONTECE/ACONTECEU 
+
+
+
+JUSTAMENTE PQ 
+
+
+
+A ÚNICA COISA QUE FALAMOS SOBRE O FORMATO DE UM 'POST'
+
+
+nesse nosso código foi isto:
+
+
+          transformedPostsArray.push({...responseData[key], id: key});
+
+
+
+
+
+
+
+
+
+
+
+
+          --> MAS FORA ISSO,
+
+
+          O OBJECT QUE FAZEMOS 'PUSH' 
+
+
+
+          PARA DENTRO 
+
+          DE NOSSO array de 'postsArray '
+
+
+É COMPLETAMENTE 
+
+
+
+
+'UNKNOWN' ao 
+
+
+typescript/angular,
+
+
+
+
+
+
+TUDO PQ _ ELE NÃO SABE O FORMATO DE NOSSA RESPONSE DATA,
+
+
+
+
+
+E SÓ SABE QUE 
+
+
+SE TRATA DE UM OBJECT,
+
+
+
+
+MAS _ NÃO COMO ESSE OBJECT SE PARECE..
+
+
+
+
+
+
+
+
+
+
+
+-----> MAS PODEMOS, SIM, DIZER COMO ESSE 'OBJECT' SE PARECE....
+
+
+
+
+
+
+
+
+
+--> UMA MANEIRA DE FAZER ISSO, NO CASO, 
+
+
+
+
+
+É __ EXPLICAR EXPLICITAMENTE 
+
+QUAL SERÁ O TYPE DISSO,
+
+
+lá em 
+
+
+(
+    responseData
+) => {
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+--> TIPO ASSIM:
+
+
+
+
+
+
+
+responseData: {
+
+
+}
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+VAMOS DIZER UQE 'responseData'
+
+
+É UM OBJECT, SIM,
+
+
+OBJECT QUE TERÁ UMA _ 
+
+
+
+RANDOMLY GENERATED STRING COMO __ kEY.. -->
+
+
+
+
+
+
+PARA ISSO,
+
+PRECISAMOS ESCREVER/REPRESENTAR UM 'PLACEHOLDER PROPERTY NAME',
+
+
+e isso é escrito assim:
+
+
+[key: string]
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+.pipe(
+    map(
+        (responseData: {[key: string]}) => {
+
+        }
+    )
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> isso qeur dizer, em outras palavras,
+QUE VAMOS RECEBER _ QUALQUER_ STRING __
+
+como key ,
+
+
+nesse 
+
+object aí... (pq essa key realmente será GERADA ALEATORIAMENTE PELO FIREBASE, E TEREMOS MUITAS PROPRIEDADES aleatórias)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok, mas sabemos que será um property name que será interpretado 
+
+
+
+como uma string...
+
+
+
+
+
+
+---> E É CLARO QUE __ O VALUE_ SEGURADO POR ESSA PROPERTY/type de 
+
+[name:string]
+
+
+
+
+
+
+
+SERÁ __ NOSSO POST DATA...
+
+
+
+
+
+
+
+
+
+
+
+-> ou seja, a sintaxe correta seria tipo:
+
+
+
+
+
+
+
+
+
+
+[key:string]: {content: string, title: string}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS PARA _ FACILITAR ISSO UM POUCO MAIS  PARA NÓS,
+
+PROFESSOR DIZ QUE PODEMOS OUTSOURCEAR UMA INTERFACE, EM UM ARQUIVO 'post.model.ts',
+
+
+E AÍ SIMPLESMENTE PASSAR ESSA INTERFACE COMO type
+
+
+
+DESSA KEY DE 
+
+'[key:string]: Post' 
+
+
+
+
+
+
+
+
+
+
+
+
+tipo algo assim...
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+export interface Post {
+
+    title: string;
+    content: string;
+
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+e AÍ ASSIM:
+
+
+
+
+
+
+
+
+
+  private fetchPosts() {
+    this.http.get('https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json')
+    .pipe( /////é assim que usamos 'OPERATORS' nos nossos observables (no caso, o observable de 'http')...
+    map(
+        (responseData: {[key: string]: Post}) => {
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------------------
+
+
+
+
+
+
+
+
+
+----> OK... ISSO SIGNIFICA QUE AGORA O TYPESCRIPT 
+
+
+
+'SABE QUE ISSO SERÁ POST DATA'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO VAI FICANDO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  private fetchPosts() {
+    this.http.get('https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json')
+    .pipe( /////é assim que usamos 'OPERATORS' nos nossos observables (no caso, o observable de 'http')...
+    map(
+      // (responseData: any) => {
+        (responseData: {[key: string]: Post}) => {
+
+
+        const transformedPostsArray: Post[] = [];
+
+
+        for (const key in responseData) {
+
+          if (responseData.hasOwnProperty(key)) {  ///VAI CHECAR SE ISSO NÃO É UM 'PROTOTYPE' dentro da 'responseData'...
+            transformedPostsArray.push({...responseData[key], id: key});
+          }
+      
+        }
+
+
+        return transformedPostsArray;
+
+      }
+    )
+    ) 
+    
+    .subscribe(
+      // (responseData ) => {
+        (posts) => {
+
+        // console.log(responseData);
+        console.log(posts);
+        // this.loadedPosts = responseData;
+        // const newArrayDataOfObject = Object.values(responseData); ////maneira alternativa de CONVERTER NOSSO 'OBJECT COM OBJECTS' em um ARRAY de objects (sem o uso de OPERATORS DE OBSERVABLES...)
+      //   console.log(newArrayDataOfObject);
+      //  return this.loadedPosts = newArrayDataOfObject;
+        // this.loadedPosts = postsArray;
+
+
+       
+
+      }
+    )
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> MAS ISSO ME DEU UM _ ERRO_:
+
+
+
+
+
+  Error: src/app/app.component.ts:130:5 - error TS2345: Argument of type 'OperatorFunction<{ [key: string]: Post; }, Post[]>' is not assignable to parameter of type 'OperatorFunction<Object, Post[]>'.
+  Type 'Object' is not assignable to type '{ [key: string]: Post; }'.
+    The 'Object' type is assignable to very few other types. Did you mean to use the 'any' type instead?
+      Index signature for type 'string' is missing in type 'Object'.
+
+130     map(
+        ~~~~
+131       // (responseData: any) => {
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+...
+149       }
+    ~~~~~~~
+150     )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... MAS ISSO __ NÃO ESTAVA FUNCIONANDO...
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR ENTÃO NOS EXPLICA QUE EXISTE UM JEITO BEM MAIS ELEGANTE DE FFAZER 'ACCESS' de propriedades 
+
+
+
+
+
+E 
+
+
+__DE FAZER O __ ASSIGN DE TYPES 
+
+PARA 
+
+
+A DATA DE SUA RESPONSEDATA..
+
+
+
+
+
+
+
+
+----> A MANEIRA ELEGANTE ENVOLVE O USO DE '<>'  NO METHOD DE '.get()'...
+
+
+
+
+
+
+
+
+
+--> ISSO SIGNIFICA QUE 
+
+'.get()'
+É UM  __ GENERIC METHOD --------> ISSO SIGNIFICA QUE 
+
+
+
+VOCÊ PODE SIMPLESMENTE ADICIONAR '<>'
+
+
+
+
+DEPOIS DE '.get()',
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+.get<>()
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> AÍ, DENTRO DESSE '<>',
+
+
+VOCe^_ RETORNA O TYPE_ QUE SERÁ ACTUALLY _ RETURNED 
+
+POR ESSA RESPONSE,
+
+
+
+
+
+QUE SERÁ RETORNADO, POR ESSA RESPONSE, COMO UM _ BODY..
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  private fetchPosts() {
+    this.http.get<{[key: string]: Post}>('https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json')
+    .pipe( /////é assim que usamos 'OPERATORS' nos nossos observables (no caso, o observable de 'http')...
+    map(
+      // (responseData: any) => {
+        (responseData) => {
+
+
+        const transformedPostsArray: Post[] = [];
+
+
+        for (const key in responseData) {
+
+          if (responseData.hasOwnProperty(key)) {  ///VAI CHECAR SE ISSO NÃO É UM 'PROTOTYPE' dentro da 'responseData'...
+            transformedPostsArray.push({...responseData[key], id: key});
+          }
+      
+        }
+
+
+        return transformedPostsArray;
+
+      }
+    )
+    ) 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    EX:
+
+
+
+
+
+      private fetchPosts() {
+    this.http.get<{[key: string]: Post}>('https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json')
+    .pipe( /////é assim que usamos 'OPERATORS' nos nossos observables (no caso, o observable de 'http')...
+    map(
+
+
+
+
+
+
+
+
+
+
+
+
+        EX:
+
+
+
+
+
+
+
+         ///o value que você passa dentro desse '<>' É __ O VALUE _ QUE SERÁ ACTUALLY_ RETORNADO PELA RESPONSE, NO BODY DA RESPONSE... (o value será retornado NESSE FORMATO AÍ, essencialmente...)
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -----> ok... isso significa que 
+
+     
+     É O 'RESPONSE BODY TYPE'
+
+
+     que tem sua ESTRUTURA DEFINIDA NESSE LUGAR,
+
+
+     em '<>"...
+
+
+
+
+
+
+
+
+     -> _ E ESSE TYPE _ SERÁ ENTÃO HANDLADO AUTOMATICAMENTE PELO HTTPCLIENT,
+
+
+
+
+     E AÍ _O TYPESCRIPT VAI ENTENDER ESSA SINTAXE E TAMBÉM VAI _ ENTENDER__ QUE NOSSA 
+
+     RESPONSE DATA TERÁ UM 'TYPE' DE DATA EXATAMENTE COM ESSA ESTRUTURA...
+
+
+
+
+
+
+
+
+
+
+
+
+     -> E ESSA GAMBIARRRA DO '<>' 
+
+
+     É ALGO QUE 
+
+
+
+
+     FICA DISPONÍVEL NÃO SÓ EM GET REQUESTS, MAS TAMBÉM COMO _ EM TODOS OS TIPOS DE REQUESTS...
+
+
+
+
+
+
+
+
+
+
+
+     -> PODEMOS ADICIONAR ESSES '<>" ,
+
+     que 
+
+
+
+     são TOTALMENTE OPCIONAIS,
+
+     MAS QUE ADICIONAM INFO E DESCREVEM A DATA QUE VOCÊ VAI 'GET BACK'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+     --> LÁ EM 'createPost',
+
+
+     POR EXEMPLO,
+
+     O PROFESSOR DEFINE QUE O VALOR RETORNADO SERÁ 
+
+
+
+     UM OBJECT COM ESTE FORMATO:
+
+
+
+
+
+     {
+        name: string
+     }
+
+
+
+
+
+
+
+
+
+
+
+     -> ISSO PQ ANTERIORMENTE, QUANDO CRIAMOS UM NOVO ITEM,
+
+
+     NO SUBSCRIBE
+
+
+
+     FIZEMOS CONSOLE.LOG 
+
+
+
+
+
+     DA RESPONSE, E AÍ VIMOS COISAS COMO 
+
+
+
+
+     '{
+         name: "-L_asdasdojasdoasdjo'
+
+
+     }
+
+
+
+
+
+
+
+
+     -> ESSAS ERAM AS RESPONSES...
+
+
+
+
+
+
+     -> DEIXAMOS ISSO BEM CLARO PARA SABER O QUE FAZER A PARTIR DE CADA RETURN TYPE...
+
+
+
+
+
+
+
+
+     --> ISSO É OPCIONAL, MAS É TOTALMENTE RECOMENDADO,
+
+
+
+
+     DESCREVER O TYPE DE DATA QUE SERÁ RETORNADA A PAARTIR DO USO 
+
+
+
+     DO OBSERVABLE DE 'http'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     OK... O CÓDIGO COMPLETO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     import { Component, ComponentFactoryResolver } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+import { HttpClient } from '@angular/common/http'; ///DEVE SER UTILIZADO, JUNTO DE 'HttpClientModule', lá em 'angular.module.ts', PARA CONSEGUIRMOS FAZER SEND DE HTTP REQUESTS...
+
+
+
+
+import { map } from 'rxjs';  ////UM DE NOSSOS OPERATORS, a ser usado em nossos OBSERVABLES (no caso, será usado NO OBSERVABLE DE 'http'...)...
+
+
+
+import { Post } from './post.model';   ///modelo de post, CRIADO POR NÓS,  a ser usado PARA ESPECIFICAR COMO É A DATA QUE SERÁ RETORNADA DE NOSSO HTTP REQUEST...
+
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  loadedPosts: {title: string, content: string}[] = [];
+
+
+  // loadedPosts: any[] = [];
+
+  // constructor(private http: HttpClient) {
+  constructor(private http: HttpClient) {}
+
+  ngOnInit() {
+
+
+
+    this.fetchPosts();
+
+
+    console.log(this.loadedPosts);
+  }
+
+
+
+
+  /////////////ISTO NÃO FUNCIONARÁ, POIS NÃO ESTAMOS USANDO OBSERVABLES COM ESSE HTTP REQUEST...
+  // onCreatePost(formReference: NgForm) {
+  //   //send HTTP POST request
+
+  //   console.log(formReference.value);
+
+  //   const postData = formReference.value;
+
+  //   this.http.post('https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json',    //// '/posts.json' --> é uma IDIOSSINCRASIA DO 'FIREBASE', e não do angular --> precisamos definir um 'NOVO PATH' para armazenar nossos posts diretamente, e aí, AO FINAL DESSA ROUTE, SOMOS OBRIGADOS A ESCREVER '.json' (coisa do FIREBASE , que é MALUCO)...
+    
+  //   postData ///NOSSO OBJECT JAVASCRIPT SERÁ CONVERTIDO EM JSON DATA AUTOMATICAMENTE...
+    
+    
+    
+  //   );
+
+  //   formReference.reset(); //resetta os values de todos os fields a partir de um submit bem sucedido...
+  // }
+
+
+
+  onCreatePost(formReference: NgForm) { ///VAI FUNCIONAR, PQ USAMOS _ OBSERVABLES COM ESSE HTTP REQUEST....
+    //send HTTP POST request
+
+    console.log(formReference.value);
+
+    const postData = formReference.value;
+
+
+      //você não precisa chamar 'ngOnDestroy()' para dar unsubscribe em subscriptions feitas em cima de 'this.http.post()'...
+    ///this.http.post VAI NOS RETORNAR UM __ OBSERVABLE, SEMPRE... E AÍ VAMOS TER DE FAZER __ SUBSCRIBE __ A ELE..
+    this.http.post<{name : string}>('https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json',    //// '/posts.json' --> é uma IDIOSSINCRASIA DO 'FIREBASE', e não do angular --> precisamos definir um 'NOVO PATH' para armazenar nossos posts diretamente, e aí, AO FINAL DESSA ROUTE, SOMOS OBRIGADOS A ESCREVER '.json' (coisa do FIREBASE , que é MALUCO)...
+    
+    postData ///NOSSO OBJECT JAVASCRIPT SERÁ CONVERTIDO EM JSON DATA AUTOMATICAMENTE...
+    
+    
+    
+    ).subscribe(
+      (responseData) => {  //// 'responseData' --> é o equivalente ao nosso 'BODY' da response... não vai reunir TUDO TUDO da response (coisas como headers e tal, essas coisas são acessadas por OUTROS METHODS DA RESPONSE, NO ANGULAR)...
+ 
+
+          console.log(responseData);
+      }
+    )
+
+    formReference.reset(); //resetta os values de todos os fields a partir de um submit bem sucedido...
+  }
+
+
+
+
+  onFetchPosts() {
+    //send HTTP GET request...
+
+    this.fetchPosts();
+  }
+
+  onClearPosts() {
+    //send HTTP request
+  }
+
+
+
+  // private fetchPosts() {
+  //   this.http.get('https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json')
+  //   .subscribe(
+  //     (responseData ) => {
+
+  //       console.log(responseData);
+  //       // this.loadedPosts = responseData;
+  //       // const newArrayDataOfObject = Object.values(responseData); ////maneira alternativa de CONVERTER NOSSO 'OBJECT COM OBJECTS' em um ARRAY de objects (sem o uso de OPERATORS DE OBSERVABLES...)
+  //     //   console.log(newArrayDataOfObject);
+  //     //  return this.loadedPosts = newArrayDataOfObject;
+  //       // this.loadedPosts = postsArray;
+
+
+       
+
+  //     }
+  //   )
+  // }
+
+
+  private fetchPosts() {
+
+    ///o value que você passa dentro desse '<>' É __ O VALUE _ QUE SERÁ ACTUALLY_ RETORNADO PELA RESPONSE, NO BODY DA RESPONSE... (o value será retornado NESSE FORMATO AÍ, essencialmente...)
+    this.http.get<{[key: string]: Post}>('https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json')
+    .pipe( /////é assim que usamos 'OPERATORS' nos nossos observables (no caso, o observable de 'http')...
+    map(
+      // (responseData: any) => {
+        (responseData) => {
+
+
+        const transformedPostsArray: Post[] = [];
+
+
+        for (const key in responseData) {
+
+          if (responseData.hasOwnProperty(key)) {  ///VAI CHECAR SE ISSO NÃO É UM 'PROTOTYPE' dentro da 'responseData'...
+            transformedPostsArray.push({...responseData[key], id: key});
+          }
+      
+        }
+
+
+        return transformedPostsArray;
+
+      }
+    )
+    ) 
+    
+    .subscribe(
+      // (responseData ) => {
+        (posts) => {
+
+        // console.log(responseData);
+        console.log(posts);
+        // this.loadedPosts = responseData;
+        // const newArrayDataOfObject = Object.values(responseData); ////maneira alternativa de CONVERTER NOSSO 'OBJECT COM OBJECTS' em um ARRAY de objects (sem o uso de OPERATORS DE OBSERVABLES...)
+      //   console.log(newArrayDataOfObject);
+      //  return this.loadedPosts = newArrayDataOfObject;
+        // this.loadedPosts = postsArray;
+
+
+       
+
+      }
+    )
+  }
+
+
+
+}
+
+
+
+
+
+
+
+
+

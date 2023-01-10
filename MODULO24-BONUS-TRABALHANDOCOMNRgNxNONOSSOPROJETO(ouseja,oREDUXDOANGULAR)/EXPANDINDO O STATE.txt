@@ -1,0 +1,1702 @@
+
+
+MEU CÓDIGO ESTÁ TODO BUGADO.. TENHO QUE CONSERTAR.
+
+
+
+
+
+
+
+
+
+
+
+
+SE EXAMINARMOS O COMPONENT DE 'SHOP-LIST-EDIT',
+
+
+
+VEREMOS QUE 
+
+
+
+estamos carregando DATA,
+
+
+LÁ EM 'ngOnInit',
+
+
+
+VINDA 
+
+
+DO SERVICE DE 'shoppingListService':
+
+
+
+
+
+
+
+
+  ngOnInit(): void {
+
+    this.ingredientSelectedSubscription = ////código SEM USO DO NGRX...
+      this.shoppingListService.ingredientSelected.subscribe((index: number) => {
+        console.log('TEST', 'LINE')
+        this.editedItemIndex = index;
+        this.editMode = true;
+          console.log(index, 'LINE');
+        this.editedItem = this.shoppingListService.getIngredient(index);  ///agora com o uso do DISPATCH DE UMA ACTION, lá no service....
+
+
+        this.formReference.form.setValue({
+          name: this.editedItem.ingredient,
+          amount: this.editedItem.amount,
+        });
+      });
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ----> para ser mais preciso,
+
+
+  NÓS 
+
+  ACTUALLLY ESTAMOS MANAGEANDO NOSSO 'current editing state' (representado por 'ingredientSelected')
+
+
+
+
+  LÁ NO SERVICE DE 'SHOPPINGLISTSERVICE'...  
+
+
+
+
+
+
+
+  --> NÓS __ TAMBÉM __ ESTAMOS CONSEGUINDO O 'INGREDIENT' que estamos editando nesse local,
+
+
+  TAMBÉM LÁ do 'shoppingListService',
+
+
+  como podemos observar 
+
+
+  pelo código 
+
+
+
+  de 
+
+  'this.editedItem = this.shoppingListService.getIngredient(index)'
+
+
+
+
+
+  --> E ESSE VALUE DE 'editedItem'
+
+  ESTÁ SENDO USADO NA NOSSA FORM, PARA PREENCHER OS FIELDS..
+
+
+
+
+
+
+
+
+
+
+  -> ISSO QUER DIZER,
+   
+   PORTANTO,
+
+
+   QUE OS _ VALUES_ QUE 
+
+   ESTAMOS 
+
+   INSERINDO NA 'SHOPPING LIST FORM' (que estão sendo inseridos) 
+
+
+
+   NÃO 
+
+
+
+   ESTÃO _ VINDO LÁ NA NOSSA '@ngrx/store',
+
+
+   E SIM 
+
+
+   ESTÃO VINDO LÁ DO 
+
+   SERVICE DEE 'SHOPPINGLISTSERVICE' (ou seja, um CONFLITO ENTRE SOURCES OF TRUTH)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ALÉM DISSO, OUTRO PROBLEMA NESSE COMPONENT DE 'SHOP-EDIT-COMPONNET'
+
+
+
+
+É 
+
+
+QUE
+
+
+ESTAMOS ACTUALLY_ USANDO _ O 'shoppingListService'
+
+
+PARA __ 
+
+
+CONTROLAR _ SE ''''ESTAMOS/NÃO ESTAMOS NO MODO DE EDITING''' (
+
+
+
+    por causa do código de 
+
+
+    'this.shoppingListService.ingredientSelected.subscribe()'...
+)
+
+
+
+
+
+
+
+
+
+
+
+------> BEM, E NÓS REALMENTE TEMOS ESSA SUBSCRIPTION A 'ingredientSelected',
+
+
+
+que 
+
+
+
+É MANAGEADA LÁ NO SHOPPINGLISTSERVICE ----->  E ISSO FOI CONFIGURADO ASSIM,
+
+
+
+NO NOSSO CÓDIGO,
+
+
+
+
+PQ 
+
+
+NÓS _ REALMENTE__ COMEÇAMOS O 'EDITING PROCESS'
+
+
+
+LÁ DE DENTRO DO 'shopping-list.component.ts',
+
+
+E NÃO __ 
+
+
+
+DE DENTRO 
+
+
+DO COMPONENT DE 'shop-list edit' (que é outra coisa, completamente diferente)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> DENTRO DO SHOPPINGLIST Component,
+
+
+TEMOS O METHOD DE 
+
+'onShoplistItemClick':
+
+
+
+
+
+
+
+  onShoplistItemClick(index: number) {
+    this.shoppingListService.loadShopListItem(index);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> É NESSA FUNCTION/METHOD QUE 
+
+
+O 
+
+
+
+
+EDIT DE NOSSO INGREDIENT COMEÇA... -----> 
+
+
+
+
+
+
+
+
+BEM, MAS PARA TRAUDUZIRMOS ISSO PARA O 'NGRX WORLD',
+
+
+
+
+
+
+
+SÃO NECESSÁRIOS VÁRIOS AJUSTES..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> FAZ BEM MAIS SENTIDO FAZER O 'DISPATCH'
+
+
+
+de uma ACTION LÁ EM 
+
+
+'onShoplistItemClick()',
+
+
+
+
+
+PARA ENTÃO 
+
+
+
+
+'START EDITING'...
+
+
+
+
+
+
+
+
+
+
+--> QUANDO COMEÇA ESSE 'START EDITING',
+
+VAMOS QUERER _ ALTERAR_ 
+
+
+
+ALGUMA PROPRIEDADE DENTRO DO STATE SLICE DE 'shoppingList',
+
+
+
+
+talvez 
+
+
+
+alterar uma propriedade como 'selectedItem' 
+
+ou coisa do gênero... (alterar para que fique como o item que recém foi selecionado em 'onShoplistItemClick()' )....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ISSO QUER DIZER QUE A SOLUÇÃO É 
+
+
+
+FAZER ESSE DISPATCH PARA ENTÃO 
+
+
+
+'the ngrx store will AUTOMATICALLY KIND OF USE A SUBJECT, BEHIND THE SCENES,
+
+
+
+
+__ PARA __ INFORMAR_ O NOSSO INTEIRO APP SOBRE ESSA MUDANÇA'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> É POR ISSO QUE LÁ EM 'shoppingListEdit.component.ts',
+
+
+
+
+UMA 
+
+BOA ALTERNATIVA É SIMPLES FAZER 'LISTEN TO' AO NOSSO STATE,
+
+
+PARA 
+
+AÍ CHECAR SE 'ESTAMOS EDITING OU NÃO'..
+
+
+
+
+
+
+---> E, SE ESTIVERMOS 'EDIITNG',
+
+
+
+O QUE VAMOS QEURER FAZER É BASICAMENTE RODAR AQUELAS LINHAS DE 
+
+
+
+
+'this.editedItemIndex = index;
+this.editMode = true;
+this.editedItem = this.shoppingListService.getIngredient(index)
+
+
+
+
+'
+
+
+
+
+
+
+
+
+---> OUTRA INFO IMPORTANTE É ACERCA DE 'QUAL O INDEX DO 
+
+
+ELEMENT QUE ESTOU EDITANDO, NO MOMENTO'...
+
+
+
+
+
+
+
+
+
+
+-> para fazer TUDO ISSO,
+
+PROVAVELMENTE _ PRECISAREI _ 
+
+
+
+
+EXPANDIR MEU STATE,
+
+
+COLOCAR UMA PROPRIEDADE NOVA DE 'selectedIngredient' ou algo assim..
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> É POR ISSO QUE PARA IMPLEMENTAR TUDO ISSO DE UMA MANEIRA FÁCILL,
+
+
+
+PODEMOS 
+
+
+
+IR ATÉ O 'shoppinList.reducer.ts'
+
+
+
+
+
+
+
+
+
+
+E ENTAÕ ALTERAR NOSSO STATE PELA PRIMEIRA VEZ:
+
+
+
+
+
+
+
+export interface ShoppingListState {
+  ingredients: Ingredient[],
+  selectedIngredient: Ingredient | null
+}
+
+
+
+
+
+
+
+----->  ESSE É O ELEMENTO QUE ESTAVA FALTANDO:
+
+
+
+
+
+ANTES PRECISAMOS MAIS DO QUE OS INGREDIENTS NO STATE;
+
+
+
+AGORA PRECISAMOS, 
+
+
+
+PARA UPDATAR AS DIFERENTES PARTES DO APP ENVOLVIDAS NISSO,
+
+
+
+PRECISAMOS 
+
+
+
+DAS PROPRIEDAEDS 
+
+
+
+
+'selectedIngredient'
+
+
+
+e 
+
+
+'editedIngredientIndex' (meio redundante, pq na minha versão do código, em cada 'Ingredient', eu JÁ TENHO ESSA PRORPEIDADE)...
+
+
+
+
+
+
+
+
+
+
+
+
+model de ingredient:
+
+
+export class Ingredient {
+  constructor(public ingredient: string, public amount: number, public recipeIndex: number) {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... ESCREVEMOS ASSIM:
+
+
+
+
+
+
+
+
+export interface ShoppingListState {
+  ingredients: Ingredient[],
+  selectedIngredient: Ingredient | null
+}
+
+
+
+
+
+
+
+
+
+
+
+-> CERTO... NESSE LOCAL DEFINIMOS OS 'TYPES',
+
+
+SIM,
+
+
+
+
+E NO INITIAL STATE DEFINIMOS OS VALUES:
+
+
+
+
+
+
+const initialState: ShoppingListState = {
+
+  ingredients: [new Ingredient('Lettuce', 5, 0.1221412452154)],
+  selectedIngredient: null
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> ok...
+
+
+
+
+
+MAS ANTES DE FAZERMOS QUALQUER COISA NO NOSSO APP, JÁ TEREMOS UM PROBLEMA:
+
+
+
+
+''TEREMOS ALTERADO A ESTRUTURA DO NOSSO STATE''..
+
+
+
+
+
+
+
+
+
+
+--> ou seja, vamos ter que ALTERAR A APARÊNCIA DESSE 'STATE',
+
+EM TODOS OS LOCAIS EM QUE 
+
+FIZEMOS o 
+
+
+INJECT DELE,
+
+
+COMO LÁ EM 'ShoppingList.component.ts":
+
+
+
+
+
+
+
+  constructor(
+    private shoppingListService: ShoppingListService,
+    private loggingService: LoggingService,
+    private store: Store<
+    {shoppingList: {ingredients: Ingredient[]}     }           ///dentro da marcação do generic type, descreva o FORMATO DA DATA QUE SERÁ RETORNADA POR SEU REDUCER (cheque o 'initialState' do reducer, e os types das propriedades)...
+    
+    >               
+  ) {}
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+
+    constructor(
+    private shoppingListService: ShoppingListService,
+    private loggingService: LoggingService,
+    private store: Store<
+    {shoppingList: {ingredients: Ingredient[], selectedIngredient: Ingredient}    }           ///dentro da marcação do generic type, descreva o FORMATO DA DATA QUE SERÁ RETORNADA POR SEU REDUCER (cheque o 'initialState' do reducer, e os types das propriedades)...
+    
+    >               
+  ) {}
+
+
+
+
+
+
+
+  ----------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  EM CADA 1 DESSES COMPONENTS, COMPARTILHAMOS UMA 'FOOTPRINT' DO FORMATO DE NOSSO STORE... 
+
+
+  (
+
+    ou seja,
+
+    compartilhamos 'COMO A DATA DE NOSSA STORE SE PARECE'...
+
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+  certo.... mas agora tive um FLASH,
+
+  tive uma  
+
+  ideia...
+
+
+
+
+
+
+  -> se quisermos só passar o _ TYPE,
+
+  A ESTRUTURA DE NOSSO STATE A TODOS ESSES LOCAIS,
+
+
+  BASTA USAR 
+
+
+
+  A NOSSA INTERFACE de 
+
+  'ShoppingListState':
+
+
+
+
+
+
+  export interface ShoppingListState {
+  ingredients: Ingredient[],
+  selectedIngredient: Ingredient | null
+}
+
+
+
+
+
+
+
+
+
+
+
+
+-> BASTA IMPORTAR ISSO AÍ, MSM...
+
+
+
+
+
+
+
+
+
+
+
+-> TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  constructor(
+    private shoppingListService: ShoppingListService,
+    private loggingService: LoggingService,
+    // private store: Store<  ///é a mesma coisa que o código de baixo de 'store', mas o código de baixo IMPORTA ESSA INTERFACE, que está outsourceada lá em 'shoppingList.reducer.ts'...
+    // {shoppingList: {ingredients: Ingredient[], selectedIngredient: Ingredient}    }           ///dentro da marcação do generic type, descreva o FORMATO DA DATA QUE SERÁ RETORNADA POR SEU REDUCER (cheque o 'initialState' do reducer, e os types das propriedades)...
+    
+    // >               
+    private store: Store<{shoppingList: ShoppingListState}>
+  ) {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  OU SEJA,
+
+  ISTO:
+
+
+
+     private store: Store< 
+     {shoppingList: {ingredients: Ingredient[], selectedIngredient: Ingredient}    }         
+    
+     >               
+
+
+
+
+
+
+
+
+
+VIROU ISTO:
+
+
+
+    private store: Store<{shoppingList: ShoppingListState}>
+
+
+
+
+
+
+
+
+
+
+
+--> com isso, evitamos de 
+
+
+
+REPETIR ESSA 'DECLARAÇAÕ DE NOSSO STATE' em todos os locais que pedem por isso, pela 
+
+declaração da aparência de nosso 'store', dessa slice de nosso store...
+
+
+
+----> ok... AGORA BASTA FAZER ISSO NO OUTRO LUGAR EM QUE INJETAMOS ESSE NEGÓCIO:
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+  constructor(
+    private shoppingListService: ShoppingListService,  //agora vamos usar o STORE, no lugar do nosso shoppingListService... (nosso data source passa a ser o 'CENTRAL STORE'/reducers com central store, e não mais o state no service)....
+    // private store: Store<{shoppingList: {ingredients: Ingredient[], selectedIngredient: Ingredient | null }}> ///CÓDIGO IMPORTANTE (vamos usar nossas actions a partir dessa store.. enviar actions ao reducer, que está vinculado a essa store)....
+    private store: Store<{shoppingList: ShoppingListState}>
+  ) {}
+
+
+
+
+
+
+
+
+
+
+
+
+  O PROFESSOR ENTÃO FALA DO PATTERN DESSA INTERFACE AÍ, EXATAMENTE COMO FIZEMOS...
+
+
+
+
+
+  --> ELE EXPLICA QUE ESSA INTERFACE DEFINA A APARÊNCIA DO NOSSO REDUCER 
+
+
+  DE 
+
+  'shoppingList',
+
+  que é uma das partes do nosso STATE/STORE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> O PROFESSOR ENTÃO NOS EXPLICA QUE 'NO FUTURO TEREMOS VÁRIOS REDUCERS',
+
+
+
+
+
+
+
+e que JUSTAMENTE POR ISSO,
+
+
+
+
+DEVEMOS 
+
+
+TER UM _ LOCAL__ CENTRAL, NO NOSSO CÓDIGO, EM QUE TEREMOS 
+
+TODOS OS REDUCERS COMBINADOS...
+
+
+
+
+
+
+
+
+
+
+ESSE LUGAR É AQUI, em 'index.ts',
+
+
+QUE FICARÁ BEM NO _ ROOT__ DE NOSSO APP_...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> O CÓDIGO DE INDEX.TS FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+import { ActionReducerMap } from '@ngrx/store';
+import { recipeBookReducer, RecipeBookState } from 'src/app/recipeBook/store/recipeBook.reducer';
+import { shoppingListReducer, ShoppingListState } from './ShoppingList/store/shoppingList.reducer';
+
+export const rootReducer = {};
+
+export interface AppState { //// 'AppState' é usado para DEFINIR O 'APPLICATION WIDE STATE'... 
+  shoppingList: ShoppingListState;
+  recipeBook: RecipeBookState;
+
+}
+
+export const reducers: ActionReducerMap<AppState, any> = {
+  shoppingList: shoppingListReducer,
+  recipeBook: recipeBookReducer
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> esse 'AppState',
+
+
+
+no caso,
+
+SERÁ USADO PARA DEFINIR NOSSO 'APP-WIDE STATE',
+
+
+e naõ 
+
+só 
+
+o 
+
+state do reducer de 'ShoppingList'...
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA, COM ISSO, FICOU CLARO QUE 
+
+
+
+'TEMOS UM STATE APP-WIDE DE FORMATO AppState,
+
+
+
+
+e que dentro desse 'AppState' 
+
+
+
+TEMOS OS 
+
+
+'SLICES' DE 'shoppingListState' 
+
+e 
+
+'recipeBookState'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> AGORA, NOS DIFERENTES LUGARES EM QUE ESCREVEMOS 
+
+
+
+
+''     private store: Store<{shoppingList: ShoppingListState}> '',
+
+
+
+
+
+
+PODEMOS SUBSTITUIR 
+
+
+
+ESSE 
+
+
+''' Store<{shoppingList: ShoppingListState}> '''
+
+
+
+INTEGRALMENTE POR 
+
+
+
+'AppState'... (que representará nosso state inteiro)...
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+import { Component, OnDestroy, OnInit } from '@angular/core';
+
+import { Store } from '@ngrx/store';
+
+import { Observable, Subscription } from 'rxjs';
+import { AppState } from '..';
+import { LoggingService } from '../logging.service';
+import { Ingredient } from '../shared/ingredient.model';
+import { ShoppingListService } from '../shoppingList.service';
+import { ShoppingListState } from './store/shoppingList.reducer';
+
+@Component({
+  selector: 'app-shopping-list',
+  templateUrl: './shoppingList.component.html',
+  styleUrls: ['./shoppingList.component.css'],
+})
+export class ShoppingListComponent implements OnInit {
+  ingredients: Observable<{ ingredients: Ingredient[] }>;
+
+  constructor(
+    private shoppingListService: ShoppingListService,
+    private loggingService: LoggingService,
+
+    private store: Store<AppState>
+  ) {}
+
+  ngOnInit(): void {
+    this.ingredients = this.store.select('shoppingList');
+  }
+
+  onShoplistItemClick(index: number) {
+    this.shoppingListService.loadShopListItem(index);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> certo... mas pelo visto não devemos importar o 'state inteiro'
+ 
+
+ em todas as partes de nosso app...
+
+
+
+
+
+
+ --> em vez disso,
+
+
+ opte pela sintaxe de 
+
+
+
+
+
+
+
+
+
+
+ '''
+
+ import * as fromShoppingList from './store/shopping-list.reducer;
+
+
+
+
+
+
+
+
+
+ ''''
+
+
+ --> ISSO VAI, NO CASO, IMPORTAR 
+
+ APENAS A PARTE _ PERTINENTE AO STATE/REDUCER DE 'ShoppingList',
+
+
+ e nada mais do que isso..
+
+
+
+
+
+
+
+ ex:
+
+
+
+
+
+
+
+
+
+     private store: Store<fromShoppingList.ShoppingListState>
+
+
+
+
+
+
+
+
+
+
+
+-----> OK, ISSO PQ AGORA ESSA MARCAÇÃO DE 'fromShoppingList.ShoppingListState'
+
+
+
+VAI ACABAR 'DESCREVENDO NOSSO APPLICATION STATE INTEIRO,
+
+VISTO DE DENTRO DO SHOPLIST REducer'.. --> 
+
+
+
+
+
+
+E ISSO É RELEVANTE,
+
+
+
+
+SERÁ RELEVANTE QUANDO USAMOS O SHOPPINGLIST REDUCER...
+
+
+
+
+
+
+
+
+
+
+
+
+-> SIM, O APP STATE É COMPOSTO DE MAIS COISAS,,
+ 
+
+ MAS DE ACORDO COM A 'VISÃO DO shoppingListReducer',
+
+
+
+ o state é só isso (só isso importa para ele)...
+
+
+
+
+
+
+
+
+
+ -> É CLARO QUE TEMOS OUTROS LOCAIS EM QUE INJETAMOS O STORE, como 'shop-edit component'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ EX DE NOSSO CÓDIGO COMPLETO:
+
+
+
+
+
+
+
+
+
+
+
+
+ O CÓDIGO DE 'shoppingListReducer':
+
+
+
+
+ import * as ShoppingListActions from './shoppingListActions';
+
+import { Ingredient } from '../../shared/ingredient.model';
+
+import { updateObject } from '../../utility/updateObject';
+
+export interface ShoppingListState {
+  ingredients: Ingredient[];
+  selectedIngredient: Ingredient | null;
+}
+
+export interface AppState {
+  shoppingList: ShoppingListState;
+}
+
+const initialState: ShoppingListState = {
+  ingredients: [new Ingredient('Lettuce', 5, 0.1221412452154)],
+  selectedIngredient: null,
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO DE 'shop-edit component':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
+
+import { NgForm } from '@angular/forms';
+import { Store } from '@ngrx/store';
+import { map, Observable, Subscription } from 'rxjs';
+
+import { Ingredient } from 'src/app/shared/ingredient.model';
+
+import { ShoppingListService } from 'src/app/shoppingList.service';
+
+import * as fromShoppingList from '../store/shoppingList.reducer';
+
+import * as ShoppingListActions from '../store/shoppingListActions';
+
+@Component({
+  selector: 'app-shop-list-edit',
+  templateUrl: './shop-list-edit.component.html',
+  styleUrls: ['./shop-list-edit.component.css'],
+})
+export class ShopListEditComponent implements OnInit, OnDestroy {
+  editMode = false;
+  editedItemIndex: number;
+
+  editedItem: Ingredient;
+
+  @ViewChild('localFormReference') formReference: NgForm;
+
+  ingredientSelectedSubscription: Subscription;
+
+  constructor(
+    private shoppingListService: ShoppingListService,
+
+    private store: Store<fromShoppingList.AppState>
+  ) {}
+
+  ngOnInit(): void {
+    this.ingredientSelectedSubscription =
+      this.shoppingListService.ingredientSelected.subscribe((index: number) => {
+        console.log('TEST', 'LINE');
+        this.editedItemIndex = index;
+        this.editMode = true;
+        console.log(index, 'LINE');
+        this.editedItem = this.shoppingListService.getIngredient(index);
+
+        this.formReference.form.setValue({
+          name: this.editedItem.ingredient,
+          amount: this.editedItem.amount,
+        });
+      });
+  }
+
+  onFormSubmit(form: NgForm) {
+    const yourIngredient = new Ingredient(
+      form.value['name'],
+      form.value['amount'],
+      this.editedItemIndex
+    );
+
+    if (this.editMode) {
+      console.log(form);
+
+      this.shoppingListService.editIngredient(
+        this.editedItemIndex,
+        yourIngredient
+      );
+
+      this.editMode = false;
+    } else {
+      this.shoppingListService.onIngredientAdd(yourIngredient);
+    }
+
+    this.formReference.form.reset();
+  }
+
+  ngOnDestroy(): void {
+    this.ingredientSelectedSubscription.unsubscribe();
+  }
+
+  onClearRecipe() {
+    this.formReference.form.reset();
+    this.editMode = false;
+  }
+
+  onDeleteRecipe() {
+    this.shoppingListService.deleteIngredient(this.editedItemIndex);
+    this.onClearRecipe();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PARTE IMPORTANTE:
+
+
+
+
+
+
+  constructor(
+    private shoppingListService: ShoppingListService,
+
+    private store: Store<fromShoppingList.AppState>
+  ) {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -----> ok...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ---> com isso
+
+
+  ,
+
+
+  FICAMOS COM  MAIOR FLEXIBILIDADE 
+
+
+
+
+COM NOSSO STATE.. ---> 
+
+PQ 
+
+SE TIVERMOS ALGUMA COISA NOVA NO NOSSO STATE,
+
+
+
+ALGO ADICIONAL,
+
+
+
+DEVEMOS SIMPLESMENTE EDITAR O 'LAYOUT'
+
+
+
+visto na interface de 'ShoppingListState' 
+
+
+
+
+
+
+(
+
+
+  o typescript vai saber o que temos dentro de nosso 'store'....
+)
+
+
+
+
+
+
+
+
+
+
+-> CERTO... MAS ESSE NÃO ERA O 'MAIN PROBLEM' QUE QUEREMOS SOLUCIONAR..
+
+
+
+
+
+
+
+
+-> o problema que queremos solucionar é AQUELA PROPRIEDADE DE 
+
+
+'selectedIngredient',
+
+
+
+
+
+
+lá no 'initialState'
+
+
+
+do 
+
+REDUCER DE 'shoppingList',
+
+
+
+QUE É JUSTAMENTE UMA PROPRIEDADE/STATE QUE QUEREMOS HANDLAR POR MEIO DO NGRX...
+
+
+
+
+
+
+
+
+
+--> FAREMOS ISSO NA PRÓXIMA AULA...

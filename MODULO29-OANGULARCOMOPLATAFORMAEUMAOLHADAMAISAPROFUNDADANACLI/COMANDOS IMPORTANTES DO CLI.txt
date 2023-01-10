@@ -1,0 +1,1584 @@
+
+
+
+
+
+
+
+
+
+
+ANTES DE EXPLORARMOS O ARQUIVO 'ANGULAR.JSON',
+
+
+
+
+
+
+
+
+
+DEVEMOS 
+
+
+EXAMINAR QUAIS COMANDOS CLI PODEMOS USAR DENTRO DE UM PROJECT..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> o comando mais utilizado por nós foi 'ng new',
+
+
+para criar um novo project... 
+
+
+
+
+
+
+
+
+
+
+
+
+-> TEMOS UM PUNHADO DE COMANDOS QUE TAMBÉM PODEMOS RODAR APÓS RODAR 'ng new'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> o mais comum é 'ng serve',
+
+
+
+' e 'ng build'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> SE DIGITAMOS 'ng help',
+
+FICAMOS COM ISTO:
+
+
+
+  ng add <collection>            Adds support for an external library to your project.
+  ng analytics                   Configures the gathering of Angular CLI usage metrics. See https://angular.io/cli/usage-analytics-gathering
+  ng build [project]             Compiles an Angular application or library into an output directory named dist/ at the given output path.
+                                                                                                                                         [aliases: b]  ng cache                       Configure persistent disk cache and retrieve cache statistics.
+  ng completion                  Set up Angular CLI autocompletion for your terminal.
+  ng config [json-path] [value]  Retrieves or sets Angular configuration values in the angular.json file for the workspace.
+  ng deploy [project]            Invokes the deploy builder for a specified project or for the default project in the workspace.
+  ng doc <keyword>               Opens the official Angular documentation (angular.io) in a browser, and searches for a given keyword.   [aliases: d]  ng e2e [project]               Builds and serves an Angular application, then runs end-to-end tests.                                   [aliases: e]  ng extract-i18n [project]      Extracts i18n messages from source code.
+  ng generate                    Generates and/or modifies files based on a schematic.                                                   [aliases: g]  ng lint [project]              Runs linting tools on Angular application code in a given project folder.
+  ng new [name]                  Creates a new Angular workspace.                                                                        [aliases: n]  ng run <target>                Runs an Architect target with an optional custom builder configuration defined in your project.
+  ng serve [project]             Builds and serves your application, rebuilding on file changes.                                         [aliases: s]  ng test [project]              Runs unit tests in a project.                                                                           [aliases: t]  ng update [packages..]         Updates your workspace and its dependencies. See https://update.angular.io/.
+  ng version                     Outputs Angular CLI version.      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+alguns commands não funcionam, como 'ng completion'...:
+
+
+
+
+`$SHELL` environment variable not set. Angular CLI autocompletion only supports Bash or Zsh. If you're on Windows, Cmd and Powershell don't support command autocompletion, but Git Bash or Windows Subsystem for Linux should work, so please try again in one of those environments.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok.... então não há o q fazer no windows...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> 'ng e2e' --> faz alguma coisa doida com E2E TESTING...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ng analytics ------> CONFIGURA O GATHERING DE ANGULAR CLI USAGE METRICS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ng cache --> configura coisas acerca do USO PERSISTENTE DE DISCO do angular...
+
+
+
+
+
+
+
+
+
+
+
+--> ng config  --> RETRIEVA OU DEFINE CONFIGURATION VALUES ANGULAR no 'angular.json', para o given project..
+
+
+
+
+
+
+
+
+
+
+---> 'ng deploy' --> Faz o DEPLOY DE ALGUM PROJETO, LOCALMENTE, a partir dos arquivos criados com 'ng build'...
+
+
+
+
+
+
+
+'ng doc palavra '---> ABRE O ANGULAR DOCS E PROCURA POR UMA DETERMINADA KEYWORD ...
+
+
+
+
+
+
+
+
+
+
+
+NG E2E --> BUILDA E FAZ SERVE DE UM ANGULAR APP,
+
+aí roda END-TO-END tests nele...
+
+
+
+
+
+
+
+
+
+
+
+
+ng generate --> GERA FILES A PARTIR DE UM SCHEMATIC (já usamos muito) ... --> as files são:
+
+
+
+
+
+
+
+
+
+
+
+
+
+--. para ENCONTRAR_ _ 
+
+MAIS INFO SOBRE UM DETERMINADO COMMAND (como 'ng generate', ou 'ng g'),
+
+
+
+VOCÊ DEVE 
+
+ESCREVER 
+
+
+
+
+'ng nome do comando --help'... --.
+
+
+
+
+
+tipo 
+
+
+
+
+'ng generate --help'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok, agora vejo que podemos criar um MONTE DE DIFERNETES COISAS COM ESSE COMMAND:
+
+
+
+
+
+
+
+
+ng generate app-shell 
+
+
+ng generate application [name] 
+
+
+
+ng generate class (nunca usei)...
+
+
+
+
+
+ng generate component --> usamos toda hora ....
+
+
+
+
+
+
+ng generate directive --> já usei....  --> cria uma directive 
+
+
+
+
+
+
+
+
+ng generate enum --> não usei.... 
+
+
+
+
+
+
+ng generate guard -----> NÃO USEI, MAS PODE SER ÚTIL... (cria uma definition GENÉRICA de guard em um default project folder)...
+
+
+
+
+
+
+
+
+
+
+
+--> ok, criei um authGuard...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O AUTHGUARD FICOU COM ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthGuard implements CanActivate {
+  canActivate(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    return true;
+  }
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok, isso é realmente BEM CONVENIENTE...
+
+
+
+
+
+
+
+
+
+-_> outras coisas que podemos GENERATE com esse comando:
+
+
+
+
+
+
+
+
+
+
+
+
+ng generate interceptor  ----> útil, podemos editar CADA REQUEST QUE DEIXA NOSSO APP...
+
+
+
+
+tipo 
+
+
+
+
+ng generate interceptor httpRequestInterceptor
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+FICOU COM ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+import {
+  HttpRequest,
+  HttpHandler,
+  HttpEvent,
+  HttpInterceptor
+} from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable()
+export class HttpRequestInterceptorInterceptor implements HttpInterceptor {
+
+  constructor() {}
+
+  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    return next.handle(request);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ng generate interface --> nunca usei...
+
+
+
+
+
+
+
+
+
+
+
+
+quais outros comandos?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ng generate library --------> NUNCA USEI..
+
+
+
+
+
+
+ng generate module ---> já usei.... cria um module, automaticamente...
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+
+
+@NgModule({
+  declarations: [],
+  imports: [
+    CommonModule
+  ]
+})
+export class ExemploModuleModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> certo...
+
+
+
+
+
+
+
+
+
+
+temos também 
+
+
+
+
+
+
+
+
+
+
+
+
+ng generate pipe pipeExemplo
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'pipeExemplo'
+})
+export class PipeExemploPipe implements PipeTransform {
+
+  transform(value: unknown, ...args: unknown[]): unknown {
+    return null;
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DEPOIS DISSO,
+
+
+
+temos 
+
+
+
+
+RESOLVERS:
+
+
+
+
+
+
+
+
+
+ng generate resolver exemploResolver
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+import {
+  Router, Resolve,
+  RouterStateSnapshot,
+  ActivatedRouteSnapshot
+} from '@angular/router';
+import { Observable, of } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ExemploResolverResolver implements Resolve<boolean> {
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
+    return of(true);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> depois temos um bem comum,
+
+
+
+ng generate service:
+
+
+
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ServiceExemploService {
+
+  constructor() { }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK....
+
+
+
+
+
+
+
+
+
+
+
+
+depois temos generate service e web workers (menos útil, mas ainda bom)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> O PROFESSOR ENTAÕ FALA UM POUCO DE 'ng serve'...
+
+
+
+
+
+
+
+
+
+
+o comando ng serve tem várias flags, que podem ser visualizadas com 'ng serve --help'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      --help                Shows a help message for this command in the console.                                  [boolean]  -c, --configuration       One or more named builder configurations as a comma-separated list as specified in the
+                            "configurations" section in angular.json.
+                            The builder uses the named configurations to run the given target.
+                            For more information, see
+                            https://angular.io/guide/workspace-config#alternate-build-configurations.
+                                                                             [string] [choices: "development", "production"]      --allowed-hosts       List of hosts that are allowed to access the dev server.                                 [array]      --browser-target      A browser builder target to serve in the format of `project:target[:configuration]`. You can    
+                            also pass in more than one configuration name as a comma-separated list. Example:
+                            `project:target:production,staging`.                                                    [string]      --disable-host-check  Don't verify connected clients are part of allowed hosts.             [boolean] [default: false]      --hmr                 Enable hot module replacement.                                        [boolean] [default: false]      --host                Host to listen on.                                               [string] [default: "localhost"]      --live-reload         Whether to reload the page on change, using live-reload.               [boolean] [default: true]  -o, --open                Opens the url in default browser.                                     [boolean] [default: false]      --poll                Enable and define the file watching poll time period in milliseconds.                   [number]      --port                Port to listen on.                                                      [number] [default: 4200]      --proxy-config        Proxy configuration file. For more information, see
+                            https://angular.io/guide/build#proxying-to-a-backend-server.                            [string]      --public-host         The URL that the browser client (or live-reload client, if enabled) should use to connect to the                            development server. Use for a complex dev server setup, such as one with reverse proxies.       
+                                                                                                                    [string]      --serve-path          The pathname where the application will be served.                                      [string]      --ssl                 Serve using HTTPS.                                                    [boolean] [default: false]      --ssl-cert            SSL certificate to use for serving HTTPS.                                               [string]      --ssl-key             SSL key to use for serving HTTPS.                                                       [string]      --verbose             Adds more details to output logging.                                                   [boolean]      --watch               Rebuild on change.                                                     [boolean] [default: true]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok... temos algumas curiosas,
+
+
+como 'ssl'
+
+
+
+
+
+
+
+'ssl-cert' 
+
+
+
+
+'ssl-key',
+
+
+
+etc...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> MAS TEMOS A FLAG DE 'port',
+
+
+    que podemos USAR PARA SERVIR O APP EM UMA PORTA DIFERENTE...
+
+
+
+
+
+
+
+
+
+
+
+-> TAMBÉM É POSSÍVEL FAZER 'SERVE' do app 
+
+
+
+
+
+
+em modo de 
+
+
+
+
+prod,
+
+por meio de 
+
+
+
+'ng serve --prod',
+
+
+
+PARA TER UMA 
+
+IDEIA BÁSICA DE COMO SEU APP
+
+
+
+VAI FUNCIOANR QUANDO TIVERMOS CONCLUÍDO SEU 'BUILD FOR PRODUCTION' (mas isso é só um preview de como sua production build vai funcionar  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--open ----> ISSO VAI PEDIR AO CLI QUE 
+
+ABRA 
+
+O APP 
+
+
+
+
+
+
+
+
+EM UMA NOVA PÁGINA, para que vocEê não tenha
+
+
+que abrir o browser manualmente...
+
+
+
+
+
+
+
+
+
+
+
+--> A MAIOR PARTE DAS OPTIONS É RARAMENTE UTILIZADA,
+
+MAS É BOM AS TER...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DEPOIS DISSO,
+
+
+
+TEMOS TAMBÉM 
+
+'NG GENERATE',
+
+
+
+
+
+
+
+QUE NOS DEIXA GENERATE NOVAS COISAS NO NOSSO APP....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AS COISAS QUE PODEMOS GENERATE EU 
+
+MOSTREI HÁ POUCO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> vocÊ pode fazer generate de pipes e modules,
+
+
+
+
+
+interfaces e interceptors,
+
+PARA O HTTP CLIENT..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--. VOCÊ TAMBÉM PODE FAZER GENERATE DE 'application', que é algo que veremos mais tarde,
+
+
+
+
+
+
+
+e 
+
+também 
+
+
+
+coisas como 
+
+
+
+'web e service workers',
+
+
+coisas bem nicho...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-_> OK....
+
+
+
+
+
+
+
+
+
+E SE VOCÊ qUER SER BEM ESPECÍFCO,
+
+
+
+PODE ESCREVER 
+
+
+
+'ng generate --help' ------> TEMOS CONFIGURATION OPTIONS 
+
+PARA 
+
+
+
+OS COMPONENTS EM SI,
+
+
+
+
+
+
+
+bem detalhado...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> os defaults dos components 
+
+
+
+SÃO FINE EM GRANDE PARTE DAS SITUAÇÕES,
+
+SÓ RARAMENTE NÃO SERÃO TÃO BOAS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> APENAS CHEQUE OS DOCS QUANDO VOCê 
+
+
+
+
+ACHAR QUE O DEFAULT NÃO É BOM O SUFICIENTE..
+
+
+
+
+
+
+
+
+OPTIONS DO GENERATE DOS COMPONENTS:
+
+
+
+
+
+
+
+
+Arguments:
+  name  The name of the component.                                                                                  [string]
+Options:
+      --help                Shows a help message for this command in the console.                                  [boolean]      --interactive         Enable interactive input prompts.                                      [boolean] [default: true]      --dry-run             Run through and reports activity without writing out results.         [boolean] [default: false]      --defaults            Disable interactive input prompts for options with a default.         [boolean] [default: false]      --force               Force overwriting of existing files.                                  [boolean] [default: false]  -c, --change-detection    The change detection strategy to use in the new component.
+                                                                [string] [choices: "Default", "OnPush"] [default: "Default"]  -b, --display-block       Specifies if the style will contain `:host { display: block; }`.      [boolean] [default: false]      --export              The declaring NgModule exports this component.                        [boolean] [default: false]      --flat                Create the new files at the top level of the current project.         [boolean] [default: false]  -s, --inline-style        Include styles inline in the component.ts file. Only CSS styles can be included inline. By      
+                            default, an external styles file is created and referenced in the component.ts file.
+                                                                                                  [boolean] [default: false]  -t, --inline-template     Include template inline in the component.ts file. By default, an external template file is      
+                            created and referenced in the component.ts file.                      [boolean] [default: false]  -m, --module              The declaring NgModule.                                                                 [string]  -p, --prefix              The prefix to apply to the generated component selector.                                [string]      --project             The name of the project.                                                                [string]      --selector            The HTML selector to use for this component.                                            [string]      --skip-import         Do not import this component into the owning NgModule.                [boolean] [default: false]      --skip-selector       Specifies if the component should have a selector or not.             [boolean] [default: false]      --skip-tests          Do not create "spec.ts" test files for the new component.             [boolean] [default: false]      --standalone          Whether the generated component is standalone.                        [boolean] [default: false]      --style               The file extension or preprocessor to use for style files, or 'none' to skip generating the     
+                            style file.           [string] [choices: "css", "scss", "sass", "less", "none"] [default: "css"]      --type                Adds a developer-defined type to the filename, in the format "name.type.ts".
+                                                                                             [string] [default: "Component"]  -v, --view-encapsulation  The view encapsulation strategy to use in the new component.
+                                                                         [string] [choices: "Emulated", "None", "ShadowDom"]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+É CLARO QUE ESSAS OPTIONS FUNCIONAM PARA TODO TIPO DE GENERATE....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK...
+
+
+
+
+
+
+O ESLINT VAI POR TODOS SEUS FILES,
+
+PARA 
+
+
+
+
+
+DETECTAR SE TEMOS 
+
+ALGUM TIPO DE ERROR...
+
+
+
+
+
+
+
+
+
+
+(tslint.json)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo.... 
+
+
+
+
+
+
+
+
+VOCÊ SEMPRE PODE USAR O COMANDO DE 'NG LINT'
+
+
+
+PARA CHECAR A QUALIDADE DO SEU CÓDIGO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ng build --prod -----> ASSIM VOCÊ OPTIMIZA SEU CÓDIGO O MÁXIMO PSOSÍVEL ---. 
+
+
+
+
+
+
+ISSO GERA UM FOLDER DE 'dist',
+
+
+
+
+COM TODOS SEUS PRODUCTION FILES,
+
+
+QUE DEVEM SER COLOCADOS EM UM SERVER PARA QUE 
+
+SEU 
+
+APP SEJA SERVIDO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> PODEMOS ADICIONAR NG LINT AO NOSSO PROJETO, Com `ng lint`...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> VEREMOS DEPLOYMENT 
+
+
+
+
+
+UM POUCO MAIS TARDE...
+
+
+
+
+
+
+
+
+
+--> APRENDEMOS SOBRE COMO DAR 'DEPLOY',
+
+
+
+MAS ACTUALLY 
+
+
+
+
+HÁ TAMBÉM UMA OUTRA 
+MANEIRA 
+
+
+
+DE DEPLOYAR,
+
+
+
+
+
+COM A AJUDA DO CLI (
+
+
+
+    e logo veremos isso...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, ESSES SÃO OS CLI COMMANDS...
+
+
+
+
+
+
+
+
+
+
+
+
+--> explore os docs para ver todos os commands...
+
+
+
+
+
+
+
+
+
+
+
+'ng update' 
+
+
+'ng add' 
+
+
+
+'ng deploy' 
+
+
+
+
+
+SÃO IMPORTANTES... 
+
+
+(
+
+
+    VAMOS OS ESTUDAR MAIS DE PERTO....
+)
+
+
+
+
+
+
+
+
+
+
+
+
+--> antes disso,
+
+
+
+vamos analisar o arquivo 
+
+
+
+'angular.json'... (
+
+
+    pq 
+
+    ESSE ARQUIVO CONFIGURA NOSSO PROJECT,
+
+    E AINDA NÃO VIMOS NADA SOBRE ISSO...
+)
+
+
+
+

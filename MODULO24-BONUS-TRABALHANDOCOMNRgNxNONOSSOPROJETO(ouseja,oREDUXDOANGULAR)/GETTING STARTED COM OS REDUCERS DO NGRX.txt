@@ -1,0 +1,1427 @@
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok.. subdividi meu projeto em 2 versões,
+
+
+uma 
+
+
+COM 
+
+
+O NGRX,
+
+OUTRA SEM...
+
+
+
+
+
+
+
+
+--> DEVEMOS COMEÇAR COM O IMPLEMENT DO NGRX 
+
+
+NO NOSSO COURSE PROJECT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--. VAMOS USAR O COURSE PROJECT PQ 
+
+
+
+
+
+
+
+
+APRENDEMOS MAIS 
+
+
+
+OBSERVANDO COMO ESSE NEGÓCIO É APLICADO EM UM APP DE VERDAED....
+
+
+
+
+
+
+
+
+
+
+
+
+------> DE NOVO, O PROFESSOR 
+
+
+RESSALTOU ISSO NOS SLIDES:
+
+
+
+
+
+VOCÊ _ PODERIA '''DEIXAR O APP COMO ELE ESTÁ''..
+
+
+
+
+
+
+
+(
+
+
+    ele não está incompleto,
+    não é uma 
+
+    bad practice,
+
+    não é 
+
+    RUIM FICAR 
+
+    HANDLANDO SEU STATE COM 
+
+
+    RXJS SUBJECTS..
+)
+
+
+
+
+
+
+
+
+
+
+--> MAS O PROFESSOR RECOMENDA IR POR ESTE MÓDULO,
+
+
+
+PARA 
+
+VERMOS O NGRX 
+
+
+EM GRANDE DETALHE,
+
+E AÍ 
+
+
+
+SIMPLESMENTE DECIDIR POR CONTA PRÓPRIA:
+
+
+
+
+
+
+
+
+'''VOCÊ GOSTA DESSE PATTERN? ACHA QUE É VANTAJOSO EM APPS MAIORES?'''
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE PATTERN É ÚTIL,
+
+MESMO ASSIM....
+
+
+
+
+
+
+
+--> ANTES DE MAIS NADA,
+
+
+DEVEMOS __ INSTALAR O PACKAGE DO NGRX
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-. PARA ISSO,
+
+
+
+ABRIMOS O TERMINAL, O FOLDER DO NOSSO PROJETO ABERTO,
+
+E ESCREVEMOS 
+
+
+
+
+
+
+
+npm install --save @ngrx/store
+
+
+
+
+
+
+
+
+
+
+
+--> esse é o PRIMEIRO PACKAGE DE QUE VAMOS PRECISAR...
+
+
+
+
+
+
+
+
+
+-> PROFESSOR DIZ 'PRIMEIRO PACKAGE' PQ __ CERTAMENTE_ PRECISAREMOS DE OUTROS PACKAGES...
+
+
+
+
+
+
+
+
+
+
+
+
+OK... NOSSO PACKAGE.JSON FICOU ASSIM:
+
+
+
+
+
+
+
+{
+  "name": "novoprojeto5",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "~13.3.0",
+    "@angular/common": "~13.3.0",
+    "@angular/compiler": "~13.3.0",
+    "@angular/core": "~13.3.0",
+    "@angular/forms": "~13.3.0",
+    "@angular/platform-browser": "~13.3.0",
+    "@angular/platform-browser-dynamic": "~13.3.0",
+    "@angular/router": "~13.3.0",
+    "@ngrx/store": "^13.2.0",
+    "bootstrap": "^3.4.1",
+    "jsonwebtoken": "^8.5.1",
+    "rxjs": "~7.5.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.11.4"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "~13.3.3",
+    "@angular/cli": "~13.3.3",
+    "@angular/compiler-cli": "~13.3.0",
+    "@types/jasmine": "~3.10.0",
+    "@types/node": "^12.11.1",
+    "jasmine-core": "~4.0.0",
+    "karma": "~6.3.0",
+    "karma-chrome-launcher": "~3.1.0",
+    "karma-coverage": "~2.1.0",
+    "karma-jasmine": "~4.0.0",
+    "karma-jasmine-html-reporter": "~1.7.0",
+    "typescript": "~4.6.2"
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo....
+
+
+
+
+
+
+
+
+
+MAIS TARDE PRECISAREMOS DE OUTROS PACAKGES,
+
+
+
+
+MAS ESSE JÁ NOS DÁ O 'CORE' DO NGRX,
+
+
+e as features básicas necessárias para começarmos...
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+    "@angular/platform-browser-dynamic": "~13.3.0",
+    "@angular/router": "~13.3.0",
+    "@ngrx/store": "^13.2.0",
+    "bootstrap": "^3.4.1",
+    "jsonwebtoken": "^8.5.1",
+    "rxjs": "~7.5.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.11.4"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -> OK... APERTAMOS ENTER E ESPERAMOS PELO COMPLETE DESSA INSTALLATION..
+
+
+
+
+
+
+
+    --> ISSO FEITO,
+
+
+    VOCê PODE ESCREVER 'ng serve'
+
+    PARA RECOMEÇAR O DEV SERVER..
+
+
+
+
+
+
+
+AGORA PODEMOS COMEÇAR A 
+
+
+
+
+
+ADICIONAR O NGRX AO NOSSO PROJETO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NO SLIDE DE ANTES,
+
+PERCEBEMOS QUE EXISTEM ESSAS CORE PARTS:
+
+
+
+
+
+
+
+1) STORE 
+
+
+
+
+2) REDUCER 
+
+
+
+
+
+3) ACTIONS PARA O REDUCER....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> BEM, O STORE E OS REDUCERS SÃO 'CLOSELY TIED TOGETHER',
+
+
+
+
+POR ISSO 
+
+
+DEVEMOS COMEÇAR PELO _ IMPLEMENT__ DE UM REDUCER 
+
+
+
+NO NOSSO APP..
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+
+
+lá NO FEATURE FOLDER DE 
+'ShoppingList',
+
+
+
+
+
+
+
+
+
+O PROFESSOR SIMPLESMENTE ADICIONA UM NOVO ARQUIVO,
+
+QUE CHAMA DE 
+
+
+'shopping-list.reducer.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSA FILE 
+
+
+
+
+
+
+
+
+
+
+
+
+SERÁ A FILE EM QUE COLOCAREMOS UM 'REDUCER'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS COMO UM 'NGRX' 
+
+
+
+REDUCER SE PARECE?
+
+
+
+
+
+
+
+
+
+
+O PROFESSOR HAVIA EXPLICADO QUE 
+
+
+''''É UMA SIMPLES FUNCTION'',
+
+
+
+
+
+
+
+
+
+
+
+
+
+é uma function que começamos assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+export function shoppingListReducer() {
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E ESSA FUNCTION DEVE RECEBER_ 2 ARGUMENTS... -----> 
+
+
+
+
+
+
+ELA VAI RECEBER ESSES ARGUMENTS __ AUTOMATICAMENTE,
+
+
+ISSO 
+
+
+
+
+PQ __ 
+
+
+LOGO 
+
+
+VAMOS 
+
+
+
+A INTEGRAR AO NOSSO PROJETO DE MODO QUE SERÁ 'MANAGED BY THE NGRX PACKAGE',
+
+
+
+
+E ESSA PACKAGE VAI, NO FINAL DAS CONTAS,
+
+ 
+
+
+ ser A PARTE DE NOSSO PROJETO QUE 'CALLS THIS FUNCTION',
+
+
+
+
+
+
+
+
+ E É EXATAMENTE POR ISSO QUE ESSES 
+
+ ARGUMENTOS SERÃO PASSADOS PARA DENTRO DESSA FUNCTION DE 
+
+ 'shoppingListReducer'...
+
+
+
+
+
+
+
+
+-> SEMPRE PODEREMOS 'RELY' EM 2 ARGUMENTOS SENDO PASSADOS A ESSA FUNCTION....
+
+
+
+
+
+
+1) O PRIMEIRO É O 'STATE', o nosso 'CURRENT STATE' ANTES  DE ELE SER _ ALTERADO _ PELO REDUCER (ou seja, o OLDSTATE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+2) JÁ O SEGUNDO ARGUMENTO SERÁ 
+
+
+
+
+A 'ACTION'...  ---------> ISSO PQ '''É A ACTION QUE VAI TRIGGAR A ATUAÇÃO DO REDUCER'', e é ELA 
+
+QUE 
+
+VAI 
+
+SER O ESTOPIM PARA O PROCESSO DE 'STATE UPDATE' (pq o reducer só será ativado por ela, e é o reducer que faz o RETURN DE UM NOVO STATE, QUE SUBSTITUI O VELHO, lá na 'central store'...)
+
+
+
+
+
+
+
+ -. tipo assim:
+
+
+
+
+ 
+
+
+export function shoppingListReducer(state, action) {
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export function shoppingListReducer(state, action) {  ///////ESSES 2 ARGUMENTOS SÃO SEMPRE 'PASSED IN' pelo próprio angular 'NGRX', contanto que vocÊ defina esse reducer como REDUCER DE SEU APP 
+
+                        ///state --> é o APPLICATION-WIDE STATE DE SEU APP...
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, AGORA DENTRO DESSA FUNCTION ,PODEMOS 
+
+
+DESCOBRIR 'QUAL TIPO DE ACTION ESSA ACTION É' (por meio do INVESTIGATE DE SUAS PROPRIEDADES, PROCURANDO POR UMA KEY),
+
+
+
+
+
+E AÍ 
+
+
+
+PODEMOS 'UPDATE' O STATE...
+
+
+
+
+
+
+
+
+
+
+-----> PARA ISSO, PARA ALTERARMOS O STATE,
+É ÓBVIO QUE 
+
+PODEMOS DEFINIR UM 'INITIAL STATE' PARA O NOSSO APP...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ISSO PQ SE OLHARMOS PARA NOSSO SERVICE DE 
+
+
+
+'shopping-list.service.ts',
+
+
+
+
+seu código  base,
+
+
+veremos isto:
+
+
+
+
+
+
+
+
+import { Injectable, Output } from '@angular/core';
+import { Subject } from 'rxjs';
+import { Ingredient } from './shared/ingredient.model';
+
+@Injectable()
+export class ShoppingListService {
+  ingredientsChanged = new Subject<Ingredient[]>();
+
+  ingredientSelected = new Subject<number>();
+
+  private ingredients: Ingredient[] = [];
+
+  getIngredients() {
+    return [...this.ingredients];
+  }
+
+  onIngredientAdd(ingredient: Ingredient) {
+    console.log('RECEIVED');
+    this.ingredients.push(ingredient);
+
+    this.ingredientsChanged.next([...this.ingredients]);
+  }
+
+  loadShopListItem(index: number) {
+    this.ingredientSelected.next(index);
+  }
+
+  getIngredient(index: number) {
+    return this.ingredients[index];
+  }
+
+  editIngredient(index: number, ingredient: Ingredient) {
+    this.ingredients[index] = ingredient;
+
+    this.ingredientsChanged.next([...this.ingredients]);
+  }
+
+  deleteIngredient(index: number) {
+    this.ingredients.splice(index, 1);
+
+    this.ingredientsChanged.next([...this.ingredients]);
+  }
+
+  cleanupDeleteIngredients(recipeId: number) {
+    this.ingredients = this.ingredients.filter((ingredient) => {
+      console.log(recipeId);
+      console.log(ingredient.recipeIndex);
+      return ingredient.recipeIndex !== recipeId;
+    });
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COMO VOCÊ PODE OBSERVAR, JÁ TÍNHAMOS UM 'INITIAL STATE' nesse service aí,
+
+específico ao 'shop-list':
+
+
+
+
+
+
+
+  private ingredients: Ingredient[] = [];
+
+
+
+
+
+
+
+
+
+
+
+
+  ------> OS INGREDIENTS, ESSE ERA O NOSSO STATE...
+
+
+
+
+
+
+
+
+  -> NA MINHA VERSÃO, INICIALIZAVA O APP _ SEM NENHUM INGREDIENT (0 ingredients)..
+
+
+
+
+
+
+
+  --> ESSE É O INITIAL STATE...
+
+
+
+
+
+
+
+
+
+
+
+  ---> É POR ISSO QUE O PROFESSOR ADMITE QUE SERIA BOM TER UM 
+
+
+  INITIAL STATE SIMILAR LÁ NO NOSSO REDUCER DE SHOP-LIST,
+
+  quando 
+
+
+
+  trocarmos para 
+
+
+  esse approach com o 'NgRx'
+
+
+  em vez 
+
+
+  de usar esse service para o state management...
+
+
+
+
+
+
+  eX:
+
+
+
+
+
+
+
+
+
+
+
+
+  export function shoppingListReducer(state, action) {
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+  ------> OK... 
+
+
+
+
+
+
+
+  É POR ISSO QUE 
+
+  PODEMOS CRIAR UMA NOVA CONSTANTE
+
+
+
+  LÁ EM 'shoppingList.reducer.ts',
+
+
+
+
+
+
+
+
+
+
+
+  DE NOME 
+
+
+  'initialState',
+
+
+
+
+  QUE SERÁ UM JAVASCRIPT OBJECT- -->  SEU STATE GERALMENTE SERÁ UM _ JAVASCRIPT OBJECT (
+
+    ele nem sempre precisa ser 1 ,
+
+
+
+
+    mas 
+
+
+PARA 
+
+QUASE QUALQUER CASE,
+
+
+
+SERÁ UM JAVASCRIPT OBJECT... -> PQ ISSO TE DEIXA AGRUPAR MAIS 
+
+
+
+DATA DISTINTA EM 1 SÓ LUGAR..
+
+
+  )
+
+
+
+
+
+
+
+
+  ----> ok.... VAMOS ESCREVER ASSIM:
+
+
+
+
+
+
+
+  
+
+  const initialState = {
+
+
+
+  }
+
+  export function shoppingListReducer(state, action) {
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> o professor acha que é bom ficarmos com aquela propriedade de 'ingredients'
+
+DENTRO 
+
+DESSE OBJECT JAVASCRIPT, TIPO ASSIM:
+
+
+
+
+
+
+  
+
+  const initialState = {
+
+    ingredients: Ingredient[] = [],
+
+  }
+
+  export function shoppingListReducer(state, action) {
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-VAMOS QUERER TAMBÉM FICAR COM O TYPE, É CLARO..
+
+
+
+
+
+
+
+
+ENCONTREI UM PROBLEMA COM O TYPESCRIPT, MAS JÁ RESOLVI:
+
+
+
+
+
+
+
+
+
+import { Ingredient } from "../shared/ingredient.model";
+
+
+let ingredients: Ingredient[] = [];
+
+
+
+const initialState = {
+
+ingredients: ingredients,
+
+
+
+}
+export function shoppingListReducer(state, action) {  ///////ESSES 2 ARGUMENTOS SÃO SEMPRE 'PASSED IN' pelo próprio angular 'NGRX', contanto que vocÊ defina esse reducer como REDUCER DE SEU APP 
+
+                        ///state --> é o APPLICATION-WIDE STATE DE SEU APP...
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok... esse é o NOSSO 'INITIAL STATE'....
+
+
+
+
+
+
+
+
+
+--> E AGORA PODEMOS __DEFINIR _ ESSE INITIAL STATE 
+
+
+
+
+NO NOSSO REDUCER,
+
+
+
+TUDO POR MEIO DO DEFINE 
+
+DO PRIMEIRO ARGUMENTO DE 'shoppingListReducer'
+
+
+
+
+
+COMO TENDO UM DEFAULT VALUE DESSA CONST DE 'initialState',
+
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Ingredient } from "../shared/ingredient.model";
+
+
+let ingredients: Ingredient[] = [];
+
+
+
+const initialState = {
+
+ingredients: ingredients,
+
+
+
+}
+export function shoppingListReducer(state = initialState, action) {  ///////ESSES 2 ARGUMENTOS SÃO SEMPRE 'PASSED IN' pelo próprio angular 'NGRX', contanto que vocÊ defina esse reducer como REDUCER DE SEU APP 
+
+                        ///state --> é o APPLICATION-WIDE STATE DE SEU APP...
+
+}
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Ingredient } from "../shared/ingredient.model";
+
+
+let ingredients: Ingredient[] = [];
+
+
+
+const initialState = { ////queremos ter esse 'INITIALSTATE' de nosso app, que antes existia lá no SERVICE DE 'shoppingList.service.ts', CONSIDERADO NESSE NOSSO REDUCER/SISTEMA DO CENTRAL STORE...
+
+ingredients: ingredients,
+
+
+
+}
+
+
+
+////POR MEIO DA FEATURE typescript (next gen javascript) de 'state = initialState', DEFINIMOS O 'initial state' considerado no nosso reducer _cOMO _ SENDO O MESMO STATE QUE DEFINIMOS LOGO ACIMA, NAQUELA CONST...
+export function shoppingListReducer(state = initialState, action) {  ///////ESSES 2 ARGUMENTOS SÃO SEMPRE 'PASSED IN' pelo próprio angular 'NGRX', contanto que vocÊ defina esse reducer como REDUCER DE SEU APP 
+
+                        ///state --> é o APPLICATION-WIDE STATE DE SEU APP...
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK... ESSENCIALMENTE PODEMOS DEFINIR 'DEFAULT VALUES' 
+
+
+A FUNCTION ARGUMENTS... --> AÍ,
+
+
+
+SE ESSA FUNCTION FOR CHAMADA E NENHUM PARAMETER FOR PASSADO PARA ESSE PRIMEIRO PARÂMETRO,
+
+
+
+
+
+SERÁ UTILIZADA ESSA CONST DE 'initialState'...
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER QUE 
+
+
+
+__ NA PRIMEIRA_ VEZ QUE NOSSO REDUCER (esse reducer de 'shopList')
+
+FOR CHAMADO,
+
+
+ELE 
+
+
+VAI 
+
+RECEBER ESSE 'INITIAL STATE'
+
+
+como staet.... ------> MAS PARA TODAS AS ACTIONS SUBSEQUENTES,
+
+
+
+
+ACIONADAS 'DEPOIS QUE O STATE FOR INICIALIZADO PELA PRIMEIRA VEZ',
+
+
+
+
+E DEPOIS QUE O STATE TIVER SIDO INICIALIZADO GLOBALMENTE pelo NGRX,
+
+
+
+
+
+
+
+
+
+assim que esse state tiver sido inicializado,
+
+
+
+
+
+o state sempre será o 
+
+'''PREVIOUS STATE'''',
+
+
+
+mas pela 
+
+primeira vez 
+
+
+
+REALMENTE SERÁ UTILIZADO ESSE 'initialState'... (quando as coisas ainda estão sendo INICIALIZADAS)..
+
+
+
+
+
+
+
+
+
+
+OK... 

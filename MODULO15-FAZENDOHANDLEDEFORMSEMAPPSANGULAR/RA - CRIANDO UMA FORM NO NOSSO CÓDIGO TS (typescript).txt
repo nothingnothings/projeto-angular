@@ -1,0 +1,1901 @@
+
+
+
+
+
+
+
+
+
+
+-> PARA CONSEGUIR SETTAR 
+
+
+A 'REACTIVE APPROACH' 
+
+de criaçaõ 
+
+
+de 
+
+
+forms,
+
+
+
+
+EU TIVE DE DEFINIR MEU APP.MODULE.ts 
+assim:
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+// import { FormsModule } from '@angular/forms'; NÃO É NECESSÁRIO.... SÓ É NECESSÁRIO NO 'template-driven approach' (TD)...
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    // FormsModule  ////NÃO É NECESSÁRIO.... SÓ É NECESSÁRIO NO 'template-driven approach' (TD)...
+    ReactiveFormsModule ////////ESSE É O MODULE QUE VOCÊ TEM QUE IMPORTAR, PARA PODER ESCREVER FORMS USANDO O 'REACTIVE APPROACH'..
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> AGORA O PRÓXIMO PASSO É REALMENTE __ CRIAR __ NOSSA FORM,
+
+
+ISSO 
+
+LÁ 
+
+
+
+NO ARQUIVO 
+
+de 
+
+'app.component.ts'...
+
+
+
+
+
+
+
+
+
+
+----> NOSSO CÓDIGO COMEÇA ASSIm:
+
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+import { FormGroup } from '@angular/forms'; /// NO REACTIVE APPROACH, usamos UM MONTE DAS CLASSES OFERECIDAS POR ESSA PACKAGE...
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+    genders = ['Male', 'Female'];
+
+    signupForm: FormGroup;  //nossa 'overall form' sempre será isso, um 'FORM GROUP', um grande COMPILADO DE TODOS OS input fields, selects, textareas, radio buttons, etc
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+-----> PODERÍAMOS INICIALIZAR NOSSA 
+
+
+FORM 
+
+
+
+diretamente 
+
+
+em 
+
+
+
+'signupForm: FormGroup',
+
+
+
+
+
+
+PARA AÍ 
+
+
+
+'SETTAR UM VALUE IMEDIATAMENTE',
+
+
+
+
+
+
+
+
+
+
+
+__ MAS O PROFESSOR __ 
+
+
+
+
+
+
+
+
+
+
+
+
+_ NÃO _ GOSTA NEM UM POUCO 
+
+_ 
+
+
+DE DEFINIR O VALUE INICIAL DIRETAMENTE ASSIM.... -----> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+EM VEZ DISSO,
+
+ELE GOSTA DE TER UM _ _ METHOD_ QUE 
+
+INICIALIZA 
+
+
+ESSA NOSSA 'FORM PROGRAMÁTICA'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+mas pq um method? 
+
+
+
+
+
+
+
+
+
+-> É PQ 
+
+
+
+O DEFINE INICIAL DE UMA FORM 
+
+
+_ É 
+
+
+UM BOCADO DE CÓDIGO (quite a lot of code),
+
+
+
+
+
+
+
+
+
+
+E 
+O PROFESSOR 
+
+ACHA 
+
+
+
+QUE 
+
+
+
+O CABEÇALHO
+
+
+
+
+
+
+
+DE NOSSO COMPONENT É UM PÉSSIMO 
+
+
+
+
+LOCAL PARA O ESCREVER...
+
+
+
+
+(
+A ÁREA DO TOPO DE SUA CLASS/COMPONENT DEVE SER RESERVADA 
+
+
+A DECLARATION DE PROPERTIES, DEVE FICAR SEMPRE LIMPA....
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> É POR ISSO QUE O PROFESSOR 
+
+
+
+
+
+
+
+ACHA MELHOR USAR O LIFECYCLE HOOK DE 'OnInit()'
+
+
+
+
+
+PARA _ 
+
+
+DEFINIR OS VALUES INICIAIS 
+
+
+
+
+DE NOSSA FORM PROGRAMÁTICA..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ele implementa o 'OnInit',
+
+
+
+e escreve assim:
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+import { FormGroup } from '@angular/forms'; /// NO REACTIVE APPROACH, usamos UM MONTE DAS CLASSES OFERECIDAS POR ESSA PACKAGE...
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent implements OnInit{
+    genders = ['Male', 'Female'];
+
+    signupForm: FormGroup;  //nossa 'overall form' sempre será isso, um 'FORM GROUP', um grande COMPILADO DE TODOS OS input fields, selects, textareas, radio buttons, etc
+
+
+
+
+
+
+
+
+
+
+        ngOnInit() {
+
+
+        }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { FormGroup } from '@angular/forms'; /// NO REACTIVE APPROACH, usamos UM MONTE DAS CLASSES OFERECIDAS POR ESSA PACKAGE...
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent implements OnInit {
+    genders = ['Male', 'Female'];
+
+    signupForm: FormGroup;  //nossa 'overall form' sempre será isso, um 'FORM GROUP', um grande COMPILADO DE TODOS OS input fields, selects, textareas, radio buttons, etc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    ngOnInit(): void {   ////é bem melhor inicializar iniicalmente nossa form AQUI, em 'ngOnInit()'....
+      
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------
+
+
+
+
+
+
+
+
+
+
+
+DENTRO DE 
+
+'ngOnInit()",
+
+
+
+
+
+
+
+VAMOS INICIALIZAR NOSSA FORM ------------> AÍ,
+
+
+O PROFESSOR 
+
+
+
+NOS EXPLICA QUE 
+
+
+
+_ _É CLARO QUE __ VOCê VAI QUERER 
+
+
+INICIALIZAR SUA FORM
+
+
+
+
+
+'ANTES DE O TEMPLATE SER RENDERIZADO',
+
+
+
+
+
+
+
+POR ISSO 
+
+
+
+
+É ESSENCIAL QUE VOCÊ CHAME UM 
+
+LIFECYCLE HOOK 
+
+
+
+CUJO RUN _ OCORRE __ ANTES_ 
+
+
+DO TEMPLATE SER RENDERIZADO.. ( por isso 'ngOnInit')...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> dentro de 'ngOnInit',
+
+
+
+
+
+O PROFESSOR VAI DEFINIR 
+
+
+
+
+nossa signupForm
+
+
+
+
+
+como :
+
+
+
+
+
+
+
+
+
+this.signupForm = ...
+
+
+
+
+
+
+
+
+
+
+
+
+--> VAI DEFINIR ESSA PROPRIEDADE/NOSSA FORM 
+
+
+
+
+__ COMO O QUE_, EXATAMENTE? 
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> bem, devemos  TER EM MENTE QUE 
+
+
+
+'signupForm'
+
+
+
+
+TEM UM TYPE QUE 
+
+
+É PRECISAMENTE 
+
+
+
+'FormGroup'....
+
+
+
+
+
+
+
+----> ISSO QUER DIZER QUE _ O QUE DEVEMOS FAZER, AQUI,
+
+
+
+
+
+
+É SIMPLESMENTE __________cRIAR__ UM 'NOVO FORMGROUP',
+
+
+
+
+
+
+
+
+
+ou por meio do WRITE MANUAL 
+
+
+
+DESSE OBJECT (tipo '{xxx: yyy, zzz: www}' )
+
+
+
+
+
+
+
+
+
+
+
+OU POR MEIO DE UMA CONSTRUCTOR FUNCTION....
+
+
+
+
+
+
+
+
+
+-> SÓ NÃO SEI QUAL O PROFESSOR UTILIZARÁ...
+
+
+
+
+
+
+
+
+
+-> ELE VAI USAR UMA CONSTRUCTOR FUNCTION..
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+this.signupForm = new FormGroup()
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK... ->  COM ISSO TEREMOS UMA 'FORM QUASE VÁLIDA'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+    ngOnInit(): void {   ////é bem melhor inicializar iniicalmente nossa form AQUI, em 'ngOnInit()'....
+
+
+      this.signupForm = new FormGroup(); /////ISSO VAI __ CRIAR UMA _ NOVA FORM _ QUASe__ VÁLIDA...
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -----> OK...
+
+
+
+
+
+
+
+
+
+
+
+    MAS AGORA SEREMOS _ FORÇADOS_ A PASSAR UM OBJECT 
+
+
+    JAVASCRIPT 
+
+
+
+    DENTRO 
+
+    DESSE 'FormGroup'.. -----> 
+
+
+
+
+
+
+
+
+
+
+
+    SE PASSARMOS UM __ OBJECT_ JAVASCRIPT 
+
+
+
+    A ESSE METHOD de 'new FormGroup',
+
+
+
+
+
+
+    ESTARMEOS _ __ 
+
+
+
+
+
+
+
+
+    'TEORICAMENTE DONE'... ------->  ISSO 
+
+
+
+
+    CRIARÁ 
+
+
+
+    A NOSSA 
+
+    _PRIMEIRA FORM DE FORMA PROGRAMÁTICA.... -----> 
+
+
+
+
+
+
+
+
+
+
+
+
+    CERTO... MAS AQUELE OBJECT JAVASCRIPT VAI CONFIGURAR NOSSA 'form'..
+
+
+
+
+
+
+
+    --> e, no momento,
+
+
+
+
+
+    ESSE CALL DO CONSTRUCTOR ESTÁ COM UM _ OBJECT_ VAZIO NO SEU INTERIOR, TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+       ngOnInit(): void {   ////é bem melhor inicializar iniicalmente nossa form AQUI, em 'ngOnInit()'....
+
+
+      this.signupForm = new FormGroup({}); 
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK, MAS O QUE SIGNIFICA/QUAL O EFEITO DE PASSAR UM OBJECT JAVASCRIPT VAZIO 
+
+
+
+A 
+
+
+CONSTRUCTOR FUNCTION?  -------> BEM, O EFEITO SERÁ QUE 
+
+
+
+__ ESSA FORM _ NÃO VAI TER NENHUM 'CONTROL'.......
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA QUE 
+
+ESSA FORM 
+
+FIQUE 
+
+
+
+COM 
+
+
+ALGUNS CONTROLS,
+
+
+
+
+PRECSIAMOS 
+
+OS  ADICIONAR POR MEIO 
+
+
+DESSA csontructor function de 
+
+
+
+
+
+new FormGroup({})..
+
+
+
+
+
+
+
+
+
+
+-----> CERTO.. 
+
+
+
+
+
+
+
+E ___ 'controls'
+SÃO _ BASICAMENTE _ 
+
+
+
+
+__KEY-VALUE _ PAIRS 
+
+
+NESSE OBJECt JAVASCRIPT 
+
+QUE PASSAMOS 
+
+
+AO 
+
+
+'overall FormGroup' que é 
+
+
+
+
+
+'this.signupForm'...
+
+
+
+
+
+
+
+
+
+
+
+-> NO NOSSO CÓDIGO TEMPLATE/HTML,
+
+
+TEMOS:
+
+
+
+
+
+
+
+
+
+1) FIELD DE USERNAME
+
+
+
+2) FIELD DE EMAIL 
+
+
+
+3) RADIO BUTTONS AO FINAL DO CÓDIGo,
+
+
+
+
+com 
+
+sintaxes tipo:
+
+
+
+''''''
+
+
+
+
+
+
+
+
+
+        <div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input
+              required
+              type="radio"
+              name="gender"
+              [ngModel]="exemploGender"
+              [value]="gender"
+            />
+            {{ gender }}
+          </label>
+        </div>
+
+
+
+
+
+
+
+
+'''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> É POR ISSO QUE FAZ SENTIDO TER UM CONTROL de 
+
+
+
+'username',
+
+para começar:
+
+
+
+
+
+
+
+
+
+
+
+      ngOnInit(): void {  
+
+      this.signupForm = new FormGroup({
+
+          'username': 
+      }); 
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK, MAS __ PQ _ O PROFESSOR ESCREVEU _ 
+
+
+
+
+
+
+
+AS 'KEYS' DESSE OBJECT JAVASCRIPT _ _ 
+
+COMO SENDO 
+
+ _ STRINGs?  -----> BEM, ELE ESTÁ WRAPPANDO AQUELE VALUE COM "" 
+
+
+
+
+
+ pq __ DURANTE A MINIFICATION,
+
+
+
+ EM QUE
+
+
+
+ ESSE CÓDIGO TYPESCRIPT INTEIRO É 'mangled' (mutilado),
+
+
+
+
+ ESSE 
+
+
+ PROPERTY NAME AINDA SIGA/seguirá  INTACTO,
+
+
+
+
+
+
+
+ TUDO PQ 
+
+
+
+
+_ O PROFESSOR __ VAI REFERENCIAR 
+
+
+
+ESSE 
+
+
+'name' 
+
+
+
+LÁ NO CÓDIGO HTML.... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ELE EXPLICA QUE ISSO TVZ NÃO SEJA NECESSÁRIO,
+
+QUE O 
+
+
+
+ELEMENT TALVEZ NÃO SEJA DESTRUÍDO,
+
+
+
+
+MAS QUE 
+
+MESMO ASSIM 
+
+
+
+
+ELE VAI __ WRAPPAR 
+
+ESSE VALUE COMO UMA STRING...
+
+
+
+
+
+
+
+
+
+
+---> ok, recapitulando:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { FormGroup } from '@angular/forms'; /// NO REACTIVE APPROACH, usamos UM MONTE DAS CLASSES OFERECIDAS POR ESSA PACKAGE...
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent implements OnInit {
+    genders = ['Male', 'Female'];
+
+    signupForm: FormGroup;  //nossa 'overall form' sempre será isso, um 'FORM GROUP', um grande COMPILADO DE TODOS OS input fields, selects, textareas, radio buttons, etc
+
+
+
+    ngOnInit(): void {   ////é bem melhor inicializar iniicalmente nossa form AQUI, em 'ngOnInit()'....
+
+
+      this.signupForm = new FormGroup({
+        
+      }); /////ISSO VAI __ CRIAR UMA _ NOVA FORM _ QUASe__ VÁLIDA...
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok...
+
+
+
+
+
+
+
+
+
+
+
+mas PQ O PROFESSOR ESTÁ USANDO STRINGS PARA WRAPPAR NOSSOS KEY NAMES (que representam os INPUT FIELDS DE NOSSO APP)
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ --> ele está wrappando para que a minification não DESCARTE esse name, pq 
+
+
+ esse name aí será REFERENCIADO LÁ NO CÓDIGO HTML...
+
+
+
+
+
+(
+
+  isso talvez não seja necessário,
+
+  mas 
+  'TO BE SURE',
+
+  é melhor wrappar isso com uma string..
+
+
+
+
+    
+)
+
+
+
+
+ ---> OK ,
+
+
+
+
+
+
+
+
+
+ MAS QUAL SERÁ _ O VALUE__ QUE 
+
+
+ FICARÁ 
+
+
+ EM CADA UMA DESSAS KEYS?
+
+
+
+
+
+
+
+ -> SERÁ 
+
+
+ UM VALUE DE TIPO 'FormControl',
+
+
+
+
+
+
+ representando JUSTAMENTE NOSSO INPUT FIELD/INPUT FIELDS....
+
+
+
+
+
+
+->_ é por isso que o professor vai usar 
+
+
+
+'new FormControl()',
+
+
+para CRIAR UM NOVO 
+
+OBJETO DESSES, NESSA NOSSA KEY..
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+    ngOnInit(): void {   
+
+
+      this.signupForm = new FormGroup({
+
+          'username': new FormControl()
+      }); 
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -> 'FormControl' É OUTRA COISA FORNECIDA PELO PACKAGE DE '@angular/forms'..
+
+
+
+
+
+
+
+
+
+--> CRIAMOS UM NOVO 'FormControl'...
+
+
+
+
+
+
+
+
+
+--> certo....
+
+
+
+
+
+
+
+--> MAS NESSE CONSTRUCTOR,
+
+DEVEMOS _ PASSAR _ ALGUNS ARGUMENTOS __ ESSENCIAIS...
+
+
+
+
+
+
+
+
+--> O PRIMEIRO ARGUMENTO É O 'INITIAL STATE',
+
+
+
+
+O INITIAL VALUE QUE ESSE CONTROL VAI SEGURAR,
+
+em outras palavras...
+
+
+
+
+
+
+
+
+em suma,
+
+
+
+esse 
+
+
+object/constructor function 
+
+
+
+exige 
+
+
+
+
+os seguintes argumentos:
+
+
+
+
+
+
+
+1) O 'INITIAL VALUE' de seu input field....
+
+
+
+
+
+
+2) O SEGUNDO PARÂMETRO É UM 'SINGLE VALIDATOR', ou então um ARRAY _ DE VALIDATORS, que serão aplicados a esse control específico....
+
+
+
+
+
+
+3) O TERCEIRO ARGUMENTO SERÁ 'asynchronous validators' em potencial, que você talvez adicione... (também veremos isso mais tarde)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> COMO PRIMEIRO VALUE DESSE INPUT FIELD,
+
+o professor coloca um value de 'null',
+
+para que fique EM BRANCO... ----------> MAS VOCÊ TAMBÉM PODERIA
+ 
+
+ PASSAR UMA STRING,
+
+
+
+ como 
+ 'Default Username'  (aí isso realmente apareceria como o primeiro value do input field)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ _> certo... vamos deixar esse input field de lado um pouco, e aí codar o field do 'email'....
+
+
+
+
+
+
+
+
+
+ --> PARA ISSO,
+
+ DEVEMOS CRIAR UMA NOVA KEY,
+
+
+ com outro FormGroup,
+
+
+
+ dessa vez com o 
+
+
+
+ EMAIL:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+    ngOnInit(): void {   ////é bem melhor inicializar iniicalmente nossa form AQUI, em 'ngOnInit()'....
+
+
+      this.signupForm = new FormGroup({  /////ISSO VAI __ CRIAR UMA _ NOVA FORM _ QUASe__ VÁLIDA...
+
+        ////sempre wrappe o nome de seus input fields em _ STRINGS_...
+        'username': new FormControl(  ////é usado para CRIAR A REPRESENTAÇÃO DESSE INPUT FIELD em si... e ele tem VÁRIOS ARGUMENTOS QUE DEVEM SER PASSADOS..
+
+        null, //// 1/////// O PRIMEIRO PARÂMETRO É o 'INITIAL VALUE' de seu input field... colocamos 'null' pq queremos que fique EM BRANCO...
+
+
+        ),
+
+        'email': new FormControl(
+          
+          null,
+          
+        )
+
+      }
+      
+      
+      
+      );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      --> de forma mais 'bonitinha',
+
+
+
+      o código fica assim:
+
+
+
+
+
+
+
+
+
+
+      this.signupForm = new FormGroup({
+
+          'username': new FormControl(null),
+          'email': new FormControl(null)
+      })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -----> ok....
+
+
+
+
+
+  VALIDATION SERÁ ADICIONADA MAIS TARDE...
+
+
+
+
+
+
+
+
+
+  ---> TAMBÉM VAMOS ADICIONAR UM NOVO FormControl
+
+
+  para 'GENDER'....
+
+
+
+
+
+
+
+
+
+
+  gender pode ser um 'radio button',
+
+
+
+  mas no final das contas ele SEMPRE SERÁ UM 
+
+
+'NORMAL INPUT', só meio gozado... ----> ISSO SIGNIFICA QUE, PARA O ANGULAR
+
+ELE É CONSIDERADO COMO UM 
+
+
+CONTROL NORMAL...
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR DIZ QUE PODERÍAMOS, SIM,
+
+DEIXAR ISSO COMO NULL,
+
+
+
+
+mas que ele vai querer 'select the default gender' ,
+
+
+só para fins de demonstração..
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { FormControl, FormGroup } from '@angular/forms'; /// NO REACTIVE APPROACH, usamos UM MONTE DAS CLASSES OFERECIDAS POR ESSA PACKAGE...
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent implements OnInit {
+    genders = ['Male', 'Female'];
+
+    signupForm: FormGroup;  //nossa 'overall form' sempre será isso, um 'FORM GROUP', um grande COMPILADO DE TODOS OS input fields, selects, textareas, radio buttons, etc
+
+
+
+    ngOnInit(): void {   ////é bem melhor inicializar iniicalmente nossa form AQUI, em 'ngOnInit()'....
+
+
+      this.signupForm = new FormGroup({  /////ISSO VAI __ CRIAR UMA _ NOVA FORM _ QUASe__ VÁLIDA...
+
+        ////sempre wrappe o nome de seus input fields em _ STRINGS_...
+        'username': new FormControl(  ////é usado para CRIAR A REPRESENTAÇÃO DESSE INPUT FIELD em si... e ele tem VÁRIOS ARGUMENTOS QUE DEVEM SER PASSADOS..
+
+        null, //// 1/////// O PRIMEIRO PARÂMETRO É o 'INITIAL VALUE' de seu input field... colocamos 'null' pq queremos que fique EM BRANCO...
+
+
+        ),
+
+        'email': new FormControl( ///user input de 'email'
+          
+          null,
+
+        ),
+
+        'gender': new FormControl(this.genders[0] //queremos definir o 'initial value', value default, como sendo 'male' no início...
+          
+          )
+
+      }
+      
+      
+      
+      );
+    }
+}
+
+
+
+
+
+
+
+
+---------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+COM ISSO,
+
+
+
+
+
+UMA FORM BÁSICA TERÁ SIDO INITIALIZADA..
+
+
+
+
+
+
+
+
+
+
+ELA TERÁ 3 CONTROLS..
+
+
+
+
+
+
+
+
+
+
+
+-> por enquanto, é isso que temos...
+
+
+
+
+
+
+
+-> ESSA É NOSSA PRIMEIRA 'BASIC' FORM com o reactive approach...
+
+
+
+
+
+
+
+
+
+
+
+-> NA PRÓXIMA AULA,
+
+
+
+
+__ _VAMOS _ CONECTAR__ ESSA FORM _ QUE 
+
+CRIAMOS AQUI,
+
+NO TYPESCRIPT,
+
+
+
+COM _ 
+
+
+O NOSSO TEMPLATE HTML  de 
+
+
+
+
+'app.component.html'... (vAMOS CONECTAR A FORM DE NOSSO CÓDIGO TYPESCRIPT _ À FORM _ QUE SETTAMOS LÁ NO CÓDIGO HTML)...

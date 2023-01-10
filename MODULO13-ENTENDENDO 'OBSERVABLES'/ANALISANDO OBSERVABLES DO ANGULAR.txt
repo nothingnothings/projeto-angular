@@ -1,0 +1,494 @@
+
+
+
+
+
+
+
+
+
+
+
+PARA DEMONSTRAR O FUNCIONAMENTO DOS OBSERVABLES,
+
+
+O PROFESSOR CRIOU UM PROJECT ANGULAR BEM SIMPLES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NESSE PROJECT,
+
+ESSENCIALMENTE 
+
+TEMOS 3 DIFERENTES LINKS,
+
+
+
+
+
+
+
+QUE NOS LEVAM A DIFERENTES PAGES....
+
+
+
+
+
+
+
+
+
+USER1 
+
+
+
+USER2 
+
+
+
+E HOME..
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO,
+
+
+
+HÁ ALGO QUE 
+
+
+JÁ APRENDEMOS 
+
+
+sobre 
+
+
+
+esse tópico,
+
+E ISSO 
+
+
+PODE SER ENCONTRADO  NO
+
+
+
+
+COMPONENT DE 'user'
+
+
+
+
+
+
+
+
+
+
+--> LÁ ENCONTRAMOS 
+
+
+
+
+
+JÁ UMA SUBSCRIPTION,
+
+
+
+
+
+
+
+como você pode ver pelo código de 
+
+
+
+
+
+
+ngOnInit() {
+    this.route.params.subscribe( next: (params: Params) => {
+
+
+            this.id = +params.id;
+    })
+}
+
+
+
+
+
+
+
+
+
+---------------------------
+
+
+
+
+
+
+ESSA SUBSCRIPTION FAZ 'LISTEN' 
+
+
+
+A 
+
+
+
+'CHANGING ROUTE PARAms',
+
+
+
+
+PARA QUe 
+
+
+
+
+
+aconteça:
+
+
+
+
+
+SE 
+
+
+ESTIVERMOS NA PAGE DE 
+
+'user 1'
+
+
+e clicarmos em 'user 2',
+
+
+
+
+
+
+
+ISSO VAI __ 
+UPDATAR _ 
+
+
+
+
+
+A ESCRITA DE 
+
+
+'user with ID x was loaded' 
+
+
+
+
+
+
+
+
+---> É UPDATADO ESSE VALOR AÍ,
+
+
+ MESMO 
+
+ QUE _ 
+
+
+
+
+ ISSO AINDA É 
+
+
+
+ TECNICAMENTE O MESMO COMPONENT... -> BEM,
+
+
+
+
+
+
+
+ ISSO É ALGO QUE APRENDEMOS DURANTE O MÓDULO DE 
+
+ 'routing'...
+
+
+
+
+
+
+
+
+
+
+
+ -_> e esse 
+
+ 'this.route.params.subscribe()'
+
+
+
+ É UM _ OBSERVABLE....
+
+
+
+
+
+
+
+
+
+
+
+ -> para sermos mais precisos,
+
+é o 'PARAMS' o observable, aqui..
+
+
+
+
+
+
+
+
+
+
+PARAMS É O OBSERVABLE,
+
+
+
+pq fizemos 'SUBSCRIBE' a ele,
+para vigiar suas changes...
+
+
+
+
+
+
+
+
+
+
+
+-> VOCÊ DEVE SE LEMBRAR DISSO:
+
+
+
+
+
+
+
+'''OBSERVABLES SÃO CONSTRUCTS A QUE _ VOCê _ FAZ SUBSCRIBE,
+
+
+PARA _ AÍ _ SER __INFORMED__  SOBRE AS CHANGES NA SUA DATA (na data dos próprios observables)''''
+
+
+
+
+
+
+
+
+
+
+
+
+----> LEMBRE-SE:
+
+OBSERVABLES 
+
+SÃO UMA STREAM OF DATA,
+
+
+
+E SEMPRE QUE 
+
+UMA NOVA 
+
+'DATA PIECE'
+é emitida,
+
+NOSSA SUBSCRIPTION VAI SABER DISSO...
+
+
+
+
+
+
+
+
+--> É EXATAMENTE ISSO QUE OCORRE COM 
+
+
+'this.route.params.subscribe()',
+
+
+
+
+
+
+PARAMS É UM OBSERVABLE,
+
+É UMA STREAM DE ROUTE PARAMETERS,
+
+
+
+E ESSA 
+
+STREAM 
+
+_ NOS _ DÁ 
+
+UMA NOVA 
+
+'route parameter'
+
+
+SEMPRE QUE 
+
+
+
+_ACESSAMOS_ _  UMA NOVA PAGE  E O 
+
+'ROUTE PARAMETER '(no caso, o 'userId' da url)
+
+
+NA URL 
+
+
+MUDA... ------> 
+
+
+
+
+
+
+
+
+
+e aí, 
+
+nessa function QUE PASSAMOS AO SUBSCRIBE,
+
+NÓS PEGAMOS 
+
+
+esses 'novos params'
+
+
+e entaõ O EXTRAÍMOS,
+
+PARA ENTAÕ DEFINIR NOSSO STATE DE 'id'
+
+
+como sendo esse param..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARAMS SÃO ASSIM,
+
+PARAM É UM OBSERVABLE,
+É AQUELA STREAM OF DATA QUE 
+
+NOS DÁ 
+
+
+
+NOVOS VALUES..
+
+
+
+
+
+
+
+
+--> TUDO ISSO É NICE, SIM,
+
+
+E O ANGULAR VAI USAR ESSES OBSERVABLES...
+
+
+
+
+
+
+
+
+
+-> OS OBSERVABLES DO ANGULAR 
+SÃO TODOS 
+
+
+
+
+PRONTOS,
+
+VOCÊ NÃO PRECISA OS CRIAR...
+
+
+
+
+
+
+
+
+-> VOCÊ PODE CRIAR SEUS PRÓPRIOS OBSERVABLES,
+
+
+
+
+
+por issso 
+
+
+
+
+
+vamos fazer 
+isso na próxima aula,
+
+
+vmaos 
+
+criar 
+
+
+
+NOSSO PRÓPRIO OBSERVABLE,
+
+
+PARA ENTENDER SEUS 'INTERNALS'...

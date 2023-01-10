@@ -1,0 +1,635 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESTAMOS QUASE ACABADOS,
+
+
+nosso app 
+
+está 
+
+
+
+ficando melhor,
+
+e os 
+
+
+
+services
+
+melhoraram mt nosso app...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> AGORA QUEREMOS 
+
+
+
+FAZER ALGO NA SECTION DE 'RECIPES'..
+
+
+
+
+-> queremo que CADA 'RECIPE' 
+
+
+
+
+TENHA ALGUNS 'INGREDIENTS'
+
+
+
+
+elencados 
+
+logo abaixo de si....
+
+
+
+
+
+
+
+
+
+
+
+-> PRECISAMOS IMPLEMENTAR ESSA FEATURE DOS INGREDIENTS...
+
+
+
+
+
+
+
+--> DEPOIS DISSO,
+
+O PROFESSOR 
+
+QUER 
+FAZER 
+
+
+ESSES 3 buttons de 
+
+
+
+'to shopping list' 
+
+
+
+
+'edit recipe' 
+
+
+
+
+'delete recipe' ,
+
+
+
+
+
+
+
+
+
+
+PARA QUE __ SEJA _ POSSÍVEL__ 
+
+
+
+
+ENVIAR NOSSOS INGREDIENTS AO 
+
+
+SHOPPINGLIST....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA FAZER ISSO,
+
+
+A PRIMEIRA COISA QUE O PROFESSOR FAZ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+É __ 
+
+
+
+IR ATÉ O MODEL DE 
+
+'recipe',
+
+
+
+PQ 
+
+
+AGORA CADA 
+
+
+RECIPE TERÁ _ 
+
+
+
+DE 
+
+SEGURAr_ 
+
+
+ALGUNS 'ingredients'..
+
+
+
+
+
+
+
+
+
+------> colocamos ingredients,
+
+
+por isso 
+
+
+escrevemos assim:
+
+
+
+
+
+
+
+
+
+
+import { Ingredient } from '../shared/ingredient.model';
+
+export class Recipe {
+
+
+
+
+  constructor(
+    public name: string,
+    public description: string,
+    public imagePath: string,
+    public ingredients: Ingredient[]
+  ) {
+  }
+}
+
+
+
+
+
+
+------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... AGORA 
+ESTAMOS PREPARADOS PARA TER ALGUNS 'INGREDIENTS'
+
+em 
+
+cada 
+
+
+
+'recipe'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR DECIDE 
+
+
+
+
+COLOCAR 
+
+ALGUNS INGREDIENTS NAS NOSSAS RECIPES,
+
+POR ISSO ELE 
+
+
+EDITA O array de 'recipes' 
+
+
+em  
+
+
+'recipes.service.ts',
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { EventEmitter, Injectable, Output } from '@angular/core';
+import { Recipe } from './recipeBook/recipe.model';
+import { Ingredient } from './shared/ingredient.model';
+
+
+@Injectable()
+export class RecipeBookService {
+  private recipes: Recipe[] = [
+    new Recipe(
+      'Chicken Wings',
+      'Delicious chicken wings',
+      'https://www.farmfor.com.br/wp-content/uploads/2022/02/coxinha-da-asa-superbowl.jpg',
+      [
+        new Ingredient('Potato', 1),
+        new Ingredient('Tomato', 3),
+        new Ingredient('Banana', 5),
+      ]
+    ),
+    new Recipe(
+      'Pork Chops',
+      'Tasty pork chops, check them out',
+      'http://t2.gstatic.com/licensed-image?q=tbn:ANd9GcQsRbNYL4S-Noacb27Vi-sbWzURFRjW9YN8VOScbiJ0DxTAiGxTyqlNdG1TWHKN1xWqOV4UhHaFef-fBD8-PGo',
+      [
+        new Ingredient('Potato', 1),
+        new Ingredient('Tomato', 3),
+        new Ingredient('Banana', 5),
+      ]
+    ),
+    new Recipe(
+      'Caesar Salad',
+      'Fresh and healthy salad',
+      'https://www.confeiteiradesucesso.com/wp-content/uploads/2019/06/ceasarsalad-fb.jpg',
+      [
+        new Ingredient('Potato', 1),
+        new Ingredient('Tomato', 3),
+        new Ingredient('Banana', 5),
+      ]
+    ),
+  ];
+
+  getRecipes() {
+    return [...this.recipes]; //mesma coisa que 'this.recipes.slice();'
+  }
+
+  @Output() recipeItemClickedEmitter = new EventEmitter<Recipe>();
+
+
+  recipeItemClicked(index: number) {
+
+    const recipe = this.recipes[index];
+    this.recipeItemClickedEmitter.emit(recipe);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK...
+
+
+
+
+
+AGORA TEMOS INGREDIENTS EM CADA RECIPE...
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA SÓ FALTA EDITAR O TEMPLATE DE 'recipe-detail.component.ts',
+
+
+
+
+
+
+
+em que temos este código, atualmente:
+
+
+
+
+
+
+
+
+
+
+
+<div *ngIf="loadedRecipe; else noRecipeLoaded">
+<div class="row">
+  <div class="col-xs-12">
+    <img src="{{loadedRecipe.imagePath}}" alt="" class="img-responsive" style="max-height: 300px; max-width: 400px;" />
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <h1>{{ loadedRecipe.name }}</h1>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+      <h2>{{loadedRecipe.description}}</h2>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <div class="btn-group" appDropdown>
+      <button type="button" class="btn btn-primary dropdown-toggle">
+        Manage Recipe <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu">
+          <li><a href="#">Add to Shopping List</a></li>
+          <li><a href="#">Edit Recipe</a></li>
+          <li><a href="#">Delete Recipe</a></li> 
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        Ingredients
+    </div>
+</div>
+
+</div>
+<ng-template #noRecipeLoaded>
+<p>Please select a Recipe!</p>
+</ng-template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> TEMOS ISTO AQUI:
+
+
+
+
+<div class="row">
+    <div class="col-xs-12">
+        Ingredients
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+-> TEMOS ESSE PLACEHOLDER DE 'ingredients'...
+
+
+
+
+
+
+
+
+--> e agora vamos adicionar uma ul aqui, para os OUTPUTTAR,
+
+usando ngFor,
+
+pprovavelmente...
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok, vou tentar fazer por conta própria...
+
+
+
+
+
+
+
+
+
+-> consegui, ficou tipo assim:
+
+
+
+
+
+
+
+
+
+
+<div *ngIf="loadedRecipe; else noRecipeLoaded">
+<div class="row">
+  <div class="col-xs-12">
+    <img src="{{loadedRecipe.imagePath}}" alt="" class="img-responsive" style="max-height: 300px; max-width: 400px;" />
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <h1>{{ loadedRecipe.name }}</h1>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+      <h2>{{loadedRecipe.description}}</h2>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <div class="btn-group" appDropdown>
+      <button type="button" class="btn btn-primary dropdown-toggle">
+        Manage Recipe <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu">
+          <li><a href="#">Add to Shopping List</a></li>
+          <li><a href="#">Edit Recipe</a></li>
+          <li><a href="#">Delete Recipe</a></li> 
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <ul class="list-group">
+          <li class="list-group-item" *ngFor="let ingredient of loadedRecipe.ingredients" [ngStyle]="
+          {
+          'margin-top': '12px'}"
+          >{{ingredient.name}} - {{ingredient.amount}}</li>
+        </ul>
+    </div>
+</div>
+
+</div>
+<ng-template #noRecipeLoaded>
+<p>Please select a Recipe!</p>
+</ng-template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> ok... AGORA VAMOS QUERER __ 'ENVIAR' ESSES INGREDIENTS 
+
+À SHOPPING LIST,
+
+
+ATRAVÉS
+
+DAQUELE BUTTON DE 
+
+
+
+'send to shopping list'...
+
+
+
+
+
+
+
+
+--> É ISSO QUE FAREMOS, NA PRÓXIMA AULA...

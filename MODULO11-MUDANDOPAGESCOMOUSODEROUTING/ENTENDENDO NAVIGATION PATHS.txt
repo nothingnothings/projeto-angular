@@ -1,0 +1,1356 @@
+
+
+
+
+
+
+
+
+
+
+
+
+-> NA ÚLTIMA LIÇÃO,
+
+ 
+ NÓS ADICIONAMOS NAVIGATION NO NOSSO APP,
+
+
+
+ através deste código no 
+
+ 'app.component.html',
+
+
+
+
+
+ além do código em 'app.module.ts':
+
+
+
+
+
+
+
+
+
+ <div class="container"> <!-- COM ROUTING-->
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="nav nav-tabs">
+        <!-- <li role="presentation" class="active"><a href="#">Home</a></li>  ///LINKS _ COM PERDA _ DE STATE, pq um NOVO HTML É ENVIADO QUANDO É EXECUTADA ESSA ANCHOR TAG..., OU SEJA, SEM O USO DO ATTRIBUTE DE 'routerLink'....
+
+        <li role="presentation" class="active"><a href="#">Servers</a></li>
+        <li role="presentation" class="active"><a href="#">Users</a></li> -->
+        <!-- <li role="presentation" class="active"><a routerLink="/">Home</a></li> USAMOS 'routerLink' para conseguir DEFINIR LINKS NO NOSSO APP__ QUE NÃO VÃO FAZER O USER PERDER O STATE.... -->
+        <li role="presentation" class="active"><a routerLink="/">Home</a></li> 
+        <!-- <li role="presentation" class="active"><a routerLink="/servers">Servers</a></li>  versão SIMPLIFICADA DO WRITE DE 'routerLink'.... é MELHOR USAR ESSA VERSÃO VISTA LOGO ABAIXO, com essa sintaxe de 'property binding', pq ela te deixa EDITAR COM _ MAIOR CONTROLE__ TODOS _OS SEGMENTS DE SEU PATH/url/route... -->
+        <li role="presentation" class="active"><a [routerLink]="['/servers']">Servers</a></li>
+        <li role="presentation" class="active"><a [routerLink]="['/users']">Users</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <!-- <app-home></app-home> --> 
+      <router-outlet></router-outlet><!-- É NESSE SLOT DE 'router-outlet' em que SERÃO OUTPUTTADOS/RENDERIZADOS os page-components de nossas ROUTES, a partir do path/route digitado na URL... -->
+    </div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR TAMBÉM 
+
+
+
+
+
+
+
+
+
+__ MENCIONOU _ QUE 
+
+PODEMOS _ 
+
+
+
+
+
+
+
+_______ MUDAr___ A MANEIRA __ PELA QUAL __ USAMOS NOSSOS 'PATHS'...
+
+
+
+
+
+
+
+
+
+
+
+
+-> por enquanto, 
+
+por meio de 
+
+
+'routerLink',
+
+
+
+
+
+
+usamos essa notation 
+de 
+
+
+
+
+''routerLink='/servers' 
+
+
+
+
+e 
+
+
+
+''[routerLink]=['/users']''' 
+
+
+
+
+
+
+
+
+
+
+----> OK.... 
+
+
+
+
+
+
+
+ESSE É O APPROACH QUE ESTAMOS SEGUINDO ATÉ AGORA...
+
+
+
+
+
+
+
+
+---> MAS E O QUE ACONTECE SE EU ESCREVER SÓ 
+
+
+
+''''routerLink='servers' ,
+
+
+
+
+
+
+
+
+
+
+
+_ SEM AQUELE LEADING SLASH ('/')? 
+
+
+
+
+
+
+
+
+
+
+
+---> OU ENTÃO 
+
+USAR 
+
+
+
+
+
+
+assim:
+
+
+
+
+
+''[routerLink]=['users']''' 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------> BEM, SE FIZERMOS ISSO 
+
+
+
+
+E RECARREGARMOS NOSSA PAGE,
+
+
+VEREMOS QUE 
+
+TUDO AINDA FUNCIONARÁ COMO ANTES,
+
+
+
+vamos poder clicar 
+
+
+em nossos links,
+
+
+
+e 
+
+aí isso vai alternar as pages,
+
+
+
+sem problemas...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------> NADA MUDOU... ------->  MAS AÍ O PROFESSOR FAZ ALGO DE DIFERENTE..
+
+
+
+
+
+
+
+
+
+
+-> ELE VAI ATÉ O CÓDIGO DO ARQUIVO 'servers.component.html',
+
+uma de nossas 'pages'
+
+CARREGADAS ATRAVÉS DO ROUTING...
+
+
+
+
+
+
+
+
+
+
+--> O CÓDIGO DE 'servers.component.html'
+
+
+É ESTE:
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12 col-sm-4">
+    <div class="list-group">
+      <a href="#" class="list-group-item" *ngFor="let server of servers">
+        {{ server.name }}
+      </a>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4">
+    <app-edit-server></app-edit-server>
+    <hr />
+    <app-server></app-server>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> DENTRO DESSE 
+
+
+COMPONENT,
+
+O PROFESSOR 
+
+
+
+ADICIONA UMA NOVA ANCHOR TAG,
+
+
+em que 
+
+
+
+TAMBÉM VAMOS ADICIONAR UM 
+
+'routerLink',
+
+
+
+
+MAS __ DESSA VEZ UM ROUTERLINK 
+
+
+
+
+
+EM _ QUE 
+
+
+
+
+
+
+
+VAMOS QUERER _ COLOCAR 'servers'
+
+
+MAIS UMA VEZ ,
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12 col-sm-4">
+    <div class="list-group">
+      <a href="#" class="list-group-item" *ngFor="let server of servers">
+        {{ server.name }}
+      </a>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4">
+    <a routerLink="servers">Reload Page</a> <!-- EIS O CÓDIGO EM QUESTÃO -->
+    <app-edit-server></app-edit-server>
+    <hr />
+    <app-server></app-server>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM, PORTANTO:
+
+
+
+
+    <a routerLink="servers">Reload Page</a> <!-- EIS O CÓDIGO EM QUESTÃO -->
+
+
+
+
+
+
+
+
+
+
+
+----> É UM LINK DENTRO DE UMA DE NOSSAS PAGES,
+ 
+
+ PORTANTO... (um router link)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> bem, agora entendi o problema que o professor queria me mostrar:
+
+
+
+
+
+
+
+
+
+
+
+
+
+esse link de 'reload page'
+
+
+
+
+
+
+vai ser um link para 
+
+
+
+
+'localhost:4200/servers/servers',
+
+
+
+
+ELE __ VAI __ ADICIONAR _UM NOVO SEGMENT DE 
+
+
+'/servers'
+
+
+
+
+
+AO LINK QUE 
+
+
+
+JÁ TEMOS...
+
+
+
+
+
+
+
+
+
+
+-> ISSO SIGNIFICA QUE 
+QUANDO ESCREVEMOS 
+
+
+
+
+
+'routerLink="xxxx" ' 
+
+
+
+
+SEM 
+
+
+ACRESCENTAR 
+
+'/',
+
+
+
+
+
+NÓS _ ESTAMOS ADICIONANDO _ ESSA STRING AÍ 
+
+
+como um segment 
+
+
+
+de forma 
+
+
+'RELATIVE PATH',
+
+
+pq 
+
+
+isso 
+vai 
+
+ser acrescentado AO FINAL DO PATH QUE JÁ EXISTE...
+
+
+
+
+
+
+
+
+
+--> AGORA QUANDO ESCREVEMOS ALGO TIPO ASSIm:
+
+
+
+
+
+
+routerLink= "/exemplo" ,
+
+
+
+
+
+
+
+
+
+
+ISSO AÍ _ VAI ACTUALLY_ 
+
+
+
+
+SUBSTITUIR O PATH INTEIRO DA URL..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> CERTO... ERA ISSO QUE EU ESPERAVA....
+
+
+
+
+
+
+
+
+
+
+
+--> E SE EU DEIXAR O 
+
+
+
+
+negócio 
+
+
+'routerLink'
+
+
+
+como sendo 
+
+'servers' 
+
+em vez de 
+
+'/servers',
+
+
+
+
+
+
+ELE VAI TENTAR ME LEVAR A UMA ROUTE DE 
+'localhost:4200/servers/servers',
+
+
+que 
+
+EFETIVAMENTE NÃO FOI REGISTRADA NO MEU APP,
+
+
+
+
+portanto não existe...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> COMO ISSO AÍ _ NEM_ MESMO EXISTE,
+
+
+
+
+nossa url bar não é afetada por clicks 
+
+nesse 
+
+
+link aí... (urlbar vai continuar como 'localhost:4200/servers', e não 'localhost:4200/servers/servers')....
+
+
+
+
+
+
+
+
+
+
+
+--> bem, um side effect é que também GANHO UM ERROR 
+
+
+SE DEIXAR COMO ESTAVA ANTES:
+
+
+
+
+
+
+
+
+core.mjs:6494 ERROR Error: Uncaught (in promise): Error: Cannot match any routes. URL Segment: 'servers/servers'
+Error: Cannot match any routes. URL Segment: 'servers/servers'
+    at ApplyRedirects.noMatchError (router.mjs:2939:16)
+    at router.mjs:2921:28
+    at catchError.js:10:38
+    at OperatorSubscriber._error (OperatorSubscriber.js:23:1)
+    at OperatorSubscriber.error (Subscriber.js:40:1)
+    at OperatorSubscriber._error (Subscriber.js:64:1)
+    at OperatorSubscriber.error (Subscriber.js:40:1)
+    at OperatorSubscriber._error (Subscriber.js:64:1)
+    at OperatorSubscriber.error (Subscriber.js:40:1)
+    at OperatorSubscriber._error (Subscriber.js:64:1)
+    at resolvePromise (zone.js:1211:1)
+    at resolvePromise (zone.js:1165:1)
+    at zone.js:1278:1
+    at _ZoneDelegate.invokeTask (zone.js:406:1)
+    at Object.onInvokeTask (core.mjs:25595:1)
+    at _ZoneDelegate.invokeTask (zone.js:405:1)
+    at Zone.runTask (zone.js:178:1)
+    at drainMicroTaskQueue (zone.js:585:1)
+    at ZoneTask.invokeTask [as invoke] (zone.js:491:1)
+    at invokeTask (zone.js:1648:1)
+
+
+
+
+
+
+
+
+
+
+-----------
+
+
+
+
+
+
+
+
+
+
+ ESSE ERRO OCORREU PQ 
+
+ _ O ANGULAR NÃO CONSEGUIU ENCONTRAR UMA ROUTE 
+
+ QUE SEJA EQUIVALENTE A 'servers/servers'...
+
+
+
+
+
+
+
+
+
+
+
+ -----> MAS ESSE ERROR CERTAMENTE NÃO VAI ACONTECER SE ESCREVERMOS 
+
+
+ '/servers'... (absolute path, e não relative path)...
+
+
+
+
+
+
+
+
+
+
+
+
+ ------> COM UM RELATIVE PATH,
+
+ O PATH É SEMPRE APENSO 
+
+ AO FINAL DO CURRENT PATH... -> e o currentPath 
+
+
+ __ ,
+
+ IMPORTANTE,
+
+
+
+ __ _DEPENDE DE EM QUE 
+
+
+ _ 
+
+ COMPONENT VOCÊ ESTÁ 'CURRENTLY ON'... -> O ROOT COMPONENT DE 
+
+
+
+
+ 'app.component.html'
+
+
+
+
+ _ SEMPRE __
+
+
+ É CARREGADO 
+
+
+
+ ,
+
+
+
+
+ SEMPRE É O NOSSO APP,
+
+
+
+
+
+ E NÃO É CARREGADO ATRAVÉS DO ROUTER....
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> ISSO QUER DIZER QUE 
+
+ esse 'root component'
+
+ SEMPRE 
+
+ VAI 
+
+ 'SIT'
+  
+
+
+
+
+
+  no endereço 
+
+
+  'localhost:4200'..
+
+
+
+
+
+--> E É EXATAMENTE PORQUE 
+
+
+ESSE 
+
+
+
+COMPONENT DE 'app.component.html'
+
+
+
+
+
+RESIDIR NO NOSSO 'ROOT LEVEL'
+ 
+
+
+ que 
+
+
+
+ PODEMOS _ USAR _ RELATIVE PATHS COM ELE, sem erros... 
+
+
+
+
+
+
+
+
+
+
+
+ -> MAS 1 LAYER ABAIXO 
+
+ desse 'app.component.html',
+
+
+
+
+
+ COMO EM 'servers.component.html',
+
+
+
+que é uma route carregada,
+
+
+
+
+ EM QUE 
+
+
+
+
+TEMOS AGORA 1 LINK PARA OUTRA ROUTE,
+
+
+
+
+
+
+SE ADICIONARMOS UMA RELATIVE ROUTE LÁ 
+,
+
+
+
+com 
+
+
+'="servers" ',
+
+
+ISSO 
+
+VAI 
+
+
+ACABAR 
+
+'APPENDED'
+
+
+À route em que estamos... ---> 
+
+
+
+
+
+
+E É POR ISSO QUE RECEBEMOS AQUELE ERROR LÁ,
+
+PQ 
+
+NÃO HAVÍAMOS
+
+REGISTRADO UMA ROUTE DE 
+
+
+
+'servers/servers'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok... ---> É CLARO QUE 
+
+
+
+
+USAR 
+
+
+'relative paths'
+
+
+DENTRO 
+
+DE 
+
+
+
+
+
+
+'ACTIVE COMPONENTS'/active routes 
+
+
+
+
+
+
+
+_ PODE _ SER UMA BOA _ COISA 
+
+
+__ SE VOCÊ _ TIVER ESSAS NESTED ROUTES...
+
+
+
+
+
+
+
+
+
+-_> MAS COMO AQUI _ NÃO TEMOS ESSAS NESTED ROUTES,
+
+ISSO _ SÓ VAI _ 'BREAK THE APP'...
+
+
+
+
+
+
+
+
+
+
+
+
+-------> NÓS __ TAMBÉM PODEMOS _ USAR 
+
+
+RELATIVE PATHS 
+
+
+
+
+
+se vocÊ escrever tipo 
+
+
+'./exemplo' ....
+
+
+
+
+
+
+
+
+
+
+
+(
+
+    ISSO É A MESMA COISA QUE 
+
+    ESCREVER 
+
+    '="exemplo" ' 
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+-----> E VOCÊ PODE _ ATÉ MESMO _ 'NAVIGATE AROUND' 
+
+
+
+seu projeto __ COMO _  
+
+
+SE VOCê 
+ESTIVESSE  
+
+DENTRO DE UM 'FOLDER DIRECTORY',
+
+
+
+
+
+ESCREVENDO COISAS COMO 
+
+
+
+'../exemplo' (
+
+
+    GO UP ONE LEVEL,
+
+
+    AND ONLY THEN _ 
+
+    ADD __ THIS TO 
+
+
+    THE PATH... 
+)
+
+
+
+
+
+
+
+
+
+
+
+---->  
+
+
+
+
+
+
+
+COMO EXEMPLO DISSO,
+
+O PROFESSOR ESCREVE:
+
+
+
+<a routerLink="../servers">Reload Page</a>
+
+
+
+
+
+
+
+
+
+
+-> ISSO 
+
+
+
+VAI _ NOS DAR UM LINK DE 
+
+'localhost:4200/servers',
+
+
+
+PQ __ ELE 
+
+VAI 
+
+
+'GO UP ONE LEVEL (localhost:4200, nossa root, é alcançada) 
+
+and 
+
+ONLY THEN WILL it add "servers" as a path '..
+
+
+
+
+
+
+
+
+
+
+-----> OK..
+
+
+
+
+
+
+
+ACHO QUE ENTENDI...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OUTRO DETALHE:
+
+
+
+
+
+
+
+O PATH _ DEPENDE_ DA 
+
+
+ '''ROUTE'
+
+
+
+
+ EM QUE 
+ VOCÊ ESTÁ..
+
+
+
+
+
+
+
+
+
+
+
+
+ -> ISSO SIGNIFICA QUE 
+
+
+
+ SE NÓS 
+
+ ESTIVERMOS 
+
+ em 
+
+
+
+
+
+
+
+ ''localhost:4200/servers/something" 
+
+
+
+
+
+
+
+
+ __ E __ AÍ __ vocÊ escrever 
+
+
+
+
+ '../',
+
+
+
+
+ ISSO REMOVERIA 
+
+ _AMBOS_  OS SEGMENTS... ----> pq 
+
+
+ isso 
+
+
+ vai 
+
+ 'REMOVE __ THE CURRENTLY LOADED SEGMENT',
+
+
+
+
+
+
+ e não 'remove only one segment'...
+
+
+
+
+
+
+
+
+ ok... 
+
+
+
+
+
+
+
+ ---> E É ASSIM QUE PODEMOS 'NAVIGATE AROUNDS',
+
+
+
+
+
+
+
+tanto por meio de 
+
+'/exemplo'
+
+
+como 
+
+'exemplo'....
+
+
+ou 
+
+'./exemplo' (que é a mesma coisa)...
+
+
+
+
+
+
+--> 
+
+
+
+e também há o 
+
+
+'../exemplo' ...
+
+
+
+
+
+
+
+
+
+-----> VEREMOS AO LONGO DESSE MÓDULO ESSE NEGÓCIO, ESSE FUNCIONAMENTO...
+
+
+
+
+
+
+
+
+-> veremos um pouco de nesting ao longo desse módulo...
+
+
+
+
+
+
+
+
+
+-> professor remove esse link de 'reload page',
+
+mas eu vou manter...
+  

@@ -1,0 +1,20 @@
+<div class="row">
+  <div class="col-xs-12">
+    <button class="btn btn-success" (click)="onNewRecipe()">New Recipe</button>
+  </div>
+</div>
+<hr />
+<div class="row">
+  <div class="col-xs-12">
+    <app-recipe-item
+      *ngFor="let recipe of recipes; let index = index"
+      [routerLink]="['/recipe-book', index]"
+      routerLinkActive="active"
+      [index]="index"
+      [name]="recipe.name"
+      [description]="recipe.description"
+      [ngStyle]="{ cursor: 'pointer' }"
+      [imagePath]="recipe.imagePath"
+    ></app-recipe-item>
+  </div>
+</div>

@@ -1,0 +1,1303 @@
+
+
+
+
+
+
+
+
+AGORA QUE APRENDEMOS UM MONTE SOBRE O 
+
+'NAVIGATE AROUND'
+ 
+ e o 
+
+
+ pass de parameters,
+
+
+
+
+
+
+
+
+
+
+
+ _ DEVEMOS MELHORAR O NOSSO APP UM POUCO....
+
+
+
+
+
+
+
+
+
+
+
+
+ --> VAMOS ATÉ O COMPONENT DE 'users.component.ts',
+
+
+
+ EM QUE 
+
+ TEMOS UMA _ LIST _DE 'LINKS'
+
+ a 'single users',
+
+
+
+ E AÍ _ DEVEMOS ADICIONAR O ROUTERLINK LÁ,
+
+ tipo assim:
+
+
+
+
+
+ <div class="row">
+  <div class="col-xs-12 col-sm-4"></div>
+  <div class="list-group">
+    <a [routerLink]="['/users', user.id ]" 
+    class="list-group-item" 
+    *ngFor="let user of users"
+    
+    >
+    
+    
+    {{ user.name }}</a>
+  </div>
+</div>
+<div class="col-xs-12 col-sm-4">
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O SEGUNDO 
+
+
+
+ELEMENT NESSE ARRAY DEVE SER O ID,
+
+
+é por isso que eu escrevi 
+
+
+'user.id'...
+
+
+
+
+
+
+
+
+
+
+
+(
+  PQ 
+
+
+  ESTOU USANDO O 'user' desse for loop...
+)
+
+
+
+
+
+
+
+--> QUANTO AO 'NAME',
+
+o terceiro element 
+
+de nossa route,
+
+ELE TAMBÉM PODE SER FACILMENTE ACESSADO COM 'user.name'...
+
+
+
+
+(
+  mas eu não estou usando essa info na minha route,
+  lá em 
+
+  'app.module.ts',
+
+
+  por isso não coloco como parte desse link.... 
+)
+
+
+
+
+
+
+
+
+
+
+
+-> OK, É ASSIM QUE PODEMOS 'DYNAMICALLY CONSTRUCT' um link desses...
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok...
+
+
+
+
+
+
+
+
+--> é assim que escrevemos nosso link de 'user'...
+
+
+
+
+
+
+
+
+
+--> VAMOS FAZER A MESMA COISA COM OS 'servers',
+
+
+
+lá 
+
+em 
+
+'servers.component.html'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+<div class="row">
+  <div class="col-xs-12 col-sm-4">
+    <div class="list-group">
+      <a href="#" 
+      class="list-group-item" 
+      *ngFor="let server of servers; let index=index"
+      [routerLink]="['/servers', server.id, 'edit']"
+      [queryParams]="{allowEdit: '1'}"
+      [fragment]="'loading'"
+      
+      > <!-- [queryParams] É UMA _ PROPRIEDADE __ DE 'routerLink', e não uma NOVA DIRECTIVE... queryparams são ?allowEdit=1, na sua URL...-->
+      <!-- FRAGMENT É O '#' que Às vezes pode aparecer/ser parseado nas suas urls.... OBS: só é possível ter 1 ÚNICO FRAGMENT por 'link'/route.... -->
+        {{ server.name }}
+      </a>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4">
+    <!-- <a routerLink="servers">Reload Page</a> EIS O CÓDIGO EM QUESTÃO... relative path, string é adicionada como segment AO LADO DE TODOS OS ANTECEDENTES, no final... -->
+    <a routerLink="/servers">Reload Page</a> <!-- ABSOLUTE PATH, substitui o PATH INTEIRO -->
+    <button class="btn btn-primary" (click)="onReload()">Reload Page - programmatic navigation, with relative paths (will error out, intended behavior)</button> 
+    <app-edit-server></app-edit-server>
+    <hr />
+    <!-- <app-server></app-server> -->
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok... isso também funcionou...
+
+
+
+
+
+
+
+
+
+
+
+
+
+mas estou com um error meio estranho,
+
+
+
+de 
+
+
+
+''
+
+
+core.mjs:6494 ERROR TypeError: Cannot read properties of undefined (reading 'name')
+    at EditServerComponent.ngOnInit (edit-server.component.ts:30:35)
+    at callHook (core.mjs:2551:1)
+    at callHooks (core.mjs:2520:1)
+    at executeInitAndCheckHooks (core.mjs:2471:1)
+    at refreshView (core.mjs:9510:1)
+    at refreshComponent (core.mjs:10692:1)
+    at refreshChildComponents (core.mjs:9291:1)
+    at refreshView (core.mjs:9545:1)
+    at refreshEmbeddedViews (core.mjs:10646:1)
+    at refreshView (core.mjs:9519:1)
+
+
+
+    ''
+
+
+
+
+
+
+
+
+
+
+
+
+    -> O PROFESSOR REMOVE o 'edit', no entanto..
+
+
+
+
+---> PQ O PROFESSOR NÃO VAI QUERER CARREGAR O 'EDIT-server.component',
+
+
+
+E SIM 
+
+SÓ VAI QUERER CARREGAR O 'SINGLE SERVER COMPONENT'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR ENTÁO DECIDE ADICIONAR a route adequada 
+
+
+
+
+
+a esse 'single server component',
+
+
+por isso 
+
+
+
+
+ele vai até 'app.module.ts'
+
+
+
+E ENTÃO ESCREVE ISTO:
+
+
+
+
+
+
+
+
+
+
+
+  {
+    path: 'users/:userId', ////exemplo de DYNAMIC SEGMENTS (carregar user específico, dentro de list de users.... mesma coisa vista no NODEJS)...
+    component: UserComponent,
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+  ----------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ok.... 
+
+
+
+
+
+  ISSO SIGNIFICA 
+
+
+
+
+
+
+
+  QUE FICAMOS COM 
+
+
+  6 routes diferentes:
+
+
+
+
+
+
+
+
+  const appRoutes: Routes = [
+  {
+    path: '', ////localhost:4200/   (É O _ DEFAULT, A HOME PAGE, PQ É o domain.com SEM O PATH depois)...
+    component: HomeComponent,
+  },
+
+  {
+    /////é a nossa primeira route... cada object nesse array é uma ROUTE, que é governada por um 'PAGE-COMPONENT' (o page-component é a ROUTE/page, no caso)...
+    path: 'users', ///   localhost:4200/users
+    component: UsersComponent, ///users.component.html
+  },
+  {
+    path: 'users/:userId', ////exemplo de DYNAMIC SEGMENTS (carregar user específico, dentro de list de users.... mesma coisa vista no NODEJS)...
+    component: UserComponent,
+  },
+
+  // {
+  //   path: 'users/:userId/:name',   ////PODEMOS TER MÚLTIPLOS SEGMENTOS DINÂMICOS NAS NOSSAS URLS...
+  //   component: UserComponent
+  // },
+
+  {
+    path: 'servers', //localhost:4200/servers
+    component: ServersComponent, //servers.component.html
+  },
+
+  {
+    path: 'servers/:id',
+    component: ServerComponent,
+  },
+
+  {
+    path: 'servers/:id/edit',
+    component: EditServerComponent,
+  },
+];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> CERTO...
+~
+
+
+AGORA, 
+
+
+
+VOLTANDO A AQUELE 
+
+'single server component',
+
+
+
+que tem este código aqui:
+
+
+
+
+
+
+
+
+<h5>{{ server.name }}</h5>
+<p>Server status is {{ server.status }}</p>
+
+
+
+
+
+
+
+
+
+
+
+
+-> NESSE COMPONENT AÍ,
+
+
+O PROFESSOR 
+
+
+QUER 
+
+
+ _ QUE __ CONSIGAMOS 
+
+
+ A 
+ 'DATA' 
+
+ QUE PASSAMOS NO 'route  path',
+
+
+
+ a data que passamos dentro da URL 
+
+
+
+
+ de 
+
+
+
+ '/servers/:id' 
+
+
+
+
+
+
+
+
+
+ --> nós passamos o ID AÍ...
+
+
+
+ basta 
+
+
+ usar 
+
+
+ o código de 'this.serversService.getServer()',
+
+
+ lá em 
+
+ 'ngOnInit'
+
+
+ de 'server.component.ts',
+
+
+ PARA CONSEGUIR A DATA ADEQUADA A ESSE COMPONENT DINÂMICO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ TENTEI ESCREVER ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+ import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { ServersService } from '../servers.service';
+
+@Component({
+  selector: 'app-server',
+  templateUrl: './server.component.html',
+  styleUrls: ['./server.component.css']
+})
+export class ServerComponent implements OnInit {
+
+  server: {id: number, name: string, status: string};
+
+  constructor(private serversService: ServersService, private route: ActivatedRoute) { }
+
+  ngOnInit(): void {
+    // this.server = this.serversService.getServer(1)!;
+
+    const serverId = this.route.snapshot.queryParams['id'];
+
+    this.server = this.serversService.getServer(serverId)!;
+  }
+
+}
+
+
+
+
+
+
+
+
+
+-> mas fiquei com um monte de ERRORS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> CONSEGUI FAZER ESSE COMPONENT DE 
+
+'server component' (single) funcionar...
+
+
+
+
+FICOU ASSIM:
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { ServersService } from '../servers.service';
+
+@Component({
+  selector: 'app-server',
+  templateUrl: './server.component.html',
+  styleUrls: ['./server.component.css']
+})
+export class ServerComponent implements OnInit {
+
+  server: {id: number, name: string, status: string};
+
+  constructor(private serversService: ServersService, private route: ActivatedRoute) { }
+
+  ngOnInit(): void {
+    // this.server = this.serversService.getServer(1)!;
+
+    const serverId = +this.route.snapshot.params['id'];
+    
+
+    console.log(this.serversService.getServer(serverId))
+
+    this.server = this.serversService.getServer(serverId)!;
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> agora é hora de ver a versão do professor do códig...
+
+
+
+
+
+
+
+
+
+
+--> ele injetou nossa 'ActivatedRoute',
+
+exatamente como eu fiz...
+
+
+
+
+
+
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+constructor (private serversService: ServersService, private route: ActivatedRoute) {}
+
+
+
+
+
+
+
+
+
+
+
+
+----> NO 'ngOnInit',
+
+
+ele 
+
+
+PRIMEIRAMENTE PEGOU o 'id',
+
+
+
+por meio deste código:
+
+
+
+
+
+
+
+
+
+ngOnInit() {
+  const id = this.route.snapshot.params['id'];
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> DEPOIS ELE PEGOU O NOSSO 'server' lá do service de 'servers', usando esse id',
+
+tipo assim:
+
+
+ngOnInit() {
+  const id = this.route.snapshot.params['id'];
+  this.server = this.serversService.getServer(id);
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> SE VOCê QUER A 'VERSÃO QUE VAI SEMPRE REAGIR QUANDO 
+
+
+SEUS PARAMS FOREM ALTERADOS 
+
+DURANTE A VIDA DO SEU COMPONENT',
+
+
+
+
+
+
+
+
+
+você precisa 
+
+
+
+escrever a versão do código assim:
+
+
+
+
+
+
+
+
+
+
+this.route.params.subscribe(
+  (params: Params) => {
+    this.server = this.serversService.getServer(params['id')]);
+  }
+)
+
+ 
+
+
+
+
+
+
+
+
+
+ -> VOU DEIXAR ESSA VERSÃO DO CÓDIGO 
+
+
+
+ LOGO ABAIXO DA VERSÃO 'DEFAULT',
+
+ só para que 
+
+ e
+ xista 
+ 'just in case' (
+
+
+   case de que essas changes realmente ocorram..
+
+
+
+
+
+   -> é por isso que o código ficou assim:
+
+
+
+
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> OK, SE FIZERMOS TUDO ISSO E VOLTARMOS AO NOSSO APP,
+
+ receberemos um ERROR
+ no console...
+
+
+
+
+
+
+
+ -> esse error FAZ SENTIDO..
+
+
+
+
+
+
+
+
+
+
+
+ -> É PQ LA´NO NOSSO 'servers.component.html'
+
+
+ AINDA ESTAMOS SEMPRE 
+
+
+
+ RENDERIZANDO 'app-server' (mas eu já tirei esse código)...
+
+
+
+
+
+
+
+
+
+
+ ----->  é por isso que o professor comenta isso para fora.... -----> MAS O PROFESSOR 
+
+
+ LOGO VAI NOS MOSTRAR 
+
+ 'COMO PODEMOS NEST ANOTHER ROUTE' 
+
+ dentro desse local ali,
+
+
+
+ para que tenhamos um 
+
+
+
+ 'kindof' 
+
+ CHILD ROUTING,
+
+
+ para 
+
+
+ RENDERIZAR ESSA ROUTE DINAMICAMENTE, AO LADO DO NOSSO MENU  de 'servers'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> quando o professor clica em um 'server' da list de 'servers',
+
+
+ ele ainda ganha um error...
+
+
+
+
+
+
+
+
+
+
+
+ mas pq isso, qual a razão desse error?
+
+
+
+
+
+
+
+
+
+
+ --> QUAL A RAZÃO DISSO?
+
+
+
+
+
+
+
+
+
+
+
+
+ --> a razão é que 
+
+
+ SE NÓS 
+
+ PARSEAMOS 
+
+ UM
+
+ QUERY PARAM 
+
+ LÁ DA URL,
+
+
+
+ ELA NUNCA SERÁ UM NUMBER DIRETO... --> 
+
+ será uma string,
+
+
+ e teremos de converter essa 
+ string 
+
+
+ em um number....
+
+
+
+
+
+
+
+
+
+ -> É POR ISSO QUE ESCREVI ASSIM:
+
+
+
+     const serverId = +this.route.snapshot.params['id'];
+
+    this.server = this.serversService.getServer(serverId)!;
+
+
+
+
+
+
+
+
+
+
+
+
+--> TAMBÉM FAÇA ISSO NO OBSERVABLE... 
+
+
+
+
+
+
+Ex:
+
+
+
+
+
+
+
+
+    const serverId = +this.route.snapshot.params['id'];
+
+    this.server = this.serversService.getServer(serverId)!;
+
+
+    this.route.params.subscribe( ///versão/modalidade usada para quando 'SEUS PARAMS FOREM ALTERADOS DURANTE A VIDA DE SEU COMPONENT/PAGE  de server'.... --> aí isso vai ALTERAR O CONTENT DA PÁGINA, sem reloads, intuitivamente (pq é um observable, async code, roda no background e detecta CHANGES NOS SEUS 'params' na url, durante o runtime/vida desse component/page de 'server')...
+      (params: Params) => {
+        this.server = this.serversService.getServer(+params['id'])!;
+      }
+    )
+      
+
+
+
+
+
+
+
+
+
+
+
+
+  --> ok, quando clicamos em um server, carregamo-no com sucesso...
+
+
+
+
+
+
+
+
+
+  -> mas estou com aquele problema de 
+
+
+
+  'os servers ficam sem nome, no início'...
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+
+
+  ERROR TypeError: Cannot read properties of undefined (reading 'name')
+    at EditServerComponent.ngOnInit (edit-server.component.ts:31:35)
+    at callHook (core.mjs:2551:1)
+    at callHooks (core.mjs:2520:1)
+    at executeInitAndCheckHooks (core.mjs:2471:1)
+    at refreshView (core.mjs:9510:1)
+    at refreshComponent (core.mjs:10692:1)
+    at refreshChildComponents (core.mjs:9291:1)
+    at refreshView (core.mjs:9545:1)
+    at refreshEmbeddedViews (core.mjs:10646:1)
+    at refreshView (core.mjs:9519:1)
+
+
+
+    -> e´por causa de 'edit component'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -> ok, consertei o problema...
+
+
+
+
+
+
+
+
+
+
+
+
+    ------> PODEMOS CLICAR EM 'SERVERs', em algum deles,
+
+
+    e aí carregar 1 page com 
+
+
+
+    essa data apropriada (de acordo com cada server)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ----> OK... ----> 
+
+    MAS JÁ 
+
+
+    PERCEBEMOS QUE NOSSO APP TEM ALGUMAS LIMITAÇÕES..
+
+
+
+
+
+
+
+    -> SERIA NICE SE __ NÓS __ 
+
+
+    NÃO CARREGASSEMOS UMA NOVA 'PAGE'
+
+
+    com o user/server,
+
+
+    E SIM 
+
+
+
+
+
+    CARREGÁSSEMOS 
+
+
+
+
+    ESSAS 'PAGES'
+
+
+    ao lado das 'lists' (servers/users),
+
+
+
+
+    em ambos os cases...
+
+
+
+
+
+
+
+
+
+
+--> É EXATAMENTE POR ISSO QUE PRECISAMOS DE UMA 
+
+'NESTED ROUTING',
+
+
+
+algum tipo de 
+
+'child routes',
+
+
+
+
+PARA _ TER UM 'ROUTER DENTRO DE UM ROUTER'...
+
+
+
+
+
+
+
+
+--> VEREMOS COMO FAZER ISSO NAS PRÓXIMAS AULAS...
+
+
+

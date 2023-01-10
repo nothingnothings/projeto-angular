@@ -1,0 +1,193 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+APRENDEMOS MT NESSA SECTION...
+
+
+
+
+
+APRENDEMOS 
+
+
+
+
+
+1) SETUP DE ROUTES 
+
+
+
+2) SETUP DE CHILD ROUTES 
+
+
+
+
+
+3) NAVIGATE ATÉ AS ROUTES,
+
+NAVIGATE DE FORMA NO TEMPLATE (routerLink)
+
+
+
+E 
+DE FORMA PROGRAMÁTICA (this.router.navigate)
+
+
+
+
+
+
+
+
+4) PASS DE PARAMETERS 
+
+
+
+
+
+5) PASS DE QUERY PARAMETERS 
+
+
+
+
+
+
+
+
+6) EXTRACT DE PARAMETERS POR MEIO DE 'snapshot' (approach estático)
+
+
+
+
+7) EXTRACT DE PARAMETERS DINAMICAMENTE (approach  de 'this.route.params.subscribe()', etc)
+
+
+
+
+
+
+
+
+
+
+8) O USO DE GUARDS 
+
+
+
+
+9) O USO DE DIFERENTES TIPOS DE GUARDS, como 'canActivate', 'canActivateChild', 'CanDeactivateGuard', etc....
+
+
+canActivateChild,  etc...
+
+
+
+
+
+
+10) PREVENÇAÕ DO 'NAVIGATE ACIDENTAL' do user, por  meio do uso de 'CanDeactivateGuard'..
+
+
+
+
+
+
+
+
+11) RESOLVENDO DATA antes do load de nossas routes, por meio do uso de 'resolvers', que são um type especial de service...
+
+(resolvers são usados para async tasks, como o 'REACH OUT A UM SERVER')
+
+
+
+12) FAZENDO PASS DE STATIC DATA (sem o uso de resolvers, mas ainda assim ANTES DO LOAD DE NOSSO COMPONENT)...
+
+
+
+
+
+
+
+
+13) STYLING THE LINKS,
+
+OS LINKS DE NOSSAS ROUTES QUE FICAM ACTIVE,
+
+por meio de 
+
+'routerLinkActive' e etc...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> E MUITO, MUITO MAIS...
+
+
+
+
+
+
+
+
+
+
+-> É ASSIM QUE USAMOS O ANGULAR ROUTER...
+
+
+
+
+
+
+
+
+-> USAMOS O ANGULAR ROUTER UM MONTE NO NOSSO COURSE PROJECT,
+
+
+NAS PRÓXIMAS AULAS...
+
+
+
+
+
+
+
+
+--> O PROFESSOR 
+
+TAMBÉ 
+
+
+
+
+VAI NOS DAR UMA OLHADA MAIS APROFUNDADA NAS OBSERVABLES,
+
+EM UM MÓDULO FUTURO..
+
+
+
+
+
+
+
+--> VAMOS CONTINUAR...

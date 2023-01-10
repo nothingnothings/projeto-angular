@@ -1,0 +1,1695 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> QUASE ACABAMOS COM ESSA SECTION, MAS TEMOS 
+
+
+UM OUTRO BUG/BEHAVIOR 
+
+
+
+
+QUE O PROFESSOR QUER 
+
+CONSERTAR...
+
+
+
+
+
+
+
+
+
+
+------> SE ESTAMOS NA PAGE DE 'RECIPE-DETAIL'
+
+
+E ENTÃO _ RECARREGAMOS,
+
+
+
+GANHAMOS UM _ ERROR_.... -->  
+
+
+
+
+
+
+
+SERÁ UM ERROR DE 
+
+
+
+'Cannot read property "ingredients" of undefined"....
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... MAS ISSO ACONTECE _ sÓ COM O PROFESSOR; MEU CÓDIGO NÃO TEM  ESSE PROBLEMA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> O PROBLEMA, AQUI, DIZ O PROFESSOR,
+
+
+NÃO É 
+
+RELACIONADO AOS 'INGREDIENTS',
+
+
+E  SIM _ 
+
+AO FATO DE QUE 
+
+SIMPLESMENTE 
+
+
+TENTAMOS 
+
+
+
+CARREGAR A 'DETAIL PAGE'
+
+
+
+PARA 
+
+UMA _ RECIPE_ __ QUE 
+
+NÃO EXISTE... (
+
+    ISSO PQ 
+
+    __ESTAMOS FETCHEANDO NOSSAS RECIPES 
+
+
+
+DE UM BACKEND,
+
+
+
+E 
+
+SE 
+
+NÓS 
+
+
+AINDA NÃO PRESSIONAMOS 
+
+
+'fetch data' ,
+
+
+
+
+NÓS 
+
+
+CERTAMENTE NÃO TEREMOS NENHUMA RECIPE,
+
+
+O QUE QUER DIZER QUE 
+
+
+O 
+'ACCESS' DOS DETAILS DE UMA PAGE 
+
+
+
+
+FICARÁ FADADO A FALHAR...
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+--> HÁ DIFERENTES MANEIRAS DE FAZER ISSO FUNCIONAR.... --> 
+
+
+
+
+
+
+
+
+UMA MANEIRA SERIA SIMPLESMENTE 
+
+
+
+
+
+__ ADICIONAR _UMA GUARD__ QUE 
+
+NOS PREVENISSE 
+
+DE 
+
+
+
+ACESSAR 
+
+
+'recipes/2' 
+
+
+
+
+
+
+
+
+OU COISAS ASSIM, NA HIPÓTESE EM QUE 
+
+
+'''WE DONT HAVE ANY RECIPES LOADED''' -----> nesses cases,
+
+
+ele simplesmente 
+
+NOS REDIRECIONARIA 
+
+
+
+
+
+a page mais simples de '/recipes',
+
+
+por exemplo...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ESSE É UM CAMINHO, SIM,
+
+
+PODERÍAMOS ADICIONAR UM GUARD ASSIm....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS PODEMOS ADICIONAR _ UM OUTRO TIPO 
+
+
+DE GUARD_,
+
+
+
+
+
+UM 
+
+
+
+
+
+
+
+___________rESOLVER_,
+
+
+
+
+coisa que 
+
+foi ensinada NO MÓDULO DE ROUTING....
+
+
+
+
+
+
+
+
+
+
+--> 1 RESOLVER ---> É ESSENCIALMENTE 
+
+
+
+
+
+UM CÓDIGO QUE RODA _ ANTES__ DE UMA ROUTE SER CARREGADA,
+
+
+
+
+
+
+
+PARA __ _ASSEGURAR ___________ QUE 
+
+
+
+CERTA DATA 
+
+DE QUE 
+AS ROUTES 
+
+
+SÃO _ DEPENDENTES__ 
+
+
+CERTAMENTE 
+
+JÁ ESTARÁ NO LUGAR,
+
+no momento em qeu 
+
+for necessitada..
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR DIZ QUE ISSO PARECE UMA BOA IDEIA,
+
+
+
+POR ISSO ELE CRIA O ARQUIVO DE 'recipes-resolver.service.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO VAI FICANDO ASSIM:
+
+
+
+
+
+
+
+
+
+import { Injectable } from "@angular/core";
+
+import { Resolve } from '@angular/router';
+
+
+@Injectable()
+export class RecipesResolverService implements Resolve {
+
+
+
+
+    resolve() {
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ''Resolve''
+
+
+
+É UMA GENERIC INTERFACE,
+
+O QUE 
+
+QUER DIZER QUE 
+
+
+
+
+ELE REQUER 
+
+QUE DEFINAMOS 
+
+
+
+A 'DATA A QUE ELE VAI RESOLVE', no final das contas...
+
+
+
+
+
+
+definimos isso dentro de '<>'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> NO NOSSO CASO, ESSA DATA SERÁ 
+
+
+a 
+
+'Recipe[]',
+
+
+
+
+UM ARRAY DE RECIPES, EM OUTRAS PALAVRAS..
+
+
+
+
+
+
+
+
+--> ok...
+
+AÍ IMPORTAMOS O 'Recipe' model...
+
+
+
+
+
+
+
+
+
+
+--> NOSSO RESOLVER VAI RODAR UM CÓDIGO QUE VAI __ cARREGAR_ ALGUMAS RECIPES_....
+
+
+
+
+
+
+
+
+--> PARA CONSEGUIRMOS 
+
+CARREGAR NOSSAS RECIPES,
+
+PRECISAMSO 
+
+
+
+
+
+DO SERVICE DE 
+
+'recipeBook.service.ts',
+
+
+EM QUE 
+
+
+
+
+
+
+FAZEMOS O ACTUAL LOAD DOS RECIPES...
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+import { Injectable } from "@angular/core";
+
+import { Resolve } from '@angular/router';
+import { RecipeBookService } from "./recipeBook.service";
+import { Recipe } from "./recipeBook/recipe.model";
+
+
+@Injectable()
+export class RecipesResolverService implements Resolve<Recipe[]> {
+
+
+
+
+    resolve() {
+
+    }
+
+
+    constructor(private recipeBookService: RecipeBookService) {
+
+    }
+
+}
+
+
+
+
+
+
+
+
+
+---------------------------------
+
+
+
+
+
+
+
+ISSO FEITO,
+
+
+
+
+A INTERFACE DE 'Resolve'
+
+NOS FORÇA
+ 
+
+ A
+  
+
+
+
+  DEFINIR AQUELE METHOD DE 'resolve',
+
+
+
+
+
+
+  QUE VAI NOS OBRIGAR A TER AQUELES 2 OBJECTS,
+
+
+
+  '
+  route' 
+
+  e 
+
+  'state'...
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+
+
+
+      resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Recipe[] | Observable<Recipe[]> | Promise<Recipe[]> {
+        
+
+
+
+        return
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> A PARTIR DE NOSSA 'route',
+
+
+
+
+
+
+poderíamos pegar info como 'THE ID WE ARE REQUESTING',
+
+
+mas o professor explica que não há interesse nisso....
+
+
+
+
+
+
+
+
+--> EM VEZ DISSO, QUEREMOS CARREGAR __ TODAS AS RECIPES,
+
+
+
+ISSO PQ 
+
+SE NÃO AS CARREGARMOS, TODAS ELAS,
+COISAS 
+
+
+COMO EDITING 
+
+E ETC 
+
+NÃO FUNCIONARÃO 
+
+
+NELAS (
+
+pq precisamos 
+
+
+as reinserir no array, etc....
+
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK, O OBJETIVO AQUI É:
+
+
+
+
+1) OU RETORNAR UM __ ARRAY _ DE RECIPES (
+
+    mas não podemos fazer isso,
+
+PQ PRECISAMOS CARREGAR 
+
+ESSE ARRAY ANTES...
+
+)
+
+
+
+
+
+
+2) OU RETORNAR UM _ OBSERVABLE, QUE NO FINAL DAS CONTAS VAI 
+
+
+
+'YIELD' UM ARRAY DE RECIPES --> ISSO É ALGO DIFERENTE,
+
+E ISSO 
+
+É ALGO QUE PODEMOS OFERECER...
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ ----> VAMOS QUERER INTEGRAR O FUNCIONAMENTO 
+
+ DESSE 
+
+ 'resolver' 
+
+ de 
+
+ 'RecipesResolverService'
+
+
+
+
+
+
+JUNTO COM O METHOD DE 'loadRecipes',
+
+
+lá em 'recipeBookService'..
+
+
+
+
+
+
+---> para isso,
+
+devemos revisitar o código de 'recipeBookService':
+
+
+
+
+
+
+
+
+
+
+
+  loadRecipes() {
+    return this.http
+      .get<{ [name: string]: Recipe }>(
+        'https://recipebookdummyproject-default-rtdb.firebaseio.com/recipes.json'
+      )
+      .pipe(
+        map((data) => {
+          const transformedRecipesArray: Recipe[] = [];
+
+          console.log(data);
+
+          for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+              transformedRecipesArray.push({ ...data[key] });
+            }
+          }
+
+          transformedRecipesArray.map((recipe) => {  
+            return {
+              ...recipe,
+              ingredients: recipe.ingredients ? recipe.ingredients : [],   ////////SE NOSSA PROPRIEDADE 'ingredients' dessa recipe específica NÃO EXISTIR (um bug possível), VAMOS QUERER QUE OS INGREDIENTS SEJAM SETTADOS COMO UM EMPTY ARRAY....
+            };
+          });
+
+          return transformedRecipesArray;
+        })
+      )
+      .subscribe((recipes) => {
+
+        this.recipes = recipes;
+
+        this.recipeItemsChanged.next([...recipes]);
+      });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------->  O PROFESSOR EXPLICA QUE AINDA VAMOS QUERER EXECUTAR ESSAS LINHAS:
+
+
+
+
+        this.recipes = recipes;
+
+        this.recipeItemsChanged.next([...recipes]);
+
+
+
+
+
+
+ISSO PQ _ AINDA VAMOS QUERER 
+
+
+DEFINIR/SETTAR AS RECIPES
+
+
+
+POR DENTRO DESSE SERVICE DE 'recipes', e de dentro desse 
+
+
+method de 'fetch recipes'...
+
+
+
+
+
+
+
+
+
+
+--> ENTRETANTO,
+
+PODEMOS FAZER ESSE SET/DEFINIÇÃO 
+
+
+
+
+por meio do USO __ DE AINDA OUTRO OPERATOR _ 
+
+
+
+
+
+
+
+AO NOSSO 'loadRecipes' -----> 
+
+
+
+
+
+
+
+PODEMOS COLOCAR O '.tap()"
+
+
+
+LOGO DEPOIS DE 
+
+'.map()',
+
+
+
+PQ O 
+
+
+'tap' 
+
+
+
+NOS DEIXA 
+
+
+EXECUTAR LÓGICA 
+
+
+
+
+
+__ SEM __ ALTERAR _ A DATA QUE É FUNNELADA ATRAVÉS 
+
+DE NOSSO OBSERVABLE...  (o return da data ocorre de forma normal)..
+
+
+
+
+
+
+------> 
+
+
+
+
+
+O QUE O PROFESSOR FAZ, AQUI, 
+
+É 
+
+
+CHAMAR 
+
+
+
+
+AS LINHAS 
+
+
+'''
+        this.recipes = recipes;
+
+        this.recipeItemsChanged.next([...recipes]);
+
+
+'''
+
+
+
+
+DENTRO DESSE METHOD DE '.tap()',
+
+
+
+
+
+PARA QUE FIQUE ASSIM:
+
+
+
+
+
+
+
+      .pipe(
+        map((data) => {
+          const transformedRecipesArray: Recipe[] = [];
+
+          console.log(data);
+
+          for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+              transformedRecipesArray.push({ ...data[key] });
+            }
+          }
+
+          transformedRecipesArray.map((recipe) => {  
+            return {
+              ...recipe,
+              ingredients: recipe.ingredients ? recipe.ingredients : [],   ////////SE NOSSA PROPRIEDADE 'ingredients' dessa recipe específica NÃO EXISTIR (um bug possível), VAMOS QUERER QUE OS INGREDIENTS SEJAM SETTADOS COMO UM EMPTY ARRAY....
+            };
+          });
+
+          return transformedRecipesArray;
+        }),
+
+        tap(
+            (recipes) => {
+            this.recipes = recipes;
+            this.recipeItemsChanged.next([...recipes]);
+            }
+        )
+      )
+      .subscribe((recipes) => {
+
+
+      });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> A PARTIR DISSO, O PROFESSOR TIRA 
+  O 
+
+  'subscribe()"
+
+
+  DESSE LUGAR, E AÍ O ESCREVE LÁ EM 
+
+
+  'header-component.ts'..
+
+
+
+
+
+
+
+
+  ex:
+
+
+
+
+
+
+
+
+
+
+
+    return...
+
+
+      .pipe(
+        map((data) => {
+          const transformedRecipesArray: Recipe[] = [];
+
+          console.log(data);
+
+          for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+              transformedRecipesArray.push({ ...data[key] });
+            }
+          }
+
+          transformedRecipesArray.map((recipe) => {  
+            return {
+              ...recipe,
+              ingredients: recipe.ingredients ? recipe.ingredients : [],   ////////SE NOSSA PROPRIEDADE 'ingredients' dessa recipe específica NÃO EXISTIR (um bug possível), VAMOS QUERER QUE OS INGREDIENTS SEJAM SETTADOS COMO UM EMPTY ARRAY....
+            };
+          });
+
+          return transformedRecipesArray;
+        }),
+
+        tap(
+            (recipes) => {
+            this.recipes = recipes;
+            this.recipeItemsChanged.next([...recipes]);
+            }
+        )
+      )
+    
+  }
+
+
+
+
+
+
+
+
+AÍ LÁ NO HEADER:
+
+
+
+
+
+
+
+  onLoadData() {
+    this.recipeService.loadRecipes().subscribe()  ///não precisamos da data retornada por esse subscribe específico, por isso não passamos uma callback function/anon function...
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OK...
+
+
+
+
+
+
+
+
+  REALIZADAS ESSAS MUDANÇAS,
+
+  lá no 'recipe-resolver.service.ts'
+
+
+
+
+
+
+  PODEMOS USAR O METHOD DE 'resolve'
+
+
+  PARA 
+
+
+
+
+
+  executar uma lógica de 
+
+
+'''
+  return this.recipeBookService.loadRecipes();
+
+  '''
+
+
+
+
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+
+  import { Injectable } from "@angular/core";
+
+import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
+import { Observable } from "rxjs";
+import { RecipeBookService } from "./recipeBook.service";
+import { Recipe } from "./recipeBook/recipe.model";
+
+
+@Injectable()
+export class RecipesResolverService implements Resolve<Recipe[]> {
+
+
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Recipe[] | Observable<Recipe[]> | Promise<Recipe[]> {
+        
+        return this.recipeBookService.loadRecipes();  // vai 'resolve' essa data ANTES DE NOSSOS COMPONENTS SEREM CARREGADOS, ANTES DA PAGE DE 'recipe-book' SER CARREGADA...
+    }
+
+    constructor(private recipeBookService: RecipeBookService) {
+
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS É CLARO QUE ESSE RESOLVER NÃO VAI FUNCIONAR POR SI SÓ... --> TEMOS QUE APLICAR 
+
+
+ESSE RESOLVER,
+
+ E ISSO DEVERÁ 
+
+ SER FEITO 
+
+
+ LÁ 
+
+
+
+
+ NO ARQUIVO de 
+ 'app-routing.module.ts',
+
+
+
+
+
+
+ 
+
+ EM QUE SERÁ APLICADO ÀS ROUTES DE 
+
+
+
+
+ 'RecipeDetailComponent'
+
+
+
+ e 
+
+ 'RecipeEditComponent',
+
+
+
+
+
+
+
+ QUE SÃO OS LOCAIS EM QUE ESSA DATA IMPORTA...
+
+
+
+
+
+
+
+
+
+
+ EX:
+
+
+
+
+
+
+
+
+   {
+    path: 'recipe-book',
+    component: RecipeBookComponent,
+    children: [
+      {
+        path: '',
+        component: SelectARecipeComponent,
+      },
+      {
+        path: 'new',
+        resolve: RecipesResolverService,
+        component: RecipeEditComponent,
+      },
+      {
+        path: ':id',
+        resolve: RecipesResolverService,
+        component: RecipeDetailComponent,
+      },
+
+      {
+        path: ':id/edit',
+        component: RecipeEditComponent,
+      },
+
+      // {
+      //     path: 'new-recipe',
+      // }
+    ],
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  CÓDIGO COMPLETO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { GenericErrorPageComponent } from './generic-error-page/generic-error-page.component';
+import { HomePageComponent } from './home-page/home-page.component';
+import { RecipeBookComponent } from './recipeBook/recipe-book.component';
+import { RecipeDetailComponent } from './recipeBook/recipe-detail/recipe-detail.component';
+import { RecipeEditComponent } from './recipeBook/recipe-edit/recipe-edit.component';
+import { SelectARecipeComponent } from './recipeBook/select-a-recipe/select-a-recipe.component';
+import { RecipesResolverService } from './recipes-resolver.service';
+import { ShoppingListComponent } from './ShoppingList/shoppingList.component';
+
+const appRoutes: Routes = [
+  // {   ///approach que USA UMA HOME PAGE COMO ROUTE DE '/'...
+  //   path: '',
+  //   component: HomePageComponent,
+  // },
+
+  {////ordem das routes importa, exatamente como no REACT ROUTER
+    
+    path: '',
+    redirectTo: '/recipe-book',
+    pathMatch: 'full', /// (COMMON GOTCHA) evita o error de 'SEMPRE VAI REDIRECIONAR PARA ESSA ROUTE DE recipe-book' (pq o padrão é 'prefix' em vez de 'full'; ou seja, é o MESMO COMPORTAMENTO DEFAULT DO REACT ROUTER)...
+  },
+  {
+    path: 'recipe-book',
+    component: RecipeBookComponent,
+    children: [
+      {
+        path: '',
+        component: SelectARecipeComponent,
+      },
+      {
+        path: 'new',
+        resolve: RecipesResolverService,
+        component: RecipeEditComponent,
+      },
+      {
+        path: ':id',
+        resolve: RecipesResolverService,
+        component: RecipeDetailComponent,
+      },
+
+      {
+        path: ':id/edit',
+        component: RecipeEditComponent,
+      },
+
+      // {
+      //     path: 'new-recipe',
+      // }
+    ],
+  },
+
+  {
+    path: 'shop-list',
+    component: ShoppingListComponent,
+  },
+
+  {
+    path: 'not-found',
+    component: GenericErrorPageComponent,
+    data: {
+      message: 'The requested page could not be found.',
+    },
+  },
+  {
+    path: '**',
+    redirectTo: '/not-found',
+  },
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(appRoutes)],
+
+  exports: [RouterModule],
+})
+export class AppRoutingModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------
+
+
+
+
+
+
+
+NESSES 2 PATHS, ADICIONAMOS A KEY DE 'resolve',
+
+EM QUE 
+
+COLOCAMOS 
+
+NOSSO 'RecipesResolverService'....
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK.... COM ISSO, AGORA O ANGULAR VAI RODAR ESSE RESOLVER ANTES DE CARREGAR ESSAS ROUTES.. 
+
+
+
+(
+
+    e, maravilha, isso quebrou meu código... -> agora 
+
+    as recipes não são mais mostradas no início/startup da página...
+)
+
+
+
+
+
+
+
+--> meu código não está funcionando com esse resolver....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> reverti meu código À versão anterior, sem o resolver...
+
+
+
+
+
+--> o código funciona meio igual, mas sem o resolver...
+
+
+
+
+
+
+
+
+
+
+
+-> ah, mas agora entendi o problema de recarregar a página sem ter o resolver.... talvez valha a pena 
+
+
+consertar esse problema....
+
+
+
+
+
+
+
+
+--. mas não sei como fazer isso...
+
+
+
+
+
+
+
+
+
+-> reverti o código para a versão do 'resolver',
+
+
+mas ele 
+não está funcionando...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> talvez a DATA RETORNADA ESTÁ EM 1 FORMATO INVÁLIDO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> consertei... o problema era que esse resolver não estava adicionado em 'todas as routes que importam',
+
+que no caso eram 3,
+
+
+
+era 
+
+a route de 
+
+'recipe-book' +  " '' "
+
+
+
+,
+
+
+a route de 
+
+'recipe-book' + ':id' 
+
+
+
+e 
+
+'recipe-book' + ':id' + 'edit...
+
+
+
+EX:
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+  {
+    path: 'recipe-book',
+    component: RecipeBookComponent,
+    children: [
+      {
+        path: '',
+        resolve: [RecipesResolverService],
+        component: SelectARecipeComponent,
+      },
+      {
+        path: 'new',
+
+        component: RecipeEditComponent,
+      },
+      {
+        path: ':id',
+        resolve: [RecipesResolverService],
+        component: RecipeDetailComponent,
+      },
+
+      {
+        path: ':id/edit',
+        resolve: [RecipesResolverService],
+        component: RecipeEditComponent,
+      },
+
+      // {
+      //     path: 'new-recipe',
+      // }
+    ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

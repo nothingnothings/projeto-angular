@@ -1,0 +1,124 @@
+
+
+
+
+This Section only provides an Introduction to Unit Testing an Angular 2+ App.
+
+It's NOT a detailed Guide about that neither is it a detailed Introduction to Unit Testing in general. Check out the "Further Resources" (last Lecture in this Module) to dive deeper into these topics.
+
+
+
+
+
+
+
+
+VAMOS APRENDER SOBRE UNIT TESTING COM O ANGULAR...
+
+
+
+
+
+APRENDEMOS MT SOBRE O ANGULAR...
+
+
+
+
+
+
+
+
+MAS N APRENDEMOS SOBRE O UNIT TESTING..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PROFESSOR NÃO QUERIA MISTURAR COISAS DE TESTING COM O ANGULAR..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PROFESSOR QUER NOS DAR UMA INTRODUÇAÕ AO TESTING..
+
+
+
+
+
+
+
+
+
+
+
+
+--> vamos aprender sobre como tests geralmente funcionam....
+
+
+
+
+
+
+
+
+
+PROFESSOR VAI NOS ENSINAR:
+
+
+
+
+1) TEST DE UM BASIC COMPONENT 
+
+
+2) TEST DE UM SERVICE 
+
+
+
+3) TEST DE UM PIPE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> MAS DEPOIS DISSO, TEMOS QUE NOS VIRAR...
+
+
+
+
+
+
+
+
+
+
+
+
+--> TESTING É CONTEÚDO PARA UM CURSO DE 50 HORAS...

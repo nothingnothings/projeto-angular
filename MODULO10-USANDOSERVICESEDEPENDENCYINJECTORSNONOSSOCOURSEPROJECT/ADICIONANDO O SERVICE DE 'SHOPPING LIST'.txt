@@ -1,0 +1,362 @@
+ 
+
+
+
+
+
+
+
+
+
+
+ -> NA ÚLTIMA LIÇÃO,
+
+ MELHORAMOS NOSSA SECTION DE 'RECIPES' UM MONTE, COM OS SERVICES...
+
+
+
+
+
+
+
+
+
+ -> AGORA VAMOS CODAR O SERVICE DE 'SHOPPINGLIST',
+
+ que ficou assim:
+
+
+
+
+
+ import { Ingredient } from './shared/ingredient.model';
+
+
+
+
+export class ShoppingListService {
+ private ingredients: Ingredient[] = [
+
+    new Ingredient('Potato', 1),
+    new Ingredient('Tomato', 3),
+    new Ingredient('Banana', 5),
+  ];
+
+
+
+  getIngredients() {
+    return [...this.ingredients];
+  }
+
+
+  onIngredientAdd(ingredient: Ingredient) {
+    this.ingredients.push(ingredient);
+    console.log(this.ingredients);
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE SERVICE JÁ CONSEGUE FAZER 'MANAGE' DE NOSSA SHOPPING LIST... ------> 
+
+
+
+
+consegui adicionar o method de 'addIngredient',
+
+que está funcionando....
+
+
+
+
+
+
+
+
+-> ué, mas agora o código está quebrado (não está mais adicionando 
+
+
+esses 'ingredients')...
+
+
+
+
+-> provavelmente é pq 
+
+defini
+
+
+
+o 
+
+
+
+array de 'ingredients' como sendo PRIVATE, e aí 
+
+pq estou tentando 
+
+ADICIONAR 
+
+
+
+ESSE INGREDIENT DO LADO DE FORA, POR MEIO DE METHODS TRASH COMO '.push()',
+
+diretamente...
+
+
+
+
+
+
+
+
+--> basta criar um METHOD DEDICADO, em 'shoppingList.service.ts',
+QUE FAÇA ESSA FUNÇÃo..
+
+
+
+
+
+
+
+
+
+--> não, mas não é esse o problema, pq já tenho um method desses....
+
+
+
+
+
+
+
+
+
+
+--> não, mas esse é o problema, mesmo....
+
+
+
+
+
+
+
+
+
+
+--> tirei tudo isso, pq não funciona...
+
+
+
+
+
+
+
+
+
+
+
+
+FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+import { Ingredient } from './shared/ingredient.model';
+
+
+
+
+export class ShoppingListService {
+ ingredients: Ingredient[] = [
+
+    new Ingredient('Potato', 1),
+    new Ingredient('Tomato', 3),
+    new Ingredient('Banana', 5),
+  ];
+
+
+
+  getIngredients() {
+    return [...this.ingredients];
+  }
+
+
+  onIngredientAdd(ingredient: Ingredient) {
+    this.ingredients.push(ingredient);
+    console.log(this.ingredients);
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> mas o professor também deixou como 'private',
+
+
+
+e também 
+
+
+colocou 
+
+esse method de 'getIngredients'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> PROFESSOR EXPLICA QUE USAREMOS ESSE SERVICE DE 'SHOPPINGLIST' em outro service, no futuro (inject)
+
+
+
+
+
+
+
+
+
+até agora, está tudo igual....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PROFESSOR DIZ QUE É UMA 'BOA PRACTICE'
+
+colocar todas as tarefas que envolvem 'heavy lifting'
+
+
+
+lá 
+
+em 
+
+'ngOnInit()',
+
+nos nossos components.. --> TODAS AS INITIALIZATIONS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-_> quanto ao add de items e o RELOAD DA LIST DE ITEMS A PARTIR DESSE ADD,
+
+
+
+
+o professor escreve assim:
+
+
+
+
+
+
+
+
+
+
+
+
+addIngredient(ingredient: Ingredient) {
+    this.ingredients.push(ingredient);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PROFESSOR MENCIONA O PROBLEMA QUE ENCONTREI:
+
+
+
+
+
+
+
+_ _NÓS NÃO VEMOS NENHUM UPDATE DA LIST DE INGREDIENTS,
+
+MAS __ TAMBÉM_ NÃO VEMOS NENHUM ERRO...
+
+
+
+
+
+
+
+
+
+
+-> HÁ ALGO ERRADO AQUI, E VEREMOS A RAZÃO DISSO _ NA PRÓXIMA AULA....

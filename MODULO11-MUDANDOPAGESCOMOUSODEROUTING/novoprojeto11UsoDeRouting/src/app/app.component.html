@@ -1,0 +1,60 @@
+<!-- <div class="container"> SEM ROUTING 
+  <div class="row"> 
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="#">Home</a></li>
+        <li role="presentation" class="active"><a href="#">Servers</a></li>
+        <li role="presentation" class="active"><a href="#">Users</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <app-home></app-home>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+    <app-users></app-users>
+  </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+    <app-servers></app-servers>
+  </div>
+</div>
+</div> -->
+
+
+
+<div class="container"> <!-- COM ROUTING-->
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="nav nav-tabs">
+        <!-- <li role="presentation" class="active"><a href="#">Home</a></li>  ///LINKS _ COM PERDA _ DE STATE, pq um NOVO HTML É ENVIADO QUANDO É EXECUTADA ESSA ANCHOR TAG..., OU SEJA, SEM O USO DO ATTRIBUTE DE 'routerLink'....
+
+        <li role="presentation" class="active"><a href="#">Servers</a></li>
+        <li role="presentation" class="active"><a href="#">Users</a></li> -->
+        <!-- <li role="presentation" class="active"><a routerLink="/">Home</a></li> USAMOS 'routerLink' para conseguir DEFINIR LINKS NO NOSSO APP__ QUE NÃO VÃO FAZER O USER PERDER O STATE.... -->
+        <!-- options é usado para CONSERTAR O PROBLEMA DO STYLING NO 'LINK PARA O HOME/STARTPAGE', pq não queremos que o style active sempre esteja ativado nesse link (que nos dá esse problema pq '/' faz parte de todos os links)-->
+        <li role="presentation" routerLinkActive="active"
+        [routerLinkActiveOptions]="{exact: true}"
+        
+        ><a routerLink="/">Home</a></li>
+        <!-- 'routerLinkActive' é uma directive que ATIVA o style que vocÊ definiu no value dela, se detectar que estamos no mesmo component/page descrito em 'routerLink'...--> 
+        <!-- <li role="presentation" class="active"><a routerLink="/servers">Servers</a></li>  versão SIMPLIFICADA DO WRITE DE 'routerLink'.... é MELHOR USAR ESSA VERSÃO VISTA LOGO ABAIXO, com essa sintaxe de 'property binding', pq ela te deixa EDITAR COM _ MAIOR CONTROLE__ TODOS _OS SEGMENTS DE SEU PATH/url/route... -->
+
+         <!-- 'routerLinkActive' é uma directive que ATIVA o style que vocÊ definiu no value dela, se detectar que estamos no mesmo component/page descrito em 'routerLink'...--> 
+         <!-- NO CASO DO BOOSTRAP, você coloca essa directive NO _ LIST ELEMENT QUE SEGURA A ANCHOR TAG, e não na anchor tag, pq a anchor tag não será estilizada/não terá o style de 'active'-->
+        <li role="presentation" routerLinkActive="active"><a [routerLink]="['/servers']" >Servers</a></li>
+        <li role="presentation" routerLinkActive="active"><a [routerLink]="['/users']" >Users</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <!-- <app-home></app-home> --> 
+      <router-outlet></router-outlet><!-- É NESSE SLOT DE 'router-outlet' em que SERÃO OUTPUTTADOS/RENDERIZADOS os page-components de nossas ROUTES, a partir do path/route digitado na URL... -->
+    </div>
+</div>
+</div>

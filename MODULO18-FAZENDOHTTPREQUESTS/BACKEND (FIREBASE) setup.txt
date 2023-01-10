@@ -1,0 +1,350 @@
+
+
+
+
+
+
+
+
+
+
+
+usaremos o FIREBASE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VAMOS USAR AS FEATURES HTTP DO ANGULAR...
+
+
+
+
+
+
+
+
+
+
+
+
+---> PARA ISSO,
+
+PRECISAMOS DE UM BACKEND..
+
+
+
+
+
+
+
+
+
+
+
+
+--> COMO MENCIONADO ANTERIORMENTE,
+
+NÃO VAMOS USAR NOSSA PRÓPRIA SOLUÇÃO,
+
+
+
+
+VAMOS USAR 
+
+
+UMA SOLUÇÃO PRÉ-PRONTA...
+
+
+
+
+
+
+
+
+
+
+--> HÁ O CURSO 'MEAN COURSE' 
+
+
+do professor,
+
+
+
+
+ENCONTRADO NO UDEMY,
+
+
+
+
+
+QUE MOSTRA A CRIAR UM APP INTEGRADO  '''ANGULAR - NODE''''.
+
+
+
+
+
+
+
+
+--> MAS AQUI USAREMOS 
+
+
+
+O FIREBASE...
+
+
+
+
+
+
+
+
+
+
+-----> FIREBASE 
+
+
+
+PARECE SER 'DATABASE ONLY',
+
+
+
+
+mas 
+
+
+É UMA 
+
+SOLUÇÃO
+
+
+
+
+QUE NOS DÁ BACKEND  (rest api)....
+
+
+
+E 
+
+DATABASE TAMBÉM..
+
+
+
+
+
+
+
+
+
+
+
+--> É DE GRAÇA,
+
+E PODEMOS ENVIAR DIFFERENTES TIPOS DE REQUESTS 
+
+
+
+A ESSE NEGÓCIO,
+
+
+
+
+PODEMOS ARMAZENAR DATA,
+
+
+
+DIFERENTES TIPOS DE REQUEST,
+
+
+
+
+
+VER AS CHANGES QUE FAZEMOS POR MEIO DESSES REQEUSTS,
+
+
+
+
+
+E É PERFEITO...
+
+
+
+
+
+
+
+
+
+--> precisamos de uma conta google,
+
+e aí criamos 'add project'...
+
+
+
+
+
+
+
+
+-> OK, VOU CRIAR UMA NOVA CONTA...
+
+
+
+
+
+
+--> FIREBASE É UMA SOLUTION COMPLETA BACKEND-DATABSE... 
+
+
+
+
+
+
+
+
+
+--> MAS NÃO É UMA ALTERNATIVA A 'MONGODB' OU 'SQL'
+
+
+
+
+PQ É MAIS DO QUE UMA DATABASE,
+
+É UM COMPLETO BACKEND SERVICE...
+
+
+
+
+
+
+
+
+--> O PROFESSOR DIZ QUE NÃO VAMOS USAR 
+
+'CLOUD FIRESTORE',
+
+
+E SIM 
+
+
+
+
+'REALTIME DATABASE' --> É MAIS FÁCIL DE USAR,
+
+E NOS DÁ UM VISUAL FEEDBACK MELHOR..
+
+
+
+
+
+
+
+
+
+
+----> COLOCAMOS 'START IN TEST MODE',
+
+
+pq queremos 
+
+
+ter full write e read access, por enquanto..
+
+
+
+
+
+
+
+
+
+
+
+
+------> CERTO... --> 
+
+
+
+ESSE É NOSSO SETUP BÁSICO...
+
+
+
+
+--> a url 
+
+
+
+
+QUE TEMOS NA REALTIME DATABASE 
+
+
+JA 
+
+SERÁ 
+
+
+A URL A QUE VAMOS PODER 'send requests to'...
+
+
+
+
+
+(
+
+tipo 
+
+'ng-complete-guide-c1221d1.firebaseio.com'...
+
+)
+
+
+
+
+
+
+
+
+
+
+-> FAREMOS ISSO, DEFINIREMOS ISSO COMO A URL A QUE ENVIAR HTTP REQEUSTS,
+
+
+E AÍ VAMOS DEFINIR NOSSA POST ROUTE...
+
+
+
+--> OK.. CRIEI UM NOVO PROJETO,
+
+
+com o user de 
+
+
+'nothingnothings2022@gmail.com' 
+
+
+
+
+
+
+
+
+
+--> NA REALTIME DATABASE,
+
+
+ficou assim a url/api route:
+
+
+
+https://angularconnectiondummy-default-rtdb.firebaseio.com/

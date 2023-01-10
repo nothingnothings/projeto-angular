@@ -1,0 +1,1699 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+A PRIMEIRA PERGUNTA É 
+
+
+''' O QUE É APPLICATION STATE?''' 
+
+
+
+
+
+
+
+
+-> PQ PRECISAMOS DE UM 'STATE MANAGEMENT SOLUTION',
+
+
+
+isso já não existe nativamente no angular?
+
+
+
+qual é a utilidade disso?
+
+
+
+
+
+
+
+
+
+
+
+
+BEM, CONSIDERE 
+
+
+
+ESSE ANGULAR APP COMUM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    TRAININGSERVICE 
+
+
+WELCOMECOMPONENT    NEWTRAININGCOMPONENT  CURRENTTRAININGCOMPONENT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É UM APP DIFERENTE DO RECIPEBOOK..
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS ESSE 
+
+É 
+
+
+UM APP QUE VOCÊ PODERIA TER,
+
+
+
+
+
+TIPO UM TRAINING APP (em que pessoas podem fazer workouts e os salvar)..
+
+
+
+
+
+
+
+--> NESSE APP,
+
+
+O SERVICE DE 
+
+'TRAINING SERVICE'
+
+
+
+EXISTE PARA 'MANAGE'
+
+
+
+A CORE DATA 
+
+
+PARA 
+
+ESSE SEU APP FUNCIONAR CORRETAMENTE..
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+FETCHEAR 'EXERCISES' ... -->  
+
+
+
+
+
+
+
+
+
+OU, ENTÃO, QUANDO O USER TERMINASSE 1 EXERCISE,
+
+VOCÊ 
+
+PODERIA ARMAZENAR O RESULT DESSE EXERCISE POR MEIO DO 
+
+
+
+'TRAININGSERVICE'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> E TODA ESSA DATA QUE É IMPORTANTE PARA SEU APP,
+
+
+
+PQ TODA ESSA DATA, NO FINAL DAS CONTAS,
+
+CONTROLA 'O QUE É VISÍVEL NA TELA'''... -- -> E TODO ESSE 
+
+
+'APPLICATION STATE'
+
+
+
+
+
+É __ PERDIDO_ QUANDO SEU APP REFRESHA.... --> ISSO QUER DIZER QUE 
+
+
+
+SEMPRE QUE 
+
+VOCË 
+
+RECARREGA 
+
+
+SEU APP ANGULAR,
+
+
+O SEU WEBSITE,
+
+
+
+
+VOCË PERDE ESSE STATE... ---------> ISSO ACONTECE 
+
+
+SIMPLESMENTE PQ 
+
+ESSA DATA 
+
+TODA É MANAGEADA 
+
+
+
+NO SERVICE E EM COMPONENTS,
+
+
+
+
+MAS __ O QUE INTERESSA É QUE TUDO ISSO AÍ, TODO SEU ANGULAR APP,
+
+
+
+
+É __ APENAS UM 'JAVASCRIPT BUNDLE' ---> ISSO SIGNIFICA QUE 
+
+
+TUDO 
+
+DO 
+
+SEU APP 
+
+É 
+
+
+
+
+MANAGEADO, EM MEMÓRIA,
+
+PELO JAVASCRIPT --------------> É POR ISSO QUE QUANDO VOCÊ RECARREGA 
+
+
+
+A PÁGINA SEU APP 
+ANGULAR BASICAMENTE 'REINICIA',
+
+
+
+
+
+
+E AÍ 
+
+
+
+TODO O SEU APP 
+
+É 
+
+'DUMPED',
+
+É PERDIDO,
+
+
+
+E SUA 
+
+
+MEMÓRIA É PERDIDA ....... --------> MAS ESSE NÃO É O 'PROBLEMA'
+
+
+
+
+
+QUE 
+
+É SOLUCIONADO PELO NGRX,
+
+
+
+
+
+
+
+
+
+PQ ISSO AÍ 
+
+NÃO É UM PROBLEMA POR SI SÓ,
+
+
+
+E SIM 
+
+APENAS 
+
+
+
+''COMO O JAVASCRIPT FUNCIONA'.. ------> E PARA __ SOLUCIOANR ESSE PROBLEMA DE 
+
+
+
+
+'PERSISTENCIA DE DATA',
+
+
+
+
+NÓS TIPICAMENTE USAMOS UM __ BACKEND_...
+
+
+
+
+
+
+
+
+
+--> ISSO FOI VISTO POR NÓS DURANTE O CURSO,
+
+
+
+
+QUANDO USAMOS RECIPES,
+
+
+
+
+ E PRECISÁVAMOS DE UMA DATABASE NO BACKEND PARA ARMAZENAR ESSA DATA.... --> BEM,
+
+
+
+
+
+ SE NÃO TIVERMOS UMA DATABASE PARA ARMAZENAR TODA ESSA DATA,
+
+
+
+ PERDEMOS 
+
+ TODA 
+
+
+
+ A DATA ACERCA DESSAS RECIPES QUANDO NOSSO APP REINICIA --> ESSA É UMA DAS 
+
+ UTILIDADES 
+
+
+ DE UMA DATABASE,
+
+
+ VIABILIZA O 
+
+
+ 'PERSISTENT STATE',
+
+
+
+ QUE 
+
+ PASSA A EXISTIR NO BACKEND... --> É PERSISTENT STATE PQ 
+
+
+
+
+
+
+
+ __ ELE SOBREVIVE NOSSOS PAGE REFRESHES,
+ PQ 
+
+ É 
+
+ ARMAZENADO NO BACKEDN...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> ISSO QUER DIZER QUE 
+
+ 'STATE'
+
+
+
+ PODE SER TRADUZIDO COMO 
+
+
+
+ ''''DATA _ QUE __ É IMPORTANTE AO SEU APP,
+ E QUE 
+
+ INFLUENCIA AQUILO QUE É VISUALIZÁVEL NA TELA'''' ----> E STATE 
+
+ NÃO 
+
+ É 
+
+
+ APENAS 
+
+ DATA 
+
+ COM 
+ '
+ STORED EXERCIES OU RECIPES',
+
+
+
+
+
+
+
+ PQ __ PODE __ SER COISAS COMO ''''ESSE APP ESTÁ CURRENTLY WAITING FOR SOME DATA TO BE FETCHED''' (
+
+    ou seja,
+
+    o 
+
+    APP ESTÁ EM UM 'LOADING STATE', 
+
+
+    ESTÁ NOS MOSTRANDO UM SPINNER, POR EXEMPLO..
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> BASICAMENTE,
+
+
+ QUALQUER DATA,
+
+ QUALQUER INFO QUE __ CONTROLA__ AQUILO QUE 
+
+ DEVE 
+
+ SER VISUALIZADO NA TELA,
+
+ ISSO 
+
+ AÍ 
+
+
+ __ É O STATE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ----> CERTO... ---> ESSE É O STATE,
+
+
+
+
+ E ATÉ AGORA,
+
+
+ NO CURSO,
+
+
+
+JÁ FIZEMOS 
+
+
+DO STATE,
+
+
+
+TIPICAMENTE POR SERVICES,
+
+
+
+
+MAS 
+
+
+ATÉ MESMO PEQUENOS PEDAÇOS DE STATE 
+
+
+
+
+SÃO MANAGEADOS 
+
+POR COMPONENTS,
+
+
+COISAS 
+'MENORES' DO QUE SERVICES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> EXEMPLO DISSO É O ARRAY DE 
+
+'ingredients' lá no service de 'shoppingListServices'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OUTRO EXEMPLO, DE COMPONENT,
+
+
+É 
+O 
+
+
+
+STATE DE 'isLoading',
+
+que é usado 
+PARA 
+
+MOSTRAR UM SPINNER 
+
+
+ENQUANTO 
+
+
+O 
+
+
+PROCESSO DE LOADING (send de request e receive de response) está  em progresso....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO TAMBÉM É STATE,
+
+
+
+NÃO É APPLICATION STATE (pq não afeta partes largas do app),
+
+
+
+MAS 
+
+
+É LOCAL STATE,
+
+PQ 
+IMPORTA 
+
+A 
+
+ESSE COMPONENT 
+
+ESPECÍFICO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... E SE VISUALIZARMOS O SERVICE DE 'RECIPEBook',
+
+
+
+LÁ TAMBÉM 
+
+
+FAZEMOS MANAGE DO STATE (manageamos o array de 'recipes'),
+
+
+
+
+
+
+
+
+
+
+ARMAZENAMOS 
+
+
+A DATA DAS RECIPES EM UM SERVER,
+
+
+TUDO PARA QUE 
+
+A 
+
+DATA NÃO 
+
+ACABE
+
+SENDO PERDIDA (PERSIST DE DATA)...
+
+
+
+
+
+
+
+
+
+
+
+--> é assim que as coisas trabalham em conjunto no nosso app...
+
+
+
+
+
+
+
+
+
+
+--> MAS QUAL É O PROBLEMA DESSE APPROACH?
+
+
+
+
+
+
+
+
+
+---> BEM, APPS MENORES TIPICAMENTE FICAM 'FINE' QUANTO A ESSE APPROACH ATUAL DE MANAGE DE STATE...
+
+(
+
+
+    POR MEIO DO USO DE COMPONENTS 
+
+    E 
+    SERVICES.... --> ATÉ MESMO 
+
+
+
+
+    APPS MAIORES PODEM SER MANAGEADOS POR COMPONENTS E SERVICES...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS APPS_ MAIORES,
+
+
+QUÃO MAIOR FOR SEU APP E SEU STATE (
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+VEJA ESTE EXEMPLO DE APP:
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SIGNINCOMPONENT 
+
+
+
+AUTHSERVICE 
+
+
+
+
+TRAININGSERVICE 
+
+
+
+
+
+HOMECOMPONENT 
+
+
+
+NEWTRAININGCOMPONENT
+
+
+
+
+CURRENTTRAININGCOMPONENT...
+
+
+
+
+
+
+
+
+
+
+
+--> esse app aí é grandinho,
+
+
+
+E TEMOS UM MONTE DE COMPONENTS QUE 
+
+
+
+INTERAGEM 1 COM O OUTRO...
+
+
+
+
+
+
+--> SE VOCÊ TIVER 
+
+
+
+1 APP QUE FICA MAIOR E MAIOR,
+
+
+
+E 
+
+
+
+
+
+SE SEU STATE DEPENDER DE MUITOS COMPONENTS AO MESMO TEMPO,
+
+
+
+
+
+E MUITOS COMPONENTS DEPENDEREM DO SERVER E ASSIM POR DIANTE,
+
+
+
+
+AÍ VOCÊ 
+
+
+
+
+PODERIA 
+
+FICAR COM 
+
+
+
+UM 
+
+
+
+'STATE MANAGEMENT NIGHTMARE',
+
+
+
+
+UM APP 
+
+
+
+QUE É DIFÍCIL DE SER 'MAINTAINED',
+
+
+
+
+
+TUDO PQ 
+
+SERÁ DIFÍCL 
+
+
+DE 
+
+
+DIZER 
+
+
+
+''EM QUE LUGAR 
+
+
+
+
+ESTOU MANAGEANDO ESSE PEDAÇO ESPECÍFICO DE INFO''' --> 
+
+
+
+
+
+ 
+ OU ENTÃO
+
+
+
+ VOCÊ 
+
+ PODE 
+
+
+ ACABAR 
+
+ MUDANDO UMA PIECE DE INFO 
+
+ DE UM 
+
+ COMPONENT (como o 'isLoading' de um component),
+
+
+ lá´´aááá 
+
+
+
+
+ de outro 
+
+
+ lugar de seu app,
+
+
+
+
+TUDO PQ 
+
+SEU CÓDIGO 
+
+ESTÁ ESTRUTURADO 
+
+
+DE MODO 
+
+QUE 
+
+ISSO 
+
+
+É POSSÍVEL...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, NÓS JÁ TEMOS UM 
+
+REMÉDIO PARA ISSO,
+
+
+
+
+
+UM REMÉDIO 'PARCIAL',
+
+
+
+
+
+QUE É O 
+
+
+
+'RXJS'...
+
+
+
+
+
+
+
+
+
+----> O RXJS 
+
+
+NOS DEIXA 'CREATE A STREAMLINED STATE MANAGEMENT EXPERIENCE'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COM O RXJS,
+
+
+
+
+
+E, COM ELE,
+
+ESPECIFICAMENTE 
+
+COM 
+
+'SUBJECTS',
+
+
+
+
+
+PODEMOS FAZER 
+
+'REACT'
+ 
+
+
+ A USER EVENTS NA USER INTERFACE,
+  
+  OU 
+
+
+
+
+  APP EVENTS (como DATA FETCHING/FETCHING FINISHING),
+
+
+
+
+
+
+
+
+
+
+
+
+  PODEMOS REAGIR A ESSES STATE-CHANGING EVENTS 
+
+  ,
+
+
+  a
+   
+
+
+   events PELOS QUAIS VAMOS QUERER UPDATAR ALGUMA DATA/INFO DE NOSSO APP,
+
+
+
+   TUDO 
+
+   POR MEIO 
+
+   DO 
+
+   USO 
+
+   DE 
+
+   OBSERVABLES/SUBJECTS (que são observables)...
+
+
+
+
+
+
+
+
+
+
+   ---> E AÍ PODEMOS 
+
+   'EMIT'/'NEXT' 
+
+
+
+   UM PEDAÇO DE DATA 
+
+
+
+   POR MEIO DESSES SUBJECTS,
+
+
+
+
+   E AÍ 
+
+
+
+   ATÉ MESMO TALVEZ 
+
+
+USAR OPERATORS PARA _ TRANSFORMAR A DATA EM UM FORMATO QUE 
+
+
+
+
+DESEJAMOS,
+
+
+
+
+
+E AÍ 
+
+
+
+
+__ FAZER 'LISTEN' 
+
+A 
+
+
+ESSES 'STATE CHANGES'
+
+
+
+
+EM 
+
+OUTROS PARTES DO APP 
+
+EM QUE 
+
+
+
+
+
+FOREM NECESSÁRIAS, PARA AÍ UPDATAR A UI... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O FLOW FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+USER EVENT IN THE APP --> STATE CHANGING EVENT --> OBSERVABLE --> OPERATORS --> LISTENER --> UPDATE UI...
+
+
+
+
+
+
+
+
+
+
+
+
+--> E JÁ ESTAMOS FAZENDO ISSO NO NOSSO APP:
+
+
+
+
+
+
+
+
+
+
+
+
+
+SE VOLTARMOS AO CODE,
+
+
+
+DE VOLTA AO SERVICE DE 'recipeBook',
+
+
+
+VEREMOS QUE 
+
+
+
+
+
+AS NOSSAS RECIPES SÃO 
+
+MANAGED POR MEIO 
+
+DAQUELE 
+
+
+SUBJECT DE 
+
+
+
+'recipesChanged',
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+  recipeItemsChanged = new Subject<Recipe[]>();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> TENHA EM MENTE QUE ESSE SUBJECT É USADO PARA 'EMIT A NEW COPY OF RECIPES,
+
+
+SEMPRE QUE 
+OS RECIPES DE NOSSO APP REALMENTE TIVEREM SIDO ALTERADOS''...
+
+
+
+
+(
+
+
+    OU SEJA,
+
+    QUANDO OVERWRITTAMOS 
+
+    NOSSAS RECIPES,
+
+    OU SEMPRE QUE 
+    ADICIOANRMOS UMA NOVA RECIPE...
+
+
+)
+
+
+
+
+
+
+
+
+
+-> E PQ ISSO IMPORTA?
+
+
+
+IMPORTA PQ 
+
+ESSE SUBJECT PODE SER USADO EM OUTROS COMPONENTS,
+
+
+COMO POR EXEMPLO O 
+
+
+
+COMPONENT DE 'RECIPELIST',
+
+
+
+
+
+QUE ENTÃO VAO USAR ESSA INFO PARA __ ATUALIZAR_ O STATE PRÓPRIO 
+
+DELES,
+
+
+
+
+COMO O ARRAY DE 'recipes: Recipe[]'  no RECIPELIST,
+
+por exemplo...
+
+
+
+
+
+
+
+
+--> FAZEMOS ISSO POR MEIO DE __ SUBSCRIPTIONS __ NOS NOSSOS COMPONENTS QUE ESTÃO INTERESSADOS NESSA 
+
+'MUDANÇA DE DATA', mudança em algum state 
+
+
+(
+    ISSO QUER DIZER QUE O 'STATE GERAL', QUANDO ALTERADO, ACABA 
+
+    
+
+    ALTERANDO  OS 'STATES LOCAIS',
+
+    se usarmos os SUBJECTS COM OBSERVABLES,
+
+    NOS NOSSOS COMPONENTS MENORES...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER QUE 
+
+AQUI 
+
+JÁ 
+ESTAMOS USANDO 
+
+
+
+UM PATTERN 
+
+
+BEM BOM 
+
+DE 
+
+'MANAGE DE STATE',
+
+
+
+
+POR 
+
+
+__ MEIO _ DO USO DE SUBJECTS,
+
+
+E POR MEIO 
+
+DO 
+
+USO DAQUELE MECANISMO 
+
+
+
+
+
+
+DE 'push subscribe',
+
+
+
+
+
+
+
+
+EM QUE 
+
+
+TEMOS 
+
+
+
+UMA 'CLEAR STREAM OF DATA'
+
+
+
+
+
+
+
+,
+
+
+UMA 
+
+'UNIDIRECTIONAL DATA STREAM'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> POR MEIO DESSA STREAM PRÉ-DEFINIDA,
+
+
+NÃO É POSSÍVEL/FICA DIFICULTADO 
+
+
+
+O __ UPDATE__ DE RECIPES_ 
+
+
+
+
+
+POR UM CAMINHO QUE NÃO SEJA AQUELE 'PRE-DEFINED' FLOW 
+
+
+
+
+DE 
+
+USAR AQUELES METHODS 
+
+DEFINIDOS LÁ EM 'recipeBook.service.ts',
+
+
+
+
+EM QUE FAZEMOS O EMIT DE UM NOVO EVENT,
+
+
+
+
+
+
+EM QUE AÍ FAZEMOS SUBSCRIBE AO EVENT, TIPO ASSIM:
+
+
+
+
+
+  onRecipeAdded(newRecipe: Recipe) {
+    this.recipes.push(newRecipe);
+
+    this.recipeItemsChanged.next([...this.recipes]);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ---> SIM, SEMPRE PODEMOS 'HACK OUR WAY AROUND THIS',
+
+
+
+
+  MAS 
+
+
+  SE QUEREMOS _ BREAK O NOSSO APP,
+
+
+
+SEMPRE PODEMOS FAZER ISSO...
+
+
+
+
+
+
+
+
+
+-_> MAS O QUE O PROFESSOR QUER DIZER, COM ISSO,
+
+
+
+
+É QUE 
+
+
+ESSE 
+
+APPROACH 
+
+
+
+
+
+QUE USAMOS,
+
+QUE MANAGEIA 
+
+O 
+
+
+STATE 
+
+
+DE NOSSO APP POR MEIO DE 
+
+
+
+
+
+
+
+'RxJs'
+
+
+
+E 'SUBJECTS'
+
+
+
+JÁ 
+
+
+
+
+É _ _SUPER BOM,
+
+
+
+
+
+E QUE 
+
+PROVAVELMENTE 
+
+
+
+JÁ 
+
+
+
+TEM TUDO O QUE VOCÊ PRECISA, ATÉ MESMO PARA APPS MAIORES.... (
+
+
+
+ 
+
+ há apps maiores que 
+
+ continuam usando esse approach,
+
+
+USANDO:
+
+1) SERVICES 
+
+
+2) COMPONENTS 
+
+3) SUBJECTS
+
+
+
+
+
+PARA MANAGEAR STATE...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS É CLARO QUE O USO DESSE SISTEMA EM __ APPS ___ MAIORES__ PODE SER REALMENTE BEM_ ___ TRICKY__,
+
+
+
+
+PQ 
+
+
+
+__ ISSO __ TE FORÇA ___ A CUIDAR 
+
+
+
+COM 
+
+
+
+O PROVIDE DE UMA 
+
+
+'GOOD STRUCTURE',
+
+
+
+E DE UM 
+'CLEAN SETUP',
+
+
+E QUE 
+
+
+
+TODOS OS SERVICES 
+
+E 
+'PIECES OF STATE'
+
+
+são IMPLEMENTADOS DE UMA BOA MANEIRA...
+
+
+
+
+
+
+
+
+
+
+
+
+--> E É NESSE ASPECTO QUE O 'NGRX'
+
+
+
+PODE NOS AJUDAR...
+
+

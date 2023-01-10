@@ -1,0 +1,1882 @@
+
+
+
+
+
+
+
+
+
+
+
+
+-> NÓS JÁ UTILIZAMOS ATTRIBUTE DIRECTIVES COMO NGSTYLE E 
+
+NGCLASS anteriormente,
+
+
+
+
+
+
+
+
+
+e é __ ainda _ mais FÁCIL DE ENTENDER O QUE FAZER COM ELAS __ DEOPIS 
+
+
+
+
+QUE 
+
+
+APRENDEMOS A CRIAR NOSSA PRÓPRIA DIRECTIVE..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA CONSTRUIR UMA DIRECTIVE SIMPLES,
+
+
+DIRECTIVE DE 
+
+'highlight o element em que passo o mouse em cima',
+
+
+
+(essa é uma directive meio inútil, pq o mesmo efeito poderia ser obtido com o uso DE CSS STYLES NORMAIS, com ':hover'...)
+
+
+
+
+
+__  AINDA ASSIM,
+
+
+
+
+ESSE É SÓ UM BOM 'DEMO'...
+
+
+
+
+
+
+
+
+
+
+
+
+-_> O PROFESSOR VAI 'app' folder, e aí cria uma 
+
+
+
+
+NOVA DIRECTIVE,
+
+em um folder chamado de 
+
+'basic-highlight'...
+
+
+
+
+
+
+
+
+
+
+
+--> DENTRO DESSE FOLDER, O PROFESSOR CRIA UM ARQUIVO CHAMADO DE 
+
+
+
+
+basic-highlight.directive.ts 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> DENTRO DESSE ARQUIVO,
+
+
+
+O PROFESSOR FAZ EXPORT DE UMA CLASS,
+
+
+ 
+
+ a qual chama de 
+
+
+
+
+
+
+
+
+
+
+
+
+ BasicHighlightDirective...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> fica tipo assim:
+
+
+
+
+
+
+
+
+
+ export class BasicHighlightDirective {
+
+
+
+
+ }
+
+
+
+
+
+
+
+
+
+
+ -----------------------------
+
+
+
+
+
+
+
+
+ PARA FAZER COM QUE ISSO SE TRANSFORME EM UMA 'DIRECTIVE',
+
+
+ somos obrigados a importar um decorator de '@Directive()',
+
+ precisamente como fizemos com 
+
+ '@Component' 
+
+ para 
+
+ criar components angular....
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+
+import { Directive } from '@angular/core';
+
+
+
+@Directive()
+
+export class BasicHighlightDirective {
+
+}
+
+
+-----------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------->  CERTO... 
+
+
+
+
+
+
+
+
+E AQUI TEMOS ALGO PARECIDO COM 'COMPONENT',
+
+pq 
+
+
+dentro desse decorator de 
+
+'Directive'
+
+
+
+TAMBÉM SOMOS OBRIGADOS A PASSAR UM 'OBJECT' de config...
+
+
+
+
+
+
+
+
+eX:
+
+
+
+
+
+
+
+import { Directive } from '@angular/core';
+
+
+
+@Directive({
+
+})
+
+export class BasicHighlightDirective {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE OBJECT VAI  _CONFIGURAR ESSA DIRECTIVE...
+
+
+
+
+
+
+
+
+
+
+--> MAS COMO A CONFIGURAMOS? 
+
+
+
+
+
+
+
+
+
+
+--> A PRIMEIRA COISA DE QUE PRECISAMOS,, COMO SEMPRE,
+
+É UM 
+
+'selector' key...
+
+
+
+
+
+
+
+
+-----> PQ LEMBRE-SE: NÓS COLOCAMOS  DIRECTIVES NOS NOSSOS TEMPLATES,
+
+
+PARA QUE 
+
+SEJAM 
+
+
+
+ANEXADAS AOS NOSSOS 'elements'... -> É POR ISSO QUE PRECISAMOS 
+
+
+
+
+DE ALGUMA MANEIRA DE DIZER AO ANGULAR 
+
+
+
+
+que 
+
+
+
+essa instrução deve ser seguida,
+
+
+
+
+E ESSA MANEIRA É PRECISAMENTE O 'SELECTOR'...
+
+
+
+
+
+
+
+
+
+--> AQUI, 
+
+NO CASO,
+
+ESSE _ TAMBÉM_ _ DEVERÁ SER UM ''''UNIQUE SELECTOR'''' ----> VOCê PRECISA ESCOLHER UM NOME QUE 
+
+
+REPRESENTE SUA 
+
+
+
+DIRECTIVE.. --. TIPICAMENTE USAMOS CAMEL CASE NOTATION, e escrevemos 
+
+algo tipo 
+
+
+
+
+
+
+'appBasicHighlight' 
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+import { Directive } from '@angular/core';
+
+@Directive({ ////esse object vai CONFIGURAR essa directive...
+
+    selector: 'appBasicHighlight'  //escreva o selector dessa directive de forma 'camelCase'...
+})
+export class BasicHighlightDirective {
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------> OK.... ----> ESSE SELECTOR AÍ,
+
+
+se escrito assim,
+
+
+
+faria 
+
+
+
+select
+
+ desse 
+
+ negócio 'POR ELEMENT' (seria encontrado um elemento tipo '<appBasicHighlight>', mas não é isso que queremos, pois 
+ esse attribute directive deverá existir _ DENTRO DE UM OUTRO ELEMENT......)
+
+
+
+
+
+
+
+
+
+
+
+ -------> COMO QUEREMOS QUE ISSO SEJA UM 'ATTRIBUTE STYLE 'directive,
+
+
+ o PROFESSOR WRAPPA ISSO 
+
+
+ com '[]' ,
+
+
+
+
+
+ o que fará com que 
+
+
+ ESSA NOSSA DIRECTIVE SEJA _ RECONHECIDA__ SEMPRE QUE ESCREVERMOS 
+
+
+
+
+
+''' [appBasicHighlight]''' dentro de um component,
+
+no nosso código template....
+
+
+
+
+
+
+
+
+
+
+
+
+-->  import { Directive } from '@angular/core';
+
+@Directive({ ////esse object vai CONFIGURAR essa directive...
+
+    selector: '[appBasicHighlight]'  //escreva o selector dessa directive de forma 'camelCase'...
+                                    ////usamos '[]' pq isso realmente será usado como um DIRECTIVE, ATTRIBUTE DIRECTIVE, uma directive/COISA que VIVE DENTRO DOS OUTROS COMPONENTS DE SEU TEMPLATE/ELEMENTS DO SEU TEMPLATE... --> basta escrever 'appBasicHighlight' dentro de um elemento, sem '[]', que ele será reconhecido como esse 'attribute directive'...s
+})
+export class BasicHighlightDirective {
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> VOCê DEVE ESCREVER 'appBasicHighlight'
+
+
+no seu component, mas __ SEM_ _ SQUARE BRACKETS O ENVOLVENDo..
+
+
+
+
+
+
+
+
+->  PARA __ MOSTRAR _ ESSA DIRECTIVE,
+
+SEU FUNCIONAMENTO,
+
+PRECISAMOS 
+DE 
+UMA 
+
+'VISUAL CUE'
+
+para nos mostrar que 
+ela está funcionanod...
+
+
+
+
+
+
+
+
+
+
+
+--> NO CASO, 
+
+O PROFESSOR DIZ QUE 
+
+O USE-CASE MAIS BÁSICO DE TODOS É 'CHANGE THE BACKGROUND COLOr'
+ 
+
+ DO ELEMENTO A QUE 
+
+ ESSA DIRECTIVE É ANEXADA....
+
+
+
+
+
+
+
+
+
+
+ --> PARA ISSO,
+
+ PRECISAMOS __ DE 'ACESSO''
+
+
+
+ AO ELEMENTO EM QUE 
+
+
+ ESSA 
+
+ DIRECTIVE É POSICIONADA... -------> A COISA LEGAL SOBRE ISSO 
+
+  
+  É QUE 
+
+  O 
+
+  ANGULAR _ SEMPRE CONSEGUE __ NOS ENTREGARR ESSE ACESSO... --> EM OUTRAS PALAVRAS,
+
+
+
+  PODEMOS 'INJECT' O ELEMENT 
+
+
+
+
+
+  ___ EM QUE ESSA DIRECTIVE 
+
+  FOI POSICIONADA,
+
+  DENTRO DA DIRECTIVE EM SI...
+
+
+
+
+
+
+
+
+
+
+
+
+  -----> E A 'INJECTION' do element para 'dentro da directive'
+
+
+  É __ ALGO QUE _ VEREMOS NA PRÓXIMA COURSE SECTION,
+
+
+
+
+
+
+
+  que é sobre _ SERVICES,
+
+
+
+
+  MAS O PROFESSOR JÁ NOS MENCIONA, AQUI,
+
+
+  QUE 
+
+
+
+  ESSA É '''UMA MANEIRA FÁCIL DE GANHAR ACESSO 
+
+  A ALGUMAS OUTRAS CLASSES  SEM TER DE AS INSTANCIAR POR NOSSA PRÓPRIA CONTA''...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> NÓS ''INJETAMOS'' qualquer element na nossa directive _ POR MEIO __ 
+
+
+  DO ADD DE UM CONSTRUCTOR à directive..
+
+
+
+
+
+
+
+
+
+
+
+  ----> tipo assim:
+
+
+
+
+
+
+  import { Directive } from '@angular/core';
+
+@Directive({ ////esse object vai CONFIGURAR essa directive...
+
+    selector: '[appBasicHighlight]'  //escreva o selector dessa directive de forma 'camelCase'...
+                                    ////usamos '[]' pq isso realmente será usado como um DIRECTIVE, ATTRIBUTE DIRECTIVE, uma directive/COISA que VIVE DENTRO DOS OUTROS COMPONENTS DE SEU TEMPLATE/ELEMENTS DO SEU TEMPLATE... --> basta escrever 'appBasicHighlight' dentro de um elemento, sem '[]', que ele será reconhecido como esse 'attribute directive'...s
+})
+export class BasicHighlightDirective {
+
+
+
+constructor () {
+
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------> ISSO PQ TODA CLASS TYPESCRIPT SEMPRE TERÁ UM CONSTRUCTOR...
+
+
+
+
+
+
+
+
+
+
+
+
+----> POR ENQUANTO, NÃO COLOCAREMOS NADA NO 'CONSTRUCTOR BODY',
+
+
+MAS NA LISTA DE ARGUMENTS DO constructor
+
+
+
+
+VAMOS QUERER _ LISTAR__ UM PUNHADO DE ARGUMENTS QUE VAMOS QUERER 
+
+
+''OBTER'''
+
+SEMPRE QUE 
+
+
+
+UMA INSTANCE DESSA 'CLASS' 'BasicHighlightDirective'
+
+
+FOR criada... --------> E É CLARO QUE 
+
+
+
+
+__ É O ANGULAR __ QUE É RESPONSÁVEL PELO CREATE DESSAS INSTANCES,
+
+
+portanto 
+
+
+se dissermos ao angular 
+
+
+''''POR FAVOR, NOS DÊ UM ARGUMENTO DESSE TYPE ESPECÍFICO''',
+
+
+
+
+É ISSO QUE SERÁ A 'INJECTION' 
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> injection ---> É A TENTATIVA DO ANGULAR _ DE CRIAR__  ESSA  'COISA DE QUE PRECISAMOS' (seja ela qual for)
+
+
+E DE ENTÃO ENTREGÁ-LA A NÓS...
+
+
+
+
+
+
+
+---------> BEM, ESSA COISA DE QUE PRECISAMOS,
+
+NO CASO,
+
+
+É __ SIMPLESMENTE UMA 'REFERENCE'
+
+
+
+
+AO ELEMENT EM QUE 
+
+A DIRECTIVE FOI POSICIONADA... ->  
+
+
+
+
+
+
+é por isso que o professor escreve 
+
+'elementRef' (e esse nome poderia ser qualquer um, depende do que quisermos),
+
+
+
+E AÍ O TYPE SERÁ IMPORTANTE...
+
+
+
+
+
+
+
+--. O TYPE SERÁ DE 'ElementRef' ------> IMPORTANTE, VOCê DEVE COLOCAR ESSE 'ElementRef' Mesmo..
+
+
+
+
+
+(
+
+
+    já vimos esse 'ElementRef' anteriormente,
+
+
+    lá 
+
+    com 
+
+    '@ViewChild()'....
+)
+
+
+
+
+
+
+----> EM 'ViewChild' ,
+
+
+esse 
+
+'ElementRef'
+
+
+TAMBÉM ERA UMA REFERENCE A UM ELEMENTo,
+
+
+
+como será aqui também...
+
+
+
+
+
+
+
+
+
+ESCREVEMOS TIPo assim...:
+
+
+
+
+
+
+
+
+
+
+  import { Directive } from '@angular/core';
+
+@Directive({ ////esse object vai CONFIGURAR essa directive...
+
+    selector: '[appBasicHighlight]'  //escreva o selector dessa directive de forma 'camelCase'...
+                                    ////usamos '[]' pq isso realmente será usado como um DIRECTIVE, ATTRIBUTE DIRECTIVE, uma directive/COISA que VIVE DENTRO DOS OUTROS COMPONENTS DE SEU TEMPLATE/ELEMENTS DO SEU TEMPLATE... --> basta escrever 'appBasicHighlight' dentro de um elemento, sem '[]', que ele será reconhecido como esse 'attribute directive'...s
+})
+export class BasicHighlightDirective {
+
+constructor (elementRef: ElementRef) {
+
+
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--_> BEM, PARA SERMOS CAPAZES DE UTILIZAR ESSA 
+
+
+DATA 
+
+
+de 
+
+'elementRef'
+
+
+
+NA NOSSA CLASS,
+
+EM QUALQUER LOCAL DE NOSSA CLASS,
+
+
+
+DEVEMOS 
+
+A 
+
+
+
+
+_ DEFINIR __ COMO SENDO UMA PROPRIEDADE DELA,
+
+
+POR MEIO DO CONSTRUCTOR...
+
+
+
+
+
+
+
+
+---> poderíamos escrever assim:
+
+
+
+
+
+
+
+
+  import { Directive } from '@angular/core';
+
+@Directive({ ////esse object vai CONFIGURAR essa directive...
+
+    selector: '[appBasicHighlight]'  //escreva o selector dessa directive de forma 'camelCase'...
+                                    ////usamos '[]' pq isso realmente será usado como um DIRECTIVE, ATTRIBUTE DIRECTIVE, uma directive/COISA que VIVE DENTRO DOS OUTROS COMPONENTS DE SEU TEMPLATE/ELEMENTS DO SEU TEMPLATE... --> basta escrever 'appBasicHighlight' dentro de um elemento, sem '[]', que ele será reconhecido como esse 'attribute directive'...s
+})
+export class BasicHighlightDirective {
+
+constructor (elementRef: ElementRef) {
+    this.elementRef = ElementRef
+
+}
+}
+
+
+
+
+
+
+
+
+
+--> MAS ESSA ESCRITA É UMA DROGA,
+
+
+PQ 
+
+O 
+
+PROFESSOR DIZ QUE 
+É BEM MELHOR USAR O SHORTCUT DE 'public/private' 
+
+
+
+dO 
+
+
+TYPESCRIPT PARA DEFINIR ESSA PROPRIEDADE NO RUNTIME,
+
+QUE É O QUE FAREMOS,
+
+POR MEIO DO ADD DA KEYWORD 'private'
+
+
+na lista de parâmetros do constructor:
+
+
+
+
+
+
+
+
+
+
+
+  import { Directive } from '@angular/core';
+
+@Directive({ ////esse object vai CONFIGURAR essa directive...
+
+    selector: '[appBasicHighlight]'  //escreva o selector dessa directive de forma 'camelCase'...
+                                    ////usamos '[]' pq isso realmente será usado como um DIRECTIVE, ATTRIBUTE DIRECTIVE, uma directive/COISA que VIVE DENTRO DOS OUTROS COMPONENTS DE SEU TEMPLATE/ELEMENTS DO SEU TEMPLATE... --> basta escrever 'appBasicHighlight' dentro de um elemento, sem '[]', que ele será reconhecido como esse 'attribute directive'...s
+})
+export class BasicHighlightDirective {
+
+constructor (private elementRef: ElementRef) {
+
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+import { Directive, ElementRef } from '@angular/core';
+
+@Directive({ ////esse object vai CONFIGURAR essa directive...
+
+    selector: '[appBasicHighlight]'  //escreva o selector dessa directive de forma 'camelCase'...
+                                    ////usamos '[]' pq isso realmente será usado como um DIRECTIVE, ATTRIBUTE DIRECTIVE, uma directive/COISA que VIVE DENTRO DOS OUTROS COMPONENTS DE SEU TEMPLATE/ELEMENTS DO SEU TEMPLATE... --> basta escrever 'appBasicHighlight' dentro de um elemento, sem '[]', que ele será reconhecido como esse 'attribute directive'...s
+})
+export class BasicHighlightDirective {
+
+
+
+    constructor(private elementRef: ElementRef) {   /// o parâmetro que representa esse 'element' em que a directive foi posicionada é 'elementRef', que possui esse type de 'ElementRef'......
+        ///é no constructor de nossa 'directive' QUE VAMOS __ GANHAR _ ACESSO AO 'ELEMENT/COMPONENT' em que essa directive é posicionada (seja esse element um <p>, um <h1>, um <input>, qualquer coisa)....
+                //aqui também usamos aquele SHORTCUT DO ANGULAR, para adicionar essa propriedade como 'private property' de nossa class (para que possa ser usada sua data para todo tipo de coisa, dentro dessa directive/class)...
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK,
+
+
+ISSO FAZ COM QUE ESSA PROPRIEDADE de 'elementRef'
+
+
+
+
+
+seja _ DEFINIDA COMO:
+
+
+
+1) UMA PROPERTY PRIVADA,
+
+
+
+
+
+QUE NÃO PODE SER ACESSADA DO LADO DE FORA,
+
+E SIM APENAS POR MEIO DE METHODS....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DEFINIDA ESSA PROPRIEDADE DE 
+
+
+'elementRef',
+
+
+
+
+JÁ PODEMOS FAZER COISAS COM ELA,
+
+
+
+
+
+TANTO FAZ SE NO _ CONSTRUCTOR OU EM METHODS DIVERSOS....
+
+
+
+
+
+
+
+
+
+
+
+-> O QUE O PROFESSOR FAZ, NO CASO,
+
+É 
+
+ACESSAR 
+
+
+ESSA PROPRIEDADE 
+
+
+lá 
+
+NO CONSTRUCTOR,
+
+
+
+
+
+
+PARA __ AÍ __ ACESSAR A PROPRIEDADE 
+
+
+'nativeElement' e aí fazer coisas nesse elemento...
+
+
+
+
+
+
+
+
+
+
+--> o código fica/ficaria assim:
+
+
+
+
+
+
+
+
+
+import { Directive, ElementRef } from '@angular/core';
+
+@Directive({ 
+
+    selector: '[appBasicHighlight]'  
+})
+export class BasicHighlightDirective {
+
+
+
+    constructor(private elementRef: ElementRef) {   
+
+        elementRef.nativeElement.xxxx = ''; ///TIPO ASSIM...
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS ENTÃO O PROFESSOR JÁ NOS ALERTA DE ALGO:
+
+
+
+
+
+É MELHOR FAZER ESSAS ALTERAÇÕES NO COMPONENT/ELEMENTO __ LÁ 
+
+
+NO HOOK DE 
+
+
+
+
+'NgOnInit',
+
+
+
+
+pq 
+
+
+
+
+
+esse HOOK EXECUTA _ APÓS O 'constructor' ,
+
+
+o que é melhor, pq pode evitar alguns comportamentos indesejados....
+
+
+
+
+
+
+
+
+
+
+
+
+-----> PARA ISSO, VOCÊ DEVE IMPLEMENTAR 'OnInit' 
+
+NESSA CLASS,
+
+PARA AÍ TER ACESSO AO LIFECYCLE HOOK DE 
+
+
+
+'NgOnInit(){}'...
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+import { Directive, ElementRef } from '@angular/core';
+
+@Directive({ 
+
+    selector: '[appBasicHighlight]'  
+})
+export class BasicHighlightDirective implements OnInit {
+
+
+
+    constructor(private elementRef: ElementRef) {   
+
+        
+    }
+
+
+
+    ngOnInit() {
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Directive, ElementRef } from '@angular/core';
+
+
+import { OnInit } from '@angular/core';
+@Directive({ ////esse object vai CONFIGURAR essa directive...
+
+    selector: '[appBasicHighlight]'  //escreva o selector dessa directive de forma 'camelCase'...
+                                    ////usamos '[]' pq isso realmente será usado como um DIRECTIVE, ATTRIBUTE DIRECTIVE, uma directive/COISA que VIVE DENTRO DOS OUTROS COMPONENTS DE SEU TEMPLATE/ELEMENTS DO SEU TEMPLATE... --> basta escrever 'appBasicHighlight' dentro de um elemento, sem '[]', que ele será reconhecido como esse 'attribute directive'...s
+})
+export class BasicHighlightDirective implements OnInit { //sempre importe 'OnInit()', pois o lifecycle hook de 'ngOnInit()' é MT ÚTIL para directives... (melhor definir coisas de nosso elemento lá em 'ngOnInit', e não diretamente no constructor)...
+
+
+
+    constructor(private elementRef: ElementRef) {   /// o parâmetro que representa esse 'element' em que a directive foi posicionada é 'elementRef', que possui esse type de 'ElementRef'......
+        ///é no constructor de nossa 'directive' QUE VAMOS __ GANHAR _ ACESSO AO 'ELEMENT/COMPONENT' em que essa directive é posicionada (seja esse element um <p>, um <h1>, um <input>, qualquer coisa)....
+                //aqui também usamos aquele SHORTCUT DO ANGULAR, para adicionar essa propriedade como 'private property' de nossa class (para que possa ser usada sua data para todo tipo de coisa, dentro dessa directive/class)...
+  
+  
+                // elementRef.nativeElement.xxxx = ''; ///TIPO ASSIM... --> assim já poderíamos editar coisas do elemneto em que foi posicionada a directive, dentro desse constructor....  --> MAS É MELHOR FAZER ESSE TIPO DE COISA LÁ NO 'ngOnInit()' hook, e não aqui, diz o professor...
+            }
+
+
+
+            ngOnInit(): void {
+                
+            }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------> NGONINIT -->  DENTRO DE LÁ,
+
+
+JÁ PODEMOS ACESSAR 
+
+
+
+'elementRef',
+
+
+ 
+
+
+ __ 
+
+
+
+ E AÍ _ FAZER COISAS COM ELE,
+
+ A PARTIR DO ACESSO A 
+
+
+ '.nativeElement'...
+
+
+
+
+
+
+
+ ex:
+
+
+
+
+
+
+
+             ngOnInit(): void {
+
+                 this.elementRef.nativeElement.xxxx 
+                
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NO CASO, O PROFESSOR ACESSA A PROPRIEDADE DE 
+
+
+
+'.style'
+
+PARA AÍ 
+
+
+
+
+
+DEFINIR A PROPRIEDADE 
+
+'backgroundColor'
+
+
+COMO SENDO 'GREEN'... 
+
+
+
+
+
+
+
+
+
+
+
+            ngOnInit(): void {
+                
+
+                this.elementRef.nativeElement.style.backgroundColor = 'green';  //com isso, conseguimos MUDAR PROPRIEDADES DE NOSSO ELEMENTO DURANTE SUA INICIALIZAÇÕA, POR MEIO DE NOSSA DIRECTIVE...
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESTAMOS RECEBENDO ACESSO A ESSE STYLE E ENTÃO FAZENDO 'OVERWRITE' do overall  style desse elemento...
+
+
+
+
+
+
+
+
+
+-> AGORA DEVEMOS UTILIZAR ESSA DIRECTIVE..
+
+
+
+
+
+
+
+
+
+
+
+--> A PRIMEIRA COISA,
+
+
+
+COMO __ COM __ COMPONENTS,
+
+
+PRECISAMOS __ INFORMAR_ O ANGULAR_ DE QUE 
+
+TEMOS _ UMA NOVA DIRECTIVE...
+
+
+
+
+
+--> ISSO PQ __ O ANGULAR_, EXATAMENTE COMO COMPONENTS,
+
+
+NÃO ESCANEIA NOSSOS ARQUIVOS,
+
+O QUE QUER DIZER QUE ELE NÃO SABE/RECONHECE QUE 
+ADICIONAMOS 
+
+UMA NOVA DIRECTIVE...
+
+
+
+
+--> PARA ISSO,
+
+DEVEMOS IR ATÉ 
+
+'app.module.ts',
+
+
+
+
+
+
+E AÍ 
+
+ESCREVER,
+
+LÁ EM 
+'
+declarations',
+
+
+nossa nova directive... 
+
+ 
+
+
+
+
+
+
+ EX:
+
+
+
+
+
+
+
+
+
+ import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { BasicHighlightDirective } from './basic-highlight-directive/basic-highlight.directive';
+
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    BasicHighlightDirective
+  ],
+  imports: [
+    BrowserModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------------------
+
+
+
+
+
+
+
+
+
+
+CERTO.... COM ISSO, A DIRECTIVE QUE CRIAMOS _ PASSA A FICAR DISPONÍVEL NO NOSSO APP,
+
+
+
+PQ _ NÓS INFORMAMOS O ANGULAR ACERCA DISSO....
+
+
+
+
+
+
+
+--> CERTO, AGORA DEVEMOS UTILIZAR ISSO NO NOSSO ARQUIVO 'app.component.html'...
+
+
+
+
+
+
+
+
+--> CERTO.. AÍ LÁ NO ARQUIVO 
+
+html,
+
+DEPOIS DE TODAS NOSSAS LISTS,
+
+
+O PROFESSOR 
+
+
+
+
+
+
+ESCREVE UM 
+
+
+<p>Style me with basic attribute directive!</p> 
+
+
+
+
+
+
+
+
+
+
+
+--> AÍ O PROFESSOR ESCREVE aquele 
+
+
+'appBasicHighlight'... --> NÃO PRECISAMOS 
+
+DEFINIR NENHUM VALUE 
+
+
+
+COMO VALUE 
+
+DESSA PROPRIEDADE NO HTML ELEMENT,
+
+PQ __ 
+
+ELA FUNCIONARÁ COMO UM 'BOOLEAN ATTRIBUTE'..
+
+
+
+
+
+
+ex:
+
+
+
+
+<p appBasicHighlight >Style me with basic attribute directive!</p> 
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <button class="btn btn-primary" (click)="onlyOdd = !onlyOdd">
+        Only show odd numbers
+      </button>
+      <br /><br />
+      <ul class="list-group">
+        <div *ngIf="onlyOdd">
+          <li
+            class="list-group-item"
+            *ngFor="let odd of oddNumbers"
+            [ngStyle]="{
+              backgroundColor: odd % 2 !== 0 ? 'yellow' : 'transparent'
+            }"
+            [ngClass]="{ odd: odd % 2 !== 0 }"
+          >
+            {{ odd }}
+          </li>
+        </div>
+        <div *ngIf="!onlyOdd">
+          <li
+            class="list-group-item"
+            *ngFor="let even of evenNumbers"
+            [ngStyle]="{
+              backgroundColor: even % 2 !== 0 ? 'yellow' : 'transparent'
+            }"
+            [ngClass]="{ odd: even % 2 !== 0 }"
+          >
+            {{ even }}
+          </li>
+        </div>
+      </ul>
+      <p appBasicHighlight >Style me with basic attribute directive!</p> 
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+OK, FUNCIONOU, E NO DEVTOOLS O ELEMENTO FICOU ASSIM:
+
+
+
+
+
+
+
+<p _ngcontent-oaw-c12="" appbasichighlight="" style="background-color: green;">
+Style me with basic attribute directive!
+</p>
+
+
+
+
+
+
+
+-----------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CONFORME O PROFESSOR ENFATIZOU,
+
+
+A DIRECTIVE NAME É 
+
+'APENAS O SELECTOR' QUE DEFINIMOS 
+
+
+LA´EM
+ 
+  'selector': '[appBasicHighlight]' ,
+
+
+
+
+
+
+  E ESSAS '[]' NÃO FAZEM PARTE DESSE NOME
+  ,
+
+
+  E SIM 
+
+
+  APENAS SÃO A MARCAÇÃO QUE DIZ AO ANGULAR 
+
+  '''POR FAVOR 
+
+  SELECIONE ESSE NEGÓCIO _ COMO SE FOSSE UM ATTRIBUTE EM UM ELEMENTo'',
+
+
+  e é por isso que 
+
+
+  a adicionamos 
+
+  dentro de coisas como '<p>',
+
+  por exemplo..
+
+
+
+
+
+
+
+
+
+
+
+
+  -> OK, NOSSO ELEMENTO '<P>' 
+
+
+  TERÁ SIDO COLORIDO EM VERDE,
+
+
+
+
+  o que significa que deu certo.... -> mas podemos enhancear nossa directive, é claro....

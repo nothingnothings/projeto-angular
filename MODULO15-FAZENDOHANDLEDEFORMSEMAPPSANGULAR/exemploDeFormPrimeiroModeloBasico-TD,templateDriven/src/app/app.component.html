@@ -1,0 +1,154 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <!-- <form (ngSubmit)="onSubmitForm(formReference)" #formReference="ngForm" >  ESSA DIRECTIVE VAI CAPTURAR O 'TRIGGER DO SUBMIT' de sua form e então vai o utilizar para RODAR OS METHODS QUE VOCê DEFINIU LÁ NO ARQUIVO '.ts'.. -->
+      <form (ngSubmit)="onSubmitForm(formReference)" #formReference="ngForm">
+        <!-- NO ANGULAR, VOCÊ NUNCA COLOCA 'action=xxx' na sua tag de FORM, pq sua form vai ser handldada PELO ANGULAR EM SI... é por isso que não temos 'action' APONTANDO A ALGUMA ROUTE DE NOSSO APP.. NÓS TAMBÉM NÃO VAMOS COLOCAR 'method=POST', esse outro attribute famoso...-->
+
+        <!-- VOCÊ TAMBÉM PRECISA DEFINIR O VALOR DE SUA LOCAL REFERENCE COMO EQUIVALENTE A 'ngForm', para CONSEGUIR PASSAR A _ ACTUAL_ REPRESENTAÇÃO JAVASCRIPT DE SUA FORM AO seu method em 'xxx.ts', ao código typescript-->
+        <div
+          id="user-data"
+          ngModelGroup="userData"
+          #userDataReference="ngModelGroup"
+        >
+          <!-- 'ngModelGroup' É UMA DIRECTIVE USADA PARA ORGANIZAR O OBJECT de 'value' dentro de 'form.value', quando é submittada a form .... isso quer dizer que VAMOS AGRUPAR múltiplos values de inputs em diferentes grupos, usando essa directive em DIVS QUE WRAPPAM NOSSOS INPUT FIELDS... , AQUI, os values dos input fields 'username' e 'email' SERÃO AGRUPADOS sob o grupo 'userData' -->
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              class="form-control"
+              ngModel
+              placeholder="Your name"
+              name="username"
+              required
+              #nameReference="ngModel"
+              minlength="5"
+            />
+            <span
+              class="help-block"
+              [ngStyle]="{ color: 'red' }"
+              *ngIf="!nameReference.valid && nameReference.value"
+            >
+              Your name must have at least 5 characters!</span
+            >
+            <!-- required É UM DEFAULT HTML ATTRIBUTE, mas quando você o escreve em código angular, É USADO COMO UM SELECTOR PARA UMA DAS DIRECTIVES BUILT-IN DO ANGULAR...-->
+          </div>
+
+          <button class="btn btn-default" type="button">
+            Suggest an Username
+          </button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              ngModel
+              name="email"
+              required
+              placeholder="example@test.com"
+              email
+              #emailReference="ngModel"
+            />
+            <span
+              class="help-block"
+              [ngStyle]="{ color: 'red' }"
+              *ngIf="!emailReference.valid && emailReference.value"
+            >
+              Please enter a valid email!</span
+            >
+            <!--- essa é uma maneira de RENDERIZAR CONDICIONALMENTE MENSAGENS DE ERROR/AVISO AO USER, na sua UI.... basta usar as local referenecs de seus elementos, configuradas por 'ngModel'...-->
+            <!-- <p *ngIf="" [ngStyle]="{'color': 'red'}">Please enter a valid value!</p> -->
+            <!-- 'EMAIL' é outra DIRECTIVE DO ANGULAR, UMA DAS 'VALIDATOR DIRECTIVES', pq é algo que assegura a validation dos inputs do user, e que NÃO É UM DEFAULT HTML ATTRIBUTE, E SIM UMA DIRECTIVE...-->
+            <!-- o angular vai RECONHECER ESSE INPUT FIELD como um dos 'CONTROLS' da REPRESENTAÇAÕ TYPÉSCRIPT DA FORM SE VOCê ADICIONAR 'ngModel' como directive-->
+            <!-- VOCÊ TAMBÉM PRECISA DE 'name', essa directive/attribute que vai dizer ao ANGULAR __ como _ deverá ser o nome desse control/input na REPRESENTAÇÃO TYPESCRIPT DESSA FORM.. .-->
+          </div>
+        </div>
+        <p *ngIf="!userDataReference.valid && userDataReference.touched">
+          <!-- EXEMPLO DE USO DE UMA LOCAL REFERENCE EM UMA DIV QUE POSSUI DIRECTIVE DE 'ngFormGroup' ... -->
+          There is some user data that is still invalid.
+        </p>
+
+        <div class="form-group">
+          <label for="secret">Secret Questions</label>
+          <select
+            id="secret"
+            class="form-control"
+            name="secret"
+            [ngModel]="defaultQuestion"
+          >
+            <option value="pet">Your first Pet?</option>
+            <option value="teacher">Your first teacher?</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <textarea
+            class="form-control"
+            id="exampleFormControlTextarea1"
+            rows="3"
+            [ngModel]="defaultTextValue"
+            required
+            type="text"
+            name="textValue"
+          >
+          </textarea>
+        </div>
+
+        <textarea
+          name="answer"
+          row="3"
+          [(ngModel)]="questionAnswer"
+          class="form-control"
+          required
+          minlength="5"
+          #textAreaReference="ngModel"
+        >
+        </textarea>
+        <!-- exemplo DE TWO-WAY DATABINDING...-->
+        <p>{{ questionAnswer }}</p>
+        <span
+          class="help-block"
+          [ngStyle]="{ color: 'red' }"
+          *ngIf="!textAreaReference.valid && textAreaReference.value"
+          >Textarea text too short, please input more than 4 characters.</span
+        >
+
+        <div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input
+              required
+              type="radio"
+              name="gender"
+              [ngModel]="exemploGender"
+              [value]="gender"
+            />
+            <!-- 'value' é o VALUE QUE ESSE ELEMENTO DE 'RADIO button' vai segurar, e que vai render, se você o marcar... -->
+            {{ gender }}
+          </label>
+        </div>
+
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="!formReference.valid"
+        >
+          <!-- AQUI USAMOS A LOCAL REFERENEC DE '#formReference', para usar essa propriedade 'valid' de nosso object javascript de form, para aí enablar/disablar esse nosso button, dinamicamente (validation)..-->
+          Submit
+        </button>
+
+        <div class="row" *ngIf="submitted">
+          <div class="col-xs-12">
+            <h3>Your Data</h3>
+            <p>Username: {{ user.username}}</p>
+            <p>Mail: {{ user.email}}</p>
+            <p>Secret Question: {{ user.secretQuestion}}</p>
+            <p>Answer: {{ user.answer}}</p>
+            <p>Gender: {{ user.gender}}</p>
+            <p>TextValue: {{user.textValue}}</p>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,316 @@
+
+
+
+
+
+
+JÁ CONSEGUI FAZER ISSO....
+
+
+
+
+
+
+
+
+-----> O FETCH DE DATA É FEITO POR MEIO DESSE METHOD, NO NOSSO SERVICE de 'recipeBook':
+
+
+
+
+
+
+
+
+
+
+
+
+
+  loadRecipes() {
+
+  return this.http.get<{ [name: string]: Recipe}>(
+      'https://recipebookdummyproject-default-rtdb.firebaseio.com/recipes.json'
+    ).pipe(
+      map((data) => {
+
+        const transformedRecipesArray: Recipe[] = [];
+
+
+        console.log(data);
+
+        for (const key in data) {
+
+          if (data.hasOwnProperty(key)) {
+
+            transformedRecipesArray.push({...data[key]})
+          }
+        }
+
+
+
+
+        return transformedRecipesArray;
+      })
+    )
+    .subscribe(
+      (recipes) => {
+
+        
+        console.log(recipes);
+
+        this.recipes = recipes;
+
+        console.log(this.recipes);
+
+
+        this.recipeItemsChanged.next([...recipes]);
+
+      }
+    )
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE METHOD É 
+
+
+
+
+ATIVADO __ SEMPRE _ QUE 
+
+
+
+NOSSO 
+
+
+
+component de 'recipeBook' é iniciado (ngOnInit())
+
+
+
+e também 
+
+QUANDO CLICAMOS 
+
+
+NO 
+
+LINK DE FETCH DATA 
+
+lá 
+
+de 
+
+'HeaderComponent'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... AGORA O PROFESSOR QUER UM METHOD QUE NOS DEIXE 
+'OVERWRITE'
+
+
+O 
+
+ARRAY JÁ EXISTENTE 
+
+
+
+
+DE 
+
+RECIPES
+
+
+
+QUE TEMOS __CARREGADO__ NO NOSSO APP...
+
+
+
+
+
+
+
+--> para isso,
+
+ele cria um novo method ,
+
+
+
+de 
+
+
+'setRecipes(
+    recipes: Recipe[]
+) {
+
+
+}
+'
+
+
+
+
+
+
+
+
+
+
+
+
+-> o código será bem simples:
+
+
+
+
+
+
+
+
+setRecipes(recipes: Recipes[]) {
+    this.recipes = recipes;
+}
+
+
+
+
+
+
+
+
+
+
+--> o professor fez isso para que fosse possível 
+
+
+usar o código de 'this.recipeItemsChanged.next([...this.recipes])',
+
+
+
+
+PARA QUE TODAS AS PARTES 
+
+
+
+DE NOSSO CÓDIGO SEJAM INFORMADAS 
+
+
+DESSA 
+
+MUDANÇA 
+
+
+NOS NOSSOS RECIPE ITEMS... ( que ganhamos novos items, essencialmente)
+
+
+
+
+
+
+
+
+
+
+
+POR FIM, O PROFESSOR TEVE DE INFORMAR 
+
+O TYPESCRIPT SOBRE O  TYPE DE NOSSA RESPONSE ,
+
+
+tipo assim:
+
+
+
+
+
+return this.http.get<{ [name: string]: Recipe}>(
+      'https://recipebookdummyproject-default-rtdb.firebaseio.com/recipes.json'
+    ).pipe(
+      map(
+        (data) => {
+
+        const transformedRecipesArray: Recipe[] = [];
+
+
+        console.log(data);
+
+        for (const key in data) {
+
+          if (data.hasOwnProperty(key)) {
+
+            transformedRecipesArray.push({...data[key]})
+          }
+        }
+
+
+
+
+        return transformedRecipesArray;
+      }
+      )
+    )
+    .subscribe(
+      (recipes) => {
+
+        // this.recipes = recipes;
+
+        
+        console.log(recipes);
+
+        this.recipes = recipes;
+
+        console.log(this.recipes);
+
+
+        this.recipeItemsChanged.next([...recipes]);
+
+      }
+    )
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> BEM, AGORA SOMOS CAPAZES DE FETCHEAR E DE ARMAZENAR NOSSAS RECIPES EM 1 SERVER...

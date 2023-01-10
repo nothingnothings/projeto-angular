@@ -1,0 +1,616 @@
+
+
+
+
+
+
+
+
+
+
+eu já consegui escrever isso aí,
+
+e ficou assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { EventEmitter, Injectable, Output } from '@angular/core';
+import { Recipe } from './recipeBook/recipe.model';
+
+
+@Injectable()
+export class RecipeBookService {
+  recipes: Recipe[] = [
+    new Recipe(
+      'Chicken Wings',
+      'Delicious chicken wings',
+      'https://www.farmfor.com.br/wp-content/uploads/2022/02/coxinha-da-asa-superbowl.jpg'
+    ),
+    new Recipe(
+      'Pork Chops',
+      'Tasty pork chops, check them out',
+      'http://t2.gstatic.com/licensed-image?q=tbn:ANd9GcQsRbNYL4S-Noacb27Vi-sbWzURFRjW9YN8VOScbiJ0DxTAiGxTyqlNdG1TWHKN1xWqOV4UhHaFef-fBD8-PGo'
+    ),
+    new Recipe(
+      'Caesar Salad',
+      'Fresh and healthy salad',
+      'https://www.confeiteiradesucesso.com/wp-content/uploads/2019/06/ceasarsalad-fb.jpg'
+    ),
+  ];
+
+
+  @Output() recipeItemClickedEmitter = new EventEmitter<Recipe>()
+
+
+  // loadedRecipe: Recipe;
+
+
+  recipeItemClicked(index: number) {
+    // this.loadedRecipe = this.recipes[index];
+    // console.log(this.loadedRecipe);
+    // this.recipeItemClickedEmitter.emit(this.loadedRecipe);
+
+    const recipe = this.recipes[index];
+    this.recipeItemClickedEmitter.emit(recipe)
+
+  } 
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O SERVICE DE 'RECIPES' SERÁ 
+
+
+O 
+
+LUGAR DE NOSSO APP EM QUE 
+
+
+GERENCIAMOS 
+
+
+NOSSAS RECIPES...
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR COMEÇA COPIANDO O ARRAY DE 
+
+
+'recipes' lá 
+
+no service de 'recipeBook.service.ts'...
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+
+
+@Injectable()
+export class RecipeBookService {
+  recipes: Recipe[] = [
+    new Recipe(
+      'Chicken Wings',
+      'Delicious chicken wings',
+      'https://www.farmfor.com.br/wp-content/uploads/2022/02/coxinha-da-asa-superbowl.jpg'
+    ),
+    new Recipe(
+      'Pork Chops',
+      'Tasty pork chops, check them out',
+      'http://t2.gstatic.com/licensed-image?q=tbn:ANd9GcQsRbNYL4S-Noacb27Vi-sbWzURFRjW9YN8VOScbiJ0DxTAiGxTyqlNdG1TWHKN1xWqOV4UhHaFef-fBD8-PGo'
+    ),
+    new Recipe(
+      'Caesar Salad',
+      'Fresh and healthy salad',
+      'https://www.confeiteiradesucesso.com/wp-content/uploads/2019/06/ceasarsalad-fb.jpg'
+    ),
+  ];
+
+
+
+
+
+
+
+
+
+
+
+
+--> entretanto,
+a primeira coisa de diferente que o 
+
+PROFESSOR FAZ _ é 
+
+
+DEFINIR _ 
+
+
+
+
+
+esse array de 'RECIPES'
+
+como sendo 
+
+PRIVATE...
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+@Injectable()
+export class RecipeBookService {
+  private recipes: Recipe[] = [
+    new Recipe(
+      'Chicken Wings',
+      'Delicious chicken wings',
+      'https://www.farmfor.com.br/wp-content/uploads/2022/02/coxinha-da-asa-superbowl.jpg'
+    ),
+    new Recipe(
+      'Pork Chops',
+      'Tasty pork chops, check them out',
+      'http://t2.gstatic.com/licensed-image?q=tbn:ANd9GcQsRbNYL4S-Noacb27Vi-sbWzURFRjW9YN8VOScbiJ0DxTAiGxTyqlNdG1TWHKN1xWqOV4UhHaFef-fBD8-PGo'
+    ),
+    new Recipe(
+      'Caesar Salad',
+      'Fresh and healthy salad',
+      'https://www.confeiteiradesucesso.com/wp-content/uploads/2019/06/ceasarsalad-fb.jpg'
+    ),
+  ];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO FEITO, OUTRA COISA QUE ELE FAZ É 
+
+
+ADICIONAR UM METHOD DE 'getRecipes',
+
+
+PARA __ QUE _ CONSIGAMOS _ GANHAR ACESSO A ESSE ARRAY,
+
+DO LADO DE FORA 
+
+
+
+
+DELE....
+
+
+
+
+
+
+
+--> MAS 
+
+COMO _ QUEREMOS _ APENAS RETORNAR _UMA __ CÓPIA_ 
+
+DO ARRAY DE RECIPES 
+
+
+com 'getRecipes',
+
+
+E NÃO 
+
+
+
+
+O _ ARRAY_ EM SI,
+
+
+DEVEMOS COPIÁ-LO COM A AJUDA DO SPREAD OPERATOR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> vai ficando tipo assim:
+
+
+
+
+
+  private recipes: Recipe[] = [
+    new Recipe(
+      'Chicken Wings',
+      'Delicious chicken wings',
+      'https://www.farmfor.com.br/wp-content/uploads/2022/02/coxinha-da-asa-superbowl.jpg'
+    ),
+    new Recipe(
+      'Pork Chops',
+      'Tasty pork chops, check them out',
+      'http://t2.gstatic.com/licensed-image?q=tbn:ANd9GcQsRbNYL4S-Noacb27Vi-sbWzURFRjW9YN8VOScbiJ0DxTAiGxTyqlNdG1TWHKN1xWqOV4UhHaFef-fBD8-PGo'
+    ),
+    new Recipe(
+      'Caesar Salad',
+      'Fresh and healthy salad',
+      'https://www.confeiteiradesucesso.com/wp-content/uploads/2019/06/ceasarsalad-fb.jpg'
+    ),
+  ];
+
+
+
+  getRecipes() {
+    return [...this.recipes]
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OK...
+
+
+  agora em todos locais do meu código em que 
+
+
+
+  FAÇO 'GET' DESSE ARRAY DE 'recipes',
+
+
+  tenho que chamar esse 
+
+  method GETTER aí....
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -_> o professor 
+
+
+
+
+  escreve algo parecido,
+
+
+  ele escreve 
+
+
+
+
+  return this.recipes.slice();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ----> O PROFESSOR DIZ QUE 
+
+
+
+  É IDEAL 
+
+  COLOCARMOS 
+
+  NOSSO SERVICE DE 
+
+
+  'recipeBook'
+
+
+  ao component de 'recipeBook' (
+
+      pq esse service não é necessário em OUTROS 
+
+
+      COMPONENTS, NÃO PRECISA FICAR DISPONÍVEL NOS OUTROS COMPONENTS...
+  )
+
+
+
+
+
+
+
+
+
+
+--> ok, mas eu deixei eles incorporados ao app inteiro,
+
+
+por meio do add 
+
+
+em 
+
+'app.module.ts',
+
+
+pq acho mais conveniente...
+
+
+
+
+
+
+
+
+
+
+
+-_> OK... 
+
+
+
+
+
+
+
+
+
+
+---> O 'recipeList'
+
+
+vai começar 
+
+
+
+com um array 
+
+
+INDEFINIDO DE 'recipe'...
+
+
+
+
+
+
+
+
+
+-> AÍ SÓ VAMOS CONSEGUIR ESSE ARRAY LÁ EM 'ngOnInit()',
+
+
+
+
+portanto fica assim:
+
+
+
+
+
+
+
+
+import { Component, Input, OnInit, Output } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+import { RecipeBookService } from 'src/app/recipeBook.service';
+
+import { Recipe } from '../recipe.model';
+
+@Component({
+  selector: 'app-recipe-list',
+  templateUrl: './recipe-list.component.html',
+  styleUrls: ['./recipe-list.component.css'],
+})
+export class RecipeListComponent implements OnInit {
+
+
+  recipes: Recipe[] = [];
+
+  constructor(private recipeBookService: RecipeBookService) {
+
+
+
+  }
+
+  ngOnInit(): void {
+    // this.recipes = this.recipeBookService.recipes;
+    this.recipes = this.recipeBookService.getRecipes();
+
+  }
+
+  onRecipeItemClick(index: number) {
+    console.log('TEST');
+    // console.log(index)
+
+
+    this.recipeBookService.recipeItemClicked(index);
+    // this.listItemDetail.emit(selectedRecipe);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK.. 
+
+
+
+INICIALIZAMOS/INCORPORAMOS O service lá no constructor,
+e aí 
+o 
+
+utilizamos 
+
+lá 
+
+
+
+
+em 
+
+'ngOnInit()'...
+
+
+
+
+
+
+
+
+
+
+
+-> A ÚNICA COISA QUE MUDAMOS, AGORA, É 
+
+O 'LOCAL EM QUE FAZEMOS MANAGE DE NOSSO ARRAY DE RECIPES'..
+
+
+
+
+
+
+
+
+
+
+
+-> obs: POSSO FAZER ESSA SACANAGEM Do 
+
+
+'private recipes'
+
+
+
+LÁ 
+
+
+
+EM 'shoppingList.service.ts',
+
+TAMBÉM...

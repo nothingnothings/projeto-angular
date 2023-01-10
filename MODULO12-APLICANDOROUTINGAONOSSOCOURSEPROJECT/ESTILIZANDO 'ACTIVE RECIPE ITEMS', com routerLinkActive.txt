@@ -1,0 +1,246 @@
+  hm... como poderia fazer isso?
+
+
+
+
+
+
+
+
+  --> tive de usar o approach do professor....
+
+
+
+
+
+
+
+
+
+
+
+  --> tive de colocar uma propriedade 
+
+
+
+  'index'
+
+
+  DENTRO DO 
+
+
+
+  COMPONENT DE 'recipe-item',
+
+
+  PARA AÍ 
+
+
+  adicioanr a directive de 
+
+
+  'routerLinkActive'
+
+
+  com um value de 'active',
+
+
+  para 
+  que 
+
+
+  fosse triggado esse style de 'active'
+
+
+
+dependendo 
+
+se 'estamos ou não na page desse recipe-item específico'...
+
+
+
+
+
+
+
+
+
+FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+    <app-recipe-item *ngFor="let recipe of recipes; let index=index"  
+    [routerLink]="['/recipe-book', index]"
+    routerLinkActive="active"
+    [index]="index"
+    [name]="recipe.name"
+    [description]="recipe.description"
+    [ngStyle]="{'cursor': 'pointer'}"
+    [imagePath]="recipe.imagePath"></app-recipe-item>
+
+
+
+
+
+
+
+
+
+
+RECIPE-ITEM:
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+
+import { Input } from '@angular/core';
+import { RecipeBookService } from 'src/app/recipeBook.service';
+
+@Component({
+  selector: 'app-recipe-item',
+  templateUrl: './recipe-item.component.html',
+  styleUrls: ['./recipe-item.component.css'],
+})
+export class RecipeItemComponent implements OnInit {
+  // @Input() recipeImagePath: string = '';
+  // @Input() recipeName: string = '';
+  // @Input() recipeDescription: string = '';
+
+  // @Output() recipeDetailEmitter = new EventEmitter<number>()
+
+  @Input() name: string;
+  @Input() description: string;
+  @Input() imagePath: string;
+
+  @Input() index: number;
+
+
+  // constructor(private recipeBookService: RecipeBookService) {
+    constructor() {
+
+
+  }
+
+  ngOnInit(): void {
+     
+  }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E O HTML DE RECIPE-ITEM:
+
+
+
+
+
+
+
+
+
+  <a class="list-group-item clearfix" routerLinkActive="active">
+    <div class="pull-left">
+      <h4 class="list-group-item-heading">{{ name }}</h4>
+      <p class="list-group-item-text">{{ description }}</p>
+    </div>
+    <span class="pull-right">
+      <!-- <img src="{{recipe.imagePath}}" alt="{{recipe.name}}" class="img-responsive" style="max-height: 50px" /> -->
+      <img
+        src="{{imagePath}}"
+        alt="{{ name }}"
+        class="img-responsive"
+        style="max-height: 50px;"
+      >
+    </span>
+  </a>
+
+
+
+
+
+
+
+
+
+
+
+  -----------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  professor fez exatamente isso,
+
+
+
+
+  adicionou
+
+
+  'routerLinkActive="active" ' 
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA O PRÓXIMO PASSO É GARANTIR QUE O BUTTON DE 'NEW RECIPE' 
+
+
+
+
+e 
+
+
+
+'EDIT RECIPE'
+
+
+
+funcionem...

@@ -1,0 +1,484 @@
+
+
+
+
+
+
+
+QUASE ACABAMOS COM OS 'BASICS' DO ANGULAR...
+
+
+
+
+
+
+
+
+
+--> JÁ APRENDEMOS UM MONTE SOBRE COMPONENTS (que são o BASIC BUILDING BLOCK DE QUALQUER APP ANGULAR)...
+
+
+
+
+
+
+
+
+
+
+
+
+--> APRENDEMOS QUE O __ COMPONENT 'app.component.ts/html'
+
+
+INICIA 
+
+O APP,
+
+
+
+
+E QUE PODEMOS NOS COMUNICAR COM OS TEMPLATES NOS NOSSOS COMPONENTs para:
+
+
+
+
+
+
+
+
+1) OUTPUTTAR DATA OBTIDA/EXTRAÍDA DOS ARQUIVOS 'ts' de cada component... (ou então alterar propriedades nos components em 'ts', a partir de mudanças 
+NA DATA OUTPUTTADA POR MEIO DO TEMPLATE...)
+
+
+
+
+
+
+
+2) REAGIR A EVENTOS nos templates, a partir da interação do user...
+
+
+
+
+
+
+
+
+
+
+
+3) MAS HÁ MAIS UM KEY BUILDING BLOCK QUE 
+
+
+VOCÊ PROVAVELMENTE USA/USARÁ EM QUALQUER __ APP 
+
+ANGULAR QUE VOCÊ 
+
+QUER CONSTRUIR...
+
+
+
+
+
+
+
+SÃO AS DIRECTIVES.
+
+
+
+
+-> MAS O QUE  SÃO DIRECTIVES? 
+
+
+
+
+
+
+
+
+
+
+
+
+-> DIRECTIVES SÃO ESSENCIALMENTE 
+
+
+
+'INSTRUCTIONS _ NO _ DOM'....
+
+
+
+
+
+
+
+
+
+
+INSTRUCTIONS IN THE DOM..
+
+
+
+
+
+
+
+
+
+---> E NÓS ACTUALLY _ JA´
+
+
+USAMOS __ DIRECTIVES,
+
+
+
+
+
+
+USAMOS DIRECTIVES SEM NEM MESMO PENSAR...
+
+
+
+
+
+
+
+
+
+
+
+
+---> 'COMPONENTS' SÃO ALGO __ COMO __ 'INSTRUCTIONS NO DOM', LÁ NO DOM.... ----> OS COMPONENTS 
+
+
+SÃO PARECIDOS COM ISSO... ---> DEPOIS QUE 
+
+
+
+
+
+COLOCAMOS (place) 
+
+O SELECTOR DE NOSSO COMPONENT, _ DENTRO DE  algum lugar de NOSSOS TEMPLATE,
+
+
+
+
+
+
+
+
+---> nesse momento, ESTAMOS INSTRUINDO O __ ANGULAR__ A ADICIONAR O 
+
+
+CONTENT DOS NOSSOS 'COMPONENT TEMPLATE' (e a business logic do nosso código .ts)
+
+
+
+
+
+
+NO LUGAR EM QUE USAMOS ESSE TAL SELECTOR....
+
+
+
+
+
+
+-> ESSA ERA A NOSSA INSTRUÇÃO,
+
+
+
+'
+''ANGULAR, POR FAVOR ADICIONE 
+
+
+
+
+
+ESSE COMPONENT NESTE LUGAR ESPECÍFICO.'''....
+
+
+
+
+
+
+
+
+
+
+
+-> E, DE FATO,
+
+
+COMPONENTS __ SÃO_ DIRECTIVES__,
+
+
+
+
+mas são directives com um TEMPLATE.... --> 
+
+
+
+
+
+
+
+
+
+
+
+
+COMPONENTS === DIRECTIVES __ COM TEMPLATE__....
+
+
+
+
+
+
+
+
+MAS __ É ÓBVIO _ QUE EXISTEM DIRECTIVES ____________ SEM TEMPLATES....
+
+
+
+
+
+
+
+
+
+
+
+
+--> UM EXEMPLO SERIA ISTO:
+
+
+
+
+
+
+
+
+
+<p appTurnGreen>Receives a green background!</p>
+
+
+
+
+
+
+
+
+
+
+
+---> ESSA É/PODE SER UMA _ _DIRECTIVE___....  ------> ESSA PODERIA SER 
+
+
+UMA CUSTOM DIRECTIVE QUE PODERÍAMOS CONSTRUIR....
+
+
+
+
+
+
+
+
+
+
+------> NÓS TIPICAMENTE ADICIONAMOS DIRECTIVES COM 
+
+
+um 
+
+
+'''ATTRIBUTE SELECTOR''' 
+
+
+
+(
+
+    ou seja,
+
+
+
+
+
+    aquele código de 
+
+
+
+
+
+
+    '''''''
+
+        selector: '[appTurnGreen]'
+
+
+
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+----> TIPICAMENTE USAMOS ESSE TIPO DE SELECTOR COM '[]',
+
+
+
+
+
+
+MAS É CLARO QUE TECNICAMNETE 
+
+
+O SELECTOR DE UMA DIRECTIVE PODE SER __ CONFIGURADO 
+
+EXATAMENTE COMO O SEELCTOR DE 
+
+UM COMPONENT (ou seja, com uma grafia como " selector: 'appTurnGreen' ", PARA SELEcionar diretamente esse slot desse component no template....)
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER QUE VOCÊ PODERIA USAR O ELEMENT OU CSS STYLE (mas isso não é recomendado)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DENTRO DESSE PARAGRAPH,
+
+
+
+
+a directive pode fazer algo simples como 
+
+
+'COLOR THE TEXT GREEn'... ------>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+no código do angular,
+
+provavelmente teríamos algo assim:
+
+
+
+
+
+
+
+@Directive(
+    {
+        selector: '[appTurnGreen]'
+    }
+)
+export class TurnGreenDirective {
+    p.color = 'green';
+}
+
+
+
+
+
+
+
+
+
+
+--> ISSO VAI ATIVAR__ ESSE __ ''''ATTRIBUTE''' (Que vai conter a directive, na verdade)
+,
+
+E FARÁ COM QUE 
+
+O 
+PARAGRAPH/qualquer coisa em que 
+
+vocE^
+
+anexar essa directive
+
+
+
+FIQUE _ VERDE....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> APRENDEREMOS 
+
+
+A ESCREVER NOSSAS PRÓPRIAS DIRECTIVES 
+
+
+
+
+NO MÓDULO 
+
+DEDICADO A DIRECTIVES DESSE NOSSO CURSO....
+
+
+
+
+
+
+
+
+
+-_> MAS EXISETM ALGUMAS DIRECTIVES __ BUILT-IN QUE _ SÃO MT ÚTEIS,
+
+
+devemos estudá-las nas próximas lições...

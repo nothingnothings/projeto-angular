@@ -1,0 +1,3424 @@
+
+
+
+
+
+
+
+
+
+
+ESSA SERÁ UMA AULA COMPLICADA...
+
+
+
+
+ 
+
+
+
+
+
+
+ COM ISSO, FICAMOS COM UMA INTRODUÇÃO BÁSICA AO TESTING DE COMPONENTS E SERVICES,
+
+
+ E O INJECT DE SERVICES EM COMPONENTS...
+
+
+
+
+
+
+
+ -> CERTO, MAS TUDO QUE VIMOS ATÉ AGORA FOI 'SYNC',
+
+
+ nada de coisas async, como O REACH OUT A WEBSERVERS..
+
+
+
+
+
+
+
+
+
+
+
+
+ --. É POR ISSO QUE NO 
+
+
+ FOLDER DE 'shared' (Que criamos)
+
+ O PROFESSOR CRIOU UM 
+
+
+
+ NOVO SERVICE,
+
+
+
+
+
+
+
+
+ O 'data.service.ts',
+
+
+
+
+
+ QUE 
+
+
+ VAI ACTUALLY __ 
+
+
+ __EXPOSE 
+
+
+
+
+ UMA ASYNC FUNCTION,
+
+ UMA FUNCTION QUE 
+
+ VAMOS QUERER TESTAR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> ok...
+
+
+
+
+
+
+
+
+
+
+
+ --> DENTRO DALI,
+
+
+
+ VAMOS QUERER 
+
+ TAMBÉM EXPORTAR UMA CLASS,
+
+
+
+
+ como qualquer service...
+
+
+
+
+
+
+
+
+
+
+ COMEÇAMOS TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+ import { TestBed } from '@angular/core/testing';
+
+import { DataService } from './data.service';
+
+describe('DataService', () => {
+  let service: DataService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(DataService);
+  });
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+CERTO... MAS PRIMEIRO TENHO QUE CODAR O SERVICE DE 'data.service.ts'..
+
+
+
+
+
+
+
+
+
+
+
+
+--> vou até esse arquivo, e aí começo ESCREVENDO UM METHOD, method que VAI 
+
+TER UMA PROMISE NO SEU INTERIOR...
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DataService {
+
+  
+
+
+
+  getDetails() {
+  const resultPromise = new Promise(
+    () => {
+
+    }
+  )
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK... E ESSA PROMISE, COMO SEMPRE, VAI RECEBER 'RESOLVE' E 'REJECT' COMO PARÂMETROS..
+
+
+
+
+
+ex:
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DataService {
+
+  
+
+
+
+  getDetails() {
+  const resultPromise = new Promise(
+    (resolve, reject) => {
+
+    }
+  )
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------------
+
+
+
+
+
+
+
+
+
+
+
+OK.... AÍ BASICAMENTE VAMOS SETAR UM TIMEOUT,
+
+
+QUE VAI EXPIRAR 
+
+
+DEPOIS DE 1.5 segundos..
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO FEITO,
+
+VAMOS QEURER FAZER O RESOLVE DE UMA STRING, de 'Data'..
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class DataService {
+  getDetails() {
+    const resultPromise = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve('Data');
+      }, 1500);
+    });
+  }
+}
+
+
+
+
+
+
+
+
+
+
+------------------------------------
+
+
+
+
+
+
+
+
+
+
+OK.... 
+
+FORA DA PROMISE, SIMPLESMENTE RETORNAMOS ESSA PROMSIE..
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class DataService {
+  getDetails() {
+    const resultPromise = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve('Data');
+      }, 1500);
+
+    });
+
+    return resultPromise;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK, ISSO SIGNIFICA QUE O METHOD 'getDetails'
+
+VAI RETORNAR UMA PROMISE, E ESSA PROMISE VAI 'RESOLVE' APÓS 
+
+1.5 segundos...
+
+
+
+
+
+
+
+
+
+
+--> CERTO, MAS AGORA VAMOS QUERER TESTAR ESSE METHOD..
+
+
+
+
+
+
+
+
+
+
+--> VAMOS QUERER TESTÁ-LO NO COMPONENT DE 'exemplo'...
+
+
+
+
+
+
+
+
+
+
+
+
+-> vamos criar uma propriedade de 'data',
+
+
+que terá um type de 'string'...
+
+
+
+
+
+
+
+
+
+
+
+--> injetamos esse daatService,
+
+
+nada de mais..
+
+
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ExemploService } from '../exemplo.service';
+import { DataService } from '../shared/data.service';
+
+@Component({
+  selector: 'app-exemplo',
+  templateUrl: './exemplo.component.html',
+  styleUrls: ['./exemplo.component.css'],
+})
+export class ExemploComponent implements OnInit {
+  example = { name: 'EXEMPLO1' };
+  isLoggedIn = false;
+
+  data: string;
+  constructor(
+    // private exemploService: ExemploService  ///quando estiver testando UNITARIAMENTE, não injete o service dentro do seu component... faça isso APENAS NO PRÓPRIO 'component.spec.ts', dentro da 'testBed' apropriada (que vai representar seu component)...
+
+    private exemploService: ExemploService,
+    private asyncDataService: DataService
+  ) {}
+
+  ngOnInit(): void {
+    // this.example.name = this.exemploService.user.name;
+    this.example.name = this.exemploService.user.name;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK...
+
+
+
+
+PODEMOS CONSEGUIR ACESSO A ESSA DATA POR MEIO DO CALL DESSE METHOD NO SERVICE DE 'exemplo',
+
+como sempre....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> AÍ VAMOS ESCREVER UM TEST PARA ISSO...
+
+
+
+
+
+
+
+
+--> ANTERORMENTE,  ESCREVEMOS TESTS PARA FETCH DE DATA SÍNCRONA:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ExemploService } from '../exemplo.service';
+import { ExemploComponent } from './exemplo.component';
+
+describe('ExemploComponent', () => {
+  let component: ExemploComponent;
+  let fixture: ComponentFixture<ExemploComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [
+        ExemploComponent, //aqui vamos DECLARAR TODOS OS COMPONENTS QUE VAO SER ALVOS DE NOSSO TESTING..
+      ],
+    }).compileComponents(); ///devemos chamar isso....
+
+    fixture = TestBed.createComponent(ExemploComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges(); //// isso DETECTA O CHANGE DE NOSSAS PROPRIEDADES (como o change ocorrido com o INJECT DO SERVICE NO NOSSO COMPONENT, isso é o change de properties, por exemplo)....
+  });
+
+  ////SINTAXE NOVA DO ANGULAR PARA CONSEGUIR ACESSO AO ELEMENT (ts e dom)
+
+  // fixture: ComponentFixture<ExemploComponent>; ///COMPONENT NO NOSSO DOM.. (DOM SIMULADO, É COMO SE CRIÁSSEMOS UM DOM ADICIONAL, E AÍ RENDERIZÁSSEMOS ESSE ELEMENT NELE)...
+  // component: ExemploComponent; ///COMPONENT EM SI
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should be defined', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should have "example" property', () => {
+    expect(component.example).toBeDefined();
+  });
+
+  // it('"example" property should have a name value of "EXEMPLO"', () => {
+  //   expect(component.example.name).toEqual('EXEMPLO');
+  // });
+
+  it('should use the user name from the service "exemploService"', () => { ///testamos se a propriedade do service realmente é injetada com sucesso nesse component...
+    const exemploService = fixture.debugElement.injector.get(ExemploService); /////é assim que TESTAMOS A UTILIZAÇAÕ DE services externos aos nossos components, sua utilzaçaõ nos nossos components... (checamos/testamos se o value REALMENTE FOI INJETADO NO NOSSO COMPONENT)...
+
+    fixture.detectChanges(); ///usado para DETECTAR CHANGES NO NOSSO COMPONENT (como o inject de nosso service, no caso)...
+    expect(exemploService.user.name).toEqual(component.example.name);
+  });
+
+
+
+
+
+  it('should display user.name in a string interpolation, if user is logged in', 
+  
+  () => {
+
+ 
+
+
+  // const exemploService = fixture.debugElement.injector.get(ExemploService);
+
+  component.isLoggedIn = true;
+
+  fixture.detectChanges();
+  
+  const compiledTemplate = fixture.debugElement.nativeElement as HTMLElement;
+
+    expect(compiledTemplate.querySelector('p')?.textContent).toContain(component.example.name);
+
+  }
+  
+  )
+
+
+
+
+
+
+
+  it('should not display user.name in a string interpolation, if user is not logged in', 
+  
+  () => {
+
+ 
+
+
+  // const exemploService = fixture.debugElement.injector.get(ExemploService);
+
+  fixture.detectChanges();
+
+  ///'isLoggedIn' já vai estar como false, no caso... 
+  
+  const compiledTemplate = fixture.debugElement.nativeElement as HTMLElement;
+  
+
+  expect(compiledTemplate.querySelector('p')?.textContent).not.toContain(component.example.name);
+
+  }
+  
+  )
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+AGORA, VAMOS 
+
+
+ESCREVER TESTS PARA O FETCH DE DATA DE FORMA ASSÍNCRONA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> PARA ISSO,
+
+
+O PROFESSOR PRIMEIRAMENTE QUER ESCREVER UM 'TEST COMUM' (sync),
+
+
+
+PARA VER SE ISSO FUNCIONA... PROVAVELMENTE NÃO FUNCIONARÁ...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+it("shouldn't fetch data successfully if not called asynchronously.")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... VAMOS ESCREVER O TEST DA FORMA 'COMUM',
+
+
+
+
+sem 
+
+escrever 
+
+
+de modo 'async'...
+
+
+
+
+
+
+--. ok... é claro que sempre vamos passar aquela segunda function como segundo parâmetro...
+
+
+
+
+
+
+
+
+
+
+--> DENTRO DISSO,
+
+
+
+
+O PROFESSOR VAI  querer ter aquela 'fixture' e 'component' comuns,
+
+
+para serem testados..
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+it("shouldn't fetch data successfully if not called asynchronously.", 
+
+
+
+() => {
+
+
+   
+}
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+--> VAMOS PRECISAR, DE ALGUMA FORMA,
+
+
+
+__GANHAR _ ACESSO__ 
+
+A 
+
+ESSE METHOD DE 'getDetails()',
+
+
+QUE OCORRE DE FORMA ASSÍNCRONA..
+
+
+
+
+
+
+
+
+
+-----> OK.... MAS O DETALHE, AQUI, É QUE NÃO VAMOS QUERER_ 
+
+
+ACTUALLY _ EXECUTAR O METHOD DE 'getDetails' de VERDADE,
+
+
+
+
+
+
+ISSO PQ 
+
+ESSE METHOD PODE ACABAR FAZENDO 'REACH OUT' A UM SERVER REMOTO...
+
+
+
+
+
+
+
+
+
+
+em APPS DE VERDADE, você provavelmente vai querer EVITAR FAZER 'REACH OUT' a um 
+
+webserver 
+
+TODA VEZ QUE VOCÊ VAI TESTAR ESSE METHOD,
+
+
+
+
+
+
+
+POR ISSO VOCÊ VAI QUERER 'FAKAR' esse method,
+
+
+
+DAR OVERWRITE NELE,
+
+
+CRIAR UMA 
+
+
+VERSÃO/IMPLEMENTAÇÃO 
+
+
+
+'FAKE',
+
+
+
+
+QUE AINDA SERÁ ASYNC,
+
+
+MAS QUE FAZ ALGO DIFERENTE,
+
+OU QUE 
+
+
+
+
+PELO MENOS NÃO VAI FAZER 'REACH OUT'
+
+
+
+e vai providenciar alguma DUMMY DATA, data que o service também te retrievaria, em condições normais de funcionamento do seu app....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------> É POR ISSO QUE O PROFESSOR VAI CRIAR UMA NOVA VARIABLE,
+
+
+de nome 
+
+'spy'...
+
+
+
+
+
+
+
+
+--> COMO VALUE DESSA VARIABLE, O PROFESSOR USA 'spyOn()',
+
+
+
+
+
+QUE É __ OUTRA __ FUNCTION PROVIDENCIADA PELO TESTING ENVIRONMENt (e não pelo angular em si, não é específico ao angular)
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+it("shouldn't fetch data successfully if not called asynchronously.", 
+
+
+
+() => {
+
+
+   
+   let spy = spyOn()
+}
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+  it("shouldn't fetch data successfully if not called asynchronously.", () => {
+    let spy = spyOn();
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ----> DENTRO DESSE METHOD,
+
+
+  vamos primeiramente 
+
+
+
+  ''''dizer o que vamos querer SPY ON''....
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> A PRIMEIRA COISA QUE QUEREMOS ESPIONAR É 
+
+
+
+
+
+
+
+  O SERVICE DE 'DataService',
+
+
+
+
+
+
+   O QUAL FAREMOS 
+
+
+
+   spyOn
+
+
+
+
+   POR MEIO DO USO DO __ INJECTOR __ DELE,
+
+
+
+
+
+
+
+  com uso da REFERÊNCIA AO SEU INJECTOR, TIPO ASSIm:
+
+
+
+
+
+
+
+
+
+
+  it("shouldn't fetch data successfully if not called asynchronously.", () => {
+
+
+    let exemploService = fixture.debugElement.injector.get(DataService);
+
+    let spy = spyOn(exemploService);
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ----> OK... 
+
+
+
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+
+    it("shouldn't fetch data successfully if not called asynchronously.", () => {
+
+
+    let exemploService = fixture.debugElement.injector.get(DataService);  /////QUEREMOS FAZER 'spyOn', espionar, esse SERVICE ESPECÍFICO, QUE CONTÉM O METHOD ASYNC QUE NOS INTERESSA...
+
+    let spy = spyOn(exemploService)
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+  --------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo...
+
+
+
+
+
+
+
+
+ISSO FEITO,
+
+USAMOS 
+
+ESSE DATA SERVICE 
+
+
+
+
+PARA __ CONSEGUIRMOS _ ESPIONAR SEU METHOD ESPECÍFICO DE 
+
+
+
+'getDetails'...
+
+
+
+
+
+
+
+
+
+
+
+
+FAZEMOS ISSO COM ESTA SINTAXE:
+
+
+
+
+
+
+
+
+
+
+
+let spy = spyOn(dataService, 'getDetails');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  it("shouldn't fetch data successfully if not called asynchronously.", () => {
+
+
+    let dataService = fixture.debugElement.injector.get(DataService);  /////QUEREMOS FAZER 'spyOn', espionar, esse SERVICE ESPECÍFICO, QUE CONTÉM O METHOD ASYNC QUE NOS INTERESSA...
+
+    let spy = spyOn(dataService, 'getDetails')
+  });
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+  it("shouldn't fetch data successfully if not called asynchronously.", () => {
+
+
+    let dataService = fixture.debugElement.injector.get(DataService);  /////QUEREMOS FAZER 'spyOn', espionar, esse SERVICE ESPECÍFICO, QUE CONTÉM O METHOD ASYNC QUE NOS INTERESSA...
+
+    let spy = spyOn(dataService, 'getDetails'); /////fazemos 'SPY' desse METHOD ESPECÍFICO (que é async), NESSE GIVEN SERVICE...
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ---> OK... COM ISSO SETTADO,
+
+
+
+
+
+
+
+
+
+
+  O PROFESSOR NOS EXPLICA QUE ELE PODE 'CHAINAR' um segundo código 
+
+
+  
+
+  ATRAVÉS DA ESCRITA DE 
+
+
+
+  '.and.'....
+
+
+
+
+
+
+
+
+
+
+  DEPOIS DISSO, ELE ESCREVE '.and.returnValue()'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  O CÓDIGO VAI FICANDO ASSIM:
+
+
+
+
+
+
+
+
+
+  
+    let spy = spyOn(dataService, 'getDetails') /////fazemos 'SPY' desse METHOD ESPECÍFICO (que é async), NESSE GIVEN SERVICE...
+    .and  /////complementa 'spyOn()' 
+    .returnValue();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> ok, mas o que esse CÓDIGO INTEIRO 
+
+
+    de 
+
+
+
+
+    spyOn().and.returnValue()
+
+
+
+
+
+    FAZ?
+
+
+
+
+
+
+
+
+
+
+
+
+    --> BEM, ELE _ VAI ESPIONAR ESSE METHOD AÍ,  
+
+
+
+
+    o que quer dizer que 
+
+
+    VAMOS ACABAR__ INFORMADOS_ 
+
+
+    SEMPRE QUE 
+
+    ESSE METHOD DE 
+
+
+
+    'getDetails()'
+
+
+    FOR EXECUTADO....
+
+
+
+
+
+
+
+
+
+    EX:
+
+
+
+
+
+
+
+    
+    let dataService = fixture.debugElement.injector.get(DataService);  /////QUEREMOS FAZER 'spyOn', espionar, esse SERVICE ESPECÍFICO, QUE CONTÉM O METHOD ASYNC QUE NOS INTERESSA...
+
+    let spy = spyOn(dataService, 'getDetails') /////fazemos 'SPY' desse METHOD ESPECÍFICO (que é async), NESSE GIVEN SERVICE...
+    .and  /////complementa 'spyOn()' */////COM 'spyOn', SEREMOS INFORMADOS _ SEMPRE QUE _ ESSE METHOD DE 'getDetails' FOR EXECUTADO.... -> E QUANDO ELE FOR EXECUTADO, SUA EXECUÇÃO SERÁ INTERROMPIDA, E SERÁ RETORNADO, EM VEZ DISSO, O VALUE DEFINIDO EM 'returnValue()'....
+    .returnValue(); ////quando esse 'getDetails' for executado, QUEREMOS QUE SEJA RETORNADO ESSE VALUE ESPECÍFICO (retornado o parâmetro de 'returnValue')..
+  
+  
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ---> a vantagem é que 'returnValue'
+
+
+
+
+  VAI _ IGNORAR/CANCELAR O EXECUTE DE 
+
+
+  'getDetails',
+
+
+
+  vai INTERROMPER SUA EXECUÇÃO,
+
+
+
+  E AÍ 
+
+  VAI 
+
+
+  RETORNAR 
+
+
+
+  O VALUE ESCRITO EM 'returnValue',
+
+
+
+
+  COMO MANEIRA DE 'INFORMAR QUE 
+
+  ESSE CÓDIGO ASYNC FOI EXECUTADO'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OK, e em 'returnValue'
+
+
+  VAMOS RETORNAR UM VALUE 
+
+
+
+DEFINIDO POR NÓS MESMOS...
+
+
+
+
+
+
+
+
+
+
+
+
+--> O VALUE QUE RETORNAREMOS, AQUI, É 
+
+
+
+
+
+
+
+
+'Promise.resolve('Data')' 
+
+
+
+
+
+
+
+
+
+
+
+,
+
+
+
+
+
+
+
+
+
+OK, MAS PQ VAMOS RETORNAR ESSE VALUE AÍ?
+
+
+
+
+
+
+
+
+
+
+
+
+O EFEITO DESSE CÓDIGO AÍ, POR TRÁS DAS CENAS,
+
+
+
+
+É 
+
+
+'EXECUTE O CÓDIGO ASYNC, SIM',
+
+
+
+
+
+
+
+__ MAS_ '''NÃO RETORNE, EVENTUALMENTE, O 
+
+
+VALUE QUE DEVERIA SER RETORANDO POR ESSE METHOD,
+
+
+E SIM 
+
+O VALUE QUE DEFINIMOS DENTRO DE returnValue()',
+
+
+
+totalmetne definido por nós''..
+
+
+
+
+
+
+
+(
+
+  com isso, EVITAMOS COMPLETAMENTE O 'REACH OUT' A UM SERVER EXTERNO... 
+)
+
+
+
+
+
+
+
+
+
+
+
+--> OU SEJA,
+
+EVENTUALMENTE NOS SERÁ 
+
+
+
+ENTREGUE A DATA DE 'Data' (essa STRING AÍ, definida agora),
+
+
+
+
+
+
+E NÃO ALGUM VALUE QUE SERIA EFETIVAMENTE RETRIEVADO DE UM BACKEND...
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+  it("shouldn't fetch data successfully if not called asynchronously.", () => {
+
+
+    let dataService = fixture.debugElement.injector.get(DataService);  /////QUEREMOS FAZER 'spyOn', espionar, esse SERVICE ESPECÍFICO, QUE CONTÉM O METHOD ASYNC QUE NOS INTERESSA...
+
+    let spy = spyOn(dataService, 'getDetails') /////fazemos 'SPY' desse METHOD ESPECÍFICO (que é async), NESSE GIVEN SERVICE...
+    .and  /////complementa 'spyOn()' */////COM 'spyOn', SEREMOS INFORMADOS _ SEMPRE QUE _ ESSE METHOD DE 'getDetails' FOR EXECUTADO.... -> E QUANDO ELE FOR EXECUTADO, SUA EXECUÇÃO SERÁ INTERROMPIDA, E SERÁ RETORNADO, EM VEZ DISSO, O VALUE DEFINIDO EM 'returnValue()'....
+    // .returnValue(); ////quando esse 'getDetails' for executado, QUEREMOS QUE SEJA RETORNADO ESSE VALUE ESPECÍFICO (retornado o parâmetro de 'returnValue')..
+    .returnValue(
+      Promise.resolve('Data') //////ok, significa que, QUANDO ESSE METHOD NESSE SERVICE FOR EXECUTADO, method async, SERÁ ENTREGUE A NÓS UMA DATA '''DUMMY'''', data definida por nós, e que vai ser retornada nesse returnValue (e, com isso, a execução do METHOD COMUM, ASYNC, não ocorrerá, evitando reach out a servers de verdade)....
+    )
+  
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ---> OK... OU SEJA,
+
+
+
+  EVITAMOS O RUN DO NOSSO METHOD ASYNC, E AÍ TAMBÉM 
+
+  EVITAMOS O 
+
+
+
+  RETURN DO VALUE QUE ELE TERIA NOS DADO (com alguma communication ao backend)..
+
+
+
+
+
+
+
+
+
+
+  --> EM VEZ DISSO, FICAMOS COM ESSA versão que SIMULA seu execute, mas que vai INTERROMPER seu actual execute (na verdade, nunca o executará)
+
+
+
+  E QUE ENTÃO VAI NOS RETORNAR 
+
+  ESSE DUMMY VALUE QUE DEFINIMOS AGORA...
+
+  (
+
+
+    e essa function AINDA VAI SER RODADA DE MODO ASYNC, O QUE É BOM,
+
+    pq 
+
+
+    a simuçaõa é realista/quase a coisa de verdade....
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> DEPOIS DESSE CÓDIGO TODO, O PROFESSOR CHAMA 'fixture.detectChanges()'
+
+
+
+  PARA ASSEGURAR QUE A CHANGE DETECTION _ MUDE__ O COMPONENT 
+
+
+
+
+
+
+  DEPOIS DE 
+
+
+  TERMOS OBTIDO ESSA DATA de 'spyOn'...
+
+
+
+
+
+
+
+  Ex:
+
+
+
+
+
+
+  
+
+  it("shouldn't fetch data successfully if not called asynchronously.", () => {
+
+
+    let dataService = fixture.debugElement.injector.get(DataService);  /////QUEREMOS FAZER 'spyOn', espionar, esse SERVICE ESPECÍFICO, QUE CONTÉM O METHOD ASYNC QUE NOS INTERESSA...
+
+    let spy = spyOn(dataService, 'getDetails') /////fazemos 'SPY' desse METHOD ESPECÍFICO (que é async), NESSE GIVEN SERVICE...
+    .and  /////complementa 'spyOn()' */////COM 'spyOn', SEREMOS INFORMADOS _ SEMPRE QUE _ ESSE METHOD DE 'getDetails' FOR EXECUTADO.... -> E QUANDO ELE FOR EXECUTADO, SUA EXECUÇÃO SERÁ INTERROMPIDA, E SERÁ RETORNADO, EM VEZ DISSO, O VALUE DEFINIDO EM 'returnValue()'....
+    // .returnValue(); ////quando esse 'getDetails' for executado, QUEREMOS QUE SEJA RETORNADO ESSE VALUE ESPECÍFICO (retornado o parâmetro de 'returnValue')..
+    .returnValue(
+      Promise.resolve('Data') //////ok, significa que, QUANDO ESSE METHOD NESSE SERVICE FOR EXECUTADO, method async, SERÁ ENTREGUE A NÓS UMA DATA '''DUMMY'''', data definida por nós, e que vai ser retornada nesse returnValue (e, com isso, a execução do METHOD COMUM, ASYNC, não ocorrerá, evitando reach out a servers de verdade)....
+    );
+
+
+    fixture.detectChanges();
+  
+  });
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+  it("shouldn't fetch data successfully if not called asynchronously.", () => {
+
+
+    let dataService = fixture.debugElement.injector.get(DataService);  /////QUEREMOS FAZER 'spyOn', espionar, esse SERVICE ESPECÍFICO, QUE CONTÉM O METHOD ASYNC QUE NOS INTERESSA...
+
+    let spy = spyOn(dataService, 'getDetails') /////fazemos 'SPY' desse METHOD ESPECÍFICO (que é async), NESSE GIVEN SERVICE...
+    .and  /////complementa 'spyOn()' */////COM 'spyOn', SEREMOS INFORMADOS _ SEMPRE QUE _ ESSE METHOD DE 'getDetails' FOR EXECUTADO.... -> E QUANDO ELE FOR EXECUTADO, SUA EXECUÇÃO SERÁ INTERROMPIDA, E SERÁ RETORNADO, EM VEZ DISSO, O VALUE DEFINIDO EM 'returnValue()'....
+    // .returnValue(); ////quando esse 'getDetails' for executado, QUEREMOS QUE SEJA RETORNADO ESSE VALUE ESPECÍFICO (retornado o parâmetro de 'returnValue')..
+    .returnValue(
+      Promise.resolve('Data') //////ok, significa que, QUANDO ESSE METHOD NESSE SERVICE FOR EXECUTADO, method async, SERÁ ENTREGUE A NÓS UMA DATA '''DUMMY'''', data definida por nós, e que vai ser retornada nesse returnValue (e, com isso, a execução do METHOD COMUM, ASYNC, não ocorrerá, evitando reach out a servers de verdade)....
+    )
+
+
+    fixture.detectChanges(); ///necessário, pois RECEBEMOS NOVA DATA NO NOSOS COMPONENT, através do dataService....
+  
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  POR FIM,
+
+
+
+
+
+
+  O PROFESSOR VAI QUERER __ CHECAR_ SE 
+
+
+
+
+
+
+  ESSE FETCH DE DATA DE MODO 'ASYNC' funcionou OU NÕA..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> PARA ISSO,
+
+
+  ele escreve 
+
+
+
+
+
+
+
+
+  expect(component.data).toBe(undefined));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OU SEJA, ESTAMOS FAZENDO 'expect' 
+
+
+
+
+
+
+  DE QUE NOSSO FIELD DE 'data' NESSE COMPONENT ESTARÁ __ UNDEFINED....
+
+
+
+
+
+
+
+
+
+
+
+
+  --> ISSO NOS PARECE ESTRANHO, AQUI,
+
+
+
+
+
+  pq lá em 'exemplo.component.ts'
+
+HAVÍAMOS ESCRITO ASSIM:
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ExemploService } from '../exemplo.service';
+import { DataService } from '../shared/data.service';
+
+@Component({
+  selector: 'app-exemplo',
+  templateUrl: './exemplo.component.html',
+  styleUrls: ['./exemplo.component.css'],
+})
+export class ExemploComponent implements OnInit {
+  example = { name: 'EXEMPLO1' };
+  isLoggedIn = false;
+
+  data: string;
+  constructor(
+    // private exemploService: ExemploService  ///quando estiver testando UNITARIAMENTE, não injete o service dentro do seu component... faça isso APENAS NO PRÓPRIO 'component.spec.ts', dentro da 'testBed' apropriada (que vai representar seu component)...
+
+    private exemploService: ExemploService,
+    private asyncDataService: DataService
+  ) {}
+
+  ngOnInit(): void {
+    // this.example.name = this.exemploService.user.name;
+    this.example.name = this.exemploService.user.name;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------------------
+
+
+
+
+
+
+
+
+
+ok... ali no 'ngOnInit'
+
+
+
+
+
+
+o professor COLOCA UM CALL DE 'getDetails()',
+
+
+EM QUE ELE DEFINE 'this.data = data',
+
+
+
+
+
+
+
+
+
+
+TIPOA SSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ExemploService } from '../exemplo.service';
+import { DataService } from '../shared/data.service';
+
+@Component({
+  selector: 'app-exemplo',
+  templateUrl: './exemplo.component.html',
+  styleUrls: ['./exemplo.component.css'],
+})
+export class ExemploComponent implements OnInit {
+  example = { name: 'EXEMPLO1' };
+  isLoggedIn = false;
+
+  data: string;
+  constructor(
+    // private exemploService: ExemploService  ///quando estiver testando UNITARIAMENTE, não injete o service dentro do seu component... faça isso APENAS NO PRÓPRIO 'component.spec.ts', dentro da 'testBed' apropriada (que vai representar seu component)...
+
+    private exemploService: ExemploService,
+    private asyncDataService: DataService
+  ) {}
+
+  ngOnInit(): void {
+    this.example.name = this.exemploService.user.name;
+
+
+    this.asyncDataService.getDetails().then(
+      (data) => {
+        return this.data = data;
+      }
+    )
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok, esse é o FUNCIONAMENTO NORMAL, O QUE 
+
+NÓS ESPERAMOS QUE NORMALMENTE ACONTECA...  
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESPERAMOS QUE ISSO ACONTEÇA NORMALMENTE;
+
+
+
+
+
+
+
+
+
+que A PROMISE SE RESOLVA,
+
+E QUE 
+
+
+A DATA 
+
+
+
+
+QUE A PROMISE ME PASSA __ ACABE__ SENDO ARMAZENADA NAQUELA PROPRIEDADE DE 'data'
+
+
+
+em 'ExemploComponent'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> MAS LÁ 
+
+
+
+
+
+
+
+
+
+NO 'TEST',
+
+arquivo '.spec.ts',
+
+
+
+
+
+
+
+
+
+
+
+
+
+O PROFESSOR HAVIA COLOCADO QUE ELE 'EXPECTA' QUE ISSO (a propriedade 'data' de app 
+VAI DAR UNDEFINED... ------> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ e ele agora nos explica que  A RAZÃO PELA QUAL ELE EXPECTA QUE 
+
+
+
+
+
+
+
+
+ 'app.data'
+
+
+ VAI DAR UNDEFINED
+
+
+
+
+
+
+
+
+ É PQ __ ELE __ SABE 
+
+
+
+ QUE ISSO SERÁ 'UNDEFINED'
+
+
+
+
+
+
+
+
+
+
+
+ É _ A DE QUE 
+ ____ 
+
+
+
+
+
+
+'''ELE SABE QUE A EXECUÇÃO de 
+
+
+"""spy""", desse method QUE ESTAMOS ESPIONANDO, 
+
+VAI FALHAR'''...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O PROFESSOR VAI EXPLICAR ISSO MELHOR MAIS TARDE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, O CÓDIGO FICA, NO MOMENTO, ASSIM:
+
+
+
+
+
+
+
+
+
+  it("shouldn't fetch data successfully if not called asynchronously.", () => {
+    let dataService = fixture.debugElement.injector.get(DataService);
+
+    let spy = spyOn(dataService, 'getDetails').and.returnValue(
+      Promise.resolve('Data')
+    );
+
+    fixture.detectChanges();
+
+    expect(component.data).toBe(undefined);
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+  ---> E ESSE EXPECT NOS RETORNA 'success',
+
+  QUE NÃO 
+
+  É 
+
+
+
+
+  O RESULTADO NORMALMENTE ESPERADO.... -> 
+
+
+
+
+
+
+
+
+
+
+
+  pq se deu 'success',
+
+
+  SIGNFIICA QUE O VALUE DE 
+
+  'app.data'
+
+  ACABOU COMO 'undefined'...
+
+
+
+
+
+
+
+
+
+
+  -> é justamente POR ISSO QUE 
+
+
+  AS COISAS ESTÃO ESTRANHAS:
+
+
+
+
+  O VALUE QUE ESPERAMOS, quase 100%,
+
+
+
+  é 
+
+  de 
+
+  'Data',
+
+
+  pq é isso que havíamos definido para nosso METHOD ASYNC...
+
+
+
+
+
+
+
+  --> sim, é verdade...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> MAS SE TENTAMOS 
+  ESCREVER
+
+
+
+  'expect(app.data).toBe(undefined)',
+
+
+
+
+
+  IMEDIATAMENTE RECEBEMOS 'FAIL',
+
+
+
+  PQ 
+
+  O 
+
+  VALUE REALMENTE 
+
+
+
+  ESTAVA/ESTARÁ COMO 'undefined'
+
+  NESSE EXEMPLO..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS O PROFESSOR REITERA:
+
+
+
+NESSE EXEMPLO/USE-CASE AQUI,
+
+
+
+
+
+'undefined'
+
+NÃO É AQUILO QUE ACTUALLY ESPERARÍAMOS DURANTE O RUNTIME,
+
+
+
+pq sabemos que essa propriedade 'data'
+
+
+EVENTUALMENTE VAI SEGURAR 'Data'.. ( essa string....)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+NÓS SABEMOS QUE, NO FINAL, 
+
+ESSA PROPRIEDADE VAI SEGURAR ESSA STRING..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO, MAS _ COMO PODEMOS__ TESTAR UM ASYNC TASK COMO ESSE ,
+
+
+
+EM QUE 
+
+
+
+
+O _ 'STATE MUDA'
+
+
+DURANTE O RUNTIME...?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> PARA ISSO,
+
+
+O PROFESSOR ESCREVE UM SEGUNDO TEST...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ele copia esse test fajuto,
+
+
+
+
+
+
+para aí criar uma nova versão, que vai CONSIDERAR O 
+
+
+
+
+
+
+
+CALL DESSE METHOD DE FORMA ASYNC,
+
+
+O PROFESSOR 
+
+
+COMEÇA ESCREVENDO ASSIM:
+
+
+
+
+
+
+
+
+
+  it("SHOULD fetch data successfully if called asynchronously.", () => {
+
+
+    let dataService = fixture.debugElement.injector.get(DataService); 
+
+    expect(component.data).toBe(undefined);
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  BEM, ANTES DE MAIS NADA,
+  O PROFESSOR 
+
+
+
+  UTILIZA A FUNCTION DE 'async'
+
+
+  NESSE SEGUNDO PARÂMETRO, TIPO ASSIm:
+
+
+
+
+
+
+
+
+
+    it("SHOULD fetch data successfully if called asynchronously.", async () => {
+
+
+    let dataService = fixture.debugElement.injector.get(DataService); 
+
+    expect(component.data).toBe(undefined);
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ---->  OK... COLOCAMOS ESSE 'async' aí..
+
+
+
+
+
+
+
+
+
+
+
+  --> MAS É CLARO QUE 'async' É UMA FUNCTION QUE _ DEVERÁ __ WRAPPAR _ 
+
+
+
+
+
+  TODO NOSSO CÓDIGO '() => {}',
+
+
+  OU SEJA,
+
+
+  TODA NOSSA CALLBACK FUNCTION..
+
+
+
+
+
+
+
+
+  O CÓDIGO FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  ///APPROACH _ CORRETO__ DE test de methods async...
+    
+  it("SHOULD fetch data successfully if called asynchronously.", 
+  
+  
+  async (() => { ///EIS AQUI A GRANDE DIFERENÇA, ESSa inserção do termo 'async', que vai denotar o caráter ASYNC DE NOSSO TEST... --> ELE VAI 'CRIAR A SORT OF ASYNC TESTING ENVIRONMENT for angular 2'...
+
+
+    let dataService = fixture.debugElement.injector.get(DataService); 
+
+    expect(component.data).toBe(undefined);
+  }));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> O QUE ISSO FAZ, NO CASO, É 
+
+  'CRIA UM KINDOF ASYNC TEST ENVIRONMENT FOR ANGULAR 2'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> É CLARO QUE ESSE AMBIENTE  _ NÃO É __ REALMENTE_ ASYNC, MAS O QUE IMPORTA É QUE '''ELE NOS DEIXA RODAR TAREFAS ASYNC NO SEU INTERIOR'''..,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  E O ANGULAR 
+
+
+
+
+  _ É CAPAZ DE ENTENDER QUE 'HÁ ASYNC TASKS',
+
+  E AÍ 
+
+  É CAPAZ 
+
+
+  DE HANDLÁ-LOS COMO 
+  SE ESTIVESSE 
+
+  OS HANDLANDO EM UM APP DE VERDADE 
+
+
+  (
+
+    apesar de, aqui, nada ser ALTERADO/requests 
+
+
+    estarem sendo enviados a backends, justamente por  ser um test...
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> NÃO É 'ASYNC DE VERDADE', MAS É QUASE ISSO....
+
+
+
+
+
+
+
+
+
+
+
+ 
+  --> ok... --> MAS PARA CONSEGUIRMOS ESCREVER E RODAR 'DE MENTIRA' ESSE CÓDIGO,
+
+
+  PROFESSOR DIZ QUE DEVEMOS FAZER MAIS 1 COISINHA, que é :
+
+
+
+
+
+
+
+
+
+  1) EXECUTAR 'fixture.detectChanges()' PARA __ REFLETIR 
+
+
+
+  O GET DE _ _DATA para dentro de nosso component ('returnValue')...
+
+
+
+
+
+
+
+2) EXECUTAR 'fixture.whenStable()'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE METHOD/FUNCTION NO 'fixture'
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ///APPROACH _ CORRETO__ DE test de methods async...
+    
+  it("SHOULD fetch data successfully if called asynchronously.", 
+  
+  
+  async (() => { ///EIS AQUI A GRANDE DIFERENÇA, ESSa inserção do termo 'async', que vai denotar o caráter ASYNC DE NOSSO TEST... --> ELE VAI 'CRIAR A SORT OF ASYNC TESTING ENVIRONMENT for angular 2'...
+   //// --> É CLARO QUE ESSE AMBIENTE  _ NÃO É __ REALMENTE_ ASYNC, MAS O QUE IMPORTA É QUE '''ELE NOS DEIXA RODAR TAREFAS ASYNC NO SEU INTERIOR'''..
+
+    let dataService = fixture.debugElement.injector.get(DataService); 
+
+
+
+    fixture.detectChanges();
+
+    fixture.whenStable()
+
+    expect(component.data).toBe(undefined);
+  }));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ----> OK..
+
+
+
+
+
+
+  'whenStable',
+
+
+  ESSA FUNCTION __ NO FIXTURE,
+
+
+  __ ME __ DEIXA 
+
+
+
+
+
+
+  'REAGIR' 
+
+
+  A ''''TODOS OS ASYNC TESTS ESTÃO ACABADOS''''
+
+
+
+
+
+
+
+
+
+
+
+  -> COMO TODOS OS ASYNC TESTS ESTÃO ACABADOS, PROFESSOR EXPLICA QUE PODEMOS RODAR 
+
+
+  '.then(
+    () => {
+
+    }
+  ),
+
+
+
+
+
+
+
+
+
+  UM  CALLBACK A SER EXECUTADO ASSIM QUE ESSA FOR EXECUTADA....
+
+
+
+
+
+
+
+
+
+
+
+  ex:
+
+
+
+
+
+
+
+
+
+
+      
+  it("SHOULD fetch data successfully if called asynchronously.", 
+  
+  
+  async (() => { ///EIS AQUI A GRANDE DIFERENÇA, ESSa inserção do termo 'async', que vai denotar o caráter ASYNC DE NOSSO TEST... --> ELE VAI 'CRIAR A SORT OF ASYNC TESTING ENVIRONMENT for angular 2'...
+   //// --> É CLARO QUE ESSE AMBIENTE  _ NÃO É __ REALMENTE_ ASYNC, MAS O QUE IMPORTA É QUE '''ELE NOS DEIXA RODAR TAREFAS ASYNC NO SEU INTERIOR'''..
+
+    let dataService = fixture.debugElement.injector.get(DataService); 
+
+
+
+    fixture.detectChanges();
+
+    fixture.whenStable().then(
+      () => {
+        
+      }
+    )
+
+    expect(component.data).toBe(undefined);
+  }));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OK.. MAS É SÓ QUANDo 'whenStable()'
+
+
+
+
+  REALMENTE ENGATAR/ENGRENAR,
+
+  APENAS NESSE MOMENTO, É QUE 
+
+  VOU poder 'EXPECT' que a data de 'Data' (string)
+
+
+
+  
+
+  TERÁ SIDO ENFIADA DENTRO DO COMPONENT DE 'exemplo.component.ts'...
+
+
+
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+
+  
+      
+  it("SHOULD fetch data successfully if called asynchronously.", 
+  
+  
+  async (() => { ///EIS AQUI A GRANDE DIFERENÇA, ESSa inserção do termo 'async', que vai denotar o caráter ASYNC DE NOSSO TEST... --> ELE VAI 'CRIAR A SORT OF ASYNC TESTING ENVIRONMENT for angular 2'...
+   //// --> É CLARO QUE ESSE AMBIENTE  _ NÃO É __ REALMENTE_ ASYNC, MAS O QUE IMPORTA É QUE '''ELE NOS DEIXA RODAR TAREFAS ASYNC NO SEU INTERIOR'''..
+
+    let dataService = fixture.debugElement.injector.get(DataService); 
+
+
+
+    fixture.detectChanges();
+
+    fixture.whenStable().then(
+      () => {
+        expect(component.data).toBe('Data')
+        
+      }
+    )
+  }));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... AGORA QUANDO O PROFESSOR SALVA ISSO AÍ,
+GANHAMOS TESTS BEM SUCEDIDOS....
+
+
+
+
+
+
+
+
+
+
+
+
+
+eX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  it("SHOULD fetch data successfully if called asynchronously.", 
+  
+  
+  async (() => { ///EIS AQUI A GRANDE DIFERENÇA, ESSa inserção do termo 'async', que vai denotar o caráter ASYNC DE NOSSO TEST... --> ELE VAI 'CRIAR A SORT OF ASYNC TESTING ENVIRONMENT for angular 2'...
+   //// --> É CLARO QUE ESSE AMBIENTE  _ NÃO É __ REALMENTE_ ASYNC, MAS O QUE IMPORTA É QUE '''ELE NOS DEIXA RODAR TAREFAS ASYNC NO SEU INTERIOR'''..
+
+    let dataService = fixture.debugElement.injector.get(DataService); 
+
+
+
+    fixture.detectChanges();
+
+    fixture.whenStable() ///'whenStable' É APLICADO somente quando todos os 'async' já tiverem acabado sua seleção...
+    .then(
+      () => {
+        expect(component.data).toBe('Data'); 
+      }
+    )
+
+    expect(component.data).toBe(undefined);
+  }));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  COM ISSO,
+
+
+  ESTAMOS ESPERANDO PELO 'FINISH' 
+
+
+
+
+  DAS ASYNC TASKS/TESTS,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COM ESSE CÓDIGO, DIZEMOS AO ANGULAR2:
+
+
+
+
+
+
+
+'HEY, EU TENHO UM SORT OF ASYNC TASKS (mesmo com o código da promise sendo RESOLVADO INSTANTANEAMENTE )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE PODEMOS, com o 'async',  RECORRER AO 'whenStable()',
+
+para entaõ 'ESPERAR PELO STABILIZE DO NOSSO ENVIRONMENT' ,
+
+
+
+
+
+
+PARA QUE TODAS AS ASYNC TASKS TERMINEM,
+
+
+E PARA QUE CONSIGAMOS ACESSAR NOSSA DATA 
+
+
+NO MOMENTO EM QUE ELA ESTIVESSE EM UM 'REAL ENVINRONMENT'..
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+  it("SHOULD fetch data successfully if called asynchronously.", 
+  
+  
+  async (() => { ///EIS AQUI A GRANDE DIFERENÇA, ESSa inserção do termo 'async', que vai denotar o caráter ASYNC DE NOSSO TEST... --> ELE VAI 'CRIAR A SORT OF ASYNC TESTING ENVIRONMENT for angular 2'...
+   //// --> É CLARO QUE ESSE AMBIENTE  _ NÃO É __ REALMENTE_ ASYNC, MAS O QUE IMPORTA É QUE '''ELE NOS DEIXA RODAR TAREFAS ASYNC NO SEU INTERIOR'''..
+
+    let dataService = fixture.debugElement.injector.get(DataService); 
+
+
+    let spy = spyOn(dataService, 'getDetails')
+    .and.returnValue(Promise.resolve('Data'));
+
+    fixture.detectChanges();
+
+    fixture.whenStable() ///'whenStable' É APLICADO somente quando todos os 'async' já tiverem acabado sua seleção...
+    .then(
+      () => {
+        expect(component.data).toBe('Data'); 
+      }
+    )
+  }));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> o código não é REALMENTE ASYNC, 
+
+
+
+não vamos ter que esperar 1.5 segundos... ----> mas ainda assim, 
+
+
+
+
+
+
+o comportamento de async é SIMULADO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  X:
+
+
+
+
+
+
+
+
+
+      
+  it("SHOULD fetch data successfully if called asynchronously.", 
+  
+  
+  async (() => { ///EIS AQUI A GRANDE DIFERENÇA, ESSa inserção do termo 'async', que vai denotar o caráter ASYNC DE NOSSO TEST... --> ELE VAI 'CRIAR A SORT OF ASYNC TESTING ENVIRONMENT for angular 2'...
+   //// --> É CLARO QUE ESSE AMBIENTE  _ NÃO É __ REALMENTE_ ASYNC, MAS O QUE IMPORTA É QUE '''ELE NOS DEIXA RODAR TAREFAS ASYNC NO SEU INTERIOR'''..
+
+    let dataService = fixture.debugElement.injector.get(DataService); 
+
+
+    let spy = spyOn(dataService, 'getDetails')
+    .and.returnValue(Promise.resolve('Data'));
+
+    fixture.detectChanges();
+
+    fixture.whenStable() ///'whenStable' É APLICADO somente quando todos os 'async' já tiverem acabado sua seleção...
+    .then(
+      () => {
+        expect(component.data).toBe('Data'); 
+      }
+    )
+  }));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -------> certo..
+
+
+
+
+
+  na próxima aula,
+
+  usando 'fakesync' e 'tic'..

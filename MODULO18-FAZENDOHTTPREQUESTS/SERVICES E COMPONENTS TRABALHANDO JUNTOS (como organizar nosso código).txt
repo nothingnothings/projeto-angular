@@ -1,0 +1,658 @@
+
+
+
+
+
+
+
+
+
+O PROFESSOR HAVIA ESCRITO UM BLOCÃO DE 
+
+
+
+
+
+CÓDIGO HTTP,
+ 
+
+
+
+ com observable e subscription,
+
+
+ LÁ 
+
+
+ NOS SERVICES... -> E ISSO, OBVIAMENTE, NÃO FUNCIONOU...
+
+
+
+
+
+
+
+
+
+
+
+
+---> o meu approach foi diferente;
+
+
+eu 
+
+
+
+OUTSOURCEEI 
+
+o 
+
+
+'http request' 
+
+
+
+ao service,
+
+
+
+ficando tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  onCreatePost(postData: Post) {
+    return this.http.post<{ name: string }>( ///return de 'observable' (Faça SUBSCRIPTION lá nos seus COMPONENTS, para pegar o resultado da subscription)...
+      'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json',
+
+      postData ///nossa ACTUAL DATA.
+    );
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> AÍ, LÁ NO 'app.component.ts',
+
+
+
+
+  EU 
+
+
+
+  FAÇO/FAZIA 
+
+
+  O 
+
+
+  _SUBSCRIBE_ A ESSE OBSERVABLE RETORNADO POR ESSE METHOD:
+
+
+
+
+
+
+
+
+
+
+
+
+    onCreatePost(formReference: NgForm) {
+
+    console.log(formReference.value);
+
+    const postData = formReference.value;
+
+    this.httpPosts.onCreatePost(postData).subscribe(
+      (responseData) => {
+
+        console.log(responseData);
+        formReference.reset(); //resetta os values de todos os fields a partir de um submit bem sucedido...
+      }
+    )
+
+    
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ------> QUANTO AO PROBLEMA ENCONTRADO PELO PROFESSOR (e que já foi solucionado por nós),
+
+
+
+
+  TEMOS 
+
+
+  DUAS MANEIRAS DE O CONSERTAR:
+
+
+
+
+
+
+
+
+
+  1) USAMOS UM _ SUBJECT_ NO SERVICE DE 'postsHttpService'.... --> 
+
+
+
+
+
+
+
+
+  FARÍAMOS ISSO JUSTAMENTE PARA QUE _ CONSEGUÍSSEMOS CHAMAR 
+
+
+
+  '.next(posts)'
+
+
+
+
+  SEMPRE 
+
+
+
+  QUE CONSEGUISSEMOS NOSSOS POSTS A PARTIR 
+
+  DESSE 
+
+
+  fetch deles, http request...  (mas não fiz isso)....
+
+
+
+
+
+
+
+
+
+
+
+  --> ESSE É UM 'FINE PATTERN',
+
+  sim, nada de errado com ele...
+
+
+
+
+
+
+
+
+
+
+
+
+        (foi ISTO AQUI QUE EU FIZ):
+
+  2) MAS O APPROACH MAIS _ ÚTIL/CONVENIENTE,
+
+
+
+  É ___ JUSTAMENTE_ 
+
+
+
+  SIMPLESMENTE __ 
+
+  RETORNAR__ O 
+
+
+
+  RESULTADO DOS DIVERSOS METHODS (como 'this.http.get()', 'this.http.post()', 'this.http.patch()' )
+
+
+
+
+  DENTRO DOS METHODS DE NOSSO SERVICE,
+
+
+
+
+  como 
+
+
+  em 
+
+
+  ''
+
+
+    onCreatePost(postData: Post) {
+    return this.http.post<{ name: string }>( ///return de 'observable' (Faça SUBSCRIPTION lá nos seus COMPONENTS, para pegar o resultado da subscription)...
+      'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json',
+
+      postData ///nossa ACTUAL DATA.
+    );
+  }
+
+
+  '',
+
+
+
+
+
+
+
+
+
+
+
+  PARA __ AÍ _ 
+
+
+  ,
+
+
+  DEPOIS DISSO,
+
+
+  CHAMAR APENAS O METHOD DE 
+
+
+  '.subscribe()",
+
+
+
+
+
+  EM CIMA DESSE METHOD DO SERVICE,
+
+
+
+  
+
+  LÁ NOS NOSSOS COMPONENTS:
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+  
+  onCreatePost(formReference: NgForm) {
+
+    console.log(formReference.value);
+
+    const postData = formReference.value;
+
+    this.httpPosts.onCreatePost(postData).subscribe(
+      (responseData) => {
+
+        console.log(responseData);
+        formReference.reset(); //resetta os values de todos os fields a partir de um submit bem sucedido...
+      }
+    )
+
+    
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> É POR ISSO  QUE NO SERVICE VAMOS SÓ 'RETURN THE PREPARED OBSERVABLE',
+
+
+
+  que 
+
+  aí será OBSERVED por nossa subscription,
+
+  lá 
+
+
+
+  nos components... (aí pegamos a DATA RESULTANTE DESSE HTTP REQUEST)...
+
+
+
+
+
+
+
+
+
+
+
+
+  --> certo... isso significa que acertei o código..
+
+
+
+
+
+
+
+
+
+
+  --> isso significa QUE 
+
+  MOVEMOS O 'RESULT HANDLING' ao COMPONENT,
+
+
+
+
+
+
+
+
+  E AÍ _ DEIXAMOS_ O 'MORE HEAVY LIFTING',
+
+
+  A PARTE 
+
+
+  DETTACHEADA  DO TEMPLATE E DO UI,
+
+
+
+
+  A PARTE RELACIONADA AO HANDLE DO REQUEST E A TRANSFORMAÇÃO 
+
+
+  DA DATA,
+
+
+
+ISSO 
+
+
+
+DEIXAMOS AO 'SERVICE'...
+
+
+
+
+
+
+
+
+
+-----> E ESSA É SEMPRE A MELHOR PRACTICE 
+
+EM QUESTÃO DE ANGULAR 
+
+
+E HTTP REQUEST:
+
+
+
+MOVA A PARTE RELACIONADA A SEU TEMPLATE,
+
+
+
+COMO O HANDLE DE LOADING STATUS E 'LOADED DATA',
+
+
+
+
+MOVA ISSO AO SEU COMPONENT,
+
+
+
+
+E DEIXE O 'SUBSCRIBE' no seu component...
+
+
+
+
+
+
+
+
+--> MAS QUANTO AO RESTO DA LÓGICA, LÓGICA DO HANDLE DO REQUEST 
+
+
+E DA INITIAL DATA RECEBIDA NA RESPONSE,
+
+
+
+ESSA LÓGICA DEVE SER POSICIONADA NO SERVICE... (que vai retornar a  'OBSERVABLE' que será 
+
+OBSERVED LÁ NO COMPONENT...)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS QUANTO AO 'create de um post',
+
+
+
+O CÓDIGO DO PROFESSOR ESTÁ UM POUCO DIFERENTE,
+
+PQ ELE ESCREVEU ASSIM:
+
+
+
+
+
+
+
+
+
+createAndStorePost(title: string , content: string) {
+
+    const postData: Post = {title: title, content: content};
+
+
+    this.http
+    .post<{name: string}>(url,
+    
+    
+    postData)
+    .subscribe(
+        responseData => {
+            console.log(responseData)
+        }
+    )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NESSE CÓDIGO AÍ, ELE 
+
+
+
+FAZ SUBSCRIBE NO PRÓPRIO SERVICE... .--> ELE EXPLICA QUE 
+
+
+
+
+'''THIS CAN BE FINE TOO''',
+
+
+
+
+ISSO 
+
+
+SE _ O _ COMPONENT_ NÃO SE __ iMPORTA_ 
+
+
+
+sobre o resultado,
+
+sobre a response,
+
+
+e acerca de 
+
+
+
+se o 
+
+REQUEST FOI 'SUCCESSFUL' ou não.. (como é o case de nosso app).... ------> SE O COMPONENT 
+
+
+
+
+NÃO SE IMPORTA COM ISSO,
+
+
+
+
+NÃO HÁ RAZÃO PARA FAZER O SUBSCRIBE DISSO NO COMPONENT (
+
+
+    nesses cases, você pode soltar o subscribe lá no service mesmo,
+
+
+    nõa há problema..
+)
+
+
+
+
+
+
+
+
+
+MAS SE ELE SE IMPORTA COM A RESPONSE E COM A RESPONSE STATUS (
+
+    como 
+
+    ele se importa com o FETCH DE POSTS,
+
+    nesse nosso exemplo
+
+
+)
+
+
+
+
+
+AÍ TER ESSE SPLIT DE 'component-service'
+
+
+É UMA ÓTIMA IDEIA...
+
+
+
+
+
+
+
+
+
+----> OK...
+
+
+
+
+RECARREGAMOS TUDO, E AGORA TUDO FUNCIONA,
+
+
+
+E TEMOS O MELHOR DOS 2 MUNDOS...
+
+
+
+
+
+
+
+
+
+--> ESSE SETUP VEREMOS UM MONTE,
+
+
+
+VEREMOS UM MONTE QUANDO TRABALHARMOS COM ANGULAR...

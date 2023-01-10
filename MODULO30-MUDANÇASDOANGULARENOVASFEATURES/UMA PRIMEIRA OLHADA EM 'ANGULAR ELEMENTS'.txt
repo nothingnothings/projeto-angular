@@ -1,0 +1,3314 @@
+
+
+
+
+
+
+
+
+
+
+
+NESSA AULA,
+FAREMOS EXATAMENTE ISSO,
+
+
+
+VAMOS CARREGAR UM 'ANGULAR COMPONENT'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O LOAD DE UM COMPONENT É ALGO BEM BORING,
+
+já fizemos várias vezes...
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA VAMOS FAZER ISSO DE FORMA __ DINÂMICA,
+
+
+
+COMO UM 'CUSTOM ELEMENT'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+UÉ, COMO ASSIM?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OU SEJA,
+
+ 
+ VAMOS RENDERIZAR NOSSO COMPONENT COMO UM 
+
+
+ 'NATIVE WEB COMPONENT',
+
+
+
+ em vez de um 
+
+
+
+ ANGULAR COMPONENT COMUM/NORMAL...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> O QUE HÁ DE BOM NISSO, E COMO FUNCIONA?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ---> VEREMOS ISSO NESTA AULA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> ok, MAS O QUE SÃO ANGULAR ELEMENTS? 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> É UMA FEATURE DO ANGULAR FRAMEWORK QUE 
+
+ __ TE DEIXA__ TRANSFORMAR __ SEUS 
+
+
+ ANGULAR 
+
+
+ COMPONENTS NORMAIS  (OS QUAIS VOCÊ USA NO SEU ANGULAR APP )
+
+
+
+
+
+
+
+
+
+
+ EM __ NATIVE WEB COMPONENTS... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> 'WEB COMPONENTS' são 
+
+
+
+
+ ESSENCIALMENTE 
+
+ 'CUSTOM HTML ELEMENTS',
+
+
+
+
+ ELES FAZEM PARTE DO DOM/javascript API, 
+
+
+
+
+
+
+
+
+
+
+ NÃO POSSUEM RELAÇÃO COM O ANGULAR EM SI,
+
+
+
+
+ E VOCÊ 
+
+
+ PODE __ 
+
+
+ OS UTILIZAR 
+
+
+
+
+
+ TANTO EM 'VANILLA JAVASCRIPT APPS' 
+
+
+
+
+ como em 
+
+
+
+ APPS CONSTRUÍDOS COM OUTROS FRAMEWORKS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> OK, QUER DIZER QUE 
+
+
+
+ ESSES SÃO WEB COMPONENTS,
+
+ E É ISSO QUE 
+
+ VOCê 
+
+ PODE CRIAR 
+
+
+
+ COM 'ANGULAR ELEMENTS'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> POR ACASO ESSA FEATURE AINDA ____EXISTE___?
+
+
+
+
+
+
+
+
+
+
+ --> o professor ressalta que essa feature AINDA SÓ É UTILIZÁVEL, NO MOMENTO DA GRAVAÇÃO DO  VIDEO,
+
+
+
+
+ em 'ANGULAR PROJECTS' (por enquanto)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> MAS AGORA ISSO FUNCIONA EM APPS VANILLA, sem angular...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> 'MAS ENTÃO PQ DIABOS CONSTUIRÍAMOS ANGULAR ELEMENTS, SE SÓ PODEMOS USAR 
+
+ ESSES ELEMENTS DENTRO DE UM ANGULAR APP''... --> 
+
+
+
+
+
+
+
+ A RESPOSTA É:
+
+
+
+
+
+
+
+
+
+
+
+ ________ELES SÃO ÚTEIS PARA __ O LOAD__ DE CONTEÚDO __ DINÂMICO... ----> 
+
+
+
+
+
+
+
+
+ OU SEJA,
+
+
+
+ SUA ATRIBUIÇÃO É 
+
+
+
+
+ '''PERMITEM QUE VOCÊ __ INSIRA DINAMICAMENTE CÓDIGO HTML NA SUA PÁGINA,
+
+ CÓDIGO HTML SEGURANDO _ ANGULAR COMPONENTS, 
+
+
+ ___ DEPOIS__ QUE __ O ANGULAR_ APP __ FOI COMPILADO E CARREGADO NA SUA PÁGINA'''....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ EXEMPLO CONCRETO:
+
+
+
+
+
+
+
+ DIGAMOS QUE VOCÊ TENHA UM 
+
+
+ CONTENT MANAGEMENT SYSTEM 
+
+ NO SEU BACKEND, 
+
+
+ em um server,
+
+
+
+ E, LÁ,
+
+ SEUS EDITORES PODEM __ 
+
+ CRIAR CÓDIGO HTML... --> 
+
+
+
+
+
+
+ ELES SABEM __ COMO ESCREVER CÓDIGO HTML,
+
+
+
+
+
+ e portanto ELES CRIAM O CONTEÚDO QUE ACABA CARREGADO NO SEU ANGULAR APP,
+
+
+
+ USANDO HTML...
+
+
+
+
+
+
+
+
+
+
+ --> ATÉ AÍ, TUDO BEM...
+
+
+
+
+
+
+
+
+
+
+
+ -> MAS E SE VOCÊ QUISESSE OS 'ENABLAR' 
+
+
+ A USAR 
+
+ TAMBÉM _ ALGUNS DE_ SEUS ANGULAR COMPONENTS __ NO CÓDIGO HTML QUE 
+
+
+ ELES ESTÃO PREPRANDO....?
+
+
+
+
+
+
+
+
+
+
+ --> bem, se eles fizerem isso,
+
+
+
+ SE ELES __ USAREM __ SEUS 
+ ANGULAR COMPONENT SELECTORS 
+
+
+
+ LÁ NO CÓDIGO HTML QUE ELES PREPARARAM NO BACKEND,
+
+
+
+ E SE VOCÊ AÍ TENTAR CARREGAR 
+
+ ESSE CONTEÚDO DINAMICAMENTE NO SEU APP (após o initial load),
+
+
+
+
+ ISSO 
+
+
+ ACTUALLY _ NÃO FUNCIONARÁ..
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> ISSO NÃO FUNCIONARÁ PQ 
+
+ SEU ANGULAR APP é 'COMPILED AHEAD OF TIME',
+
+
+
+
+
+
+ E MESMO COM 'JUST IN TIME COMPILATION',
+
+
+
+ É 
+
+
+ __COMPILADO _ 
+
+
+
+
+ ANTES__ DO 
+
+
+
+ CONTEÚDO DA PÁGINA SER CARREGADO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> ISSO QUER DIZER QUE 
+
+
+
+ __SE O CONTEÚDO __ CONTÉM 
+
+ O PRÓPRIO 'SELECTOR'
+
+
+ de um 
+
+ ANGULAR 
+
+ ELEMENT/COMPONENT,
+
+
+
+
+ ISSO NÃO FUNCIONARÁ, pq o 
+
+ BROWSER  NÃO VAI RECONHECER 
+
+
+
+ ESSE SELECTOR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> O PROFESSOR CRIA UM NOVO PROJECT ANGULAR,
+
+
+ COM 'ng new'...
+
+
+
+
+
+
+
+
+
+
+
+ --> certo...
+
+
+
+
+
+
+
+
+
+
+ O PROFESSOR INSTALOU TAMBÉM A PACKAGE de 
+
+
+ 'rxjs-compat' 
+
+
+
+
+
+
+ PARA NÃO TER PROBLEMAS COM O PACKAGE DE 'rxjs'...
+
+
+
+(isso é/era necessário para a package de 'angular elements')...
+
+
+
+
+
+
+
+
+
+
+ --> ele explica que isso PODE SER NECESSÁRIO 
+
+
+
+ no momento em que 
+
+ ele está gravando o vídeo, mas que pode já ter mudado...  
+
+
+
+
+
+
+
+
+
+
+
+
+
+ OK, DE VOLTA AOS ANGULAR COMPONENTS:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> O PROFESSOR CRIA UM NOVO ANGULAR COMPONENT,
+
+
+
+
+
+ de nome 
+
+
+
+ 'alert.component.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> SERÁ UM COMPONENT ANGULAR COMUM,
+
+
+
+
+
+
+
+
+ por isso começamos assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ import { Component } from '@angular/core';
+
+
+
+
+
+
+
+
+
+ @Component(
+    {
+        selector: 'app-alert',
+        template: '<div>This is an alert. {{message}}</div>',
+        styles: [
+            `
+            div {
+                border: 1px solid black;
+                background: salmon';
+                padding: 10px;
+                font-family: sans-serif;
+            }
+            `
+        ]
+    }
+ )
+
+
+
+
+export  class AlertComponent {
+    @Input() message: string;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> OK...
+ 
+
+
+
+
+ o professor 
+
+
+
+
+
+
+
+
+ TAMBÉM QUER DEIXAR ESSA PROPRIEDADE BINDABLE DO LADO DE FORA, POR ISSO ELE COLOCOU O DECORATOR DE '@Input()'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ CERTO..
+
+
+
+
+
+
+ até aí, tudo bem...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> CERTO, OUTPUTTAMOS ESSE COMPONENT LÁ EM 'app.component.html',
+
+
+
+
+
+
+
+
+ e aí bindamos a propriedade 'message' 
+
+ a uma string de 
+
+
+
+ ''''This is a normal angular component...'''
+ 
+
+
+
+
+
+
+
+
+ FICA TIPO ASSIM:
+
+
+
+ <app-alert message="This is the most normal alert ever"></app-alert>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> CERTO... NG SERVE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE É UM NORMAL ANGULAR COMPONENT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA DIGAMOS QUE QUEREMOS CARREGAR 
+
+ESSE 
+
+COMPONENT DINAMICAMENTE...
+
+
+
+
+
+
+
+
+
+
+
+
+---> 
+O PROFESSOR ENTÃO ADICIONA UMA 
+
+
+
+
+NOVA PRORPIEDADE NO NOSSO COMPONENT 'app',
+
+
+DE 'content',
+
+que será 'NULL'
+inicialemnte...
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+
+
+  content = null;
+
+  constructor() {
+
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA, DIGAMOS QUE 
+
+EM VEZ 
+
+
+DE 
+OUTPUTTARMOS NOSSO COMPONENT DIRETAMENTE ASSIM,
+
+temos uma 
+
+
+
+
+
+
+
+
+DIV,
+
+
+E DENTRO DESSA 
+
+
+DIV 
+
+
+
+USAMOS 
+
+
+
+
+a propriedade '[innerHTML]'    (que é uma propriedade de verdade, do javascript comum)
+
+
+,
+
+
+
+E AÍ BINDAMOS O VALUE DE 'content'
+
+
+
+
+
+A ESSA PROPRIEDADE...
+
+
+
+
+
+
+
+PROPERTY BINDING QUE FICA ASSIM:
+
+
+
+
+
+
+<!-- <app-alert message="This is the most normal alert ever"></app-alert> -->
+
+
+<div [innerHTML]="content"></div>
+
+
+
+
+
+
+
+
+
+
+
+entõa,
+
+lá em 
+
+'app.component.ts',
+
+
+O PROFESSOR DEFINE/SIMULA O 
+
+
+
+FETCH A UM SERVER EXTERNO,
+
+por meio de um call de 
+
+
+'setTimeout' 
+
+LÁ NO 
+
+'constructor(){}'....
+
+
+
+
+
+
+
+
+
+----> DEPOIS DE UM CERTO TEMPO (1.5s ),
+
+
+QUEREMOS 
+
+
+QUE 
+
+
+SEJA DEFINIDO O VALUE DE 'content'
+
+
+
+COMO SENDO EQUIVALENTE 
+
+
+
+A '<app-alert></app-alert>' 
+
+
+
+
+
+
+
+(
+
+    OU SEJA,
+
+    RENDER DE CONTEÚDO DINÂMICO,
+
+    NO CASO ANGULAR COMPONENT(s),
+
+
+
+    DEPOIS DE UM CERTO TEMPO NA PÁGINA...c
+)
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+
+
+  content = null;
+
+  constructor() {
+
+
+        setTimeout(
+            () => {
+                this.content = `
+                <p>A paragraph!</p>
+                `
+            }, 
+
+
+            1000
+        )
+  }
+}
+
+
+
+
+
+
+
+
+
+
+OK, PARECE QUE ERREI INICIALMENTE:
+
+O PROFESSOR NÃO VAI QUERER RENDERIZAR NOSSO COMPONENT INICIALMENTE,
+
+
+E SIM 
+
+
+UM SIMPLSE CÓDIGO HTML...
+
+
+
+
+
+
+
+
+
+
+
+OK, TESTAMOS ESSE CÓDIgo...
+
+
+
+
+
+
+
+
+
+
+
+    OK, FUNCIONOU...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ATÉ AÍ, TUDO BEM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DEPOIS DE 1.5 SEGUNDOS,
+
+
+NOSSO PARAGRAPH É RENDERIZADO 
+
+
+
+
+NA TELA...
+
+
+
+
+
+
+
+
+
+
+
+
+--> é claro que poderíamos substituir esse 'setTimeout'
+
+
+
+
+PELO SEND DE UM HTTP REQUEST,
+
+
+
+
+
+
+
+é o mesmo princípio, na verdade...
+
+
+
+
+
+
+
+
+
+
+--> OK, UM PARAGRAPH REALMENTE É RENDERIZADO NO DOM,
+
+
+PQ ESTAMOS AFETANDO O 'innerHTML'
+
+dessa div 
+
+e 
+
+
+renderizando um 
+
+
+
+
+PARAGRAPH no interior...
+
+
+
+
+
+
+
+
+
+
+
+--> OK, NÃO SERIA ÓTIMO SE FOSSE POSSÍVEL 
+
+
+
+
+INSERIR UM ANGULAR COMPONENT DA MESMA MANEIRA?
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  content: null | string = null;
+
+  constructor() {
+    setTimeout(
+      () => {
+
+
+        ////ESSA VERSÃO FUNCIONARÁ (pq é um HTML COMUM, e não um ANGULAR COMPONENT)...
+        this.content = `
+          <p>A paragraph!</p>
+          `;
+
+        ////ESSA VERSÃO NÃO FUNCIONARÁ (pq é um ANGULAR COMPONENT, E NÃO HTML)
+        //   this.content = `
+        //   <app-alert message="Rendered dynamically!"></app-alert>
+        // `
+      },
+
+      1000
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> mas é claro que isso NÃO FUNCIONA 
+
+
+
+
+assim, 
+
+não dará certo...
+
+
+
+
+
+
+
+
+
+
+
+
+-> NADA SERÁ CARREGADO,
+
+
+
+
+
+A DIV FICARÁ VAZIA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> A RAZÃO PARA ISSO 'NÃO FUNCIONAR' É QUE 
+
+
+
+
+
+O ANGULAR COMPONENT QUE DIGITAMOS ALI É RENDERIZADO COMO HTML CODE,
+
+SIM ,
+
+
+
+MAS NÃO É RECONHECIDO COMO UM HTML ELEMENT (pq app-alert NAÕ É UM BUILT-IN ELEMENT DO HTML  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ANGULAR NÃO VAI CONSIDERAR NOSSOS COMPONENTS DEPOIS DE NOSSO APP TER SIDO 
+
+
+RENDERIZADO, 
+
+
+
+
+
+PQ A COMPILATION DOS TEMPLATES (e a parte em que o angular ENTENDE OS COMPONENTS SELECTORS)
+
+
+
+já estará 'DONE' 
+
+
+a esse ponto...
+
+
+
+
+
+
+
+
+
+
+--> E ISSO NÃO MUDA 
+
+
+
+
+SE TENTARMOS RENDERIZAR ESSE negócio NO INÍCIO DE NOSSA PAGE 
+
+TBM,
+
+
+
+
+
+PQ _ ELE _ TAMBÉM ___  FICARÁ 'ATRASADO',
+
+
+
+tentará ser reconhecido DEPOIS DA 
+
+
+PHASE DE COMPILATION,
+
+que é o que interessa....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... O ANGULAR NÃO COMPILA ESSE CÓDIGO, EM OUTRAS PALAVRAS...( pq ele ficou mt atrasado)...
+
+
+
+
+
+
+
+
+
+
+--> BEM, E O ANGULAR ELEMENTS CONSERTA JUSTAMENTE ESSA SITUAÇÃO:
+
+
+
+
+
+
+
+
+
+ELE _ TE DEIXA__ BASICAMENTE
+
+
+'TAKE OUR ANGULAR COMPONENT' 
+
+
+
+
+
+e então 
+
+
+
+
+TE DEIXA 
+
+
+O COLOCAR EM UM  '''TOTALLY ENCAPSULATED, SELF-BOOTSTRAPPING HTML ELEMENT''',
+
+
+
+
+o QUAL VOCÊ PODE DUMPAR 
+
+
+
+
+NO SEU ANGULAR APP dessa forma 
+
+
+ 
+ que vimos agora... (e o component ainda vai funcionar, nada de errado com ele)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> OK, MAS COMO CRIAMOS UM COMPONENT COMO ESSE?
+
+
+
+ COMO CRIAMOS UM COMPONENT DE FORMA 'ANGULAR ELEMENT'?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> BEM, PARA ISSO PRECISAMOS INSTALAR O 'angular/elements'...
+
+
+
+
+
+
+
+
+
+
+ --> instale com 
+
+
+
+ 'npm install --save @angular/elements'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+ {
+  "name": "angular-elements",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^14.0.0",
+    "@angular/common": "^14.0.0",
+    "@angular/compiler": "^14.0.0",
+    "@angular/core": "^14.0.0",
+    "@angular/elements": "^14.0.4",
+    "@angular/forms": "^14.0.0",
+    "@angular/platform-browser": "^14.0.0",
+    "@angular/platform-browser-dynamic": "^14.0.0",
+    "@angular/router": "^14.0.0",
+    "rxjs": "~7.5.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.11.4"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^14.0.3",
+    "@angular/cli": "~14.0.3",
+    "@angular/compiler-cli": "^14.0.0",
+    "@types/jasmine": "~4.0.0",
+    "jasmine-core": "~4.1.0",
+    "karma": "~6.3.0",
+    "karma-chrome-launcher": "~3.1.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.0.0",
+    "karma-jasmine-html-reporter": "~1.7.0",
+    "typescript": "~4.7.2"
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> ok... 
+
+
+
+
+
+
+
+
+AGORA CERTIFIQUE-SE DE QUE A PACKAGE ESTÁ INSTALADA,
+
+
+
+e aí 
+
+
+importe 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { createCustomElement } from '@angular/elements';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+import { createCustomElement } from '@angular/elements';  ////usado para CRIAR COMPONENTS ANGULAR DE FORMA 'ANGULAR ELEMENt'...
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  content: null | string = null;
+
+  constructor() {
+    setTimeout(
+      () => {
+
+
+        ////ESSA VERSÃO FUNCIONARÁ (pq é um HTML COMUM, e não um ANGULAR COMPONENT)...
+        this.content = `
+          <p>A paragraph!</p>
+          `;
+
+        ////ESSA VERSÃO NÃO FUNCIONARÁ (pq é um ANGULAR COMPONENT, E NÃO HTML)
+        //   this.content = `
+        //   <app-alert message="Rendered dynamically!"></app-alert>
+        // `
+      },
+
+      1000
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+INSTALADO ESSE PACKAGE,
+
+
+
+VOCÊ DEVE ASSEGURAR QUE 
+
+
+o 
+
+
+'rxjs-compat'
+
+ESTÁ INSTALADO...
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+https://angular.io/api/elements
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+parece que 
+
+'rxjs-compat' 
+
+
+
+e 
+
+
+
+'@webcomponets/custom-elements' (ERA UM POLYFILL, NECESSÁRIO PARA FAZER O ANGULAR ELEMENTS FUNCIONAR)..
+
+NÃO SÃO MAIS NECESSÁRIOS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ok...
+
+
+
+
+
+
+
+agora PROVAVELMENTE VAMOS CRIAR 1 CÓPIA DO NOSSO COMPONENT ATRAVÉS DE 
+
+'createCustomElement()',
+
+
+
+
+
+
+PROVAVELMENTE 
+
+
+O ARMAZENAR 
+
+
+EM UMA 
+
+
+
+
+
+const, ou algo assim...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> O PROFESSOR NOS INSTRUÍ 
+
+
+
+a 
+
+
+ir até o CONSTRUCTOR (você deve sempre rodar esse código em lugares que RODAM CEDO no seu project..)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> o professor escreve assim:
+
+
+
+
+
+
+
+
+
+
+const AlertElement = createCustomElement(),
+
+
+
+
+
+
+
+
+
+
+
+
+E DEPOIS DIZ QUE PRECISAMOS IMPORTAR O NOSSO 'CUSTOM ELEMENT'
+
+
+em questão,
+
+
+que será 
+
+'AlertComponent'....
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+import { createCustomElement } from '@angular/elements';  ////usado para CRIAR COMPONENTS ANGULAR DE FORMA 'ANGULAR ELEMENt'...
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  content: null | string = null;
+
+  constructor() {
+
+    const AlertElement = createCustomElement(AlertComponent);
+
+
+    setTimeout(
+      () => {
+
+
+
+      },
+
+      1000
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+
+
+ISSO VAI CRIAR O NOSSO 'CUSTOM ELEMENT'
+
+A PARTIR DESSE COMPONENT...
+
+
+
+
+
+
+
+
+
+Ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+import { createCustomElement } from '@angular/elements';  ////usado para CRIAR COMPONENTS ANGULAR DE FORMA 'ANGULAR ELEMENt'...
+import { AlertComponent } from './alert/alert.component';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  content: null | string = null;
+
+  constructor() {
+
+
+    const AlertElement = createCustomElement(AlertComponent);
+
+    setTimeout(
+      () => {
+
+
+        ////ESSA VERSÃO FUNCIONARÁ (pq é um HTML COMUM, e não um ANGULAR COMPONENT)...
+        // this.content = `
+        //   <p>A paragraph!</p>
+        //   `;
+
+        ////ESSA VERSÃO NÃO FUNCIONARÁ (pq é um ANGULAR COMPONENT, E NÃO HTML... é um angular component sem a FEATURE DO ANGULAR ELEMENTS)
+        //   this.content = `
+        //   <app-alert message="Rendered dynamically!"></app-alert>
+        // `
+
+
+
+
+
+
+      },
+
+      1000
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok, mas agora temos um PROBLEMA....
+
+
+
+
+
+
+
+
+
+PQ A VERSÃO 
+
+MAIS NOVA 
+
+
+de 'createCustomElement'
+
+
+
+
+EXIGE UM SEGUNDO PARÂMETRO, um parâmetro de 'config'...
+
+
+
+
+
+
+
+
+
+
+
+
+o segundo PARÂMETRO É 
+
+USADO PARA __ CONFIGURAR_ ESSE NOSSO ELEMENT...
+
+
+
+
+
+
+
+
+
+--> A ELE,
+ 
+ É OBRIGATÓRIO PASSAR O 'INJECTOR QUE ESTAMOS USANDO PARA ESSE ELEMENt'...
+
+
+
+
+
+
+ --> O ANGULAR SEMPRE USOU DEPENDENCY INJECTION,
+
+
+
+ e o injector É BASICAMENTE A FERRAMENTA QUE 
+
+ FAZ ESSA INJECTION -->  PROVIDENCIAMOS 
+
+
+
+
+
+ESSA TOOL AO 'CUSTOM ELEMENT'
+
+
+PARA QUE 
+
+ELE POSSA,
+
+NO FINAL DAS CONTAS,
+
+
+POR TRÁS DAS CENAS,
+
+SE CONECTAR AO NOSSO  APP... -->
+
+
+
+
+
+
+
+
+
+
+
+É POR ISSO QUE DEVEMOS 'INJETAR O INJECTOR',
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+import { Component, Injector } from '@angular/core';
+
+
+
+
+
+
+
+    constructor(injector: Injector) {
+
+    }
+
+
+
+    const AlertElement = createCustomElement(AlertComponent, {injector: Injector});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, Injector } from '@angular/core';
+
+import { createCustomElement } from '@angular/elements';  ////usado para CRIAR COMPONENTS ANGULAR DE FORMA 'ANGULAR ELEMENt'...
+import { AlertComponent } from './alert/alert.component';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  content: null | string = null;
+
+  constructor(injector: Injector) { ///necessário
+
+
+    const AlertElement = createCustomElement(AlertComponent,
+                                  {injector: injector}  ///esse segundo parâmetro é necesário
+                                  );
+
+    setTimeout(
+      () => {
+
+
+
+
+      },
+
+      1000
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------>  OK, MAS NOSSO CÓDIGO AINDA NÃO TERMINOU...
+
+
+
+
+
+
+
+
+
+
+
+
+APENAS CRIAMOS O NOSSO CUSTOM ELEMENT (
+
+    e ele JÁ É UM 'NATIVE WEBCOMPONENT'...
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ISSO FEITO,
+
+PODEMOS USAR 
+
+
+
+A api 
+
+
+de 
+
+
+'customElements',
+
+
+
+
+
+QUE  É UMA API 
+
+
+
+TÍPICA DO JAVASCRIPT DE BROWSER,
+
+
+
+
+
+
+
+
+É UMA FEATURE PROVIDENCIADA PELO JAVASCRIPT,
+
+
+
+e aí 
+
+
+
+
+CHAMAR 
+
+'.define()'
+
+
+
+
+
+
+
+no call dessa api 
+
+PARA AÍ __ 
+
+
+REGISTRAR 1 'CUSTOM WEB COMPONENT' (como 'AlertElement'...)
+
+
+
+
+
+
+
+
+
+
+
+
+--> VAI FICANDO ASSIM:
+
+
+
+
+    const AlertElement = createCustomElement(AlertComponent,
+                                  {injector: injector}  ///esse segundo parâmetro é necesário
+                                  );
+
+    customElements.define('');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> AQUI,
+
+
+    nós primeiramente vamos definir:
+
+
+
+
+
+
+    1)  A 'TAG' PELA QUAL QUEREMOS SELECIONAR NOSSO ELEMENT...
+
+
+
+
+
+
+
+    2) POR FIM, 
+
+
+    PASSAMOS O COMPONENT QUE QUEREMOS RENDERIZAR...
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+    const AlertElement = createCustomElement(AlertComponent,
+                                  {injector: injector}  ///esse segundo parâmetro é necesário
+                                  );
+
+    customElements.define('app-alert', AlertElement);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COM ISSO TUDO,
+
+
+
+BASTA 
+
+
+
+
+
+
+
+
+DEIXAR O 'this.content' com aquela escrita de 
+
+
+'<my-alert>',
+
+
+
+
+
+
+
+
+
+PARA QUE 
+
+ENTÃO NOSSO 'CUSTOM ELEMENT' seja renderizado com sucesso:
+
+
+
+
+
+
+
+
+    const AlertElement = createCustomElement(AlertComponent,
+                                  {injector: injector}  ///esse segundo parâmetro é necesário
+                                  );
+
+    customElements.define('app-alert', AlertElement);
+
+
+
+    setTimeout(
+        () => {
+
+            this.content = "<my-alert message="Rendered dynamically"></my-alert>";
+        },
+
+        1000
+    )
+
+
+
+
+
+
+
+
+
+
+    SALVAMOS TUDO ISSO,
+
+    E AÍ TESTAMOS...
+
+
+
+
+
+
+
+
+
+--> SERÁ QUE VAI FUNCIONAR?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> NÃO FUNCIONOU...
+
+
+
+
+
+
+
+
+
+
+
+
+--> NADA APARECEU NO NOSSO APP...
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS SE EXAMINARMOS O CONSOLE,
+
+
+ENXERGAMOS UM ERROR:
+
+
+
+
+bem, no meu código não apareceu nada...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> NO CÓDIGO DO PROFESSOR, HOUVE UM AVISO DE 'no component factory'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, OS ANGULAR ELEMENTS SÓ ESTAVAM/ESTÃO DISPONÍVEIS EM ANGULAR APPS,
+
+por enquanto... (não sei se isso mudou)...
+
+
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE, PARA FAZER O 'ANGULAR ELEMENTS' FUNCIONAR,
+
+PARA FAZER ESSE NOSSO ELEMENT 
+
+FUNCIONAR,
+
+
+É NECESSÁRIO O ADICIONAR LÁ 
+
+
+
+
+
+no array de 'entryComponents', (É UM ARRAY DE COMPONENTS QUE VOCÊ NÃO USA COM SELECTORS OU ROUTING, mas que vocÊ quer dizer ao angular QUE EVENTUALMENTE UTILIZARÁ... )
+
+
+LÁ EM 'app.module.ts':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppComponent } from './app.component';
+import { AlertComponent } from './alert/alert.component';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    AlertComponent
+  ],
+  imports: [
+    BrowserModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent],
+  entryComponents: [AlertComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS ISSO AINDA NÃO FUNCIONOU..
+
+
+
+
+
+
+
+
+
+CONSEGUI O MESMO ERROR DO PROFESSOR:
+
+
+
+
+
+
+'''SANITIZING HTML STRIPPED SOME CONTENT'''... ----> 
+
+
+
+
+
+
+
+
+
+O CUSTOM ELEMENT,
+
+NO FINAL DAS CONTAS,
+
+
+
+É 
+
+'A BUNCH OF JAVASCRIPT CODE' --> 
+
+
+e esse código,
+
+
+no final das contas,
+
+
+É 'SANITIZED',
+
+
+
+
+
+
+
+__ O QUE _ QUER DIZER QUE __ NÃO PODE SER RENDERIZADO POR MEIO DE 'innerHTML' (
+
+
+
+
+
+
+
+    essa é uma MEDIDA DE SEGURANÇA FEITA PARA 
+
+
+    EVITAR 'CROSS-SITE SCRIPTING ATTACKS'...
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+--> QUEREMOS ESSE BEHAVIOR, SIM,
+
+
+MAS _ 
+
+
+AQUI SABEMOS _ QUE _ 
+NOSSO CONTENT É 'SAFE',
+
+
+ 
+
+
+ E PORTANTO QUEREMOS SER CAPAZES
+
+ DE O OUTPUTTAR...
+
+
+
+
+
+
+
+
+
+ --> PARA CONSEGUIRMOS OUTPUTTAR ESSE CONTEÚDO,
+
+
+
+ SOMOS FORÇADOS A INJETAR O object de 
+
+ 'DomSanitizer'
+
+
+ LÁ NO NOSSO CONSTRUCTOR,
+
+ tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ import { Component, Injector } from '@angular/core';
+
+import { createCustomElement } from '@angular/elements';  ////usado para CRIAR COMPONENTS ANGULAR DE FORMA 'ANGULAR ELEMENt'...
+import { AlertComponent } from './alert/alert.component';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  content: null | string = null;
+
+  constructor(injector: Injector, domSanitizer: DomSanitizer) { ///necessário
+
+
+    const AlertElement = createCustomElement(AlertComponent,
+                                  {injector: injector}  ///esse segundo parâmetro é necesário
+                                  );
+
+
+    customElements.define('app-alert', AlertElement);
+
+
+
+    setTimeout(
+      () => {
+
+
+
+      ////ESSA VERSÃO FUNCIONARÁ (ISSO SE TIVERMOS AS LINHAS de 'AlertElement' e 'customElements.define', que vão CRIAR e DEFINIR/REGISTRAR o nosso ANGULAR COMPONENT COMO CUSTOM ELEMENT A SER RENDERIZADO)
+          ///também necessária é a escrita/uso de 'domSanitizer: DomSanitizer' no CONSTRUCTOR...
+      this.content = `
+          <app-alert message="Rendered dynamically!"></app-alert>
+        `
+
+
+      },
+
+      1000
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+COM O 'DOM SANITIZER' IMPORTADO,
+
+
+VOCÊ PODE/DEVE 
+
+
+
+WRAPPAR AQUELE 'CUSTOM HTML CODE' 
+
+
+
+
+em 'this.content'
+
+
+
+
+COM 
+
+
+ELE...
+
+
+
+
+
+
+
+
+
+--> NA VERDADE, VOCÊ DEVE USAR 
+
+
+'DomSanitizer.bypassSecurityTrustHtml()', 
+
+
+
+e wrappar sua string/html com isso..
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+import { Component, Injector } from '@angular/core';
+
+import { createCustomElement } from '@angular/elements'; ////usado para CRIAR COMPONENTS ANGULAR DE FORMA 'ANGULAR ELEMENt'...
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser'; ///também necessário
+import { AlertComponent } from './alert/alert.component';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  content: null | SafeHtml = null;
+
+  constructor(injector: Injector, domSanitizer: DomSanitizer) {
+    ///necessário
+
+    const AlertElement = createCustomElement(
+      AlertComponent,
+      { injector: injector } ///esse segundo parâmetro é necesário
+    );
+
+    customElements.define('app-alert', AlertElement);
+
+    setTimeout(
+      () => {
+        ////ESSA VERSÃO FUNCIONARÁ (pq é um HTML COMUM, e não um ANGULAR COMPONENT)...
+        // this.content = `
+        //   <p>A paragraph!</p>
+        //   `;
+
+        ////ESSA VERSÃO NÃO FUNCIONARÁ (pq é um ANGULAR COMPONENT, E NÃO HTML... é um angular component sem a FEATURE DO ANGULAR ELEMENTS)
+        //   this.content = `
+        //   <app-alert message="Rendered dynamically!"></app-alert>
+        // `
+
+        ////ESSA VERSÃO FUNCIONARÁ (ISSO SE TIVERMOS AS LINHAS de 'AlertElement' e 'customElements.define', que vão CRIAR e DEFINIR/REGISTRAR o nosso ANGULAR COMPONENT COMO CUSTOM ELEMENT A SER RENDERIZADO)
+        ///também necessária é a escrita/uso de 'domSanitizer: DomSanitizer' no CONSTRUCTOR... , e também o usage do wrapper de  'domSanitizer.bypassSecurityTrustHtml()'...
+        this.content = domSanitizer.bypassSecurityTrustHtml(`
+          <app-alert message="Rendered dynamically!"></app-alert>
+        `);
+      },
+
+      1000
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COM ESSE CÓDIGO AÍ,
+
+NOSSO RENDER CONDICIONAL DE 'ANGULAR ELEMENTS' finalmente foi um sucesso...
+
+
+
+
+
+CONSEGUIMOS VER NOSSO ALERT DEPOIS DE 1 SEGUNDO,
+
+
+MAS AGORA É CARREGADO COMO UM 'CUSTOM ELEMENT'...
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA ESSE ELEMENT É CARREGADO COMO UM 'NATIVE WEB COMPONENT' 
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> isso ainda SÓ É UTILIZÁVEL EM ANGULAR PROJECTS (mas hoje acho que já é usável em vanilla javascript)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COMO NÓS SANITIZAMOS O HTML,
+
+VOCÊ DEVE __ASSEGURAR_ QUE SEU CONTEÚDO É SAFE MESMO...
+
+
+
+
+
+(
+
+COM ISSO,
+
+VOCÊ TEM UMA TOOL BEM GREAT,
+
+
+
+QUE TE DEIXA 
+
+CARREGAR SEU 
+
+
+CONTEÚDO NO SEU 
+
+APP,
+
+
+e aí 
+
+o 
+
+CONTROLAR COMO UM ANGULAR COMPONENT,
+
+E AÍ 
+
+
+
+TE DEIXA FAZER TODAS AS COISAS LEGAIS QUE VOCê PODE FAZER COM  COMPONENTS,
+
+
+
+
+AO MESMO TEMPO QUE 
+ O CONSEGUE DE 'OUTRO SOURCE'
+
+
+ que 
+
+ não é hardcodado 
+
+
+
+
+no seu angular source project code,
+
+
+no momento de seu compile...
+
+
+
+)

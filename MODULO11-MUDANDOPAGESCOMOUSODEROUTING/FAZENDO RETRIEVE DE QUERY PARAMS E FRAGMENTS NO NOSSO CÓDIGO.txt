@@ -1,0 +1,957 @@
+
+
+
+
+
+
+
+
+
+
+----> OK...
+
+
+
+
+
+
+--> NA ÚLTIMA LIÇÃO APRENDEMOS A FAZER 'PASS' 
+
+DE QUERY PARAMS E FRAGMENTS NO NOSSO CÓDIGO,
+
+
+
+
+
+
+
+TANTO POR MEIO 
+
+DE 
+
+
+
+'ROUTERLINK',
+
+
+
+
+com códigos como ESTE:
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12 col-sm-4">
+    <div class="list-group">
+      <a href="#" 
+      class="list-group-item" 
+      *ngFor="let server of servers; let index=index"
+      [routerLink]="['/servers', index, 'edit']"
+      [queryParams]="{allowEdit: '1'}"
+      [fragment]="'loading'"
+      
+      > <!-- [queryParams] É UMA _ PROPRIEDADE __ DE 'routerLink', e não uma NOVA DIRECTIVE... queryparams são ?allowEdit=1, na sua URL...-->
+      <!-- FRAGMENT É O '#' que Às vezes pode aparecer/ser parseado nas suas urls.... OBS: só é possível ter 1 ÚNICO FRAGMENT por 'link'/route.... -->
+        {{ server.name }}
+      </a>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  (uso do bind da PROPRIEDADE DE 'routerLink', a propriedade de 'routerLink' chamada de 
+  
+  
+  'queryParams' e a outra, 'fragment')...
+
+
+
+
+
+
+
+
+
+
+
+
+  -----> HAVIA ESSE APPROACH AÍ,
+
+
+  E TAMBÉM O APPROACH ALTERNATIVO, QUE USAVA 
+
+
+
+  __ O NAVIGATE PROGRAMÁTICO, E QUE ERA ESCRITO ASSIM:
+
+
+
+
+
+
+
+
+
+
+    onLoadServer(id: number) {
+    this.router.navigate(
+      ['/servers', id, 'edit'],    ////localhost:4200/servers/4/edit      --> depois colocaremos os query params, tipo ?exemplo=true, e depois o FRAGMENT, que fica tipo    ?exemplo=true#diabrete....  ( nno caso, será '?allowEdit=1#loading')..
+
+      {
+        queryParams: {
+            allowEdit: 1
+        },
+        fragment: 'loading'
+      }
+    )
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> no navigate programático, dependemos desse SEGUNDO PARÂMETRO, que é o LOCAL EM QUE VAMOS ESPECIFICAR 
+
+
+
+  NOSSOS KEY-VALUE PAIRS 
+
+
+  que serão 
+
+
+  OS QUERY PARAMS na url,
+
+  além do 'fragment',
+
+  que será o 
+
+  '#exemplo' (ou qualquer outra coisa)
+
+
+
+
+
+  NA URL..
+
+
+
+
+
+
+
+  --> O PRÓXIMO PASSO, EM NOSSO CÓDIGO,
+
+  É ASSEGURAR QUE 
+
+
+
+
+
+  SEJA _ POSSÍVEL FAZER 'RETRIEVE'
+
+  DA DATA QUE É PASSADA, COMO QUERY PARAMS,  
+
+
+
+  na nossa url....
+
+
+
+
+
+
+
+
+
+
+
+
+  ------> PARA ISSO, O PROFESSOR VAI ATÉ O COMPONENT DE 'edit-server',
+
+
+
+
+
+  PQ É ELE QUE ACABARÁ SENDO CARREGADO QUANDO CLICAMOS EM ALGUM 'SERVER'..
+
+
+
+
+
+
+
+
+
+
+
+
+  --> É POR ISSO QUE _ É 
+
+
+
+  EM 
+
+  'edit-server'
+
+
+
+  _ 
+
+  QUE VAMOS QUERER 
+  _ PROVAVELMENTE 'RETRIEVE' alguma info....
+
+
+
+
+
+
+
+
+
+  ----> PODEMOS _ FACILMENTE_ FAZER ISSO 
+
+
+
+
+  POR MEIO 
+
+
+
+
+
+DO ESTUDO DE NOSSO CÓDIGo...
+
+
+
+
+
+
+
+
+
+
+
+
+--> O CÓDIGO DE 'edit-server.component.ts'
+
+
+
+É ESTE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ServersService } from '../servers.service';
+
+@Component({
+  selector: 'app-edit-server',
+  templateUrl: './edit-server.component.html',
+  styleUrls: ['./edit-server.component.css'],
+})
+export class EditServerComponent implements OnInit {
+  server: { id: number; name: string; status: string };
+
+  serverName = '';
+  serverStatus = '';
+
+  constructor(private serversService: ServersService) {}
+
+  ngOnInit(): void {
+    this.server = this.serversService.getServer(1)!;
+    this.serverName = this.server.name;
+    this.serverStatus = this.server.status;
+  }
+
+  onUpdateServer() {
+    this.serversService.updateServer(this.server.id, {
+      name: this.serverName,
+      status: this.serverStatus,
+    });
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> ok... isso significa que ele está usando  o 'this.serversService'
+
+
+PARA _ _CONSEGUIR O SERVER COM ID DE 1  ...
+
+
+
+
+
+ 
+
+
+ --> ELE TAMBÉM  USA ESSE SERVICE PARA _ _UPDATAR_ 
+
+
+ O NOSSO OBJECT 'server' 
+
+
+
+
+
+
+
+ ,
+
+
+
+ ATRAVÉS DO 
+
+
+ METHOD DE 'onUpdateServer()'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> MAS ESSA NÃO É A PARTE INTERESSANTE DE 'edit-server.component.ts'..
+
+
+
+--> A PARTE INTERESANTE É A 'MANEIRA PELA QUAL PODEMOS 
+
+
+GANHAR ACESSO AOS NOSSOS QUERY PARAMS E FRAGMENTS',
+
+
+dentro dele...
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO, VAMOS PRECISAR DAQEULE TYPE ESPECIAL DE 'ActivatedRoute',
+
+
+E AÍ _  VAMOS PRECISAR O ARMAZENAR NAQUELA CONST DE NOME 'routes'....
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { ServersService } from '../servers.service';
+
+@Component({
+  selector: 'app-edit-server',
+  templateUrl: './edit-server.component.html',
+  styleUrls: ['./edit-server.component.css'],
+})
+export class EditServerComponent implements OnInit {
+  server: { id: number; name: string; status: string };
+
+  serverName = '';
+  serverStatus = '';
+
+  constructor(private serversService: ServersService, private route: ActivatedRoute) {}
+
+  ngOnInit(): void {
+    this.server = this.serversService.getServer(1)!;
+    this.serverName = this.server.name;
+    this.serverStatus = this.server.status;
+  }
+
+  onUpdateServer() {
+    this.serversService.updateServer(this.server.id, {
+      name: this.serverName,
+      status: this.serverStatus,
+    });
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ok... isso NOS DÁ ACESSO A ESSE 'this.route',
+
+
+QUE SERÁ _ USADO _ PARA CONSEGUIRMOS ACESSO 
+
+
+
+AOS QUERY PARAMS E AO 
+
+'fragment' 
+
+QUE 
+
+EXISTE NA URL...
+
+
+
+
+
+
+
+
+
+
+-> PARA ISSO, BASTA ESCREVER ASSIM:
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { ServersService } from '../servers.service';
+
+@Component({
+  selector: 'app-edit-server',
+  templateUrl: './edit-server.component.html',
+  styleUrls: ['./edit-server.component.css'],
+})
+export class EditServerComponent implements OnInit {
+  server: { id: number; name: string; status: string };
+
+  serverName = '';
+  serverStatus = '';
+
+  constructor(private serversService: ServersService, private route: ActivatedRoute) {}
+
+  ngOnInit(): void {
+    this.server = this.serversService.getServer(1)!;
+    this.serverName = this.server.name;
+    this.serverStatus = this.server.status;
+  }
+
+  onUpdateServer() {
+    
+    this.serversService.updateServer(this.server.id, {
+      name: this.serverName,
+      status: this.serverStatus,
+    });
+  }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PROVAVELMENTE VOU QUERER 
+
+
+FAZER O 'PASS' 
+
+DO QUERY LÁ EM 
+
+'ngOnInit',
+
+PQ É LÁ QUE TENHO O METHOD DE 
+
+'this.serversService.getServer()',
+
+
+QUE É O 
+
+
+
+METHOD QUE 
+
+EFETIVAMENTE 
+
+
+DEFINE A DATA do object 'server' dentro de 'edit-server.component.ts'...
+
+
+
+
+
+
+
+
+-> É POR ISSO QUE O CÓDIGO FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  constructor(private serversService: ServersService, private route: ActivatedRoute) {}
+
+  ngOnInit(): void {
+    // this.server = this.serversService.getServer(1)!;
+
+
+
+   const serverId =  this.route.snapshot.queryParams;
+
+
+    this.serversService.getServer()
+    this.serverName = this.server.name;
+    this.serverStatus = this.server.status;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> eu tentei/tento 
+
+  ACESSAR A 'SNAPSHOT' de nossa url,
+
+  para então conseguir os QUERY PARAMS NELA..
+
+
+
+
+
+  OK, E PARA CONSEGUIR O FRAGMENT, O QUE FAZEMOS? 
+
+
+
+
+
+
+
+
+
+
+
+
+  devemos escrever assim:
+
+
+
+
+
+
+
+
+
+
+
+  export class EditServerComponent implements OnInit {
+  server: { id: number; name: string; status: string };
+
+  serverName = '';
+  serverStatus = '';
+
+  constructor(private serversService: ServersService, private route: ActivatedRoute) {}
+
+  ngOnInit(): void {
+    // this.server = this.serversService.getServer(1)!;
+
+//aqui temos 2 MANEIRAS DE RETRIEVAR A DATA PASSADA POR QUERY PARAMS, EXATAMENTE COMO ANTES (a maneira que usa o approach de 'subscribe' ao 'this.route.queryParams' ou algo do gênero, ou então o APPROACH QUE TIRA UMA SNAPSHOT DO MOMENTO EM QUE ESSE COMPONENT É RENDERIZADO....)
+
+   const serverId =  this.route.snapshot.queryParams;
+   const fragmentLoading = this.route.snapshot.fragment;
+
+   console.log(serverId, fragmentLoading)
+
+
+    // this.serversService.getServer()
+    this.serverName = this.server.name;
+    this.serverStatus = this.server.status;
+  }
+
+  onUpdateServer() {
+
+    this.serversService.updateServer(this.server.id, {
+      name: this.serverName,
+      status: this.serverStatus,
+    });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, O QUE INTERESSA É ISTO:
+
+
+   const serverId =  this.route.snapshot.queryParams;
+   const fragmentLoading = this.route.snapshot.fragment;
+
+
+
+
+
+
+
+
+
+
+
+   --> ISSO _ TVZ TRAGA _- O MESMO 'PROBLEMA
+
+
+
+
+   QEU TIVEMOS COM OS PARAMS (de estarmos em um MESMO COMPONENT E AÍ TENTARMOS TROCAR A URL DE DENTRO DESSE MESMO COMPONENT ),
+
+
+
+
+
+
+   PQ ESSE 'snapshot' 
+
+   SÓ É CRIADO, COM o 'ngOnInit',
+
+
+
+   _ no momento 
+
+   no tmepo 
+
+
+   EM QUE 
+
+
+   ESSE 
+
+   COMPONENT É ACTUALLY RENDERIZADO (E que ocorre só uma vez)... -----> ISSO SIGNIFCA QUE 
+
+
+   __ SE EXISTIR _ ALGUMA CHANCE _DE VOCÊ _ ALTERAR _SEUS QUERY PARAMS DURANTE 
+
+   O LIFETIME DESSA PAGE/COMPONENT,
+
+
+
+   AÍ _ __
+
+
+
+
+
+
+
+
+   SERÁ MELHOR USAR O APPROACH DO 
+
+   'this.route.queryParams()',
+
+   PQ 
+
+   ESSA ROUTE __ VAI TE DEIXAR 
+
+
+
+
+   __ SER 'REACTIVE',
+
+   PQ 
+
+
+
+
+   VAI TE DEIXAR REAGIAR A QUAISQUER MUDANÇAS 
+
+   nos 'queryParams' 
+
+   que venham ocorrer APÓS ESSE COMPONENT DE 'edit-server' SER 'LOADED'...
+
+
+
+
+
+
+
+
+
+   -> COMO NÃO TEMOS ESSE USE-CASE AQUI,
+
+   vamos seguir usando essee 
+
+
+   'snapshot'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+   TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   export class EditServerComponent implements OnInit {
+  server: { id: number; name: string; status: string };
+
+  serverName = '';
+  serverStatus = '';
+
+  constructor(private serversService: ServersService, private route: ActivatedRoute) {}
+
+  ngOnInit(): void {
+
+   const serverId =  this.route.snapshot.queryParams['allowEdit'];
+   const fragmentLoading = this.route.snapshot.fragment;
+
+   console.log(serverId, fragmentLoading)
+
+    this.serverName = this.server.name;
+    this.serverStatus = this.server.status;
+  }
+
+
+
+
+
+
+
+
+    -> A ALTERNATIVA A ISSO, É CLARO, É USAr 
+
+
+
+
+
+
+
+    this.route.queryParams.subscribe(
+        (queryParams) => 
+        {
+            console.log(queryparams)...
+        }
+    )
+
+
+
+
+
+
+
+
+
+    --> E É _ CLARO QUE   TAMBÉM TEMOS 'OBSERVABLES'
+
+
+
+
+    PARA_ FRAGMENT E 'queryParams'...
+
+
+
+
+
+
+
+
+
+
+    --> OU SEJA, EXATAMENTE COMO ANTES, ISSO VAI TE DEIXAR 'REACT TO CHANGED QUERY PARAMETERS na sua mesma página' (mesma page em que vocÊ está)...
+
+
+
+
+
+
+
+
+
+
+
+    -> VAMOS USAR ESSE 'subscribe' mais tarde nesse módulo,
+
+
+    mas 
+
+
+    por enquanto não vamos o utilizar...
+
+
+
+
+
+
+
+
+    --> OK, É ASSIM QUE 
+
+
+    PODEMOS ACESSAR ESSAS EXTRA FEATURES',
+
+
+    E COMO 
+
+
+
+
+
+
+    PODEMOS 
+
+
+    assegurar 
+
+    QUE 
+
+    NÃO 
+
+
+    FICAMOS SEM ESSA DATA....

@@ -1,0 +1,2085 @@
+
+
+
+
+
+
+
+
+
+
+
+---> ESTAMOS PRÓXIMOS DO FINAL...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS ANTES DE ACABARMOS COM ESTE MÓDULO,
+
+
+O PROFESSOR QUER FALAR DE UM CONCEITO MUITO ÚTIL 
+
+
+
+
+E IMPORTANTE,
+
+
+
+
+QUE 
+
+
+TAMBÉM
+
+
+É SUPORTADA PELO HTTPCLIENT DO ANGULAR...
+
+
+
+
+
+
+
+
+
+
+
+
+--> SÃO OS __ INTERCEPTORS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O QUE SÃO INTERCEPTORS?
+
+
+
+
+
+
+
+
+---> BEM, ESTAMOS ENVIANDO NOSSOS HTTP REQUESTS POR MEIO DE CÓDIGOS COMO 
+
+
+
+
+
+''''
+
+
+
+
+
+
+
+
+
+    return this.http
+      .get<{ [name: string]: Post }>(
+        'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json', ///1o argumento, é a url/route/api endpoint que você quer targettar...
+        
+        {  //2o e ÚLTIMO argumento: é o 'HTTP REQUEST CONFIG' object... --> define várias coisas sobre nosso http request, como OS HEADERS..
+
+          headers: new HttpHeaders(
+            {
+              "Custom-Header": "Hello-Example"
+            }
+          ),
+
+          params: searchParams //////// é assim que anexamos múltiplos query params a nosso http request...
+
+          // params: new HttpParams().set( ///usado para definir QUERY PARAMs.... --> mas esse approach só nos deixa DEFINIR 1 ÚNICO QUERY PARAM, por isso é inferior... (devemos usar aquele código de 'let searchParams', visto logo acima, que nos deixa COLOCAR MÚLTIPLOS QUERY PARAMS NO NOSSO HTTP REQUEST)...
+
+          //   'print', ///'NOME DO PARAM'  --> 'print' é um queryParam suportado pelo firebase, que vai retornar nossa data em um formato 'pretty'...
+          //   'pretty' ///'VALUE DO PARAM' (print -> pretty)
+          // )
+        }
+      
+      
+        )
+      .pipe(
+        map((responseData) => {
+          const transformedPostsArray: Post[] = [];
+
+          for (const key in responseData) {
+            if (responseData.hasOwnProperty(key)) {
+              ///VAI CHECAR SE ISSO NÃO É UM 'PROTOTYPE' dentro da 'responseData'...
+              transformedPostsArray.push({ ...responseData[key], id: key });
+            }
+          }
+
+          return transformedPostsArray; ///return de 'observable' (Faça SUBSCRIPTION lá nos seus COMPONENTS, para pegar o resultado da subscription)...
+        }),
+        catchError(  ///usado para ERROR HANDLING TASKS GENÉRICAS, COMO 'SAVE DE ERRORS EM LOGS, EM UM ANALYTICS SERVER'....
+          (errorRes) => {
+
+            return throwError(() => errorRes); ///vai passar nossa ERROR DATA ADIANTE, PARA SER USADA/HANDLADA LÁ NOS NOSSOS '.subscribe()'..
+          }
+        )
+      );
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ''''''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  OK.... E SEMPRE QUE 
+
+
+  QUEREMOS __ CONFIGURAR_ ALGUMA COISA COMO 
+
+
+
+
+  'queryParams',
+
+
+
+
+  ESTAMOS 
+
+
+  SEMPRE FAZENDO ISSO 
+
+
+
+
+  EM UMA 'PER-REQUEST-BASIS' (1 a 1, de acordo com cada REQUEST)...
+
+
+
+
+
+
+
+
+
+
+
+  --> ou seja,
+
+  nós somos forçados a escrever isto:
+
+
+
+
+
+
+          {  
+
+          headers: new HttpHeaders(
+            {
+              "Custom-Header": "Hello-Example"
+            }
+          ),
+
+          params: searchParams 
+        }
+
+
+
+
+
+
+
+
+
+PARA TODO E QUALQUER REQUEST QUE ESCREVEMOS NO NOSSO APP...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E, MUITAS VEZES,
+
+
+
+
+ISSO É EXATAMENTE '''A MANEIRA CORRETA DE FAZER AS COISAS'''',
+
+
+
+
+pq 
+
+CADA REQUEST 
+
+
+PODE/VAI TER DIFERENTES HEADERS,
+DIFERENTES 
+
+
+
+QUERYPARAMS,
+
+
+ETc...
+
+
+
+
+
+
+
+
+
+
+--->  MAS IMAGINEMOS 
+
+
+
+QUE 
+
+
+__ QUEREMOS __ 
+
+
+FAZER 
+
+
+'ATTACH'
+
+
+DESSE 
+
+
+
+header de 
+
+
+'custom-header'
+
+
+
+__ A TODOS _ NOSSOS OUTGOING REQUESTS....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> UM CENÁRIO MAIS REALÍSTICO:
+
+
+
+
+VOCÊ QUER __ AUTENTICAR SEU USER,
+
+E PARA ISSO 
+
+
+
+VOCê _ PRECISA_ ADICIONAR UM CERTO 'param'/header 
+
+
+
+
+
+_ A TODOS _ OUTGOING REQUESTS FEITOS POR ELE,
+
+
+
+TUDO PARA QUE O BACKEND 
+
+
+CONSIGA 
+
+
+LER E IDENTIFICAR ESSE PARAM/HEADER... -->  NESSES CASES,
+
+
+
+
+
+
+
+
+
+
+VOCê __ NÃO VAI QUERER_ CONFIGURAR__ TODO E QUALQUER REQUEST,
+
+
+PQ 
+
+ISSO __ É MT ___ CUMBERSOME__...
+
+
+
+
+
+
+
+--> LÁ NO REACT TÍNHAMOS ALGO BEM PARECIDO,
+
+
+ALGO QUASE IGUAL,
+
+que cumpria a mesma função...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> AQUI PODEMOS ADICIONAR 'INTERCEPTORS'...
+
+
+
+
+
+
+
+
+
+
+---> MAS COMO INTERCEPTORS FUNCIONAM?
+
+
+
+
+
+
+
+
+-> DEVEMOS CRIAR UM NOVO INTERCEPTOR,
+
+POR MEIO DO ADD DE UM NOVO ARQUIVO...
+
+
+
+
+
+
+
+
+--> CRIAMOS UM NOVO ARQUIVO,
+
+de nome 
+
+'auth-interceptor'
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR QUER KINDOF  
+
+
+SIMULAR QUE NELE _ ADICIONAREMOS 
+
+
+UM HEADER _ A TODOS OS REQUESTS_  
+
+
+
+,
+
+
+UM HEADER QUE SERÁ 
+
+
+NECESSÁRIO PARA AUTHENTICATION LÁ NO NOSSO BACKEND...
+
+
+
+
+
+
+
+
+
+
+----> é claro que não vamos usar authorization de verdade aqui,
+
+
+mas isso é um exemplo...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok, 
+
+
+'auth-interceptor.service.ts'...
+
+
+
+
+
+
+
+
+
+
+ --> CHAMAMOS ISSO de 
+
+
+ 'service'
+
+ pq 
+
+ INTERCEPTORS NÃO DEIXAM DE SER __ SERVICES__ DO ANGULAR...
+
+
+
+
+
+
+
+
+
+
+
+ --> DENTRO DELE,
+
+ vocÊ cria um interceptor assim:
+
+
+
+
+
+
+
+
+
+
+
+ export class AuthInterceptorService {
+
+     
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> AÍ VAMOS IMPLEMENTAR UMA CERTA INTERFACE,
+
+
+
+
+ QUE SERÁ A INTERFACE DE 
+
+
+ 'HttpInterceptor'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ------> OK... ESSA INTERFACE __ NOS __ FORÇA__ 
+
+
+
+
+ A ADICIONAR UM __ METHOD DE 'intercept()',
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> aí fica tipo assim:
+
+
+
+
+
+
+
+ 
+ export class AuthInterceptorService {
+
+
+
+     intercept()
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK... --> E ESSE METHOD ACEITA/EXIGE 2 ARGUMENTS...
+
+
+
+
+
+
+
+---> E ESSES ARGUMENTS SERÃO OBTIDOS AUTOMATICAMENTE PELO ANGULAR,
+
+
+NO MOMENTO EM QUE 
+
+
+ELE _ 
+
+APLICAR ESSE INTERCEPTOR...
+
+
+
+
+
+
+
+
+
+
+--> OK....
+
+
+
+
+
+
+AÍ VAMOS CONSEGUIR 2 ARGUMENTS, SIM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PRIMEIRO ARGUMENT É UM OBJECT 'request',
+
+
+
+
+
+QUE SERÁ DE TIPO 
+
+'HttpRequest',
+
+
+
+E QUE 
+
+
+VOCÊ IMPORTARÁ 
+
+LÁ de 'angular/common/http' também...
+
+
+
+
+
+
+
+
+eX:
+
+
+
+
+
+
+    intercept(req: HttpRequest<any>, next: HttpHandler):  
+    Observable<HttpEvent<any>> {
+        
+    }
+
+
+
+
+
+
+------------------------------------------
+
+
+
+
+
+
+
+
+o httpREQUEST SERÁ DE UM 'GENERIC TYPE',
+
+
+o que quer dizer que 
+
+você 
+pode 
+
+
+
+usar 
+
+'<>' 
+
+
+
+PARA INFORMAR O ANGULAR _ SOBRE O TIPO _ DE DATA QUE 
+
+
+
+ESSE REQUEST VAI 'YIELD' -------->  como o professor quer 
+
+
+
+ESCREVER UM INTERCEPTOR 
+
+
+
+
+______ GENÉRICO__, 
+
+
+ele deixa 
+
+'any',
+
+
+O QUE 
+
+FARÁ COM QUE 
+
+
+
+
+
+
+isso funcione com QUALQUER DATA QUE SEJA RETORNADA POR ALGUM REQUEST..
+
+
+
+
+
+
+
+
+--> NO SEGUNDO PARÂMETRO, VOCÊ PASSA  'next',
+
+
+
+QUE SERÁ UMA _ FUNCTION_ QUE VAI FAZER_ FORWARD_ DO REQUEST 
+
+(
+
+    ISSO PQ O 
+
+
+    INTERCEPTOR__ VAI BASICAMENTE 
+
+    __ RODAR___ CÓDIGO __ ANTES _ DE 
+
+    SEU REQUEST DEIXAR SEU APP (tipo um middleware) 
+)
+
+
+
+
+----> OU SEJA,
+
+
+
+
+O INTERCEPTOR:
+
+
+
+
+
+
+
+VAI RODAR CÓDIGO:
+
+
+
+1) ________aNTES___ DO SEU REQUEST SAIR DO APP  
+
+
+(antes de ele ser enviado)
+
+
+
+
+2) _______ LOGO ANTES__ DA RESPONSE SER FORWARDADA AO 'subscribe()' 
+
+
+
+
+
+
+
+
+
+
+
+
+ou seja,
+
+o interceptor executa códigos NESSES LUGARES:
+
+
+
+
+
+
+
+    PREPARAÇÃO         '(subscribe)'..
+        I              I
+            REQUEST <--------------------------------------------> response 
+            (e receive da response)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO PQ O 'intercept'
+
+
+está dividio em 2 fases:
+
+
+
+
+a fase de 'req',
+
+
+que é usada para CONFIGURAR AS COISAS ACERCA DO SEU REQUEST (headers genéricos, por exemplo, a serem settados no request)....
+
+
+
+
+
+
+a fase da 'response',
+
+que é usada para CONFIGURAR AS COISAS ACERCA DA SUA RESPONSE QUE CHEGA NO SUBSCRIBE (Antes de chegar no subscribe)...
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS VEREMOS MAIS DETALHES SOBRE ISSO, EM ALGUNS INSTANTES...
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... --> O 'next' -> SERÁ DE TYPE 'HttpHandler',
+
+
+
+
+QUE É UM TYPE QUE TAMBÉM PRECISA SER IMPORTADO LÁ DE 
+
+
+'angular/common/http'...
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE METHOD DE 'intercept()'
+
+
+
+
+AGORA NOS DEIXA RODAR __ CÓDIGO _ QUE,
+
+conforme mencionadoo,
+
+
+
+VAI RODAR __ LOGO ANTES_ DO REQUEST_ DEIXAR NOSSO APP...
+
+
+
+
+
+
+
+
+
+
+
+--> por exemplo,
+ podemos logar, agora,
+
+
+
+
+  
+  ISTO AQUI:
+
+
+
+
+
+  
+    intercept(req: HttpRequest<any>, next: HttpHandler):  
+    Observable<HttpEvent<any>> {
+
+            console.log('Request is on its way.');
+
+            return next
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK... ISSO VAI RODAR __ LOGO ANTES_ _ DE NOSSO REQUEST DEIXAR NOSSO APP...
+
+
+
+
+
+
+
+
+
+
+--> depois desse console.log,
+
+
+
+podemos retornar o   __RESULTADO_
+
+
+
+que nos será fornecido pelo call de 'next()'..
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+ --> NEXT É UMA FUNCTION,
+
+
+
+ na verdade,
+
+
+ é um __ OBJECT,
+
+ MAS UM OBJECT _ COM UM METHOD IMPORTANTE 
+
+
+ QUE 
+
+ VAI 
+
+
+ 'LET THE REQUEST CONTINUE ITS JOURNEY'...
+
+
+
+
+
+
+
+
+ -> PARA SERMOS MAIS PRECISOS,
+
+
+
+esse method é 
+
+
+'.handle()',
+
+
+
+
+
+
+
+E A ELE __ DEVEMOS __ PASSAR __ AQUELE OBJECT/parameter de 
+
+
+'req'....
+
+
+
+
+
+
+
+
+
+
+
+tipo assim:
+
+
+
+
+  
+    intercept(req: HttpRequest<any>, next: HttpHandler):  
+    Observable<HttpEvent<any>> {
+
+            console.log('Request is on its way.');
+
+            return next.handle(req);
+    }
+
+
+
+
+
+
+
+
+
+
+
+--------> É ESSA ESCRITA DE 'return next.handle(req)'
+
+
+
+QUE FAZ  
+
+'''LET THE REQUEST CONTINUE''',
+
+
+
+
+e vocÊ sempre deve 
+
+
+
+FAZER __ RETURN __ DO RESULT de esse 'next.handle(req)',
+
+
+PARA QUE 
+
+
+ELE __ REALMENTE __ consiga seguir em frente...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ESSE É O SETUP QUE VOCÊ PRECISA USAR 
+
+
+
+PARA_  TER UM CÓDIGO QUE 
+
+
+
+
+'''RODA LOGO ANTES DO SEU REQUEST SAIR DO APP'''... (aquela lógica em 'console.log()')
+
+
+
+
+
+
+ao mesmo tempo que 
+
+DEIXA __ O REQUEST__ SAIR DO APP (código de 'return next.handle(req)'...)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http"; ///essa interface NOS FORÇA A ADICIONAR UM METHOD DE 'intercept'...
+import { Observable } from "rxjs";
+
+
+export class AuthInterceptorService implements HttpInterceptor {
+
+    /////o primeiro object é um object de HTTP REQUEST...
+
+    intercept(req: HttpRequest<any>, next: HttpHandler):  ///esses 2 methods são OBTIDOS AUTOMATICAMENTE, pois são passados pelo angular...
+    Observable<HttpEvent<any>> {
+        
+
+
+    console.log('Request is on its way!'); ///lógica que é executada _ ANTES_ DO REQUEST DEIXAR NOSSO APP (frontend)...
+
+
+    return next.handle(req); /////lógica que é executada _ PARA _ '''LET OUR REQUEST ACTUALLY LEAVE OUR APP'''...
+    }
+     
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> SE VOCÊ __ NÃO FIZER RETURN DE 'next.handle(req)',
+
+
+
+
+O REQUEST NÃO VAI CONTINUAR,
+
+
+O QUE FARÁ SEU APP BASICAMENTE 'BREAK'....
+
+
+
+
+
+
+
+
+
+
+
+-> CERTO... COM ISSO,
+
+
+
+
+NÓS __ TEMOS QUE __ PROVIDENCIAR _ ESSE SERVICE AO NOSSO APP,
+
+
+
+
+E HÁ UMA MANEIRA ESPECIAL DE PROVIDENCIAR ESSES 'INTERCEPTORS'..
+
+
+
+
+
+
+
+
+
+--> para o implementar no seu código,
+
+você precisa ir até 
+
+'app.module.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> LÁ, em 'providers',
+
+
+VOCÊ DEVE 
+
+
+ESCREVER UMA REFERÊNCIA A ESSE INTERCEPTOR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS PARA APLICAR O INTERCEPTOR AO SEU APP,
+
+
+você não pode só escrever algo assim:
+
+
+
+providers: [
+    AuthInterceptorService
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NÃO.... EM VEZ DISSO,
+
+
+VOCÊ É OBRIGADO A ESCREVER UM _ OBJECT,
+
+OBJECT __ QUE TERÁ _ 3 KEYS__ ....
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+providers: [
+    {
+
+    }
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> A PRIMEIRA KEY DESSE OBJECT SERÁ 
+
+'provide:',
+
+
+
+ E LÁ VOCÊ TEM QUE USAR 
+
+
+
+A ESCRITA 
+
+'HTTP_INTERCEPTORS'
+,
+
+
+
+
+QUE É UM __ TYPE__ IMPORTADO LÁ DE 
+
+angular/common/http...
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+
+import { AppComponent } from './app.component';
+import { PostsHttpService } from './postsHttp.service';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    HttpClientModule
+  ],
+  providers: [
+    PostsHttpService,
+    {   ///é assim que instalamos um 'INTERCEPTOR' no nosso app... --> precisamos dessas 3 keys, para conseguir fazê-lo funcionar...
+      provide: HTTP_INTERCEPTORS,
+      
+    }
+
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+esse 
+
+
+'HTTP_INTERCEPTORS'
+
+
+
+SERÁ __ A TOKEN__ 
+
+
+PELA QUAL 
+
+
+
+
+ESSA INJECTION DE 'AuthInterceptorService'
+
+
+
+
+mais TARDE 
+
+_- SERÁ IDENTIFICADA..., identificada pelo ANGULAR...
+
+
+(
+
+O ANGULAR VAI 'SABER' 
+
+QUE TODAS AS CLASSES QUE VOCÊ 
+
+PROVIDENCIA/providenciar 
+
+
+POR ESSE 
+
+IDENTIFIER DE 
+
+'HTTP_INTERCEPTORS' 
+
+
+__deverão __ 
+
+
+
+ser _ TRATADAS COMO HTTP_INTERCEPTORS,
+
+o que 
+
+QUER DIZER QUE 
+
+ELE 
+
+
+RECONHECERÁ 
+
+QUE  
+
+
+ESSAS CLASSES DEVERÃO 
+
+
+SER EXECUTADAS, o method de 'intercept()'
+
+
+
+nelas deverá ser executado,
+
+
+SEMPRE QUE __ 
+
+
+1 REQUEST__ DEIXAR O NOSSO APP...
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+--> A SEGUNDA KEY QUE VOCÊ PASSA A ESSE OBJECT 
+
+é 
+
+a key de 
+
+
+
+'useClass',
+
+
+
+
+EM QUE 
+
+VOCê 
+
+__ FINALMENTE APONTA AO SEU INTERCEPTOR EM 'auth-interceptor.service.ts'...
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+
+import { AppComponent } from './app.component';
+import { PostsHttpService } from './postsHttp.service';
+import { AuthInterceptorService } from './authInterceptor.service';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    HttpClientModule
+  ],
+  providers: [
+    PostsHttpService,
+    {   ///é assim que instalamos um 'INTERCEPTOR' no nosso app... --> precisamos dessas 3 keys, para conseguir fazê-lo funcionar...
+      provide: HTTP_INTERCEPTORS,  ///sempre você fornecerá esse value....
+      useClass: AuthInterceptorService, ///aponte ao seu ACTUAL INTERCEPTOR --> essa class desse arquivo será adicionada como um INTERCEPTOR..
+      
+    }
+
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> CERTo...
+
+
+
+
+
+
+POR FIM,
+
+
+
+
+
+HÁ A POSSIBILIDADE DE TERMOS 
+
+
+__ MÚLTIPLOS INTERCEPTORS,
+
+
+
+
+
+
+
+E __ VOCÊ _ INFORMA_ 
+
+
+O ANGULAR SOBRE ISSO,
+
+SOBRE A EXISTÊNCIA DE MÚLTIPLOS INTERCEPTORS (e que não devem ser 'overwritten', devem COEXISITR E SEREM TODOS EXECUTADOS JUNTOS) 
+
+
+por meio 
+
+
+
+do set 
+
+
+da propriedade 
+
+'multi: true'...
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+
+import { AppComponent } from './app.component';
+import { PostsHttpService } from './postsHttp.service';
+import { AuthInterceptorService } from './authInterceptor.service';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    HttpClientModule
+  ],
+  providers: [
+    PostsHttpService,
+    {   ///é assim que instalamos um 'INTERCEPTOR' no nosso app... --> precisamos dessas 3 keys, para conseguir fazê-lo funcionar...
+      provide: HTTP_INTERCEPTORS,  ///sempre você fornecerá esse value....
+      useClass: AuthInterceptorService, ///aponte ao seu ACTUAL INTERCEPTOR --> essa class desse arquivo será adicionada como um INTERCEPTOR..
+      // multi: true  //isso comunica ao angular se no seu app EXISTEM/EXISTIRÃO  MÚLTIPLOS INTERCEPTORS, e que você quer que sejam todos executados (e que não ocorra 'overwrite' de 1 em cima do outro)....
+    }
+
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+----------------------------------
+
+
+
+
+
+
+
+
+
+
+
+OK..
+
+
+
+
+
+
+
+
+MAS PQ USAR ESSA SINTAXE ESTRANHA DE 'providers',
+
+
+com esse object ('{}' ) ?
+
+
+
+
+
+
+
+
+
+
+
+É PQ 
+
+
+ ESSA É A SINTAXE DE 'DEPENDENCY INJECTION' suportada pelo angular... 
+ 
+  -> ELA TE DEIXA REGISTRAR UM SERVICE DEBAIXO DE UM _IDENTIFIER __ DIFERENTE.... 
+  
+  
+  
+  E TAMBÉM TE DEIXA __ TER MÚLTIPLOS SERVICES SOB ESSE MESMO IDENTIFIER...
+
+
+
+
+
+
+
+
+--> esses múltiplos services são então 100% provided e injected...
+
+
+
+
+  --->  OK... O ANGULAR VAI FAZER O RESTO DO TRABALHO,
+
+
+  VAI PEGAR 
+
+  AUTOMATICAMENTE TODOS SEUS HTTP_INTERCEPTORS (classes que implementem a interface de 'HttpInterceptor'),
+
+
+E AÍ 
+
+
+
+VAI RODAR 
+
+OS METHODS DE 'intercept'
+
+
+
+SEMPRE QUE 
+
+
+
+
+
+
+UM REQUEST TENTAR SAIR DE SEU APP.....
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> AGORA SE SALVARMOS NOSSO CÓDIGO E RECARREGARMOS,
+
+
+VEREMOS 
+
+
+
+
+'request is on its way' no console....
+
+
+
+
+
+
+
+
+
+
+
+--> SE ENVIAMOS QUALQUER TIPO DE REQUEST,
+
+
+VAMOS VER 
+
+
+
+ESSE OUTPUT DO CONSOLE.LOG DO INTERCEPTOR --> ISSO ACONTECE JUSTAMENTE PQ 
+
+
+
+__ ESSE INTERCEPTOR__ SERÁ RODADO __ CADA 
+
+
+VEZ QUE 
+
+UM REQUEST 
+
+
+DEIXAR O NOSSO APP...
+
+
+
+
+
+
+
+
+
+
+
+
+--> E SE VOCÊ QUER _ RESTRINGIR _ o rol de 
+
+
+REQUESTS 
+
+
+EM QUE ESSE CÓDIGO REALMENTE É EXECUTADO,
+
+
+
+
+
+
+
+
+
+
+VOCÊ TEM QUE  _ FAZER _ ISSO NO PRÓPRIO 
+
+
+  
+
+  OBJECT 'req'
+
+
+  DENTRO DO INTERCEPTOR...
+
+
+
+
+
+
+
+  tipo assim:
+
+
+
+
+
+
+
+
+  
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http"; ///essa interface NOS FORÇA A ADICIONAR UM METHOD DE 'intercept'...
+import { Observable } from "rxjs";
+
+
+export class AuthInterceptorService implements HttpInterceptor {
+
+    intercept(req: HttpRequest<any>, next: HttpHandler):  
+    Observable<HttpEvent<any>> {
+        
+
+
+    console.log('Request is on its way!'); 
+
+    return next.handle(req); 
+    }
+     
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SE VOCÊ SABE, POR EXEMPLO, QUE VOCê __ NAÕ VAI QUERER _ 
+
+ENVIAR 
+
+
+ESSE REQUEST A UMA CERTA 
+
+
+
+URL/API ROUTE 
+
+
+
+DE SEU APP,
+
+
+
+
+aí você escreve um if check tipo assim:
+
+
+
+
+
+
+
+
+
+if (req.url === 'xxxx') {
+
+/////STOPS THE SEND OF THE REQUEST...
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E ISSO REALMENTE FUNCIONA, É UMA DAS UTILIDADES DE UM INTERCEPTOR...
+
+
+
+
+
+eX:
+
+
+
+
+  
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http"; ///essa interface NOS FORÇA A ADICIONAR UM METHOD DE 'intercept'...
+import { Observable } from "rxjs";
+
+
+export class AuthInterceptorService implements HttpInterceptor {
+
+    intercept(req: HttpRequest<any>, next: HttpHandler):  
+    Observable<HttpEvent<any>> {
+        
+
+
+        
+if (req.url === 'xxxx') {
+
+/////STOPS THE SEND OF THE REQUEST...
+
+}
+
+
+
+
+    console.log('Request is on its way!'); 
+
+    return next.handle(req); 
+    }
+     
+}

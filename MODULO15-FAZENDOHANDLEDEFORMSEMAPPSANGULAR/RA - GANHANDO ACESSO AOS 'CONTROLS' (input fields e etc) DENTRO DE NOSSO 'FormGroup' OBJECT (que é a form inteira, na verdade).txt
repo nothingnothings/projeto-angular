@@ -1,0 +1,1814 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> EU JÁ HAVIA CONSEGUIDO ACESSO AOS MEUS CONTROLS ANTES,
+
+PARA AÍ 
+
+
+
+
+adicionar uma validation específica (
+
+    deixar vermelha a border do input field 
+
+    APENAS 
+
+    SE:
+
+
+    1) TIVERMOS ALGUM VALUE NELE, ATUALMENTE 
+
+
+
+
+    2) SE O VALUE INPUTTADO REALMENTE FOR TIDO COMO INVALID...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MEU CÓDIGO, QUE EU ESCREVI, FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+css:
+
+
+
+
+
+
+.redBorder {
+    border: 1px solid red;
+}
+
+
+
+
+
+
+
+
+
+HTML:
+
+
+
+
+          <label for="username">Username</label>
+          <input
+
+          [ngClass]="{
+            'redBorder': (signupForm.value.username && !signupForm.controls['username'].valid) ? 1 : 0
+
+          }"
+            type="text"
+            id="username"
+            class="form-control"
+            formControlName="username"
+          />
+          <!-- AQUI, O QUE INTERESSA É 'formControlName', pq O VALUE PASSADO A ESSA DIRECTIVE SERÁ BUSCADO LÁ NO SEU CÓDIGO TYPESCRIPT, na form TS a que foi vinculada essa form do HTML...  (o angular vai buscar pelos KEY NAMES da sua form, lá no código typescript)-->
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> e só isso foi necessário,
+
+não foi necessário usar o 
+
+
+
+código ts,
+
+
+
+SÓ 
+
+
+AQUELA PROPRIEDADE 'signupForm'
+
+
+
+que definimos ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export class AppComponent implements OnInit {
+    genders = ['Male', 'Female'];
+
+    signupForm: FormGroup;  //nossa 'overall form' sempre será isso, um 'FORM GROUP', um grande COMPILADO DE TODOS OS input fields, selects, textareas, radio buttons, etc
+
+
+
+    ngOnInit(): void {   ////é bem melhor inicializar iniicalmente nossa form AQUI, em 'ngOnInit()'....
+
+
+      this.signupForm = new FormGroup({  /////ISSO VAI __ CRIAR UMA _ NOVA FORM _ QUASe__ VÁLIDA...
+
+        ////sempre wrappe o nome de seus input fields em _ STRINGS_...
+        'username': new FormControl(  ////é usado para CRIAR A REPRESENTAÇÃO DESSE INPUT FIELD em si... e ele tem VÁRIOS ARGUMENTOS QUE DEVEM SER PASSADOS..
+
+        null, //// 1/////// O PRIMEIRO PARÂMETRO É o 'INITIAL VALUE' de seu input field... colocamos 'null' pq queremos que fique EM BRANCO...
+        
+        [ Validators.required, Validators.minLength(5)]
+
+        ),
+
+        'email': new FormControl( ///user input de 'email'
+          
+          null,
+
+
+          ///não EXECUTE esses methods de '.required' e '.email', pq esses methods DEVEM SER EXECUTADOS AUTOMATICAMENTE PELO ANGULAR, QUANDO ELE DETECTAR QUE o input DESSE 'FormControl' ESPECÍFICO foi mudado..
+      [   Validators.required, Validators.email ]      ///O SEGUNDO PARÂMETRO É OU 1 ÚNICO VALIDATOR, OU UMA LISTA DELES..  --> esses validators são importados lá de 'angular/forms'...
+
+        ),
+
+        'gender': new FormControl(this.genders[0] //queremos definir o 'initial value', value default, como sendo 'male' no início...
+          ,
+
+          [Validators.required]
+          )
+
+      }
+      
+      
+      
+      );
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok...
+
+
+
+AGORA ASSISTO A AULA DO PROFESSOR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NAS ÚLTIMAS AULAS ADICIONAMOS VALIDATION... 
+
+
+
+
+
+
+
+
+
+
+--> ASSIM COMO NO TEMPLATE-DRIVEN APPROAHC,
+
+
+
+
+PODEMOS 
+
+USAR 
+
+
+O 
+
+'FORM STATUS'
+
+DE NOSSA FORM 
+
+
+
+__ PARA ACTUALLY_  DISPLAYAR 
+
+
+MESSAGES 
+
+
+
+
+E DESABILITAR BUTTONS,
+
+
+
+DEIXAR 
+
+
+
+A BORDA 
+
+
+DOS INPUT FIELDS VERMELHA,
+
+
+etc etc...
+
+
+
+
+
+
+
+
+
+
+--> agora vou tentar dar DISABLE NO MEU BUTTON, COM BASE NO STATE DA FORM QUE 
+
+TEMOS 
+
+agora em 'app.component.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> tento escrever assim:
+
+
+
+
+   <button class="btn btn-primary" type="submit" [disabled]="!signupForm.valid">Submit</button>
+
+
+
+
+
+
+
+
+
+
+
+   --> BEM, isso foi BEM FÁCIL,
+
+
+
+
+   FOI SÓ USAR 
+
+
+
+   property binding  (  '  [ ] ' )
+
+
+
+
+
+
+   COM A PROPRIEDADE 'disabled'
+
+   do button,
+
+
+   e aí 
+
+
+
+   UTILIZAR CONDICIONALMENTE A PROPRIEDADE 
+
+
+   'signupForm.valid'
+
+
+
+
+   DE NOSSA FORM/FORM TS...
+
+
+
+
+
+
+
+
+
+
+
+--> TAMBÉM _ PODEMOS USAR O STATE DE NOSSA FORM, TIRADA DO TS,
+
+
+
+PARA __ FAZER __ dISPLAY __ DE 
+
+
+
+
+MENSAGENS DE ERROR (
+    show de <p>s 
+
+
+    e outras coisas,
+
+
+
+    que aparecem quando nossos inputs estão errados..
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VOU TENTAR FAZER O RENDER CONDICIONAL DE '<p>',
+
+
+
+
+a partir 
+
+
+
+
+do STATE de nossa form e os form controls...
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+        <p *ngIf="!signupForm.controls['username'].valid && signupForm.value.username"   
+        
+        [ngStyle]="{ color: 'red' }" >Username must have at least 5 characters.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> escrevi assim, mas ficou + ou -....
+
+
+
+
+
+
+
+
+
+
+--> queria que fosse melhor, queria 
+
+
+
+que eu pudesse escrever um check como 
+
+
+'signupForm.value.username < 5' 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> o professor supõe:
+
+
+
+
+
+
+
+
+
+digamos que queremos mostrar um '<p>'
+
+
+
+
+DEBAIXO DO '<input>'
+
+
+
+de username...
+
+
+
+
+
+
+
+
+
+-----> por isso o professor adiciona 
+
+um 
+
+
+
+<span>
+
+
+COM UMA CLASS  
+
+
+
+de 
+
+'help-block'....(bootstrap class)...
+
+
+
+
+
+
+
+
+
+
+
+--> aí ele coloca 
+
+'Please enter a valid username'...
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+<span class="help-block">Please enter a valid username!</span>
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... 
+
+
+
+NO TEMPLATE-DRIVEN APPROACH,
+
+
+ESCREVERÍAMOS ALGO COM USO DE UMA LOCAL REFERENCE NO INPUT:
+
+
+
+
+
+
+
+
+<input
+
+
+type="text"
+id="username"
+
+ngModel
+#localReferenceUsername="ngModel"
+>
+
+
+
+
+<span class="help-block" *ngIf="!localReferenceUsername.valid">Please enter a valid username!</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> E ISSO REALMENTE FUNCIONAVA...
+
+
+
+ENTRETANTO,
+
+
+__ iSSO _ NÃO VAI FUNCIONAR AQUI,
+
+
+
+PQ NÃO PODEMOS MAIS DEPENDER DE 'ngModel'
+
+
+
+PARA CONSEGUIR NOSSA REFERENCE....
+
+
+
+
+(
+
+    ISSO NÃO É SETTADO POR MEIO DE 'ngModel'
+)
+
+
+
+
+
+
+
+
+
+--> ainda assim,
+É MT FÁCIL GANHAR 
+ACESSO 
+
+
+
+A 
+
+
+
+
+ESSAS PROPRIEDADES de validation de nossos inputs/controls...
+
+
+
+
+
+
+
+
+
+
+
+--> o professor esclarece que vamos usar 'ngIF'
+
+
+como sempre,
+
+
+
+
+
+mas aí 
+
+
+
+vamos 
+
+
+
+escrever 
+
+
+
+
+*ngIf="signupForm"  (com isso, ganhamos acesso a NOSSA 'OVERALL FORM'...)
+
+
+
+
+
+
+E DEPOIS 
+
+DISSO
+
+
+
+___ VAMOS ACESSAR _ UM METHOD ESPECIAL,
+
+
+
+
+QUE __ AINDA NÃO TÍNHAMOS VISTO... É 
+
+
+
+O METHOD 
+
+
+
+DE 
+
+'.get()'...
+
+
+
+
+
+
+
+
+
+O CÓDIGO VAI FICANDO TIPO ASSIM;
+
+
+
+
+
+
+
+<input
+
+
+type="text"
+id="username"
+class="form-control"
+formControlName="username"
+>
+
+
+
+
+<span class="help-block" *ngIf="signupForm.get()">Please enter a valid username!</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE METHOD NOS DEIXA ___ FACILMENTE__ GANHAR ACESSO AOS NOSSOS CONTROLS 
+
+
+de nossa form...
+
+
+
+
+
+
+
+
+
+
+Ex:
+
+
+
+
+
+
+
+
+        <p *ngIf="signupForm.get()"  
+        
+        [ngStyle]="{ color: 'red' }" >Username must have at least 5 characters.</p>
+
+
+
+
+
+
+
+
+
+
+---------> 
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+
+
+
+
+e em '.get()'
+
+
+VAMOS QUERER PASSAR OU:
+
+
+
+
+
+
+
+1) O 'CONTROL NAME' (username, email, gender, etc)
+
+
+
+
+
+OU 
+
+
+
+2) O _ _PATH__ DO CONTROL...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> POR ENQUANTO, É CLARO,
+
+O 
+
+
+_ PATH_ É EXATAMENTE O NAME 
+
+DE NOSSO INPUT,
+
+pq 
+
+
+SÓ TEMOS 1 LEVEL DE NESTING 
+
+
+NO NOSSO FORM OBJECT... (E já aprendemos que é possível nestear nossa form em MÚLTIPLOS LEVELS, também no template-driven approach, com coisas como a directive de ' ngModelGroup="" ')...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO.... MAS O QUE INTERESSA É QUE 
+
+
+vamos querer 
+
+
+
+ACESSAR 
+
+
+
+
+'signupForm.get('username')',
+
+
+
+
+VAMOS QUERER 
+
+ACESSAR 
+
+
+ESSE CONTROL DE 'username'
+
+DENTRO DE NOSSA FORM...
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO.... AÍ, DEPOIS DISSO,
+
+
+BASTA 
+
+
+
+
+usar 
+
+
+
+'.valid'
+
+PARA _ 
+
+
+RETORNAR O VALUE SE ISSO ESTÁ COMO TRUE OU  NÃO,
+
+tipo assim:
+
+
+
+
+
+        <span *ngIf="signupForm.get('username').valid"  
+        class="help-block"
+        [ngStyle]="{ color: 'red' }">Please enter a valid username.</span>
+
+
+
+
+
+
+
+O PROFESSOR TAMBÉM ADICIONA UM 
+
+
+
+'' signupForm.get('username').touched'',
+
+para que 
+
+
+
+
+essa mensagem de aviso/erro SÓ SEJA MOSTRADA 
+
+ASSIM QUE O USER EFETIVAMENTE TENTAR DIGITAR 
+
+
+
+ALGO NO INPUT FIELD....
+
+
+
+
+
+
+
+--> CERTO, MAS EU GANHEI UM __ ERROR__:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ Object is possibly 'null'.
+
+24         <span *ngIf="signupForm.get('username').valid && signupForm.get('username').touched " 
+                                                    ^^^^
+
+
+
+
+
+
+
+
+
+
+
+
+----> como posso acabar com esse error?
+
+
+
+
+
+
+--> talvez com alguma escrita no código typescript...
+
+
+
+
+
+
+
+
+
+
+
+VEJO ESTA EXPLICAÇÃO:
+
+
+
+
+
+The Object is possibly 'null' error can happen due to strict type checking and can be solved in 2 ways:
+
+Either assert that you are absolutely sure that can never be null, by using the ! (not null assertion operator)
+Use the ? (optional chaining operator) to stop an eventual error from happening in case the object is indeed null
+So you can replace the if statement with form.get('email')?.invalid and it should work. A similar question has been asked here.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CONSEGUI....
+
+
+
+
+
+
+O CONSERTO FICOU ASSIM:
+
+
+
+
+
+
+        <span *ngIf="signupForm.get('username')?.valid && signupForm.get('username')?.touched "  
+        class="help-block"
+
+        [ngStyle]="{ color: 'red' }" >Please enter a valid username</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        --> esse '?' 
+
+        COMUNICA QUE 
+
+
+
+        '''EU TENHO CIÊNCIA DE QUE 
+
+        ESSE VALUE __ NUNCA PODE EXATAMENTE SER NULL,
+
+        QUE A POSSIBILIDADE DE ELE SER NULL EXISTE''''...
+
+
+
+
+
+
+
+
+
+
+
+
+
+        CERTO, ISSO FUNCIONOU, E FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <span *ngIf="!signupForm.get('username')?.valid && signupForm.get('username')?.touched "  
+        class="help-block"
+
+        [ngStyle]="{ color: 'red' }">Please enter a valid username</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> AGORA QUANDO 
+
+
+
+
+DIGITAMOS ALGO COM MENOS DE 5 CARACTERES,
+
+
+essa mensagem aparece...
+
+
+(
+
+    e só aparece se já tivermos CLICADO dentro desse input field..
+)
+
+
+
+
+
+
+
+
+
+
+----> OK, COMO VOCê PODE VER,
+
+É BEM FÁCIL
+
+
+
+DE GANHAR ACESSO 
+
+
+AOS INPUT FIELDS DE SUA FORM,
+
+
+com esse method de 
+
+
+
+
+'signupFor.get()'...
+
+
+
+
+
+
+----> NÓS REPETIMOS ISSO PARA O EMAIL,
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmitForm()"> <!--AQUI AINDA VAMOS USAR ESSA DIRECTIVE/EVENT de 'ngSubmit', pq vamos querer USAR O COMPORTAMENTO DE 'submit' do HTML/JS comum _ PARA _ EXECUTAR NOSSOS PRÓPRIOS METHODS no arquivo .ts....-->
+        <!-- É ASSIM QUE VINCULAMOS NOSSA FORM CRIADA LÁ EM UM ARQUIVO TS, nesse arquivo html, nessa form do arquivo html... através de property binding com '[formGroup]'-->
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+
+          [ngClass]="{
+            'redBorder': (signupForm.value.username && !signupForm.controls['username'].valid) ? 1 : 0
+
+          }"
+            type="text"
+            id="username"
+            class="form-control"
+            formControlName="username"
+          />
+          <!-- AQUI, O QUE INTERESSA É 'formControlName', pq O VALUE PASSADO A ESSA DIRECTIVE SERÁ BUSCADO LÁ NO SEU CÓDIGO TYPESCRIPT, na form TS a que foi vinculada essa form do HTML...  (o angular vai buscar pelos KEY NAMES da sua form, lá no código typescript)-->
+        </div>
+
+
+            <!-- PARA GANHAR ACESSO A PROPRIEDADES como 'valid', 'invalid', 'touched', 'pristine' e 'dirty' de nossos CONTROLS, DEVEMOS USAR ESSE METHOD DE '.get()' NA NOSSA FORM TS, form criada lá no código ts...-->
+        <span *ngIf="!signupForm.get('username')?.valid && signupForm.get('username')?.touched "  
+        class="help-block"
+
+        [ngStyle]="{ color: 'red' }" >Please enter a valid username</span>
+
+        <button class="btn btn-default" type="button">
+          Suggest an Username
+        </button>
+        <div class="form-group">
+          <label for="email">Mail</label>
+          <input
+            type="email"
+            [ngClass]="{
+              'redBorder': (signupForm.value.email && !signupForm.controls['email'].valid) ? 1 : 0
+  
+            }"
+            id="email"
+            class="form-control"
+            formControlName="email"
+          />
+          <!-- DE NOVO, O QUE INTERESSA É 'formControlName'-->
+        </div>
+        <span *ngIf="!signupForm.get('email')?.valid && signupForm.get('email')?.touched "  
+        class="help-block"
+
+        [ngStyle]="{ color: 'red' }" >Please enter a valid email</span>
+
+        <div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input type="radio" [value]="gender" formControlName="gender"/>
+            {{ gender }}
+          </label>
+        </div>
+        <button class="btn btn-primary" type="submit" [disabled]="!signupForm.valid">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+-------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... MAS E SE EU QUERO  ACESSAR 
+
+UMA PROPRIEDADE COMO O 'value', para aí 
+
+
+rodar checks como 
+
+
+
+' maior do que x',
+
+
+
+
+
+
+como posso fazer isso?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> BEM, SE QUERO QUE MEU USER TENHA UMA LENGTH MÍNIMA, O LUGAR PARA ADICIONAR ESSE VALIDATOR É LÁ 
+
+
+NO CÓDIGO 'ts',
+
+e naõ 
+
+
+
+
+no código do nosso template..
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+O CÓDIGO NO FINAL DAS CONTAS, FICOU ASSIM:
+
+
+
+
+
+
+     <span *ngIf="!signupForm.get('username')?.valid && signupForm.get('username')?.touched "  
+        class="help-block"
+
+        [ngStyle]="{ color: 'red' }" >Username must have more than 4 characters</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -> O PROFESSOR TAMBÉM COLOCA UM 'span' PARA NOSSAS OVERALL FORM,
+
+
+
+
+
+
+que ele escreve assim (basta acessar a 'overall form' e aí checar a prorpiedade de 'valid' e aí 'touched' também)....
+
+
+
+
+
+
+
+
+
+
+
+eX:
+
+
+
+
+     <span *ngIf="!signupForm?.valid && signupForm?.touched "  
+        class="help-block"
+
+        [ngStyle]="{ color: 'red' }" >Please amend your data!</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        CERTO.... O CÓDIGO INTEIRO FICOU ASSIm:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmitForm()">
+        <!--AQUI AINDA VAMOS USAR ESSA DIRECTIVE/EVENT de 'ngSubmit', pq vamos querer USAR O COMPORTAMENTO DE 'submit' do HTML/JS comum _ PARA _ EXECUTAR NOSSOS PRÓPRIOS METHODS no arquivo .ts....-->
+        <!-- É ASSIM QUE VINCULAMOS NOSSA FORM CRIADA LÁ EM UM ARQUIVO TS, nesse arquivo html, nessa form do arquivo html... através de property binding com '[formGroup]'-->
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            [ngClass]="{
+              redBorder:
+                signupForm.get('username')?.value &&
+                !signupForm.get('username')?.valid
+                  ? 1
+                  : 0
+            }"
+            type="text"
+            id="username"
+            class="form-control"
+            formControlName="username"
+          />
+          <!-- AQUI, O QUE INTERESSA É 'formControlName', pq O VALUE PASSADO A ESSA DIRECTIVE SERÁ BUSCADO LÁ NO SEU CÓDIGO TYPESCRIPT, na form TS a que foi vinculada essa form do HTML...  (o angular vai buscar pelos KEY NAMES da sua form, lá no código typescript)-->
+        </div>
+
+        <!-- PARA GANHAR ACESSO A PROPRIEDADES como 'valid', 'invalid', 'touched', 'pristine' e 'dirty' de nossos CONTROLS, DEVEMOS USAR ESSE METHOD DE '.get()' NA NOSSA FORM TS, form criada lá no código ts...-->
+        <span
+          *ngIf="
+            !signupForm.get('username')?.valid &&
+            signupForm.get('username')?.touched
+          "
+          class="help-block"
+          [ngStyle]="{ color: 'red' }"
+          >Username must have more than 4 characters</span
+        >
+
+        <button class="btn btn-default" type="button">
+          Suggest an Username
+        </button>
+        <div class="form-group">
+          <label for="email">Mail</label>
+          <input
+            type="email"
+            [ngClass]="{
+              redBorder:
+                signupForm.get('email')?.value && !signupForm.get('email')?.valid
+                  ? 1
+                  : 0
+            }"
+            id="email"
+            class="form-control"
+            formControlName="email"
+          />
+          <!-- DE NOVO, O QUE INTERESSA É 'formControlName'-->
+        </div>
+        <span
+          *ngIf="
+            !signupForm.get('email')?.valid && signupForm.get('email')?.touched
+          "
+          class="help-block"
+          [ngStyle]="{ color: 'red' }"
+          >Please enter a valid email</span
+        >
+
+        <div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input type="radio" [value]="gender" formControlName="gender" />
+            {{ gender }}
+          </label>
+        </div>
+        <span
+          *ngIf="!signupForm?.valid && signupForm?.touched"
+          class="help-block"
+          [ngStyle]="{ color: 'red' }"
+          >Please amend your data!</span
+        >
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="!signupForm.valid"
+        >
+          Submit
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { FormControl, FormGroup, Validators } from '@angular/forms'; /// NO REACTIVE APPROACH, usamos UM MONTE DAS CLASSES OFERECIDAS POR ESSA PACKAGE...
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent implements OnInit {
+    genders = ['Male', 'Female'];
+
+    signupForm: FormGroup;  //nossa 'overall form' sempre será isso, um 'FORM GROUP', um grande COMPILADO DE TODOS OS input fields, selects, textareas, radio buttons, etc
+
+
+
+    ngOnInit(): void {   ////é bem melhor inicializar iniicalmente nossa form AQUI, em 'ngOnInit()'....
+
+
+      this.signupForm = new FormGroup({  /////ISSO VAI __ CRIAR UMA _ NOVA FORM _ QUASe__ VÁLIDA...
+
+        ////sempre wrappe o nome de seus input fields em _ STRINGS_...
+        'username': new FormControl(  ////é usado para CRIAR A REPRESENTAÇÃO DESSE INPUT FIELD em si... e ele tem VÁRIOS ARGUMENTOS QUE DEVEM SER PASSADOS..
+
+        null, //// 1/////// O PRIMEIRO PARÂMETRO É o 'INITIAL VALUE' de seu input field... colocamos 'null' pq queremos que fique EM BRANCO...
+        
+        [ Validators.required, Validators.minLength(5)]
+
+        ),
+
+        'email': new FormControl( ///user input de 'email'
+          
+          null,
+
+
+          ///não EXECUTE esses methods de '.required' e '.email', pq esses methods DEVEM SER EXECUTADOS AUTOMATICAMENTE PELO ANGULAR, QUANDO ELE DETECTAR QUE o input DESSE 'FormControl' ESPECÍFICO foi mudado..
+      [   Validators.required, Validators.email ]      ///O SEGUNDO PARÂMETRO É OU 1 ÚNICO VALIDATOR, OU UMA LISTA DELES..  --> esses validators são importados lá de 'angular/forms'...
+
+        ),
+
+        'gender': new FormControl(this.genders[0] //queremos definir o 'initial value', value default, como sendo 'male' no início...
+          ,
+
+          [Validators.required]
+          )
+
+      }
+      
+      
+      
+      );
+    }
+
+
+
+
+
+    onSubmitForm() { //checar arquivo html, no '(ngSubmit)="onSubmitForm()"'
+
+
+
+      console.log(this.signupForm.value);  ///com isso, COM a form ARMAZENADA NESSA PRORPIEDAED no arquivo typescript, podemos a referenciar a qualquer hora no código typescript...
+    }
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------>  OK... --> 
+
+
+ISSO SIGNIFICA QUE ESTAMOS MAIS UMA VEZ USANDO O 'FORM STATE',
+
+
+
+
+
+
+
+
+
+E OUTRO DETALHE:
+
+
+
+
+
+
+É ÓBVIO QUE AQUELAS CLASSES DE 
+
+
+
+'ng-touched',
+
+'ng-invalid',
+
+'ng-dirty',
+
+'ng-pristine'
+
+
+E
+ ETC 
+
+
+
+ AINDA __ ESTÃO SENDO ADICIONADAS...
+
+
+
+
+
+
+
+
+
+
+ ----> ISSO SIGNIFICA QUE 
+
+ VOCê 
+
+
+ AINDA PODE ESTILIZAR SUAS COISAS TIPO ASSIm:
+
+
+
+
+
+ input.ng-invalid.ng-touched {
+     border: 1px solid red;
+ }
+
+
+
+
+
+
+
+
+
+ ----> ISSO É POSSÍVEL;
+
+ AS CLASSES CONTINUAM AS MESMAS DO 'TEMPLATE-DRIVEN APPROACH'...
+
+
+
+
+
+
+
+
+ --> É ASSIM QUE AINDA PODEMOS USAR O FORM STATE...
+
+
+
+
+
+
+
+ --> O ÚNICO TAKEAWAY,
+ AQUI,
+
+ É QUE ACESSAMOS NOSSOS ELEMENTS DE FORMA DIFERENTE,
+
+ COM A AJUDA DAQUELE  HELPER METHOD DE 
+
+
+ 'signupForm.get('nomeDaKeyDoField')'...

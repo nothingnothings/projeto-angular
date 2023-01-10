@@ -1,0 +1,811 @@
+
+
+
+
+
+
+
+
+
+NA ÚLTIMA LIÇÃO, CRIAMOS NOSSO SERVICE DE 'ACCOUNTS',
+
+e aí 
+
+
+
+FIZEMOS 'WIRE UP' 
+
+dele ao nosso app....
+
+
+
+
+
+
+
+
+
+--> E, AINDA ASSIM, NOSSO APP PARECE ESTAR BROKEN... --> QUANDO CLICAMOS NOS BUTTONS,
+
+
+
+
+__ O STATUS_ NÃO É ALTERADO,
+E NOVOS COMPONENTS NÃO SÃO ADICIONADOS AO DOM.... ---------->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O PROFESSOR DIZ QUE PODE PARECER QUE 'NÃO ESTÁ FUNCIONANDO'...
+
+
+
+
+
+
+
+
+
+
+--> MAS, NA VERDADE,
+
+
+NOSSO CÓDIGO ESTÁ FUNCIONANDO CORRETAMENTE, O QUE 
+
+NÃO ESTÁ CORRETO É NOSSO USO DE SERVICES 
+
+
+NESSE APP,
+
+com esse 
+
+
+
+SPECIFIC CASE...
+ 
+
+
+
+
+
+
+
+
+
+ ------> NESSE CASO ESPECÍFICO,
+
+
+
+ NÃO ESTAMOS __ USANDO _ OS SERVICES DA MANEIRA QUE DEVERÍAMOS OS UTILIZAR,
+
+ NESSE APP...
+
+
+
+
+
+
+
+
+
+
+
+ -> MAS O QUE ESTAMOS FAZENDO ERRADO? 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> BEM, VEJA A EXPLICAÇÃO:
+
+
+
+
+
+
+
+
+
+
+
+ _O  ANGULAR 'DEPENDENCY INJECTOR'
+
+
+ é, na verdade,
+
+
+
+ um __ HIERARCHICAL
+
+
+ INJECTOR... -------->  ISSO __ SIGNIFICA QUE _ 
+
+
+
+
+
+ SE __ NÓS PROVIDENCIAMOS 1 service 
+
+
+
+ EM ALGUM LUGAR DE NOSSO APP,
+
+
+
+
+
+
+ COMO POR EXEMPLO 
+
+
+
+
+ EM 1 COMPONENT ESPECÍFICO.... --------> QUANDO ISSO ACONTECER,
+
+
+ O 
+
+
+ ANGULAR 
+
+ '''SABE''''
+
+
+
+ COMO CRIAR UMA INSTANCE DESSE SERVICE __ PARA_ ESSE COMPONENT ESPECÍFICO,
+
+
+
+ MAS __ MAIS DO QUE ISSO,
+
+
+ __ ELE __ SABE COMO  _FAZER ISSO (criar 1 instance de esse service para esse component) 
+
+ PARA _ 
+
+
+
+TAMBÉM __ TODOS OS CHILD COMPONENTS DESSE COMPONENT AÍ.... -----> ou seja,
+
+
+
+
+
+
+
+SE ADICIONAMOOS UM 
+
+SERVICE 
+
+AO 
+
+COMPONENT DE 
+
+'app.component.ts',
+
+
+
+________tODOS __ OS CHILD COMPONENTS DE 'app.component.ts' (ou seja, o APP INTEIRO, PQ ELE SEGURA O APP INTEIRO)
+
+
+
+
+FICARÃO VINCULADOS A ESSA 'INSTANCE' de seu service...
+
+
+
+
+
+
+
+
+
+
+
+--> É __ POR ISSO_ _ QUE SERVICES 
+
+
+SÃO 
+
+'ELEMENTOS CENTRALIZADORES' DE SEU CÓDIGO...
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER QUE TODOS OS CHILD COMPONENTS,
+
+E CHILD COMPONENTS DOS CHILD COMPONENTS,
+
+
+_ VÃO RECEBER__ A MESMA INSTANCE__ 
+
+
+DO SERVICE...
+
+
+
+
+
+
+
+
+
+
+
+----> É POR ISSO QUE 
+
+ACHO QUE 
+
+
+DEIXAR 'providers' 
+
+em cada 
+
+1 
+dos components é uma baita furada,
+
+
+pq 
+
+
+
+QUEREMO APENAS QUE O COMPONENT EM QUE ISSO __IMPORTA__ (no caso, o app component)
+
+
+
+
+tenha 
+
+o 
+
+
+
+service no array de 'providers'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR ENTÃO FALA DOS LOCAIS EM QUE PODEMOS ESCREVER 'SERVICES':
+
+
+
+
+
+
+
+
+
+
+
+
+
+1) O LOCAL MAIS 'ALTO' 
+
+PARA COLOCAR UM SERVICE É o
+
+
+
+COMPONENT DE 'AppModule'...
+
+
+
+
+
+
+
+
+
+----> AINDA NÃO FIZEMOS ISSO,
+
+MAS __ SABEMOS__ QUE 'AppModule'
+
+
+é __ anterior __ ATÉ MESMO A 'app.component.ts',
+
+
+
+E LOGO VEREMOS COMO É ADICIONAR UM 
+
+
+SERVICE A ESSE COMPONENT 'GERAL'...
+
+
+
+
+
+''''SAME INSTANCE OF SERVICE BECOMES AVAILABLE __ APPLICATION-WIDE_____'''
+
+
+
+
+
+
+
+
+
+
+
+
+-> basta ver o código de 'app.module.ts':
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppComponent } from './app.component';
+import { NewAccountComponent } from './new-account/new-account.component';
+import { AccountComponent } from './account/account.component';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    NewAccountComponent,
+    AccountComponent
+  ],
+  imports: [
+    BrowserModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+-------------------------------
+
+
+
+
+
+
+
+
+
+
+
+OK... ISSO SIGNIFIICA QUE 
+
+SE ESCREVERMOS NOSSO 
+
+
+SERVICE DENTRO DESSE ARRAY DE PROVIDERS,
+
+
+ESSA 
+
+INSTANCE DO SERVICE VAI FICAR DISPONÍVEL A 
+
+
+
+TODOS COMPONENTS 
+
+TODOS DIRECTIVES 
+
+
+TODOS OUTROS SERVICES (em que talvez interajamos com esse service aí)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------> E, SIM, PODEMOS __ INJECT_ SERVICEs__ DENTRO DE OUTROS SERVICES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------> O PRÓXIMO NÍVEL, POR EXEMPLO,
+
+
+SERIA:
+
+
+
+
+
+
+
+
+2) AppComponent ----> SE VOCÊ INJETAR O SERVICE AQUI,
+
+AÍ _ _TODOS __OS 
+
+
+CHILD COMPONENTS DE 
+'AppComponent'
+
+
+
+FICARÃO 
+
+COM ESSE SERVICE, ESSA INSTANCE DO SERVICE,
+
+
+__TAMBÉM_....
+
+
+
+
+
+
+--------> AS ÚNICAS COISAS QEU __ NÃO FICARÃO COM ACESSO DIRETO A ESSE SERVICE,
+
+
+a essa instance desse service,
+
+
+
+SERÃO _ OS __ OUTROS __ SERVICES....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-_> MAS OS SERVICE INSTANCES __ NÃO _ FAZEM 'PROPAGATE UP',
+
+
+e sim 
+
+SÓ 
+
+VÃO 'GO DOWN'
+
+ a tree de components..
+
+
+
+
+
+
+
+
+
+
+
+
+ 3) O LEVEL MAIS BAIXO... --> É UM SINGLE COMPONENT,
+
+ COM NENHUM CHILD 
+
+
+ COMPONENT --> SE PROVIDENCIARMOS O SERVICE AÍ,
+
+
+
+ ESSE __ COMPONENT _ TERÁ 
+
+ SUA própria 
+
+ 'INSTANCE'
+
+ DO 
+
+ SERVICE,
+
+ QUE SERÁ __ SEPARADA _ DAS OUTRAS... .
+
+ (
+
+
+     e é por isso que estávamos com aquele comportamento 
+
+     bizarro na nossa página...
+ )
+
+
+
+
+
+
+
+
+
+--> E SE VOCÊ TIVER VINCULADO UMA INSTANCE DESSE SERVICE 
+
+
+
+EM UM COMPONENT 'SEM NENHUM CHILD',
+
+
+
+
+ESSA INSTANCE VAI ATÉ MEMSO 
+
+
+
+__OVERWRITTAR_ 
+
+
+ESSE MESMO SERVICE,
+
+SE ELE EXISTIA EM UM 'HIGHER LEVEL' (Que é o que estamso fazendo, agora)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ---> PARA RESOLVER ESSE PROBLEMA,
+
+ PORTANTO,
+
+ A ÚNICA COISA QUE TEMOS DE FAZER 
+
+ É 
+
+ REMOVER 
+
+ O 
+
+
+
+
+
+ 'AccountComponent'
+
+
+
+
+ DO ARRAY DE 'providers'
+
+
+ em 
+
+
+ 'NewAccountComponent'
+
+
+ e
+  
+
+  'AccountComponent'...
+
+
+
+
+
+
+
+
+
+
+
+  ok... fiz isso.... mas é claro que no nosso código 
+
+
+
+  surgiram vários erros...
+
+
+
+  --> temos que 
+
+  ver 
+
+
+  COMO É POSSÍVEL 
+
+
+
+
+  'CHAMAR/FAZER REFERÊNCIA'
+
+
+  a 
+
+  esse 
+
+
+  SERVICE,
+
+  que 
+
+
+
+  agora só existirá no component 'app.component.ts' 
+
+  de nosso app...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> UÉ.... FUNCIONOU, E EU NEM TIVE DE FAZER NADA...
+
+
+
+
+
+
+
+
+
+
+
+
+  --> O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  import { Component, DoCheck, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+import { AccountsService } from '../accounts.service';
+import { LoggingService } from '../logging.service';
+
+@Component({ /////////////COM USO DE 'SERVICES' para o transfer de data das accounts...
+  selector: 'app-account',
+  templateUrl: './account.component.html',
+  styleUrls: ['./account.component.css'],
+  providers: [LoggingService]  ///1) USO DE SERVICES (requisito)
+})
+export class AccountComponent implements OnInit {
+  @Input() account: { name: string; status: string };
+
+  @Input() id: number;
+
+  // @Output() statusChanged = new EventEmitter<{
+  //   id: number;
+  //   newStatus: string;
+  // }>();
+
+  constructor(private loggingService: LoggingService, private accountsService: AccountsService) {} ///2) USO DE SERVICES (requisito)
+
+  ngOnInit(): void {}
+
+  onSetTo(status: string) {
+    // this.statusChanged.emit({ id: this.id, newStatus: status });
+    // console.log('A server status changed, new status: ' + status);
+    this.loggingService.logStatusChange(status); //3 USO DE SERVICES (aplicação/uso)....
+    this.accountsService.updateStatus({id: this.id, status: status})
+  }
+
+
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> BASTOU __REMOVER_ O 'service'
+
+
+
+DE NOSSOS ARRAYS DE 'providers'
+
+
+de cada component,
+
+para 
+
+aí 
+
+CONSEGUIR ACESSO REGULAR À INSTANCE DO SERVICE de 
+
+'accounts.service.ts'
+
+
+QUE 
+
+
+
+COLOCAMOS COMO SERVICE LÁ DE 'app.component.ts'...

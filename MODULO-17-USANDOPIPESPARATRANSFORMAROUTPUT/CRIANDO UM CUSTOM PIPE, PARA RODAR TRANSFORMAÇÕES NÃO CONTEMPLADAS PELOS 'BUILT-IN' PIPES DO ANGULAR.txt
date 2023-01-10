@@ -1,0 +1,1476 @@
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK.. NOSSO CÓDIGO, ATÉ AGORA,
+
+FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="list-group">
+        <li class="list-group-item"
+        *ngFor="let server of servers"
+        [ngClass]="getStatusClasses(server)"
+        >
+          <span class="badge" >{{ server.status }}</span>
+          <strong>{{ server.name  }}</strong> || {{ server.instanceType | uppercase }} ||
+          {{ server.started }} ||
+          {{ server.started | date }} ||
+          {{server.started | date: 'fullDate' }}  ||
+          {{server.started | date: 'fullDate' | uppercase }} ||
+       
+        </li> <!-- AQUI CONSTATAMOS O USO DE ALGUNS PIPES (uppercase e DATE... Aug 9, 1920)-->
+            <!-- PIPES _ TAMBÉM ACEITAKM PARÂMETROS, E ELES SÃO PASSADOS COM ESTA SINTAXE, de ':' :  '''{{ server.started | date: 'xxx' }}'''' -->
+      
+      
+        <!--     {{server.started | uppercase | date: 'fullDate' }}   - ISSO NÃO FUNCIONA -- NÃO FUNCIONA PQ A 'ORDER' DOS PIPES, ORDER DE TRANSFORMAÇÃO DE SUA DATA PELOS PIPES, SEMPRE IMPORTA...  E NÃO É POSSÍVEL CONVERTER UMA DATA DE TYPE 'DATE' EM UPPERCASE, pq só strings permitem essa conversão..-->
+          </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+APRENDEMOS BASTANTE SOBRE PIPES E BUILT-IN PIPES,
+
+EM GERAL...
+
+
+
+
+
+
+
+
+
+
+
+
+--> APRENDEMOS SOBRE COMO OS UTILIZAR,
+
+
+
+
+ONDE ENCONTRAR MAIS SOBRE ELES,
+
+
+
+
+COMO PASSAR PARÂMETROS (até mesmo múltiplos parameters) 
+
+
+
+
+
+
+E 
+
+
+TAMBÉM 
+
+
+
+
+A MANEIRA PELA QUAL _ CHAINAR PIPES...
+
+
+
+
+
+
+
+-----> É CLARO QUE EXISTEM 
+
+
+
+
+
+
+CASES EM QEU OS BUILT-IN PIPES NÃO SERÃO SUFICIENTES...
+
+
+
+
+
+
+
+
+
+
+
+NESSES CASES,
+
+DEVEMOS CRIAR NOSSOS PRÓPRIOS PIPES... 
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA CRIAR UM 
+
+NOVO PIPE,
+
+O PROCESSO É SIMPLES:
+
+
+
+
+
+
+
+
+
+
+CRIE UM NOVO ARQUIVO NO FOLDER DE 'app'..
+
+
+
+
+
+
+
+
+
+
+--> AÍ, DENTRO DESSE ARQUIVO,
+
+
+
+crie um novo nome..
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> NESSE EXEMPLO,
+
+
+VAMOS QUERER CRIAR UM PIPE QUE VAI _ ABREVIAR__ NOMES.
+
+
+
+
+
+
+
+
+--->  VAI 'SHORTEN THE INPUT.'..
+
+
+
+
+
+-----> QUEREMOS ABREVIAR O NAME DE NOSSOS SERVERS...
+
+
+
+
+
+
+
+
+
+
+'Development testing server' -->
+
+
+
+QUEREMOS QUE PARTE 
+
+
+DESSA 
+
+STRING ACABE 'CUT OFF'..
+
+
+
+
+
+
+
+-> para isso,
+
+
+
+CRIAMOS UM PIPE DE 'shorten',
+
+
+
+
+
+POR ISSO 
+
+
+
+
+
+INVENTAMOS UM FILE DE 
+
+
+
+
+'shorten.pipe.ts'..
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE NOVO ARQUIVO TYPESCRIPT,
+
+
+QUE DEVERÁ _ SEGURAR _UMA SIMPLES CLASS APENAS,
+
+
+
+
+
+
+
+
+
+
+será tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export class ShortenPipe {
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> pipes sempre EXIGEM 1 METHOD ESPECÍFICO,
+
+PARA SEREM CLASSIFICADOS E UTILIZADOS COMO PIPES...
+
+
+
+
+
+
+
+
+
+
+
+--> É UM METHOD QUE __ NEM __ SEMPRE _ É NECESSÁRIO,
+
+
+MAS 
+
+
+
+
+
+É UMA BOA-PRACTICE 
+
+
+
+SEMPRE 
+
+
+O ADICIONAR... --> É UMA BOA PRACTICE 
+
+
+
+
+ADICIONAR 
+
+
+
+UMA INTERFACE 
+
+DE 
+
+'pipes' especial,
+
+
+
+e essa INTERFACE __ REQUER_ QUE VOCê ADICIONE ESSE METHOD..
+
+
+
+
+
+
+
+
+
+---> A INTERFACE É CHAMADA DE 'pipeTransform'...
+
+
+
+
+
+
+
+
+
+
+
+ELA É IMPORTADA LÁ DE '@angular/core',
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+import { PipeTransform } from '@angular/core';
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+import { PipeTransform } from '@angular/core';  ////sempre é melhor você IMPLEMENTAR ESSA INTERFACE, QUANDO VOCÊ VAI __ CRIAR UM __ NOVO PIPE...
+
+
+export class ShortenPipe implements PipeTransform {
+
+
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO...
+
+
+
+
+
+
+--> com isso implementado,
+
+
+
+
+
+
+vemos que 
+
+
+
+
+
+VAMOS TER ERRORS NO NOSSO IDE SE NÃO 
+
+PROVIDENCIARMOS O METHOD DE 
+
+
+'transform()'...
+
+
+
+
+
+
+
+
+
+--> MAS O METHOD 
+
+
+
+
+
+DE TRANSFORM,
+
+ESCRITO SOLTO ASSIM,
+
+
+
+AINDA NÃO DEIXA TUDO CORRETO..
+
+
+
+
+
+--> O METHOD DE 'transform'
+
+
+
+PRECISA RECEBER UM PARAMETER DE 'value',
+
+
+QUE 
+
+
+
+
+SERÁ O VALOR 
+
+
+,
+
+O INPUT 
+
+
+
+__ QUE SERÁ ENFIADO 
+
+NESSE NOSSO 
+
+CUSTOM PIPE,
+
+E QUE 
+
+ACABARÁ 
+
+
+TRANSFORMADO..
+
+
+
+
+
+
+
+
+
+
+
+-> O TYPE DESSE VALUE, NESSE CASO,
+
+SERÁ DE 'any',
+
+
+
+E AÍ 
+
+
+
+,
+
+
+LOGO APÓS SUA FIGURA,
+
+
+ESPECIFICAMOS UMA LISTA DE ARGUMENTS... (são arguments em POTENCIAL, que seriam/são adicioandos com ':' NOS PIPES, lá no nosso template)..
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO VAI FICANDO ASSIM:
+
+
+
+
+
+
+import { PipeTransform } from '@angular/core';  ////sempre é melhor você IMPLEMENTAR ESSA INTERFACE, QUANDO VOCÊ VAI __ CRIAR UM __ NOVO PIPE...
+
+
+
+
+
+
+
+export class ShortenPipe implements PipeTransform {
+
+
+    // transform(value: any, , , , , ) {     /////esse pipe comporta o pass de múltiplos parameters...
+        
+    // }
+
+
+    transform(value: any) { ////aqui só vamos querer receber o VALUE, sem o pass de parameters adicionais configurando o comportamento de nosso pipe (contrariamente a pipes como 'SlicePipe')..
+
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA ABREVIAR ESSE VALUE,
+
+
+
+UMA MANEIRA QUICK AND EASY 
+
+
+SERIA 
+
+
+
+
+__ FAZER__ o RETURN __ 
+
+
+
+
+
+DO VALUE...
+
+
+
+
+
+
+
+
+--> UM PIPE É SEMPRE ''YOU GET SOMETHING IN, YOU GET SOMETHING OUT'',
+
+
+
+POR ISSO VOCÊ SEMPRE PRECISA DE UM RETURN...
+
+
+
+
+
+
+
+
+--> VAMOS RETORNAR UMA 
+
+
+STRING,
+SIM,
+
+
+MAS 
+
+ESSA 
+STRING DEVERÁ 
+
+_ SER O 'OLD VALUE',
+
+
+
+
+MAS DE CERTA FORMA __ ABREVIADO_>..
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+O PROFESSOR USA O METHOD DE 
+
+
+'.substr()',
+
+
+
+QUE É UM METHOD QUE TE DEIXA DEFINIR 
+
+
+'QUÃO LONGA  DEVERÁ SER ESSA SUBSTRING, ESSA STRING QUE VOCÊ VAI QUERER 
+EXTRAIR DA STRING INICIAl'...
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR QUER APENAS OS PRIMEIROS 10 CARACTERES,
+
+POR ISSO ELE ESCREVE ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+import { PipeTransform } from '@angular/core';  ////sempre é melhor você IMPLEMENTAR ESSA INTERFACE, QUANDO VOCÊ VAI __ CRIAR UM __ NOVO PIPE...
+
+
+
+
+
+
+
+export class ShortenPipe implements PipeTransform {
+
+
+    // transform(value: any, , , , , ) {     /////esse pipe comporta o pass de múltiplos parameters...
+        
+    // }
+
+
+    transform(value: any) { ////aqui só vamos querer receber o VALUE, sem o pass de parameters adicionais configurando o comportamento de nosso pipe (contrariamente a pipes como 'SlicePipe')..
+
+
+
+
+        return value.substr(0, 10);
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> OK... 
+
+
+
+
+
+ MAS AGORA A PERGUNTA É:
+
+
+
+
+ COMO PODEMOS __ USAR ESSE PIPE?
+
+
+
+
+
+
+
+
+
+
+
+ -> DEVEMOS IR ATÉ __ 'app.module.ts'
+
+
+
+ E ENTAÕ 
+
+ O DECLARAR 
+
+
+
+ EM 
+
+
+
+
+ 'declarations'....
+
+
+
+
+
+
+
+
+
+
+ EX:
+
+
+
+
+
+
+
+
+
+
+ import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppComponent } from './app.component';
+import { ShortenPipe } from './shorten.pipe';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    ShortenPipe /////É AQUI QUE OS PIPES SÃO ADICIONADOS (pipes são adicionados como COMPONENTS E DIRECTIVES)..
+    
+  ],
+  imports: [
+    BrowserModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO ADICIONADO,
+
+
+
+DEIXAMOS ESSE PIPE _ AVAILABLE__...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> FEITO ISSO,
+
+
+ESSE NOSSO PIPE 
+
+
+ESTARÁ DISPONÍVEL, SIM,
+
+
+MAS AÍ A PERGUNTA É:
+
+
+
+'qual SERÁ O _ NAME__ DESSE PIPE',
+
+
+
+como PODEMOS O INVOCAR,
+
+LÁ DE DENTRO DO NOSSO ARQUIVO 
+
+
+TEMPLATE? 
+
+
+
+
+
+
+
+
+
+
+
+----> BEM,
+
+
+DEVEMOS 
+
+REVISITAR O CÓDIGO DE 
+
+'shorten.pipe.ts';
+
+
+
+
+
+import { PipeTransform } from '@angular/core'; ////sempre é melhor você IMPLEMENTAR ESSA INTERFACE, QUANDO VOCÊ VAI __ CRIAR UM __ NOVO PIPE...
+
+///OBS: PIPES DEVEM SEMPRE SER ADICIONADAS NO ROL DE 'declarations' lá em 'app.module.ts'....
+
+export class ShortenPipe implements PipeTransform {
+  // transform(value: any, , , , , ) {     /////esse pipe comporta o pass de múltiplos parameters...
+
+  // }
+
+  transform(value: any) {
+    ////aqui só vamos querer receber o VALUE, sem o pass de parameters adicionais configurando o comportamento de nosso pipe (contrariamente a pipes como 'SlicePipe')..
+
+    return value.substr(0, 10); /////retorna uma SUBSTRING (só uma parte da initial string)
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> É CERTO QUE 
+
+
+ESSA CLASS ESTÁ IMPLEMENTANDO A INTERFACE DE 'PipeTransform',
+
+
+
+MAS A QUESTÃO É QUE 
+
+ALGO ESTÁ FALTANDO...
+
+
+
+
+
+
+
+
+
+
+--> SOMOS OBRIGADOS A ADICIONAR UM OUTRO DECORATOR,
+
+QUE É O DECORATOR DE 
+
+'@Pipe',
+
+
+
+
+QUE TAMBÉM 
+
+É IMPORTADO LÁ DE 'angular/core'..
+
+
+
+
+
+
+
+
+
+
+--> DENTRO DESSE DECORATOR,
+
+
+
+PASSAMOS UM OBJECT,
+
+
+E DENTRO DESSE OBJECT DEVEMOS TER AQUELA KEY de 
+
+'name',
+
+
+
+
+
+QUE __ SERÁ EFETIVAMENTE  __ O NAME__ DO 
+
+
+
+SEU 
+
+PIPE...
+
+
+
+
+
+
+
+
+
+-> NO NOSSO CASO,
+ QUEREMOS QUE ISSO SEJA 'shorten',
+
+
+ POR ISSO ESCREVEMOS ASSIM:
+
+
+
+
+
+
+
+
+
+import { PipeTransform } from '@angular/core';
+
+
+
+
+@Pipe({
+
+    name: 'shorten'
+})
+export class ShortenPipe implements PipeTransform {
+  transform(value: any) {
+    return value.substr(0, 10);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Pipe, PipeTransform } from '@angular/core'; ////sempre é melhor você IMPLEMENTAR ESSA INTERFACE, QUANDO VOCÊ VAI __ CRIAR UM __ NOVO PIPE...
+
+///OBS: PIPES DEVEM SEMPRE SER ADICIONADAS NO ROL DE 'declarations' lá em 'app.module.ts'....
+
+
+
+
+
+@Pipe( ///// ISSO É NECESSÁRIO, ESSE DECORATOR É NECESSÁRIO...
+    {
+        name: 'shorten'  /////ESSE SERÁ O NOME PELO QUAL VOCÊ INVOCARÁ ESSE SEU PIPE específico, esse seu 'custom pipe'...
+    }
+)
+export class ShortenPipe implements PipeTransform {
+  // transform(value: any, , , , , ) {     /////esse pipe comporta o pass de múltiplos parameters...
+
+  // }
+
+  transform(value: any) {
+    ////aqui só vamos querer receber o VALUE, sem o pass de parameters adicionais configurando o comportamento de nosso pipe (contrariamente a pipes como 'SlicePipe')..
+
+    return value.substr(0, 10); /////retorna uma SUBSTRING (só uma parte da initial string)
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO,
+
+COM O PIPE SETTADO ASSIM,
+
+
+VOCÊ PODE VOLTAR AO 'app.component.html'
+
+
+
+
+
+E ENTÕA ADICIONAR SEU PRÓPRIO PIPE,
+
+
+
+tipo naquele 
+
+'server.name' lá:
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="list-group">
+        <li class="list-group-item"
+        *ngFor="let server of servers"
+        [ngClass]="getStatusClasses(server)"
+        >
+          <span class="badge" >{{ server.status }}</span> <!-- `shorten` É UM EXEMPLO DE CUSTOM PIPE, PIPE CRIADO POR NÓS MESMOS..-->
+          <strong>{{ server.name | shorten
+             }}</strong> || {{ server.instanceType | uppercase }} ||
+          {{ server.started }} ||
+          {{ server.started | date }} ||
+          {{server.started | date: 'fullDate' }}  ||
+          {{server.started | date: 'fullDate' | uppercase }} ||
+       
+        </li> <!-- AQUI CONSTATAMOS O USO DE ALGUNS PIPES (uppercase e DATE... Aug 9, 1920)-->
+            <!-- PIPES _ TAMBÉM ACEITAKM PARÂMETROS, E ELES SÃO PASSADOS COM ESTA SINTAXE, de ':' :  '''{{ server.started | date: 'xxx' }}'''' -->
+      
+      
+        <!--     {{server.started | uppercase | date: 'fullDate' }}   - ISSO NÃO FUNCIONA -- NÃO FUNCIONA PQ A 'ORDER' DOS PIPES, ORDER DE TRANSFORMAÇÃO DE SUA DATA PELOS PIPES, SEMPRE IMPORTA...  E NÃO É POSSÍVEL CONVERTER UMA DATA DE TYPE 'DATE' EM UPPERCASE, pq só strings permitem essa conversão..-->
+          </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SALVAMOS TUDO ISSO,
+
+
+
+E AÍ 
+
+
+PERCEBEMOS QUE NOSSO SHORTEN PIPE FOI UTILIZADO...
+
+
+
+
+
+
+
+
+
+--> OK, 
+
+ISSO 
+
+
+PODE SER VISTO NOS NAMES DE NOSSOS SERVERS,QUE AGORA FICARAM TIPO 
+
+
+
+
+
+User Datab 
+
+
+
+Developmen 
+
+
+
+Testing En 
+
+
+
+
+
+
+
+
+
+
+--> MAS PODEMOS __ MELHORAR ESSE PIPE AÍ,
+
+
+
+
+
+
+O PROFESSOR MELHORA A LÓGICA,
+
+
+
+ELE 
+
+
+COLOCA 
+
+
+
+
+uma string de '... '; 
+
+
+
+AO FINAL 
+
+
+
+
+DE CADA 
+
+NEGÓCIO.. (fica melhor a estética de abreviação)..
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR COLOCA UM IF CHECK PARA _ NÃO ABREVIAR __ 
+
+STRINGS/INPUTS MAIORES DO QUE '10 caracteres',
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+import { Pipe, PipeTransform } from '@angular/core'; ////sempre é melhor você IMPLEMENTAR ESSA INTERFACE, QUANDO VOCÊ VAI __ CRIAR UM __ NOVO PIPE...
+
+///OBS: PIPES DEVEM SEMPRE SER ADICIONADAS NO ROL DE 'declarations' lá em 'app.module.ts'....
+
+
+
+
+
+@Pipe( ///// ISSO É NECESSÁRIO, ESSE DECORATOR É NECESSÁRIO...
+    {
+        name: 'shorten'  /////ESSE SERÁ O NOME PELO QUAL VOCÊ INVOCARÁ ESSE SEU PIPE específico, esse seu 'custom pipe'...
+    }
+)
+export class ShortenPipe implements PipeTransform {
+  // transform(value: any, , , , , ) {     /////esse pipe comporta o pass de múltiplos parameters...
+
+  // }
+
+  transform(value: any) {
+    ////aqui só vamos querer receber o VALUE, sem o pass de parameters adicionais configurando o comportamento de nosso pipe (contrariamente a pipes como 'SlicePipe')..
+
+
+
+
+    if (value.length > 10) { ///string maior do que 10 caracteres, vamos querer abreviar ...
+        return value.substr(0, 10) + ' ...'; /////retorna uma SUBSTRING (só uma parte da initial string)
+    }
+
+
+    return value;
+
+  
+  }
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO.... 
+
+
+
+
+
+
+
+
+
+MAS AS COISAS IMPORTANTES ACERCA DE PIPES, NO CASO, SÃO:
+
+
+
+1) VOCÊ DEVE ADICIONAR AQUELE 'PIPE DECORATOR' @Pipe({})
+
+
+
+
+
+
+
+2) VOCÊ DEVE COLOCAR A KEY de 'name' no pipe DECORATOR, e aí escrever o nome de seu pipe...
+
+
+
+
+
+
+
+3) VOCÊ DEVE TER UM METHOD DE 'transform()" DENTRO DO SEU PIPE, com um parameter de 'value' e POSSÍVEIS PARAMETROS ADICIONAIS...
+
+
+3.5) possivelmente IMPLEMENTE A INTERFACE DE 'PipeTransform'...
+
+
+4) VOCÊ DEVE TER UM RETURN NESSE METHOD DE 'transform()'...
+
+
+
+
+
+
+
+5) VOCÊ DEVE ADICIONAR SEU PIPE NAS DECLARATIONS DO ARQUIVO 'app.module.ts',
+
+
+COMO SE FOSSE UMA DIRECTIVE OU COMPONENT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO,
+
+VOCê 
+
+CONSEGUE 
+
+
+CRIAR SEUS PRÓPRIOS PIPES E OS UTILIZAR PARA SEUS PRÓPRIOS FINS...

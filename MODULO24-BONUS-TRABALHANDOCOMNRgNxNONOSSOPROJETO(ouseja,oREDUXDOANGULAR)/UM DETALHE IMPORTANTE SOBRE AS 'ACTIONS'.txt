@@ -1,0 +1,995 @@
+
+
+
+
+
+
+
+
+
+
+
+
+ANTES DE 
+
+EXAMINARMOS O TÓPICO DOS 'SIDE EFFECTS' (como o STORE DE USER DATA EM 'LOCAL STORAGE')
+
+
+
+
+
+e o handle 
+
+
+
+desses effects com o NGRX,
+
+
+
+
+
+
+
+
+
+O PROFESSOR DIZ QUE 
+
+
+
+DEVEMOS TER 2 COISAS EM MENTE:
+
+
+
+
+
+
+
+
+
+
+1a COISA: O NOSSO REDUCER...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O REDUCER, ATUALMENTE, ESTÁ COM ESTE CÓDIGO:
+
+
+
+
+
+
+export function AuthReducer(
+  state: AuthState = initialState,
+  action: AuthActions.AuthActions
+) {
+  switch (action.type) {
+    case AuthActions.AUTH_START:
+      return authStart(state, action as AuthActions.AuthStart);
+    case AuthActions.AUTH_SUCCESS:
+      return authSuccess(state, action as AuthActions.AuthSuccess);
+    case AuthActions.AUTH_FAIL:
+      return authFail(state, action as AuthActions.AuthFail);
+    case AuthActions.AUTH_LOGOUT:
+      return authLogout(state, action as AuthActions.AuthLogout);
+      default:
+        return state;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ATÉ AGORA,
+
+O PROFESSOR FALOU QUE 
+
+
+
+ESSE RETURN DE 'state' COMO __ DEFAULT__ 
+
+
+era essencial 
+
+
+PARA _ O INITIALIZE DO STATE (dessa slice do state, no nosso state geral)...
+
+
+
+
+
+
+
+
+
+--> e isso ___ É VERDADE_,
+
+
+PQ quando 
+o 
+
+NGRX _ INICIA,
+
+
+
+
+GRAÇAS AO INITIALIZE DO 'storeModule' lá no 'app.module.ts',
+
+
+
+
+
+
+
+
+
+__ O NGRX _ ENVIA ESSENCIALMENTE '''ONE INITIAL ACTION'''
+
+
+a todos os reducers... -->  E COMO _ ESSA ACTION _ TEM UM 
+
+IDENTIFIER
+
+
+
+QUE __ NÃO É HANDLADO _ EM LUGAR NENHUM (um action.type 'invisível', assim por dizer),
+
+
+
+
+
+
+NA VERDADE, ESSE IDENTIFIER __ EXISTE__, 
+
+E LOGO VEREMOS 
+
+
+QUAL É SEU VALUE...
+
+
+
+
+
+
+
+
+
+--> MAS COMO ESSE É UM __ IDENTIFIER__ QUE _ NÃO HANDLAMOS EXPLICITAMENTE,
+
+
+
+NÓS ACABAMOS CAINDO NO 'DEFAULT CASE',
+
+
+
+
+E POR ISSO ACABAMOS RETORNANDO 'state'.. -->  e como 
+
+
+
+NÃO TEMOS NENHUM PRIOR STATE QUANDO ESSA 'ACTION' É EMITADA,
+
+
+
+
+
+nós acabamos 
+
+
+
+FICANDO/RETORNANDO O 
+
+
+'initialState',
+
+
+
+
+PQ FOI ISSO QUE escrevemos no nosso parâmetro, com a marcação de 'default argument' do typescript:
+
+
+
+
+
+
+
+const initialState: AuthState = {
+  token: null,
+  userId: null,
+  error: null,
+  isLoading: false,
+  email: null,
+};
+
+
+
+
+'''''state:StateSlice = initialState'''''....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK.... ESSA É A PRIMEIRA 'NOTE' IMPORTANTE...
+
+
+
+
+
+
+
+
+
+
+--> MAS OUTRA COISA __ IMPORTANTE SOBRE ISSO QUE O PROFESSOR RECÉM MENCIONOU:
+
+
+
+
+
+ESSA 'INITIAL ACTION',
+
+
+
+QUE _ É DISPATCHEADA AUTOMATICAMENTE PELO NGRX,
+
+
+_ ELA _ 
+
+
+
+SEMPRE__ VAI __ ALCANÇAR _ ___ tODOS __ OS NOSSOS REDUCERS.... -----> 
+
+
+
+
+
+
+
+
+
+BEM, 
+
+
+NA VERDADE,
+
+
+O CURIOSO (e importante) 
+
+
+
+É QUE 
+
+
+_TODAS__ AS ACTIONS, NÃO SÓ A 'initial Action',
+
+
+
+
+
+VÃO _ SEMPRE _ 
+
+
+
+
+SER_ DISPATCHEADAS __ A TODOS _ OS REDUCERS 
+
+DE SEU APP,
+
+
+
+
+
+VÃO SER RECEBIDAS POR TODOS ELES.... 
+
+
+
+
+
+
+
+------> ok.... ----. ISSO QUER DIZER QUE 
+
+
+
+
+
+
+
+QUANDO FAZEMOS UM DISPATCH DE 
+
+
+
+'''''
+this.store.dispatch(
+    new AuthActions.Login(userData)
+)'''
+
+
+
+
+
+
+
+,
+
+
+ESTAMOS FAZENDO DISPATCH DISSO __ A TODOS_  NOSSOS REDUCERS,
+
+
+
+
+E NÃO APENAS 'TARGETTAR 1 SÓ'...
+
+
+
+
+
+
+
+
+
+--> ISSO PQ _ EXISTIRÃO CASOS EM QUE VOCê VAI QUERER TARGETTAR MAIS DE 1 ÚNICO REDUCER POR VEZ..
+
+
+
+
+
+
+
+
+
+
+--> OK...
+
+
+
+
+
+
+ENTÃO ESSE É O PRIMEIRO DETALHE:
+
+
+
+
+
+
+
+
+
+1) QUAISQUER ACTIONS QUE VOCÊ DISPATCHEAR _ SEMPRE_ ATINGIRÃO
+
+
+__ TODOS OS REDUCERS...
+
+
+
+
+
+
+
+QUALQUER 
+
+ACTION QUE VOCÊ DISPATCHEAR SEMPRE ATINGIRÁ TODOS OS REDUCERS...
+
+
+
+
+
+
+
+
+
+
+----> É CLARO QUE ISSO TEM OUTRA IMPORTANTE IMPLICAÇÃO:
+
+
+
+
+
+
+
+__ É _ SEMPRE__ VITAL_ QUE 
+ 
+VOCÊ
+
+ 
+COPIE 
+O 
+
+'OLD STATE'
+
+
+
+COM O SPREAD OPERATOR,
+
+
+
+E TAMBÉM SUPER VITAL_
+
+
+QUE 
+
+VOCÊ 
+
+FAÇA O RETURN DAQUELE 
+
+
+'default state',
+
+EM 
+
+TODOS 
+
+
+OS 
+
+
+
+REDUCERS DE SEU APP..
+
+
+
+
+
+
+
+
+--> mas pq isso?
+
+
+
+
+
+
+---> bem, suponha este caso:
+
+
+
+
+
+suponha-se que 
+
+
+1 'SHOPPING-LIST-RELATED' 
+
+ACTION É DISPATCHEADA.... -->  MESMO SENDO RELATIVA AO 'shop-list',
+
+
+ELA _ AINDA _ VAI ATINGIR _ O 'AUTH REDUCER'. -----> 
+
+
+
+
+E COMO PROVAVELMENTE NÃO TEREMOS NENHUM CASE PARA HANDLAR ESSA ACTION NO 
+
+
+
+AUTH REDUCER,
+
+
+É ESSENCIAL QUE NOSSO CÓDIGO DE 'default: return state;' 
+
+
+ESTEJA 
+
+NO LUGAR,
+
+
+
+ESTEJA NO LUGAR PARA HANDLAR ESSES CASOS DE 'NÃO FALAMOS COM VOCÊ, MAS CONTINUE O STATE COMO ESTAVA ANTES'...
+
+
+
+
+
+
+
+
+
+
+
+
+-------> OK... É POR ISSO QUE PRECISAMOS 
+
+
+
+DESSE RETURN DO 'OLD STATE' nos cases de 'default',
+
+
+PQ CASO CONTRÁRIO PERDERÍAMOS ESSE STATE... (imagine... vocÊ ficaria com um auth state atualizado, mas aí perderia todos os shop items, etc etc)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR DEMONSTRA ISSO POR MEIO DE UM CONSOLE.LOG...
+
+
+
+
+
+
+
+--> CADA SLICE TEM INFORMAÇÕES APENAS SOBRE_ _ O STATE SLICE 
+
+gerenciado por si... (o shoppingList REDUCER SÓ SE IMPORTA COM O PRÓPRIO STATE DELE, e os outros, a mesma coisa, mas a ACTION SEMPRE VAI ATINGIR TODOS OS REDUCERS, essa é a regra)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, SEMPRE ESCREVA ESSE DEFAULT: RETURN STATE....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2) 
+
+
+
+A SEGUNDA COISA IMPORTANTE É:
+
+
+
+
+
+
+
+
+
+
+
+
+
+COMO _ SUAS DISPATCHED ACTIONS 
+
+
+
+
+
+__ VÃO _ SEMPRE ATINGIR _TODOS OS REDUCRS,
+
+
+VOCê 
+SEMPRE 
+
+
+
+PRECISA _ASSEGURAR_ QUE 
+
+
+SEUS IDENTIFIERS 
+
+
+SÃO 
+
+
+
+'AUTH_LOGIN'
+
+
+
+E 
+
+'AUTH_LOGOUT',
+
+
+
+por exemplo,
+
+
+AO LONGO DO APP INTEIRO.... -->  ISSO PQ  PODEMOS TER ACTIONS QUE TRIGGAM 
+
+
+2 REDUCERS AO MESMO TEMPO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> NÓS ,NESSE NOSSO APP,
+
+temos IDENTIFIERS QUE NÃO VÃO 
+
+
+
+INTERFERIR 1 COM O OUTRO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS EM APPS MAIORES,
+É POSSÍVEL QUE VOCÊ TENHA 
+
+
+'DUPLICATE IDENTIFIERS',
+
+
+
+PARA 
+
+
+
+DIFERENTES PARTES DO SEU APP,
+
+
+
+
+
+
+
+
+o que é bem ruim... -> COMO SUAS ACTIONS 
+
+
+
+
+
+precisam SER UNIQUE 
+
+
+
+_ PARA __ TODO SEU APP (
+
+pq as actions sempre atingem todo o app/todos os reducers
+
+),
+
+
+
+
+
+
+
+
+
+
+O PROFESSOR RECOMENDA UMA TÉCNICA CHAMADA DE 'PREFIXING'...
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK, MAS O QUE É PREFIXING?
+
+
+
+
+
+
+
+
+
+
+--> ISSO SIGNIFICA QUE VOCê VAI EDITAR 1 POUCO SEUS IDENTIFIERS,
+
+TUDO PARA TER 1 PEQUENO PEDAÇO DE INFO ADICIONAL..
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+ADD_INGREDIENT 
+
+
+ADD_INGREDIENTS 
+
+
+UPDATE_INGREDIENT 
+
+
+DELETE_INGREDIENT 
+
+
+START_EDIT 
+
+STOP_EDIT
+
+
+
+
+
+
+
+
+
+--> NO 'MUNDO NGRX',
+
+
+
+ESSA NAMING CONVENTION TIPICAMENTE 
+
+ 
+ PEDE QUE 
+
+ VOCÊ 
+
+
+
+USE 
+
+
+'[]'  (square brackets) E 
+
+
+ENTÃO ADICIONE O 'NOME DA FEATURE'
+
+
+
+
+COM QUE 
+VOCê 
+
+ESTÁ LIDANDo...
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export const ADD_INGREDIENT = '[Shopping List] ADD_INGREDIENT';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok... isso faz sentido, realmente...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO VAI EVITAR CONFLITOS, BASICAMENTE... conflitos entre actions....
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+export const GET_INGREDIENT = '[Shopping List] INGREDIENT_GET';
+
+export const ADD_INGREDIENT = '[Shopping List] INGREDIENT_ADD'; ////identifiers de nossas actions
+
+export const ADD_INGREDIENTS = '[Shopping List] INGREDIENTS_ADD';
+
+export const EDIT_INGREDIENT = '[Shopping List] INGREDIENT_EDIT';
+
+export const DELETE_INGREDIENT = '[Shopping List] INGREDIENT_DELETE';
+
+
+export const START_EDIT = '[Shopping List] START_EDIT';
+
+
+
+export const STOP_EDIT = '[Shopping List] STOP_EDIT';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK....
+
+
+
+
+
+
+
+
+
+ESSE É O PATTERN QUE ENCONTRAMOS NOS OFFICIAL NGRX DOCS...
+
+
+
+
+
+
+
+COM ISSO, SABEMOS QUE ESSE 'START EDIT' E 'STOP EDIT'
+
+
+
+
+são os de 'shopping list'...
+
+
+
+
+
+
+
+
+
+
+
+MAS OS CONSTANT NAMES FICAM IGUAIS,
+
+SÓ OS VALUES  (strings) nas constants 
+
+QUE DEVEM SER ALTERADOS...
+
+
+
+
+
+
+
+
+
+
+-> AGORA DEVEMOS FOCAR NOS SIDE EFFECTS 
+
+
+
+DE NOSSAS ACTIONS/actions nos reducers...

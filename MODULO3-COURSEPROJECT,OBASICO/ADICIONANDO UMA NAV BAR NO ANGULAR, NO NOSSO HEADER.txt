@@ -1,0 +1,991 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... --> ADICIONAMOS TODOS OS COMPONENTS QUE CRIAMOS AOS NOSSOS TEMPLATE.S...
+
+
+
+
+
+
+
+
+
+
+-> AGORA DEVEMOS FAZER FINE-TUNE NELES,
+
+
+PARA QUE 
+
+
+PASSEM A TER O VERDADEIRO CONTEÚDo...
+
+
+
+
+
+
+
+
+
+
+
+--> COMEÇAMOS PELO HEADER...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O HEADER ATÉ AGORA ESTÁ ASSIM:
+
+
+
+
+
+<h1>Header</h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR VAI USAR O BOOTSTRAP PARA ADICIONAR ALGUMAS CLASSES LEGAIS E BONITAS....
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA ISSO,
+
+ELE COMEÇA COM 
+UM ELEMENTO '<nav>'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> aí ele adiciona o estilo de "navbar navbar-default"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-_> ISSO VAI NOS DAR UM HEADER  BOOSTRAP DEFAULT..
+
+
+
+
+
+
+
+
+
+
+
+
+
+<nav class="navbar navbar-default">
+</nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> CERTO... DENTRO DO HEADER,
+
+O PROFESSOR COLOCA UMA DIV COM 
+
+
+
+
+class de 'container-fluid'....,
+
+
+
+
+
+PARA QUE TENHAMOS NOSSO PRÓPRIO 'view container' lá dentro...
+
+
+
+
+
+
+
+
+
+Use .container-fluid for a full width container, spanning the entire width of the viewport.
+
+Copy
+<div class="container-fluid">
+  ...
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK...
+
+
+
+
+
+
+
+
+
+e ele adiciona um HEADER, ESSA É A PRIMEIRA COISA QUE VAMOS QUERER AQUI:
+
+
+
+
+
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+        </div>
+    </div>
+</nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> para isso,
+
+TEMOS A CLASS DE 'navbar-header'
+
+
+QUE PODEMOS ADICIONAR A UMA DIV...
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+        </div>
+    </div>
+</nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> DENTRO DESSA DIV,
+
+
+
+QUEREMOS TER UM 'CLICKABLE HEADER',
+
+
+
+
+
+
+
+
+POR ISSO O PROFESSOR ADICIONA UMA _ ANCHOR TAG__ APONTANDO 
+
+A UM ENDEREÇO...   -> POR ENQUANTO ELE COLOCA "#'
+,
+
+
+MAS DEPOIS COLOCAREMOS UMA ROUTE NESSE LOCAL (basta aprender sobre routes)....
+
+
+
+-----> VAMOS COLOCAR O STYLE DE 'navbar-brand',
+
+
+
+PARA DAR ESSE TEXT-STYLE de 
+
+'brand-like'...
+
+
+
+
+
+ex:
+
+
+
+ 
+
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+        <a href="#" class="navbar-brand">Recipe Book</a>
+        </div>
+    </div>
+</nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... ESSA É A PARTE 'HEADER'  de nosso header..
+
+
+
+
+
+
+
+
+
+
+-> AGORA DEVEMOS TRABALHAR NOS NOSSOS ACTUAL LINKS... -> para isso 
+
+
+
+O PROFESSOR ADICIONA UMA DIV,
+
+
+QUE RECEBERÁ A CLASS DE 
+
+
+'collapse',
+
+ 
+
+
+ E AÍ _ 
+
+
+
+ A CLASS DE 'navbar-collapse'...
+
+
+
+
+
+
+
+
+
+ ---> O PROFESSOR EXPLICA QUE NAÕ VAMOS USAR A 'COLLAPSE FEATURE',
+
+ e que 
+
+
+ NÃO VAMOS ADICIONAR UM 'HAMBURGUER MENU' aqui,
+
+
+ PQ NÃO VAMOS TER TANTOS 
+
+
+ LINKS NO NOSSO 
+
+ HEADER DE QUALQUER FORMA...
+
+
+
+
+
+
+
+
+ ex:
+
+
+
+
+
+
+ <nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+        <a href="#" class="navbar-brand">Recipe Book</a>
+        </div>
+
+        <div class="collapse navbar-collapse">
+        </div>
+    </div>
+</nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--_> MAS ISSO AÍ JÁ NOS DÁ ALGUNS STYLES LEGAIS...
+
+
+
+
+
+
+
+
+
+
+
+
+É CLARO QUE DENTRO DESSA div com class de 'navbar' collapse
+
+
+
+VAMOS QUERER 
+
+
+TER UM 
+
+GRUPO DE LIST ITEMss,
+
+
+um grupo de 
+
+
+LINKS EM LIST ITEMS... -> será uma UNORDERED LIST,
+
+
+
+COM 
+
+
+
+O ESTILO DE 
+
+
+'nav navbar-nav'...
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+ <nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+        <a href="#" class="navbar-brand">Recipe Book</a>
+        </div>
+
+        <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+
+        </ul>
+
+        </div>
+    </div>
+</nav>
+
+
+
+
+
+
+
+
+
+
+
+
+E AGORA, DENTRO 
+
+
+
+DESSA 'UL',
+
+
+SE ADICIONARMOS ALGUNS LIST ITEMS,
+
+ELES VÃO ACTUALLY 
+
+'SIT RIGHT NEXT TO EACH OTHER'... ---> ELES SERÃO 
+
+POSICIONADOS CORRETAMENTE AUTOMATICMAENTE PELO BOOSTRAP...
+
+
+
+
+
+
+
+
+
+
+
+-> COLOCAMOS LINKS tipo assim:
+
+
+
+
+
+
+<li><a href="#">Recipes</a></li>
+<li><a href="#">Shopping List</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> COM ISSO ADICIONADO, O PROFESSOR ADICIONA OUTRA 
+
+ÁREA NO HEADER,
+
+
+que 
+
+SERÁ OUTRA UL... -> 
+
+
+
+ESSA 
+
+
+LIST VAI RECEBER AS CLASSES DE 'nav navbar-nav',
+
+
+
+MAS AÍ 
+
+TAMBÉM 
+
+
+'navbar-right',
+
+
+PARA 
+
+
+POSICIONAR ESSES ITEMS (na verdade, é só 1 item) 
+
+
+
+
+À DIREITA... -->  ESSE ITEM SERÁ UM LIST ITEM 
+
+com class 
+ed 
+
+'dropdown',
+
+
+PQ 
+
+MAIS _ _TARDE_ VAMOS ADICIONAR NOSSA PRÓPRIA DIRECTIEV,
+
+
+QUE 
+
+VAI 
+
+TRANSFORMAR ISSO EM UM _ DROPDOWN FUNCIONAL,
+
+
+EM QUE 
+
+AÍ 
+
+ESCOLHEREMOS ALGUMAS OPTIONS PARA __ FAZEr_ STORE_ _DE NOSSA DATA EM UM SERVER,
+
+
+
+ALGO QUE TAMBÉM IMPLEMENTAREMOS MAIS TARDE,
+
+
+
+
+
+
+
+
+
+OU ENTÃO _ FETCHEAR DATA DE UM 
+
+
+SERVER...
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="#" class="navbar-brand">Recipe Book</a>
+    </div>
+    <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="#">Recipes</a></li>
+        <li><a href="#">Shopping List</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+              
+          </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK.. DENTRO DESSE ITEM COM CLASS DE 'dropdown',
+
+
+
+
+
+
+
+
+queremos 
+
+
+
+ter 
+
+
+UM DROPDOWN MENU,
+
+
+
+
+QUE TAMBÉM SERÁ UMA 'UNORDERED LIST.'... ---> 
+
+
+
+ISSO VAI SEGURAR OS ITEMS DO DROPDOWN.. -> UM PUNHADO DE LIST ITEMS,
+
+
+
+TODOS SEGURARÃO 1 LINK,
+
+
+
+
+serão:
+
+
+
+1) SAVE DATA 
+
+
+
+2) FETCH DATA..
+
+
+
+
+
+
+-> VAMOS PREENCHER ESSES NEGÓCIOS COM CÓDIGO MAIS TARDE... ficaram tipo assim:
+
+
+
+
+
+
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="#" class="navbar-brand">Recipe Book</a>
+    </div>
+    <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="#">Recipes</a></li>
+        <li><a href="#">Shopping List</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+              <ul class="dropdown-menu">
+                  <li><a href="#">Save Data</a></li>
+                  <li><a href="#">Fetch Data</a></li>
+              </ul>
+          </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok.... parece OK... -->
+
+
+
+
+
+
+ALGUMAS COISAS ESTÃO ERRADAS....
+
+
+
+
+
+--->  O DROPDOWN ESTÁ ERRADO 
+
+
+PQ 
+
+
+não estamos com O LINK PARA TRIGGAR 
+
+
+O 
+
+DROPDOWN...
+
+
+
+
+
+
+-->  será um 'a href'
+ 
+ COM UMA CLASS DE 'dropdown-toggle'.... --> PQ ISSO SERÁ O BUTTON QUE TOGGLARÁ 
+
+
+ o dropdown....
+
+
+
+
+
+
+
+
+
+
+ --> TAMBÉM TERÁ UM ROLE DE 'button',
+
+ PARA ADICIONAR ACESSIBILIDADE A ESSE NEGÓCIo....
+
+
+
+
+
+ ex:
+
+
+
+ <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="#" class="navbar-brand">Recipe Book</a>
+    </div>
+    <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="#">Recipes</a></li>
+        <li><a href="#">Shopping List</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+              <a href="#" class="dropdown-toggle" role="button">Manage</a>
+              <ul class="dropdown-menu">
+                  <li><a href="#">Save Data</a></li>
+                  <li><a href="#">Fetch Data</a></li>
+              </ul>
+          </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> COM ISSO, SE SALVAMOS O CÓDIGO,
+
+VEREMOS O DROPDOWN... -> 
+
+
+
+SERIA 
+
+LEGAL 
+
+SE 
+
+TIVÉSSEMOS UMA 
+
+ARROW 
+
+
+DO 
+
+LADO 
+
+DO 
+
+
+'Manage',
+
+INDICANDO QUE É UM DROPDOWN... ->  É POR ISSO QUE 
+
+O 
+
+PROFESSOR 
+
+
+
+COLOCA UM 'span'
+
+AO LADO do 'manage',
+
+
+
+COM UMA CLASS DE 
+
+'caret',
+
+QUE 
+
+
+
+NOS DARÁ UMA ARROW APONTANDO PARA BAIXO,
+ 
+ tipo assim:
+
+
+
+
+
+ <span class="caret"></span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ESSE DROPDOWN _ NÃO VAI ABRIR SE VOCÊ CLICAR NELE PQ AINDA NAÕ ADICIONAMSO NENHUM CÓDIGO QUE 
+
+O ABRA...
+
+
+
+
+
+
+
+
+
+
+
+--> FAREMOS ISSO DEPOIS DA SECTION DE 'directives'..
+
+
+
+
+
+
+
+
+--> devemos prosseguir com a página,
+
+agora 
+
+trabalhar na section de 'recipes'...

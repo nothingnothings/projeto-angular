@@ -1,0 +1,184 @@
+ 
+
+
+
+
+
+
+
+
+
+
+
+ MODULES ---->  MODULARIDADE É ALGO SUPORTADO PELO TYPESCRIPT,
+
+
+ E USAREMOS MODULES UM MONTE AO LONGO DESSE CURSO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> o arquivo:
+
+
+
+
+
+
+
+
+
+
+
+
+
+ export class ExportedClass {
+
+
+
+
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> ok, com 'EXPORT' dizemos que essa class DEVERÁ SER 
+
+ USADA 
+ EM ARQUIVOS 
+
+ EXTERIORES AO NOSSO ARQUIVO LOCAL...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> MODULARITY --> NÓS USAMOS 
+
+
+ MT NO ANGULAR2,
+
+
+
+
+
+
+
+
+
+
+ PQ no curso usamos 'system.js'
+
+ PARA 
+
+ CARREGAR NOSSOS DIFERENTES ARQUVOS (??? não entendi, nunca usei isso)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+ MODULARITY --. É SOBRE O SPLIT DO CÓDIGO EM MÚLTIPLOS ARQUIVOS,
+
+ E AÍ 
+
+ TER TUDO FUNCIONAR 'SMOOTHLY' com um module loader... (como o angular)...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> NÃO ESTAMOS SEPARANDO PARTES 
+
+
+
+ DE NOSSO APP EM FILES,
+
+ E SIM 
+
+ ESTAMOS 
+
+ JUNTANDO TUDO, POR MEIO 
+
+
+ DESSES MODULES (
+
+    é mais fácil de ler o código, e de o compartilhar...
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> OK, ESSA É UMA INTRODUÇÃO BÁSICA AO TYPESCRIPT...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> agora é hora de fazer alguns sites...

@@ -1,0 +1,250 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+PRIMEIRAMENTE, VOU DAR UMA LIMPADA NO MEU CÓDIGO,
+
+REMOVER TODOS OS COMMENTS 
+
+DOS COISOS PASSADOS, PARA FICAR COM UMA LEGIBILIDADE MELHOR...
+
+
+
+
+
+
+
+
+
+--> AGORA VEREMOS O USO DE 'FormsModule'
+
+
+
+COM NOSSO APP,
+
+
+E COISAS COMO 
+
+'NgModule'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE COURSE MODULE´E SOBRE FORMS,
+
+
+
+
+
+FORMS NA SUA HTML PAGE,
+
+
+
+
+
+
+E COMO O ANGULAR PODE TE AJUDAR COM  ESSAS FORMS..
+
+
+
+
+
+
+
+
+
+
+--> A PRIORI,
+
+
+
+
+
+
+  VOCÊ PODE PENSAR QUE VOCÊ NÃO PRECISARIA 
+
+
+  DESSA AJUDA,
+
+
+  PQ 
+
+
+
+  UMA FORM É ALGO QUE VOCê PODE SIMPLESMENTE 
+  'SUBMIT'
+
+  AO 
+  SERVER...
+
+
+
+
+
+
+
+
+
+
+
+
+  --> MAS TENHA EM MENTE QUE VOCê ESTÁ CRIANDO UMA 'SPA',
+
+
+  POR iSSO _ 
+
+
+
+  NÃO EXISTE ESSE 'SUBMIT TO THE SERVER'.. -------> EM VEZ DISSO,
+
+
+
+  VOCÊ VAI PRECISAR 
+
+
+
+
+
+
+
+
+  FAZER HANDLE DESSA FORM ATRAVÉS DO ANGULAR,
+
+
+
+  e aí,
+   
+   SE VOCê __ 
+
+   DESEJAR _ ENVIAR ALGUMA COISA AO SERVER,
+
+
+
+
+   VOCe^
+
+   VAI PRECISAR 
+
+    
+
+    FAZER 'REACH OUT'
+
+
+    VIA 
+
+
+    O HTTP SERVICE 
+
+    DO ANGULAr,
+
+
+
+
+
+    QUE SERÁ ESTUDADO NA PARTE MAIS 
+
+    POSTERIOR DO CURSO,...
+
+
+
+
+
+
+
+
+
+
+    --> precisará do HTTP SERVICE DO ANGULAR PARA ALCANÇAR ESSE SERVICE COM SEU REQUEST....
+
+
+
+
+
+
+
+
+
+
+    --> ISSO QUE VOCê VAI PRECISAR HANDLAR SUAS FORMS COM O ANGULAR,
+
+
+
+
+
+    E, NA VERDAED, O ANGULAR VAI TE AJUDAR COM ESSE HANDLE,
+
+
+
+    PQ 
+
+
+    NÃO SÓ 
+
+
+
+    ELE VAI TE DEIXAR 
+
+
+
+    FAZER 'GET' DOS VALUES QUE O USER INPUTTOU,
+
+
+
+    MAS TAMBÉM VAI 
+
+
+    __ TE DEIXAR__ CHECAR__ SE UMA FORM É VÁLIDA,
+
+
+
+
+
+
+    VAI TE DEIXAR __ CONDICIOANLMENTE_ 
+
+
+    ALTERAR A MANEIRA PELA QUAL A 
+
+
+    FORM É DISPLAYED (colocar 'red borders' ao redor dos INVALID CONTROLS),
+
+
+
+
+    O QUE QUER DIZER QUE O ANGULAR VEM COM PODEROSAS FERRAMENTAS,
+
+    QUANDO O ASSUNTO É FORMS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> TEMOS QEU VER COMO O ANGULAR HANDLA FORMS,
+
+    COMO ELE FAZ ISSO PARA NÓS...

@@ -1,0 +1,1097 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM O EFFECT DE 'LOGIN' ADICIONADO,
+
+
+
+
+
+O PROFESSOR DIZ QUE __ TAMBÉM _ DEVEMOS _ 
+
+
+CRIAR UM EFFECT PARA O 
+
+'SIGNUP' DE NOSSOS USERS,
+
+
+
+
+PQ 
+
+
+
+ESSA É A OUTRA GRANDE COISA QUE PODEMOS FAZER NO NOSSO APP...
+
+
+
+
+
+
+
+
+--> é por isso que o professor adiciona um novo effect, de nome 
+
+
+'authSignup$',
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+  authSignup$ = createEffect(
+    () => {
+
+      return this.actions$.pipe(
+        ofType(AuthActions.AUTH_SUCCESS);
+      )
+    }
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> COMEÇAMOS COM ISSO, É CLARO,
+
+  PQ QUEREMOS FILTRAR 
+
+
+  POR TODAS AS ACTIONS de...
+
+
+
+
+
+
+
+
+
+  bem, 'auth_success'
+
+
+  É ALGO MEIO _ TRASH DE USAR AQUI,
+
+
+
+
+
+
+
+
+
+  E O PROFESSOR COMENTA QUE ACHA QUE É MELHOR _ 
+
+
+
+  CRIARMOS UMA NOVA ACTION,
+
+
+  TALVEZ 
+
+
+  'SIGNUP START'....
+
+
+
+
+
+
+
+
+
+  ex:
+
+
+
+
+
+
+
+
+  export const SIGNUP_START = '[Auth] Signup Start';
+
+
+
+
+
+
+
+
+
+
+
+
+-----> O PROFESSOR ARGUMENTA QUE __ A ÚNICA COISA QUE 
+
+
+
+VAI SER NECESSÁRIA,
+
+AQUI,
+
+
+
+SERÁ O 
+
+
+
+'SIGNUP_START'
+
+
+ACTION IDENTIFIER,
+
+
+
+
+
+
+
+PQ 
+
+
+
+_ NO NOSSO APP,
+
+
+
+
+
+
+
+
+SE NÓS 'SUCCEED' OU 'FAIL',
+
+
+
+NÓS ESSENCIALMENTE __ RODAMOS O MESMO CÓDIGO,
+
+
+
+
+
+
+
+RODAMOS A MESMA 'ERROR HANDLING LOGIC'
+
+
+
+E ENTÃO 
+
+
+
+
+
+RODAMOS _A MESMA 'LOGIN LOGIC'...
+
+
+
+
+
+
+
+
+
+
+-> É POR ISSO QUE NO NOSSO 'auth.service.ts'
+
+
+ANTIGO ESTÁVAMOS USANDO UM METHOD DE 'handleError()'
+
+
+
+E 'handleAuthentication' 
+
+
+
+
+
+DE FORMA UNIFICADA... (usados tanto para o login como o signup)...
+
+
+
+
+
+
+
+
+
+
+começamos assim:
+
+
+
+
+
+
+
+export class AuthSignupStart implements Action {
+  readonly type = AUTH_SIGNUP_START;
+
+
+  constructor(public)
+}
+
+
+
+
+
+
+
+
+
+
+
+APENAS CRIAMOS ESSE IDENTIFIER AÍ PQ 
+
+
+ESSE NÃO DEIXARÁ DE SER 'UM TIPO DE ACTION DIFERENTE',
+
+
+
+pq 
+
+vamos ACABAR ENVIANDO UM HTTP REQUEST A UMA URL COMPLETAMENTE DIFERENTE DAQUELA ENVIADA À URL DE 'login'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... MAS 'AUTH_FAIL' E 
+
+
+'AUTH_SUCCESS'
+
+
+
+PODEM _ SER REUTILIZADOS PARA O SIGNUP, EM OUTRAS PALAVRAS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+EU TENTO ESCREVER ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Action } from '@ngrx/store';
+import { User } from '../user.model';
+
+export const AUTH_START = '[Auth] AUTH_START';
+
+export const AUTH_FAIL = '[Auth] AUTH_FAIL';
+
+export const AUTH_SIGNUP_START = '[Auth] AUTH_SIGNUP_START';
+
+export const AUTH_SUCCESS = '[Auth] AUTH_SUCCESS';
+
+export const AUTH_LOGOUT = '[Auth] AUTH_LOGOUT';
+
+// export class AuthStart implements Action {  ///versão REACT (só usado para trocar isLoading para true)...
+//   readonly type = AUTH_START;
+
+//   constructor() {}
+// }
+
+export class AuthStart implements Action {
+  readonly type = AUTH_START;
+
+  constructor(public payload: { email: string; password: string }) {}
+}
+
+export class AuthFail implements Action {
+  readonly type = AUTH_FAIL;
+
+  constructor(public payload: string) {} ////vai segurar 'error', que será uma STRING (ou um object error).
+}
+
+export class AuthLogout {
+  readonly type = AUTH_LOGOUT;
+  ///temos que remover os items no localStorage, por meio de algum helper method, no reducer...
+}
+
+export class AuthSuccess implements Action {
+  readonly type = AUTH_SUCCESS;
+
+  constructor(public payload: User) {}
+}
+
+export class AuthSignupStart implements Action {
+  readonly type = AUTH_SIGNUP_START;
+
+  constructor(public payload: { email: string; password: string }) {}
+}
+
+export type AuthActions =
+  | AuthStart
+  | AuthFail
+  | AuthLogout
+  | AuthSuccess
+  | AuthSignupStart;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> agora basta adicionar o effect para essa action... (que vai DISPARAR ESSA ACTION),
+
+
+
+E AÍ 
+
+
+O HELPER METHOD/FUNCTION NO REDUCER 
+
+
+
+
+
+
+
+,
+
+ALÉM DO CASE NO SWITCH-CASE STATEMENT,
+
+
+QUE VAI ALTERAR O STATE DE 'isLoading'
+
+DE FALSE PARA TRUE...
+
+
+
+
+
+
+
+
+
+
+
+
+tipo algo assim, POR ENQUANTO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  authSignup$ = createEffect(
+    () => {
+
+      return this.actions$.pipe(
+        ofType(AuthActions.AUTH_SIGNUP_START)
+      ),
+
+
+      map(
+        (resData: AuthResponseData ) => {
+
+          const expirationDate = new Date( 
+            new Date().getTime() + +resData.expiresIn * 1000
+          );
+
+          return new AuthActions.AuthSuccess(new User(resData.email, resData.localId, resData.idToken, expirationDate))
+        }
+      )
+    }
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OS CÓDIGOS FICARAM TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+  authLogin$ = createEffect(() => {
+
+
+
+
+
+
+    return this.loginUser('LOGIN');  ///o código de baixo foi TODO OUTSOURCEADO...
+
+
+
+,
+
+
+{
+    dispatch: true
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+authSignup$ = createEffect(
+    () => {
+
+      return this.loginUser('SIGNUP'),
+
+
+
+
+
+      {dispatch: true}
+
+
+
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+
+E A LÓGICA DE 'loginUser': (helper method):
+
+
+
+
+
+
+
+
+
+
+
+private loginUser(operationType: 'LOGIN' | 'SIGNUP') {
+  let url: string;
+
+  if (operationType === 'LOGIN') {
+    url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`;
+  } else {
+    url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.firebaseAPIKey}`;
+  }
+
+  return this.actions$.pipe(
+    ofType(AuthActions.AUTH_START),
+    switchMap((authData: AuthActions.AuthStart) => {
+      const requestHeaders = new HttpHeaders();
+      requestHeaders.append('Content-Type', 'application/json');
+
+      const httpAuthData: {
+        email: string;
+        password: string;
+        returnSecureToken: boolean;
+      } = {
+        email: authData.payload.email,
+        password: authData.payload.password,
+        returnSecureToken: true,
+      };
+
+      return this.http
+        .post<AuthResponseData>(
+          // `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`,
+
+          url,
+          httpAuthData,
+
+          {
+            headers: requestHeaders,
+          }
+        )
+        .pipe(
+          map((resData: AuthResponseData) => {
+            const expirationDate = new Date(
+              new Date().getTime() + +resData.expiresIn * 1000
+            );
+
+            return new AuthActions.AuthSuccess(
+              new User(
+                resData.email,
+                resData.localId,
+                resData.idToken,
+                expirationDate
+              )
+            );
+          }),
+
+          catchError((errorRes) => {
+            let errorMessage = 'An unknown error has occured.';
+
+            if (!errorRes.error || !errorRes.error.error) {
+              return of(new AuthActions.AuthFail(errorMessage));
+            }
+
+            switch (errorRes.error.error.message) {
+              case 'EMAIL_NOT_FOUND':
+                errorMessage = 'No user found for the entered email!';
+                break;
+              case 'INVALID_PASSWORD':
+                errorMessage = 'Invalid password, please try again.';
+                break;
+              case 'EMAIL_ALREADY_EXISTS':
+                errorMessage = 'Email already exists, please try again.';
+            }
+
+            return of(new AuthActions.AuthFail(errorMessage));
+          })
+        );
+    })
+  );
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+
+
+
+ISSO REALMENTE ECONOMIZOU BASTANTE CÓDIGO..
+
+
+
+
+
+
+
+
+
+--> professor faz um pouco de cleanup,
+
+
+
+
+
+
+ea gora em 
+
+
+autheffecst 
+
+
+
+ele 
+
+coloca o 
+
+
+
+
+signupstart...
+
+
+
+
+O ´CODIGO COMPLETO FICA ASSIM:
+
+
+
+
+
+
+///todos seus effects serão organizados em CLASSES, esse é o ngrx effects... npm install --save @ngrx/effects
+
+import { Actions, createEffect, Effect } from '@ngrx/effects'; /// é diferente de 'Action' lá de @ngrx/store....
+
+import { ofType } from '@ngrx/effects'; //'ofType 'é um _ OPERATOR _ _FORNECIDO PELO NGRX (e não pelo rxjs)... --> é usado para 'FILTRAR' as actions que interessam/triggam cada 1 de nossos effects...
+
+import * as AuthActions from '../store/authActions';
+import { catchError, map, of, switchMap, tap } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { AuthResponseData } from '../auth.service';
+import { environment } from 'src/environments/environment';
+import { User } from '../user.model';
+import { Injectable } from '@angular/core';   ////precisamos disso, pq vamos injetar coisas diversas nesses nossos effects, como 'http', o HttpClient service...
+import { Router } from '@angular/router';
+                                                ///também fazemos inject das 'Actions'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@Injectable()
+export class AuthEffects {
+  //aqui vamos definir os possíveis effects dessa feature de nosso app... (side-effects, como send de http requests, etc)...
+
+  //     /esse é nosso PRIMEIRO EFFECT...  -> essa é a versão 'DEPRECADA' desse código...
+
+  // @Effect()  /////DECORATOR USADO PELO 'NGRX/EFFECTS' para IDENTIFIAR UM EFFECT em nosso app... (é obrigatório) --> foi deprecado, e hoje o method de 'createEffect()' é usado no seu lugar...
+  // authLogin = this.actions$.pipe(   ///'actions$'é um observable, mas O NGRX _ NOS DEIXA _ FICAR 'SEM FAZER SUBSCRIBE A ELE', PQ O SUBSCRIBE É AUTOMÁTICO com ele...
+
+  // ofType(AuthActions.AUTH_START),  ////com isso, dizemos que 'APENAS AS ACTIONS DE TYPE AUTH_START DISPATCHEADAS' é que vão __TRIGGAR_ ESSE NOSSO EFFECT DE 'Authlogin'...
+
+  // switchMap(  ////nos deixa CRIAR UM NOVO OBSERVABLE, A PARTIR DA DATA DE UM OBSERVABLE ANTERIOR (que, no caso, será o observable que segurará a DATA ENVIADA, COMO PAYLOAD, por nossa action de 'AuthActions.AUTH_START')...
+
+  //     (authData: AuthActions.AuthStart) => {  ////data contida dentro de nosso object 'action' de 'AUTH_START' (com o payload e etc)... --> sempre coloque o 'type' desse argumetno como sendo EQUIVALENTE À CLASS/action que você definiu lá no arquivo de class, que também será a action que vai triggar esse effect específico....
+
+  //                     ////dentro desse operator, vamos retornar a MESMA LÓGICA DE LOGIN QUE TÍNHAMOS NO NOSSO SERVICE DE 'LOGIN'...
+
+  //                     const requestHeaders = new HttpHeaders();
+
+  //                     requestHeaders.append('Content-Type', 'application/json');
+
+  // const httpAuthData = {
+  //     email: authData.payload.email,
+  //     password: authData.payload.password
+  // }
+
+  //             return this.http
+  // .post<AuthResponseData>(
+
+  //   `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`,
+  //   httpAuthData,
+
+  //   {
+  //     headers: requestHeaders,
+  //   }
+  // )
+  // }
+  // )
+  // )
+
+
+
+
+
+
+  ////effects __ PODEM __ OU NÃO_ RETORNAR 'NEW DISPATCHABLE ACTIONS' ao final de seus códigos... o 'authLogin' é um exemplo de EFFECT QUE FAZ DISPATCH DE UMA DESSAS ACTIONS (action de 'AuthSuccess') ... --> já o effect de 'AuthSuccess' NÃO FAZ ISSO; ELE _ NÃO _ FAZ O RETURN DE UMA NOVA 'DISPATCHABLE ACTION' ao final...
+  authLogin$ = createEffect(() => {
+
+
+
+
+
+
+    return this.loginUser('LOGIN');  ///o código de baixo foi TODO OUTSOURCEADO...
+
+
+
+    // return this.actions$.pipe( ///pipe call no nosso OUTER OBSERVABLE, que é this.actions$....
+    //   ofType(AuthActions.AUTH_START),
+    //   switchMap((authData: AuthActions.AuthStart) => {
+    //     const requestHeaders = new HttpHeaders();
+    //     requestHeaders.append('Content-Type', 'application/json');
+
+    //     const httpAuthData: {email: string, password: string, returnSecureToken: boolean} = {
+    //       email: authData.payload.email,
+    //       password: authData.payload.password,
+    //       returnSecureToken: true
+    //     };
+
+    //     return this.http.post<AuthResponseData>(  //aqui temos um pipe call NO NOSSO INNER OBSERVABLE, que é 'this.http.post()'...
+    //       `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`,
+    //       httpAuthData,
+
+    //       {
+    //         headers: requestHeaders,
+    //       }
+    //     ).pipe(  ///AQUI, ESTAMOS CHAMANDO '.pipe()' NO NOSSO INNER OBSERVABLE, em 'this.http.post()' (ao contrário do OUTER OBSERVABLE, que é 'this.actions$.post()' )...
+    //     map(  // 1 ////  executa código e faz dispatch de uma action de 'AUTH_SUCCESS' caso não ocorra nenhum error com esse http request observable...
+    //     (resData: AuthResponseData) => {
+
+    //         const expirationDate = new Date( 
+    //         new Date().getTime() + +resData.expiresIn * 1000
+    //       );
+    //               ///'of()' é um method que te AJUDA A CRIAR NOVOS OBSERVABLES.... --> MAS AQUI NÃO PRECISAMOS DELE, PQ O 'map()' JÁ FAZ AUTOMATICAMENTE O 'WRAP' de tudo que você retorna nele COMO _ UM _- OBSERVABLE...
+    //         // of(new AuthActions.AuthSuccess(new User(resData.email, resData.localId, resData.idToken, expirationDate)))
+
+
+    //         return new AuthActions.AuthSuccess(new User(resData.email, resData.localId, resData.idToken, expirationDate));  /////RETURN DE NOVO OBSERVABLE, essencialmente... essa nossa action NOVA será retornada como um OBSERVABLE, por meio do uso de 'map()'...
+    //     }
+    //   ),
+    //     // catchError( /// 2 //// executa código e faz dispatch de uma action de 'AUTH_FAIL' CASO OCORRA UM ERROR NO SEND DESSE HTTP REQUEST/RESPONSE recebida por ele..
+    //     //     (error) => {  
+    //     //         ////usamos o 'of()' para CRIAR UM NOVO OBSERVABLE, OBSERVABLE QUE NÃO SEJA DE 'ERROR', pq queremos MANTER A 'OBSERVABLE STREAM' de this.actions$.pipe()' SEMPRE VIVA...
+    //     //         ///o uso de 'of()' é necessário, aqui, pq NÃO VAMOS USAR 'map()' nessa parte de nosso código (e é apenas o 'map()' que vai sempre CONVERTER AQUILO QUE VOCê RETORNOU AUTOMATICAMENTE EM UM OBSERVABLE)...
+                
+    //     //         of()
+    //     //     }
+    //     //   ),
+
+
+    //             catchError( 
+    //         (errorRes) => {  
+
+
+
+    //           let errorMessage = 'An unknown error has occured.';
+
+    //           if (!errorRes.error || !errorRes.error.error) {
+    //             return of(new AuthActions.AuthFail(errorMessage))
+    //           }
+
+    //           switch (errorRes.error.error.message) { //lógica reutilizada, lá de 'auth.service.ts'...
+    //             case 'EMAIL_NOT_FOUND':
+    //               errorMessage = 'No user found for the entered email!';
+    //               break;
+    //             case 'INVALID_PASSWORD':
+    //               errorMessage = 'Invalid password, please try again.';
+    //               break;
+    //             case 'EMAIL_ALREADY_EXISTS':
+    //               errorMessage = 'Email already exists, please try again.';
+    //           }
+    
+    //             return  of( ////VAMOS RETORNAR UM NOVO 'DISPATCH DE UMA ACTION', que será um observable, essencialmente... (por conta de 'of()', que cria NOVOS OBSERVABLES)....
+    //               new AuthActions.AuthFail(errorMessage)
+    //             )
+    //         }
+    //       ),
+
+    //     )
+    //   })
+    // );
+  },
+  {dispatch: true}  ////é o default.. força o RETURN DE UMA NOVA ACTION/DISPATCHABLE ACTION/observable, ao final desse nosso effect...
+  
+  
+  );
+
+
+
+
+
+
+
+
+
+
+  authSignup$ = createEffect(
+    () => {
+
+      return this.loginUser('SIGNUP')
+
+      // return this.actions$.pipe(
+      //   ofType(AuthActions.AUTH_SIGNUP_START)
+      // ),
+      // switchMap(
+      //   (authData: AuthActions.AuthSignupStart ) => {
+
+
+      //     const requestHeaders = new HttpHeaders();
+      //     requestHeaders.append('Content-Type', 'application/json');
+  
+      //     const httpAuthData: {email: string, password: string, returnSecureToken: boolean} = {
+      //       email: authData.payload.email,
+      //       password: authData.payload.password,
+      //       returnSecureToken: true
+      //     };
+
+
+          
+
+
+
+      //     const expirationDate = new Date( 
+      //       new Date().getTime() + +resData.expiresIn * 1000
+      //     );
+      //     return new AuthActions.AuthSuccess(new User(resData.email, resData.localId, resData.idToken, expirationDate))
+      //   }
+      // )
+    },
+    {dispatch: true}
+  )
+
+
+
+  authSuccess$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(AuthActions.AUTH_SUCCESS),
+
+        tap(
+          () => {
+
+            this.router.navigate(['/'])
+          }
+        )
+        
+      
+      )
+    },
+    {dispatch: false}
+  )
+
+
+
+
+
+
+
+
+
+
+  constructor(private actions$: Actions, private http: HttpClient, private router: Router) {
+    //// a naming convention é realmente usar 'actions$' ($ ao final)  ---> uma das naming conventions é nomear TODOS OS OBSERVABLES DO ANGULAR Com '$' AO FINAL...
+  }
+
+
+
+
+
+
+
+
+
+
+///HELPER METHOD para os cases de 'login/signup' (lógica compartilhada: mesmo authData que deve ser inputtado, e mesmo dispatch da action de 'AUTH_SUCCESS'):
+
+
+private loginUser(operationType: 'LOGIN' | 'SIGNUP') {
+  let url: string;
+
+  if (operationType === 'LOGIN') {
+    url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`;
+  } else {
+    url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.firebaseAPIKey}`;
+  }
+
+  return this.actions$.pipe(
+    ofType(AuthActions.AUTH_START),
+    switchMap((authData: AuthActions.AuthStart) => {
+      const requestHeaders = new HttpHeaders();
+      requestHeaders.append('Content-Type', 'application/json');
+
+      const httpAuthData: {
+        email: string;
+        password: string;
+        returnSecureToken: boolean;
+      } = {
+        email: authData.payload.email,
+        password: authData.payload.password,
+        returnSecureToken: true,
+      };
+
+      return this.http
+        .post<AuthResponseData>(
+          // `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`,
+
+          url,
+          httpAuthData,
+
+          {
+            headers: requestHeaders,
+          }
+        )
+        .pipe(
+          map((resData: AuthResponseData) => {
+            const expirationDate = new Date(
+              new Date().getTime() + +resData.expiresIn * 1000
+            );
+
+            return new AuthActions.AuthSuccess(
+              new User(
+                resData.email,
+                resData.localId,
+                resData.idToken,
+                expirationDate
+              )
+            );
+          }),
+
+          catchError((errorRes) => {
+            let errorMessage = 'An unknown error has occured.';
+
+            if (!errorRes.error || !errorRes.error.error) {
+              return of(new AuthActions.AuthFail(errorMessage));
+            }
+
+            switch (errorRes.error.error.message) {
+              case 'EMAIL_NOT_FOUND':
+                errorMessage = 'No user found for the entered email!';
+                break;
+              case 'INVALID_PASSWORD':
+                errorMessage = 'Invalid password, please try again.';
+                break;
+              case 'EMAIL_ALREADY_EXISTS':
+                errorMessage = 'Email already exists, please try again.';
+            }
+
+            return of(new AuthActions.AuthFail(errorMessage));
+          })
+        );
+    })
+  );
+}
+  
+}

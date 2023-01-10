@@ -1,0 +1,834 @@
+
+
+
+
+
+
+
+
+
+
+-> aprendemos sobre COMO CRIAR DIRECTIVES, COMO AS POSICIONAR NOS ELEMENTOS,
+
+COMO AS DECLARAR 
+
+
+
+E 
+
+
+A COMO 
+
+
+
+USAR 
+
+
+'@HostListener()'
+
+
+
+
+
+
+
+PARA REAGIR A PARTIR DE EVENTOS,
+
+
+
+
+PARA ENTÃO __ ALTERARMOS NOSSO COMPONENT AFETADO POR CADA DIRECTIVE (Attribute directive)...
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK... O SETUP DE 'betterHighlight',
+
+atualmente, está assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Directive, Host } from '@angular/core';
+
+import { Renderer2 } from '@angular/core';
+
+import { OnInit } from '@angular/core';
+
+import { ElementRef } from '@angular/core';
+
+import { HostListener } from '@angular/core';
+
+@Directive({
+  selector: '[appBetterHighlight]',
+})
+export class BetterHighlightDirective implements OnInit {
+  constructor(private elementRef: ElementRef, private renderer: Renderer2) {}
+
+  ngOnInit(): void {
+    this.renderer.setStyle(
+      this.elementRef.nativeElement,
+      'background-color',
+      'blue'
+    );
+  }
+
+  @HostListener('mouseenter') mouseOver(eventData: Event) {
+    this.renderer.setStyle(
+      this.elementRef.nativeElement,
+      'background-color',
+      'red'
+    );
+  }
+
+  @HostListener('mouseleave') mouseLeave(eventData: Event) {
+    this.renderer.setStyle(
+      this.elementRef.nativeElement,
+      'background-color',
+      'transparent'
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> ESSE SETUP AÍ ESTÁ FUNCIONANDO, E ESTAMOS CONSEGUINDO ALTERAR OS STYLES DO ELEMENT 
+
+A PARTIR 
+
+DE 
+EVENTS DIVERSOS... (mouseenter e mouseleave)...
+
+
+
+
+
+
+
+
+--> MAS TEMOS OUTRO DECORATOR QUE PODEMOS USAR,
+
+
+
+QUE ENTAÕ _ NOS __ PERMITE 'NÃO PRECISAR UTILIZAR O RENDERER'...
+
+
+
+
+(
+
+    o renderer de 'Renderer2'...
+)
+
+
+
+
+
+
+
+
+
+
+
+--> NÃO HÁ NADA DE ERRADO COM O USO DE RENDERER NOS NOSSOS METHODS E EM 'onInit()',
+
+
+MAS TEMOS UMA MANEIRA AINDA MAIS FÁCIL DE 
+
+
+
+SIMPLESMENTE 'CHANGE THE BACKGROUND COLOR'
+
+
+se isso 
+é 
+
+
+TUDO QUE QUEREMOS FAZER POR MEIO DE UMA GIVEN DIRECTIVE.... (é tipo uma shorthand, portanto)...
+
+
+
+
+
+
+
+
+
+
+
+
+-> NOVAMENTE, O USO DE 'RENDERER' não é algo errado,
+
+
+mas este approach pode ser mais conveniente....
+
+
+
+
+
+
+
+
+
+--> O DECORATOR  A QUE O PROFESSOR SE REFERE É 
+
+
+'@HostBinding()' -------> 
+
+
+
+
+
+
+
+
+TAMBÉM IMPORTAMOS ISSO LÁ DE '@angular/core'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> ok...
+
+
+
+
+
+
+
+
+
+
+
+---- HOSTBINDING, PORTANTO, É O NOVO DECORATOR...
+
+
+
+
+
+
+
+
+
+
+--> 
+ESCREVEMOS DENTRO DE NOSSA DIRECTIVE, TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+export class BetterHighlightDirective implements OnInit {
+    @HostBinding() 
+}
+
+
+
+
+
+
+
+
+
+
+
+-------> ENTRETANTO,
+
+ANTES DE USAR ESSE DECORATOR,
+
+
+PRECISAMSO 
+
+
+
+
+O _ __ BINDAR__ A ALGUMA PROPERTY 
+
+
+
+CUJO 
+
+
+
+VALUE __ _ SE TORNARÁ __ IMPORTANTE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR UTILIZARÁ DE EXEMPLO A PROPRIEDADE 
+
+
+
+
+'backgroundColor',
+
+
+
+
+
+e esse negócio realmente terá esse nome:
+
+
+
+
+
+
+
+
+
+
+export class BetterHighlightDirective implements OnInit {
+    @HostBinding() backgroundColor
+}
+
+
+
+
+
+
+
+
+
+
+
+
+--------> ESSA 'PROPRIEDADE IMPORTANTE',
+
+nesse nosso caso,
+
+SERÁ DE TYPE 'string'..
+
+
+
+
+
+
+
+ex:
+
+
+
+
+export class BetterHighlightDirective implements OnInit {
+    @HostBinding() backgroundColor: string;
+    
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------> CERTO....
+
+
+
+
+
+
+
+
+
+
+
+AGORA, EM 
+
+'@HostBinding',
+
+
+podemos __ passar __UMA _ STRING__ QUE DEFINE 
+
+
+'''A QUAL PROPRIEDADE DO HOSTING ELEMENT'' 
+
+QUEREMOS 
+
+
+
+
+
+_ BINDAR__ 
+
+
+
+
+
+
+
+
+
+
+
+--> NO CASO, o professor escreve 
+
+
+
+
+
+'style.backgroundColor',
+
+
+
+
+
+
+E ISSO É TUDO... ------> O CAMELCASE É IMPORTANTE, AQUI, PQ __ ESTAREMOS _ ACESSANDO A 
+
+'PROPRIEDADE DOM' 
+
+
+
+desse elemento específico...
+
+
+
+
+
+
+
+Ex:
+
+
+
+
+
+
+
+
+export class BetterHighlightDirective implements OnInit {
+    @HostBinding('style.backgroundColor') backgroundColor: string;
+    
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> COM ISSO,
+
+ESTAREMOS DIZENDO AO ANGULAR:
+
+
+
+
+
+
+
+
+
+'''NO ELEMENT EM QUE ESSA DIRECTIVE DE BetterHighlightDirective'
+
+
+SE POSICIONA,
+
+
+__ POR FAVOR_ ACESSE _ A PROPRIEDADE 'style',
+
+
+
+E AÍ 
+
+ACESSE A SUBPROPRIEDADE DE 'backgroundColor',
+
+
+
+E AÍ _ -DEFINA _ 
+
+
+
+
+ESSA SUBPROPRIEDADE 
+
+
+
+COMO SENDO EQUIVALENTE 
+
+
+
+
+
+A COISA QUE DEFINIMOS EM 'backgroundColor: xxxx' (no caso, apenas escrevemos 'backgroundColor: string'... ) 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> ASSIM QUE VOCÊ FIZER ESSE 'bind' 
+
+
+DE ESSA PROPRIEDADE DO ELEMENTO HTML 
+
+
+a essa PROPRIEDADE DO COMPONENT 
+
+'class BetterHighlightDirective',
+
+
+
+
+VOCÊ pode ACESSAR 
+
+
+ESSA PROPRIEDADE E ENTÃO A ALTERAR,
+
+DE QUALQUER LOCAL DE SUA DIRECTIVE, TIPO ASSIM:
+
+
+
+
+
+
+
+@HostBinding('style.backgroundColor') backgroundColor2: string;
+
+
+
+@HostListener('mouseenter') mouseOver(eventData: Event) {
+
+    this.renderer.setStyle(this.elementRef.nativeElement, 'background-color', 'blue');
+    this.backgroundColor2 = 'blue';
+}
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Directive, Host } from '@angular/core';
+
+import { Renderer2 } from '@angular/core';
+
+import { OnInit } from '@angular/core';
+
+import { ElementRef } from '@angular/core';
+
+import { HostListener } from '@angular/core';
+
+import { HostBinding } from '@angular/core';
+
+@Directive({
+  selector: '[appBetterHighlight]',
+})
+export class BetterHighlightDirective implements OnInit {
+  @HostBinding('style.backgroundColor') backgroundColor2: string;
+
+  constructor(private elementRef: ElementRef, private renderer: Renderer2) {}
+
+  ngOnInit(): void {
+    this.renderer.setStyle(
+      this.elementRef.nativeElement,
+      'background-color',
+      'blue'
+    );
+  }
+
+  @HostListener('mouseenter') mouseOver(eventData: Event) {
+    this.renderer.setStyle(
+      this.elementRef.nativeElement,
+      'background-color',
+      'red'
+    );
+    this.backgroundColor2 = 'yellow';
+  }
+
+  @HostListener('mouseleave') mouseLeave(eventData: Event) {
+    this.renderer.setStyle(
+      this.elementRef.nativeElement,
+      'background-color',
+      'transparent'
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------
+
+
+MAS O PROFESSOR DIZ QUE DEVEMOS 
+
+
+DEFINIR UMA COLOR INICIAL, PARA QUE NÃO RECEBAMOS UM ERRO NA PRIMEIRA VEZ QUE FIZERMOS 'MOUSEOVEr'...
+
+
+
+--> É POR ISSO QUE ELE ESCREVE ASSIM:
+
+
+  @HostBinding('style.backgroundColor') backgroundColor2: string = 'transparent';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  import { Directive, Host } from '@angular/core';
+
+import { Renderer2 } from '@angular/core'; ////uma ferramenta melhor do que utilizar 'elementRef.nativeElement.xxx' para definir coisas de nossos elements...
+
+import { OnInit } from '@angular/core'; ///é mt comum usar esse hook para ESCREVER NOSSAS DIRECTIVES... (mt melhor fazer initialization work lá em 'ngOnInit', e não em 'constructor()')
+
+import { ElementRef } from '@angular/core';
+
+import { HostListener } from '@angular/core';   ////é usado para ESCREVER LÓGICA A PARTIR DE 'EVENTS' que ocorrerem nesse nosso element (como 'click', 'hover', etc)...
+
+
+import { HostBinding } from '@angular/core';
+
+@Directive({
+  selector: '[appBetterHighlight]',
+})
+export class BetterHighlightDirective implements OnInit {
+
+
+  @HostBinding('style.backgroundColor') backgroundColor2: string = 'transparent';
+
+
+
+
+  constructor(private elementRef: ElementRef, private renderer: Renderer2) {}
+
+
+
+
+
+
+
+  ngOnInit(): void {
+    // this.renderer        ////é assim que acessamos o renderer na nossa directive....  --> e ele nos dá um MONTE DE METHODS para manipular nosso element...
+
+    this.renderer.setStyle(this.elementRef.nativeElement, 'background-color', 'blue'); /// nos deixa SETTAR O STYLE DE ALGUM ELEMENT...  --> o element que nos interessa, em que COLOCAMOS ESSA NOSSA DIRECTIVE, segue sendo referenciado por 'this.elementRef'....
+        //você deve passar 'this.elementRef.nativeElement' (o underlying element dessa ELEMENT REFERENCE), e não 'this.elementRef' em si...
+  
+
+          //1o parâmetro --> element que queremos estilizar...
+          ///2o parametro --> estilo que queremos definir 
+          /////3o parametro --> VALOR do estilo que queremos definir 
+          ///4o parametro --> FLAGS opcionais que queremos definir para esse style... (tag de '!important', para que o style overwritte outro style), 
+  }
+
+
+
+
+  @HostListener('mouseenter') mouseOver(eventData: Event) { ///quando o event especificado em 'hostListener' acontecer ('hover', nesse exemplo), O METHOD DA DIREITA SERÁ DISPARADO...
+            //// a eventData é RECEBIDA NESSA PARÂMETRO, SE ASSIM O DESEJARMOS...
+
+
+            this.renderer.setStyle(this.elementRef.nativeElement, 'background-color', 'red')
+            this.backgroundColor2 = 'yellow';
+
+
+  }
+
+
+
+  @HostListener('mouseleave') mouseLeave(eventData: Event) { 
+
+    this.renderer.setStyle(this.elementRef.nativeElement, 'background-color', 'transparent')
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, COM ISSO APRENDEMOS 'HOSTLISTENER' E 'HOSTBINDING',
+
+
+ótimas maneiras PARA TRABALHAR COM 
+
+O 
+
+ELEMENT DENTRO DE UMA DIRECTIVE...
+
+
+
+
+
+
+
+
+
+
+--> E É CLARO QUE COM 'HostBinding'
+
+
+PODEMOS BINDAR ESSE DECORATOR/PROPRIEDAED A QUQLAQUER PROPRIEDADE QUE 
+
+
+TEMOS 
+
+DENTRO 
+
+
+
+
+desse element em que você colocou a directive...

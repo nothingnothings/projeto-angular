@@ -1,0 +1,567 @@
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ----> NA ÚLTIMA LIÇÃ0O,
+
+
+ criamos 
+
+ o 
+
+
+
+ recipeBook service 
+
+
+
+ E ENTÃO O UTILIZAMOS 
+
+ PARA HANDLAR NOSSAS SERVICES EM UM 'LUGAR CENTRAL'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> AGORA DEVEMOS USAR ESSE SERVICE 
+
+ PARA 
+
+
+
+
+ MELHORAR NOSSO APP...
+
+
+
+
+
+
+
+
+
+ --> TÍNHAMOS AQUELA LONGA 
+
+
+
+ CHAIN DE INPUTS E OUTPUTS...
+
+
+
+
+
+
+
+
+
+ --> eu já tirei tudo...
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+ -> agora meu código ficou BEM MAIS CLEAN...
+
+
+
+
+
+
+
+
+
+
+
+
+ ---> O CÓDIGO DE 
+
+
+
+ 'recipeBook.service.ts'
+
+
+ FICOU ASSIM:
+
+
+
+
+
+
+
+
+ import { EventEmitter, Injectable, Output } from '@angular/core';
+import { Recipe } from './recipeBook/recipe.model';
+
+
+@Injectable()
+export class RecipeBookService {
+  private recipes: Recipe[] = [  //professor colocou como PRIVATE....
+    new Recipe(
+      'Chicken Wings',
+      'Delicious chicken wings',
+      'https://www.farmfor.com.br/wp-content/uploads/2022/02/coxinha-da-asa-superbowl.jpg'
+    ),
+    new Recipe(
+      'Pork Chops',
+      'Tasty pork chops, check them out',
+      'http://t2.gstatic.com/licensed-image?q=tbn:ANd9GcQsRbNYL4S-Noacb27Vi-sbWzURFRjW9YN8VOScbiJ0DxTAiGxTyqlNdG1TWHKN1xWqOV4UhHaFef-fBD8-PGo'
+    ),
+    new Recipe(
+      'Caesar Salad',
+      'Fresh and healthy salad',
+      'https://www.confeiteiradesucesso.com/wp-content/uploads/2019/06/ceasarsalad-fb.jpg'
+    ),
+  ];
+
+
+
+  getRecipes() {  ///consequência direta de termos definido o array de 'recipes' como PRIVATE....
+    return [...this.recipes];  //mesma coisa que 'this.recipes.slice();'
+
+  }
+
+
+
+
+  @Output() recipeItemClickedEmitter = new EventEmitter<Recipe>()
+
+
+  // loadedRecipe: Recipe;
+
+
+  recipeItemClicked(index: number) {
+
+
+    const recipe = this.recipes[index];
+    this.recipeItemClickedEmitter.emit(recipe)
+
+  } 
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> o que interessa é o method de 
+
+
+'recipeItemClicked'..
+
+
+
+
+
+
+
+ex:
+
+
+
+
+  recipeItemClicked(index: number) {
+
+
+    const recipe = this.recipes[index];
+    this.recipeItemClickedEmitter.emit(recipe)
+
+  } 
+
+
+
+
+
+
+
+
+
+
+
+  -> ELE DEPENDE DAQUELE EVENTEMITTER,
+
+
+  que faz emit 
+
+  desse negócio, dessa RECIPE....
+
+
+
+
+  O CÓDIGO QUE INTERESSA, NA VERDADE, É ESTE:
+
+
+
+
+
+
+
+
+
+
+  @Output() recipeItemClickedEmitter = new EventEmitter<Recipe>()
+
+
+  
+  recipeItemClicked(index: number) {
+
+    const recipe = this.recipes[index];
+    this.recipeItemClickedEmitter.emit(recipe)
+
+  } 
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK....
+
+
+
+lá em 'recipe-item',
+
+
+fiquei com este código:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  onRecipeItemClick(index: number) {
+    console.log('TEST');
+    this.recipeBookService.recipeItemClicked(index);
+ 
+  }
+
+
+
+
+
+
+
+
+
+  -_> ESSE METHOD É ATIVADO 
+
+
+
+  
+
+  quando 1 GIVEN 'recipe-item' é clicado..
+
+
+
+
+
+
+
+
+  ex (código template de 'recipeList'):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <button class="btn btn-success">New Recipe</button>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-xs-12">
+
+    
+    <app-recipe-item *ngFor="let recipe of recipes; let index=index"
+    (click)="onRecipeItemClick(index)"
+    [name]="recipe.name"
+    [description]="recipe.description"
+    [imagePath]="recipe.imagePath"></app-recipe-item>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+CERTO....
+
+
+
+
+
+
+
+
+
+
+ok... mas o  professor fez um pouco diferente....
+
+
+
+
+
+
+
+
+
+
+-> ELE COLOCOU  o 'loadedRecipe'
+
+
+
+LÁ 
+
+NO COMPONENT DE 
+
+
+
+
+
+'recipeBook.component.ts'...
+
+
+
+
+
+
+
+
+
+
+----> EM VEZ DISSO,
+
+EU COLOQUEI ESSA PROPRIEDAED DE 'loadedRecipe'
+
+
+
+lá 
+
+ 
+
+EM 'recipe-detail'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> talvez seja melhor usar isso em 'recipeBook.component.ts',
+
+
+
+
+
+
+
+
+
+
+
+E  O CÓDIGO DO PROFESSOR FOI FICANDO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+export class RecipeListComponent implements OnInit {
+
+
+
+    selectedRecipe: Recipe;
+
+
+    constructor(private recipeService: RecipeService) {
+
+    }
+
+
+    ngOnInit() {
+        this.recipeService.recipeSelected
+        .subscribe(
+            (recipe) => {
+                this.selectedRecipe = recipe;
+            }
+        )
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO..
+
+
+
+
+
+
+
+
+isso ficou parecido com meu código de 'recipe-detail':
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit, Input } from '@angular/core';
+import { RecipeBookService } from 'src/app/recipeBook.service';
+
+import { Recipe } from '../recipe.model';
+
+@Component({
+  selector: 'app-recipe-detail',
+  templateUrl: './recipe-detail.component.html',
+  styleUrls: ['./recipe-detail.component.css']
+})
+export class RecipeDetailComponent implements OnInit {
+
+
+  loadedRecipe: Recipe;
+
+
+
+  constructor(private recipeBookService: RecipeBookService) { 
+
+    this.recipeBookService.recipeItemClickedEmitter.subscribe(
+      (data) => {
+          console.log(data);
+          this.loadedRecipe = data;
+      }
+    )
+
+  }
+
+
+
+  ngOnInit(): void {
+
+  }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, AGORA FICAMOS COM UM APPROACH BEM MAIS LEAN,
+
+COM SERVICES,
+
+QUE NOS AJUDAM COM CROSS-COMPONENT COMMUNICATION (Evitamos de usar 
+
+aquela 
+
+chain complexa de event e property binding)...

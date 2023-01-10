@@ -1,0 +1,2368 @@
+
+
+
+
+
+
+
+
+
+
+
+--> OK... 
+
+
+
+
+
+
+
+
+
+--> SE FETCHEAMOS RECIPES (iniciamos a page),
+
+
+DEPOIS 
+
+
+
+
+CLICAMOS EM ALGUMA DELAS PARA 'LOAD DETAILS' 
+
+
+
+
+E ENTÃO RECARREGAMOS,
+
+
+
+PERCEBEMOS QUE 
+
+
+
+
+'PERDEMOS A DATA' 
+
+
+de antes....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> isso, é claro, está relacionado com NOSSO RESOLVEr...
+
+
+
+
+
+
+
+
+
+--> O CÓDIGO DE NOSSO RESOLVER, NO MOMENTO, É ESTE:
+
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+
+import {
+  ActivatedRouteSnapshot,
+  Resolve,
+  RouterStateSnapshot,
+} from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { AppState } from '.';
+import { RecipeBookService } from './recipeBook.service';
+import { Recipe } from './recipeBook/recipe.model';
+
+import * as RecipeBookActions from '../app/recipeBook/store/recipeBookActions';
+
+@Injectable({ providedIn: 'root' })
+export class RecipesResolverService implements Resolve<Recipe[]> {
+  resolve(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Recipe[] | Observable<Recipe[]> | Promise<Recipe[]> {
+    const recipes = this.recipeBookService.getRecipes();
+
+    if (recipes.length === 0) {
+      return this.recipeBookService.loadRecipes();
+    } else {
+      return recipes;
+    }
+  }
+
+  constructor(
+    private recipeBookService: RecipeBookService,
+    private store: Store<AppState>
+  ) {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------> COMO VOCÊ PODE OBSERVAR, NO NOSSO RESOLVER AINDA ESTAMOS USANDO AQUELES METHODS FEDIDOS DO 'recipeBookService',
+
+
+
+
+QUAL SEJAM 
+
+
+
+'''getRecipes()'''
+
+
+e 'loadRecipes()''..
+
+
+
+
+
+
+
+
+
+
+
+---> PRECISAMOS SUBSTITUÍ-LO POR UM USO CORRETO DO _ _STATE__ DE 'ngrx store', 
+
+
+O
+
+
+
+STATE DE 'RECIPES', para sermos mais precisos... 
+
+
+
+
+
+
+
+
+
+----> O RESOLVER É _rESPONSÁVEL__ 
+
+
+
+
+
+POR ACTUALLY __  TRIGGAR A CALL DE 'FETCH RECIPES'
+
+
+
+
+
+
+
+SEMPRE QUE _ TENTAMOS VISITAR ALGUMA DAQUELAS 
+
+
+
+
+PAGES DE 'RECIPE-DETAIL' (recipe-detail, recipe-edit, etc)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS VER QUE ELE ESTÁ INTEGRADO AO NOSSO APP POR MEIO DO ARQUIVO 'recipe-book-routing.app.ts',
+
+
+
+
+
+QUE TEM ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { AuthGuardService } from '../auth/auth-guard.service';
+import { RecipesResolverService } from '../recipes-resolver.service';
+import { RecipeBookComponent } from './recipe-book.component';
+import { RecipeDetailComponent } from './recipe-detail/recipe-detail.component';
+import { RecipeEditComponent } from './recipe-edit/recipe-edit.component';
+import { SelectARecipeComponent } from './select-a-recipe/select-a-recipe.component';
+
+const recipeBookRoutes: Routes = [
+  {
+    path: '',
+    component: RecipeBookComponent,
+    canActivate: [AuthGuardService],
+    children: [
+      {
+        path: '',
+        resolve: [RecipesResolverService],
+        component: SelectARecipeComponent,
+      },
+      {
+        path: 'new',
+        component: RecipeEditComponent,
+      },
+      {
+        path: ':id',
+        resolve: [RecipesResolverService],
+        component: RecipeDetailComponent,
+      },
+
+      {
+        path: ':id/edit',
+        resolve: [RecipesResolverService],
+        component: RecipeEditComponent,
+      },
+    ],
+  },
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(recipeBookRoutes)],
+
+  exports: [RouterModule],
+})
+export class RecipeBookRoutingModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ou seja,
+
+
+
+ele foi integrado 
+
+
+
+a DIVERSAS DE NOSSAS ROUTES..
+
+
+
+
+
+
+
+
+
+
+
+
+-------> USAMOS ESSE RESOLVER PARA 'RESOLVE' nossa data de RECIPES...
+
+
+
+
+
+
+
+
+
+--> MAS É CLARO QUE ISSO ESTÁ SIMPLESMENTE DANDO 'FAIL' aqui,
+
+
+
+
+
+
+E É POR ISSO QUE NÃO CONSEGUIMOS OBTER ÊXITO EM 'CARREGAR AS RECIPES'
+
+
+SEMPRE QUE 
+RECARREGAMOS NOSSO APP...
+
+
+
+
+
+
+
+
+
+
+-------> NÃO CONSEGUIMOS FETCHEAR ESSA DATA JUSTAMENTE PQ AINDA ESTAMOS USANDO O SERVICE DE 'recipeBookService'
+
+para isso....
+
+
+
+
+
+
+
+
+
+
+
+
+OK, HORA DE TENTAR USAR O NOSSO STATE DE 'recipeBook' 
+
+
+
+
+
+
+com esse resolver...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> para isso, talvez seja necessário o DISPATCH DE ALGUMA ACTION, MAS NÃO TENHO CERTEZA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> LÁ NO 'HEADER', já fiz isso, jÁ SUBSTITUÍ 
+
+
+
+meus methods que usavam O SERVICE, 
+
+por um 
+
+USO PURO DO 
+'STATE DO NOSSO NGRX STORE'... (staet global)...
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+import { Component, OnDestroy, OnInit, Output } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { AppState } from '..';
+import { AuthService } from '../auth/auth.service';
+
+import { RecipeBookService } from '../recipeBook.service';
+
+import * as AuthActions from '../auth/store/authActions';
+
+import * as RecipeBookActions from '../recipeBook/store/recipeBookActions';
+import { RecipeBookComponent } from '../recipeBook/recipe-book.component';
+import { Recipe } from '../recipeBook/recipe.model';
+
+@Component({
+  templateUrl: './headerComponent.app.html',
+  styleUrls: ['./headerComponent.app.css'],
+  selector: 'app-header-component',
+})
+export class HeaderComponent implements OnInit, OnDestroy {
+  collapsed: boolean = true;
+
+  isAuth: boolean = false;
+
+  userEmitted: Subscription;
+
+  recipesEmitted: Subscription;
+
+  loadedRecipes: Recipe[];
+
+  constructor(
+    private recipeService: RecipeBookService,
+
+    private store: Store<AppState>
+  ) {}
+
+  ngOnInit(): void {
+    this.recipesEmitted = this.store
+      .select('recipeBook')
+      .subscribe((recipeBookData) => {
+        this.loadedRecipes = recipeBookData.recipes;
+      });
+
+    this.userEmitted = this.store.select('auth').subscribe((user) => {
+      if (user.token) {
+        this.isAuth = true;
+      } else {
+        const loadedUser = localStorage.getItem('token');
+
+        if (loadedUser) {
+          this.isAuth = true;
+        } else {
+          this.isAuth = false;
+        }
+      }
+    });
+  }
+
+  onLoadData() {
+    console.log('TEST');
+
+    this.store.dispatch(new RecipeBookActions.StartFetchRecipes());
+  }
+
+  onSaveData() {
+    this.store.dispatch(
+      new RecipeBookActions.SaveRecipesStart(this.loadedRecipes)
+    );
+  }
+
+  onLogout() {
+    this.store.dispatch(new AuthActions.AuthLogout());
+  }
+
+  ngOnDestroy(): void {
+    this.userEmitted.unsubscribe();
+    this.recipesEmitted.unsubscribe();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> ok...  E O PROFESSOR ADMITE QUE _ É MELHOR_ FAZERMOS HANDLE 
+
+
+
+DESSE 'LOAD DE NOSSAS RECIPES' através dos 
+
+
+
+EFFECTS,
+
+NGRX EFFECTS...
+
+
+
+
+
+
+
+
+
+
+vou tentar codar isso por conta própria...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+não sei o que fazer, aqui...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> o professor começa o write de alguns effects...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export class RecipeBookEffects {
+
+
+    constructor(private actions$: Actions) {}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+VAMOS ADICIONANDO EFFECTS COMO PROPRRIEDADES, NESSA CLASS..
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+export class RecipeBookEffects {
+
+
+    constructor(private actions$: Actions) {}
+
+
+
+
+
+
+
+
+
+    fetchRecipes$ = createEffect(
+        () => {
+
+
+            return this.actions$.pipe(
+
+            )
+        }
+    )
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> CERTO, O PRIMEIRO OPERATOR NECESSÁRIO É 'ofType()",
+
+
+que vai 
+
+'FILTER'
+ 
+,
+
+
+vai ACEITAR APENAS
+
+
+
+
+TYPES ESPECÍFICOS PARA QUE ESSE EFFECT SEJA TRIGGADO...
+
+
+
+
+
+
+
+
+
+
+---------> 
+
+
+
+
+
+
+
+
+PARA ISSO, O PROFESSOR ADICIONA UMA NOVA ACTION,
+
+DE NOME 
+
+
+
+
+
+
+'
+
+
+
+
+
+export const FETCH_RECIPES = '[Recipes] Fetch Recipes';
+
+
+
+
+
+
+
+
+export class FetchRecipes implements Action {
+
+    readonly type = FETCH_RECIPES
+}
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok, e o código fica 
+
+
+
+
+
+
+
+
+
+
+
+    fetchRecipes$ = createEffect(
+        () => {
+
+
+            return this.actions$.pipe(
+                ofType(
+                    RecipeBookActions.FETCH_RECIPES
+                )
+            )
+        }
+    )
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok...A SEGUNDA ETAPA, DIZ O PROFESSOR, É JUSTASMENTE 'SEND THE HTTP REQUEST TO FETCH RECIPES'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> bem, eu já havia feito isso,
+
+como você pode observar deste c´doigo aqui:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  fetchRecipes$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(RecipeBookActions.START_FETCH_RECIPES),
+
+        switchMap(
+          (startFetchRecipeAction: RecipeBookActions.StartFetchRecipes) => {
+            const requestHeaders = new HttpHeaders();
+
+            return this.http
+              .get<{ [name: string]: Recipe }>(
+                // 'https://recipebookdummyproject-default-rtdb.firebaseio.com/recipes.json' ///VERSÃO DUMMY, SEM AUTHENTICATE RULES NO FIREBASE API
+                'https://recipebookdeployproject-default-rtdb.firebaseio.com/recipes.json', //VERSÃO DEPLOY, com o uso de AUTHENTICATE RULES no firebase api (restrição de acesso a contas com email)...
+
+                {
+                  headers: requestHeaders,
+                }
+              )
+              .pipe(
+                map((data) => {
+                  const transformedRecipesArray: Recipe[] = [];
+
+                  for (const key in data) {
+                    if (data.hasOwnProperty(key)) {
+                      transformedRecipesArray.push({ ...data[key] });
+                    }
+                  }
+
+                  transformedRecipesArray.map((recipe) => {
+                    return {
+                      ...recipe,
+                      ingredients: recipe.ingredients ? recipe.ingredients : [], ////////SE NOSSA PROPRIEDADE 'ingredients' dessa recipe específica NÃO EXISTIR (um bug possível), VAMOS QUERER QUE OS INGREDIENTS SEJAM SETTADOS COMO UM EMPTY ARRAY....
+                    };
+                  });
+                  // return transformedRecipesArray;
+                  // console.log('recipes', transformedRecipesArray);
+
+                  return new RecipeBookActions.RecipesFetchSuccess({
+                    recipes: transformedRecipesArray,
+                  });
+                }),
+
+                catchError((errorRes: any) => {
+                  let errorMessage = 'An unknown error has occured.';
+
+                  if (!errorRes.error || !errorRes.error.error) {
+                    return of(
+                      new RecipeBookActions.RecipesFetchFail(errorMessage)
+                    );
+                  }
+                  return of(
+                    new RecipeBookActions.RecipesFetchFail(errorMessage)
+                  );
+                })
+              );
+          }
+        )
+      );
+    },
+    { dispatch: true }
+  );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO....
+
+
+
+
+
+
+
+
+------->  O PROFESSOR TAMBÉM COMEÇA PELO USO DE 'switchMap',
+
+
+
+tipo assim:
+
+
+
+
+
+
+    fetchRecipes$ = createEffect(
+        () => {
+
+
+            return this.actions$.pipe(
+                ofType(
+                    RecipeBookActions.FETCH_RECIPES
+                ),
+
+                switchMap(
+                    (fetchRecipeActionData) => {
+
+
+                        return this.http.get(url)
+
+
+
+                    }
+                ),
+            )
+        }
+    )
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO, MAS TAMBÉM PRECISAMOS DA LÓGICA PARA 'TRANSFORM' A DATA OBTIDA POR ESSE REQUEST...
+
+
+
+
+
+
+
+
+-----> certo...
+
+
+
+
+
+
+
+
+
+
+
+
+
+    fetchRecipes$ = createEffect(
+        () => {
+
+
+            return this.actions$.pipe(
+                ofType(
+                    RecipeBookActions.FETCH_RECIPES
+                ),
+
+                switchMap(
+                    (fetchRecipeActionData) => {
+
+
+                        return this.http.get(url)
+
+
+
+                    }
+                ),
+
+                
+          map((data) => {
+                  const transformedRecipesArray: Recipe[] = [];
+
+                  for (const key in data) {
+                    if (data.hasOwnProperty(key)) {
+                      transformedRecipesArray.push({ ...data[key] });
+                    }
+                  }
+
+                  transformedRecipesArray.map((recipe) => {
+                    return {
+                      ...recipe,
+                      ingredients: recipe.ingredients ? recipe.ingredients : [], ////////SE NOSSA PROPRIEDADE 'ingredients' dessa recipe específica NÃO EXISTIR (um bug possível), VAMOS QUERER QUE OS INGREDIENTS SEJAM SETTADOS COMO UM EMPTY ARRAY....
+                    };
+                  });
+                  return new RecipeBookActions.RecipesFetchSuccess({
+                    recipes: transformedRecipesArray,
+                  });
+                }),
+
+
+
+            )
+        }
+    )
+
+}
+
+
+
+
+
+
+
+
+
+---------> ASSIM QUE ESTAMOS ACABADOS COM ESSE 'TRNASFORM'
+
+dentro desse map,
+
+
+
+É CLARO QUE O OBJETIVO É SIMPLESMENTE FAZER O 'RETURN' DE UMA NOVA ACTION,
+
+
+ACTION QUE VAI ALTERAR NOSSO GLOBAL STATE.
+
+
+
+
+
+
+
+
+
+
+--> É EXATAMENTE POR ISSO QUE ANTERIORMENTE EU HAVIA FEITO O RETURN DE UMA ACTION DE 'RecipesFetchSuccess'.. (o return de uma action, em 'map', faz com que ela seja retornada automamticamwente)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK..
+
+
+
+
+
+o professor escreveu assim:
+
+
+
+        return new RecipeBookActions.RecipesFetchSuccess({
+                    recipes: transformedRecipesArray,
+                  });
+
+
+
+
+
+
+
+
+
+
+
+
+        --> CERTO...
+
+
+
+
+
+
+
+
+
+MAS PARA QUE NOSSOS EFFECTS SEJAM CONSIDERADOS, SOMOS OBRIGADOS A 
+
+
+
+OS DECLARAR lá em 'app.module.ts'...
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+    EffectsModule.forRoot([AuthEffects, RecipeBookEffects]), //essencial para o run de código async com nossos reducers (Suportando nossos reducers com código async)...
+             
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> COM ISSO, FICAMOS COM ESSES 'LISTENERS',
+
+
+    AGORA SÓ PRECISAMOS 
+
+
+
+
+
+    _ FAZER DISPATCH DE 'fetchRecipes'
+
+
+
+    PARA CONSEGUIR OS UTILIZAR...
+
+
+
+
+
+
+
+
+
+
+---> CERTo...
+
+
+
+
+
+
+
+
+
+MAS COMO FAZEMOS DISPATCH DE 'FETCH RECIPES'
+
+
+
+
+
+NO NOSSO APP?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> o professor explica que 
+
+
+temos 2 LOCAIS EM NOSSO APP QUE DEVEMOS CHAMAR 'FETCH RECIPES'..
+
+
+
+
+
+
+
+
+1o LUGAR --> É NO 'HEADER COMPONENT',
+
+
+NO LOCAL EM QUE 
+
+
+
+CHAMÁVAMOS O METHOD DE 'fetchRecipes' do service 'recipeBookActions'  PARA FAZER 'LOAD DAS NOSSAS RECIPES'...
+
+
+
+
+
+
+
+
+
+FICOU BASICAMENTE ASSIM:
+
+
+
+
+
+
+  }
+
+  onLoadData() {
+    console.log('TEST');
+    // this.recipeService.loadRecipes().subscribe(
+    //   (data) =>  {
+
+    //     console.log(data);
+
+    //   }
+    // )
+
+
+
+    ///SUBSTITUÍDO PELO NGRX E  NGRX/EFFECTS...
+    // this.recipeService.loadRecipes().subscribe(); ////não precisamos da data retornada por esse method, especificamente...
+ 
+    
+    this.store.dispatch(new RecipeBookActions.StartFetchRecipes());
+ 
+ 
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OK... SE APERTAMOS 'LOAD COISO',
+
+
+
+
+
+  FAZEMOS FETCH DA DATA DAS RECIPES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... O OUTRO LUGAR EM QUE EU HAVIA CHAMADO O DISPATCH DESSA ACTION, NO CASO,
+
+FOI EM 'recipeBook.component.ts',
+
+
+
+
+
+
+e eu já estava achando ótimo,
+
+
+mas agora o professor me diz que
+
+
+'
+'não, o correto é chamar NO RESOLVER, que é ainda anterior a ESSE COMPONENT...':
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnDestroy, OnInit, Output } from '@angular/core';
+
+import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { LoggingService } from '../logging.service';
+
+import * as fromRecipeBook from './store/recipeBookActions';
+
+import { AppState } from '..';
+import { Subscription } from 'rxjs';
+
+@Component({
+  selector: 'app-recipe-book',
+  templateUrl: './recipe-book.component.html',
+  styleUrls: ['./recipe-book.component.css'],
+})
+export class RecipeBookComponent implements OnInit {
+  isLoading: boolean = false;
+
+  constructor(
+    private store: Store<AppState>,
+
+    private loggingService: LoggingService
+  ) {}
+
+  ngOnInit(): void {
+    this.loggingService.printLog('Hello from recipeBookModule');
+
+    this.store.dispatch(new fromRecipeBook.StartFetchRecipes());
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ENTRETANTO,
+
+
+
+
+
+
+
+
+O PROFESSOR AGORA ME DIZ QUE DEVEMOS ADICIONAR ESSE DISPATCH LÁ 
+
+
+
+no 'resolver',
+
+
+
+
+
+
+
+
+
+
+MAS O PROBLEMA É QUE:
+
+
+
+
+
+
+
+A LÓGICA DO RESOLVER É ESTA:
+
+
+
+
+
+
+
+
+
+
+
+
+export class RecipesResolverService implements Resolve<Recipe[]> {
+
+
+    constructor(private recipeBookService) {
+
+    }
+
+
+
+
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+
+        return this.recipeBookService.fetchRecipes();
+    }
+}
+
+
+
+
+
+
+
+
+
+--> ISSO É MAIS TRICKY...
+
+
+
+
+--> PQ NO RESOLVER SEMPRE CHAMÁVAMOS 'resolver' no passado,
+
+
+
+
+
+MAS A COISA, AQUI, É QUE 
+
+
+
+O RESOLVER SEMPRE 
+
+
+SIMPLESMENTE 
+
+
+
+'''EXPECTS AN OBSERVABLE AS A RETURN VALUE''''
+
+
+
+
+
+NAQUELE METHOD DE 'resolve()"... ------> E, AÍ, O RESOLVER 'espera' 
+
+
+
+PELA COMPLETION __ DESSE OBSERVABLE ESPECÍFICO _________ANTES MESMO__ 
+
+DE CARREGAR _ A ROUTE A QUE VOCÊ CONECTOU ESSE RESOLVER...
+
+
+
+
+
+
+
+
+
+
+
+--> OK... MAS O PROBLEMA, AQUI,
+
+
+
+É QUE __ QUANDO NÓS FAZEMOS O __ DISPATCH_ DE UMA ACTION,
+
+ISSO É UMA AÇÃO __ SÍNCRONA,
+
+
+ALÉM _ DE NÃO NOS RETORNAR UM OBSERVABLE... --------> ISSO SIGNIFICA, EM OUTRAS PALAVRAS,
+
+
+
+QUE O 'resolve()'
+
+
+FICARIA __ INSTANTANEAMENTE 'RESOLVED', resolveria em um instante,
+
+
+
+
+E ISSO _ 
+
+ACABARIA FAZENDO COM QUE 
+
+
+
+
+FOSSE CARREGADA NOSSA ROUTE __ SEM NENHUMA DA INITIAL DATA NECESSÁRIA (pq é justamente o caráter ASYNC dos observables que faz com que 
+
+aconteça o '''espere pela data'''' --> '''carregue a página agora, pq tudo já está carregado''')..
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, ISSO SIGNIFICARIA QUE ACABARÍAMOS CARREGANDO UMA PAGE EM QUE NENHUMA DA DATA NECESSÁRIA 
+JÁ ESTARIA NO LUGAR...
+
+
+
+
+
+
+
+
+
+
+-> É CLARO QUE _ EXISTEM __ WORKAROUNDS PARA ESSE PROBLEMA, E O PROFESSOR QUER 
+
+
+EXPLORAR 1 DELES CONOSCO, AGORA...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ANTES DE MAIS NADA,
+
+
+PRECISAMOS _ INJETAR_ NOSSA STORE...
+
+
+
+
+
+
+
+-- >BEM, EU JA FIZ ISSO..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> bem, mas ainda vamos fazer dispatch dessa action, aparentemente.
+
+
+
+
+
+
+
+
+
+
+--> OK... NA LÓGICA DO RESOLVER,
+
+
+O PROFESSOR ESCREVE ASSIm:
+
+
+
+
+export class RecipesResolverService implements Resolve<Recipe[]> {
+
+
+    constructor(private recipeBookService) {
+
+    }
+
+
+
+
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+
+        return this.store.dispatch(new RecipeBookActions.StartFetchRecipes() );
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--->  CERTO, MAS ENTÃO ELE NOS EXPLICA:
+
+
+
+
+
+
+
+
+NÃO PODEMOS SIMPLESMENTE __ RETORNAR __ O DISPATCH DESSA ACTION AQUI,
+
+
+PQ ISSO __ NÃO VAI 'YIELD' 
+
+
+UM OBSERVABLE...
+
+
+
+
+
+
+
+
+___ EM VEZ DISSO,
+
+
+
+O QUE VAMOS QUERER FAZER É 
+
+
+
+
+
+
+
+
+
+
+
+''''''''ESPERAR __ PELO __ EFFECT__ QUE É __TRIGGADO__ POR __ ESSA ACTION,
+
+
+ESPERAR O COMPLETE DO EFFECT QUE É TRIGGADO POR ESSA ACTION''''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, MAS COMO PODEMOS FAZER ISSO?
+
+
+
+
+
+
+
+
+
+
+
+HÁ UM APPROACH BEM INTERESSANTE PARA RESOLVER ESSE PROBLEMA...
+
+
+
+
+
+
+
+
+
+
+
+
+REFLITA:
+
+
+
+
+EM 'recipe effects',
+
+
+NÓS, NO FINAL DAS CONTAS,
+
+
+
+NÓS:
+
+
+
+1) FILTRAMOS POR 'SPECIFIC ACTIONS' 
+
+
+
+
+
+2) DEPOIS QUE FILTRAMOS PELO DISPATCH DESSAS ACTIONS ESPECÍFICAS, nós 'RUN LOGIC' em cima disso...
+
+
+
+
+ex:
+
+
+this.actions$.pipe(
+    ofType(RecipeBookActions.START_FETCH_RECIPES)
+)
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, A PARTE INTERESSANTE, AQUI, É QUE 
+
+PODEMOS __ ACTUALLY_  USAR__ ESSA 'FILTERING LOGIC' 
+
+dos effects,
+
+
+
+
+
+E __ ESSE OBSERVABLE 'actions$' 
+
+
+
+PROVIDENCIADO PELO NGRX __________ EM QUALQUEr_ CLASS DE NOSSO APP,
+
+
+
+__ 
+
+
+NÃO PRECISA SER OBRIGATORIAMENTE UMA CLASS TIPO 'RecipeEffects'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER QUE 'ofType' e 'actions$'
+
+SÓ SÃO 
+
+FREQUENTEMENTE ASSOCIADOS A 'ngrx/effects'
+
+
+
+
+PQ __ 
+
+
+ELES SÃO ÚTEIS POR POSSUÍREM COISAS COMO 'AUTOMATIC UNSUBSCRIBING' ,
+
+
+
+
+
+
+
+
+
+
+
+
+MAS _ PODEMOS __ TAMBÉM ABUSAR ESSAS FEATURES_ EM CLASSES DIFERENTES,
+
+
+COMO NESSE NOSSO RESOLVER...
+
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE O PROFESSOR VAI QUERER IMPORTAR 'ofType' e 'Actions' DOS NGRX/EFFECTS... 
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+import { ofType, Actions } from "@ngrx/effects";  ///FEATURES TÍPICAS DO NGRX/EFFECTS, MAS QUE PODEM SER UTILIZADAS EM OUTRAS CLASSES, SEM PROBLEMAS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok, aí 
+
+
+INJETAMOS esse 'actions$' lá no CONSTRUCTOR...
+
+
+
+
+
+EX:
+
+
+
+    constructor(private recipeBookService: RecipeBookService, private store: Store<AppState>, private actions$: Actions) {
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO FEITO, O PROFESSOR, DEPOIS DO 'dispatch'
+
+
+DAQUELA ACTION,
+
+
+
+ELE __ VAI USAR 'this.actions$.pipe()'
+
+
+
+PARA __ 
+FAZER 
+
+'LISTEN' 
+
+
+AO 'OCCUR' 
+
+
+
+DE UMA __ 
+
+
+
+
+ACTION ESPECÍFICA,
+
+
+
+PARA __ AÍ _ ___TRIGGAR _ ESSE OBSERVABLE de 'this.actions$.pipe()'...
+
+
+
+
+
+
+
+
+
+
+----> OU SEJA,
+
+O CÓDIGO FICA TIPO ASSIM:
+
+
+
+
+
+
+this.store.dispatch(new RecipeBookActions.FetchRecipes());
+
+return this.actions$.pipe(ofType());
+
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER QUE __ VAMOS __ IMEDIATAMENTE 
+
+
+
+FAZER DISPATCH DA ACTION, E AÍ 
+
+
+
+VAMOS TRIGGAR AQUELE OBSERVABLE LOGO DE BAIXO....
+
+
+
+
+
+
+
+
+
+
+resolve() {
+
+
+
+    
+                this.store.dispatch(new RecipeBookActions.StartFetchRecipes());
+
+
+                return this.actions$.pipe(
+                    ofType(
+                        RecipeBookActions.FETCH_RECIPES_SUCCESS
+                    )
+                )
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+           this.store.dispatch(new RecipeBookActions.StartFetchRecipes());
+
+
+                return this.actions$.pipe(
+                    ofType(
+                      RecipeBookActions.FETCH_RECIPES_SUCCESS
+                    )
+                )
+
+
+
+
+
+
+
+
+
+
+
+
+
+    eEX:
+
+
+
+
+
+
+
+    
+                this.store.dispatch(new RecipeBookActions.StartFetchRecipes());
+
+
+                return this.actions$.pipe(
+                    ofType(
+                      RecipeBookActions.FETCH_RECIPES_SUCCESS
+                    ),
+
+
+                )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                -> depois,
+
+
+
+                ADICIONO um 'take()'
+
+
+                PARA __ OBTER APENAS 1 'SNAPSHOT' 
+
+
+
+                do nosso state, nesse resolve'...
+
+
+
+
+
+
+Ex:
+
+
+
+
+
+
+    
+                this.store.dispatch(new RecipeBookActions.StartFetchRecipes());
+
+
+                return this.actions$.pipe(
+                    ofType(
+                      RecipeBookActions.FETCH_RECIPES_SUCCESS
+                    ),
+
+                    take(1),
+
+
+
+                )
+
+
+
+
+
+
+
+
+
+
+
+ISSO PQ SÓ TEMOS INTERESSE NESSE 'EVENT' 1 única vez....
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO SIGNIFICA, AGORA, QUE 
+
+
+
+VAMOS:
+
+
+
+
+
+1) DISPATCH A ACTION DE 'FETCH RECIPES'
+
+
+
+2) IMEDIATAMENTE VAMOS ESPERAR PELO DISPATCH DA ACTION DE 'RecipesFetchSuccess'...
+
+
+
+
+
+
+
+
+
+
+                fica tipo assim:
+
+
+
+
+
+              this.store.dispatch(new RecipeBookActions.StartFetchRecipes());
+
+
+                return this.actions$.pipe(
+                    ofType(
+                      RecipeBookActions.FETCH_RECIPES_SUCCESS
+                    ),
+
+                    take(1),
+
+                )
+
+
+
+
+
+
+
+
+NÃO PRECISAMOS FAZER MAIS NADA, NEM MESMO UM 'map()'...
+
+
+
+
+
+
+
+
+
+
+
+--> aí reinicio a página... 
+
+
+
+
+
+
+
+
+
+-> BEM, MAS AINDA ESTAMOS COM O MESMO PROBLEMA:
+
+
+
+
+SE CLICAMOS EM ALGUMA RECIPE, ELA FICA CARREGADA, MAS SE CLICAMOS EM 'RELOAD PAGE',
+
+
+
+PERDEMOS A 'DATA DE QUE ESTÁVAMOS NESSA RECIPE ESPECÍFICA',
+
+O QUE FAZ COM QUE 
+
+
+VOLTEMOS AO 
+
+
+
+'localhost:4200/' (sem nenhuma recipe carregada/selecionada)...
+
+
+
+
+
+
+
+
+
+
+
+
+BEM, MAS JÁ VAMOS CONSERTAR ESSA LÓGICA...
+
+
+
+
+
+
+
+
+
+
+-> mas meu código está totalmente quebrado... --> 
+
+
+
+nenhuma recipe aparece, tanto no startup como 
+
+
+
+também 
+
+
+quando clico em 'fetch recipes'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS QUANDO RECARREGAMOS NOSSA PÁGINA, SOMOS REDIRECIONADOS...
+
+
+
+
+
+
+
+--> NOSSO RESOLVER ESTÁ TRIGGANDO EM TODA ROUTE DE 'RECIPEBOOK',
+o que é ótimo, 
+
+pq quer dizer que estamos 'fetching the latest info'...
+
+
+
+--> ESSE REDIRECT __ NÃO POSSUI RELAÇÃO DIRETA COM O RESOLVER,
+
+
+É UM OUTRO PROBLEMA, desvinculado..
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ESSE REDIRECT ESTÁ OCORRENDO POR CONTA DE NOSSA 'AUTH',
+
+
+É UM REDIRECT RELACIONADO A NOSSO MECANISMO DE 'AUTH'...

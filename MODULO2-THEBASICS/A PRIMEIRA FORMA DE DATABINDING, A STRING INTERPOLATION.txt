@@ -1,0 +1,833 @@
+  
+
+
+
+
+
+
+
+
+  VAMOS COMEÇAR DANDO UMA OLHADA MAIS APROFUNDADA 
+
+
+
+  EM 'STRING INTERPOLATION'....
+
+
+
+
+
+
+
+
+
+
+
+
+  ----> CRIO UM NOVO COMPONENT,
+
+
+
+
+  stringInterpolation...
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OK.... NO CÓDIGO DESSE COMPONENT,
+
+  NÕA VAMOS QUERER 
+
+
+
+  OUTPUTTAR 
+
+
+
+  CÓDIGO HTML NA NOSSA PÁGINA DE FORMA SIMPLES COMO 
+
+
+
+
+  <p>The Interpolation component</p>
+
+
+
+
+
+
+
+
+
+
+
+
+  --> NÃO VAMOS QUERER HARDCODAR O OUTPUT, AQUI... --> 
+
+
+
+
+
+
+
+
+
+
+  SERIA BEM REALISTA SE 
+
+  ESSE 
+
+  COMPONENT 'stringInterpolation'
+
+
+
+
+  CONTIVESSE INFORMAÇÕES SOBRE UM 'SERVER' ESPECÍFICO...
+
+
+
+
+
+
+
+
+
+
+  -> É POR ISSO QUE 
+
+  NA 'TEMPLATE FILE'
+
+
+
+  talvez seja melhor 
+
+  outputtar algo como 
+
+
+
+
+
+  <p>Server with ID: {{serverId}}</p>
+  <p>Server is: {{serverStatus}}</p>
+
+
+
+
+
+
+
+QUEREMOS QUE O STATUS SEJA OFFLINE OU ONLINE....
+
+
+
+
+
+
+
+
+
+
+----> AGORA, FARIA SENTIDO DERIVAR ESSES VALORES/STRINGS 
+
+
+
+a partir do 
+
+TYPESCRIPT CODE.... (
+
+
+    em um app de verdade,
+
+
+    esse status/nome do server pode ser derivado 
+
+
+    DE ALGUM HTTP REQUEST QUE VOCÊ FAZ A ALGUM BACKEND, 
+
+    OU 
+
+    
+
+    DE ALGUM CÁLCULO...
+)
+
+
+
+
+
+
+
+
+
+--> certo.. o código de nosso component é assim:
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-string-interpolation',
+  templateUrl: './string-interpolation.component.html',
+  styleUrls: ['./string-interpolation.component.css']
+})
+export class StringInterpolationComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> AÍ O PROFESSOR EDITA A CLASS/coisa de 
+
+
+
+'StringInterpolationComponent'....
+
+
+
+
+
+
+
+
+
+
+--> ele escreve:
+
+
+
+
+'serverId = 10;'
+
+
+
+
+
+
+
+--> DEPOIS DISSO,
+
+ELE DEFINE 
+
+
+serverStatus = 'offline';
+
+
+
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-string-interpolation',
+  templateUrl: './string-interpolation.component.html',
+  styleUrls: ['./string-interpolation.component.css']
+})
+export class StringInterpolationComponent implements OnInit {
+  serverId = 10;
+  serverStatus = 'offline'
+
+
+
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> EMBORA ISSO NÃO SEJA TOTALMENTE NECESSÁRIO,
+
+VOCÊ 
+
+
+
+
+PODE SER BEM CHATINHO COM O TYPESCRIPT,
+
+DECLARAR
+
+
+
+EXPLICITAMENTE 
+
+
+QUAL O_ TYPE_ QUE ESSAS PROPRIEDADES DEVERÃO SEGURAR, TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-string-interpolation',
+  templateUrl: './string-interpolation.component.html',
+  styleUrls: ['./string-interpolation.component.css']
+})
+export class StringInterpolationComponent implements OnInit {
+  serverId: number = 10;
+  serverStatus: string = 'offline'
+
+
+
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+DEU CERTO, E O OUTPUT FICOU ASSIM:
+
+
+
+
+
+
+
+
+SUCCESS
+WARNING
+Server with ID: 10
+
+Server is: offline
+
+
+
+
+
+
+
+
+
+-----------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> OK... ESCRITAS ESSAS 2 PROPRIEDADES,
+
+
+
+
+VAMOS QUERER 
+
+AS OUTPUTTAR NO NOSSO TEMPLATE.. -> eu já fiz isso,
+
+
+
+basta 
+
+
+escrever 
+
+{{nomeDaPropriedade}} 
+
+
+
+
+
+
+
+LÁ NO SEU TEMPLATE....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA CONSEGUIR ESSA CONEXÃO, PRECISAMOS DE DATA BINDING...
+
+
+
+
+
+
+
+
+
+
+--> string interpolation  É A SOLUÇÃO TÍPICA PARA ESSA NOSSA TAREFA, AQUI...
+
+
+
+
+
+
+
+
+
+
+a sintaxe é  {{}} ------> VOCê PODE ESCREVER UMA _ TYPESCRIPT EXPRESSION 
+
+
+
+DENTRO 
+
+
+DESSES ESPAÇOS...
+
+
+
+
+
+
+{{ serverId }}
+
+
+
+
+
+
+
+
+
+-> essa é a expressão mais simples possível... --> VOCÊ OUTPUTTA O VALOR DE UMA PROPERTY...
+
+
+
+
+
+
+
+
+
+
+
+-> MAS EXISTEM MAIS USE-CASES... --> VOCÊ PODE HARDCODAR STRINGS DENTRO 
+
+
+
+
+DESSES ESPAÇOS, TIPO ASSIM:
+
+
+
+
+
+<p>{"server"}</p>
+
+
+
+
+
+
+
+
+VOCÊ PODE COLOCAR DENTRO DESSES ESPAÇOS _ QUAIQUER EXPRESSÕES QUE ACABEM RESOLVED COMO 
+
+'STRINGS'
+
+
+NO FINAL DAS CONTAS.... (essa é a única condição para escrever uma SINTAXE DE STRING INTERPOLATION... )
+
+
+
+
+
+
+
+
+
+
+
+
+-> ISSO QUER DIZER QUE QUALQUER COISA QUE VOCÊ 
+TEM NO MEIO DAS CURLY BRACES,
+
+
+ELA DEVE RETORNAR UMA STRING AO FINAL... --. vocÊ pode até mesmo ESCREVER UM METHOD ALI DENTRO,
+
+
+BASTA QUE 
+
+ELE RETORNE UMA STRING AO FINAL.....
+
+
+
+
+
+
+
+
+
+
+--> A ÚNICA OUTRA RESTRIÇÃO É QUE 
+
+VOCÊ __ NÃO PODE_ ESCREVER MULTI-LINE EXPRESSIONS DENTRO DE '{{}}' ,
+
+
+
+NÃO PODE ESCREVER BLOCK EXPRESSIONS --> É IMPOSSÍVEL ADICIONAR UMA 
+
+
+
+'if' 
+
+ou 
+
+'for' 
+
+
+CONTROL STRUCTURE ali dentro... ---------> MAS VOCÊ PODE USAR UMA TERNARY EXPRESSION...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK...
+
+
+
+
+
+
+
+
+O PROFESSOR ESCREVE ASSIM:
+
+
+
+
+
+<p>Your {{"server"}} Server with ID: {{serverId}}</p>
+<p>Server is: {{serverStatus}}</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK... 
+
+
+
+
+
+VOCÊ TAMBÉM PODERIA CHAMAR UM METHOD AQUI DENTRO, 
+
+METHOD QUE RETORNA UMA STRING..
+
+
+
+
+
+
+
+
+
+
+----> MAS O INTERESSANTE É QUE 
+
+
+'serverId' é um NUMBER.. -> E O PROFESSOR HAVIA DITO QUE 
+
+
+
+A STRING INTERPOLATION SEMPRE DEVE RETORNAR UMA STRING AO FINAL... 
+
+
+
+
+
+
+
+
+
+
+
+---> mas os numbers FUNCIONAM MESMO ASSIM,
+
+
+
+pq 
+
+
+
+ELAS SÃO RESOLVED COMO 'strings' no html...
+
+
+
+
+
+
+NUMBERS NÃO SÃO UM PROBLEMA... --> PQ UM NUMBER PODE SER FACILMENTE CONVERTIDO 
+
+
+
+EM 
+
+
+UMA STRING... --> VOCÊ É OBRIGADO A RETORNAR STRINGS __OU COISAS _ QUE PODEM 
+
+SER FACILMENTE 
+
+CONVERTIDAS EM STRINGS...
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK, MAS DIGAMOS QUE O 'serverStatus'
+
+É RETORNADO POR UM METHOD, E NÃO POR UMA VARIABLE....
+
+
+
+
+
+
+
+
+
+
+
+--> ESCREVEMOS ASSIM:
+
+
+
+
+
+
+
+getServerStatus() {
+    return this.serverStatus;
+}
+
+
+
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-string-interpolation',
+  templateUrl: './string-interpolation.component.html',
+  styleUrls: ['./string-interpolation.component.css']
+})
+export class StringInterpolationComponent implements OnInit {
+  serverId: number = 10;
+  serverStatus: string = 'offline'
+
+  getServerStatus() {
+    return this.serverStatus;
+}
+
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+E O HTML/TEMPLATE FICA ASSIM:
+
+
+
+
+<p>Your {{"server"}} Server with ID: {{serverId}}</p>
+<p>Server is: {{serverStatus}}</p>
+<p>Again, the server is: {{ getServerStatus()}}</p>
+
+
+
+
+
+
+---------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, ESSA É A STRING INTERPOLATION EM AÇAÕ...

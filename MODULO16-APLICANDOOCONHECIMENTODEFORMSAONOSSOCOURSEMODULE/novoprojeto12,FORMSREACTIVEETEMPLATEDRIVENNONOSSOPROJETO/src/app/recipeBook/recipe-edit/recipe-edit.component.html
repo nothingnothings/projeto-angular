@@ -1,0 +1,256 @@
+<!-- <div class="row">
+  <div class="col-xs-12">
+    <form (ngSubmit)="onSubmitForm()" [formGroup]="recipeForm">
+      <div class="form-group">
+        <label for="recipeName">Recipe Name</label>
+        <input
+          type="text"
+          id="recipeName"
+          class="form-control"
+          formControlName="recipeName"
+        />
+      </div>
+      <div class="form-group">
+        <label for="recipeDescription">Recipe Description</label>
+        <textarea
+          id="recipeName"
+          class="form-control"
+          formControlName="recipeDescription"
+        >
+        </textarea>
+      </div>
+      <div class="form-group">
+        <label for="imagePath">Image Path</label>
+        <input
+          type="text"
+          id="imagePath"
+          class="form-control"
+          formControlName="imagePath"
+        />
+      </div>
+      <div formArrayName="recipes">
+        <label for="ingredientName">Ingredients: &nbsp;</label>
+        <button
+          class="btn btn-default"
+          type="button"
+          (click)="onAddIngredient()"
+        >
+          Add Ingredient
+        </button>
+        <div
+          class="form-group"
+          *ngFor="
+            let ingredientControl of getIngredientControls();
+            let index = index
+          "
+        >
+          <div [ngStyle]="{'margin-top': '20px'}">
+            <label>Ingredient {{ index + 1 }} &nbsp;</label>
+            <input type="text" class="form-control" [formControlName]="index" />
+          </div>
+        </div>
+      </div>
+      <hr />
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="!recipeForm.valid"
+      >
+        {{ editMode ? "EDIT" : "ADD" }}
+      </button>
+    </form>
+  </div>
+</div>
+ -->
+
+<div class="row">
+  <div class="col-xs-12">
+    <form (ngSubmit)="onSubmitForm()" [formGroup]="recipeForm">
+      <div class="row">
+        <div class="col-xs-12"></div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="name">Recipe Name</label>
+            <input
+              type="text"
+              id="name"
+              formControlName="recipeName"
+              class="form-control"
+            />
+          </div>
+        </div>
+      </div>
+      <span
+        *ngIf="
+          !recipeForm.get('recipeName')?.value &&
+          recipeForm.get('recipeName')?.touched
+        "
+        [ngStyle]="{ color: 'red' }"
+        >Recipe Name is required!</span
+      >
+      <span
+        *ngIf="(recipeForm.get('recipeName')?.errors?.['minlength']) &&
+      recipeForm.get('recipeName')?.touched"
+        [ngStyle]="{ color: 'red' }"
+        >Recipe Name must have at least 3 characters!</span
+      >
+      <div class="row">
+        <div class="col-xs-12">
+          <img
+            *ngIf="recipeForm.get('imagePath')?.value"
+            [src]="recipeForm.get('imagePath')?.value"
+            class="img-responsive"
+            alt="image"
+          />
+        </div>
+      </div>
+      <div class="row" [ngStyle]="{ 'margin-top': '12px' }">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="imagePath">Image URL</label>
+            <input
+              type="text"
+              id="imagePath"
+              class="form-control"
+              formControlName="imagePath"
+            />
+          </div>
+        </div>
+      </div>
+      <span
+        *ngIf="
+          !recipeForm.get('imagePath')?.valid &&
+          recipeForm.get('imagePath')?.touched
+        "
+        [ngStyle]="{ color: 'red' }"
+        >Image URL is required!</span
+      >
+
+      <div class="row" [ngStyle]="{ 'margin-top': '12px' }">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="desc">Description</label>
+            <textarea
+              type="text"
+              formControlName="description"
+              id="description"
+              rows="6"
+              class="form-control"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+      <span
+        *ngIf="
+          !recipeForm.get('description')?.value &&
+          recipeForm.get('description')?.touched
+        "
+        [ngStyle]="{ color: 'red' }"
+        >Description is required!</span
+      >
+      <span
+        *ngIf="(recipeForm.get('description')?.errors?.['minlength']) &&
+      recipeForm.get('description')?.touched"
+        [ngStyle]="{ color: 'red' }"
+        >Your description must have at least 10 characters!</span
+      >
+
+      <div
+        class="row"
+        formArrayName="ingredients"
+        [ngStyle]="{ 'margin-top': '12px' }"
+      >
+        <div class="col-xs-12">
+          <label for="ingredients">Ingredients</label>
+          <!-- <div class="row" *ngFor="let recipeControl of getRecipeControls(); let index=index" > -->
+          <div
+            class="row"
+            *ngFor="
+              let ingredientControl of getIngredientControls();
+              let index = index
+            "
+            [ngStyle]="{ 'margin-bottom': '12px' }"
+          >
+            <div formGroupName="{{ index }}">
+              <div class="col-xs-8">
+                <input
+                  type="text"
+                  formControlName="ingredient"
+                  class="form-control"
+                />
+              </div>
+              <div class="col-xs-2">
+                <input
+                  formControlName="amount"
+                  [min]="1"
+                  type="number"
+                  class="form-control"
+                />
+              </div>
+            </div>
+            <div
+              class="col-xs-2"
+              [ngStyle]="{ display: 'flex', 'margin-bottom': '10px' }"
+            >
+              <button
+                class="btn btn-primary"
+                [ngStyle]="{ 'flex-grow': '1' }"
+                (click)="onAddIngredient()"
+                *ngIf="index === 0"
+                type="button"
+              >
+                Add
+              </button>
+              <button class="btn btn-danger" [ngStyle]="{ 'flex-grow': '1' }" type="button" (click)="onRemoveIngredient(index)" *ngIf="index !== 0">
+                X
+              </button>
+            </div>
+            <!-- <span *ngIf="(recipeForm.get('ingredients.index')?.value?.ingredient.length > 3)"
+              [ngStyle]="{ color: 'red', 'margin-left': '14px' }"
+              
+              >Ingredients must have at least 3 characters!</span>  NÃO FUNCIONA -->
+          </div>
+          <!-- <span *ngIf="!recipeForm.get('ingredients')?.valid &&
+          recipeForm.get('ingredients')?.touched && !recipeForm.get('ingredients.index')?.controls?.amount?.errors?.['required']"
+          [ngStyle]="{ color: 'red' }"
+          
+          >Ingredient information is required!</span> -->
+        </div>
+      </div>
+      <div>
+        <span
+          *ngIf="!recipeForm.get('ingredients')?.valid && recipeForm.touched"
+          [ngStyle]="{ color: 'red' }"
+          >Ingredient and amount fields are
+          required!
+        </span>
+      </div>
+      <div [ngStyle]="{ 'margin-top': '20px', 'display': 'flex' }">
+        <button
+          type="submit"
+          class="btn btn-success"
+          [ngStyle]="{ 'margin-right': '1rem' }"
+        >
+          {{editMode ? 'Edit' : 'Add'}}
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          [disabled]="!recipeForm.valid"
+          [ngStyle]="{ 'margin-right': '1rem' }"
+          (click)="onCancel()"
+        >
+          Cancel
+        </button>
+
+        <span
+          *ngIf="!recipeForm.valid && recipeForm.touched"
+          [ngStyle]="{ 'color': 'white', 'display': 'inline-block', 'padding': '6px', 'border-radius': '4px', 'border': '1px solid rgb(180, 180, 180)', 'background-color': 'rgb(48,48,48)', 'cursor': 'default' }"
+          >Recipe data currently invalid!</span
+        >
+      </div>
+    </form>
+  </div>
+</div>

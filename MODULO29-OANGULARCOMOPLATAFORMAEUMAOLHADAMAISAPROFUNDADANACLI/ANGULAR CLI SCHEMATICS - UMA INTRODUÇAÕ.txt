@@ -1,0 +1,365 @@
+
+
+
+
+
+
+
+
+
+
+
+
+--> O QUE SÃO ANGULAR CLI SCHEMATICS?
+
+
+
+
+
+
+
+
+
+
+
+
+-> SCHEMATICS SÃO UM CONCEITO/FERRAMENTA PODEROSA _ INTRODUZIDA 
+
+
+
+PELO 
+
+
+TIME DO ANGULAR.... --> PELO 'ANGULAR CLI TEAm'...
+
+
+
+
+
+
+
+
+
+--> ANGULAR SCHEMATICS  SÃO 
+
+
+
+
+ESSENCIALMENTE BLUEPRINTS QUE 
+
+CERTOS ANGULAR COMMANDS CONSEGUEM 'PICK UP'...
+
+
+
+
+
+
+
+
+
+
+--> VOCê PODE TER COMMANDS, POR EXEMPLO,
+
+
+para 
+
+
+'ng generate'  (
+
+
+
+    ISSO 
+
+    GERA NOVOS BUILDING BLOCKS, COMO COMPONENTS...
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+'ng add'- -> USADO PARA ADICIONAR CERTAS LIBRARIES/CAPABILITIES AO SEU PROJECT...
+
+
+
+
+
+
+
+(
+
+    ainda não estudamos isso em detalhes... --->
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'ng update' ---> eu usei 1 única vez,
+
+
+é usado para 
+
+
+
+'KEEP YOUR PROJECT UP TO DATe' (updata PROJECTS E LIBRARIES)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS O INTERESSANTE É QUE É POSSÍVEL 
+
+
+__CONSTRUIR SUAS PRÓPRIAS SCHEMATICS.. ---> 
+
+
+
+O ANGULAR JÁ VEM COM ALGUMAS BUILTIN SCHEMATICS,
+
+
+
+
+
+
+
+
+QEU VOCê TEM POR DEFAULT NO ANGULAR CLI (
+
+
+
+    devem ser 'generate', 'add' 
+
+    e 
+
+    'update'..
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E VOCÊ/THIRD PARTY PACAKGES _ _TAMBÉM _ PODEM ADICIONAR SCHEMATICS AO SEU PROJECT... ---> E É ISSO QUE 
+
+
+
+DEIXA ESSA FEATURE PODEROSA ...--> 
+
+
+
+
+
+
+
+
+
+e isso É MT FORTE,
+
+
+PQ TEORICAMENTE 
+
+
+
+
+VOCÊ 
+
+
+PODE _ CONSTRUIR 'SEUS PRÓPRIOS 
+
+
+
+BLUEPRINTS',
+
+
+
+
+
+
+seus próprios 
+
+
+comandos 
+
+
+'generate' 
+
+
+'add' 
+
+
+e 
+
+'update'...
+
+
+
+
+
+
+
+
+
+
+
+
+-> ISSO SIGNIFICA QUE VOCÊ PODE 'CONSTRUIR SUA PRÓPRIA VERSÃO DE UM COMPONENT, 
+
+ATRAVÉS DE SEU PRÓPRIO COMANDO 'generate' customizado...
+
+
+
+
+
+
+
+
+
+
+
+
+-_> MAS O PROFESSOR JÁ NOS AVISA:
+
+
+
+
+
+
+
+CONSTRUIR 'SEU PRÓPRIO SCHEMATIC' 
+
+
+
+não é algo exatamente trivial..,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SE VOCÊ PROCURAR POR 'angular schematic' no google,
+
+
+
+VOCê ENCONTRA ENTRIES NO DOCS..
+
+
+
+
+
+
+
+
+
+
+
+
+--> 'authoring schematics '--> ISSO TE 
+
+
+
+
+DÁ INSTRUÇÕES 
+DE COMO 
+
+
+CONSTRUIR SUA PRÓPRIA SCHEMATIC...
+
+
+(
+
+    esse artigo é bem introdutorio,
+
+
+
+
+
+    MAS É UM BOM COMEÇO --> 
+
+
+
+
+
+    SE VOCê QUER CONSTRUIR SEU PRÓPRIO COMANDO DE 'GENERATE',
+
+
+
+
+    isso tudo é bastante 'TRIAL AND ERROR'..
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PROFESSOR RECOMENDA  QUE CHEQUEMOS ALGUNS TPP schematics,
+
+
+pq 
+
+
+
+É NISSO QUE O PROFESSOR FOCARÁ,
+
+AGORA...

@@ -1,0 +1,2483 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA IMPLEMENTAR O LAZY LOADING,
+COMEÇAMOS COM NOSSO APP DEFAULT...
+
+
+
+
+
+
+
+
+
+
+
+-. O PROFESSOR VAI à ABA 'NETWORK',
+
+
+
+E AÍ 
+
+
+MOSTRA QUE 
+
+ACABAMOS BAIXANDO UM MONTE DE ARQUIVOS,
+
+
+
+
+PQ 
+
+
+ESTAMOS 
+
+
+NO DEWV MODE,
+
+
+
+
+
+NO DEV MODE OS ARQUIVOS SÃO MAIORES,
+
+
+
+CÓDIGO SUBOPTIMIZADO (
+
+    um monte de debugging features.... 
+)
+
+
+
+
+
+
+
+
+
+
+
+--> FILES BEM GRANDES, 4MB, 
+
+
+
+5kb,
+
+
+etc etc...
+
+
+
+
+
+
+
+
+-> ok, esse é o nosso file size...
+
+
+
+
+
+
+
+
+
+
+--> COM O LAZY LOADING,
+
+
+SEREMOS CAPAZES DE __ REDUZIR ESSE NÚMERO DE BYTES..
+
+
+
+
+
+
+
+
+
+
+
+----------> UM EXEMPLO DE EFEITO DE LAZY LOADING:
+
+
+
+
+
+
+
+
+
+
+
+1) QUANDO NÃO ESTAMOS 'AUTHENTICATED',
+
+
+OBVIAMENTE NÃO PRECISAMOS RENDERIZAR 
+
+
+
+QUALQUER COMPONENT DA ROUTE DE 'Recipe-book',
+
+
+
+
+PQ _ 
+
+
+
+NÓS OBVIAMENTE NÃO PODEREMOS ACESSAR QUALQUER COISA DESSA ROUTE (ela estará 'barrada' a nós)...
+
+
+
+
+
+
+
+
+
+
+--------> TAMBÉM PODERÍAMOS COLOCAR LAZY LOADING NO 'SHOP-LIST',
+
+
+
+fazer com que 
+ELE NÃO FOSSE BAIXADO ATÉ SER EFETIVAMENTE ACESSADO... (não há nenhuma necessidade de baixar esse código no startup da página)...
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+ --> MAS VAMOS COMEÇAR COM O MODULE DE 'recipe-book'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> TEMOS O MODULE DE 'recipe-book',
+
+ e TAMBÉM
+
+
+
+
+ O MODULE DE ROUTING DESSE MODULE,
+
+
+ que é 
+
+
+
+ recipeBook-routing.module.ts..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ------> O PROFESSOR JÁ NOS DIZ QUE 
+
+
+
+
+ ''''TER SUAS ROUTES REGISTRADAS 
+
+
+
+ EM 1 MODULE SEPARADO _ JÁ _ É UM IMPORTANTE STARTING POINT PARA O LAZY LOADING''''...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ------> PARA QUE O LAZY LOADING FUNCIONE NO SEU APP,
+
+
+
+
+ SEU 'FEATURE MODULE' específico (no caso, 'recipe-book')
+
+
+
+
+ PRECISA _ 
+
+
+
+
+
+
+ '''BRING ITS OWN ROUTES''',
+
+
+
+
+ comoo observamos neste código aqui:
+
+
+
+
+
+
+
+ 
+
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { AuthGuardService } from "../auth/auth-guard.service";
+import { RecipesResolverService } from "../recipes-resolver.service";
+import { RecipeBookComponent } from "./recipe-book.component";
+import { RecipeDetailComponent } from "./recipe-detail/recipe-detail.component";
+import { RecipeEditComponent } from "./recipe-edit/recipe-edit.component";
+import { SelectARecipeComponent } from "./select-a-recipe/select-a-recipe.component";
+
+
+
+
+
+
+const recipeBookRoutes: Routes = [
+    {
+        path: 'recipe-book',
+        component: RecipeBookComponent,
+        canActivate: [AuthGuardService], ////VAI REDIRECIONAR à 'auth', SE O USER NÃO ESTIVER AUTH....
+        children: [
+          {
+            path: '',
+            resolve: [RecipesResolverService],
+            component: SelectARecipeComponent,
+          },
+          {
+            path: 'new',
+            component: RecipeEditComponent,
+          },
+          {
+            path: ':id',
+            resolve: [RecipesResolverService],
+            component: RecipeDetailComponent,
+          },
+    
+          {
+            path: ':id/edit',
+            resolve: [RecipesResolverService],
+            component: RecipeEditComponent,
+          },
+    
+        ],
+      },
+]
+
+
+
+
+@NgModule(
+    {
+        imports: [
+            // RouterModule.forChild(recipeBookRoutes)   ////quando você quer incluir algum 'FEATURE MODULE' dentro de seu APP MODULE (outsourcing), você usa esse 'forChild' em vez de 'forRoot()'...
+            RouterModule.forChild(recipeBookRoutes) 
+          ],
+
+        exports: [
+            RouterModule
+        ]
+    }
+)
+export class RecipeBookRoutingModule {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, PRECISA TER SUA PRÓPRIA 'ROUTING CONFIG',
+
+
+
+
+
+
+
+
+
+
+E PRECISA TRAZER 
+
+
+ESSA SUA ROUTING CONFIG ATRAVÉS DO 'RouterModule.forChild()',
+
+
+QUE É 
+
+
+EXATAMENTE O QUE ESTAMOS USANDO, AQUI...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... MAS 1 COISA PRECISA MUDAR, NO ENTANTO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PRECISAMOS ALTERAR A NOSSA CONFIGURAÇÃO DE 'paths' 
+
+lá 
+
+
+do 
+
+'recipe-book-routing.module.ts',
+
+
+
+
+
+
+
+
+
+
+
+PQ PRECISAMOS TROCAR 
+
+
+
+AQUELA 
+
+
+ROUTE 
+
+
+que tem 
+
+'path: 'recipe-book' ' 
+
+
+
+
+
+
+
+
+
+
+
+-------> O PROFESSOR VAI ALTERAR ESSE NEGÓCIO, VAI COLOCAR O PATH DESSA ROUTE COMO SENDO 
+
+
+
+'' (empty string),
+
+
+
+
+
+
+
+
+JUSTAMENTE PQ 
+
+AGORA _ PRECISAMOS ADICIOONAR UMA 
+
+
+
+
+
+NOVA COISA AO MODULE de 'app-routing.module.ts',
+
+
+
+
+
+
+
+
+
+
+__ E ESSA NOVA COISA SERÁ _ FUNDAMENTAL PARA O FUNCIONAMENTO DO LAZY LOADING..
+
+
+
+
+
+
+
+
+
+
+
+-----> NESSE NEGÓCIO, O PROFESSOR ADICIONA UM NOVO PATH,
+
+um path 
+
+
+para 
+
+
+
+a route de 'recipe-book',
+
+
+
+que 
+
+é 
+
+
+
+
+A ROUTE QUE RECÉM REMOVEMOS LÁ  DE 
+
+
+'recipe-book-routing.module.ts'...
+
+
+
+
+
+
+
+
+
+O CÓDIGO FICA ASSiM:
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { AuthGuardService } from './auth/auth-guard.service';
+import { AuthPageComponent } from './auth/auth-page.component';
+import { GenericErrorPageComponent } from './generic-error-page/generic-error-page.component';
+import { HomePageComponent } from './home-page/home-page.component';
+
+import { RecipeBookComponent } from './recipeBook/recipe-book.component';
+import { RecipeDetailComponent } from './recipeBook/recipe-detail/recipe-detail.component';
+import { RecipeEditComponent } from './recipeBook/recipe-edit/recipe-edit.component';
+import { SelectARecipeComponent } from './recipeBook/select-a-recipe/select-a-recipe.component';
+import { RecipesResolverService } from './recipes-resolver.service';
+
+import { ShoppingListComponent } from './ShoppingList/shoppingList.component';
+import { ShoppingListModule } from './ShoppingList/shoppingList.module';
+
+const appRoutes: Routes = [
+  {
+    path: '',
+    component: RecipeBookComponent,
+  },
+
+  { path: 'recipe-book' },
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(appRoutes)],
+
+  exports: [RouterModule],
+})
+export class AppRoutingModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK...
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { AuthGuardService } from "../auth/auth-guard.service";
+import { RecipesResolverService } from "../recipes-resolver.service";
+import { RecipeBookComponent } from "./recipe-book.component";
+import { RecipeDetailComponent } from "./recipe-detail/recipe-detail.component";
+import { RecipeEditComponent } from "./recipe-edit/recipe-edit.component";
+import { SelectARecipeComponent } from "./select-a-recipe/select-a-recipe.component";
+
+
+
+
+
+
+const recipeBookRoutes: Routes = [
+    {
+        // path: 'recipe-book', ////sem lazy loading
+        path: '', /////com lazy loading
+        component: RecipeBookComponent,
+        canActivate: [AuthGuardService], ////VAI REDIRECIONAR à 'auth', SE O USER NÃO ESTIVER AUTH....
+        children: [
+          {
+            path: '',
+            resolve: [RecipesResolverService],
+            component: SelectARecipeComponent,
+          },
+          {
+            path: 'new',
+            component: RecipeEditComponent,
+          },
+          {
+            path: ':id',
+            resolve: [RecipesResolverService],
+            component: RecipeDetailComponent,
+          },
+    
+          {
+            path: ':id/edit',
+            resolve: [RecipesResolverService],
+            component: RecipeEditComponent,
+          },
+    
+        ],
+      },
+]
+
+
+
+
+@NgModule(
+    {
+        imports: [
+            // RouterModule.forChild(recipeBookRoutes)   ////quando você quer incluir algum 'FEATURE MODULE' dentro de seu APP MODULE (outsourcing), você usa esse 'forChild' em vez de 'forRoot()'...
+            RouterModule.forChild(recipeBookRoutes) 
+          ],
+
+        exports: [
+            RouterModule
+        ]
+    }
+)
+export class RecipeBookRoutingModule {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- >CERTO....
+
+
+
+
+
+
+
+
+
+lá no 'app-routing.module.ts',
+
+
+
+
+
+
+NÃO  VAMOS COLOCAR 
+
+
+
+o 'component que vamos querer carregar' 
+
+
+,
+
+
+
+não vamos escrever algo como 
+'component': 'ComponentName',
+
+
+
+
+
+
+
+E SIM 
+
+
+VAMOS COLOCAR UMA KEY DIFERENTE,
+
+A KEY DE 
+
+
+
+
+
+
+
+
+
+
+
+'loadChildren: xxxxx'
+
+
+
+
+
+
+
+
+
+
+
+
+--> 'loadChildren'
+
+
+É UMA __ PROPRIEDADE__ ESPECIAL 
+
+
+
+
+EM ROUTING CONFIGs,
+
+
+
+
+a qual 
+
+
+o 
+
+
+
+ANGULAR _ COMPREENDE COMO 
+
+
+
+
+'''' POR FAVOR, APENAS CARREGUE O CODE CONTENT/MODULE A QUE 
+
+TE APONTEI __ SE O USEr__ TIVER VISITADO ESSE PATH`````..
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ --> O CÓDIGO VAI FICANDO ASSIm:
+
+
+
+
+
+
+
+
+
+    {
+      path: '',
+      component: RecipeBookComponent
+    },
+
+
+    {path: 'recipe-book', 
+    
+    loadChildren: ''
+    
+    
+    } ////lazy loading
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... MAS COMO VALUE DESSA KEY,
+
+NÃO VAMOS COLOCAR UM TYPE/COMPONENT TYPE.... --> não,
+
+
+
+
+EM VEZ DISSO VAMOS _ ESCREVER UMA STRING_...
+
+
+
+
+
+
+
+
+-----> ESSA STRING SERÁ O 'PATH AO MODULE QUE VOCê QUER CARREGAR __ 
+
+
+QUANDO _ ESSA PAGE/PATH _ FOR VISITADA''...
+
+
+
+
+
+
+
+
+
+
+
+-------> E É CLARO QUE O PROFESSOR QUER CARREGAR, 'relatively' (A partir do app-routing.module.ts),
+
+
+
+
+
+
+AQUELE MODULE DE 
+
+
+
+'./recipe-book/recipe-book.module.ts'..
+
+
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+
+
+    {
+      path: '',
+      component: RecipeBookComponent
+    },
+
+
+    {path: 'recipe-book', 
+    
+    loadChildren: './recipeBook/recipe-book.module.ts'
+    
+    
+    } 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+    {
+      path: '',
+      component: RecipeBookComponent
+    },
+
+
+    {path: 'recipe-book', 
+  
+     loadChildren: './recipeBook/recipe-book.module.ts'       ////lazy loading   --> é o 'module' que você vai carregar de forma LAZY. (só quando o user acessar essa sua route, essencialmente)...
+  } 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --------------> OK.. MAS É CLARO QUE 
+
+
+  NO SEU APP NÃO BASTA VOCê SÓ ESCREVER ISSO AÍ;
+
+
+
+  NÃO BASTA 
+
+  ESCREVER APENAS O PATH AO SEU MODULE NESSE LOCAL AQUI,
+
+
+
+  pq vocÊ 
+
+  TAMBÉM 
+
+  PRECISA 
+
+
+
+
+
+  __ ADICIONAR __ O 'NAME' DESSE SEU MODULE ESPECÍFICO... (
+
+
+
+    isso pq o angular não vai ter como saber o NOME 
+
+    DA CLASS QUE VAI SEGURAR ESSE SEU 'MODULE',
+
+    e ele 
+
+
+    PRECISA SABER DISSO,
+
+
+    PQ ELE VAI TENTAR 'GO INTO THAT PATH' e 
+
+    então 
+
+
+    TENTAR importar um 
+
+    OBJECT ESPECÍFICO DESSE ARQUIVO....  e teoricamnete,
+
+
+    esse object poderia ter QUALQUER NOME 
+
+
+
+    (
+
+
+      ELE NÃO SABE QUE O NOME DO NEGÓCIO VAI SER 'RecipeBookModule'
+    )
+  ),
+
+
+
+
+
+
+
+
+
+
+
+,
+
+E É EXATAMENTE POR ISSO QUE PRECISAMOS ESPECIFICAR O '''NOME DAQUELA 
+
+
+CLASS/MODULE DENTRO DAQUELE ARQUIVO xxxx.module.ts''....
+
+
+
+
+
+
+
+
+
+
+--> para especificar esse nome,
+
+você 
+
+
+
+
+
+deve 
+
+
+
+escrever o path,
+
+e logo depois colocar 
+
+'#' 
+
+
+e entaõ o 
+
+
+NOME DO SEU MODULE/CLASS pertinente,
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+    {
+      path: '',
+      component: RecipeBookComponent
+    },
+
+
+    {path: 'recipe-book', 
+  
+     loadChildren: './recipeBook/recipe-book.module.ts#RecipeBookModule'       ////lazy loading   --> é o 'module' que você vai carregar de forma LAZY. (só quando o user acessar essa sua route, essencialmente)...
+  } 
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+   loadChildren: './recipeBook/recipe-book.module.ts#RecipeBookModule'      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   EX:
+
+
+
+
+
+
+
+
+
+       {path: 'recipe-book', 
+              ////vocÊ deve escrever o PATH ATÉ O SEU ARQUIVO, e logo depois o '#NOME DA CLASS/MODULE DENTRO DESSE ARQUIVO' (é necessário especificar assim, para que isso funcione)...
+     loadChildren: './recipeBook/recipe-book.module.ts#RecipeBookModule'       ////lazy loading   --> é o 'module' que você vai carregar de forma LAZY. (só quando o user acessar essa sua route, essencialmente)...
+  } 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  CERTO....
+
+
+
+
+
+
+
+
+TEORICAMENTE ISSO DEVERIA ESTAR CERTO, MAS NOSSO IDE NOS DÁ UM ERRO:
+
+
+
+
+
+
+
+
+   Type 'string' is not assignable to type 'LoadChildrenCallback'.ts(2322)
+router.d.ts(1998, 5): The expected type comes from property 'loadChildren' which is declared here on type 'Route'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---. MAS O  PROFESSOR IGNORA ESSE PROBLEMA, AFIRMANDO QUE 
+
+
+
+'''O NOSSO CÓDIGO AGORA ESTARÁ __ sPLIT__ 
+
+
+
+no point/ponto entre 
+
+
+o 
+
+
+
+'SLASH NOTHING' e o 'recipe-book'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> solução para o problema:
+
+
+
+
+
+
+https://stackoverflow.com/questions/70313032/type-string-is-not-assignable-to-type-loadchildrencallback
+
+
+
+
+20
+
+For dynamic imports you'll need to update this
+
+{ path: 'Supplier', loadChildren: '../Supplier/CustomerApp.SupplierModule#CustomerAppSupplierModule' },
+
+
+
+
+
+
+
+To this:
+
+{ 
+   path: 'Supplier',
+   loadChildren: () => import('../Supplier/CustomerApp.SupplierModule').then(x => x.CustomerAppSupplierModule)
+},
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok... vou tentar formatar meu código assim:
+
+
+
+
+
+
+
+
+
+
+
+
+    {path: 'recipe-book', 
+              ////vocÊ deve escrever o PATH ATÉ O SEU ARQUIVO, e logo depois o '#NOME DA CLASS/MODULE DENTRO DESSE ARQUIVO' (é necessário especificar assim, para que isso funcione)...
+    //  loadChildren: './recipeBook/recipe-book.module.ts#RecipeBookModule'       ////lazy loading   --> é o 'module' que você vai carregar de forma LAZY. (só quando o user acessar essa sua route, essencialmente)...
+        ////SINTAXE VELHA DE 'loadChildren' ^^^
+
+
+        ///SINTAXE NOVA VVVVVV 
+
+        loadChildren: () => import('./recipeBook/recipe-book.module').then(x => x.RecipeBookModule)
+  
+  
+  } 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> ESSA É A SINTAXE NOVA, CORRETA... (que não nos dá errors...)
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> ISSO SIGNIFICA, AGORA, QUE ESSE MODULE INTEIRO DE 'recipe-book.module'
+
+
+
+
+SERÁ _ COLOCADO __ EM UM 'SEPARATE CODE BUNDLE',
+
+
+
+QUE __ 
+
+
+ENTÃO __ SÓ É CARREGADO/BAIXADO  __ ON DEMAND,
+
+
+APENAS 
+
+
+NO MOMENTO QUE O USER 
+
+
+VISITA ESSA PAGE,
+
+
+E EM  NENHUM MOMENTO ANTES DISSO..
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO  OCORRE PQ 
+
+
+O 
+
+
+
+ANGULAR-CLI ANALISA ESSE CÓDIGO/ARQUIVO E ENTAÕ ANALISA O NOSSO 'app.module.ts',
+
+
+
+
+
+PARA ENTÃO SEPARAR AS COISAS QUE DECLARAMOS como 'lazy loaded' nesse 
+
+
+app-routing.module.ts..
+
+
+
+
+
+
+
+
+
+
+
+--> OK, E ESSE SEPARATE BUNDLE AGORA REALMENTE É 
+
+CARREGADO SEPARADAMENTE DO 'RESTO DO NOSSO APP'...
+
+
+
+
+
+
+
+
+
+-----> OK.... MAS _ AGORA TEMOS UM DETALHE IMPORTANTE...
+
+
+
+
+
+
+
+
+
+
+--> PARA __ GARANTIR_ QUE SEU CÓDIGO SERÁ PRESERVADO/VOCÊ REALMENTE VAI OBTER 
+
+
+
+ESSE 'LAZY LOADING',
+
+
+
+VOCÊ 
+
+
+
+TEM QUE 
+
+
+SE CERTIFICAR DE QUE 
+
+
+OS IMPORT STATEMENTS DE SEU 'LAZILY LOADED COMPONENT'
+
+
+REALMETNE 
+
+SÓ EXISTEM NO ARQUIVO DO MODULE QUE É CARREGADO 'LAZILY',
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { CommonModule } from "@angular/common";
+import { NgModule } from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
+// import { RouterModule } from "@angular/router";
+import { RecipeBookRoutingModule } from "./recipe-book-routing.module";
+import { RecipeBookComponent } from "./recipe-book.component";
+import { RecipeDetailComponent } from "./recipe-detail/recipe-detail.component";
+import { RecipeEditComponent } from "./recipe-edit/recipe-edit.component";
+import { RecipeItemComponent } from "./recipe-list/recipe-item/recipe-item.component";
+import { RecipeListComponent } from "./recipe-list/recipe-list.component";
+import { SelectARecipeComponent } from "./select-a-recipe/select-a-recipe.component";
+
+
+
+import { SharedModule } from "../shared/shared.module"; ///features compartilhadas entre vários modules, como 'CommonModule', spinning loader, directives, etc...
+
+@NgModule({
+
+    declarations: [
+        RecipeBookComponent,
+        RecipeDetailComponent,
+        RecipeBookComponent,
+        SelectARecipeComponent,
+        RecipeEditComponent,
+        RecipeListComponent,
+        RecipeItemComponent,
+
+    ],
+    providers: [],
+    imports: [
+       
+       SharedModule, ////DEVE SER IMPORTADO AQUI E TAMBÉM EM 'app.module.ts' (todos shared modules são assim)....
+        // CommonModule,
+        ReactiveFormsModule,  ///esses 3 modules são necessários, aqui, pq usamos essas 3 features dentro dos componnets/código de 'recipeBookMOdule', esse SUBMODULE de nosso app (que é representado por 'app.module.ts', o module em que esse 'recipeBookMOdule' é importado) ------> 
+        ///A RAZÃO PARA TERMOS DE 'REPETIR' ESSES IMPORTS, AQUI, É QUE __ IMPORTS REALIZADOS LÁ EM 'app.module.ts' NÃO SÃO TRANSFERIDOS/INHERITED AUTOMATICAMENTE PELOS 'child modules' importados nele...
+        RecipeBookRoutingModule  ////assim fazemos o ACTUAL IMPORT DAS  _ROUTES_ RELATIVAS_ A ESSA FEATURE DE 'recipeBook' dentro do nosso module de 'recipeBook' (ou seja, aqui há um outsourcing bem absurdo, que deixa nossos components bem mais 'lean')...
+    ],
+     exports: [
+
+        ///não PRECISAMOS IMPORTAR NENHUM DESSES COMPONENTS AO RESTO DAS FEATURES/MODULES DE NOSSO APP, justamente pq ELES SÓ SÃO/SERÃO USADOS INTERNAMENTE, com ESSE PRÓPRIO 'MODULE' de 'RecipeBookModule' que criamos.... 
+        //  RecipeBookComponent,
+        // RecipeDetailComponent,
+        // RecipeBookComponent,
+        // SelectARecipeComponent, 
+        // RecipeItemComponent
+    ],
+
+})
+
+export class RecipeBookModule {
+
+    
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OU SEJA,
+
+NÃO DEIXE NENHUM 
+
+
+'OLD IMPORT STATEMENT'
+
+LÁ NO 'app.module.ts',
+
+
+
+PQ   É CLARO QUE 
+
+
+
+
+
+COM OS BUILD PROCESS,
+
+
+SEMPRE _  SÃO IMPORTANTES 
+
+
+
+AS COISAS QUE IMPORTAMOS (
+
+  se importamos coisas que NÃO USAMOS EM 1 COMPONENT/ARQUIVO/MODULE,
+
+
+  AÍ TEMOS UM PROBLEMA NO NOSSO APP,
+
+
+  de performance... (estaremos baixando algo DESNECESSÁRIO)..
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> É POR ISSO QUE VOCê PRECISA ASSEGURAR QUE SEUS 
+
+
+CODE IMPORTS ESTÃO CORRETOS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------> ok.... 
+
+
+
+
+
+
+
+
+AÍ O PROFESSOR FALA UM POUCO DO 'app-routing.module.ts',
+
+
+
+E DA NECESSIDADE DE DEIXARMOS 
+
+
+
+
+
+O PATH COMO '',
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { AuthGuardService } from './auth/auth-guard.service';
+import { AuthPageComponent } from './auth/auth-page.component';
+import { GenericErrorPageComponent } from './generic-error-page/generic-error-page.component';
+import { HomePageComponent } from './home-page/home-page.component';
+
+import { RecipeBookComponent } from './recipeBook/recipe-book.component';
+import { RecipeDetailComponent } from './recipeBook/recipe-detail/recipe-detail.component';
+import { RecipeEditComponent } from './recipeBook/recipe-edit/recipe-edit.component';
+import { SelectARecipeComponent } from './recipeBook/select-a-recipe/select-a-recipe.component';
+import { RecipesResolverService } from './recipes-resolver.service';
+
+import { ShoppingListComponent } from './ShoppingList/shoppingList.component';
+import { ShoppingListModule } from './ShoppingList/shoppingList.module';
+
+const appRoutes: Routes = [
+  {
+    path: '',
+    component: RecipeBookComponent,
+  },
+
+  {
+    path: 'recipe-book',
+
+    loadChildren: () =>
+      import('./recipeBook/recipe-book.module').then((x) => x.RecipeBookModule),
+  },
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(appRoutes)],
+
+  exports: [RouterModule],
+})
+export class AppRoutingModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { AuthGuardService } from "../auth/auth-guard.service";
+import { RecipesResolverService } from "../recipes-resolver.service";
+import { RecipeBookComponent } from "./recipe-book.component";
+import { RecipeDetailComponent } from "./recipe-detail/recipe-detail.component";
+import { RecipeEditComponent } from "./recipe-edit/recipe-edit.component";
+import { SelectARecipeComponent } from "./select-a-recipe/select-a-recipe.component";
+
+
+
+
+
+
+const recipeBookRoutes: Routes = [
+    {
+        // path: 'recipe-book', ////sem lazy loading
+        path: '', /////com lazy loading --> ver module de 'app-routing.module.ts', que JÁ FAZ O SET DA ROUTE DE 'recipe-book' para nós (é por isso que não precisamos REDEFINIR 'recipe-book' como a route, aqui)....
+        component: RecipeBookComponent,
+        canActivate: [AuthGuardService], ////VAI REDIRECIONAR à 'auth', SE O USER NÃO ESTIVER AUTH....
+        children: [
+          {
+            path: '',
+            resolve: [RecipesResolverService],
+            component: SelectARecipeComponent,
+          },
+          {
+            path: 'new',
+            component: RecipeEditComponent,
+          },
+          {
+            path: ':id',
+            resolve: [RecipesResolverService],
+            component: RecipeDetailComponent,
+          },
+    
+          {
+            path: ':id/edit',
+            resolve: [RecipesResolverService],
+            component: RecipeEditComponent,
+          },
+    
+        ],
+      },
+]
+
+
+
+
+@NgModule(
+    {
+        imports: [
+            // RouterModule.forChild(recipeBookRoutes)   ////quando você quer incluir algum 'FEATURE MODULE' dentro de seu APP MODULE (outsourcing), você usa esse 'forChild' em vez de 'forRoot()'...
+            RouterModule.forChild(recipeBookRoutes) 
+          ],
+
+        exports: [
+            RouterModule
+        ]
+    }
+)
+export class RecipeBookRoutingModule {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COLOCAMOS O 'path' como '' em 'recipe-book'
+
+
+
+PQ 
+
+
+
+
+
+
+
+NÓS JÁ DEFINIMOS, LÁ EM 
+'app-routing.module.ts',
+
+
+
+
+
+
+QUE __ 'recipe-book' 
+
+DEVERÁ 
+
+SER 
+
+A ROUTE QUE VAI 'KICK IN'
+
+
+
+
+
+O MODULE DE 'RecipeBookModule' (
+
+
+
+
+  e aí, dentro do 'RecipeBookRoutingModule',
+
+
+
+  basta colocar 
+
+  '' como a 'MAIN ROUTE' desse 
+
+
+  module, 
+  pq 
+
+
+  é 
+
+  óbvio que ele 
+
+
+  será ACESSADO, PRIMEIRAMENTE,
+
+  POR 
+
+
+  'recipe-book',
+
+  PQ FOI ISSO QUE 
+  DEFINIMOS LÁ NO 'app-routing.module.ts',  que é seu 'CHEFE'...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> REINICIE SEU APP,
+
+PQ 
+O 
+
+LAZY LOADING EXIGE ISSO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR FALA UM POUCO DESSA SINTAXE 
+
+
+
+
+de '#RecipeBookModule',
+
+
+
+
+
+
+
+
+
+
+QUE A SINTAXE MODERNA É MELHOR,
+
+
+QUE É AQUELA QUE USAMOS, QUE É ASSIM:
+
+
+
+
+    loadChildren: () => import('./recipeBook/recipe-book.module').then(x => x.RecipeBookModule)
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> NESSE CÓDIGO AÍ,
+
+
+
+  NÓS _ SETTAMOS UMA 'FUNCTION',
+
+  UMA ANON ARROW FFUNCTION,
+
+
+  E AÍ 
+
+
+   
+   NO FUNCTION BODY VOCê CHAMA 'import',
+
+
+   como se fosse uma function...
+
+
+
+
+
+
+   E A ESSE IMPORT,
+
+   VOCe^
+
+   PASSA O _ PATH __ AO 
+
+
+   SEU MODULE...
+
+
+
+
+
+
+
+   --> por fim,
+
+   VOCê 
+
+
+
+
+usa A PROMISE RETORNADA POr 'import' 
+
+PARA 
+
+
+
+
+
+ACESSAR O 'MODULE' (Argumento 'x') 
+
+
+PARA ENTÃO 
+EXTRAIR SEU MODULE ESPECÍFICO (
+
+  NO CASO, 
+
+  'x.RecipeBookModule'....
+)
+
+
+
+
+
+
+
+
+
+
+
+-> OK, É ASSIM QUE 
+
+CARREGAMOS NOSSAS ROUTES DE FORMA LAZY....
+
+
+
+
+
+
+
+
+
+-> OS 2 APPROACHES SÃO IDÊNTICOS, MAS O MAIS MODERNO É MELHOR....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA QUITTE TUDO ISSO, RESETTE SEU APP,
+
+
+
+para que 
+
+ele 
+leve em cosideraçao o ''lazy loading'....
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS QUANDO NOSSO APP RECARREGAR, PROVAVELMENTE RECEBEREMOS UM ERROR COMO 
+
+
+
+'undefined is not a function'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS O QUE PODE ESTAR CAUSANDO ISSO?
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, O PROFESSOR EXPLICA QUE 
+
+
+É 
+
+PQ 
+
+
+AINDA ESTAMOS COM 
+
+
+'RecipeBookModule'
+
+
+
+IMPORTADO LÁ No 'app.module.ts',
+
+tipo assim:
+
+
+
+
+
+  imports: [
+    AuthModule, ///outsourcing em essa 'feature module'...
+
+    BrowserModule,
+    AppRoutingModule,  //módulo de routing, customizado por nós...
+    HttpClientModule,
+    RecipeBookModule,  ///////OUTSOURCING, EM UM MODULE SEPARADO...
+    ShoppingListModule,  ////OUTSOURCING, EM OUTRO MODULE SEPARADO...
+    SharedModule   ///outsourcing...
+
+  ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  --> BEM, COMO O MODULE DE 'recipeBookMOdule'
+
+
+
+
+  é o module que estamos tentando CARREGAR__ DE FORMA 'LAZY',
+
+
+
+
+
+  DEVEMOS __ TER __ APENAS _ O MODULE/ROUTE 
+
+
+  DE 
+
+
+
+
+  'AppRoutingModule',
+
+
+
+
+SEM IMPORTAR 
+
+O 
+
+
+
+'RecipeBookModule',
+
+
+
+
+
+
+
+
+pq caso contrário ficaríamos com um 'LAZY LOAD' e um 'EAGER LOAD'
+
+
+
+
+ao mesmo tempo.... --> e isso vai causar um ERRO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COMO RESULTADO DO LAZY LOADING,
+
+
+
+
+
+OBSERVAMOS ISSO NO NOSSO BUILD WORKFLOW OUTPUT:
+
+
+
+
+
+
+Initial Chunk Files                         | Names                         |  Raw Size
+main.js                                     | main                          | 143.50 kB | 
+runtime.js                                  | runtime                       |  12.64 kB | 
+
+Lazy Chunk Files                            | Names                         |  Raw Size
+src_app_recipeBook_recipe-book_module_ts.js | recipeBook-recipe-book-module |  67.77 kB | 
+
+3 unchanged chunks
+
+
+
+
+
+
+
+
+
+
+
+ok... significa que nosso approach __ FUNCIONOU...
+
+
+
+
+
+
+(
+
+
+  certifique-se de que o import de 'RecipeBookModule'
+
+  em 
+
+
+  'app.module.ts'
+
+  também foi removido, pq isso também vai pesar no load de sua página...
+)
+
+
+
+
+
+
+
+
+
+
+
+-> RECARREGAMOS A PAGE,
+
+
+E AÍ 
+
+
+OBSERVAMOS UM POUCO DE MELHORIA...  --> o vendorjs 
+
+
+
+
+ainda continua 
+
+grande, mas o 
+
+
+'main.js'
+
+
+
+DIMINUIU,
+
+
+
+agora é bem menor... 
+
+
+(
+
+  antes era 200 e pouco,
+
+
+  agora é 
+
+
+  143...
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+isso quer dizer que 
+
+
+
+nosso app foi dividido em várias partes, por conta do lazy loading...
+
+
+
+
+
+
+
+
+
+
+-> tudo está funcionando como antes, mas agora a route de 
+
+
+
+
+
+'recipe-book'
+
+
+foi LAZILY LOADED...
+
+
+
+
+
+
+
+
+
+
+--> QUÃO MAIOR FICAR SEU APP,
+
+
+
+MAIORES SERÃO AS FEATURES,
+
+
+
+
+E 
+
+MAIORES VANTAGENS VOCÊ EXTRAIRÁ DO 
+
+LAZY LOADING..
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE FAZ BEM MAIS SENTIDO VOCÊ FAZER LAZY LOAD, NO APP,
+
+
+DAS PARTES 
+
+
+
+
+
+QUE _ O USER __ QUASE NUNCA VAI ACESSAR...
+
+
+
+
+
+
+
+NO CASO DE NOSSO APP,
+
+
+
+A PÁGINA QUE MAIS FAZ SENTIDO DEIXAR LAZILY LOADED É 
+
+
+
+'auth' page...
+
+
+
+
+
+
+
+
+
+
+
+--> MAS SE VOCÊ TIVER UMA PAGE QUE É MT VISITADA,
+
+
+
+
+NÃO É MT BOM DEIXAR 'LAZILY LOADED',
+
+
+
+pq isso 
+
+pode 
+
+
+forçar o user a baixar coisas de 'FORMA ATRASADA'...
+
+
+
+
+
+
+
+
+--> MAS O PROFESSOR TAMBÉM VAI NOS MOSTRAR UMA MANEIRA DE 
+
+
+
+
+OPTIMIZAR ESSE PROCESSO DE 'LOAD ATRASADO'
+
+
+
+que é uma desvantagem do lazy loading...

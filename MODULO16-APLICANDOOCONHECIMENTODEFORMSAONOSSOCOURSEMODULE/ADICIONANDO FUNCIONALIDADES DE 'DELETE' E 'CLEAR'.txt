@@ -1,0 +1,792 @@
+
+
+
+
+
+
+
+
+
+
+
+
+-----> BEM... HÁ 3 COISAS QUE DEFINITIVAMENTE DEVEMOS IMPLEMENTAR:
+
+
+
+
+
+
+1) QUANDO EDITAMOS UMA RECIPE,
+
+NÃO INTERESSA SE ESTIVERMOS FAZENDO 'UPDATE' OU 'ADD',
+
+
+
+DEVEMOS FAZER O _ BUTTON _ DE 'CANCEL' funcionar...
+
+
+
+
+
+2) DEVEMOS ENABLAR AQUELE BUTTON DE 'Delete REcipe'
+
+
+
+
+
+
+
+3) TAMBÉM, QUANDO FOR CLICADO O BUTTON DE 'add/edit',
+
+DEVEMOS 
+
+'NAVIGATE AWAY'..
+
+
+
+
+
+
+
+
+
+
+OK.. VAMOS FAZER 1 POR 1....
+
+
+
+
+
+
+
+
+
+
+
+
+QUANTO AO BUTTON DE 'CANCEL',
+
+
+acho que colocarei este código:
+
+
+
+
+
+
+
+
+
+
+  onCancel() {
+
+        this.router.navigate(['/recipe-book', this.recipeId])
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> ISSO VAI NOS NAVEGAR ATÉ A 'PÁGINA' que existia antes dessa,
+
+  que 
+
+  era só 
+
+
+
+a página que mostra o nosso 'recipeItem'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... ESSA PRIMEIRA TAREFA ESTÁ PRONTA..
+
+
+
+
+
+
+
+
+
+
+
+
+-> AGORA VAMOS TENTAR ENABLAR O BUTTON DE 'DELETE'...
+
+
+
+
+
+
+
+
+-> escrevo esta lógica aqui, lá em 
+
+
+
+''recipe-detail'':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  onDeleteRecipe() {
+
+
+    this.recipeBookService.onRecipeDeleted(this.id);
+
+
+    this.router.navigate(['/recipe-book']);
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+  ----------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ----> ok..... 
+
+
+
+
+
+  DEVEMOS FAZER TAMBÉM A MESMA COISA COM O CLICK NO BUTTON DE 'add/edit'...
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+    }
+
+  onSubmitForm() {
+    console.log(this.recipeForm);
+    console.log(this.recipeForm.get('ingredients.0')?.value.ingredient);
+
+
+    const recipe: Recipe = {
+      name: this.recipeForm.get('recipeName')?.value,
+      description: this.recipeForm.get('description')?.value,
+      imagePath: this.recipeForm.get('imagePath')?.value,
+      ingredients: this.recipeForm.get('ingredients')?.value
+    }
+
+    console.log(recipe);
+
+
+    if (this.editMode) {
+
+      this.recipeBookService.onRecipeEdited(recipe, this.recipeId);
+      this.onNavigateAway();
+    } else {
+
+
+      this.recipeBookService.onRecipeAdded(recipe);
+
+      this.router.navigate(['/recipe-book'])
+    }
+   
+
+
+  }
+
+
+
+
+
+
+
+-----------------
+
+
+
+
+
+
+
+
+
+OK... ISSO TUDO ESTÁ FUNCIONANDO....
+
+
+
+
+
+
+
+
+
+
+
+--> SÓ O BUTTON DE 'DELETE', ainda há uma funcionalidade que quero implementar....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> QUANDO 1 RECIPE FOR DELETADA,
+
+SE TIVERMOS ALGUM DE SEUS 
+
+
+'items'
+
+
+LÁ 
+
+
+
+NA PAGE DE 'ShoppingList',
+
+
+
+
+VAMOS QUERER _ 
+
+APAGAR TODOS ESSES ITEMS (pq a recipe que os origiina/originou NÃO EXISTE MAIS)..
+
+
+
+
+
+
+
+
+
+
+
+-> ok, mas COMO PODEMOS FAZER ISSO?
+
+
+
+
+
+
+
+
+
+
+-> NÃO VEJO OUTRA MANEIRA 
+
+ALÉM DAQUELA DE 'colocar um userId' dentro de cada 'ingredient', apontando 
+
+
+
+a cada
+
+
+'recipe'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO, AGORA CADA 'Ingredient'  tem um 'userId' property....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> certo, e quando um RECIPE FOR ADICIONADO À SHOPPING LIST,
+
+
+
+
+
+
+vamos querer NAVEGAR ATÉ ELA...
+
+
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+  sendToShoppingList() {
+    console.log('CLICKED');
+    this.recipeBookService.sendToShopList(this.loadedRecipe.ingredients);
+    this.router.navigate(['/shop-list'])
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E QUANDO FOR 'DELETADA' ESSA RECIPE , TAMBÉM:
+
+
+
+
+
+  onDeleteRecipe() {
+
+
+    this.recipeBookService.onRecipeDeleted(this.id);
+    this.shoppingListService.cleanupDeleteIngredients(this.id);
+
+
+    // this.router.navigate(['/recipe-book']);
+
+    this.router.navigate(['/shop-list'])
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> mas meus items lá no array de 'ingredients' NÃO ESTÃO SENDO DELETADOS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> agora estão sendo deletados,
+
+  mas quando somos navegados até 'shop-list',
+
+
+
+
+
+  nosso STATE dos ingredients NÃO É UPDATADO AUTOMATICAMENTE... (por alguma razão)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> esse problema do reload de nosso state é o único, no momento....
+
+
+  -> uma solução é simplesmetne NAÕ FAZER O NAVIGATE ATÉ 'SHOP-LISt'...
+
+
+
+
+
+
+
+  --> NÃO, MAS MESMO COM ISSO,
+
+
+
+
+
+
+  o state NÃO ESTÁ SENDO UPDATADO... (talvez pq esses items NÃO ESTÃO SENDO APAGADOS) --> é isso, na verdade..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  OK, MAS AGORA ESTÁ FUNCIONANDO, E OS ITEMS ESTÃO SENDO REALMENTE APAGADOS DE NOSSO STATE....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> ok.... agora só estou com UM PROBLEMINHA.... --> QUANDO ADICIONO  
+
+
+
+
+
+NOVOS ITEMS,
+
+
+
+O 
+
+
+ID DELES NÃO CORRESPONDE COM O ID EXTRAÍDO DE NOSSA ROUTE (
+
+    o que faz com que 
+
+    acabemos com INCOMPATIBILIDADES ENTRE OS IDS,
+
+
+
+    como visto aqui:
+
+
+
+2
+ 1653700242561.4785
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+--> COMO POSSO SOLUCIONAR ESSE PROBLEMA?
+
+
+
+
+--> uma solução possível seria 
+
+
+colocar o ID DAS NOSSAS RECIPES _ DENTRO __ 
+
+
+
+DO ':id' 
+
+de nossa página...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... CONSEGUI.. FIZ EXATAMENTE ISSO, E MEU CÓDIGO INTEIRO MUDOU PARA COMPORTAR 
+ESSA ALTERAÇÃO..
+
+
+
+
+
+
+
+
+
+---> mas agora o código está funcionando melhor,
+
+
+
+pq 
+
+quando editamos tudo isso, as mudanças são refletidas cross-component...
+
+
+
+
+
+
+
+
+
+uma das principais mudanças foi esta:
+
+
+
+
+
+
+
+  
+  getRecipe(id: number): Recipe {
+    // return this.recipes[id];
+
+    const selectedRecipe = this.recipes.find((recipe) => { return recipe.id === id})!;
+    return selectedRecipe
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+MUDEI TAMBÉM A PRÓPRIA ESTRUTURA DE NOSSOS RECIPES E INGREDIENTS,
+
+
+
+pq agora cada RECIPE possui um 'id',
+
+
+E
+ CADA 
+
+ INGREDIENT POSSUI UM 'recipeIndex',
+
+
+
+
+ DEMARCANDO QUAL RECIPE FOI RESPONSÁVEL POR SUA CRIAÇÃO (sistema meio sql)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ----- o professor faz uns injects de 'router',
+
+
+ coisa bem simples...
+
+
+
+
+
+
+
+ --. adiciona um method de 'onCancel()',
+
+
+ e aí 
+
+ ele
+
+
+
+
+
+ diz que esse navigate vai 'take us back one level',
+
+
+
+
+
+
+
+
+
+que é exatamente o que eu fiz...
+
+
+
+
+
+
+
+mas o method dele ficou assim:
+
+
+
+
+
+
+
+
+
+onCancel() {
+        this.router.navigate(['../'], {relativeTo: this.route})
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> O DELETE DE NOSSA RECIPE ESTÁ FUNCIONANDO...
+
+
+
+
+

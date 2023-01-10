@@ -1,0 +1,392 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> NOSSO PROBLEMA DE '''REDIRECT A localhost:4200/ CADA VEZ QUE RECARREGAMOS A PAGINA'
+
+
+está RELACIONADO AO 
+
+
+
+'auth.effects.ts',
+
+
+
+
+
+
+
+
+
+
+ESTE CÓDIGO AQUI:
+
+
+
+
+
+
+
+authRedirect$ = createEffect( ///redireciona o user a partir das actions de 'success' e 'logout', ambos os cases vão para a page de '/'...
+  () => {
+      return this.actions$.pipe(
+          ofType(AuthActions.AUTH_SUCCESS,
+              // AuthActions.AUTH_LOGOUT  //removendo isto, impedimos CONFLITOS/RACE entre ESSE EFFECT E O AUTHGUARD (que tem sua própria lógica de redirects....)
+            ),
+
+          tap(
+              () => {
+                  this.router.navigate(['/']);
+              }
+          )
+      )
+  },
+  {dispatch: false}
+)
+
+
+
+
+
+
+
+
+
+
+-> OU SEJA,
+
+
+NÓS 'SEMPRE REDIRECIONAMOS QUANDO TEMOS UM AUTH_SUCCESS'...
+
+
+
+
+
+
+
+----> ISSO QUER DIZER QUE ESTAMOS SEMPRE FAZENDO NAVIGATE QUANDO HÁ UM 'AUTH_SUCCESS',
+
+E UM AUTH_SUCCESS 
+sempre 
+
+
+
+ocorre quando recarregamos a nossa page,
+
+o que é um problema...
+
+
+
+
+
+
+
+
+----> DEVEMOS FAZER COM QUE ESSE AUTO REDIRECT OCORRA __ SOMENTE__ SE TEMSO UM 'AUTH_SUCCESS'
+
+
+
+___ FORA__ DO __ MECANISMO DE 'AUTO-LOGIN'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> é por isso que o approach mais fácil é simplesmente dividir 
+
+
+
+as actions entre 
+
+'AUTH_SUCCESS'
+
+
+E 
+
+'AUTO_AUTH_SUCCESS' 
+
+(
+
+    e aí fazer com que esse effect DE 'REDIRECT' TRIGGUE APENAS _A PARTIR _ 
+
+
+    DO 
+
+    'AUTH_SUCCESS',
+
+
+    E NÃO DO 'AUTO_AUTH_SUCCESS'...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O PROFESSOR IMPLEMENTA UM APPROACH MAIS ELEGANTE....
+
+
+
+
+
+
+
+
+
+
+
+--> ELE COLOCAW UM __ NOVO ITEM 
+
+
+
+AO PAYLOAD DE 'authenticate_success',
+
+
+
+
+
+
+
+
+
+
+
+QUE __ SERÁ UM __ BOOLEAN...
+
+
+
+
+
+
+--> provavelmente uma propriedade 
+
+'isRedirect: true/false',
+
+
+
+
+
+E AÍ _ VAMOS CHECAR _ POR ESSA PROPRIEDADE 
+
+
+
+
+
+LÁ em 'authRedirect'... --> 
+
+
+
+se isso for true,
+
+VAMOS REDIRECIONAR, SE FOR FALSE,
+
+VAMOS 
+
+DEIXAR O USER NA PAGE EM QUE ESTÁ...
+
+
+
+
+
+
+
+
+
+
+-> e aí alteramos o dispatch de nossas actions de 'success'
+para ter 
+
+tanto 'false' como 'true'...
+
+
+
+
+
+
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+authRedirect$ = createEffect( ///redireciona o user a partir das actions de 'success' e 'logout', ambos os cases vão para a page de '/'...
+  () => {
+      return this.actions$.pipe(
+          ofType(AuthActions.AUTH_SUCCESS,
+              // AuthActions.AUTH_LOGOUT  //removendo isto, impedimos CONFLITOS/RACE entre ESSE EFFECT E O AUTHGUARD (que tem sua própria lógica de redirects....)
+            ),
+
+          tap(
+              (authSuccessData: AuthActions.AuthSuccess) => {
+
+                if (authSuccessData.payload.isRedirect) {
+                  this.router.navigate(['/']);
+                }
+              }
+          )
+      )
+  },
+  {dispatch: false}
+)
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  autoLogin$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(AuthActions.AUTO_LOGIN),
+
+
+        map(  //tudo que é retornado aqui será AUTOMATICAMENTE DISPATCHEADO COMO UMA 'NOVA ACTION'...
+          () => {
+
+              const userData: {
+                email: string,
+                id: string,
+                _token: string,
+                _tokenExpirationDate: string
+              } = JSON.parse(localStorage.getItem(
+                'userData'
+              )!);
+
+
+              if (!userData) {
+                // return { type: 'DUMMY'};  ///action falsa... não vai fazer coisa alguma...
+                return new AuthActions.DummyAction();
+              }
+
+              const loadedUser = new User(
+                userData.email,
+                userData.id,
+                userData._token,
+                new Date(userData._tokenExpirationDate)
+              )
+
+              if (loadedUser.token) {
+
+                const expirationDuration =
+                new Date(userData._tokenExpirationDate).getTime() - new Date().getTime();
+
+
+                this.authService.setLogoutTimer(expirationDuration / 1000);
+
+
+                // console.log('TEST LINE')
+                return new AuthActions.AuthSuccess({
+                  email: loadedUser.email,
+                  userId: loadedUser.id,
+                  token: loadedUser.token,
+                  expirationDate: new Date(userData._tokenExpirationDate),
+                  isRedirect: false
+                });
+
+              }
+              return new AuthActions.DummyAction();
+              // return { type: 'DUMMY'};
+          }
+        )
+      )
+    }
+  )
+
+
+
+
+
+
+
+
+
+
+  ------------------------
+
+
+
+
+
+
+
+
+
+
+--> ok, agora nossa page, quando é recarregada,
+
+
+NÃO TROCA A RECIPE CARREGADA NA PAGE...
+
+
+
+tudo por conta do nosso RESOLVER...
+

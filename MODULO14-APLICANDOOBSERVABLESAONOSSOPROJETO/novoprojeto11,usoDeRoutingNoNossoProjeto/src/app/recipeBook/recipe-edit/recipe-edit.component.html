@@ -1,0 +1,45 @@
+<div class="row">
+  <div class="col-xs-12">
+    <form>
+      <div class="row" *ngIf="editMode else newRecipe">
+        <div class="col-sm-5 form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" class="form-control" [(ngModel)]="editableRecipe.name" name="name"/>
+        </div>
+        <div class="col-sm-5 form-group">
+          <label for="description">Description</label>
+          <input type="text" id="description" class="form-control" [(ngModel)]="editableRecipe.description" name="description"/>
+        </div>
+        <div class="col-sm-2 form-group">
+            <label for="imagePath">Image</label>
+            <input type="text" id="imagePath" class="form-control"  [(ngModel)]="editableRecipe.imagePath" name="imagePath"/>
+          </div>
+          <div class="col-sm-2 form-group">
+            <label for="imagePath">Ingredients</label>
+            <input type="text" id="imagePath" class="form-control" [(ngModel)]="editableRecipe.ingredients" name="ingredients"/>
+          </div>
+      </div>
+      <ng-template #newRecipe>
+      <div class="col-sm-5 form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" class="form-control"/>
+      </div>
+      <div class="col-sm-5 form-group">
+        <label for="description">Description</label>
+        <input type="text" id="description" class="form-control"/>
+      </div>
+      <div class="col-sm-2 form-group">
+          <label for="imagePath">Image</label>
+          <input type="text" id="imagePath" class="form-control"/>
+        </div>
+        <div class="col-sm-2 form-group">
+          <label for="imagePath">Ingredients</label>
+          <input type="text" id="imagePath" class="form-control"/>
+        </div>
+</ng-template>
+        <div class="col-xs-12">
+          <button class="btn btn-success">Add</button>
+        </div>
+    </form>
+  </div>
+</div>

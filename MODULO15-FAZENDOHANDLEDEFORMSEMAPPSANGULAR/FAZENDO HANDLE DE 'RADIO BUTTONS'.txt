@@ -1,0 +1,1098 @@
+
+
+
+
+
+
+
+
+
+
+RADIO INPUTS SÃO AS 'BOLINHAS'
+
+
+
+que você 
+
+
+vê 
+
+
+em  alguns formulários...
+
+
+
+
+
+
+
+
+O FORMATO COMUM É ASSIM:
+
+
+
+<input type="radio" id="html" name="fav_language" value="HTML">
+
+
+
+
+
+
+
+
+
+É TIPO UMA 'OPTION',
+eu acho...
+
+
+
+
+
+
+
+
+
+-> 
+
+
+ 
+VAMOS 
+
+
+VER COMO ADICIONAR RADIO BUTTONS NO ANGULAR....
+
+
+
+
+
+
+
+
+
+
+
+
+-> DEVEMOS ADICIONAR ALGUNS RADIO BUTTONS...
+
+
+
+
+
+
+
+
+
+
+--> PARA ADICIONAR ALGUNS RADIO BUTTONS NO NOSSO EXEMPLO,
+
+
+O PROFESSOR CRIA UM ARRAY 
+
+DE 
+
+VALUES 
+
+
+
+no nosso 
+
+'app.component.ts',
+
+
+
+
+em que 
+
+
+
+
+colocamos 
+
+
+
+
+'''''
+
+
+genders = ['male', 'female' ]
+
+
+
+'''''''
+
+
+
+
+
+
+
+
+-----> OK, COM ESSE ARRAY.... 
+
+
+
+
+
+
+
+-> VAMOS QUERER OUTPUTTAR OS GENDERS....
+
+
+
+
+
+
+
+--> É POR ISSO 
+
+QUE O PROFESSOR ADICIONA UMA NOVA DIV,
+
+
+
+com uma class de 'radio'...
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+<div class="radio"></div>
+
+
+
+
+
+
+
+
+-> ESSA DIV _dEVERÁ _ SER REPLICADA __ PARA TODOS OS GENDERS,
+
+POR ISSO VAMOS LOOPAR 
+
+POR DENTRO DE TODOS OS GENDERS..
+
+
+
+
+(
+
+    OBS::: 'radio' class é uma CLASS DO BOOTSTRAP PARA ESTILIZAR NOSSOS 'radio'  elements.. --> mas vocÊ 
+
+    pode usar qualquer class para os estilizar...
+)
+
+
+
+
+
+
+ex:
+
+
+
+
+
+<div class="radio" *ngFor="let gender of genders"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO.. --> 
+
+
+
+NO MUNDO BOOTSTRAP,
+
+SE QUEREMOS DAR UM ESTILO LEGAL AO NOSSO 
+
+
+
+'radio button',
+
+
+devemos FAZER WRAP 
+
+
+
+DO '<input>' 
+
+do radio 
+
+
+COM UMA LABEL,
+
+
+
+
+
+
+PARA QUE FIQUE TIPO ASSIM:
+
+
+
+
+
+
+
+
+<div class="radio" *ngFor="let gender of genders">
+    <label>
+        <input
+        type="radio"
+        name="gender">
+    </label>
+</div>
+
+
+
+
+
+
+
+
+
+
+--> vamos colocar um 'name' de 'gender',
+
+PQ 
+
+
+
+EM 
+
+_ 1 RADIO BUTTON,
+
+
+nós __ SÓ PODEMOS SELECIONAR __ 1 ÚNICO DELES 
+
+
+
+
+
+em 1 group... --> isso quer dizer que 
+
+
+
+
+esse value de 'gender' É DINÂMICO, e vai ser substituído pelo value (male ou female) 
+
+
+
+que 
+
+
+temos LÁ 
+
+
+
+EM 'genders', no app.component.ts... -----> 
+
+
+
+
+
+
+E AÍ BASICAMENTE 2 ELEMENTOS SERÃO CRIADOS,
+
+
+
+
+
+tipo assim:
+
+
+<div class="radio">
+    <label>
+        <input
+        type="radio"
+        name="male">
+    </label>
+</div>
+
+
+
+<div class="radio">
+    <label>
+        <input
+        type="radio"
+        name="female">
+    </label>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO.... aí vamos colocar 'ngModel' 
+
+
+
+
+
+NESSE INPUT AÍ,
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+<div class="radio" *ngFor="let gender of genders">
+    <label>
+        <input
+        type="radio"
+        name="gender"
+        ngModel
+        
+        >
+    </label>
+</div>
+
+
+
+
+
+
+
+
+
+----> CERTO... E AÍ, O PROFESSOR VAI QUERER 'PREPOPULATE'/definir 
+
+
+O VALUE INICIAL DESSE BUTTON,
+
+
+
+POR MEIO 
+
+DO PROPERTY BINDING DE 
+'[value]'  -> e ele vai definir o value dessa property como sendo 'gender', aquela variable de nosso ngFor loop..
+
+
+
+
+
+
+
+
+fica tipo assim:
+
+
+
+<div class="radio" *ngFor="let gender of genders">
+    <label>
+        <input
+        type="radio"
+        name="gender"
+        ngModel
+        [value]="gender"
+        >
+    </label>
+</div>
+
+
+
+
+
+
+
+----> com isso,
+
+
+
+VEREMOS QUE 2 'RADIO BUTTONS' foram adicionados a nossa página...
+
+
+
+
+
+
+
+
+--> PARA OUTPUTTAR UM _ TEXT __ AO LADO DE CADA 'radio button',
+
+
+
+
+o professor precisa 
+
+colocar uma string interpolation no meio das tags >< 
+
+
+de '<label>', e do lado do 'input'...
+
+
+
+
+-> é claro que esse 'gender' vai ser nossa VARIABLE DO FOR LOOP..
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+<div class="radio" *ngFor="let gender of genders">
+    <label>
+        <input
+        type="radio"
+        name="gender"
+        ngModel
+        [value]="gender"
+        >
+        {{gender}}
+    </label>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <!-- <form (ngSubmit)="onSubmitForm(formReference)" #formReference="ngForm" >  ESSA DIRECTIVE VAI CAPTURAR O 'TRIGGER DO SUBMIT' de sua form e então vai o utilizar para RODAR OS METHODS QUE VOCê DEFINIU LÁ NO ARQUIVO '.ts'.. -->
+      <form (ngSubmit)="onSubmitForm(formReference)" #formReference="ngForm">
+        <!-- NO ANGULAR, VOCÊ NUNCA COLOCA 'action=xxx' na sua tag de FORM, pq sua form vai ser handldada PELO ANGULAR EM SI... é por isso que não temos 'action' APONTANDO A ALGUMA ROUTE DE NOSSO APP.. NÓS TAMBÉM NÃO VAMOS COLOCAR 'method=POST', esse outro attribute famoso...-->
+
+        <!-- VOCÊ TAMBÉM PRECISA DEFINIR O VALOR DE SUA LOCAL REFERENCE COMO EQUIVALENTE A 'ngForm', para CONSEGUIR PASSAR A _ ACTUAL_ REPRESENTAÇÃO JAVASCRIPT DE SUA FORM AO seu method em 'xxx.ts', ao código typescript-->
+        <div id="user-data" ngModelGroup="userData" #userDataReference="ngModelGroup">  <!-- 'ngModelGroup' É UMA DIRECTIVE USADA PARA ORGANIZAR O OBJECT de 'value' dentro de 'form.value', quando é submittada a form .... isso quer dizer que VAMOS AGRUPAR múltiplos values de inputs em diferentes grupos, usando essa directive em DIVS QUE WRAPPAM NOSSOS INPUT FIELDS... , AQUI, os values dos input fields 'username' e 'email' SERÃO AGRUPADOS sob o grupo 'userData' -->
+          <div class="form-group"  
+          
+          
+          
+          >
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              class="form-control"
+              ngModel
+              placeholder="Your name"
+              name="username"
+              required
+              #nameReference="ngModel"
+              minlength="5"
+            />
+            <span class="help-block" 
+            [ngStyle]="{'color': 'red'}"
+            *ngIf="!nameReference.valid && 
+            
+            nameReference.value">
+            
+            Your name must have at least 5 characters!</span>
+            <!-- required É UM DEFAULT HTML ATTRIBUTE, mas quando você o escreve em código angular, É USADO COMO UM SELECTOR PARA UMA DAS DIRECTIVES BUILT-IN DO ANGULAR...-->
+          </div>
+          
+          <button class="btn btn-default" type="button">
+            Suggest an Username
+          </button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              ngModel
+              name="email"
+              required
+              placeholder="example@test.com"
+              email
+              #emailReference="ngModel"
+            />
+            <span class="help-block" 
+            [ngStyle]="{'color': 'red'}"
+            *ngIf="!emailReference.valid && 
+            
+            emailReference.value">
+            
+            Please enter a valid email!</span> <!--- essa é uma maneira de RENDERIZAR CONDICIONALMENTE MENSAGENS DE ERROR/AVISO AO USER, na sua UI.... basta usar as local referenecs de seus elementos, configuradas por 'ngModel'...-->
+            <!-- <p *ngIf="" [ngStyle]="{'color': 'red'}">Please enter a valid value!</p> -->
+            <!-- 'EMAIL' é outra DIRECTIVE DO ANGULAR, UMA DAS 'VALIDATOR DIRECTIVES', pq é algo que assegura a validation dos inputs do user, e que NÃO É UM DEFAULT HTML ATTRIBUTE, E SIM UMA DIRECTIVE...-->
+            <!-- o angular vai RECONHECER ESSE INPUT FIELD como um dos 'CONTROLS' da REPRESENTAÇAÕ TYPÉSCRIPT DA FORM SE VOCê ADICIONAR 'ngModel' como directive-->
+            <!-- VOCÊ TAMBÉM PRECISA DE 'name', essa directive/attribute que vai dizer ao ANGULAR __ como _ deverá ser o nome desse control/input na REPRESENTAÇÃO TYPESCRIPT DESSA FORM.. .-->
+          </div>
+        </div>
+        <p *ngIf="!userDataReference.valid && userDataReference.touched"> <!-- EXEMPLO DE USO DE UMA LOCAL REFERENCE EM UMA DIV QUE POSSUI DIRECTIVE DE 'ngFormGroup' ... -->
+          There is some user data that is still invalid.
+        </p>
+
+
+
+          <div class="form-group">
+            <label for="secret">Secret Questions</label>
+            <select id="secret" 
+            
+            class="form-control" 
+            name="secret" 
+            [ngModel]="defaultQuestion"
+            
+            >
+              <option value="pet">Your first Pet?</option>
+              <option value="teacher">Your first teacher?</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <textarea
+            class="form-control" id="exampleFormControlTextarea1" rows="3"
+            [ngModel]="defaultTextValue"
+            required
+            type="text"
+            name="textValue"
+            >
+
+            </textarea>
+          </div>
+
+
+          <textarea
+          name="answer"
+          row="3"
+          [(ngModel)]="questionAnswer"
+          class="form-control"
+          required
+          minlength="5"
+          #textAreaReference="ngModel"
+          >
+
+          </textarea> <!-- exemplo DE TWO-WAY DATABINDING...-->
+          <p>{{questionAnswer}}</p>
+          <span class="help-block" 
+            [ngStyle]="{'color': 'red'}"
+            *ngIf="!textAreaReference.valid && textAreaReference.value"
+            >Textarea text too short, please input more than 4 characters.</span>
+
+            <div class="radio" *ngFor="let gender of genders">
+              <label>
+                  <input
+                  type="radio"
+                  name="gender"
+                  ngModel
+                  [value]="gender"
+                  >
+                  {{gender}}
+              </label>
+          </div>
+          
+          <button class="btn btn-primary" type="submit" [disabled]="!formReference.valid"> <!-- AQUI USAMOS A LOCAL REFERENEC DE '#formReference', para usar essa propriedade 'valid' de nosso object javascript de form, para aí enablar/disablar esse nosso button, dinamicamente (validation)..-->
+            Submit
+          </button>
+        
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+
+  defaultQuestion: string = 'pet';  ////'pet' para a 'option' número 1, 'teacher' para a option número 2 (propriedade 'value' em cada 'option' é o que conta)...
+
+  defaultTextValue: string = `There was one occasion in which I wrote a very long text, it was very long and had multiple lines and...`
+
+  questionAnswer: string = 'TWO WAY DATABINDING';
+
+  genders = ['Male', 'Female'];
+
+
+  suggestedUserName() {
+    const suggestedName = 'Superuser';
+  }
+
+
+  onSubmitForm(formReference: NgForm) { ///aqui será passado o ACTUAL FORM element, com todos seus input fields e <selects> (os controls de sua form, essencialmente)..
+    console.log(formReference);
+    console.log('submitted!');
+
+    console.log('ISDIRTY?', formReference.dirty);
+
+    console.log(formReference.value);
+    console.log('ISVALID?', formReference.valid);
+    console.log('ISTOUCHED?', formReference.touched);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> certo...
+
+
+
+
+
+
+
+--> AGORA SE SALVARMOS TUDO ISSO E CHECARMOS NOSSO OBJECT 'form' quando ela for submittada,
+
+
+
+veremos que 
+
+
+
+EXISTIRÁ UMA KEY DE 'gender'
+
+
+lá 
+
+
+no object de 'value'...
+
+
+
+(form.value)... 
+
+
+
+
+
+
+
+(
+
+    e essa key, o NOME DELA,
+
+    será ditado 
+
+    por aquilo que você colocou como 'name'
+
+
+
+    lá 
+
+
+    no seu ELEMENTO <input> que é um radio button:
+
+
+
+
+               <input
+                  type="radio"
+                  name="gender"
+                  ngModel
+                  [value]="gender"
+                  >
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+---> certo... É ASSIM QUE PODEMOS FACILMENTE INCORPORAR  RADIO BUTTONS,
+
+
+
+
+TUDO POR MEIO de:
+
+
+
+
+
+
+
+
+1) PLACE DE 'ngModel' NO SEU RADIO BUTTON (que é um '<input>' de type 'radio')...
+
+
+
+
+
+
+2) O SET DE 'value', [value], O _ VALUE _ DESSE RADIO BUTTON, o value que ele segurará...   (você também poderia HARDCODAR ESSE VALUE, SEM PROBLEMAS)...
+
+
+
+
+
+3)  aí você pode usar esse input, como qualquer outro..
+
+
+
+
+
+
+
+
+
+
+
+
+-> E SE VOCÊ QUISESSE DEIXAR 
+
+1 DOS 
+
+RADIO BUTTONS MARCADO POR DEFAULT , NO STARTUP DA PÁGINA,
+
+VOCÊ 
+
+NOVAMENTE _ PODERIA USAR _ ONE-WAY BINDING 
+
+
+com esse radio button,
+
+para ASSEGURAR 
+
+QUE ELE FICARÁ MARCADO POR DEFAULT, AO INÍCIO....
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok, mas como fazemos isso?
+
+
+
+
+-> é por meio de '[ngModel]="nomeDaPropriedadeQueSeguraOvalueQueVocêQuer'...
+
+
+
+
+
+
+
+
+--> tipo assim:
+
+
+
+
+
+
+
+
+              <label>
+                  <input
+                  type="radio"
+                  name="gender"
+                  [ngModel]="genders[0]"
+                  [value]="gender"
+                  > <!-- 'value' é o VALUE QUE ESSE ELEMENTO DE 'RADIO button' vai segurar, e que vai render, se você o marcar... -->
+                  {{gender}}
+              </label>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> como você pode ver,
+
+
+
+
+escrevemos 
+
+
+'genders[0]'
+
+
+para 
+
+
+ESCOLHER O __ 
+
+PRIMEIRO ELEMENTO NO ARRAY DE 'genders' ( que é ['male', 'female' ])
+
+
+
+
+
+
+COMO SENDO O VALUE/RADIO BUTTON SELECIONADO... --> 
+
+
+
+
+e podemos fazer isso 
+
+
+com qualquer tipo de radio button input...
+
+
+
+
+
+
+
+
+
+
+
+
+-> COMO EXEMPLO DISSO,
+
+CRIEI UMA 
+
+
+PROPRIEDADE DE 'exemploGender' e coloquei a 
+
+
+string 
+
+'Female' no seu interior,
+
+e aí 
+
+escrevi assim:
+
+
+
+
+            <div class="radio" *ngFor="let gender of genders">
+              <label>
+                  <input
+                  type="radio"
+                  name="gender"
+                  [ngModel]="exemploGender"
+                  [value]="gender"
+                  > <!-- 'value' é o VALUE QUE ESSE ELEMENTO DE 'RADIO button' vai segurar, e que vai render, se você o marcar... -->
+                  {{gender}}
+              </label>
+          </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          --> agora o 
+
+
+          radio button que JÁ COMEÇA 'ESCOLHIDO' é o de 'female',
+
+          e não o de male (que antes estava selecionado por conta de 'gender[0]')
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> TAMBÉM PODEMOS/DEVEMOS ADICIONAR 
+
+A DIRECTIVE DE 
+
+'required',
+
+
+
+PARA FAZER COM QUE A OVERALL FORM NÃO SEJA VÁLIDA _ SE 
+
+
+ESSES RADIO BUTTONS, ALGUM DELES,
+
+NÃO FOR CLICADO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK.... O PROFESSOR SÓ QUERIA 
+
+
+
+
+MOSTRAR ISSO AÍ PQ _ RADIO BUTTONS _ PODEM PARECER UM CASO BEM ESPECIAL,
+
+
+
+
+MAS _ NÃO SÃO,
+
+
+
+SÃO USADOS 
+
+
+COMO QUALQEUR OUTRO INPUT,
+
+QUANDO USAMOS 
+
+
+
+ESSE 
+
+'TEMPLATE DRIVEN APPROACH' 
+
+
+NO NOSSO ANGULAR APP...

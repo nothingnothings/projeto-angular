@@ -1,0 +1,548 @@
+
+
+
+
+
+
+
+
+
+
+
+QUASE ACABAMOS, MAS AINDA É NECESSÁRIO FAZER CERTO CLEAN-UP WORK..
+
+
+
+
+
+
+
+
+
+--> É NICE QUE AGORA É POSSÍVEL FAZER LOAD E SAVE DE NOSSAS RECIPES,
+
+
+
+
+
+
+
+
+
+
+MAS É CLARO QUE ISSO SIGNIFIICA QUE NÃO PRECISAMOS MAIS DE NOSSAS 'DEFAULT RECIPES',
+
+por isso vou comentar tudo para fora:
+
+
+
+
+
+
+
+
+
+
+  private recipes: Recipe[] = [
+    //professor colocou como PRIVATE....
+    // new Recipe(
+    //   'Chicken Wings',
+    //   'Delicious chicken wings',
+    //   'https://www.farmfor.com.br/wp-content/uploads/2022/02/coxinha-da-asa-superbowl.jpg',
+    //   [
+    //     new Ingredient('Potato', 1, 0),
+    //     new Ingredient('Tomato', 2, 0),
+    //     new Ingredient('Banana', 5, 0),
+    //   ],
+    //   0
+    // ),
+    // new Recipe(
+    //   'Pork Chops',
+    //   'Tasty pork chops, check them out',
+    //   'http://t2.gstatic.com/licensed-image?q=tbn:ANd9GcQsRbNYL4S-Noacb27Vi-sbWzURFRjW9YN8VOScbiJ0DxTAiGxTyqlNdG1TWHKN1xWqOV4UhHaFef-fBD8-PGo',
+    //   [
+    //     new Ingredient('Lettuce', 5, 1),
+    //     new Ingredient('Apple', 4, 1),
+    //     new Ingredient('Banana', 1, 1),
+    //   ],
+    //   1
+    // ),
+    // new Recipe(
+    //   'Caesar Salad',
+    //   'Fresh and healthy salad',
+    //   'https://www.confeiteiradesucesso.com/wp-content/uploads/2019/06/ceasarsalad-fb.jpg',
+    //   [
+    //     new Ingredient('Pumpkin', 3, 2),
+    //     new Ingredient('Meat', 9,  2),
+    //     new Ingredient('Avocado', 4, 2),
+    //   ],
+    //   2
+    // ),
+  ];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ------> OK.... MAS AGORA O PROFESSOR 
+
+  INICIALIZA 
+
+
+  ESSE ARRAY COMO UM EMPTY ARRAY.
+
+
+
+
+
+
+
+
+
+
+  --> podemos fazer a mesma coisa na área de 'ShoppingList'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> MAS NESSE APP TEMOS UM BUG, QUE  DEVEMOS CONSERTAR...
+
+
+
+
+
+
+
+
+  ---> PARA ENCONTRÁ-LO, ADICIONE UMA 
+
+
+
+
+
+  NOVA RECIPE.....
+
+
+
+
+
+
+
+
+
+
+
+  --> A COISA IMPORTANTE É QUE O PROFESSOR NÃO ADICIONA NENHUM 'INGREDIENT' (mas isso é impossível, na minha versão do app´)...
+
+
+
+
+
+
+
+
+
+
+
+  -> SE CHECARMOS A NOSSA REALTIME DATABASE DO 
+
+
+  FIREBASE,
+
+  VEREMOS 
+
+  QUE NÃO EXISTIRA´
+
+
+  NENHUM INGREDIENT NA MINHA RECIPE..
+
+
+
+
+
+
+
+
+
+
+
+
+  --> bem, isso é mentira, pq 
+
+
+
+  NA MINHA VERSÃO É POSSÍVEL VER OS INGREDIENTS, SIM...
+
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+
+
+  "recipes": [
+    {
+      "description": "asdsdasdaads",
+      "id": 1654108479833.4094,
+      "imagePath": "asdsadsdasda",
+      "ingredients": [
+        {
+          "ingredient": "asdasdsdasadadAS",
+          "recipeIndex": 1654108479833.4094
+        }
+      ],
+      "name": "asdasd"
+    },
+    {
+      "description": "ASDDSAASD",
+      "id": 1654108600249.0618,
+      "imagePath": "ASDSDAASDASDADS",
+      "ingredients": [
+        {
+          "amount": 2,
+          "ingredient": "ASDSADDASASDAS",
+          "recipeIndex": 1654108600249.0618
+        }
+      ],
+      "name": "ASDSADASDDAS"
+    },
+    {
+      "description": "SDAASDDASDASASDDASD",
+      "id": 1654108610048.621,
+      "imagePath": "CASDDAS",
+      "ingredients": [
+        {
+          "amount": 2,
+          "ingredient": "ASDSADASDDAS",
+          "recipeIndex": 1654108610048.621
+        }
+      ],
+      "name": "CCCCCCCCCCCCCC"
+    },
+    {
+      "description": "DASSDASDASDAASD",
+      "id": 1654111412310.6367,
+      "imagePath": "ASDSDAASDS",
+      "ingredients": [
+        {
+          "amount": 3,
+          "ingredient": "ASDSDAASDSDAA",
+          "recipeIndex": 1654111412310.6367
+        }
+      ],
+      "name": "DASDASASDASD"
+    }
+  ]
+}
+
+
+
+
+
+
+
+
+
+
+----------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PARA PREVENIR BUGS,
+
+O PROFESSOR DIZ QUE 
+FARIA SENTIDO SEMPRE 
+
+
+
+CHECAR SE 
+
+'THE LOADED RECIPE DATA ALWAYS HAS 
+
+LOADED INGREDIENTS' (mesmo que esse array seja um EMPTY ARRAY)...
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+
+
+PARA __ CONSEGUIR SEMPRE TER 'INGREDIENTS' na nossa propriedade de ingredients,
+
+
+
+o professor diz que podemos 
+
+
+USAR 
+
+'.pipe()'
+
+
+LÁ NO 
+
+METHOD DE 'loadRecipes',
+
+
+
+
+PARA ENTÃO MANIPULAR A NOSSA DATA DE RECIPES QUE CHEGA DO BACKEND...
+
+
+
+
+
+
+
+
+--> no caso, vamos checar se 
+
+
+'!data.recipes.ingredients',
+
+ou algo assim,
+
+
+
+
+e aí se isso for true,
+
+vamos querer adicionar uma nova propriedade 'ingredients: []',
+
+
+
+
+ou algo assim...
+
+
+
+
+
+
+
+
+O PROFESSOR ESCREVE ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  loadRecipes() {
+
+  return this.http.get<{ [name: string]: Recipe}>(
+      'https://recipebookdummyproject-default-rtdb.firebaseio.com/recipes.json'
+    ).pipe(
+      map(
+        (data) => {
+
+        const transformedRecipesArray: Recipe[] = [];
+
+
+        console.log(data);
+
+        for (const key in data) {
+
+          if (data.hasOwnProperty(key)) {
+
+            transformedRecipesArray.push({...data[key]})
+          }
+
+
+        }
+
+
+
+
+        transformedRecipesArray.map(
+            (recipe) => {
+
+
+               return {...recipe, ingredients: recipe.ingredients ? recipe.ingredients : []}
+            }
+        )
+
+        
+
+
+        return transformedRecipesArray;
+      }
+      )
+    )
+    .subscribe(
+      (recipes) => {
+
+        // this.recipes = recipes;
+
+        
+        console.log(recipes);
+
+        this.recipes = recipes;
+
+        console.log(this.recipes);
+
+
+        this.recipeItemsChanged.next([...recipes]);
+
+      }
+    )
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+  loadRecipes() {
+    return this.http
+      .get<{ [name: string]: Recipe }>(
+        'https://recipebookdummyproject-default-rtdb.firebaseio.com/recipes.json'
+      )
+      .pipe(
+        map((data) => {
+          const transformedRecipesArray: Recipe[] = [];
+
+          console.log(data);
+
+          for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+              transformedRecipesArray.push({ ...data[key] });
+            }
+          }
+
+          transformedRecipesArray.map((recipe) => {  
+            return {
+              ...recipe,
+              ingredients: recipe.ingredients ? recipe.ingredients : [],   ////////SE NOSSA PROPRIEDADE 'ingredients' dessa recipe específica NÃO EXISTIR (um bug possível), VAMOS QUERER QUE OS INGREDIENTS SEJAM SETTADOS COMO UM EMPTY ARRAY....
+            };
+          });
+
+          return transformedRecipesArray;
+        })
+      )
+      .subscribe((recipes) => {
+        // this.recipes = recipes;
+        this.recipes = recipes;
+
+        this.recipeItemsChanged.next([...recipes]);
+      });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ----> ok, tudo funciona como antes,
+
+  mas agora temos um pouco mais de protection contra errors inesperados,
+
+
+  pq agora 
+
+  ASSEGURAMOS QUE A PROPRIEDADE 'INGREDIENTS' DAS LOADED RECIPES SEMPRE 
+
+
+  SERÁ DEFINID COMO PELO MENOS UM EMPTY ARRAY...

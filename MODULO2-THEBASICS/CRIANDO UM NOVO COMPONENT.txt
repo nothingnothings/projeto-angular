@@ -1,0 +1,1717 @@
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -------> COMPONENTS SÃO IMPORTANTES.... ->  É POR ISSO QUE 
+
+ JÁ COMEÇAMOS COM UM COMPONENT,
+
+
+
+
+
+ o chamado 'AppComponent':
+
+
+
+
+
+
+
+ export class AppComponent {
+  title = 'projetobasico';
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------> POR UM LADO, ESSE 'AppComponent'
+
+
+É UM COMPONENT ANGULAR COMUM,
+
+
+MAS POR OUTRO LADO,
+
+
+É 
+
+'KIND OF SPECIAL',
+
+
+
+
+PQ _ 
+
+
+ELE __ SERVE _ DIRETAMENTE COMO O 'ROOT COMPONENT'
+
+de nosso app...
+
+
+
+
+
+
+
+
+
+
+
+
+--> NO FINAL DAS CONTAS,
+
+
+
+
+
+
+ELE 
+
+
+
+É LISTADO LÁ NAQUELE ARQUIVO DE 
+
+
+
+
+'app.module.ts',
+
+
+
+NAQUELA LINHA DE 
+
+'bootstrap: [AppComponent]',
+
+
+
+
+
+O QUE 
+
+
+NOS DIZ /DIZ AO ANGULAR QUE 
+
+
+
+ESSE 
+
+
+É 
+
+
+UM 
+
+_COMPONENT MT IMPORTANTE...
+
+
+
+BOOTSTRAP:
+
+
+(v.) to cause a system (usually a computer system) to build itself; 
+to build something complex by giving a simple instruction. From the concept of
+ "pulling yourself up by your own bootstraps."
+
+
+
+
+
+
+
+
+
+
+
+----->  É 'JUNTAR TODO O APP EM 1 BLOCÃO',
+
+
+usando aquele root component como base....
+
+
+
+
+
+
+
+
+
+
+
+
+------->  TODOS OS OUTROS COMPONENTS QUE CRIARMOS NÃO SERÃO ADICIONADOS AO INDEX.HTML
+
+
+que criarmos/usarmos,
+
+
+
+
+SEUS SELECTORS SERÃO ADICIONADOS EM OUTRO LUGAR,
+
+
+
+
+NO CASO 
+
+
+
+
+
+SERÃO ADICIONADOS 
+
+
+
+
+AO 
+
+
+'app.component.html',
+
+
+
+PQ 
+
+
+
+ESSE PASSARÁ A SER O 'ROOT COMPONENT'
+
+
+
+DE NOSSO APP,
+
+
+O LOCAL EM QUE 
+
+ACTUALLY 
+
+
+
+
+COLOCAREMOS AS OUTRAS PARTES DO SITE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> VAMOS ADICIONAR 1 COMPONENT AGORA...
+
+
+
+
+
+
+
+
+
+
+
+
+---> DIGAMOS QUE 
+QUEREMOS OUTPUTTAR UM POUCO DE INFO SOBRE __ 1 DETERMINADO SERVER...
+
+
+
+
+
+
+
+
+--> ESTAMOS CONSTRUINDO UM BACKEND PARA NOSSO 
+
+
+SERVER MANAGEMENT APPLICATION,
+
+
+
+E QUEREMOS OUTPUTTAR 
+
+
+
+ALGUMA SERVER INFORMATION..
+
+
+
+
+
+
+
+
+
+
+
+----> É POR ISSO QUE O PROFESSOR CRIA UM NOVO FOLDER,
+
+
+UM SUBFOLDER DO 
+
+
+FOLDER 
+
+
+'app'  ------> ISSO PQ, GERALMENTE,
+
+
+
+EM UM ANGULAR-CLI PROJECT,
+
+
+
+TODO SEU 
+
+CONTEÚDO 
+
+
+'APP-RELATED'
+
+
+
+
+
+VAI FICAR DENTRO DESSE FOLDER 'app'... -----> 
+
+
+
+
+
+
+
+
+
+
+CERTO... --> VAMOS CHAMAR ESSE COMPONENT DE 'server',
+
+
+PQ ELE VAI SEGURAR MEU COMPONENT 'server'...
+
+
+
+
+
+
+
+
+
+
+
+---> E ESSA É UMA BOA PRÁTICA,
+
+
+
+FAZER O COMPONENT TER O MESMO NOME DO FOLDER... 
+
+
+
+
+
+
+--> 1 folder para cada component...
+
+
+
+
+
+
+
+
+
+
+---> UMA BOA NAMING CONVENTION É 
+
+TER 
+
+
+
+
+
+OS ARQUIVOS COM NOMES COMO 
+
+
+
+
+
+server.component 
+
+
+
+
+
+
+(
+ex:
+
+
+
+
+
+
+
+exemplo.component
+
+
+
+)
+
+
+
+
+
+
+
+
+-> MAIS TARDE APRENDEREMOS QUE EXISTEM OUTROS BUILDING BLOCKS EM UM ANGULAR APPS,
+
+coisas diferentes de 'components'... --> É POR ISSO QUE O USO DE 
+
+
+FILENAMES COMO 'server.component'
+
+FACILITA OBSERVAR  O QUE EXISTE DENTRO DESSE ARQUIVO...
+
+
+
+
+
+
+
+
+---> PARA COMPLETAR ESSE COMPONENT,
+
+
+VOCÊ DEVE ESCREVER 
+
+'.ts',
+
+
+
+PQ 
+
+
+VAMOS ESCREVER ESSE COMPONENT NA LINGUAGEM TS...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> TEMOS UM ARQUIVO VAZIO... --> DEVEMOS CRIAR UM COMPONENT..
+
+
+
+
+
+
+
+
+
+
+--> COMO CRIAMOS UM COMPONENT?
+
+
+
+
+
+-> primeiramente,
+
+
+
+CABE 
+
+
+
+RESSALTAR QUE UM COMPONENT É 
+
+
+
+APENAS UMA 
+
+
+TYPESCRIPT CLASS,
+
+
+
+UMA CLASS TYPESCRIPT PQ 
+
+
+
+QUEREMOS 
+
+QUE 
+
+
+O 
+
+ANGULAR SEJA CAPAZ DE __ INSTANCIAR__ ESSA 
+
+
+
+CLASS _ E ENTÃO CRIAR 
+
+
+
+
+OBJECTS __ COM BASE NA BLUEPRINT QUE 
+
+DEFINIMOS NESSES ARQUIVOS '.ts'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> é por isso que começamos com 
+
+
+
+
+
+
+
+export class {
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+--> PQ VAMOS IMPORTAR ESSA CLASS/COMPONENT CRIADO A PARTIR DESSA CLASS 
+
+lá 
+
+
+no 'APP COMPONENT'... 
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok.... adicionamos uma class,
+
+
+E ESSA 
+
+CLASS SERÁ CHAMADA DE 
+
+
+
+'ServerComponent'...
+
+
+
+
+
+
+
+
+
+
+A NAMING CONVENTION É:
+
+
+
+1) NAME DO COMPONENT....
+
+
+
+
+
+2) _ TYPE__ /DESCRIPTION DO COMPONENT... (aqui, no caso, é 'Component'..) --> MAIS TARDE VEREMOS QUE 
+
+EXISTEM OUTROS PEDAÇOS DE APP ANGULAR, QUE RECEBEM NOMES DIFERENTES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> CERTO... ESSA É NOSSA CLASS.. -> POR ENQUANTO,
+
+
+ELA É UMA 
+
+
+CLASS TYPESCRIPT COMUM,
+
+NADA DE ESPECIAL SOBRE ELA:
+
+
+
+
+
+
+export class ServerComponent {
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+--> AINDA NÃO É POSSÍVEL USAR NOSSA CLASS ASSIM... -> O ANGULAR REQUER MAIS INFORMAÇÕES...
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA CONSEGUIR USAR ESSA CLASS COM O ANGULAR,
+
+PRECISAMOS DEFINIR ALGO NO SEU INTERIOR QUE DIGA 
+
+
+QUE 
+
+
+
+ISSO 'NAÕ É UMA NORMAL TYPESCRIPT CLASS,
+
+E SIM 
+
+
+UM _ COMPONENT'...
+
+
+
+
+
+
+
+
+
+
+
+
+-----> PARA _ DIZER__ AO 
+
+
+ANGULAR QUE 
+
+VOCÊ 
+
+ESTÁ QUERENDO CRIAR UM COMPONENT,
+
+
+
+VOCê DEVE USAR 
+
+
+UM __ DECORATOR... (@)..
+
+
+
+
+
+
+
+
+
+---> decorators --> É UMA FEATURE TYPESCRIPT QUE 
+
+
+TE PERMITE __ ENHANCEAR SUAS CLASSES,
+
+
+
+
+
+ENHANCEAR ELEMENTS 
+
+
+QUE VOCê  TEM NO SEU CÓDIGO... (
+
+    outras coisas podem ser afetadas por decorators, 
+
+    naõ só classes, mas aqui 
+
+    vamos as utilizar com classes...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> OK... O DECORATOR QUE USAREMOS 
+
+
+ 
+ É 
+
+
+
+
+
+ '@Component()'...
+
+
+
+
+
+
+
+
+
+
+
+ -----> CERTO... MAS ESSE DECORATOR DE '@Component()"
+
+
+ NÃO É ALGO QUE O TYPESCRIPT ''''conhece''' de cara,
+
+
+
+
+
+ no seu código,
+
+
+ POR ISSO 
+
+ VOCÊ É OBRIGADO _ A IMPORTAR_ 
+
+
+
+ ESSE 
+
+ 'type'
+
+
+
+
+
+
+ ,
+
+
+
+
+ PQ O TYPESCRIPT PRECISA COMPREENDER O QUE ELE É...
+
+
+
+
+
+
+
+
+
+
+
+ EX:
+
+
+
+
+
+
+
+
+
+ import { Component } from "@angular/core";  ////ISTO É NECESSÁRIO, PQ COMUNICA AO TYPESCRIPT QUE vamos querer definir um component/usar aqule decorator de COMPONENT..
+
+
+
+@Component() //uma das partes MAIS IMPORTANTES DO ANGULAR...
+export class ServerComponent {
+
+}
+
+
+
+
+
+
+
+
+----------------------------
+
+
+
+ESSA É A SINTAXE DE IMPORTS ES6 (ecmascript 6)...
+
+
+
+
+
+
+
+
+
+
+-> VAMOS IMPORTAR ESSE OBJECT/COMPONENT É 
+
+
+
+
+
+'@angular/core'...
+
+
+
+
+
+
+
+
+
+
+
+'@angular' -> ELE 
+
+
+VEM COM UM PUNHADO DE PACKAGES QUE ESSENCIALMENTE 'AGRUPAM' funcionalidades...
+
+
+
+
+
+
+
+
+
+
+
+-> E A PACKAGE 'core' DÁ ACESSO a
+ ALGUMAS DAS CORE FUNCTIONALITIES DO 
+
+ ANGULAR...
+
+
+
+
+
+
+
+
+
+
+
+
+ -> OS PACOTES DE ANGULAR SÃO:
+
+
+
+
+ 1) CORE (JÁ VIMOS)
+
+
+
+ 2) ANIMATIONs 
+
+
+ 3) COMMON 
+
+
+ 4) COMPILER 
+
+
+ 5) COMPILER-CLI
+
+ 6) FORMS (já vimos)
+
+
+ 7) PLATFORM-browser 
+
+
+
+
+ 8) PLATFORM-BROWSER-DYNAMIC
+
+
+ 9) ROUTER (mencionado)
+
+
+
+
+
+
+
+
+
+ EX:
+
+
+
+
+
+
+
+
+
+
+ import { Component } from "@angular/core";  ////ISTO É NECESSÁRIO, PQ COMUNICA AO TYPESCRIPT QUE vamos querer definir um component/usar aqule decorator de COMPONENT..
+                                ////angular é subdividido em diversas PACKAGES, uma delas é o 'core', que é SUPER IMPORTANTE...
+
+@Component() //uma das partes MAIS IMPORTANTES DO ANGULAR...
+export class ServerComponent {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+esse 
+
+
+
+@Component()
+
+
+AGORA É RECONHECIDO PELO TYPESCIRPT,
+
+
+
+
+QUANDO ELE __ 
+
+TENTAR PARSEAR ESSE ARQUIVO E TENTAR 
+
+
+
+CONVERTER EM JAVASCRIPT,
+
+VAI SER CAPAZ DE O ENTENDER..
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> CERTO... AGORA, DENTRO DO 'Component()" DECORATOR _ PRECISAMOS _ PASSAR UM 
+
+OBJECT JAVASCRIPT,
+
+
+QUE VAI O CONFIGURAR... ------> ISSO PQ _ SEM CONFIGURAÇÕES,
+
+ 
+ OS COMPONENTS NÃO POSSUEM MT VALOR PARA O ANGULAR....
+
+
+
+
+
+
+
+
+
+
+
+ --> DENTRO DE '@Component(
+     {
+
+     }
+ )
+ '
+
+
+
+
+
+
+
+
+
+ PODEMOS DEFINIR ALGUMAS _ INFORMAÇÕES IMPORTANTES, QUE 
+
+
+
+ SERÃO __ ARMAZENADAS COMO __ METADATA__ PARA ESSA CLASS,
+ NO BACKGROUND,
+
+
+
+ INFORMAÇÕES QUE 
+
+ VÃO DIZER AO ANGULAR 
+
+
+
+
+ '''O QUE FAZER COM ESSA CLASS'' ------> E UMA 
+
+
+
+ INFORMATION PIECE ___ 
+
+ CRUCIAL/IMPORTANTE DEMAIS É 
+
+ O 
+
+
+ 'selector'...
+
+
+
+
+
+
+
+
+
+ ex:
+
+
+
+
+
+
+
+
+
+ @Component(
+     {
+         selector: 
+     }
+ )
+
+ export class ServerComponent {
+
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -. O SELECTOR É IMPORTANTE/CRUCIAL PQ _ ELE DETERMINA _ O LOCAL DO COMPONENT/HTML EM QUE 
+
+ VAMOS 
+
+ INSERIR 
+
+
+ ESSE 
+
+
+ NOSSO COMPONENT/NESTED COMPONENT..
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> NAS PALAVRAS DO PROFESSOR:
+
+
+ 'é basicamente a HTML TAG pela qual 
+ VOCê 
+
+ SERÁ 
+
+ CAPAZ 
+ DE MAIS TARDE USAR 
+
+ ESSE COMPONENT,
+ EM SEUS TEMPLATES DOS OUTROS 
+
+
+ COMPONENTS'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, O SELECTOR DEVERÁ SER UMA STRING...- >  PODE SER QUALQUER COISA,
+
+
+MAS VOCÊ DEVE ASSEGURAR QUE ISSO SERÁ UM 
+
+
+'_ UNIQUE _ SELECTOR,'
+
+tudo para que 
+UM 
+
+
+'DEFAULT 
+
+
+HTML ELEMENT'
+
+
+NÃO ACABE OVERWRITTADO OU ALGO DO GÊNERo..
+
+
+
+
+
+
+
+
+
+
+--> OK... --> É POR ISSO QUE OS 'selectors' no nosso app 
+
+GERALMENTE POSSUEM UMA NAMING CONVENTION TIPO 
+
+
+
+
+
+'app-server' 
+
+
+
+
+
+ex:
+
+
+
+'app-exemplo'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> 'app' pq esse component vai ser inserido no app,
+
+
+'server' pq ESSE É O SERVER COMPONENT...
+
+
+
+
+
+
+
+
+
+
+
+-> OK...ESSE SERÁ O 'SELECTOR'
+
+pelo qual MAIS TARDE PODEREI USAR _ 
+
+
+MEU COMPONENT NOS ARQUIVOS HTML DE MEUS OUTROS COMPONENTS....
+
+
+
+
+
+
+
+
+-> COM ISSO SETTADO,
+
+O OUTRO 
+
+
+
+
+
+
+
+
+
+
+__ PEDAÇO IMPORTANTE_ que 
+precisamos 
+
+ter nesse 
+
+'@Component()'
+
+
+
+EM 
+
+'server.component.ts'
+
+
+É 
+
+UMA _ KEY COM UMA REFERÊNCIA AO NOSSO 'template/html'... ----> AQUI, NO CASO,
+
+
+REFERENCIAREMOS OUTRO ARQUIVO DE NOSSO CÓDIGO,
+
+
+o 
+
+arquivo 
+
+
+
+'server.component.html'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE É UM APPROACH QUE CARREGA UM 'HTML EXTERNO',
+
+mas o professor mais tarde nos ensinará a fazer isso de forma alternativa...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok, o professor cria 
+
+server.component.html..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO VAI FICANDO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core' 
+
+
+
+
+
+
+
+
+@Component(
+    {
+        selector: 'app-server',
+        templateUrl: 'server.component.html'
+    }
+)
+
+
+
+
+
+
+
+
+
+
+->  'server.component.html'
+
+
+-> ISSO VAI SEGURAR  O TEMPLATE/HTML CODE DESSE COMPONENT EM QUESTÃO..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+em 
+'server.component.html'
+
+
+O PROFESSOR __ 
+
+
+PODE COLOCAR OS ELEMENTOS HTML QUE QUISER...
+
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+<p>The Server Component</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> OK DE VOLTA AO ARQUIVO TYPESCRIPT (server.component.ts),
+
+EU POSSO 
+
+
+
+
+
+_ APONTAR_ A ESSE ARQUIVO HTML,
+
+
+
+
+
+
+
+ATRAVÉS DA KEY 
+
+
+'tempalteUrl:'
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core' 
+
+
+
+
+
+
+
+
+@Component(
+    {
+        selector: 'app-server',
+        templateUrl: 'server.component.html'
+    }
+)
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core'; ////ISTO É NECESSÁRIO, PQ COMUNICA AO TYPESCRIPT QUE vamos querer definir um component/usar aqule decorator de COMPONENT..
+////angular é subdividido em diversas PACKAGES, uma delas é o 'core', que é SUPER IMPORTANTE...
+
+@Component(
+  //uma das partes MAIS IMPORTANTES DO ANGULAR...
+  {
+    selector: 'app-server',
+    templateUrl: 
+  }
+)
+export class ServerComponent {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> PRECISAMOS QUE O TYPESCRIPT SAIBA ONDE ESTÁ ESSE AQRQUIVO...
+
+(ARQUIVO INDEX.HTML...)
+
+
+
+
+
+
+
+
+-> PROFESSOR DIZ QUE _ TALVEZ EVENTUALMENTE PRECISAREMOS 
+
+
+
+DO 
+
+
+MODULO DE 'PATH'...
+
+
+
+
+
+
+
+
+
+
+
+
+'templateUrl' -->  
+
+
+
+
+
+
+
+
+--> precisamos de um RELATIVE PATH..
+
+
+
+
+
+
+
+
+--> ok, escrevemos assim:
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core'; ////ISTO É NECESSÁRIO, PQ COMUNICA AO TYPESCRIPT QUE vamos querer definir um component/usar aqule decorator de COMPONENT..
+////angular é subdividido em diversas PACKAGES, uma delas é o 'core', que é SUPER IMPORTANTE...
+
+@Component(
+  //uma das partes MAIS IMPORTANTES DO ANGULAR...
+  {
+    selector: 'app-server',
+    templateUrl: './server.component.html'
+  }
+)
+export class ServerComponent {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> pronto....
+
+
+
+
+
+
+
+
+-> ISSO PROVAVELMENTE FARÁ O TRUQUE... ----> 
+
+
+
+
+
+
+
+
+MAS PARA CONSEGUIRMOS USAR 
+
+ESSE COMPONENT,
+
+PRECISAMOS 
+
+
+
+ANALISAR ALGO EM 
+
+
+
+'app.module.ts'
+ 
+
+ E ENTENDER ALGO NELE... ---------> ISSO PQ __ PRECISAMOS __ 
+
+
+
+ ALTERAR UMA COISINHA LÁ NO 'app.module.ts'
+
+
+
+
+ PARA QUE SEJA POSSÍVEL UTILIZAR O NOSSO COMPONENT 
+
+
+
+ em 
+
+
+ 'app.component.html'...
+
+
+
+
+
+
+
+ --> FAREMOS ISSO NA PRÓXIMA AULA...

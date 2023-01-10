@@ -1,0 +1,172 @@
+
+  --> MAS AGORA TAMBÉM QEUREMOS QUE A FORM SEJA 'reset'
+
+
+  AO _ EDITARMOS/ADICIONARMOS ALGUM ITEM....
+
+
+
+
+
+
+
+  -> para isso, temos o method de 
+
+
+  'form.form.reset()',
+
+   eu acho....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   MEU CÓDIGO FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+   
+  onFormSubmit(form: NgForm) {
+
+    const yourIngredient = new Ingredient(
+      // this.nameInputRef.nativeElement.value,
+      // this.amountInputRef.nativeElement.value
+      form.value['name'],
+      form.value['amount']
+
+    );
+
+
+    if (this.editMode) {
+      console.log(form);
+
+      this.shoppingListService.editIngredient(this.editedItemIndex, yourIngredient);
+      this.editMode = false;
+   
+    } else {
+
+      this.shoppingListService.onIngredientAdd(yourIngredient);
+   
+    }
+
+    this.formReference.form.reset();
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> eu preciso colocar o 'editMode'
+
+  como false, também,
+
+  para que o user retorne ao state de 'ADD' inicial...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O PROFESSOR EXPLICA QUE EXISTE ALGO 'TRICKY' sobre isso tudo...
+
+
+
+
+
+
+
+
+
+
+--> é o problema do 'update mode'... -----> ELE TERÁ DE FAZER O QUE EU FIZ,
+
+TROCAR PARA O 'add mode'...
+
+
+
+
+
+
+
+
+
+
+
+--> tipo com este códgo;
+
+
+
+
+
+    if (this.editMode) {
+      console.log(form);
+
+      this.shoppingListService.editIngredient(this.editedItemIndex, yourIngredient);
+      this.editMode = false;
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo... tudo consertado.
+
+
+
+
+
+
+
+
+
+
+
+--> o próximo passo é fazer os buttons de 'delete' e 'clear' funcionarem...

@@ -1,0 +1,799 @@
+
+
+
+
+
+
+
+
+
+
+
+----> A PRIMEIRA ETAPA EM CRIAR UM ANGULAR APPLICATION É 
+
+
+'LAYOUT THE STRCUTURE' DO APp....
+
+
+
+
+
+
+
+
+
+
+
+
+
+-. VOCÊ PRECISA DETERMINAR QUAIS COMPONENTS VOCÊ PROVAVELMENTE 
+
+UTILIZARÁ...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É NORMAL _ DECIDIR_ 
+ADICIONAR 
+
+
+
+COMPONENTS ENQUANTO VOCê VAI CONSTURINDO O APP...
+
+
+
+
+
+
+
+
+
+
+
+-> MAS AINDA ASSIM, É BOA ESSA APPROACH DE PLANEJAR ANTECIPADAMENTE..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------->  QUAL É A ESTRUTURA GERAL?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> COMEÇAMOS PELAS FEATURES:
+
+
+
+
+
+
+
+
+
+1) RECIPE BOOK 
+
+
+2) SHOPPING LIST....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+recipe book --> MANAGEAMOS NOSSAS 'WHOLE RECIPES'....
+
+
+
+
+
+
+
+SHOPPING LIST --> MANAGEAMOS NOSSOS SINGLE INGREDIENTS QUE VAMOS COMPRAR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> quais components serão usados PARA ESSAS FEATURES?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1) ROOT COMPONENT --> É O APP COMPONENT, O COMPONENT QUE VAI SEGURAR 'TUDO' em 1 bloco só...
+
+
+
+
+
+
+
+
+
+2) DEPOIS, COMO TEMOS 2 SECTIONS,
+
+FAZ 
+
+SENTIDO 
+
+TER ALGUM COMPONENT 
+
+'Header',
+
+
+QUE NOS DEIXE __ NAVEGAR_ ENTRE 
+
+ESSAS 
+2 SECTIONS (shop list e recipe book)
+
+
+
+
+
+LIVREMENTE...
+
+
+
+
+
+
+
+
+
+
+------> É CLARO QUE 
+
+
+VOCÊ PODERIA FAZER 'HARCODE'
+
+DO HEADER LÁ NO COMPONENT 
+de 
+'App',
+
+MAS COMO _ ELE _ VAI _ CONTER 
+
+
+SUA PRÓPRIA 'business logic' (
+
+    pq vai triggar SUA PRÓPRIA ROUTING LOGIC, MAIS TARDE,
+
+
+
+    O ADD DE UM DROPDOWN QUE VAI NOS DEIXAR 
+
+    ARMAZENAR NOSSAS RECIPES E AS RETRIEVAR DO 
+
+    SERVER....
+),
+
+
+
+
+
+
+COMO VAMOS TER ESSA LÓGICA TODA ANEXADA AO HEADER,
+
+
+FAZ SENTIDO 
+
+
+OUTSOURCEAR  
+
+
+
+
+ESSE NEGÓCIO _ EM UM COMPONENT PRÓPRIO,
+
+
+SPLITTAR O CÓDIGO,
+
+
+PARA QUE 
+
+NÃO TENHAMOS TODA ESSA LÓGICA 
+
+NO NOSSO 
+
+'ROOT COMPONENT' 
+
+
+(que deve SER RESPONSÁVEL PRINCIPALMENTE PELO HOLD DA 'OVERALL STRCUTRE' de nosso app...
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ----> ATÉ AGORA TEMOS ISTO:
+
+
+
+
+
+
+
+
+
+
+
+
+        ROOT
+        HEADER 
+    SHOPLIST  RECIPE BOOK..........
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------> AGORA QUE TEMOS O HEADER,
+
+DEVEMOS ANALISAR AS 'FEATURES' em si...
+
+
+
+
+
+
+
+
+
+
+-> começamos com 'SHOPLIST":
+
+
+
+
+
+
+
+
+
+
+AÍ, NA SHOPPING LIST,
+
+
+PROFESSOR ACHA QUE FAZ SENTIDO 
+
+
+TER 
+
+
+
+NOSSO PRÓPRIO 
+
+
+COMPONENT 
+
+'Shopping list',
+
+
+
+
+
+
+
+
+
+
+
+UMA FEATURE QUE PROVAVELMENTE SERÁ COMPOSTA DE:
+
+
+
+
+
+
+
+1) SHOPPING LIST 
+
+
+
+
+2) SHOPPING LIST EDIT (quando clicamos em algum element na shopping list)
+
+
+(
+    ESSA PARTE DE 'EDIT'
+
+    pode ser um trecho que nos deixa adicionar um FIELD EXTRA,
+
+
+COM UM BUTTON, ETC ETC.... ---> VAMOS TER QUE 
+
+DECIDIR 
+SE VAMOS 
+
+EDITAR UM 
+
+
+ITEM ANTIGO OU SE VAMOS ADICIONAR UM TOTALMENTE INÉDITO,
+
+
+
+PRECISAMOS __ SUBMITTAR_ ESSE 'NOVO ELEMENTO',
+
+
+
+
+
+POR ISSO FAZ SENTIDO 
+
+TER UM 'OVERALL LIST COMPONENT',
+
+
+
+
+mainly SEGURANDO 
+
+
+A 
+
+DATA DA LIST,
+
+
+
+e aí 
+
+O 
+
+ 
+
+
+
+ component de 'Shopping List Edit',
+
+
+ responsável por SEU EDIT/manipulação.... 
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS O COMPONENT 'Shopping List Edit' viverá NESTEADO DENTRO DO COMPONENT DE 'Shopping List' (que vai conter a list em si)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+quanto ao RECIPE BOOK,
+
+temos:
+
+
+
+
+
+2) FEATURE DO RECIPE BOOK:
+
+
+
+
+
+
+
+
+a) PRECISAMOS DE UMA RECIPE LIST...
+
+
+
+
+
+
+
+2) PRECISAMOS DE UM 'RECIPE ITEM'...
+
+
+
+(
+
+    ACTUALLY, TEREMOS UM EXTRA 'RecipesComponent',
+
+    QUE SEGURARÁ TANTO A 'recipeList' COMO 'recipe detail',
+
+    um DO LADO DO OUTRO....
+)
+
+
+
+
+
+3) PRECISAMOS DE UM 'RECIPE DETAIL',
+
+
+QUE É O LOCAL EM QUE PROVAVELMENTE 
+
+VAMOS 
+
+
+DETALHAR BEM CADA 
+
+
+RECIPE... (
+
+    uma área em que, ASSIM QUE CLICAMOS EM UMA RECIPE,
+
+    OBTEMOS MAIS INFO SOBRE ELA....
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAIS TARDE NO CURSO,
+
+TAMBÉM ADICIONARREMOS OUTRO COMPONENT AQUI,
+
+
+
+
+
+UM COMPONENT QUE VAI NOS DEIXAR 'ADD EXISTING RECIPES'
+ 
+
+ OU 'ADD NEW ONES'... -----> mas COMO ISSO É BEM AVANÇADO,
+
+
+
+ O PROFESSOR VAI IGNORAR ISSO POR ENQUANTO E _ FOCAr__ NA PARTE DO 'display' 
+
+
+
+
+ -> ou seja,
+
+ VAMOS QUERER UMA LIST COM ITEMS,
+
+
+
+ e aí a section de 'details',
+
+
+
+ que 
+
+
+ _ DISPLAYARÁ OS DETALHES PARA O 'CURRENTLY SELECTED ITEM'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> e esse parece um bom plano:
+
+
+
+
+
+ CADA 1 DOS COMPONENTS PARECE QEU 
+
+ SEGURARÁ 
+
+
+ UMA QUANTIDADE SIGNIFICATIVA DE 'BUSINESS LOGIC',
+
+ E O PROFESSOR 
+
+
+ ACHA UQE 
+
+
+
+
+ COM ESSE ESBOÇO AÍ 
+
+ _ 
+
+ ACABAMOS 
+
+
+
+
+ COM CADA 1 DOS COMPONENTS FOCANDO EM '1 MAIN TOPIC '(
+
+
+     DISPLAYING A LIST,
+
+     DISPLAYING INFO ABOUT A SINGLE ITEM,
+
+
+
+     DISPLAYING INFO ABOUT A SELECTED ITEM, etc etc...
+
+
+
+
+
+
+
+
+
+ )
+
+
+
+
+
+
+
+
+
+
+ ESSE É O APPROACH DO PROFESSOR, MAS É CLARO QUE 
+ VOCê 
+ PODE 
+
+FAZER MERGE DE ALGUNS COMPONETS SE ACHAR MELHOr..
+
+
+
+
+
+
+-> ISSO FICARÁ MAIS CLARO QUANDO IMPLEMENTARMOS ESSES COMPONENTSD..
+
+
+
+
+
+
+
+
+
+-> 1 ÚLTIMA COISA QUE DEVEMOOS PENASR:
+
+
+
+
+
+
+'QUAIS '''model''' VAMOS USAR NESSE APP? ' ------> por 'model',
+
+PROFESSOR QUER DIZER 
+
+
+'QUAL DATA'..
+
+
+
+
+
+
+
+
+
+
+
+-> PROFESSOR DIZ QUE VAMOS USAR MT 'ingredients',
+
+e que vamos precisar CRIAR UM 'Model' PARA OS NOSSOS 'ingredient'....
+
+
+
+
+
+
+
+
+
+---> VAMOS USAR UM MONTE DE INGREDIENTS, EM AMBOS OS APPS...
+
+
+
+
+
+
+
+
+
+-> É POR ISSO QUE DEVEMOS DEFINIR ''COMO UM INGREDIENT DEVE SER PARECER''' --> ISSO É ALGO QUE 
+
+DEVE SER ESTIPULADO BEM CLARAMENTE POR SEU APP,
+
+
+
+SEJA CLARO ACERCA DE QUAL DATA VOCÊ VAI USAR,
+
+
+
+e aí 
+
+'
+PUT IT INTO ITS OWN CLASS',
+
+tudo para que 
+
+
+
+
+VOCê TENHA SEU PRÓPRIO 'type' 
+
+a ser usado mais tarde,
+
+E TAMBÉM PARA QUE VOCÊ TENHA UMA DEFINIÇÃO/INTERFACE 
+
+
+
+
+DE COMO SUA DATA DEVE SE PARECER (
+
+    para que você consiga fazer com que 
+
+    SEUS COMPONENTS 
+
+
+
+
+    CONSIGAM SE COMUNICAR ENTRE SI,
+
+    COMO APRENDEREMOS MAIS TARDE...
+
+
+) ---> TUDO PARA QUE VOCê NÃO TENHA PROBLEMAS COM A 'DATA QUE VOCÊ ESTARÁ TROCANDO'...
+
+
+
+
+
+
+
+
+
+
+
+--->  além do model de 'INGREDIENT' (que será mt simples, segurando apenas o noem e amount, por exemplo),
+
+
+
+NÓS TAMBEM VAMOS PRECISAR DE UM 
+MODEL PAR A 
+
+
+A 
+
+
+
+'recipe' em si, QUE VAI CONTER COISAS COMO 
+
+'TITLE' ,
+
+'DESCRIPTION',
+'INGREDIENT',
+
+etc...
+
+
+
+
+
+
+
+
+
+DEVEMOS COMEÇAR ESSES COMPONENTS, USANDO UM POUCO DE DUMMY DATA....

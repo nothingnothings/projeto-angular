@@ -1,0 +1,195 @@
+
+
+
+
+
+
+
+
+
+
+
+
+----> VAMOS COMEÇAR LOGO,
+MAS O  PROFESSOR 
+
+disse que vamos usar typescript nesse curso...
+
+
+
+
+
+
+
+-> typescript --> já estudei....
+
+
+
+
+
+
+
+
+
+--> TYPESCRIPT É UM SUPERSET DO JAVASCIRPT. .. ---> OFERECE MAIS FEATURES DO QUE O JAVASCRIPT...
+
+
+
+
+
+
+
+
+
+
+
+-> ex: TYPES, CLASSES, INTERFACES...
+
+
+
+
+
+
+
+STRONG TYPING -----> NO TYPESCRIPT 
+
+
+
+VOCÊ 
+DEFINE 
+
+SE UMA VARIABLE 
+
+É UM 
+
+
+
+BOOLEAN, STRING OU QUALQUER OUTRA COISA.... E ISSO NÃO EXISTE NO JAVASCRIPT VANILla..
+
+
+
+
+
+
+
+
+
+--> JAVASCRIPT TEM DYNAMIC TYPING... -> isso quer dizer que 
+
+você 
+
+
+1) TEM UMA STRING VARIABLE 
+
+2) AÍ OVERWRITTA ISSO COM UM NUMBER,
+
+
+
+e aí mesmo assim tudo fica 'perfectly fine'...
+
+
+
+
+
+
+
+
+--> MAS ISSO NÃO FUNCIONA NO TYPESCRIPT,
+
+ISSO VAI TE DAR UM ERRO... -> CÓDIGO MAIS ROBUSTO,
+
+QUE É CHECADO 
+
+
+
+NO MOMENTO QUE 
+
+
+VOCÊ O ESCREVE ,
+
+
+
+E NÃO SÓ NO MOMENTO EM QUE VOCÊ O EXECUTA (como o javascript vanilla)..
+
+
+
+
+
+
+
+MAS O TYPESCRIPT NÃO É RODADO NO BROWSER,
+
+E SIM É COMPILADO EM JAVASCRIPT POR MEIO DO CLI...
+
+
+
+
+
+
+
+
+
+--> PRECISAMOS DO CLI,
+ 
+ UMA PROJECT MANAGEMENT TOOL, 
+
+
+ PARA FAZER ESSA COMPILATION..
+
+
+
+
+
+
+
+ -> É TECNICAMENTE POSSÍVEL 
+
+
+ ESCREVER 
+
+ UM APP ANGULAR 
+
+ COM 
+
+
+
+
+ JAVASCRIPT,
+
+ MAS 
+ O 
+
+ ANGULAR 
+
+
+
+
+FUNCIONA BEM MELHOR COM O TYPESCRIPT..
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> O PROFESSOR RECAPITULA O TYPESCRIPT AO FINAL DO CURSO...
+
+
+
+
+
+
+
+--> TYPESCRIPT É UMA ADIÇÃO AO JAVASCRIPT.....
+
+
+
+
+
+--> mt dos comandos vao parecer mt familiares....

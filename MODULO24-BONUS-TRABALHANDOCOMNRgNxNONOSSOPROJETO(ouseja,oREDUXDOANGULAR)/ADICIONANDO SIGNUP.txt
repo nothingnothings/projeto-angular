@@ -1,0 +1,1336 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK... MAS O QUE VAI ACONTECER, COMO PARTE DE NOSSO 'SIGNUP PROCESS'?
+
+
+
+
+
+
+-> BEM, É ALGO BEM PARECIDO COM O LOGIN PROCESS...
+
+
+
+
+
+
+
+
+-> EU ATÉ MESMO USEI UM 
+HELPER METHOD PARA EXECUTAR A MESMA LÓGICA..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> o professor fez a mesma coisa, mas 
+
+
+
+FEZ EM ARROW FUNCTIONS, E NAÕ DENTRO DE NOSSA CLASS DE 'AuthEffects'...
+
+
+(
+    é,
+
+
+    pq acho que isso fica melhor, mesmo....
+
+
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+--> mas eu posso deixar como um private method no 'authEffects',
+
+não há nada de errado com isso...
+
+
+
+
+
+
+
+
+
+OK... O CÓDIGO DE SIGNUP JÁ FOI ADICIONADO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA JÁ PODEMOS VER A VANTAGEM DO NGRX...
+
+
+
+
+
+
+
+
+
+--> O RESTO DEVE FUNCIONAR 
+
+
+
+CORRETAMENTE DE PRONTO,
+
+
+
+
+BASTA VER O AUTPAGE.COMPONENT.TS:
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+import {
+  Component,
+  ComponentFactoryResolver,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Observable, Subscription } from 'rxjs';
+import { AuthResponseData, AuthService } from './auth.service';
+import { PlaceholderDirective } from '../placeholderDirective/placeholder.directive';
+
+import { AlertDynamicComponent } from '../shared/alertVersaoImperativa/alert.component';
+import { Store } from '@ngrx/store';
+import { AppState } from '..';
+
+import * as AuthActions from '../auth/store/authActions';
+
+@Component({
+  selector: 'app-auth-page',
+  templateUrl: './auth-page.component.html',
+  styleUrls: ['./auth-page.component.css'],
+})
+export class AuthPageComponent implements OnInit, OnDestroy {
+  isSignup: boolean = true;
+
+  isLoading: boolean = false;
+
+  closeAlertBoxSubscription: Subscription;
+
+  error: string | null;
+
+  @ViewChild(PlaceholderDirective, { static: false })
+  dynamicAlertBoxHost: PlaceholderDirective;
+
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private store: Store<AppState>
+  ) {}
+
+  ngOnInit(): void {
+    this.store.select('auth').subscribe((authState) => {
+      this.isLoading = authState.isLoading;
+      this.error = authState.error;
+      if (this.error) {
+        this.showErrorAlert(this.error);
+      }
+    });
+  }
+
+  private showErrorAlert(errorMessage: string) {
+    const alertComponentFactory =
+      this.componentFactoryResolver.resolveComponentFactory(
+        AlertDynamicComponent
+      );
+
+    const hostViewContainerRef = this.dynamicAlertBoxHost.viewContainerRef;
+
+    hostViewContainerRef.clear();
+
+    const componentReference = hostViewContainerRef.createComponent(
+      alertComponentFactory
+    );
+
+    componentReference.instance.message = errorMessage;
+
+    this.closeAlertBoxSubscription =
+      componentReference.instance.close.subscribe(() => {
+        this.closeAlertBoxSubscription.unsubscribe();
+        hostViewContainerRef.clear();
+      });
+  }
+
+  onAuthFormSubmit(form: NgForm) {
+    if (!form.valid) {
+      return;
+    }
+
+    const email = form.form.get('email')?.value;
+    const password = form.form.get('password')?.value;
+
+    const userData = {
+      email: email,
+      password: password,
+      returnSecureToken: true,
+    };
+
+    let authObs: Observable<AuthResponseData>;
+
+    this.isLoading = true;
+
+    if (!this.isSignup) {
+      this.store.dispatch(
+        new AuthActions.AuthStart({ email: email, password: password })
+      );
+    } else {
+      this.store.dispatch(
+        new AuthActions.AuthSignupStart({ email: email, password: password })
+      );
+    }
+
+    form.reset();
+  }
+
+  onSwitchAuth() {
+    console.log('test');
+    this.isSignup = !this.isSignup;
+  }
+
+  ngOnDestroy(): void {
+    if (this.closeAlertBoxSubscription) {
+      this.closeAlertBoxSubscription.unsubscribe();
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> ok....
+
+
+
+
+
+
+
+como você pode observar,
+
+AS COISAS ESTÃO BEM MAIS SIMPLES.. --> E AGORA, COM ESSE DISPATCH DE ACTIONS E O HANDLE DOS EFFECTS,
+
+
+JÁ PODEMOS __ REMOVER AQUELE 'let authObs: Observable<AuthResponseData>',
+
+
+
+
+
+
+PQ ELE NÃO SERÁ MAIS USADO, TERÁ SIDO SUBSTITUÍDO COMPLETAMENTE PELO NGRX....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+AS ALTERAÇÕES SÃO ESTAS:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  onAuthFormSubmit(form: NgForm) {
+    if (!form.valid) {
+      return;
+    }
+
+    const email = form.form.get('email')?.value;
+    const password = form.form.get('password')?.value;
+
+    const userData = {
+      email: email,
+      password: password,
+      returnSecureToken: true,
+    };
+
+    // let authObs: Observable<AuthResponseData>;  //////completamente substituído pelo APPROACH QUE USA 'NGRX/EFFECTS'...
+      ////os effects de nosso login (UPDATE DO GENERAL STATE DO NOSSO APP) são realizados lá nos effects..
+
+
+    // this.isLoading = true;   //isso também será handlado por nossos EFFECTS...
+
+    if (!this.isSignup) {
+      // authObs = this.authService.onLogin(userData);
+
+      this.store.dispatch(new AuthActions.AuthStart({email: email, password: password}));  
+    } else {
+      // authObs = this.authService.onCreateAccount(userData);
+
+      this.store.dispatch(new AuthActions.AuthSignupStart({email: email, password: password}))
+    }
+
+    form.reset();
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  --> ou seja,
+
+  tiramos 
+
+  o uso daquele OBSERVABLE 
+
+
+
+  de 'authObs',
+
+
+  e também retiramos o set de 'isLoading'
+
+
+
+  comoo sendo true por meio desse method aí... --> pq agora o state de 'isLoading' 
+
+
+
+
+  E __ A DATA DE 'AUTH' 
+
+
+
+  SERÃO 
+
+
+  UPDATADOS, NO NOSSO STATE,
+
+
+
+  POR MEIO __ DO USO DOS EFFECTS DO NGRX...
+
+
+
+
+
+
+
+
+
+
+  ---> certo...
+
+
+
+
+
+
+
+
+  agora tenho que testar esse código...
+
+
+
+
+
+
+
+
+  o código de login funcionou, mas nada foi armazenado na minha local storage( pq ainda não adicionei esse código)...
+
+
+
+
+
+
+
+
+
+
+
+  -> agora vou testar 'SIGNUP'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> ok, coloquei 'signup',
+
+
+
+
+  MAS  O SPINNER DE LOADING NUNCA ACABA... E TAMBÉM NÃO SOU REDIRECIONADO à 
+
+
+  page de 'localhost:4200'..
+
+
+
+
+
+
+
+
+
+
+
+  ->ok, devo resolver esse código....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> é pq eu não havia colocado a lógica para discernir o 'ofType'
+
+
+
+
+  de 'LOGIN' E 'SIGNUP':
+
+
+
+
+
+
+
+
+
+
+
+
+
+  private loginUser(operationType: 'LOGIN' | 'SIGNUP') {
+  let url: string;
+
+  let type: string = AuthActions.AUTH_START;
+
+  if (operationType === 'LOGIN') {
+    url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`;
+
+  } else {
+    url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.firebaseAPIKey}`;
+    type = AuthActions.AUTH_SIGNUP_START
+  }
+
+
+
+  return this.actions$.pipe(
+    ofType(type as any),
+    switchMap((authData: AuthActions.AuthStart) => {
+      const requestHeaders = new HttpHeaders();
+      requestHeaders.append('Content-Type', 'application/json');
+
+      const httpAuthData: {
+        email: string;
+        password: string;
+        returnSecureToken: boolean;
+      } = {
+        email: authData.payload.email,
+        password: authData.payload.password,
+        returnSecureToken: true,
+      };
+
+      return this.http
+        .post<AuthResponseData>(
+          // `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`,
+
+          url,
+          httpAuthData,
+
+          {
+            headers: requestHeaders,
+          }
+        )
+        .pipe(
+          map((resData: AuthResponseData) => {
+            const expirationDate = new Date(
+              new Date().getTime() + +resData.expiresIn * 1000
+            );
+
+            return new AuthActions.AuthSuccess(
+              new User(
+                resData.email,
+                resData.localId,
+                resData.idToken,
+                expirationDate
+              )
+            );
+          }),
+
+          catchError((errorRes) => {
+            let errorMessage = 'An unknown error has occured.';
+
+            if (!errorRes.error || !errorRes.error.error) {
+              return of(new AuthActions.AuthFail(errorMessage));
+            }
+
+            switch (errorRes.error.error.message) {
+              case 'EMAIL_NOT_FOUND':
+                errorMessage = 'No user found for the entered email!';
+                break;
+              case 'INVALID_PASSWORD':
+                errorMessage = 'Invalid password, please try again.';
+                break;
+              case 'EMAIL_ALREADY_EXISTS':
+                errorMessage = 'Email already exists, please try again.';
+            }
+
+            return of(new AuthActions.AuthFail(errorMessage));
+          })
+        );
+    })
+  );
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok, agora está funcionando....
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR FALA QUE O 'HANDLE DE ERRORS' deve ser feito só no 
+
+'NGRX STATE',
+
+e naõ 
+
+
+
+em 'auth.component.ts':
+
+
+
+
+
+
+
+
+method que deve ser removido de authPage.component.ts:
+
+
+
+
+
+
+
+
+
+onHandleError() {
+
+    this.error = null;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK.. MAS ACHO QUE JÁ ESTOU FAZENDO ISSO NO MEU STATE, NA VERDADE....
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+isLoading: false, token: null, email: null, userId: null, error: 'Invalid password, please try again.'}email: nullerror: "Invalid password, please try again."isLoading: falsetoken: nulluserId: null[[Prototype]]: Object
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ok.... mas e como você vai 'LIMPAR' esse state de 'error'?
+
+
+
+
+
+--> ainda não sei....
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> isso pq nosso código de 'showAlert' é assim:
+
+
+
+
+
+
+
+
+
+
+
+
+  private showErrorAlert(errorMessage: string) {
+    const alertComponentFactory =
+      this.componentFactoryResolver.resolveComponentFactory(
+        AlertDynamicComponent
+      );
+
+    const hostViewContainerRef = this.dynamicAlertBoxHost.viewContainerRef;
+
+    hostViewContainerRef.clear();
+
+    const componentReference = hostViewContainerRef.createComponent(
+      alertComponentFactory
+    );
+
+    componentReference.instance.message = errorMessage;
+
+    this.closeAlertBoxSubscription =
+      componentReference.instance.close.subscribe(() => {
+        this.closeAlertBoxSubscription.unsubscribe();
+        hostViewContainerRef.clear();
+      });
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  --> ou seja,
+  ele __ APENAS_ LIMPA _ A UI, NÃO LIMPA O STATE...
+
+
+
+
+
+
+
+
+
+
+
+  --> ok, mas e o código de EFFECTS?
+
+
+
+
+
+
+
+
+
+
+
+
+  VEJA:
+
+
+
+
+
+
+
+
+
+            catchError((errorRes) => {
+            let errorMessage = 'An unknown error has occured.';
+
+            if (!errorRes.error || !errorRes.error.error) {
+              return of(new AuthActions.AuthFail(errorMessage));
+            }
+
+            switch (errorRes.error.error.message) {
+              case 'EMAIL_NOT_FOUND':
+                errorMessage = 'No user found for the entered email!';
+                break;
+              case 'INVALID_PASSWORD':
+                errorMessage = 'Invalid password, please try again.';
+                break;
+              case 'EMAIL_ALREADY_EXISTS':
+                errorMessage = 'Email already exists, please try again.';
+            }
+
+            return of(new AuthActions.AuthFail(errorMessage));
+          })
+        );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        -> isso vai triggar a action de 'AuthFail',
+
+
+
+        que por sua vez vai MUDAR O STATE PARA INCLUIR A DATA DE 'ERROR'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo... mas e como fazemos 'DISMISS' desse error? como resettamos nosso state de 'error' de volta a 'null'?
+
+
+
+
+
+
+
+
+
+
+-> bem, eu acho que isso nõa interessa, ele pode continuar ficando como 'ERROR: STRING' por enquanto,
+
+
+
+
+pq não vamos mostrar mais nenhum aviso na nossa UI,
+
+
+e 
+
+aí 
+esse 'error'
+
+
+
+SÓ SERÁ RESETTADO QUANDO TIVERMOS UM __ 
+
+
+
+CASE DE 'AUTH_SUCCESS' ou 'AUTH_START'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR COMENTA QUE 'AINDA NÃO ESTAMOS COM O LOADING SPINNER'...
+
+
+
+
+
+
+
+
+
+entretanto, na minha versão do código, já temos essa feature...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E ISSO É FEITO NAS PRÓPRIAS ACTIONS QUE INICIAM NOSSOS EFFECTS:
+
+
+
+
+
+
+
+
+export class AuthStart implements Action {
+  readonly type = AUTH_START;
+
+  constructor(public payload: { email: string; password: string }) {}
+}
+
+
+
+
+
+
+
+
+E 
+
+
+
+ISTO:
+
+
+
+
+
+
+export class AuthSignupStart implements Action {
+  readonly type = AUTH_SIGNUP_START;
+
+  constructor(public payload: { email: string; password: string }) {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+ACABAM 
+
+
+
+
+TRIGGANDO NOSSO REDUCER, QUE TEM ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+export function AuthReducer(
+  state: AuthState = initialState,
+  action: AuthActions.AuthActions
+) {
+  switch (action.type) {
+    case AuthActions.AUTH_START:
+      return authStart(state, action as AuthActions.AuthStart);
+    case AuthActions.AUTH_SIGNUP_START:
+      return authSignupStart(state, action as AuthActions.AuthSignupStart);
+    case AuthActions.AUTH_SUCCESS:
+      return authSuccess(state, action as AuthActions.AuthSuccess);
+    case AuthActions.AUTH_FAIL:
+      return authFail(state, action as AuthActions.AuthFail);
+    case AuthActions.AUTH_LOGOUT:
+      return authLogout(state, action as AuthActions.AuthLogout);
+      default:
+        return state;
+  }
+}
+
+
+
+
+const authStart = (
+  state: AuthState,
+  action: AuthActions.AuthStart
+): AuthState => {
+  return updateObject(state, { isLoading: true, error: null });
+};
+
+const authSignupStart = (
+  state: AuthState,
+  action: AuthActions.AuthSignupStart
+): AuthState => {
+  return updateObject(state, { isLoading: true, error: null });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> como você pode ver,
+
+
+
+
+
+
+
+
+
+é isso que INICIA NOSSO LOADING SPINNER,
+
+
+
+
+que é triggado por meio desse 'isLoading'....
+
+
+
+
+
+
+
+
+
+--> ENQUANTO ESSA ACTION FOI DISPARADA/NO MOMENTO EM QUE ESSA ACTION É DISPARADA,
+
+
+
+
+NOSSOS EFFECTS ENTRAM EM JOGO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+private loginUser(operationType: 'LOGIN' | 'SIGNUP') {
+  let url: string;
+
+  let type: string = AuthActions.AUTH_START;
+
+  if (operationType === 'LOGIN') {
+    url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`;
+
+  } else {
+    url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.firebaseAPIKey}`;
+    type = AuthActions.AUTH_SIGNUP_START
+  }
+
+
+
+  return this.actions$.pipe(
+    ofType(type as any),
+    switchMap((authData: AuthActions.AuthStart) => {
+      const requestHeaders = new HttpHeaders();
+      requestHeaders.append('Content-Type', 'application/json');
+
+      const httpAuthData: {
+        email: string;
+        password: string;
+        returnSecureToken: boolean;
+      } = {
+        email: authData.payload.email,
+        password: authData.payload.password,
+        returnSecureToken: true,
+      };
+
+      return this.http
+        .post<AuthResponseData>(
+          // `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`,
+
+          url,
+          httpAuthData,
+
+          {
+            headers: requestHeaders,
+          }
+        )
+        .pipe(
+          map((resData: AuthResponseData) => {
+            const expirationDate = new Date(
+              new Date().getTime() + +resData.expiresIn * 1000
+            );
+
+            return new AuthActions.AuthSuccess(
+              new User(
+                resData.email,
+                resData.localId,
+                resData.idToken,
+                expirationDate
+              )
+            );
+          }),
+
+          catchError((errorRes) => {
+            let errorMessage = 'An unknown error has occured.';
+
+            if (!errorRes.error || !errorRes.error.error) {
+              return of(new AuthActions.AuthFail(errorMessage));
+            }
+
+            switch (errorRes.error.error.message) {
+              case 'EMAIL_NOT_FOUND':
+                errorMessage = 'No user found for the entered email!';
+                break;
+              case 'INVALID_PASSWORD':
+                errorMessage = 'Invalid password, please try again.';
+                break;
+              case 'EMAIL_ALREADY_EXISTS':
+                errorMessage = 'Email already exists, please try again.';
+            }
+
+            return of(new AuthActions.AuthFail(errorMessage));
+          })
+        );
+    })
+  );
+}
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> e como você pode ver,
+
+
+os nossos effects vão triggar 
+
+
+
+OU AQUELA ACTION DE 'AuthSuccess',
+
+
+
+
+
+
+ou aquela outra action de 'AUTHFAIL',
+
+
+
+
+E _ AMBAS__ 
+
+
+
+
+VÃO ALTERAR NOSSO STATE,
+
+
+
+
+E VÃO 
+
+DEFINIR 
+
+
+
+
+'isLoading' COMO FALSE,
+
+
+ENCERRANDO O NOSSO SPINNER... (a diferença entre os 2 é que 'AuthFail' vai fazer o SHOW DE UMA MENSAGEM DE ERROR POR CONTA DA MANIPULAÇÃO DO STATE, ao passo que 'AUTH_SUCCESS' não o fará)...
+
+
+
+
+
+
+
+
+
+Ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export class AuthFail implements Action {
+  readonly type = AUTH_FAIL;
+
+  constructor(public payload: string) {} ////vai segurar 'error', que será uma STRING (ou um object error).
+}
+
+
+export class AuthSuccess implements Action {
+  readonly type = AUTH_SUCCESS;
+
+  constructor(public payload: User) {}
+}
+
+
+
+
+
+
+
+
+
+const authSuccess = (
+  state: AuthState,
+  action: AuthActions.AuthSuccess
+): AuthState => {
+  const { token, email, id } = action.payload;
+
+  return updateObject(state, {
+    isLoading: false,
+    error: null, //resetta o nosso state...
+    token: token,
+    email: email,
+    userId: id,
+  });
+};
+
+const authFail = (
+  state: AuthState,
+  action: AuthActions.AuthFail
+): AuthState => {
+  return updateObject(state, {
+    isLoading: false,
+    token: null,
+    email: null,
+    userId: null,
+    error: action.payload
+    
+  });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo... acho que esse é o flow correto, mas devo assistir a aula do professor mesmo assim...

@@ -1,0 +1,497 @@
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR QUER TRABALHAR NA INGREDIENT LIST..
+
+
+
+
+
+
+--> QUEREMOS ADICIONAR UM OUTRO CONTROL NA NOSSA FORM,
+
+
+
+QUE SERÁ O 'ARRAY DE INGREDIENTS'..
+
+
+
+
+
+
+
+
+
+
+
+-> é por isso que vamos ter 
+
+
+
+
+
+
+
+
+'ingredients',
+
+
+
+
+que SERÁ UM 
+
+
+'new FormArray()'...
+
+
+
+
+
+
+
+
+
+--> ESSE FORM ARRAY SERÁ __ INICIALIZADO COM UM VALOR 
+
+
+DE UM 
+
+
+EMPTY ARRAY,
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+let recipeIngredients = new FormArray([])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ANTES DE MAIS NADA, PRECISAMOS 'CHECK SE A RECIPE QUE FOI CARREGADA __ 
+
+
+FOI CARREGADA COM ALGUM INGREDIENT''' 
+
+
+(
+    pq, teoricamente,
+
+    VOCê 
+
+    PODERIA CRIAR UMA RECIPE SEM INGREDIENT ALGUM...
+)
+
+
+
+
+
+
+
+
+----> É POR ISSO QUE O PROFESSOR COLOCA UM IF CHECK,
+
+tipo 
+
+
+
+
+
+
+
+
+
+if (this.editableRecipe['ingredients']) {
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+--> SE ISSO FOR TRUE,
+
+VAMOS QUERER 'LOOP THROUGH' por todos esses 
+
+
+ingredients,
+
+
+
+e aí 
+
+
+
+rodar MAP (eu rodei map, no caso)....
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+    const ingredientObjectArray = this.editableRecipe.ingredients.map(
+        (ingredient) => {
+          return new FormGroup({
+            'ingredient': new FormControl(ingredient.name, [Validators.required]),
+            'amount': new FormControl(ingredient.amount, [Validators.required, Validators.min(1)] )
+          })
+        }
+      )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SÓ PRECISO COLOCAR ESSE NEGÓCIO _ DENTRO DO _ IF CHECk..
+
+
+
+
+
+
+
+
+
+
+
+
+
+FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  private initForm() {
+
+
+    if (this.editMode) {
+
+
+      this.editableRecipe = this.recipeBookService.getRecipe(this.recipeId);
+
+      let recipeIngredients = new FormArray([]);
+
+      if (this.editableRecipe['ingredients']) {
+       recipeIngredients = new FormArray(this.editableRecipe.ingredients.map(
+          (ingredient) => {
+            return new FormGroup({
+              'ingredient': new FormControl(ingredient.name, [Validators.required]),
+              'amount': new FormControl(ingredient.amount, [Validators.required, Validators.min(1)] )
+            })
+          }
+        ))
+      } 
+
+
+
+
+      this.recipeForm = new FormGroup({
+        recipeName: new FormControl(this.editableRecipe.name, [
+          Validators.required,
+          Validators.minLength(3),
+        ]),
+        imagePath: new FormControl(this.editableRecipe.imagePath, [Validators.required]),
+        description: new FormControl(this.editableRecipe.description, [
+          Validators.required,
+          Validators.minLength(10),
+        ]),
+        ingredients: recipeIngredients
+
+     
+      });
+    }   else  {
+
+      this.recipeForm = new FormGroup({
+        recipeName: new FormControl(null, [
+          Validators.required,
+          Validators.minLength(3),
+        ]),
+        imagePath: new FormControl(null, [Validators.required]),
+        description: new FormControl(null, [
+          Validators.required,
+          Validators.minLength(10),
+        ]),
+  
+        ingredients: new FormArray([
+          new FormGroup({
+            ingredient: new FormControl(null, [Validators.required]),
+            amount: new FormControl(null, [
+              Validators.required,
+              Validators.min(1),
+            ]),
+          }),
+        ]),
+      });
+
+
+
+    }
+
+
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS PARA QUE ISSO FUNCIONE, É CLARO QUE PRECISAMOS SINCRONIZAR NOSSO ARRAY TS COM NOSSO CÓDIGO HTML...
+
+
+
+
+
+
+
+
+
+TEMOS A SECTION DE 'RECIPE-EDIT.component.html'
+
+
+EM QUE 
+
+QUEREMOS USAR ESSE ARRAY:
+
+
+
+
+
+
+      <div class="row" formArrayName="ingredients" [ngStyle]="{ 'margin-top': '12px' }">
+        <div class="col-xs-12">
+          <label for="ingredients">Ingredients</label>
+            <div class="row" *ngFor="let ingredientControl of getIngredientControls(); let index=index" [ngStyle]="{'margin-bottom': '12px'}" >
+              <div formGroupName="{{index}}">
+              <div class="col-xs-8" >
+                <input 
+                type="text"
+                formControlName="ingredient"
+              class="form-control">
+              </div>
+              <div class="col-xs-2">
+                <input 
+                formControlName="amount"
+                [min]="1"
+                type="number"
+                class="form-control">
+              </div>
+            </div>
+              <div class="col-xs-2" [ngStyle]="{ 'display': 'flex', 'margin-bottom': '10px' }">
+                <button class="btn btn-primary" [ngStyle]="{ 'flex-grow': '9', 
+                  'margin-right': '12px'}" (click)="onAddIngredient()"  *ngIf="index === 0">Add</button>
+                <button class="btn btn-danger" [ngStyle]="{ 'flex-grow': '1' }" >X</button>
+              </div>
+          </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+          ------> O PROFESSOR PRIMEIRAMENTE COLOCA O 'formArrayName'
+
+          no ELEMENTO QUE VAI WRAPPAR  TODA A SECTION 
+
+
+
+
+
+          QUE 
+
+          VAMOS USAR....
+
+
+
+
+
+
+          -> ele binda isso a 'ingredients' (é o nome de nosso form array, lá no TS)...
+
+
+
+
+o
+
+
+
+'INDIVIDUAL CONTROL' em nosso array (referente a 'control.name' e 'control.amount')
+
+
+
+
+
+
+_ se tornará  DISPONÍVEL NESSA VARIABLE 'ingredientControl',
+
+QUE PODEMOS USAR NO TEMPALTE....
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR TAMBÉM 
+
+
+PEGA O index
+
+
+DESSE 'ingredientControl'
+
+
+
+nos controls,
+
+
+
+
+
+
+QUE ENTÃO É UTILIZADO COMO O _ NAME_ DE NOSSO 'formGroupName'..
+
+
+
+
+
+
+
+
+
+
+
+--> para POPULAR ESSES INPUTS,
+
+
+É BEM FÁCIL...
+
+
+
+
+
+
+
+
+--> só escrever 
+
+
+
+
+
+'formControlName=name',
+
+
+'formControlName=imagePath',
+
+etc etc.......
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... MAS EU JÁ FIZ TUDO ISSO,
+
+E A NOSSA FORM ESTÁ SENDO POPULADA CORRETAMENTE.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NA PRÓXIMA AULA,
+
+O PROFESSOR QUER ADICIONAR UMA OPTION DE 'ADD ITEMS' a esse array de 'ingredient inputs'.. (já fiz isso)...

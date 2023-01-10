@@ -1,0 +1,439 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O QUE SÃO MODULES?
+
+
+
+
+
+
+
+
+--> POR ISSO, O PROFESSOR QUER DIZER 'ANGULAR MODULES'...
+
+
+
+
+
+
+
+''''MODULES'''' --> TAMBÉM É UM TERMO USADO PARA OS 'IMPORTS'
+
+
+
+NAS SUAS FILES,
+
+EM QUE 
+
+VOCÊ IMPORTA ALGO DE OUTRA FILE PARA UMA FILE (
+    ISSO TAMBÉM SÃO MODULES,,
+
+
+    MAS SÃO JAVASCRIPT MODULES,
+
+    E NÃO ANGULAR MODULES... 
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+POR MODULES ANGGULAR,
+
+
+
+
+O PROFESSOR QUER DIZER O 
+
+'@NgModule({})'
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> NGMODULES ,
+
+
+NO FINAL DAS CONTAS,
+
+
+
+
+
+
+
+
+
+SÃO MANEIRAS DE 
+
+'BUNDLE'
+
+
+
+
+SEUS BUILDING BLOCKS DO ANGULAR 
+
+
+
+
+EM VÁRIOS PEDAÇOS..
+
+
+
+
+
+
+CADA 1 DESSES MODULES TEM PIPES, DIRECTIVES,
+
+SERVICES,
+
+ETC...
+
+
+
+
+
+
+
+
+
+
+---> TODOS ESSES NEGÓCIOS DEVEM SER BUNDLADOS EM DIFERENTES MODULES,
+
+
+
+TUDO PARA QUE O ANGULAR SEJA CAPAZ DE FICAR 'AWARE' 
+
+
+DESSAS FEATURES...
+
+
+
+
+
+
+
+
+
+
+--> ISSO PQ O ANGULAR NÃO 
+
+SCANNEIA AUTOMATICAMENTE TODO CÓDIGO QUE VOCê ESCREVE..
+
+
+
+
+
+
+
+
+---> EM VEZ DISSO,
+
+
+VOCÊ PRECISA DIZER AO ANGULAR 'O QUE É UM COMPONENT, QUAIS 
+
+COMPONENTS VOCÊ TEM, EM QUE MODULE ESSE 
+
+
+COMPONENT VAI', etc...
+
+
+
+
+
+
+
+
+
+
+
+
+TODO ANGULAR APP PRECISA TER PELO MENOS 1 
+
+
+
+MODULE,
+
+O MODULE 
+
+'APP.MODULE.TS'..
+
+
+
+
+
+
+
+
+
+---> O ANGULAR ANALIZA ESSES NGMODULES PARA ENTNEDER 
+
+
+
+NOSSO APP E SUAS FEATURES...
+
+
+
+
+
+
+
+
+
+--> VOCÊ USA OS MODULES
+
+
+
+
+PARA _ DEFINIR __ TODOS OS CORE BUILDING BLOCKS DE SEU APP (components, directives, services, pipes, etc)...
+
+
+
+
+
+
+
+
+
+
+
+-> VOCê GERALMENTE USA 1 ÚNICO MODULE,
+
+
+
+
+MAS USAREMOS 
+
+
+MAIS DE 1 MÓDULO NESSA COURSE SECTION...
+
+
+
+
+
+
+
+
+
+
+
+--. VOCÊ TAMBÉM TEM
+
+
+
+
+
+CORE ANGULAR FEATURES QUE 
+
+
+SÃO 
+
+'
+WRAPPED' EM MODULES,
+
+
+
+COMO O 
+
+'FormsModule' --------> ESSAS FEATURES SÃO AGRUPADAS NESSES MODULES,
+
+
+
+
+TUDO PARA QUE VOCÊ NAÕ TENHA QUE DECLARAR TIPO '10 DIFERENTES FORMS DIRECTIVES' em 
+
+vez 
+
+daquele único module de 'forms'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> POR FIM,
+
+
+
+
+É IMPORTANTE DESTACAR QUE _ QUALQUER FEATURE/BUILDING BLOCK 
+
+
+
+
+
+__ NÃO PODE __ SER USADA __ SEM 
+
+
+A INCLUIR __ DENTRO DE 1 MODULE qualquer...
+
+
+
+
+
+
+
+
+--> A MANEIRA DE INSERÇÃO DA FFEATURE,
+
+
+
+SE EM 'declarations' ou em 'providers',
+
+
+DEPENDE 
+
+
+
+DO TIPO 
+
+
+
+DE FEATURE DE QUE VOCê ESTÁ FALANDO...
+
+
+
+
+
+
+
+
+
+
+--> DEVEMOS ANALISAR NOSSO AppMOdule,
+
+para começar:
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
+
+import { AppComponent } from './app.component';
+
+import { HeaderComponent } from './headerComponent/headerComponent.app';
+
+import { RecipeBookComponent } from './recipeBook/recipe-book.component';
+import { RecipeItemComponent } from './recipeBook/recipe-list/recipe-item/recipe-item.component';
+import { RecipeListComponent } from './recipeBook/recipe-list/recipe-list.component';
+import { RecipeDetailComponent } from './recipeBook/recipe-detail/recipe-detail.component';
+import { ShoppingListComponent } from './ShoppingList/shoppingList.component';
+import { ShopListEditComponent } from './ShoppingList/shop-list-edit/shop-list-edit.component';
+import { ShoppingListItemComponent } from './ShoppingList/shopping-list-item/shopping-list-item.component';
+
+import { DropdownDirective } from './dropdownDirective/dropdown.directive';
+import { RecipeBookService } from './recipeBook.service';
+import { ShoppingListService } from './shoppingList.service';
+import { GenericErrorPageComponent } from './generic-error-page/generic-error-page.component';
+import { AppRoutingModule } from './app-routing.module';
+import { HomePageComponent } from './home-page/home-page.component';
+import { SelectARecipeComponent } from './recipeBook/select-a-recipe/select-a-recipe.component';
+import { RecipeEditComponent } from './recipeBook/recipe-edit/recipe-edit.component';
+import { AuthPageComponent } from './auth-page/auth-page.component';
+import { SpinnerComponent } from './auth-page/spinner/spinner.component';
+import { HttpInterceptorService } from 'src/app/httpInterceptor.service';
+import { AuthGuardService } from './auth-guard.service';
+import { AlertDynamicComponent } from './shared/alertVersaoNgIf (bem mais pratica)/alert.component';
+
+
+import { PlaceholderDirective } from './placeholderDirective/placeholder.directive';
+// import { AlertDynamicComponent } from './shared/alertVersaoNgIf (bem mais pratica)/alert.component';
+
+
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+    RecipeBookComponent,
+    RecipeItemComponent,
+    RecipeListComponent,
+    RecipeDetailComponent,
+    ShoppingListComponent,
+    ShopListEditComponent,
+    ShoppingListItemComponent,
+    DropdownDirective,
+    GenericErrorPageComponent,
+    HomePageComponent,
+    SelectARecipeComponent,
+    RecipeEditComponent,
+    AuthPageComponent,
+    SpinnerComponent,
+    AlertDynamicComponent,
+    PlaceholderDirective
+    // AlertDynamicComponent
+  ],
+  imports: [
+    BrowserModule,
+    ReactiveFormsModule,
+    FormsModule, //lembre-se de adicionar isso se for usar 'ngModel()'..
+    AppRoutingModule,  //módulo de routing, customizado por nós...
+    HttpClientModule
+  ],
+  entryComponents: [   ///usado com o RENDER DE COMPONENTS DENTRO DE NOSSO CÓDIGO TS... --> ou seja, components que não vão usar um 'selector' para serem renderizados, nem o ROUTE CONFIG (paths e etc) para serem renderizados... eles vão simplesmente ser 'DROPPADOS' no código, por meio de uma directive especializada e por meio de uma 'ComponentFactory' própria...
+  AlertDynamicComponent
+],
+
+  providers: [RecipeBookService, ShoppingListService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpInterceptorService,
+      multi: true
+    }
+  
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+

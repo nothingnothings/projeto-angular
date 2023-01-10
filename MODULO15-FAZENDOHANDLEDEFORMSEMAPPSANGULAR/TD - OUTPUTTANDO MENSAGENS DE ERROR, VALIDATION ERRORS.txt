@@ -1,0 +1,844 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> 
+
+NA 
+ÚLTIMA LIÇÃO,
+
+MELHORAMOS A USER EXPERIENCE 
+
+POR MEIO 
+
+
+
+
+
+DO USO/TIRAR VANTAGEM 
+
+
+
+
+
+
+DO FORM STATE HANDLADO PELO 
+ANGULAR......
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS VAMOS MELHORAR ISSO AINDA MAIS...
+
+
+
+
+
+--> PARAMOS NESTA PARTE AQUI:
+
+
+
+
+
+
+
+            <p *ngIf="" [ngStyle]="{'color': 'red'}">Please enter a valid value!</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> DIGAMOS QUE  QUEREMOS USAR AQUELE '*ngIf' 
+
+
+
+PARA _ 
+
+
+
+OUTPUTTAR 
+
+ALGUM 
+
+
+TEXT 
+
+
+
+EMBAIXO DE NOSSO INPUT,
+ 
+
+
+ PARA OUTPUTTAR 
+
+ ESSE '<p>',
+
+
+ para assim ajudar o  user...
+
+
+
+
+
+
+
+
+
+ --> para isso, o professor diz que podemos 
+
+
+
+
+
+
+
+ USAR UMA BOOTSTRAP CLASS,
+
+
+
+
+
+
+
+
+ mas usar uma class de bootstrap em um elemento 
+
+
+ 'span',
+
+
+
+ A CLASS 
+
+ de 
+
+ 'help-block',
+
+
+
+
+
+
+
+
+
+
+
+ E AÍ UM TEXT DE 'please enter a valid email',
+
+
+
+ tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+ <span class="help-block">Please enter a valid email!</span>
+
+
+
+
+
+
+
+
+
+
+
+ ----->              <span class="help-block" *ngIf="">Please enter a valid email!</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> OK... SÓ QUEREMOS MOSTRAR 
+
+
+ ESSE ELEMENT 
+
+ SE ALGUM 
+
+ VALOR INVÁLIDO TIVER SIDO INPUTTADO
+  
+
+
+  NO 'CONTROL'
+
+
+  ASSOCIADO
+
+  A ESSE INPUT,
+
+  no entanto...
+
+
+
+
+
+
+
+
+
+
+  --> BEM, UMA MANEIRA 
+
+
+
+  FÁCIL E RÁPIDA DE GANHAR ACESSO AO CONTROL CRIADO PELO ANGULAR
+  AUTOMATICAMENTE QUANDO coolocamos aquela directive de 'ngModel' em um elemento,
+
+
+
+
+É _ SIMPLESMENTE_ PELO ADD 
+
+
+
+DE:
+
+
+
+
+
+
+1) UMA LOCAL REFERENCE AO LOCAL/ELEMENTO INPUT QUE QUEREMOS USAR PARA RENDERIZAR CONDICIONALMENTE alguma outra coisa (como um '<p>')....
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              ngModel
+              name="email"
+              required
+              email
+              #emailReference
+            />
+
+
+
+        <span class="help-block" *ngIf="emailReference.valid">Please enter a valid email!</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+2) CERTO, MAS NESSE 'emailReference'
+você 
+VAI TER DE COLOCAR UM VALUE.... --> E O VALUE NÃO SERÁ 
+
+
+'ngForm',
+
+como 
+
+você colocou 
+
+
+LÁ 
+
+
+EM CIMA,
+
+na actual form tag de sua form (
+
+
+    '''''
+    
+<form (ngSubmit)="onSubmitForm(formReference)" #formReference="ngForm">
+
+
+    '''''
+)
+
+
+
+
+
+
+
+
+
+ E SIM VAI COLOCAR UM 
+
+ VALUE de 
+
+
+
+ 'ngModel',
+
+
+ tipo uma referência ao próprio 'ngModel' que você colocou no seu input desejado...
+
+
+
+
+
+
+
+
+ tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+             <input
+              type="email"
+              id="email"
+              class="form-control"
+              ngModel
+              name="email"
+              required
+              email
+              #emailReference="ngModel"
+            />
+
+
+
+        <span class="help-block" *ngIf="emailReference.valid">Please enter a valid email!</span>
+
+
+
+
+
+
+
+
+---------------------------------------------
+
+
+
+
+
+
+
+
+
+QUANDO VOCê 
+
+
+ATRIBUI O VALOR DESSA LOCAL REFERENCE A 'ngModel',
+
+
+
+a ngModel directive acaba 
+
+
+__DEIXANDO _ 'EXPOSTAS'
+
+
+
+algumas informações 
+
+ADICIONAIS SOBRE O CONTROL QUE ELA CRIA...
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+ <span class="help-block" *ngIf="!emailReference.valid">Please enter a valid email!</span> <!--- essa é uma maneira de RENDERIZAR CONDICIONALMENTE MENSAGENS DE ERROR/AVISO AO USER, na sua UI.... basta usar as local referenecs de seus elementos, configuradas por 'ngModel'...-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ---------------------------
+
+
+
+
+
+
+
+ ok.... agora sempre que 
+ ESSE INPUT FIELD ESTIVER COMO 'INVALID',
+
+
+SERÁ MOSTRADO/RENDERIZADO ESSE 
+
+'<p>'
+
+
+
+aí...
+
+
+
+
+
+
+
+
+--> é claro que preciso de mais alguma coisinha,
+
+talvez um check por 'touched',
+
+para aí APENAS MOSTRAR ESSE ELEMENTO SE O USER DIGITOU ALGUMA COISA E ENTÃO PAROU DE 
+
+
+DIGITAR/trocou de input field....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TIPO ALGO ASSIM:
+
+
+
+
+
+
+
+ <span class="help-block" 
+            [ngStyle]="{'color': 'red'}"
+            *ngIf="!emailReference.valid && 
+            
+            emailReference.touched">
+            
+            Please enter a valid email!</span>
+
+
+
+
+
+
+
+
+
+
+            OU ASSIM (só vai aparecer se tivermos um value dentro do input field, value INVÁLIDo):
+
+
+
+
+
+             <span class="help-block" 
+            [ngStyle]="{'color': 'red'}"
+            *ngIf="!emailReference.valid && 
+            
+            emailReference.value">
+            
+            Please enter a valid email!</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <input
+              type="text"
+              id="username"
+              class="form-control"
+              ngModel
+              name="username"
+              required
+              #nameReference="ngModel"
+              minlength="5"
+            />
+            <span class="help-block" 
+            [ngStyle]="{'color': 'red'}"
+            *ngIf="!nameReference.valid && 
+            
+            nameReference.value">
+            
+            Your name must have at least 5 characters!</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AQUI, NO CASO,
+
+USEI AQUELA DIRECTIVE DE 'minlength'...
+
+
+
+
+
+
+
+
+
+--->  com isso 
+
+conseguimos 
+
+
+
+simplesmente mostrar aquele 'span' sempre que 
+
+nossas conditions 
+
+
+
+
+forem satisfeitas,
+
+
+conditions que dependem daquela 'form' e 'controls',
+
+que por sua vez 
+
+
+
+SÃO 
+
+
+REFERENCIADOS POR MEIO DE LOCAL REFERENECS como 
+
+'nameReferece'
+
+
+' 
+
+
+emailReference',
+
+
+
+
+como nesse exemplo aí...
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+          <input
+              type="email"
+              id="email"
+              class="form-control"
+              ngModel
+              name="email"
+              required
+              email
+              #emailReference="ngModel"
+            />
+            <span class="help-block" 
+            [ngStyle]="{'color': 'red'}"
+            *ngIf="!emailReference.valid && 
+            
+            emailReference.value">
+            
+            Please enter a valid email!</span> 
+
+
+
+
+
+-----------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK, ISSO QUER DIZER QUE A 'NGMODEL' 
+
+expõe algumas informações extras sobre a representação do 'control' que 
+
+
+ela 
+
+cria para nós,
+
+
+
+
+tudo por meio do acesso à 'ngModel'..
+
+
+
+
+
+
+
+
+
+--> OK, SE 'email'
+
+NÃO FOR VALID 
+
+
+e
+ 
+
+ SE 
+
+ TIVERMOS UM 'VALUE'
+
+ nesse input,
+
+
+
+
+ vamos ver o warning... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> CERTO, ISSO AÍ MOSTRA O WARNING,
+ TUDO NORMAL,
+
+
+
+
+ ESSA É OUTRA MANEIRA 
+
+
+
+
+DE 
+
+'TIRAR VANTAGEM'
+
+DO STATE 
+
+
+DA FORM QUE É MANAGEADO PELO ANGULAR,
+
+
+
+
+
+E ISSO TAMBÉM TE MOSTRA COMO 
+
+
+VOCÊ 
+
+
+
+CONSEGUE 
+
+
+
+ACESSO RÁPIDO E FÁCIL A 'CONTROLS' criados 
+
+pelo angular,
+
+basta usar 
+
+
+
+
+'ngForm'
+
+
+e 'ngModel'...
+
+
+
+
+
+
+
+
+
+
+
+-->  COM ISSO, 
+
+
+VOCÊ PODE PROVIDENCIAR UMA 
+
+USER EXPERIENCE PLEASANT,
+
+
+
+MOSTRAR WARNINGS E ESTILIZAR A FORM CORRETAMENTE,
+
+A DEPENDER DO STATE DA FORM....

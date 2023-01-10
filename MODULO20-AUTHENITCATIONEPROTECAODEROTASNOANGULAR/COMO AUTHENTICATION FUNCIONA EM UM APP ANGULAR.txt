@@ -1,0 +1,1642 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> ANTES DE MAIS NADA, É CLARO QUE TEMOS QUE SABER '''COMO AUTHENTICATION FUNCIONA'''...
+
+
+
+
+
+
+
+
+
+
+
+
+--> DEVEMOS ENTENDER COMO ISSO FUNCIONA POR TRÁS DAS CENAS...
+
+
+
+
+
+
+
+
+
+
+
+
+--> DEVEMOS PENSAR SOBRE O FUNCIONAMENTO DE QUALQUER WEBAPP..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> TEMOS:
+
+
+
+
+
+CLIENT 
+
+
+
+
+
+
+
+
+
+
+
+
+SERVER 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O USER INPUTTA DADOS DE SUA CONTA, a 'Auth DATA',
+
+
+que 
+
+
+é enviada a 
+
+
+AO SERVER, ONDE É VALIDADA:
+
+
+
+
+
+
+
+
+CLIENT 
+
+
+
+
+I
+I
+I
+I( AUTH DATA) 
+I
+v 
+
+
+
+SERVER 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSA VALIDATION É FEITA __ LÁ NO SERVER,
+
+
+
+PQ 
+
+
+TODO O CÓDIGO JAVASCRIPT DO BROWSER FICA EXPOSTO AOS NOSSOS USERS (
+
+    e a lógica de validation poderia ser 
+
+    alterada pelo user....
+)
+
+
+
+
+
+
+
+
+
+-> NOSSA VALIDATION DO FRONTEND CRIA UMA 
+
+
+
+USER EXPERIENCE MELHOR,
+
+
+
+
+
+MAS SERVE SÓ PARA ISSO: USER EXPERIENCE....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> BEM, 
+
+
+SE VOCÊ PENSAR EM UM 
+
+
+
+WEBAPP TRADICIONAL,
+
+EM QEU 
+
+TEMOS 
+
+
+
+
+
+PAGES NORMAIS,
+
+
+ 
+ COM RENDER DE DIFERENTES PAGES HTML PARA AS DIFERENTES URLs/Paths 
+ qque 
+
+ você 
+
+ inputta,
+
+
+
+
+
+
+
+
+
+
+VOCÊ TRABALHARIA COM UMA _ SESSION___.... --> 
+
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+        CLIENT 
+
+
+
+                   ^
+I                  I
+I                   I
+I                    I (SESSION)
+I( AUTH DATA)        I
+I                    I
+v                   I
+
+
+
+        SERVER 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS VOCÊ DEVE SE LEMBRAR QUE,
+
+
+COM O ANGULAR/REACT,
+
+
+
+
+
+NÓS TRABALHAMOS COM 
+
+
+
+
+
+
+__ 'SINGLE-PAGE APPS' --------> ISSO SIGNIFICA, TAMBÉM,
+
+QUE 
+
+
+'DECOUPLAMOS'
+
+
+
+o 'FRONT-END' 
+
+
+do 
+
+'BACK-END'
+
+de nosso app...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA AS DIFERENTES 
+
+
+PAGES QUE VISITAMOS,
+
+
+
+TUDO ISSO É HANDLADO PELO ANGULAR E PELO ANGULAR ROUTER...
+
+
+
+
+
+
+
+
+
+
+------> É O JAVASCRIPT NO BROWSER QUE 'TAKES OVER' 
+
+e qeu 
+
+
+
+
+RENDERIZA/RE-RENDERIZA 
+
+
+
+PAGES OU PARTES 
+
+
+DE 
+
+PAGES __ 
+
+
+
+QUE 
+
+
+COMPÕEM NOSSA USER INTERFACE, 
+
+
+
+TUDO DE ACORDO COM ___ O 'USER STATE'
+
+
+
+atual...
+
+
+
+
+
+
+
+
+
+
+
+-> MAS É CLARO QUE AINDA INTERAGIMOS COM UM SERVER,
+
+
+
+MAS ESSE 
+
+
+SERVER 
+
+
+SERÁ 
+
+
+UMA 'RESTFUL API',
+
+
+
+o que quer dizer que 
+
+
+NÃO USAREMOS UMA SESSION,
+
+
+
+
+JUSTAMENTE PQ 'RESTFUL APIs SÃO _ _STATELESS''' (
+
+
+
+    E O MESMO SE APLICA PARA  GRAPHQL APIs...
+
+
+
+)
+
+
+
+
+
+
+
+--------> O QUE INTERESSA, NO CASO, É QUE 
+
+
+
+NOSSO BACKEND SERÁ UMA API... --> 
+
+ELE NÃO 
+
+VAI SER UM SERVER 
+
+
+
+QUE VAI 
+
+
+'RENDER THE HTML PAGES WE ARE ON',
+
+
+
+
+
+
+
+POR ISSO SESSIONS NÃO PODEM SER USADAS,
+
+
+PQ 
+
+
+NOSSO SERVER __ NÃO VAI _ SE IMPORTAR_ 
+
+
+COM O NOSSO CLIENT,
+
+
+
+
+
+
+
+CLIENT E SERVER SÃO 'DECOUPLED' 
+
+1 em relação ao outro;
+
+
+
+
+
+
+
+
+
+
+
+ELES SE COMUNICAM ATRAVÉS DO HTTPCLIENT que 
+
+
+é oferecido pelo angular,
+
+sim,
+
+
+
+
+
+
+MAS 
+
+FORA ISSO,
+
+
+
+NÃO HÁ CONNECTION ENTRE OS 2:
+
+
+
+
+
+O SERVER NAÕ 'CONHECE' O NOSSO CLIENT, EM OUTRAS PALAVRAS...
+
+
+
+
+
+
+ 
+
+
+
+--> É POR ISSO QUE SESSIONS NÃO SÃO SOLUÇÕES ---> UMA SESSION SERIA __ ARMAZENADA __ 
+
+
+
+NO NOSSO SERVER,
+
+
+em um app normal,
+
+
+MAS 
+
+
+AQUI _ 
+
+
+
+O SERVER NÃO SE IMPORTA COM NOSSO CLIENT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> EM VEZ DISSO,
+
+USAREMOS UM APPROACH DIFERENTE,
+
+EM QUE 
+
+
+
+O SERVER VAI 'VALIDATE' O USER EMAIL E PASSWORD... -> E SE TODA ESSA DATA FOR VÁLIDA,
+
+
+
+O SERVER VAI ENVIAR AO CLIENT UMA _ _TOKEN__,
+
+
+
+
+
+
+
+
+UMA JSON WEB TOKEN, tipicamente...
+
+
+
+
+
+
+
+
+
+
+
+--> ESSA  TOKEN É UMA 'ENCODED STRING' ,
+
+
+
+QUE CONTÉM UM MONTE DE META DATA -------> E ESSA STRING É _ _ENCODADA_,
+
+
+E NÃO ENCRIPTADA --------> o que quer dizer que 
+
+
+
+ESSA STRING _ 
+PODE/PODERÁ
+
+
+
+SER UNPACKADA E LIDA PELO CLIENT...
+
+
+
+
+
+
+
+
+
+
+--> MAS O MAIS IMPORTANTE É QUE ESSA STRING/TOKEN É _ GERADA __ 
+
+
+LÁ NO SERVER,
+COM UM 
+
+
+CERTO ALGORITMO  E UM CERTO 'SECRET',
+
+
+
+
+SECRET QUE 
+
+
+É CONHECIDO APENAS PELO SERVER...
+
+
+
+
+
+
+
+
+
+
+----> E APENAS O SERVER 
+
+
+VAI PODER 'VALIDATE INCOMING TOKENS' DE ACORDO COM SUA VALIDITY,
+
+
+
+
+
+PQ A IDEIA É QUE 
+
+
+NOSSO CLIENT,
+
+
+
+NOSSO BROWSER,
+
+
+O ANGULAR APP,
+
+
+
+VAI ARMAZENAR  ESSA TOKEN 
+
+
+
+
+EM ALGUMA 'STORAGE',
+
+
+
+
+
+
+
+COMO EM UMA 'LOCAL STORAGE' DO BROWSER, POR EXEMPLO,
+
+
+
+
+E AÍ 
+
+
+VAI  'ATTACH' ESSA TOKEN 
+
+
+A QUALQUER REQUEST 
+
+QUE 
+
+DEIXAR O NOSSO 
+
+APP browserside...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------> OK... ----->  EX:
+
+
+
+
+
+
+PRECISAMOS SER AUTENTICADOS PARA 
+
+
+CONSEGUIR ARMAZENAR RECIPES -------> POR ISSO,
+
+
+PRECISAMOS QUE 
+
+ESSA TOKEN SEJA 
+
+
+ATTACHADA 
+
+
+AOS HEADERS DE NOSSOS REQUESTS (ou query params),
+
+
+O QUE SÓ SERÁ POSSÍVEL 
+
+
+
+
+SE TIVERMOS ESSA TOKEN LÁ NO NOSSO 'LOCAL STORAGE'...
+
+
+
+
+
+
+
+
+
+
+
+
+---------> E O SERVER SÓ É CAPAZ DE 'VALIDATE' ESSA TOKEN 
+
+
+
+PQ __ O SERVER_ 
+
+CRIOU/CRIA ESSE TOKEN 
+
+
+
+
+
+COM UM CERTO ALGORITMO E PRIVATE KEY 
+
+
+QUE EXISTE NO SERVER.. (e é assim que 
+
+essa token é criada )
+
+
+
+
+
+
+
+
+-----> E NÓS __ NÃO CONSEGUIMOS __ 
+
+
+GENERATE OU EDIT UMA TOKEN NO CLIENT,
+
+PQ 
+
+
+ASSIM QUE FIZERMOS ISSO,
+
+
+ELA NÃO VAI SE ENCAIXAR 
+
+
+NO ALGORITMO 
+
+
+
+E PRIVATE KEY 
+
+USADOS NO SERVER,
+
+
+
+
+
+E O SERVER, PORTANTO, 
+
+SERÁ CAPAZ DE DETERMINAR QUE ESSA TOKEN É INVÁLIDA, BLOQUEANDO ACESSo.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE É SEGURO:
+
+
+
+O 
+
+
+SERVER 'SABE MAIS' DO QUE O CLIENT,
+
+
+
+
+
+MAS _ NÓS DAMOS AO 
+
+CLIENT UM 'PEDAÇO IMPORTANTE',
+
+
+ 
+ QUE É ENFIADO 
+
+
+
+ NOS REQUESTS,
+
+
+
+
+
+ MAS ESSE PEDAÇO É JUSTAMENTE ENTREGUE 
+
+ PELO 
+
+
+
+
+ SERVER,
+
+ E NAÕ PODE SER GERADO PELO CLIENT (pq o client sabe menos)...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> vamos implementar isso nesse módulo....
+
+
+
+
+
+
+
+
+
+
+
+ --> DEVEMOS OFERECER AO USER UMA USER INTERFACE 
+
+
+ EM QUE 
+
+ CONSIGAM
+
+
+ FAZER 'SIGNUP' ( criar uma conta )...
+
+
+
+
+
+
+
+
+
+
+ ---> depois 
+
+
+ faremos a lógica para 'LOGIN'...
+
+
+
+
+
+
+
+
+ --> depois colocaremos a lógica para 'CREATE DESSA TOKEN', STORE DA TOKEN NO LOCAL STORAGE E ATTACH DA TOKEN A TODOS NOSSOS REQUESTS...
+
+
+
+
+
+
+
+
+
+
+
+
+---> no curso de 'NODEJS' temos bastante info sobre RESTFUL APIS e SESSION-BASED (html normal) servers...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COMO É IMPLEMENTADA A AUTHENTICATION com 'sessions', em webapps tradicionais? 
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> COMO É IMPLEMENTADA A AUTHENTICATIOn?
+
+
+
+
+
+
+
+
+
+
+--> BEM, TEMOS O MESMO SETUP DE ANTES,
+
+
+
+
+
+EX:
+
+
+
+
+| User | 
+
+
+
+
+
+
+
+
+
+| sERVER |
+    |
+    V 
+| Database |
+
+
+
+
+
+
+
+----------------------
+
+
+
+
+
+
+
+
+
+
+TEMOS O USER,
+
+
+
+NOSSO BACKEND (server + database),
+
+
+
+
+
+
+
+
+tudo certO...
+
+
+
+
+
+
+
+
+
+
+
+------> AÍ, TIPICAMENTE,
+
+
+O 
+
+
+USER 
+VAI 
+
+
+
+ENVIAR 1 
+
+
+
+'LOGIN REQUEST'...
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+| User | 
+
+
+|
+|login
+|request
+|
+|
+|
+V
+
+
+| sERVER |
+    |
+    V 
+| Database |
+
+
+
+
+
+------------------------------------------
+
+
+
+
+
+
+
+
+
+É CLARO QUE PARA QUE EXISTA 1 
+
+
+'LOGIN REQUEST',
+
+
+É NECESSÁRIO QUE ESSE USER/VISITANTE DE NOSSA 
+
+PAGE 
+
+
+__JÁ _ ESTEJA 
+
+'SIGNEDUP'... ------>  MAS 
+
+
+
+
+DEPOIS DO SIGNUP,
+
+é claro que podemos SIGNIN...  -------> E AÍ,
+
+
+
+
+NO SERVER,
+
+
+
+_VAMOS _ CHECAr__ 
+
+
+SE 
+
+
+
+
+______ESSA COMBINAÇÃO__ DE 
+
+
+
+'EMAIL + PASSWORD'
+
+
+
+É __ VÁLIDA,
+
+
+VAMOS CHECAR__ 
+
+
+
+SE ________ TEMOS 
+
+
+1 
+
+USER 
+
+COM 
+
+
+ESSE 
+
+EMAIL 
+
+
+E 
+
+ESSE 
+
+PASSWORD 
+
+
+
+___ARMAZENADO __ LÁ 
+
+NA NOSSA DATABASe...  ------------->
+
+
+
+
+
+
+
+
+SE ESSE FOR O CASO,
+
+
+
+VAMOS QUERER CRIAR 1 ___SESSION__ PARA 
+
+ESSE 
+
+
+
+USER... (
+
+
+    e essa 
+
+    session é 
+
+
+    ARMAZENADA EM UMA __ COLLECTION __ A PARTE, LÁ NA NOSSA DATABASE...
+)
+
+
+
+
+
+
+
+
+
+---> E APRENDEMOS SOBRE COMO O 'CREATE' DESSA SESSION FUNCIONA __ LÁ NO ÚLTIMO MÓDULO:
+
+
+
+A) é CRIADO 1 'SESSION' lá na collection de 'sessions' na nossa database, por meio de middlewares como 'express-session'... (acompanhados de packages como 'connect-mongodb-session')
+
+
+
+
+
+B) ___ É __ CRIADO/POSICIONADO 1 'cookie de session' LÁ NO BROWSER DO USER, que O IDENTIFICARÁ COMO PERTENCENTE/VINCULADO __ A ESSA SESSION__ QUE TEMOS NA NOSSA DATABASE... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ESSA SESSION (no SERVER), JUNTO DO 'COOKIE DA SESSION', no browser do user,
+
+
+
+__ VÃO __ IDENTIFICAR ESSE USER... -------> ISSO É NECESSÁRIO PQ 
+
+
+
+
+CASO CONTRÁRIO, __ SEM 1 SESSION (na database, acompanhada do Cookie da session, no browser do user), 
+
+
+__ MESMO __ SE DESCOBRÍSSEMOS QUE 
+
+AS 
+
+CREDENTIALS SÃO 'VALID',
+
+
+
+
+O USER 
+
+
+ACABARIA 
+
+'LOGGED OUT' 
+
+
+
+___ JÁ __ NO PRÓXIMO REQUEST__ (ou seja, NA PRÓXIMA PAGE que ele visitasse, já teria outro request) QUE 
+
+
+ELE 
+
+ENVIASSE 
+
+
+AO NOSSO SERVER... -------> ISSO PQ __VOCÊ 
+
+
+TEM QUE __ SE LEMBRAR ___ QUE 
+
+
+
+
+
+_______REQUESTS___ INTERAGEM  _________ COM NOSSO SERVER DE FORMA ___ SEPARADA, SÃO 
+
+AUTÔNOMOS E NAÕ INTERAGEM 1 COM O OUTRO (requests NÃO SE COMUNICAM, não sabem nada 1 sobre o outro)... 
+
+
+
+
+
+
+
+
+
+-----> __ POR OS REQUESTS SEREM 'INDEPENDENTES'/AUTÔNOMOS,
+
+PRECISAMOS __ DE UMA 
+
+
+__________SESSION_______ PARA ___ OS CONECTAR,
+
+
+CONECTAR OS REQUESTS __ VINDOS DE 1 MESMO USER... -------> E É EXATAMENTE 
+
+POR ISSO  
+
+
+QUE 
+
+CRÍAMOS 
+
+
+
+
+
+1 SESSION POR MEIO DA INFORMAÇÃO 
+
+
+
+DO 
+
+
+'USER'/AUTH INFORMATION... ------>  OK........  A PARTIR 
+
+
+
+DO LOGIN REQUEST 
+
+
+E 
+
+
+
+A OPERAÇÃO 
+
+
+
+
+DE PROCESSAMENTO/CRIAÇÃO 
+
+DESSA 
+
+
+SESSION, 
+
+LÁ 
+
+
+
+NA DATABASE/SERVER,
+
+
+
+
+
+__ENVIAMOS UMA RESPONSE AO USER,
+
+RESPONSE 
+
+
+DE 
+
+CÓDIGO 
+
+200,
+
+ 
+
+
+ BASICAMENTE UMA SUCCESS RESPONSE,
+
+
+
+
+
+ E AÍ __ OBVIAMENTE VAMOS ARMAZENAR AQUELE COOKIE 'belonging to the session',
+ lá 
+
+
+ NO CLIENT... -------> FAZEMOS ISSO PARA QUE REALMENTE SEJA ESTABELECIDA 
+
+ A 
+
+ 'SESSION'...
+
+
+(armazenado o SESSION ID do user, altamente criptografado, __ DENTRO __ DO 'cookie da session', no seu browser... --> é isso que vai IDENTIFICAR/correlacionar o USER com a SESSION armazenada na database, que tem aquele '._id' PURO, sem ser hasheado como o 'id' ARMAZENADO NO 'cookie da session'....)
+
+
+
+
+
+
+ --------> OK... DEPOIS DISSO,
+
+
+
+
+
+
+_O  USER__ REALMENTE__ SE TORNA ___ CAPAZ__ DE 
+
+
+
+
+VISITAR_ _NOSSAS 'RESTRICTED ROUTES',
+
+
+
+
+
+ISSO 
+
+
+PQ 
+
+
+
+
+ESSE COOKIE 
+
+(que pode ser permanent/session, sua natureza, dependendo do que settamos) 
+
+
+
+AGORA
+
+
+
+SERÁ 
+
+ENVIADO 
+
+
+
+
+_____ EM TODO E CADA REQUEST__ AO NOSSO SERVER,
+
+
+
+
+
+
+E NO SERVER PODEOMS 
+
+
+
+
+CONECTAR ESSE COOKIE A UMA SESSION,
+
+
+
+E AÍ 
+
+
+
+__NA SESSION (sua presença/ausência)
+
+
+
+
+
+NA COLLECTION DE 'SESSIONS'
+
+___ NÓS TEMOS 
+
+A 
+
+INFORMATION 
+
+
+
+SE 
+
+AQUELE 
+
+USER 
+
+ESTÁ 
+
+
+'SIGNED IN' OU NÃO...
+
+
+
+
+
+
+
+
+---------> E SE O USER ESTÁ SIGNED IN,
+
+PODEMOS GARANTIR ACESSO A ALGUNS 
+
+RECURSOS... ----->   E É ___ASSIM QUE __ 
+
+
+
+
+AUTHENTICATION É IMPLEMENTADA ________ EM QUALQUER WEBAPP __ QUE 
+
+
+RENDERIZE 
+
+
+'VIEWS'...- -------> VAMOS APRENDER 
+
+
+
+
+
+UMA ___MANEIRA__ DIFERENTE DE 
+
+'ADD AUTHENTICATION'
+
+mais tarde,
+
+
+
+QUANDO APRENDERMOS 
+
+SOBRE 
+
+
+
+
+
+REST APIs 
+
+e 
+
+
+'GRAPHQL APIs'..
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS PARA 1 
+
+WEBAPP 
+
+TRADICIONAL,
+
+
+
+como esse que estamos construindo aqui
+,
+
+
+
+
+APP 
+
+
+EM QUE 
+
+
+
+__REALMENTE_ RENDERIZAMOS 
+
+
+EJS/HANDLEBARS/PUG/templating ENGINES,
+
+
+
+
+
+
+
+_______ APPS EM QUE RENDERIZAMOS VIEWS,
+
+
+
+AÍ REALMENTE 
+
+
+
+VAMOS USAR 
+
+
+ESSE APPROACH 
+
+DE 
+
+AUTHENTICATION 
+
+'SESSION-BASED'...

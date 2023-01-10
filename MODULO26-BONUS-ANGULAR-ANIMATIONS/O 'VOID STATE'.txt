@@ -1,0 +1,2296 @@
+
+
+
+
+
+
+OK.... MEU CÓDIGO ANTERIOR HAVIA FICADO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+import { style, trigger } from '@angular/animations'; ///ESSENCIAL.
+
+import { state } from '@angular/animations'; //também essencial.  --> é um method TIPICAMENTE USADO NO TRABALHO COM ANIMATIONS...
+
+
+import { transition } from '@angular/animations';  ///TAMBÉM É ESSENCIAL... deve ser colocado dentro dos 'trigger', no mesmo NÍVEL do set dos seus diferentes 'state()'..
+
+
+import { animate } from '@angular/animations'; ////////TAMBÉM É NECESSÁRIO... define 'COMO DEVE SER FEITA A ANIMATION ENTRE ESSE (STATE A) E ESSE (STATE B)'....
+ 
+
+// @Component({
+//   selector: 'app-root',
+//   templateUrl: './app.component.html',
+//   styleUrls: ['./app.component.css'],
+//   //colocamos o nome de 'divState' pq QUEREMOS ALTERAR O 'STATE' DO ELEMENTO '<div></div>' que temos lá no nosso HTML, NESSE COMPONENT...
+//   animations: [
+//     trigger(
+//       'divStateExample', ////////////É ASSIM QUE ADICIONAMOS ANIMATIONS ANGULAR AOS NOSSOS COMPONENTS...
+
+//       [
+//         /////É O ARRAY DE 'ANIMATIONS' que serão TRIGGADAS a partir do 'satisfact' da primeira condição, que é o trigger...
+
+//         ////style define 'COMO DEVERÁ SER O INITIALSTATE desse service/component....
+
+//         state(
+//           'divStateExample', //sempre vamos querer ter MAIS DE 1 'state' em 1 trigger/animation, isso pq TODA ANIMATION DEPENDE DE PELO MENOS 2 'states' DIFERENTES para conseguir existir uma animation...
+
+//           style({})
+//         ),
+//         state('hightlighted'),
+//       ]
+//     ),
+//   ],
+
+//   ///1o argumento de 'trigger' --> é o IDENTIFIER DO SEU TRIGGER... se for constatado que esse identifier está no seu template, SERÁ ATIVADO O TRIGGER....
+//   ////2o argumento --> É A ANIMATION QUE VAI 'PLAY OUT' a partir do set off desse trigger...
+// })
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  animations: [
+    trigger('divStateExample', [
+      state('normal', style({ /////queremos que o value desse 'starting state' SEJA IGUAL ao value do state ('normal', nesse caso) que temos ali embaixo, o starting state...
+
+        'background-color': 'red',
+        'transform': 'translateX(0px) '
+
+      })), 
+      state('highlighted', style({
+
+        'background-color': 'blue',
+        'transform': 'translateX(200px)'
+      })),
+
+      transition( ///////É UM METHOD SUPER INTUITIVO --> --> ELE NOS DEIXA 'DESCREVER COMO A TRANSITION DE UM STATE PARA OUTRO DEVE SE PARECER/acontecer''...
+      
+      'normal => highlighted',  ////com isso, especificamos que 'A TROCA DE VALUE DE NORMAL PARA HIGHLIGHTED DEVE....'
+
+     
+      animate( /////a coisa mais simples que você pode fazer é passar um NÚMERO, que será o NÚMERO DE ms até que essa transition ACABE..
+
+      300
+      )
+      ),
+
+      transition(
+      'highlighted => normal',
+      animate(
+      100
+      )
+      ),
+
+      // transition( ////////USE ESTA VERSÃO SE VOCê QUER QUE '(STATE A) => (STATE B)'  e '(STATE B) => (STATE A)' OCORRAM COM A MESMA VELOCIDADE....
+      //   'normal <=> highlighted',
+      //   animate(
+      //   100
+      //   )
+      //   ),
+
+
+
+
+
+    ]),
+
+
+    trigger('wildStateExample',
+    
+    [
+
+
+      state('normal', style( ///STATE A
+        {
+          'background-color': 'green',
+          'transform': 'translateX(0) scale(1)'
+        }
+      )),
+      state('highlighted', style( ///STATE B
+      {
+        'background-color': 'blue',
+        'transform': 'translateX(100px) scale(1)'
+      }
+    )),
+
+    state('shrunken', style( ///STATE C
+    {
+      'background-color': 'red',
+
+      'transform': 'translateX(0) scale(0.5)'  ///transformation mais complexazinha, queremos que o cubo diminua pela METADE..
+    }
+  )),
+
+  transition('normal <=> highlighted', animate(300)),
+  // transition('shrunken <=> *', animate(300))  ////////COM ISSO, ESSENCIALMENTE DEFINIMOS QUE ''SE SAÍMOS DO VALUE DA STRING DE SHRUNKEN PARA QUALQUER VALUE, OU SE TROCAMOS DE QUALQUER VALUE PARA ESSE  VALUE DA STRING DE SHRUNKEN', queremos que SEJA __ APLICADA_ ESSA VELOCIDADE DE ANIMATION/ESSA ANIMATION DEFINIDA EM 'animate()'...
+
+
+
+
+  /////^^^^essa é a versão SIMPLES DA ANIMATION DA TRANSITION DE 'string de shrunken/state de shrunken para qualquer outra string/state'... --> mais simples pq no 'animtate()' apenas especifiquei o TEMPO QUE ESSA ANIMATION DEVE LEVAR...
+
+
+
+  //////VVVVVV essa é a versão COMPLEXA, em que definimos aspectos mais delicados da animation...
+
+
+  //na versão mais complexa, colocamos um segundo parâmetro em 'animate()', que será um call de 'style()' para definir bem COMO SERÁ O STYLING DE NOSSO ELEMENTO durante a animation..
+
+
+
+  // transition('shrunken <=> *', animate(300, style({ //////MAS ESSA VERSÃO É MEIO RUIM, PQ É MEIO BUGADA... (vai animate a sua ordem de 'style', e aí vai DIRETAMENTE PULAR AO END STATE... é bem feio)
+
+  //   'border-radius': '50px'
+
+
+  // })) )
+
+
+
+
+
+/////esse é o melhor jeito de EDITAR DETALHADAMENTE UMA DETERMINADA TRANSITION... --> DEVE-SE PASSAR UM ARRAY no lugar daquele 'animate()' method ..
+
+
+
+  transition('shrunken <=> *', 
+
+  [ ///o array notation delimita essa 'ANIMATION INTEIRA'... (que tem 3 'PASSOS' nesse exemplo, por assim dizer; são: 1) o starting state... (é instantaneo). 2) o primeiro animate, que vai: A) por alguma razão, deixar o border-radius INSTANTANEAMENTE '50px'..., B) CONVERTER, AO LONGO DE '5s', a cor do elemento em LARANJA...
+
+
+
+  ///'style', quando definido dentro das PHASES de uma transition, acaba APLICANDO UNS STYLES IMEDIATAMENTE (ao contrário de usos de 'animate()', que pressupõem um TEMPO até ocorrer a transformaçõa/aplicação dos styles)...
+    style({'background-color': 'purple'}),  ///o nosso 'starting state' na animation, dentro dessa animation, vai ter essa característica (esses styles)...
+
+
+    animate(1000, style({'background-color': 'orange', 'border-radius': '15px'})), 
+
+    animate(5000, style({'background-color': 'orange', 'border-radius': '50px'})), 
+
+    animate(10000) /// esse código aí vai REMOVER o BORDER-RADIUS ao final da animation, pq é esse o 'END STATE' que definimos lá no 'state' de shrunken, como vocÊ pode ver mais acima...
+   
+    //o animate(500) vai REDUZIR O OBJECT (por conta do código do state de 'END' 'shrunken', mais acima) E AÍ VAI TRANSFORMAR A COR, VAI TRANSFORMAR DE 'ORANGE 'PARA 'RED' (end state)...
+      ///ver aula 'phases em suas transtions'..
+
+
+      ///se vocÊ quer ter um 'SMOOTH TRANSITION TO YOUR END STATE', talvez seja uma boa ideia colocar um 'animate(tempo)', pq o objetivo desse method com apenas o tempo sendo passado (e sem um 'style({})' ) é justamente TROCAR PARA O 'END STATE' depois de transcorridos x milissegundos
+  ]
+  
+  )
+
+    ]
+    )
+  ],
+})
+export class AppComponent {
+  animationState = 'normal'; ////vamos USAR ESSA PROPRIEDADE COMO 'CONDITION' para dar PLAY EM DIFERENTES ANIMATIONS, por meio do bind do nosso trigger de 'divStateExample' a essa propriedade....
+
+
+  wildAnimationState = 'normal';
+
+
+
+
+  items: string[] = ['Milk', 'Sugar', 'Bread'];
+
+  constructor() {}
+
+  onDeleteItem(item: string) {
+    console.log(item);
+  }
+
+  onAddItem(item: string) {
+    this.items.push(item);
+  }
+
+
+  
+
+
+  animateBox() {
+
+
+
+    switch(this.animationState) {
+
+      case 'normal':
+        this.animationState = 'highlighted';
+        break;
+      case 'highlighted':
+        this.animationState = 'normal';
+        break;
+
+    }
+
+
+
+    switch(this.wildAnimationState) {
+
+      case 'normal':
+        this.wildAnimationState = 'highlighted';
+        break;
+      case 'highlighted':
+        this.wildAnimationState = 'normal';
+        break;
+      case 'shrunken':
+        this.wildAnimationState = 'normal';
+
+    }
+
+
+}
+
+
+
+
+
+// animateWildBox() {
+
+// }
+
+
+
+onShrink() {
+
+  this.wildAnimationState !== 'shrunken' ? this.wildAnimationState = 'shrunken' : this.wildAnimationState = 'normal'; 
+
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO,
+
+
+SOMOS CAPAZES DE 'ANIMATE' AQUELAS DIVs...
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo, mas e se nós ACTUALLY 
+
+
+QUISERMOS 
+
+
+
+
+
+
+'''ANIMATE__ A ADDITION DE UM ITEM A NOSSA LIST 
+
+
+
+
+DE ITEMS''''?
+
+
+
+
+
+
+
+
+(
+    isso é útil, pq posso implementar esse negócio lá no meu COURSE PROJECt...
+)
+
+
+
+
+
+
+
+
+
+
+
+-> ALTERNATIVAMENTE,
+
+
+
+
+SERIA LEGAL SE COLOCÁSSEMOS UMA ANIMATION PARA 'REMOVE'
+
+
+OS NOSSOS 
+
+
+
+ITEMS 
+
+
+
+da nossa list...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> COMO PODEMOS ANIMATE ISSO AÍ....?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+BEM, ATÉ AGORA, NO NOSSO PROJETO,
+
+APENAS FIZEMOS 
+
+O 
+
+ANIMATE DE UMA 'SINGLE DIV'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> bem, o professor nos explica que agora é hora 
+
+
+DE 
+
+
+
+ADICIONARMOS UM NOVO 'TRIGGER' AO NOSSO APP,
+
+
+
+
+
+
+
+
+
+
+
+por isso 
+
+
+
+
+
+ELE 
+
+
+
+
+VAI 
+
+
+COPIAR O CÓDIGO 
+
+DO 
+
+TRIGGER BÁSICO,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ou seja,
+
+
+vai começar assim:
+
+
+
+
+
+
+
+
+
+
+
+
+animations: [
+
+
+
+
+
+    trigger(
+        '', [
+
+
+
+
+        ]
+
+
+    )
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... O PROFESSOR VAI CHAMAR ESSE 'trigger' simplesmente de 
+
+
+
+'list1'...
+
+
+
+
+
+
+
+
+
+
+
+
+---> E DENTRO 
+
+
+
+
+DESSE trigger, o professor não vai querer ter múltiplos states,
+
+e sim 
+
+APENAS 1 ÚNICO STATE...
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+animations: [
+
+
+
+
+
+    trigger(
+        'list1', [
+
+
+            state(
+
+            )
+
+
+        ]
+
+
+    )
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO...
+
+
+
+
+
+
+
+
+
+
+
+
+-> E QUAL SERÁ O 'value' para esse state?
+
+
+
+
+
+
+
+será 
+
+
+de 
+
+'in' ...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'in' 
+
+
+pq O PROFESSOR QUER  que isso significa que 
+
+
+
+'''THE ELEMENT IS ADDED TO THE STATE,
+
+THE ELEMENT _ IS __ IN __ THE DOM___....'''...
+
+
+
+
+
+
+
+
+
+
+ok..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+quer dizer que o código vai ficando assim:
+
+
+
+
+
+
+
+
+animations: [
+
+
+
+
+
+    trigger(
+        'list1', [
+
+
+            state(
+                'in',
+
+            )
+
+
+        ]
+
+
+    )
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> CERTO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> já o próximo STATE 
+
+
+
+DESSE NOSSO TRIGGER 
+
+
+VAI 
+
+SER 
+
+
+
+um que expresse 
+
+
+
+
+''''nós nÃO TEMOS ESSE ELEMENTO,
+
+POR ALGUMA RAZÃO''' (
+
+
+
+nós o removemos,
+
+ou então o EDITAMOS...  --> quando EDITAMOS UM ELEMENTO, ele deve 'appear', e isso é handlado pelo ANGULAR 2, como logo aprenderemos... (?)
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok... mas QUE APARÊNCIA DEVE TER O NOSSO ELEMENTO,
+
+
+
+com esse state de 'in',
+
+QUANDO ELE FINALMENTE ESTIVER NO DOM?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> o professor quer que esse element tenha uma posição de '0',
+
+
+
+
+PARA QUE FIQUE, no seu state de 'in the dom',
+
+
+
+
+PRECISAMENTE NO LOCAL EM QUE DEVE SER ADICIONADo..
+
+
+
+
+
+
+
+
+
+--> A OPACITY TAMBÉM DEVE SER de '1',
+
+PARA QUE ESSE ELEMENTO FIQUE PLENAMENTE VISÍVEL...
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+animations: [
+
+
+
+
+
+    trigger(
+        'list1', [
+
+
+            state(
+                'in',
+                style(
+                    {
+                        'opacity': '1',
+                        'transform': 'translateX(0)'
+                    }
+                )
+
+            )
+
+
+        ]
+
+
+    )
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok... COM ISSO, NOSSO ELEMENTO FICARÁ PLENAMENTE VISÍVEL E FIXO NAQUELA POSIÇÃO..
+
+
+
+
+
+
+
+
+
+
+
+
+--> agora me resta:
+
+
+1) um state para 'out',
+
+
+
+que deverá ter um STYLE DE 'opacity: 0',
+
+e aí um TRANSFORM de 'translateX(-60)',
+
+ou algo assim...
+
+
+
+
+
+
+(para que esse elemento SUBA enquanto _DESAPARECE)...
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+animations: [
+
+
+
+
+
+    trigger(
+        'list1', [
+
+
+            state(
+                'in',
+                style(
+                    {
+                        'opacity': '1',
+                        'transform': 'translateX(0)'
+                    }
+                )
+
+            ),
+
+            state(
+                'out',
+                style(
+                    {
+                        'opacity': '0',
+                        'transform': 'translateX(-60px)'
+                    }
+                )
+            )
+
+
+        ]
+
+
+    )
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO COMPLETO FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+    trigger('list1', [
+
+
+      state(
+        'in', 
+        style(
+          {
+            'opacity': '1',
+            'transform': 'translateX(0)'
+          }
+        )
+      ),
+
+      state(
+        'out', 
+        style(
+          {
+            'opacity': '0',
+            'transform': 'translateX(-60px)'
+          }
+        )
+      ),
+
+      transition(
+        'in <=> out', 
+        animate(500)
+      )
+
+
+    ])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -> ISSO SIGNIFICA QUE ESSAS ANIMATIONS VÃO TOCAR AO LONGO DE 0.5 segundos...
+
+
+
+
+
+
+
+
+
+
+    ---> ok...
+
+
+
+
+
+
+
+
+
+
+MAS AQUI FIZ ALGO DE ERRADO...
+
+
+
+
+
+
+
+
+
+-> EU COLOQUEI QUE O QUE DEVE SER CONSIDERADO PARA O PLAY DESSA ANIMATION, desse trigger,
+
+
+é a condition de 
+
+'''      'in <=> out',  ''',
+
+
+
+
+
+
+
+
+OU SEJA,
+
+
+
+
+SE ESTAMOS TIRANDO OU COLOCANDO UM NOVO LIST ITEM NO DOM..
+
+
+
+
+
+
+
+
+
+
+--> MAS O PROFESSOR NOS APONTA QUE ISSO ESTÁ ERRADO,
+
+QUE A COISA CORRETA A SE FAZER,
+
+
+
+QUANDO _ UM _ ELEMENT_ 
+
+
+
+
+
+É UM ELEEMNT _ QUE _ AINDA NÃO FOI ADICIONADO AO DOM,
+
+ 
+
+
+
+
+
+ É __ USAR _ UM STATE 
+
+
+
+
+
+
+ ESPECIAL,
+
+
+
+
+
+
+
+
+
+'''STATE ESPECIAL QUE DEVE SER USADO QUANDO UM ELEMENTO AINDA NÃO FOI ADIICONADO AO DOM''',
+
+
+que é o 'VOID'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'void'....
+
+
+
+
+
+
+
+
+
+
+
+
+ok, o professor vai querer usar esse state de 'void'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'void' -----> VOID É UM 'RESERVED STATE NAME', você não pode o utilizar para outras coisas...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VOID É USADO ''''EM CASOS EM QUE __ VOCê __ TEM UM ELEMENT 
+
+
+EM UM STATE DE 'end' QUE __ NÃO ESTAVA PRESENTE NO DOM NO INÍCIO'''.
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ''vocÊ também pode usar void como uma TRANSITION para algum state'''... (?)... '''se vocÊ REMOVE  UM ELEMENTO ,POR EXEMPLO'... 
+
+
+
+
+
+
+
+
+
+
+
+a escrita do professor foi esta:
+
+
+
+
+
+
+
+
+
+
+
+transition('void => in', animate(300))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> mas o professor vai TIRAR aquele 
+
+
+
+
+
+'in' 
+
+
+
+como state value 'end' que triggará essa animation... ele substitui 'in' por '*',
+
+
+
+
+
+
+PELO WILDCARD,
+
+
+
+PQ _ _É IRRELEVANTE O STATE em que esse nosso elemento vai acabar como, o seu value é irrelevante,
+
+
+
+
+
+pq a única coisa relevante é que 
+
+
+
+
+'ELE VAI SAIR DE UM STATE, ESTADO DE 'VOID', PARA ENTÃO FICAR EM UM ESTADO DE 'BEING'''...
+
+(
+
+  é isso que deverá triggar a nossa animation...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+--> isso quer dizer que nosso código anterior estava bem errado, aquele código de 
+
+
+
+
+
+'''
+
+
+
+
+
+
+    trigger('list1', [
+
+
+      state(
+        'in', 
+        style(
+          {
+            'opacity': '1',
+            'transform': 'translateX(0)'
+          }
+        )
+      ),
+
+      state(
+        'out', 
+        style(
+          {
+            'opacity': '0',
+            'transform': 'translateX(-60px)'
+          }
+        )
+      ),
+
+      transition(
+        'in <=> out', 
+        animate(500)
+      )
+
+
+    ])
+
+
+
+
+
+
+
+
+
+
+
+'''''
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO CORRETO FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+trigger(
+  'list1',
+
+
+  [
+
+    state(
+
+    'in',
+
+    style({ 'opacity': '1',
+                'transform': 'translateX(0)'})
+    ),
+
+    transition('void => *', animate(300))
+  ]
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo....
+
+
+
+
+
+meu código de delete é este:
+
+
+
+
+
+
+
+
+    onDeleteItem(index: number) {
+   
+
+
+      this.items.splice(index, 1);
+
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> ok....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> MAS É CLARO QUE ESSA ANIMATION AINDA NÃO ESTÁ FUNCIONANDO...
+
+
+
+
+
+
+
+
+
+  --> deve ser pq ainda não assignei '[@list1]'
+
+
+
+  AO ELEMENTO DE 'list item', lá no dom...
+
+
+
+
+
+
+
+
+
+
+
+
+  pois é,
+
+
+
+  devo fazer assim:
+
+
+
+
+
+
+      <ul class="list-group">
+      <li
+        [@list1]
+        class="list-group-item"
+        (click)="onDeleteItem(index)"
+        *ngFor="let item of items; let index=index"
+      >
+        {{ item }}
+      </li>
+    </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    OK... isso vai assignar essa animation/trigger a esse item...
+
+
+
+
+
+
+
+
+
+
+--> É IMPORTANTE MENCIONAR QUE ESSE TRIGGER __ APENAS __ TOCARÁ_ QUANDO _ ADICIONAMOS 
+
+
+1 ITEM,
+
+justamente 
+
+
+pq 
+
+definimos 
+
+'void => *'...
+
+
+
+
+
+ok... devo addar um item para ver isso....
+
+
+
+
+
+
+
+
+
+
+ok, mas ainda NÃO VI ANIMATION ALGUMA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> QUAL É O PROBLEMA AQUI?
+
+
+
+
+
+
+
+
+----> o problema é que 
+
+
+
+'''NÃO TEMOS NENHUM STARTING STATE''' para esse elemento aí....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E COMO 'VOID' é um built-in state,
+
+
+
+
+
+state especial (pq teoricamente 'não existe'),
+
+
+
+
+
+NÃO HÁ COMO DEFINIR UM 'STARTING STATE' de 
+
+
+opacity 0, por exemplo....
+
+
+
+
+
+
+
+
+
+
+-> EM VEZ DISSO,
+
+
+
+
+
+SOMOS OBRIGADOS A ESCREVER DE FORMA UM POUCO DIFERENTE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> para conseguir APLICAR UMA ANIMATION A UM ELEMENTO QUE PARTE DE 'void' para ser 'being' ( qualquer value de state),
+
+
+
+
+
+
+
+
+devemos editar um pouco o method de 'transition()"
+
+
+
+desse trigger...
+
+
+
+
+
+
+
+
+ATÉ AGORA, ESTAMOS COM NOSSO
+
+
+
+'trigger' assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+trigger(
+  'list1',
+
+  [
+    state('in', style({
+
+      'opacity': '1',
+      'transform': 'translateX(0)'
+    })),
+
+
+    transition('void => *', [
+      animate(300)
+    ])
+  ]
+)
+
+
+
+
+
+
+
+
+
+
+
+
+---> E NOSSO TRIGGER REALMENTE NÃO ESTÁ FUNCIONANDO...
+
+
+
+
+
+
+
+
+
+--> para que funcione, vamos colocar um OUTRO METHOD DE 'style()'
+
+DENTRO DA TRANSITION,
+
+
+antes de 'animate(300)'...
+
+
+
+
+
+
+
+--> NESSE 'style',
+
+definimos um _ INITIAL STYLE,
+
+E ESSE STYLE 
+
+
+SERÁ __ APLICADO PELO ANGULAR2 
+
+bem ao início da animation, ou seja,
+
+
+BEM NO MOMENTO EM QUE ESSE LIST ITEM É 
+
+'APENSO' ao seu DOM... --> DEPOIS DE CONSEGUIR ESSE 'INITIAL STYLE',
+
+
+
+
+esse elemento VAI TRANSICIONAR PARA O 'END STYLE' de 'opacity:1', 
+
+
+
+ao longo de '0.3s' (conforme o animate que escrevemos ali)...
+
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+trigger(
+  'list1',
+
+  [
+    state('in', style({
+
+      'opacity': '1',
+      'transform': 'translateX(0)'
+    })),
+
+
+    transition('void => *', [
+      style({
+
+        'opacity': 0,
+        'transform': 'translateX(10px)'
+      })
+      animate(300)
+    ])
+  ]
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, AGORA SIM, FINALMENTE CONSEGUIMOS UMA ANIMATION:
+
+
+
+
+
+
+
+
+
+
+
+    trigger(
+      'list1',
+  
+      [
+        state(
+        'in',
+        style({ 'opacity': '1',
+                    'transform': 'translateX(0)'})),
+    
+        transition('void => *',  //// ou seja, não interessa se o value é 'in' ou 'out' ou 'whatever', o que interessa é que essa transition APENAS SERÁ TRIGGADA quando 'o elemento estiver em um ESTADO DE VOID (não existir no dom), para então PASSAR A EXISTIR (ter um 'value' de seu state, pode ser 'in', no caso)....
+        
+        [
+
+      style({ ///esse style também é necessário, queremos que nosso elemento fique INSTANTANEAMENTE com esse style, por 1 fração de segundo, quando a animation começar/começa... (e depois transicionamos para o end state, através daquele 'animate(300)', que vai fazer o 'FADE-IN')..
+
+            'opacity': '0',
+            'transform': 'translateX(-20px)'
+      }),
+
+        animate(300)]) 
+      ]
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> nossos items tocam uma 'animaçãozinha' da esquerda para a direita...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... MAS É CLARO QUE ESSA ANIMATION NÃO FUNCIONA PARA O DELETE DE ITEMS... 
+
+
+
+
+para o delete de items, é necessário escrever outra sintaxe...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA O DELETE, VAMOS QUERER QUE O NOSSO ITEM DESLIZE DA ESQUERDA PARA A DIREITA E ENTÃO SUMA DA TELA...
+
+
+
+
+
+
+
+
+--> bem, para isso, acho que posso tentar o CAMINHO INVERSO, para início de conversa...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CONSEGUI FAZER ISSO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+    trigger(
+      'list1',
+  
+      [
+        state(
+        'in',
+        style({ 'opacity': '1',
+                    'transform': 'translateX(0)'})),
+    
+        transition('void => *',  //// ou seja, não interessa se o value é 'in' ou 'out' ou 'whatever', o que interessa é que essa transition APENAS SERÁ TRIGGADA quando 'o elemento estiver em um ESTADO DE VOID (não existir no dom), para então PASSAR A EXISTIR (ter um 'value' de seu state, pode ser 'in', no caso)....
+        
+        [
+
+      style({ ///esse style também é necessário, queremos que nosso elemento fique INSTANTANEAMENTE com esse style, por 1 fração de segundo, quando a animation começar/começa... (e depois transicionamos para o end state, através daquele 'animate(300)', que vai fazer o 'FADE-IN')..
+
+            'opacity': '0',
+            'transform': 'translateX(-20px)'
+      }),
+
+        animate(300)]),
+
+
+        transition(
+          '* => void',
+        [
+
+        animate(
+          300, style(
+            {
+              'opacity': '0',
+              'transform': 'translateX(50px)'
+            }
+          )
+        )
+        ]
+
+        )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        ------>
+
+
+
+
+        ou seja,
+
+        trocamos o state de 'any state' 
+
+
+        para o VOID...
+
+
+
+
+
+
+
+        --> COMO QUERÍAMOS TRANSICIONAR DO 'STATE DE ANIMATION EM QUE JÁ ESTÁ' (ou seja, 'opacity 1' e 'translateX(0)', posição nativa),
+
+
+
+
+        PARA ENTÃO UM STATE DE 'SAIU DA TELA',
+
+
+
+        eu só coloquei um animate de 300,
+
+
+        com 
+
+
+
+
+
+
+        um style sendo aplicado gradualmente de 'translateX(100)'...
+
+
+
+
+
+
+
+
+
+
+
+
+        OK... FUNCIONOU, É ASSIM QUE PODEMOS ANIMAR LISTS 
+
+
+
+
+        NAS NOSSAS PAGES ANGULAR...
+
+
+
+
+
+
+
+
+        ---> A PROPÓSITO:
+
+
+
+
+
+
+ESSA MESMA SINTAXE FUNCIONA COM 
+
+
+'*ngIf' 
+
+e etc,
+
+
+
+
+PQ 
+
+
+
+COM NGIF VOCÊ TAMBÉM TEM 'COISAS NOVAS SENDO ADICIONADAS AO DOM'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> COMO QUEREMOS, AGORA, QUE CERTAS 'PHASES' SEJAM MAIS IMPORTANTES (durem mais )
+
+
+
+
+DO QUE OUTRAS,
+
+
+
+
+deiaxmos de lado aquele array das 'ordens comuns', que tinha um formato como  
+
+
+
+''' [ animate(300) ]'''
+
+
+
+
+
+
+
+
+---> EM VEZ DISSO,
+
+
+
+
+
+
+
+
+O PROFESSOR AGORA VAI USAR UM ARRAY DIFERENTE,
+
+
+ARRAY
+
+
+que começa assim:
+
+
+
+
+
+
+
+
+
+
+
+[
+  animate(1000)
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO, MAS A PARTE DIFERENTE, AQUI, É QUE 
+
+ELE VAI USAR 
+
+
+O ARGUMENTO DE 'keyframes' 
+
+
+
+como segundo argumento, nesse 'animate()' aí..
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+[
+  animate(1000, keyframes())
+]
+
+

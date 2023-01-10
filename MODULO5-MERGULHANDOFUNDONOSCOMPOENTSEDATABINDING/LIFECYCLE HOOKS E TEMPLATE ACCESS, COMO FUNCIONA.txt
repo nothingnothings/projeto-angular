@@ -1,0 +1,816 @@
+
+
+
+
+
+
+
+
+-> ANTES DE CONCLUIRMOS ESSE MÓDULO,
+
+HÁ MAIS 1 COISA QUE DEVEMOS VER,
+
+RELACIONADA A 'HOOKS'...
+
+
+
+
+
+
+
+
+
+
+---> NÓS APRENDEMOS SOBRE 
+
+'@ViewChild',
+
+
+
+QUE PODEMOS USAR LÁ NO 
+
+'Cockpit'
+
+
+PARA 
+
+
+
+__ CONSEGUIR ACESSO
+
+A ALGUM ELEMENTO DE NOSSO DOM:
+
+
+
+
+
+
+
+
+
+
+
+import { Component, ElementRef, OnInit } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+import { Output } from '@angular/core';
+
+import { ViewChild } from '@angular/core';
+
+@Component({
+  selector: 'app-server-cockpit',
+  templateUrl: './server-cockpit.component.html',
+  styleUrls: ['./server-cockpit.component.css'],
+})
+export class ServerCockpitComponent implements OnInit {
+  // newServerContent: string = '';  ///usado com TWOWAYBINDING em 'server-cockpit.element.html', naquele trecho de [(ngModel)]="newServerName", no input field...
+  // newServerName: string = '';  ////trocamos isso por 'LOCAL REFERENCES' lá no template (mas esse approach de twoway databinding também funcionaria..)
+
+
+
+
+
+    @ViewChild('serverContentInput', {static: true}) serverContentInput: ElementRef;   ///usado NO LUGAR DE TWO WAY BINDING (para conseguir ACESSO AO ELEMENTO INPUT referenciado pela local reference de '#serverContent' _ DENTRO DESSE NOSSO CÓDIGO TYPESCRIPT)....
+
+
+
+
+
+    ///o argumento (..., {static: true/false})  É OBRIGATÓRIO __ no angular 8+
+    //ElementRef é sempre o TYPE obtido por '@ViewChild', a partir dos elementos html (sejam eles custom ou não)...
+
+
+    ///'ElementRef' é um ANGULARTYPE....
+
+
+
+
+
+
+  // @Output() serverCreated = new EventEmitter<{ ///sem o uso de ALIAS para o nosso custom event.... (apelido)
+    @Output('serverCreated2') serverCreated = new EventEmitter<{  ////__ COM___ O USO DE ALIAS PARA NOSSO CUSTOM EVENT que definimos aqui (apelido, será de 'serverCreated2')
+    serverName: string;
+    serverContent: string;
+  }>(); ///é o completo inverso de '@Input', pq é usado para TRANSMITIR NOSSA DATA obtida em 1 CHILD COMPONENT ("cockpit") PARA__ OS NOSSOS PARENT COMPONENTS (o component 'app', nesse caso, que precisa da DATA obtida nos inputs de 'cockpit' para CONSEGUIR ADICIONAR UM NOVO SERVER no array de 'servers' que possui)....
+
+  // @Output() blueprintCreated = new EventEmitter<{ ///código SEM O ASSIGN DE ALIAS AO NOSSO 'CUSTOM EVENT'
+  @Output('blueprintCreated2') blueprintCreated = new EventEmitter<{ ////código COM O ASSIGN DE ALIAS (apelido, aquele 'blueprintCreated2') ao nosso CUSTOM EVENT....
+    blueprintName: string;
+    blueprintContent: string;
+  }>(); ///DENTRO DOS '<>' (PQ EVENTEMITTER É UM GENERIC TYPE) você simplesmente define o TIPO DE DATA QUE VOCÊ VAI EMTITR POR MEIO DESSA PROPRIEDADE...
+  ///vamos querer emitir o event type CUSTOM de {}, um objeto contendo a DATA QUE DESEJAMOS USAR lá em 'onServerAdded()'...
+  ////vocÊ deve acrescentar '()' ao final, para _ CHAMAR O CONSTRUCTOR DE 'EventEmitter', que agora ficará armazenado nessa property...
+
+  ///o '@Output()' também é necessário, pois é ele que vai nos deixar 'EMIT' esses events (emittados por meio desses eventEmitters) para FORA_ DE NOSSO COMPONENT 'server-cockpit'...
+
+  ngOnInit(): void {}
+
+  onAddServer(nameInput: HTMLInputElement) {
+    //// this.serverElements.push({ ///este código não funcionará, pois esse array ficou lá em 'app.element.ts'...
+    //  // type: 'server',
+     // // name: this.newServerName,
+    //  // content: this.newServerContent,
+   // // });
+
+    console.log(nameInput)
+    console.log(nameInput.value)
+
+    // this.serverCreated.emit( //approach que usa a LOCAL REFERENCE E O METHOD DE 'onAddServer()' PARA PASSAR ESSA REFERENCE....
+    //   ///usamos esse method que existe DENTRO DE CADA 'eventEmitter'.. --> esse method faz o 'emit' de um NOVO EVENT do type que vocÊ definiu em '<>'....
+
+    //   {
+    //     // serverName: this.newServerName,
+    //     serverName: nameInput.value,
+    //     serverContent: this.newServerContent,
+    //   }
+    // );
+
+    //aqui temos o approach de 'ViewChild()' usado para PASSAR NOSSO ELEMENTO/REFERÊNCIA AO ELEMENTO '<input>' através da LOCAL REFERENCE de '#serverContentInput' lá no html, que foi passada ao nosso código typescript através de 'viewChild'...... 
+      console.log(this.serverContentInput)
+
+
+    this.serverCreated.emit(
+      {
+        serverName: nameInput.value,
+        serverContent: this.serverContentInput.nativeElement.value ///'nativeElement' nos dá o UNDERLYING ELEMENT( que, no caso, é um input element)....
+
+      }
+    )
+
+
+  }
+
+  onAddBlueprint(nameInput: HTMLInputElement) {
+    // this.serverElements.push({
+    //   type: 'blueprint',
+    //   name: this.newServerName,
+    //   content: this.newServerContent,
+    // });
+
+    console.log(nameInput.value)
+
+    // this.blueprintCreated.emit({
+    //   blueprintName: nameInput.value,
+    //   blueprintContent: this.newServerContent,
+    // });
+
+
+    this.blueprintCreated.emit({
+      blueprintName: nameInput.value,
+      blueprintContent: this.serverContentInput.nativeElement.value
+    });
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+    @ViewChild('serverContentInput', {static: true}) serverContentInput: ElementRef;   ///usado NO LUGAR DE TWO WAY BINDING (para conseguir ACESSO AO ELEMENTO INPUT referenciado pela local reference de '#serverContent' _ DENTRO DESSE NOSSO CÓDIGO TYPESCRIPT)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> VAMOS TENTAR FAZER A MESMA COISA EM OUTRO COMPONENT, NO COMPONENT DE 
+
+
+'app-server-item'...
+
+
+
+
+
+
+
+
+--> ISSO PQ DENTRO DESSE COMPONENT NÓS ADICIONAMOS UM MONTE DE LIFECYCLE HOOKS,
+
+
+como podemos observar:
+
+
+
+
+
+
+export class ServerItemComponent implements OnInit, OnChanges, DoCheck, AfterContentInit, AfterContentChecked, AfterViewInit, AfterViewChecked, OnDestroy { //aqui fazemos IMPLEMENT das INTERFACES que pretendemos usar...
+
+
+  // @Input() element: { /////USO DE '@Input' SEM O USO _ DE 'alias' para sua property name.... (element aqui será exatamente '[element]' no seu elemento html de 'app-server-item'...)
+  //   ///por meio de '@Input' fazemos o _ 'EXPOSE' de sua given property '''' AO MUNDO''' (o que quer dizer que podemos PASSAR DATA A ESSA PROPRIEDADE de 'eleemnt' _ DO LADO_ DE FORA de seu element, tipo um react-props, pq VAMOS PODER PASSAR DATA LÁ DE UM 'PARENT COMPONENT' para esse nosso component de 'app-server-item', basta usar aquele PROPERTY BINDING de '[element]="yourValue/object"' ao COMPONENT DE 'app-server-item'....)
+  //   name: string;
+  //   type: string;
+  //   content: string;
+  // } = {
+  //   name: '',
+  //   type: '',
+  //   content: '',
+  // };
+
+    serverNumber: number = 0;
+
+  @Input('srvElement') element: {
+    /////USO DE '@Input' COM O USO _ DE 'alias' para sua property name.... (element, essa propriedade, aqui terá nome de 'element', mas no HTML terá um NOME DISTINTO, como esse exemplo 'srvElement'...) --> isso ocorre por meio do PASS DO PARÂMETRO A 'input'..
+    ///por meio de '@Input' fazemos o _ 'EXPOSE' de sua given property '''' AO MUNDO''' (o que quer dizer que podemos PASSAR DATA A ESSA PROPRIEDADE de 'eleemnt' _ DO LADO_ DE FORA de seu element, tipo um react-props, pq VAMOS PODER PASSAR DATA LÁ DE UM 'PARENT COMPONENT' para esse nosso component de 'app-server-item', basta usar aquele PROPERTY BINDING de '[element]="yourValue/object"' ao COMPONENT DE 'app-server-item'....)
+    name: string;
+    type: string;
+    content: string;
+  } = {
+    name: '',
+    type: '',
+    content: '',
+  };
+
+
+  @Input() name: string;///approach/demo de 
+
+
+
+
+  constructor() {
+    ///é executado ANTES DE ONINIT... (primeiro na ordem)
+    console.log('server-item constructor called');
+  }
+
+  ngOnChanges(changes: SimpleChanges) {  ////este é o ÚNICO HOOK _ QUE RECEBE_ UM PARÂMETRO....
+    ///é executado DEPOIS DE 'constructor' (segundo na ordem), MAS __ ANTES_ DE 'onInit'....
+    console.log('server-item ngOnChanges called', changes);
+  }
+
+  ngOnInit(): void {
+    ///é executado DEPOIS de CONSTRUCTOR (terceiro na ordem)
+
+    console.log('server-item ngOnInit called');
+  }
+
+
+  
+ ngDoCheck() {
+  console.log('server-item ngDoCheck called')
+}
+
+
+
+ngAfterContentInit(): void {
+  console.log('server-item ngAfterContentInit Called')
+}
+
+
+ngAfterContentChecked(): void {
+  console.log('server-item ngAfterContentChecked Called')
+}
+
+
+ngAfterViewInit(): void {
+  console.log('server-item ngAfterviewInit Called')
+}
+
+
+ngAfterViewChecked(): void {
+  console.log('server-item ngAfterviewChecked Called')
+}
+
+ngOnDestroy(): void {
+  console.log('server-item ngOnDestroy called')
+}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DIGAMOS QUE QUEREMOS CONSEGUIR ACESSO 
+
+AO 
+
+ELEMENTO 
+
+
+com class de 'heading'
+
+
+dentro do 'server-item',
+
+
+
+isto aqui:
+
+
+
+
+
+
+
+    <div class="panel panel-default">
+      <!-- <div class="panel-heading">{{ element.name }}</div> -->
+      <div class="panel-heading">{{ name }}</div>   --> ISTO AQUI...
+      <div class="panel-body">
+        <ng-content></ng-content>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ---> PARA CONSEGUIR ACESSO A ESSE 'HEADING' por meio de 'ViewChild',
+
+    o professor coloca uma LOCAL REFERENCE DE nome 'heading'
+
+    nesse component, tipo assim:
+
+
+
+
+
+    
+    <div class="panel panel-default">
+      <!-- <div class="panel-heading">{{ element.name }}</div> -->
+      <div class="panel-heading"
+      #heading
+      >{{ name }}</div>   --> ISTO AQUI...
+      <div class="panel-body">
+        <ng-content></ng-content>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PARA conseguir acesso a esse element DE DENTRO DE NOSSO CÓDIGO TYPESCRIPT,
+
+
+O PROFESSOR 
+DIZ QUE DEVEMOS ESCREVER OUTRO uso de 
+'@ViewChild'...
+
+
+
+
+
+
+
+
+
+
+fica itpo assim:
+
+
+
+
+
+
+
+@ViewChild('heading', {static: true}) header: ElementRef
+
+
+
+
+
+
+
+
+
+
+
+-> OU SEJA, SELECIONAMOS ESSE 
+
+'heading'
+
+
+,
+
+por meio dessa LOCAL REFERENCE,
+
+
+
+e aí armazenamos nessa propriedade de 'header'...
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK.. COM ISSO,
+
+FICAMOS COM ACESSO A ESSE ELEMENT...
+
+
+
+
+
+
+
+(no typescript)..
+
+
+
+
+
+
+- COM ISSO,
+
+
+NÓS 
+ESTAMOS 
+
+'EXPECTING'
+
+
+que NÃO 
+
+
+
+
+
+__ PODEMOS 'USAR' 
+
+
+ESSE 
+
+
+
+
+__ 'ELEMENT' de 'binding'
+
+
+
+
+ANTES DE ALCANÇARMOS O HOOK DE 'ngAfterViewInit()'  (
+
+
+  pq 
+
+
+  esse element TEORICAMENTE __ NÃO EXISTE NO DOM ATÉ LÁ....
+)
+
+
+
+
+
+
+
+
+
+-_> para testar isso,
+
+O PROFESSOR
+
+
+VAI ATÉ O 
+
+'ngOnInit()'
+
+
+
+E __ FAZ UM _ CONSOLE.LOG 
+
+
+
+
+
+de 
+
+'this.header.nativeElement.textContent',
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+export class ServerItemComponent implements OnInit, OnChanges, DoCheck, AfterContentInit, AfterContentChecked, AfterViewInit, AfterViewChecked, OnDestroy { //aqui fazemos IMPLEMENT das INTERFACES que pretendemos usar...
+
+
+  // @Input() element: { /////USO DE '@Input' SEM O USO _ DE 'alias' para sua property name.... (element aqui será exatamente '[element]' no seu elemento html de 'app-server-item'...)
+  //   ///por meio de '@Input' fazemos o _ 'EXPOSE' de sua given property '''' AO MUNDO''' (o que quer dizer que podemos PASSAR DATA A ESSA PROPRIEDADE de 'eleemnt' _ DO LADO_ DE FORA de seu element, tipo um react-props, pq VAMOS PODER PASSAR DATA LÁ DE UM 'PARENT COMPONENT' para esse nosso component de 'app-server-item', basta usar aquele PROPERTY BINDING de '[element]="yourValue/object"' ao COMPONENT DE 'app-server-item'....)
+  //   name: string;
+  //   type: string;
+  //   content: string;
+  // } = {
+  //   name: '',
+  //   type: '',
+  //   content: '',
+  // };
+
+    serverNumber: number = 0;
+
+  @Input('srvElement') element: {
+    /////USO DE '@Input' COM O USO _ DE 'alias' para sua property name.... (element, essa propriedade, aqui terá nome de 'element', mas no HTML terá um NOME DISTINTO, como esse exemplo 'srvElement'...) --> isso ocorre por meio do PASS DO PARÂMETRO A 'input'..
+    ///por meio de '@Input' fazemos o _ 'EXPOSE' de sua given property '''' AO MUNDO''' (o que quer dizer que podemos PASSAR DATA A ESSA PROPRIEDADE de 'eleemnt' _ DO LADO_ DE FORA de seu element, tipo um react-props, pq VAMOS PODER PASSAR DATA LÁ DE UM 'PARENT COMPONENT' para esse nosso component de 'app-server-item', basta usar aquele PROPERTY BINDING de '[element]="yourValue/object"' ao COMPONENT DE 'app-server-item'....)
+    name: string;
+    type: string;
+    content: string;
+  } = {
+    name: '',
+    type: '',
+    content: '',
+  };
+
+
+  @Input() name: string;///approach/demo de 
+
+
+
+
+  constructor() {
+    ///é executado ANTES DE ONINIT... (primeiro na ordem)
+    console.log('server-item constructor called');
+  }
+
+  ngOnChanges(changes: SimpleChanges) {  ////este é o ÚNICO HOOK _ QUE RECEBE_ UM PARÂMETRO....
+    ///é executado DEPOIS DE 'constructor' (segundo na ordem), MAS __ ANTES_ DE 'onInit'....
+    console.log('server-item ngOnChanges called', changes);
+  }
+
+  ngOnInit(): void {
+    ///é executado DEPOIS de CONSTRUCTOR (terceiro na ordem)
+
+    console.log('server-item ngOnInit called');
+    console.log(this.header.nativeElement.textContent)
+  }
+
+
+  
+ ngDoCheck() {
+  console.log('server-item ngDoCheck called')
+}
+
+
+
+ngAfterContentInit(): void {
+  console.log('server-item ngAfterContentInit Called')
+}
+
+
+ngAfterContentChecked(): void {
+  console.log('server-item ngAfterContentChecked Called')
+}
+
+
+ngAfterViewInit(): void {
+  console.log('server-item ngAfterviewInit Called')
+}
+
+
+ngAfterViewChecked(): void {
+  console.log('server-item ngAfterviewChecked Called')
+}
+
+ngOnDestroy(): void {
+  console.log('server-item ngOnDestroy called')
+}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+  ngOnInit(): void {
+    ///é executado DEPOIS de CONSTRUCTOR (terceiro na ordem)
+
+    console.log('server-item ngOnInit called');
+    console.log(this.header.nativeElement.textContent)
+  }
+
+
+
+
+
+
+
+
+
+
+
+  -> ELE ACESSA  ESSA PROPRIEDADE de 'textContnet',
+
+  QUE DEFINITIVAMENTE EXISTE NESSE ELEMENTO, __ SE O ELEMENTO EXISTIR.... ----> 
+
+
+
+
+
+
+
+
+
+
+  MAS SE RECARREGARMOS NOSSO CÓDIGO,
+
+  VEREMOS 
+
+  O 
+  OUTPUT DE 
+
+
+
+   '                 ' 
+
+
+
+   (
+     UMA LINHA EM BRANCO nesse slot aí....
+   )
+
+
+
+
+   -> ISSO ACONTECE/ACONTECEU 
+
+
+
+
+
+
+   __ PQ...? 
+
+
+
+
+
+
+
+
+
+
+
+   --> SE NÓS COPIARMOS ESSE __ EXATO_ CÓDIGO DE 
+
+
+   ''    console.log(this.header.nativeElement.textContent) '''
+
+
+   E COLARMOS LÁ 
+
+   em 
+
+
+
+   'ngAfterViewInit()',
+
+
+   QUE É O METHOD 
+
+
+   QUE É EXECUTADO '''APÓS A VIEW TER SIDO INITIALIZED''' -> se fizermos isso,
+
+
+
+   VEREMOS 
+
+   QUE 
+
+
+   NA SEGUNDA 
+
+
+
+
+
+
+
+
+   'VEZ' VAMOS REALMENTE VER O OUTPUT... -> E ISSO 
+
+
+   JÁ NOS DÁ UMA 
+
+   BOA 
+
+   COMPREENSÃO 
+
+   ENTRE 
+
+
+
+
+
+
+   OS 'POINTS OF TIME'
+
+
+   EM QUE 
+
+   NOSSOS HOOKS RODAM...
+
+
+
+
+
+
+
+   1) __'AFTERVIEWINIT' --> TE DÁ _ ACESSO __ AOS TEMPLATE ELEMENTS EM SI, DE SEU COMPONENT (você pode os utilizar, e utilizar seus values)...
+
+
+
+
+
+
+
+   2) MAS ANTES DE ESSE HOOK SER ALCANÇADO,
+
+
+   VOCÊ _ NÃO PODE FAZER ISSO,
+
+   NÃO PODE FAZER COISAS COMO 'CHECK THE VALUE OF SOME ELEMENT IN YOUR DOM',
+
+   isso 
+
+   pq 
+   o  element AINDA NÃO TERÁ SIDO RENDERIZADO...

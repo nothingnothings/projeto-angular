@@ -1,0 +1,3022 @@
+
+
+
+
+
+
+
+
+
+
+
+
+OK... ANTES DE MAIS NADA, DEVEMOS ENTENDER 
+
+
+
+
+'''' O QUE É UM SERVICE WORKER''''...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DEVEMOS EXAMINAR ESTE ESQUEMA AQUI:
+
+
+
+
+
+
+
+
+
+
+
+
+É O ESQUEMA DE 'COMO NOSSO CÓDIGO JAVASCRIPT GERALMENTE SE COMPORTA'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> bem, o esquema é assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     LOADED JS 
+         I
+------------------------------------------------------------------------ (SINGLE THREAD) 
+I                              I                            I                      
+
+HTML                         HTML                          HTML 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK....ESSENCIALMENTE, O JAVASCRIPT RODA 'EM UMA ÚNICA THREAD'... -> isso quer dizer que 
+
+
+NOSSO WEBAPP,
+
+
+QUE PODE CONSISTIR DE MÚLTIPLAS PAGES (ou, no caso de um angular APP, 'UMA ÚNICA PAGE'),
+
+
+
+
+
+
+
+
+__ ELE FREQUETEMENTE USARÁ JAVASCRIPT (e o angular já usa javascript normalmente, pq ele é javascript)..
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... -> ISSO SIGNIFICA QUE O CÓDIGO ANGULAR, CÓDIGO ANGULAR INTEIRO,
+
+
+
+VAI SEMPRE RODAR 'IN A SINGLE THREAD' de nosso app, a única thread do app....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE _ O JAVASCRIPT __ 'TEM ALGUMAS FEATURES USADAS PARA HANDLAR 
+
+
+ASYNC CODE E NAÕ BLOQUEAR A EXECUTION'...
+
+
+
+
+
+
+
+
+
+
+
+-----> OK... MAS É CLARO QUE 'ASYNC/SYNC', ISSO TUDO AÍ É 'NORMAL JAVASCRIPT'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> CERTO.. MAS O JAVASCRIPT E O BROWSER __NÓS __ OFERECEM 
+
+
+
+
+
+,
+
+
+TAMBÉM,
+
+
+
+
+
+
+
+
+O 'RUN DE UMA THREAD ADICIONAL.'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> O NOME DISSO, 'THREADS ADICIONAIS' à principal,
+
+
+
+
+SÃO CHAMADAS DE 'WEB-WORKERS'... 
+
+
+
+
+
+
+
+
+
+
+
+
+-------> 
+
+
+
+
+
+
+
+WEB-WORKERS --> SÃO O _ GÊNERO...
+
+
+
+
+
+
+
+
+
+--> SERVICE WORKERS --> SÃO UMA __ ESPÉCIE_ ESPECIAL _ 
+
+DE 
+
+
+WEBWORKERS...
+
+
+
+
+
+
+
+
+-> 
+
+
+
+
+
+
+
+OK.
+
+
+
+
+
+
+E OS SERVICE WORKERS/WEBWORKERS 
+
+
+
+
+
+_ _VÃO _ RODAR EM UMA OUTRA THREAD, UMA THREAD ADICIONAL..
+
+
+
+
+
+
+
+
+
+
+
+
+
+OU SEJA, OS WORKERS AINDA USAM 'ONE AND THE SAME THREAD',
+
+
+
+
+MAS UMA _ THREAD DIFERENTE DAQUELA USADA PELO SEU MAIN JAVASCRIPT/ANGULAR CODE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> A PARTE IMPORTANTE DE ENTENDER, AQUI, É QUE 
+
+
+ESSA 'THREAD EXTRA'
+
+
+
+
+É __ KIND OF __ 
+
+
+
+DECOUPLED/DETACHEADA 
+
+
+
+
+
+
+
+DAS SUAS __ PAGES HTML... -->  ISSO QUER DIZER, EM OUTRAS PALAVRAS,
+
+
+
+
+
+
+
+QUE ESSE CÓDIGO _ PODE _ _CONTINUAR _ RODANDO NO BACKGROUND,
+
+
+rodando sempre no background...
+
+
+
+
+
+
+
+
+
+
+
+
+--> UM EXEMPLO DISSO 
+
+
+
+É O USO EM CELULARES, EM MOBILE,
+
+
+EM QUE 
+
+
+
+
+OS WORKERS PODEM CONTINUAR TRABLAHANDO NO BACKGROUND...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ESSA FEATURE AÍ, DE 'TRABALHO NO BACKGROUND',
+
+
+É _ UMA _ FEATURE 
+
+
+
+QUE BROWSERS MOBILE TIPICAMENTE OFERECEM...
+
+
+
+
+
+
+(
+
+    ISSO PODE CONTINUAR RODANDO,
+
+
+    E PODE FAZER VÁRIAS COISAS AVANÇADAS,
+
+    COMO 'RECEIVE PUSH NOTIFICATIONS',
+
+
+    e outras coisas...
+
+)
+
+
+
+
+
+
+(
+
+
+    SE QUISERMOS APRENDER MAIS SOBRE ESSE TIPO DE COISA, O PROFESSOR TEM UM CURSO DE 
+
+    'PROGRESSIVE WEBAPP COURSE'...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS HÁ MAIS UMA COISA CRUCIAL QUE 1 'SERVICE WORKER' PODE FAZER... --------> 
+
+
+
+
+
+
+
+
+ELE PODE 'MANAGE TODAS SUAS DIFERENTES PAGES' (SE VOCë TIVER MÚLTIPLAS PAGES, MÚLTIPLOS HTMLs, APP TRADICIONAL),
+
+
+
+
+
+
+ou então 
+
+
+
+SUA 'SINGLE PAGE',
+
+
+
+
+se vocÊ 
+
+
+
+ESTIVER 
+
+
+
+COM UM PROJETO 'SPA' (como angular)...
+
+
+
+
+
+
+(
+    MANAGE ALL PAGES OF GIVEN SCOPE, e.g. ALL PAGES OF A DOMAIN...
+)
+
+
+
+
+
+
+--> E AO FAZER O MANAGE DE SUAS DIFERENTES PAGES,
+
+
+
+
+
+O SERVICE WORKER PODE 
+
+
+
+
+
+'LISTEN TO REQUESTS GOING OUT OF YOUR WEB PAGE'.... ,
+
+
+
+
+
+OU SEJA,
+
+'LISTEN TO OUTGOING NETWORK REQUESTS'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+EXEMPLO:
+
+
+
+
+
+
+VOCê ESTÁ 'FETCHEANDO OS ASSETS DE SUA WEBPAGE',
+
+
+
+como o CSS CODE, A FONT, O JAVASCRIPT, OU DATA DE UMA API... ->  
+
+
+
+
+
+
+
+O QUE O SERVICE WORKER VAI FAZER/PODE FAZER É 
+
+
+
+'CATCH' ESSES OUTGOING REQUESTS 
+
+
+
+
+E ENTÃO _ FAZER ALGO COM ELES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS O QUE ELE PODERIA FAZER, COM ESSES OUTGOING REQUESTS? (pq, no final das contas, ainda estamos SEM COMUNICAÇÃO COM O BACKEND)...
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR EXPLICA QUE A PRIMEIRA COISA QUE ELE PODE FAZER É 
+
+
+1) 'CACHE THE RESPONSES IN A SPECIAL CACHE STORAGE' (ué, mas como ele vai cachear as responses, se não recebeu nenhuma response/não está conectado À internet?)
+
+
+
+
+
+
+
+
+
+
+2) PODE, TAMBÉM, A PARTIR DESSAS 'CACHED RESPONSES',
+
+
+
+__RETORNAR__ ESSAS RESPONSES DE VOLTA à SUA PAGE,
+
+TUDO PARA QUE 
+
+
+
+
+_ O SEU APP _ TAMBEM FUNCIONE SEM A PRESENÇA DE INTERNET..
+
+
+(
+
+    É CLARO QUE ISSO __ SÓ _ _SERÁ POSSÍVEL __ 
+    SE 
+
+    '''EXISTIR UMA VERSÃO CACHEADA DISPONÍVEL NO SEU APP, NO MOMENTO EM QUE HOUVE O DISCONNECT''''...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK.... É ISSO QUE O 'SERVICE WORKER' FAZ.... -----> 
+
+
+
+
+
+
+
+
+
+
+ELE PODE SER VISTO COMO 'UM PROXY ENTRE SEU FRONTEND APP 
+
+E O HTTP REQUEST QUE ENVIAREMOS/ENVIAMOS AO BACKEND''
+
+
+
+
+
+
+
+
+-> ELE 'PROXIES' O REQUEST EM SI (o que quer dizer que ele _ APANHA _ O REQUEST_ e então FAZ ALGO COM ELE,
+
+O MANIPULA),
+
+
+
+
+
+
+E AÍ 
+
+
+
+
+__ ELE __ TAMBÉM DECIDE SE 'WANTS TO LET THE REQUEST LEAVE THE APP' ou
+
+ 'DOESNT WANT IT TO LEAVE THE APP'... (cria um BLOCK ao exit do request)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ---> 'CACHE STORAGE'...
+
+
+
+
+-> se há uma versão 'CACHED' DO SEU APP,
+
+você pode retornar versões 'pré-fabricadas' ao seu frontend/user...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-->  
+
+
+
+OS SERVICE WORKERS PODEM SER CONSIDERADOS COMO __ PROXIES__ --> PROXIES PQ ELE 
+
+
+
+'CATCHA' ESSE REQUEST, FAZ ALGO COM ELE, E 
+
+
+AÍ PODE PERMITIR/PROIBIR ESSE REQUEST DE SAIR DO SEU APP.......
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SERVICE WORKERS --> A CONFIGURAÇÃO E O 'WRITE FROM SCRATCH' DOS SERVICE WORKERS 
+
+
+
+
+É ALGO QUE VOCê PODE FAZER, SIM, 
+
+ 
+
+ E _ ALGO __ QUE O PROFESSOR ENSINA NO 'PROGRESSIVE WEB COURSE' (em que ensina sobre push notifications e etc)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> MAS NESSE VÍDEO, O PROFESSOR QUER FOCAR EM 'COMO O ANGUOLAR PODE FACILMENTE ADICIONAR UM SERVICE WORKER 
+
+ AO NOSSO ANGULAR APP'...
+
+
+
+
+
+
+
+
+
+
+
+
+ -----> PQ PARECE QUE HÁ UMA PACKAGE ESPECIAL QUE PODEMOS INSTALAR...
+
+
+
+
+
+
+
+
+
+ --> É IMPORTANTE QUE VOCÊ ESTEJA RODANDO A VERSÃO MAIS ATUAL DO CLI PARA O SEU PROJECT...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> AÍ VOCÊ RODA 'ng add'....
+
+
+
+
+
+
+
+
+
+
+ já fizemos isso no passado, o 'ng add' ... --> NG ADD É USADO __ PARA __ 
+
+
+
+
+ INSTALAR COISAS QUE SÃO 'UM POUCO MAIS DO QUE TPPs(third partyt packages)',
+
+
+
+
+ PQ TAMBÉM ENVOLVEM O ANGULAR EM SI... (são mais do que apenas o 'npm library')...
+
+
+
+
+
+
+
+
+
+ ->  ISSO ADICIONA UMA FUNCIONALIDADE AO SEU APP....- -> MAS APENAS ALGUMAS FUNCIONALIDADES PODEM SER ADICIONADAS,
+
+
+ PQ ISSO ESSENCIALMENTE EXECUTA UM COMANDO QUE 
+
+
+
+ ___TEM __ QUE _ SER DEFINIDO __ PELA PACKAGE QUE VOCÊ 
+
+
+
+ ESTÁ TARGETTANDO..
+
+
+
+
+ (
+
+
+    É POR ISSO QUE NEM TODA TPL suporta essa feature... poucas 
+
+    TPPs suportam...
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> MAS HÁ ESSA TPL QUE SUPORTA O ANGULAR, QUE É O 
+
+
+ 'PWA'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ PARA ADICIONAR O PWA AO SEU PROJECT ANGULAR,
+
+
+ vocÊ deve rodar 
+
+
+
+
+
+
+
+
+
+
+
+
+ ng add @angular/pwa...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ------> SE VOCê FIZER ISSO,
+
+
+ VOCê VAI ACTUALLY _ CONFIGURAR __ SEU EXISTING PROJECT,
+
+ VAI FORÇÁ-LO A USAR O  
+
+
+
+
+ '''ANGULAR SERVICE WORKER PACKAGE''',
+
+
+
+
+ e aí 
+
+
+
+
+
+
+ COMEÇAR __ COM UM 'PRE-CONFIGURED SERVICE WORKER'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> CERTO, ESSE PACKAGE JÁ FAZ UM MONTE DE COISAS PARA NÓS...
+
+
+
+
+
+
+
+
+
+-------> OK... 
+
+
+
+E ESSA PACKAGE JÁ COMEÇA FAZENDO UM MONTE DE COISAS, COMO:
+
+
+
+
+
+
+
+1) LÁ NO 'index.html',
+
+ele adiciona uma tag de '<noscript>',
+
+
+
+QUE DIRÁ
+
+
+
+'' Please enable javascript to continue using this application'',
+
+
+
+
+que serve de aviso, pq 
+
+REALMENTE PRECISAMOS DO JAVASCRIPT PARA 
+
+
+
+
+
+
+USAR O NOSSO APP, TANTO OFFLINE COMO ONLINE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> FICA TIPO ASSIM:
+
+
+
+
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>NovoProjetoServiceWorkersVersaoOnline</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald:300,700">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#1976d2">
+</head>
+<body>
+  <app-root></app-root>
+  <noscript>Please enable JavaScript to continue using this application.</noscript>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+---> OUTRA COISA INTERESSANTE É O ARQUIVO 'manifest.json'..
+
+
+
+
+
+
+
+
+
+--> se você tem esse arquivo configurado adequadamente,
+
+
+
+
+com este código aqui:
+
+
+
+
+
+
+
+{
+  "name": "novoProjetoServiceWorkersVersaoOnline",
+  "short_name": "novoProjetoServiceWorkersVersaoOnline",
+  "theme_color": "#1976d2",
+  "background_color": "#fafafa",
+  "display": "standalone",
+  "scope": "./",
+  "start_url": "./",
+  "icons": [
+    {
+      "src": "assets/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+----> se você tiver esse arquivo configurado adequadamente, você fica com um 'LAUNCHER ICOn',
+
+
+
+que aparece até mesmo no seu mobile phone (
+    vocÊ/o user pode 
+
+    até mesmo salvar esse arquivo/app 
+
+
+    na homescreen,
+
+    e aí 
+
+
+    começar com esse ícone... --> vocÊ pode definir o ícone..
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--. MAS O MAIS INTERESSANTE É O MODULE DE 
+
+
+'app.module.ts'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O CÓDIGO DESSE ARQUIVO, ATUALMENTE, É ESTE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
+
+import { AppComponent } from './app.component';
+import { PostComponent } from './post/post.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
+
+@NgModule({
+  declarations: [AppComponent, PostComponent],
+  imports: [BrowserModule, HttpClientModule, ServiceWorkerModule.register('ngsw-worker.js', {
+  enabled: environment.production,
+  // Register the ServiceWorker as soon as the application is stable
+  // or after 30 seconds (whichever comes first).
+  registrationStrategy: 'registerWhenStable:30000'
+})],
+  providers: [],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK...  VOCê VERÁ QUE O 'ServiceWorkerModule'
+
+
+
+TERÁ SIDO IMPORTADO..
+
+
+
+
+
+
+
+
+
+
+
+--> E ESSE É REALMENTE UM PACKAGE OFICIAL DO FRAMEWORK ANGULAR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E ESSE MODULE 'FAZ EXATAMETNE O QUE ELE DIZ':
+
+
+
+
+
+
+ELE __ REGISTRA UM 'SERVICE WORKER',
+
+
+
+QUE SERÁ 
+
+
+JUSTAMENTE ESSE 
+
+'PROXY'
+
+
+QUE VAI _ CATCHEAR__ OUTGOING REQUEST__ 
+
+
+
+E ENTAÕ FAZER ALGO COM ESSES REQUESTS (bloquear, modificar, deixar passar)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> VAMOS APRENDER A CONFIGURAR O QUE ESSES SERVICE WORKERS FAZEM COM NOSSOS REQUESTS,
+
+NESSE VÍDEO EM SI...
+
+
+
+
+
+
+
+
+---------> NÓS USAMOS/ADICIONAMOS/REGISTRAMOS UM 
+
+
+SERVICE WORKER ATRAVÉS DO METHOD DE '.register()',
+
+
+comoo visto aqui:
+
+
+
+
+
+
+
+  imports: [BrowserModule, HttpClientModule, ServiceWorkerModule.register('ngsw-worker.js', {
+  enabled: environment.production,
+  // Register the ServiceWorker as soon as the application is stable
+  // or after 30 seconds (whichever comes first).
+  registrationStrategy: 'registerWhenStable:30000'
+})],
+
+
+
+
+
+
+
+
+
+
+
+---> COMO PRIMEIRO ARGUMENTO,
+
+
+ESTAMOS TARGETTANDO O ARQUIVO 
+
+'ngsw-worker.js'..
+
+
+
+
+
+
+
+
+
+----> OK... --> E O INTERESSANTE É QUE ESSA FILE NÃO SERÁ ENCONTRADA NO FILE SYSTEM DO SEU PROJETO.... ----->
+
+
+
+
+A RAZÃO DISSO É QUE ESSE ARQUIVO 'ngsw-worker.js'
+
+
+
+VAI SER _ AUTO-GENERATED
+ 
+
+
+
+ PELO 
+
+
+
+ SEU PROJECT DURANTE O 'BUILD PROCESS',
+
+
+
+
+ E ELE 
+
+
+
+
+
+ ENTÃO RESIDIRÁ NO FOLDER DE 'dist',
+
+
+
+
+
+
+ E __ VAI_ __ SEGURAr__ SEUS 
+
+
+
+ 'SERVICE WORKERS',
+
+
+ QUE VÃO CONTER UM MONTE DE FUNCIONALIDADE...
+
+
+
+
+
+
+
+
+
+
+
+
+ VAI CONTER UMA FUNCIONALIDADE QUE:
+
+
+
+
+ 1) VOCÊ NÃO PRECISA ESCREVER POR CONTA PRÓPRIA,
+
+
+
+
+
+ 2) VOCê NÃO VAI QEURER ESCREVER POR CONTA PRÓPRIA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> OK... --> e aqui, NO NOSSO PROJETO, O SEGUNDO PARÂMETRO 
+
+
+
+
+ ESTIPULA QUE 
+
+
+ ESSE SERVICE WORKER DEVERÁ SER ADICIOANDO _ SOMENTE SE VOCê ESTÁ 
+
+
+ 'BUILDING FOR PRODUCTION'...
+
+
+
+
+
+
+
+ EX:
+
+
+
+   imports: [BrowserModule, HttpClientModule, ServiceWorkerModule.register('ngsw-worker.js', {
+  enabled: environment.production,
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------->   OK....... 
+
+
+
+
+
+JÁ NO FOLDER DE 'ASSETS',
+
+
+
+constatamos que 
+
+
+
+
+
+_ ALGUNS ICONS FORAM ADICIONADOS PARA AQUELE ARQUIVO DE 'manifest.json'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+ -> JÁ NO NOSSO FOLDER 'ROOT',
+
+ EM 'package.json',
+
+
+ 
+
+ ALGO MUDOU:
+
+
+
+
+
+
+
+* A PACAKGE DE 'ANGULAR/PWA' FOI ADICIONADA ---> ESSA PACKAGE INCLUI A PACKAGE DE 'ANGULAR SERVICE WORKER'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PWA -> 'PROGRESSIVE WEB APP'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ANGULAR SERVICE WORKER PACKAGE...
+
+
+
+
+
+
+
+
+
+
+
+--> TAMBÉM ADQUIRIMOS O ARQUIVO
+
+
+
+
+
+
+'''ngsw-config.json''' -> É NESSE ARQUIVO QUE CONFIGURAMOS O 'SERVICE WORKER' que acaba sendo gerado...
+
+
+
+
+
+
+
+
+
+
+
+--> logo analisaremos algumas de suas options...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> JÁ O 'angular.json',
+
+
+
+
+QUE MANAGEIA TODO O NOSSO CLI PROJECT,
+
+FOI AJUSTADO UM POUCO:
+
+
+
+
+
+
+
+
+
+LÁ, ENCONTRAMOS UMA OPTION DE 'serviceWorker": true...
+
+
+
+
+
+
+
+
+
+--> ISSO ESTÁ COMO TRUE NA 'PRODUCTION BUILD'--> ISSO É 
+
+
+
+NECESSÁRIO/SERÁ NECESSÁRIO 
+
+
+JUSTAMENTE PQ 
+
+1 
+
+SERVICE WORKER 
+
+
+SEMPRE VAI 
+
+
+
+'CACHE' 
+
+
+CERTOS RECURSOS... ----> E PARA __ ASSEGURAR_ QUE A ''''MAIS RECENTE BUILD'''
+
+
+
+UPDATE O SERVICE WORKER TAMBÉM, ESSES RECURSOS VÃO CONTER __ UM HASH.... --> E ESSE HASH 
+
+
+
+AÍ __ TAMBÉM __ sERÁ 
+
+INJETADO NO SERVICE WORKER (cada service worker tem uma hash própria da build que o criou),
+
+
+
+
+E É EXATAMENTE POR ISSO QUE 
+
+
+PRECISAMOS 
+
+
+FAZER O 'BUILD PROCESS'
+
+
+FICAR __ AWARE_ _ 
+
+
+
+DO FATO __ DE QUE 'PRECISAMOS DE UM SERVICE WORKER'...
+
+
+
+
+
+
+
+
+ok, o código fica/ficou assim:
+
+
+
+
+
+
+
+
+
+
+
+
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "novoProjetoServiceWorkersVersaoOnline": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/novo-projeto-service-workers-versao-online",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.app.json",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              "src/manifest.webmanifest"
+            ],
+            "styles": [
+              "src/styles.css"
+            ],
+            "scripts": [],
+            "serviceWorker": true,
+            "ngswConfigPath": "ngsw-config.json"
+          },
+          "configurations": {
+            "production": {
+              "serviceWorker": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "novoProjetoServiceWorkersVersaoOnline:build:production"
+            },
+            "development": {
+              "browserTarget": "novoProjetoServiceWorkersVersaoOnline:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "novoProjetoServiceWorkersVersaoOnline:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "src/test.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.spec.json",
+            "karmaConfig": "karma.conf.js",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              "src/manifest.webmanifest"
+            ],
+            "styles": [
+              "src/styles.css"
+            ],
+            "scripts": []
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... AGORA DEVEMOS SIMPLESMENTE VER TUDO ISSO EM AÇÃO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VAMOS CRIAR UMA PRODUCTION BUILD,
+
+ATRAVÉS DO CÓDIGO DE 
+
+'ng build --prod'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO VAI BUNDLAR E OPTIMIZAR TODO NOSSO APP,
+
+USAR 
+
+'AHEAD OF TIME COMPILATION',
+
+
+ 
+
+ E AÍ VAI CUSPIR TODO NOSSO ANGULAR APP NO FOLDER DE 'dist',
+
+
+
+ EM QUE VEREMOS O SERVICE WORKER...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> ok..
+
+
+
+
+
+
+  
+
+  EM 'dist',
+
+
+
+
+  ENCONTRAMOS _ 
+
+  AQUELES ARQUIVOS DE 
+
+
+
+
+
+
+
+  'ngsw-worker.js', enfiado NO MEIO DOS ARQUIVOS DE NOSSO PROJECT...
+
+
+
+
+  E ETC... --> 
+
+
+
+
+
+
+
+  ESSE ARQUIVO TERÁ SIDO CRIADO __ JUSTAMENTE __ PQ 
+
+
+ESCREVEMOS/DEFINIMOS AQUELE CÓDIGO no 'app.module.ts':
+
+
+
+
+
+ServiceWorkerModule.register('ngsw-worker.js', { ///EIS O CÓDIGO EM QUESTÃO.
+  enabled: environment.production,
+  registrationStrategy: 'registerWhenStable:30000'
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... ISSO QUER DIZER QUE ESSE NEGÓCIO REALMENTE CONSEGUE SER ENCONTRADO NO FOLDER DE 'dist'...
+
+
+
+
+
+
+ 
+ O CÓDIGO DO SERVICE WORKER É BEM EXTENSO...
+
+
+
+
+
+
+
+ É EXTENSO PQ É PRE-GENERATED PARA NÓS,
+
+
+
+
+
+ E __ PQ FAZ TODO O CACHING E TAL PARA NÓS,
+
+
+ DE UMA FORMA BEM EFICIENTE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> OK... MAS PARA VER O QUE O SERVICE WORKER FAZ,
+
+ PRECISAMOS __ DE UM __ WEBSERVER... --> PRECISAMOS DE UM HOSTING SERVICE 
+
+
+
+ QUE HOSTEIE O NOSSO APP....
+
+
+
+
+
+
+
+
+
+
+ -> PRECISAMOS DE UM HOSTING SERVICE PARA QUE NOSSO APP CONSIGA SER HOSTEADO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> SE TENTAMOS TESTAR NOSSO SERVICE WORKER COM 'ng serve',
+
+
+ ISSO NÕA FUNCIONARÁ... 
+
+ (
+
+    você não verá o service worker em ação corretamente,
+
+
+PQ ISSO VAI 
+
+APENAS 'BUILD IT IN MEMORY'....
+
+
+
+
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> É POR ISSO QUE PRECISAMOS 
+
+
+
+
+ ''''INSTALAR UM LIGHTWEIGHT NODE SERVER''',
+
+ provisório,
+
+ apenas para testar 
+
+
+
+ esse service worker...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> OK... --> para instalar esse LIGHTWEIGHT NODE SERVER,
+
+
+
+ você deve 
+
+
+
+
+ rodar 
+
+
+
+
+
+
+
+
+
+
+ npm install -g http-server 
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> ISSO TE DEIXA LANÇAR UM SIMPLE NODE-BASED SERVER,
+
+
+
+QUE VAI RODAR _ O FOLDER__ QUE VOCÊ ESPECIFICOU...
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA RODAR ISSO, APENAS ESCREVA 
+
+
+'http-server' no terminal.
+
+
+
+
+
+
+
+
+
+OK, FUNCIONOU:
+
+
+
+Starting up http-server, serving ./
+
+http-server version: 14.1.1
+
+http-server settings:      
+CORS: disabled
+Cache: 3600 seconds
+Connection Timeout: 120 seconds
+Directory Listings: visible
+AutoIndex: visible
+Serve GZIP Files: false
+Serve Brotli Files: false
+Default File Extension: none
+
+Available on:
+  http://192.168.56.1:8080
+  http://192.168.0.12:8080
+  http://192.168.193.41:8080
+  http://127.0.0.1:8080
+Hit CTRL-C to stop the server
+
+[2022-07-01T17:05:00.567Z]  "GET /" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"
+(node:10736) [DEP0066] DeprecationWarning: OutgoingMessage.prototype._headers is deprecated
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[2022-07-01T17:05:00.590Z]  "GET /styles.ef46db3751d8e999.css" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"
+[2022-07-01T17:05:00.593Z]  "GET /runtime.24f71c6936239429.js" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"
+[2022-07-01T17:05:00.594Z]  "GET /polyfills.b8d7d5a645ac35ce.js" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"
+[2022-07-01T17:05:00.595Z]  "GET /main.4890922219b61a78.js" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"
+[2022-07-01T17:05:00.636Z]  "GET /favicon.ico" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"
+
+
+
+
+
+
+
+
+----------------------------------
+
+
+
+
+
+
+
+certo... FUNCIONOU.
+
+
+
+
+
+
+
+BASTA NAVEGAR ATÉ O FOLDER DE 'dist' 
+
+E ENTÃO 
+
+rodar 
+
+
+'http-server' no terminal..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> aí é só visitar esse endereço no browser,
+
+
+
+para ver nosso app...
+
+
+
+
+
+
+
+
+
+
+--> AÍ RECARREGUE 
+
+
+
+
+O APP, PARA VER SE 
+
+
+O SERVICE WORKER ESTÁ FUNCIONANDO...
+
+
+
+
+
+
+
+
+
+
+
+--> VÁ NAS DEVTOOLS, coloque em 'aplicativo', e depois em 'service workers'...
+
+
+
+
+
+
+
+
+
+
+
+--> certo... mas o problema é que NÃO ESTOU VENDO SERVICE WORKER ALGUM..
+
+
+
+
+
+
+
+
+--> alguma coisa está errada...
+
+
+
+
+
+
+
+
+
+
+
+
+--> FECHEI A PÁGINA E ABRI DE NOVO,
+
+
+E AGORA O SERVICE WORKER ESTÁ FUNCIONANDO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> agora vemos o service worker...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> A PARTE INTERESSANTE, AGORA, É QUE 
+
+SE RECARREGAMOS NOSSA PAGE, MESMO ESTANDO OFFLINE,
+
+
+
+
+
+veremos:
+
+
+
+
+
+AINDA VEREMOS O SERVICE WORKER,
+
+
+
+MAS NOSSA PAGE TERÁ 'QUEBRADO':
+
+
+
+
+
+Esta página não está funcionando127.0.0.1 demorou muito para responder.
+HTTP ERROR 504
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESTAMOS OFFLINE,
+
+
+
+MAS O SERVICE WORKER CONTINUA FUNCIONANDO..
+
+
+
+
+
+
+
+
+
+
+
+
+-> mas a versão do professor está um pouco diferente (pq ele não ganha responses de error, todas são responses de success, com código 200)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> mas as coisas não estão certas... --> era pq eu havia definido como 'offline' as interações de nosso app, no devtools... agora que tirei essa opçõa,
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> MAS AINDA ESTOU COM PROBLEMAS, AINDA HÁ REQUESTS COM 'FAIL'..
+
+
+
+
+
+
+
+
+
+
+
+OK, MAS AGORA ESTOU COM O MESMO OUTPUT... (
+
+    quando ficamos 'OFFLINE',
+
+
+
+
+    NOSSO SERVICE WORKER TENTA FAZER COISAS, MAS FALHA... essa é a tela do professor, e a minha....
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PROFESSOR APONTA:
+
+
+
+
+
+
+
+''''ESSES REQUESTS QUE DÃO COMO __FAILED___ SÃO UM BUG/FEATURE INTENCIONAL DO CHROME,
+
+PQ __ ELES_ APARENTAM SAIR DO NOSSO APP _ MESMO _ QUANDO ESTAMOS OFFLINE'''.... (
+
+mesmo com o nosso SIMULATE DE 'offline mode'...
+
+)
+
+
+
+
+
+
+
+
+
+
+
+--> esses api requests vão 'go through', no chrome, AINDA QUE SIMULEMOS 
+
+
+
+O OFFLINE MODE...
+
+
+
+
+
+
+
+
+
+-> MAS O MAIS INTERESSANTE, AQUI, É QUE '''NÃO VEREMOS UMA PAGE DE ERROR'',
+
+
+
+
+e sim uma _ PAGE EM BRANCO...
+
+
+
+
+
+
+
+
+
+-> ou seja,
+
+
+DEIXAMOS DE RECEBER UM ERRO DE 'SEM CONEXÃO à INTERNET'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... -> É CLARO QUE 
+
+
+
+
+NA VERSÃO 'REAL' DE NOSSO APP,
+
+
+
+
+NÃO VERÍAMOS ESSA WHITE PAGEE,
+
+
+
+
+E SIM VERÍAMOS 
+
+
+
+
+
+
+
+___ ''''O CONTEÚDO QUE DEFINIMOS EM NOSSA PAGE''',
+
+
+
+
+
+
+
+ou seja,
+
+
+
+TUDO _ QUE HAVIA SIDO HARDCODADO NO NOSSO APP... ->  isso quer dizer que 
+
+
+
+
+O __ CONTEÚDO _ DINÂMICO FICARÁ 'MISSING',
+
+
+
+
+
+
+
+
+
+MAS__ TODO O 'HARDCODED CONTENT'
+
+
+ 
+ FICARÁ NO LUGAR, NÃO SERÁ REMOVIDO... -----> 
+
+
+
+
+
+
+
+
+
+
+
+
+ isso pq se NÓS EXAMINARMOS A TAB DE 'NETWORK',
+
+
+
+ VEREMOS QUE AINDA ESTAMOS CARREGANDO:
+
+
+
+
+
+
+
+
+ 1) A MAIN PAGE 
+
+
+ 2) OS STYLES (mas não a fonte em si)
+
+
+
+
+
+ 3) OS ARQUIVOS JAVASCRIPT ....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> TUDO ISSO TERÁ SIDO CARREGAOD __ POR __ MEIO DOS SERVICE WORKERS,
+
+
+ E AS 
+
+ 'FAILING THINGS' SERÃO:
+
+
+
+
+
+
+ 1) AS 'FONTS' 
+
+
+
+ 2) NOSSOS POSTS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> O PROFESSOR COLOCA O 'ONLINE MODE' de volta,
+
+ e aí tira do offline mode no 'aplicativo'...
+
+
+
+
+
+
+
+
+
+
+ -> O PROFESSOR RECARREGA A PAG, E TUDO VOLTA AO NORMAL...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> MAS AGORA ELE QUER MUDAR ALGO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> ELE VAI ATÉ 'app.component.html',
+
+
+
+ E AÍ ADICIONA UMA TAG DE 
+
+
+
+ '<h1>My Posts</h1>'...
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+<h1>My Posts!</h1>
+<app-post *ngFor="let post of posts" [content]="post.body" [title]="post.title">
+</app-post>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> AÍ ELE RODA O CÓDIGO DE 
+
+
+
+ 'ng build' -->  ISSO PQ _ 
+
+
+
+
+ ESSA ALTERAÇÃO REALMENTE MUDOU O NOSSO APP,
+
+
+
+
+ E PRECISAMOS ATUALIZAR O APP E O SERVICE WORKER...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> O PROFESSOR ADICIONOU ESSE 'h1'
+
+
+ PARA VER 
+
+
+  
+
+  SE AS COISAS 'HARD CODADAS'
+
+
+ACABAM _ CACHEADAS _ 
+
+
+
+pelo service worker... (como o professor havia mencionado)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... FUNCIONOU, AGORA VEMOS APENAS 'MY POSTS'
+
+
+
+NA NOSSA PÁGINA...
+
+
+(quando estamos offline/falsamente offline)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> OK... MAS AINDA QUE 'My Posts', esse tag <h1>, AINDA APAREÇA NA NOSSA PAGE (por ser hardcodado),
+
+
+
+
+
+
+
+
+
+
+O REAL PROBLEMA AQUI É QUE 
+
+
+OS NOSSOS 'posts'
+
+
+
+E 
+
+
+A 'font' (nossas FONTS importadas por urls no nosso index.html)
+
+
+
+
+
+
+
+AINDA ESTARÃO 'MISSING'...
+
+
+
+
+
+
+
+
+
+
+--> QUEREMOS MUDAR ISSO,
+
+
+
+
+
+
+
+
+
+___ QUEREMOS CONSEGUIR '''' A MESMA PAGE QUE TÍNHAMOS ONLINE, MAS OFFLINE''',
+
+
+
+
+COM A INCLUSÃO DESSAS 'FONTS' E DESSE FETCH DOS 'POSTS' (Que é realizado, na forma online, com a comunicação com a API de 'json.typicode.com')
+
+
+
+
+,
+
+
+
+
+
+
+
+OU SEJA,
+
+
+QUEREMOS CONSEGUIR ESSA 'DYNAMIC DATA',
+
+
+
+
+
+
+
+
+
+
+E PARA ISSO,
+
+PRECISAMOS 
+
+
+
+
+
+
+__ MUDAr__ A CONFIGURAÇÃO DE NOSSO SERVICE WORKER,
+
+
+
+
+
+
+
+
+ALGO QUE DEVE SER FEITO LÁ NO ARQUIVO DE 'ngsw-config.json', no root de nosso projeto..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> NESSE ARQUIVO, PODEMOS DEFINIR O COMPORTAMENTO DO SERVICE WORKER NO NOSSO APP...

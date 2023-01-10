@@ -1,0 +1,807 @@
+
+
+
+
+
+
+
+
+--> CRIANDO UM SERVICE DE 'LOGGING'..
+
+
+
+
+
+
+-----> O PROFESSOR QUER COMEÇAR PELO BUILD DE NOSSO PRIMIERO SERVICE,
+
+
+
+
+
+
+
+
+
+
+
+
+SERÁ UM SERVICE QUE 
+
+
+TOMARÁ 
+
+ESSA TASK DE 
+
+
+'''
+
+
+
+
+
+
+console.log('A server status changed, new status: ' + accountStatus)
+
+
+
+
+
+
+
+
+
+'' '
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, MAS A PERGUNTA É:
+
+
+'COMO CRIAMOS UM NOVO SERVICE,
+
+
+COMO ESSE SERVICE DEVE SE PARECER, NO ANGULAR?'''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+BEM, O CREATE DE UM SERVICE É SUPER SIMPLES..
+
+
+
+
+
+
+
+
+
+----> PRIMEIRAMENTE,
+
+PRECISAMOS 
+
+
+ESCOLHER UM 
+
+'LUGAR ADEQUADO'.....
+
+
+
+
+
+
+
+
+
+
+
+
+--> COMO NOSSO SERVICE SEMPRE VAI FAZER ''''ALGUMA TAREFA GENÉRICA''',
+
+
+
+
+o proefssor coloca esse negócio dentro do folder de 
+
+
+
+
+'app',
+
+
+com um nome de 
+
+
+'logging'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--. O PROFESSOR DEFINE UM NOME DE 
+
+
+'logging.service.ts',
+
+
+
+PARA QUE 
+
+SIGAMOS A CONVENTION de deixar nossos file names BEM CLAROS, claros acerca do que são...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR 
+
+CHAMA ESSA CLASS/SERVICE 
+de 
+
+
+
+
+
+
+
+export class LoggingService....
+
+
+
+
+
+
+
+
+
+
+
+
+
+export class LoggingService {
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO.... ANTERIORMENTE,
+
+
+
+
+TINHAMOS DESCOBERTO QUE:
+
+
+
+
+
+
+
+1) uma CLASS vira um COMPONENT quando adicionamos o decorator de '@Component({})' em sua frente...
+
+
+
+
+
+
+
+
+2) uma CLASS VIRA UMA DIRECTIVE QUANDO ADICIONAMOS O DECORATOR DE '@Directive({})'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK.... MAS 
+
+
+
+
+
+
+E O SERVICE... POR ACASO EXISTE UM 
+
+'@Service'? 
+
+
+
+
+
+
+
+
+
+
+...... NÃO.... __ERRADO__, NÓS NÃO FAZEMOS ISSO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> UM SERVICE, LÁ NO ANGULAR,
+
+
+É APENAS _UMA CLASS TYPESCRIPT COMUM,
+
+
+como 
+
+
+
+
+
+
+
+
+''
+
+export class LoggingService'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------> ISSO JÁ PODE SER USADO COMO UM SERVICE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DENTRO DESSA CLASS,
+
+
+
+o professor DECIDE CRIAR UM 'HELPER METHOD'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> o method será de 
+
+
+
+
+
+
+
+
+
+
+
+logToConsole(message)
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+export class LoggingService {  ///não existe um decorator de '@Service()', contrariamente a directives e components (que exigem @Directive e @Component, respectivamente)
+
+
+
+
+
+
+
+
+    logToConsole(message: string) {
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> MAS como SABEMOS QUE ESSE NEGÓCIO VAI 'APENAS CONSOLE.LOGGAR 
+
+
+A CHANGE DE ACCOUNT STATUS',
+
+
+
+
+
+
+
+
+
+O PROFESSOR DECIDE TROCAR O NOME,
+
+COLOCAR 
+
+
+
+'logStatusChange()'..
+
+
+
+
+
+
+
+
+
+
+
+Ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+export class LoggingService {  ///não existe um decorator de '@Service()', contrariamente a directives e components (que exigem @Directive e @Component, respectivamente)
+
+    logStatusChange(newStatus: string) {   //será disparado sempre que o STATE de 1 account for alterado...
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK.... COM ISSO, O PROFESSOR COPIA O CÓDIGO DE CONSOLE QUE TINHA EM 1 DOS COMPONENTS,
+
+PARA QUE ESSE CÓDIGO FIQUE ASSIM:
+
+
+
+
+
+
+
+
+export class LoggingService {  ///não existe um decorator de '@Service()', contrariamente a directives e components (que exigem @Directive e @Component, respectivamente)
+
+    logStatusChange(newStatus: string) {   //será disparado sempre que o STATE de 1 account for alterado...
+
+
+        console.log('A server status has changed, new status: ' + newStatus);
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+export class LoggingService {
+  ///não existe um decorator de '@Service()', contrariamente a directives e components (que exigem @Directive e @Component, respectivamente)
+
+  logStatusChange(newStatus: string) {
+    //será disparado sempre que o STATE de 1 account for alterado...
+    console.log('A server status has changed, new status: ' + newStatus);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO, O PROFESSOR NOS DIZ QUE ACABAMOS 'CENTRALIZANDO' esse código de console.logging,
+
+
+
+
+
+E QUE 
+
+AGORA TEMOS QUE USAR ESSE SERVICE NOS NOSSOS COMPONENTS,
+
+
+PROVAVELMENTE POR MEIO DE UMA SINTAXE ESPECIAL...
+
+
+
+
+
+
+
+
+
+
+
+
+--> vamos usar esse service EM TODOS OS LOCAIS EM QUE PREVIAMENTE ESTÁVAMOS CHAMANDO 'console.log'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS COMO USO ISSO EM 'new-account', por exemplo? devo importar esse 'service'?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> ___ VOCê __ NÃO PODE IMPORTAR NORMALMENTE, E USAR COMO UMA CLASS NORMAL... -->
+
+
+
+a maneira ERRADA 
+
+de usar um service é assim:
+
+
+
+
+
+
+
+
+
+import { LoggingService } from '../logging.service;'
+
+
+
+
+
+
+
+export class NewAccountComponent {
+
+
+
+
+
+
+
+
+    const service = new LoggingService();
+    service.logStatusChange(accountStatus);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> NÃO É ASSIM QUE USAMOS UM SERVICE NO ANGULAR...
+
+
+
+
+
+
+
+
+
+-> A RAZÃO DE ISSO __ ESTAR SUPER ERRADO_ SE TORANRÁ CLARA 
+
+
+GRADUALMENTE, NESSE MÓDULO....
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS O QUE INTERESSA É QUE O ANGULAR 'PROVIDENCIA UMA MANEIRA MT MAIS FÁICL DE 
+
+
+GANHAR ACESSO AOS SEUS """SERVICES""",
+
+
+
+
+
+
+
+
+
+E É POR ISSO QUE __ NAÕ DEVEMOS CRIAR AS INSTANCES 
+
+
+
+DOS SERVICEs__ MANUALMENTE...
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit, Output } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+// import { LoggingService } from '../logging.service';   //services NÃO DEVEM SER IMPORTADOS E USADOS ASSIM (com instanciação da class... isso é errado)..
+
+@Component({
+  selector: 'app-new-account',
+  templateUrl: './new-account.component.html',
+  styleUrls: ['./new-account.component.css']
+})
+export class NewAccountComponent implements OnInit {
+
+  @Output() accountAdded = new EventEmitter<{name: string, status: string}>();
+
+  onCreateAccount(accountName: string, accountStatus: string) {
+    this.accountAdded.emit(
+      {
+        name: accountName,
+        status: accountStatus
+      }
+    );
+    // console.log('A server status changed, new status: ' + accountStatus);
+
+    // const service = new LoggingService();  /////MANEIRA ERRADA DE USAR UM 'SERVICE'... -> você NÃO DEVE CRIAR AS INSTANCES MANNUALMENTE, DIZ O PROFESSOR..
+    // service.logStatusChange(accountStatus);
+
+    
+
+  }
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NOS LIVRAMOS DESSE CÓDIGO RUIM,
+
+
+E AÍ __ NO PRÓXIMO VÍDEO __ VAMOS _ APRENDER SOBRE __ QUAL_  FERRAMENTA 
+
+
+O ANGULAR NOS OEFERECE 
+
+
+
+PARA 'GET ACCESS' aos nossos services...

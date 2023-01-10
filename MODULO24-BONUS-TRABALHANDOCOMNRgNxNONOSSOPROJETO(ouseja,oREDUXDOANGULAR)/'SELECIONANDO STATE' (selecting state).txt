@@ -1,0 +1,3088 @@
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK... COM O STORE MODULE REGISTRADO LÁ NO 'APP.MODULE.TS',
+
+
+
+
+COM ESTE CÓDIGO AQUI:
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+// import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
+
+import { AppComponent } from './app.component';
+
+import { HeaderComponent } from './headerComponent/headerComponent.app';
+
+import { RecipeBookService } from './recipeBook.service';
+import { ShoppingListService } from './shoppingList.service';
+import { GenericErrorPageComponent } from './generic-error-page/generic-error-page.component';
+import { AppRoutingModule } from './app-routing.module';
+import { HomePageComponent } from './home-page/home-page.component';
+
+
+import { HttpInterceptorService } from 'src/app/httpInterceptor.service';
+
+import { SharedModule } from './shared/shared.module';
+import { LoggingService } from './logging.service';
+import { StoreModule } from '@ngrx/store';
+import { shoppingListReducer } from './ShoppingList/store/shoppingList.reducer';
+// import { AuthModule } from './auth/auth.module';   ///LAZILY LOADED EM 'app.routing-module.ts'...
+// import { AlertDynamicComponent } from './shared/alertVersaoNgIf (bem mais pratica)/alert.component';
+
+
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+
+    GenericErrorPageComponent,
+    HomePageComponent,
+
+  ],
+  imports: [
+    // AuthModule, ///outsourcing em essa 'feature module'...  ////depois removemos esse import daqui, pq passamos a fazer LAZYLOADING desse module, com a ajuda de 'app-routing.module.ts'...
+    
+    
+    StoreModule.forRoot( ////é o 'CENTRAL STORE' de nosso app, implementado com NGRX...  //// aqui, precisamos dizer 'QUAIS REDUCERS VÃO SER USADOS NO NOSSO APP, QUE VÃO COMPOR NOSSA CENTRAL STORE, essencialmente'...
+      { ///1 identifier para cada 'PARTE/REDUCER' do seu app, cada parte do state do seu app....
+         shoppingList: shoppingListReducer         
+      }
+    ),
+
+    BrowserModule,
+ 
+    AppRoutingModule,  //módulo de routing, customizado por nós...
+    HttpClientModule,
+ 
+    SharedModule   ///outsourcing...
+
+  ],
+
+  providers: [RecipeBookService, ShoppingListService, LoggingService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpInterceptorService,
+      multi: true
+    }
+  
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E COM ELE 
+
+
+ESTANDO CONECTADO AO NOSSO 'SHOPPING LIST REDUCER',
+
+ 
+
+
+
+
+
+
+
+
+ finalmente o 'ngrx'
+
+ COMEÇA 
+
+ A 
+
+ 'GET GOING'...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> AGORA É HORA _ DE USARMOS __ O STATE MANAGEADO PELO NGRX E PELO REDUCER...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> O PROFESSOR QUER COMEÇAR A USAR 
+
+ ESSE 
+
+
+ STATE 
+
+
+
+ LÁ 
+
+
+
+ NO COMPONENT DE 'ShoppingList.component.ts'...
+
+
+
+
+
+
+
+
+
+
+ --> NESSE COMPONENT,
+
+
+ ATÉ AGORA,
+
+
+
+ ESTIVEMOS COM ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { LoggingService } from '../logging.service';
+
+import { Ingredient } from '../shared/ingredient.model';
+import { ShoppingListService } from '../shoppingList.service';
+
+@Component({
+  selector: 'app-shopping-list',
+  templateUrl: './shoppingList.component.html',
+  styleUrls: ['./shoppingList.component.css'],
+})
+export class ShoppingListComponent implements OnInit, OnDestroy {
+  ingredients: Ingredient[] = [];
+
+  private ingredientsChangedSubscription: Subscription;
+
+  constructor(
+    private shoppingListService: ShoppingListService,
+    private loggingService: LoggingService
+  ) {}
+
+  ngOnInit(): void {
+    this.loggingService.printLog('Hello from ShopListComponent!');
+
+    this.ingredients = this.shoppingListService.getIngredients();
+
+    this.ingredientsChangedSubscription =
+      this.shoppingListService.ingredientsChanged.subscribe((ingredients) => {
+        this.ingredients = ingredients;
+      });
+  }
+
+  onShoplistItemClick(index: number) {
+    this.shoppingListService.loadShopListItem(index);
+  }
+
+  ngOnDestroy(): void {
+    this.ingredientsChangedSubscription.unsubscribe();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ATÉ AGORA, NO CASO,
+
+DEPENDEMOS DO SERVICE DE 
+
+
+
+'loggingService'
+
+
+E 
+
+
+DE 
+
+'shoppingListService'..
+
+
+
+
+
+
+
+
+
+
+
+
+------> É CLARO QUE O LOG SERVICE NÃO IMPORTA,
+
+
+mas o deixamos ali..
+
+
+
+
+
+
+
+
+-> MAS VAMOS INJETAR UM '''''SERVICE '''''
+
+
+
+
+
+
+
+NOVO,
+
+
+
+QUE NÃO SERÁ 
+
+BEM UM SERVICE,
+
+
+
+
+E SIM 
+
+
+
+
+________________ O NOSSO APPLICATION STORE__________...
+
+
+
+
+
+
+
+
+
+
+(
+
+
+
+    se você 
+
+
+    recordar bem,
+
+lembrará que o professor 
+
+
+MENCIONOU QUE 
+
+
+
+DEVEMOS PREFERIR O 'NGRX' NO LUGAR DO REDUX 
+
+
+PQ _ ELE __ NOS DÁ __ ALGUMAS FEATURES 
+
+EXTRAS,
+
+ALÉM DE MAIOR INTEGRAÇÃO COM O ANGULAR....
+
+
+
+
+-------> quando ele tinha dito ''maior integração'', ele queria justamente 
+
+
+dizer isso,
+
+
+
+um 'INJECTABLE STORE',
+
+
+
+que podemos SIMPLESMENTE INJETAR 
+
+
+NO CONSTRUCTOR DE NOSSOS COMPONENTS PARA 
+AÍ 
+
+FACILMENTE 
+
+ACESSARMOS O 'GLOBAL APPLICATION STATE'...
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... É POR ISSO QUE O CÓDIGO VAI FICAR ASSIM:
+
+
+
+
+
+
+
+
+
+
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { LoggingService } from '../logging.service';
+
+import { Ingredient } from '../shared/ingredient.model';
+import { ShoppingListService } from '../shoppingList.service';
+
+@Component({
+  selector: 'app-shopping-list',
+  templateUrl: './shoppingList.component.html',
+  styleUrls: ['./shoppingList.component.css'],
+})
+export class ShoppingListComponent implements OnInit, OnDestroy {
+  ingredients: Ingredient[] = [];
+
+  private ingredientsChangedSubscription: Subscription;
+
+  constructor(
+    private shoppingListService: ShoppingListService,
+    private loggingService: LoggingService,
+    private store: 
+  ) {}
+
+  ngOnInit(): void {
+    this.loggingService.printLog('Hello from ShopListComponent!');
+
+    this.ingredients = this.shoppingListService.getIngredients();
+
+    this.ingredientsChangedSubscription =
+      this.shoppingListService.ingredientsChanged.subscribe((ingredients) => {
+        this.ingredients = ingredients;
+      });
+  }
+
+  onShoplistItemClick(index: number) {
+    this.shoppingListService.loadShopListItem(index);
+  }
+
+  ngOnDestroy(): void {
+    this.ingredientsChangedSubscription.unsubscribe();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+Ex:
+
+
+
+
+
+
+  constructor(
+    private shoppingListService: ShoppingListService,
+    private loggingService: LoggingService,
+    private store: 
+  ) {}
+
+
+
+
+
+
+
+
+
+
+
+
+----- É CLARO QUE 
+
+O TYPE AQUI É MT IMPORTANTE PARA ESSA INJECTION, E ELE DEVERÁ SER 'Store'...
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnDestroy, OnInit } from '@angular/core';
+
+
+
+import { Store } from '@ngrx/store';  ///É ASSIM QUE ACESSAMOS NOSSO 'GLOBAL STORE' do app, do NGRX ( e nós vamos INJETAR ESSE TYPE/store, como se fosse um service, para aí conseguirmos acessar o STATE da shoppingList, dos Ingredient, nesse nosso component de 'shoppingList'...)
+
+
+
+
+import { Subscription } from 'rxjs';
+import { LoggingService } from '../logging.service';
+import { Ingredient } from '../shared/ingredient.model';
+import { ShoppingListService } from '../shoppingList.service';
+
+@Component({
+  selector: 'app-shopping-list',
+  templateUrl: './shoppingList.component.html',
+  styleUrls: ['./shoppingList.component.css'],
+})
+export class ShoppingListComponent implements OnInit, OnDestroy {
+  ingredients: Ingredient[] = [];
+
+  private ingredientsChangedSubscription: Subscription;
+
+  constructor(
+    private shoppingListService: ShoppingListService,
+    private loggingService: LoggingService,
+    private store: Store
+  ) {}
+
+  ngOnInit(): void {
+    this.loggingService.printLog('Hello from ShopListComponent!');
+
+    this.ingredients = this.shoppingListService.getIngredients();
+
+    this.ingredientsChangedSubscription =
+      this.shoppingListService.ingredientsChanged.subscribe((ingredients) => {
+        this.ingredients = ingredients;
+      });
+  }
+
+  onShoplistItemClick(index: number) {
+    this.shoppingListService.loadShopListItem(index);
+  }
+
+  ngOnDestroy(): void {
+    this.ingredientsChangedSubscription.unsubscribe();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK.... EU CONSEGUI IMPORTAR O STORE...
+
+
+
+
+
+
+
+
+
+-> ENTRETANTO, NO CASO DO PROFESSOR,
+
+
+ISSO AINDA DEU UM ERRO,
+
+
+PQ 
+
+O 
+
+
+STORE 
+
+É UM 
+
+'GENERIC TYPE',
+
+
+
+e para que 
+
+
+
+ELE NÃO DÊ ERRO,
+
+
+
+
+VOCÊ PRECISA 'DESCRIBE'
+
+
+
+
+
+_ QUAL __ É A APARÊNCIA DO _ 
+
+SEU 'APPLICATION STORE'...
+
+
+
+(
+
+
+
+
+
+
+    e a estrutura desse store será PRECISAMENTE 
+
+
+    A ESTRUTURA 
+
+
+    QUE VOCÊ DEFINIU LÁ EM 
+
+
+    'StoreModule.forRoot()',
+
+    LÁ 
+
+
+    NO 
+
+
+
+    app.module.ts,
+
+
+
+    QUE TEM ESTE CÓDIGO, NO NOSSO CASO:
+
+
+
+
+        
+    StoreModule.forRoot(
+      {
+         shoppingList: shoppingListReducer         
+      }
+    ),
+
+
+
+
+
+
+
+--> esse é o nosso 'actionReducerMap',
+
+
+É UM _ OBJECT__ EM QUE 
+
+TEMOS 
+O FORMATO 
+
+'keyDeNossaEscolha --> reducerResponsável''
+
+
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+--> OK.... ESSA É A ESTRUTURA DE NOSSO STORE, SIM... ---> 
+
+
+
+
+
+
+ISSO PQ 
+
+
+
+NESSE APP  SEU STORE SEMPRE SERÁ COMPOSTO DE MÚLTIPLAS PARTES DIFERENTES,
+
+
+
+
+
+E MAIS TARDE TEREMOS UMA ÁREA DE 'SHOPPING LIST'
+
+
+
+
+E UMA ÁREA DE 'RECIPES',
+
+
+
+E TUDO ISSO SERÁ 'MERGED TOGETHER'
+
+
+
+EM 1 ÚNICA STORE (
+
+
+    exatamente como no react....
+)
+
+
+
+
+
+
+
+
+
+
+
+
+----> E É EXATAMENTE POR ISSO 
+
+
+
+QUE nosso 'type' de 'Store'
+
+
+
+É UMA _ DESCRIPTION_  DAS DIFERENTES PARTES QUE TEMOS NO STORE...
+
+
+
+
+
+
+
+
+
+---> na versão do código do professor,
+
+ele foi forçado a escrever um OBJECT JAVASCRIPT DESCREVENDO 
+
+
+
+A ESTRUTURA DO STORE, 
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+  constructor(
+    private shoppingListService: ShoppingListService,
+    private loggingService: LoggingService,
+    private store: Store<{shoppingList: }>
+  ) {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -------> CERTO... MAS O VALUE DESSA 'shoppingList',
+
+
+
+
+  que ficará nessa KEY DE 'shoppingList',
+
+
+
+  NÃO SERÁ PROPRIAMENTE O 'REDUCER',
+
+
+
+
+  E SIM 
+
+
+  SERÁ ___  A 'DATA QUE SERÁ YIELDED PELO REDUCER'....
+
+
+
+
+
+
+
+
+
+
+
+
+  -> ok, e QUAL DATA É YIELDADA PELO NOSSO REDUCER DE 'shoppingListReducer',
+
+
+  no final das contas?
+
+
+
+
+
+
+  --> bem, para saber qual é, basta ler o 'initialState'
+
+
+  do seu arquivo 'reducer',
+
+
+  E AÍ SIMPLESMENTE IMITAR OS TYPES QUE ESTÃO LÁ..
+
+
+  ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  let ingredients: Ingredient[] = [];
+
+const initialState = {
+  ////queremos ter esse 'INITIALSTATE' de nosso app, que antes existia lá no SERVICE DE 'shoppingList.service.ts', CONSIDERADO NESSE NOSSO REDUCER/SISTEMA DO CENTRAL STORE...
+
+  ingredients: ingredients,
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER QUE A DATA RETORNADA pelo 'reducer de shoppingList'
+
+
+
+
+sempre 
+
+será 
+
+
+
+
+um OBJECT 
+
+
+
+com uma propriedade 'ingredients', que no seu interior vai SEGURAR UM ARRAY DE Objects 'Ingredient'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+  constructor(
+    private shoppingListService: ShoppingListService,
+    private loggingService: LoggingService,
+    private store: Store<
+    {shoppingList: {ingredients: Ingredient[]}     }           ///dentro da marcação do generic type, descreva o FORMATO DA DATA QUE SERÁ RETORNADA POR SEU REDUCER (cheque o 'initialState' do reducer, e os types das propriedades)...
+    
+    >               
+  ) {}
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+
+    private store: Store<
+    {shoppingList: {ingredients: Ingredient[]}     }           
+    
+    >               
+
+
+
+
+
+
+
+
+
+
+
+    -> OK, ISSO QUER DIZER QUE A NOSSA 'ÁREA'/reducer 
+
+
+
+
+
+    de 'ShoppingListReducer'
+
+
+
+    sempre vai retornar data com 
+    o 
+
+
+    FORMATO 
+
+    {
+        ingredients: [new Ingredient(), etc, etc]
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --. COM ESSE STORE INJETADO,
+
+
+
+
+    PODEMOS O UTILIZAR NESSE COMPONENT...
+
+
+
+
+
+
+
+
+
+
+
+
+    ---> até agora, nesse component, sempre usamos o service de 'ShoppingListService'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> SEMPRE O UTILIZAMOS PARA FAZER 'GET' DE NOSSOS INGREDIENTS,
+
+    E TAMBÉM PARA 
+
+
+    'REACT A CHANGES NOS NOSSOS INGREDIENTS'..
+
+
+
+
+
+
+
+
+
+    -----> É POR ISSO QUE O CÓDIGO ESTAVA ASSIM:
+
+
+
+
+
+
+
+      ngOnInit(): void {
+
+    this.ingredients = this.shoppingListService.getIngredients();
+
+    this.ingredientsChangedSubscription =
+      this.shoppingListService.ingredientsChanged.subscribe((ingredients) => {
+        this.ingredients = ingredients;
+      });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> BEM, MAS AGORA O QUE O PROFESSOR VAI QUERER FAZER É 
+
+
+
+
+
+
+
+
+
+
+
+
+
+  _ USAR __ 
+
+  O 'STORE',
+
+
+  por meio de 
+
+
+
+  '''''
+
+  this.store.xxxx
+
+
+'''
+
+
+
+
+
+----> E esse código é tão útil que 
+
+ELE 
+
+VAI NOS PERMITIR __ TIRAR_ AQUELAS 2 LINHAS DE CÓDIGO (tanto o '.getIngredients()' como a SUBSCRIPTION por changes nos nossos ingredients )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> PARA CONSEGUIRMOS ACESSAR OS 'INGREDIENTS' pertinentes a nós,
+
+
+
+DEVEMOS 
+
+
+
+chamar 
+
+
+
+'this.store'
+
+
+
+E AÍ 
+
+
+
+
+O METHOD DE '.select()'...
+
+
+
+
+
+
+
+--> ESSE METHOD DE SELECT É UM METHOD DISPONIBILIZADO DENTRO 
+
+
+DO 'SERVICE' do store...
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ngOnInit(): void {
+
+    this.store.select()
+  
+  
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  -------> ESSE METHOD __ TE DEIXA__ ESCOLHER UM 'SLICE' do seu state,
+
+
+  o 
+
+  SLICE QUE 
+
+  TE 
+
+
+  INTERESSA..
+
+
+
+
+
+
+
+
+
+
+
+
+  --> ESSE SLICE,
+
+
+  NO CASO,
+
+  É IDENTIFICADO __ POR UMA STRING..
+
+
+
+
+
+
+
+  --> vemos 'shoppingList'... ----> O TYPESCRIPT SABE DISSO __ JUSTAMENTE __ 
+
+
+
+
+
+  PQ NÓS ESCREVEMOS AQUELA TYPE DEFINITION ALI EM CIMA:
+
+
+  
+    private store: Store<{shoppingList: {ingredients: Ingredient[]} }  >               
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-->  EX:
+
+
+
+
+
+
+
+
+
+
+  ngOnInit(): void {
+
+    this.store.select('shoppingList')
+  
+  
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OK... COM ISSO, ESTAMOS SELECIONANDO  A 'SLICE' 
+
+
+
+  DE NOSSO 
+
+
+  OBJECT 'state'
+
+
+
+
+
+que é a slice do 'shoppingList'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> COM 'select',
+
+
+VOCÊ _ SEMPRE PRECISA COMUNICAR AO NGRX 
+
+
+'em que parte do store estamos interessados, agora''...
+
+
+
+
+
+
+
+
+
+
+
+----> oK.... SELECIONAMOS A 'shoppingList'..
+
+
+
+
+
+
+
+
+
+--> E O BIZARRO, AQUI,
+
+
+É QUE 
+
+
+
+
+ESSE CALL DE 'this.store.select('xxxx')'
+
+
+
+VAI __ ACTUALLY _ 
+
+
+
+NOS _ rETORNAR UM _ _OBSERVABLE...
+
+
+
+
+
+
+
+
+
+-> o que quer dizer que podemos chamar 'SUBSCRIBE' em cima dele...
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> O PROFESSOR DECIDE DEFINIR 'this.ingredients' (os ingredients do component 'ShoppingListComponent')
+
+
+
+
+ COMO SENDO EQUIVALENTE 
+
+
+
+ A 
+
+ this.store.select('shoppingList')
+
+
+
+
+
+ ,
+
+
+ TIPO ASSIM:
+
+
+
+
+
+
+   ngOnInit(): void {
+
+   this.ingredients = this.store.select('shoppingList');
+  
+  
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS É CLARO QUE O TYPESCRIPT NÃO GOSTOU NEM UM POUCO DISSO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, MAS PQ ELE NÃO GOSTOU DISSO?
+
+
+
+
+
+
+-> não gostou pq 
+
+'ingredients'  É UMA __ PROPRIEDADE de 'ShoppingListComponent'
+
+
+
+
+QUE É DO  TIPO 
+
+'Ingredient[]',
+
+
+
+
+
+e quando tentamos definir o value como sendo de 'this.store.select('shoppingList')',
+
+
+
+
+estamos tentando definir um value de 
+
+
+{
+    ingredients: [{ingredient}, {ingredient2}]
+},
+
+
+
+
+
+
+
+
+
+E ISSO __ NÃO É PERMITIDO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS O QUE PODEMOS FAZER, AGORA, PARA RESOLVER ESSE PROBLEMA?
+
+
+
+
+
+
+--> provavelmente usar um __ OPERATOR _ 
+
+
+de observables _ PARA _ CONVERTER_ A DATA EM UM FORMATO ADEQUADO,
+
+PARA AÍ CONSEGUIR ENCAIXAR ESSE 'state da shoppingList'
+
+
+
+
+
+DENTRO 
+
+
+DESSA PROPRIEDADE DE 'this.ingredients'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok, mas aqui o professor faz mais loucuras....
+
+
+
+
+
+
+
+
+
+----> parece que eu ERREI...
+
+
+
+
+
+
+
+
+--> o que o professor vai querer fazer, aqui,
+
+
+
+
+
+
+é TROCAR A PROPRIEDADE de 
+
+
+
+
+'ingredients: ingredient[]',
+
+
+
+
+
+vai querer 
+
+
+QUE ELA PARE DE SER UM ARRAY DE TIPO 'Ingredient',
+
+
+
+E QUE 
+
+PASSE 
+
+
+A 
+
+SER 
+
+
+
+
+UM __ OBSERVABLE__ (ele vai fazer 'HOLD' de um OBSERVABLE, que será justamente 
+
+
+essa '''''coisa'''' que vamos obter por meio de 'this.store.select('shoppingList)',
+
+
+
+que é JUSTAMENTE UM OBSERVABLE...
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+export class ShoppingListComponent implements OnInit, OnDestroy {
+  // ingredients: Ingredient[] = [];  ///tiramos, pq agora vamos depender do OBSERVABLE do 'ngrx', observable que é disparado QUANDO OCORRER UMA TROCA DE STATE NO STATE DE 'shoppingList'...
+
+  ingredients: Observable<>
+
+  private ingredientsChangedSubscription: Subscription;
+
+  constructor(
+    private shoppingListService: ShoppingListService,
+    private loggingService: LoggingService,
+    private store: Store<
+    {shoppingList: {ingredients: Ingredient[]}     }           ///dentro da marcação do generic type, descreva o FORMATO DA DATA QUE SERÁ RETORNADA POR SEU REDUCER (cheque o 'initialState' do reducer, e os types das propriedades)...
+    
+    >               
+  ) {}
+
+  ngOnInit(): void {
+
+   this.ingredients = this.store.select('shoppingList')
+  
+  
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -----> OK.... COMO ESSE OBSERVABLE É UM 'GENERIC TYPE',
+
+
+  VAMOS QUERER DEFFINIR QUE 
+
+  NO FINAL DAS CONTAS 
+
+
+
+  ELE VAI 'YIELD'
+   
+
+   um OBJECT _ QUE _ TERÁ UM ARRAY DE INGREDIENTS em uma propriedade de 'ingredients',
+
+
+   TIPO ASSIM:
+
+
+
+
+
+
+
+   ingredients: Observable<{ingredients: Ingredient[]}>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   OK... COM ISSO NÃO VOU PRECISAR DAQUELES OPERATORS, 
+
+
+
+   PQ BASTA DEFINIR 
+
+
+   O 
+
+
+
+   TYPE da propriedade 'ingredients' como sendo esse observable aí,
+
+   e então 
+
+
+   definir que o VALUE FINAL DE 'ingredients'
+
+
+   será 
+
+
+
+tipo isto:
+
+
+
+
+
+
+ingredients: {ingredients: [new Ingredient(), new Ingredient() ]}
+
+
+
+
+
+
+
+
+
+
+E NÓS __ SABEMOS__ QUE VAMOS RECEBER 
+
+DATA NESSE FORMATO DE 
+
+
+
+'' {ingredients: [new Ingredient(), new Ingredient() ]}  ''
+
+PQ 
+
+
+
+
+FOI ASSIM QUE DEFINIMOS LÁ NO STORE,
+
+
+em 
+
+'''''''
+
+
+
+   private store: Store<
+    {shoppingList: {ingredients: Ingredient[]}     }          
+    
+    >        
+
+
+''''
+
+
+
+
+
+ok... 
+
+
+
+
+
+
+
+
+ISSO SIGNIFICA QUE O 'CÓDIGO COMPLETO' fica assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+export class ShoppingListComponent implements OnInit, OnDestroy {
+  // ingredients: Ingredient[] = [];  ///tiramos, pq agora vamos depender do OBSERVABLE do 'ngrx', observable que é disparado QUANDO OCORRER UMA TROCA DE STATE NO STATE DE 'shoppingList'...
+
+  ingredients: Observable<{ingredients: Ingredient[]}>  ///no final das contas, vai retornar um OBJECT com uma propriedade 'ingredients', que vai segurar um ARRAY DE 'Ingredient'..
+
+  private ingredientsChangedSubscription: Subscription;
+
+  constructor(
+    private shoppingListService: ShoppingListService,
+    private loggingService: LoggingService,
+    private store: Store<
+    {shoppingList: {ingredients: Ingredient[]}     }           ///dentro da marcação do generic type, descreva o FORMATO DA DATA QUE SERÁ RETORNADA POR SEU REDUCER (cheque o 'initialState' do reducer, e os types das propriedades)...
+    
+    >               
+  ) {}
+
+  ngOnInit(): void {
+
+   this.ingredients = this.store.select('shoppingList')
+  
+  
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  --> ISSO QUER DIZER, EM OUTRAS PALAVRAS,
+
+
+
+  QUE PODEMOS NOS LIVRAR TOTALMENTE 
+
+
+  DAQUELAS 2 LINHAS QUE USAVAM O SERVICE DE 'shoppingListService'...
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> TAMBÉM PODEMOS TIRAR AQUELE CÓDIGO QUE LIMPAVA A SUBSCRIPTION, LÁ NO 'ngOnDestroy',
+
+
+  PQ NÃO USAREMOS MAIS ESSA SUBSCRIPTION AÍ...
+
+
+
+
+
+  ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  import { Component, OnDestroy, OnInit } from '@angular/core';
+
+
+
+import { Store } from '@ngrx/store';  ///É ASSIM QUE ACESSAMOS NOSSO 'GLOBAL STORE' do app, do NGRX ( e nós vamos INJETAR ESSE TYPE/store, como se fosse um service, para aí conseguirmos acessar o STATE da shoppingList, dos Ingredient, nesse nosso component de 'shoppingList'...)
+
+
+
+
+import {  Observable, Subscription } from 'rxjs';
+import { LoggingService } from '../logging.service';
+import { Ingredient } from '../shared/ingredient.model';
+import { ShoppingListService } from '../shoppingList.service';
+
+@Component({
+  selector: 'app-shopping-list',
+  templateUrl: './shoppingList.component.html',
+  styleUrls: ['./shoppingList.component.css'],
+})
+export class ShoppingListComponent implements OnInit {
+  // ingredients: Ingredient[] = [];  ///tiramos, pq agora vamos depender do OBSERVABLE do 'ngrx', observable que é disparado QUANDO OCORRER UMA TROCA DE STATE NO STATE DE 'shoppingList'...
+
+  ingredients: Observable<{ingredients: Ingredient[]}>  ///no final das contas, vai retornar um OBJECT com uma propriedade 'ingredients', que vai segurar um ARRAY DE 'Ingredient'..
+
+  constructor(
+    private shoppingListService: ShoppingListService,
+    private loggingService: LoggingService,
+    private store: Store<
+    {shoppingList: {ingredients: Ingredient[]}     }           ///dentro da marcação do generic type, descreva o FORMATO DA DATA QUE SERÁ RETORNADA POR SEU REDUCER (cheque o 'initialState' do reducer, e os types das propriedades)...
+    
+    >               
+  ) {}
+
+  ngOnInit(): void {
+
+    // this.ingredients = this.shoppingListService.getIngredients(); //////CÓDIGO INUTILIZADO POR CONTA DO USO DO STORE, USO DO _ STATE_ DO 'GLOBAL STORE' do ngrx...
+
+    // this.ingredientsChangedSubscription =
+    //   this.shoppingListService.ingredientsChanged.subscribe((ingredients) => {
+    //     this.ingredients = ingredients;
+    //   });
+
+
+    // this.store.select()  //esse é um method MT IMPORTANTE, que existe dentro do store...
+  ///as 'slices' de nosso state são identificadas POR STRINGS... (e para que aparecam como strings, vocÊ deve escrever naquele '''private store: Store<{}>''', dentro da generic type definition...)
+  
+
+   this.ingredients = this.store.select('shoppingList')
+  
+  
+  }
+
+  onShoplistItemClick(index: number) {
+    this.shoppingListService.loadShopListItem(index);
+  }
+
+
+  
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> QUANTO À SUBSCRIPTION DE 'ngrx',
+
+NÃO 
+
+
+PRECISAMOS MANAGEAR ELA, NÃO PRECISAMOS A DESTRUIR COM 'unsubscribe' no 'ngOnDestroy()',
+
+pq 
+
+
+ELA 
+
+JÁ É DESTRUÍDA AUTOMATICAMENTE, é uma feature... (feature do angular e ngrx)...
+
+
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER QUE AGORA 'INGREDIENTS' 
+
+É UM 
+
+'OBSERVABLE',
+
+E NÃO MAIS UM ARRAY DE INGREDIENTS... --->   E ISSO,
+
+É CLARO,
+
+
+
+
+
+SIGNIFICA QUE 
+
+NOSSO 'TEMPLATE'
+
+
+
+
+VAI FICAR _ QUEBRADO,
+
+
+
+IMEDIATAMENTE VAI 'BREAK',
+
+
+
+PQ NO NOSSO TEMPLATE TÍNHAMOS ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-10">
+    <app-shop-list-edit 
+    
+    ></app-shop-list-edit>
+    <hr />
+    <ul class="list-group">
+      <!-- <a class="list-group-item" 
+      style="cursor: pointer"
+      *ngFor="let ingredient of ingredients"
+      > {{ingredient.name}} ({{ingredient.amount}})
+      </a> -->
+      <app-shopping-list-item
+  
+      *ngFor="let ingredient of ingredients; let index=index"
+      [name]="ingredient.ingredient"
+      [amount]="ingredient.amount"
+      (click)="onShoplistItemClick(index)"
+      ></app-shopping-list-item>
+    </ul>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+      <app-shopping-list-item
+  
+      *ngFor="let ingredient of ingredients; let index=index"
+      [name]="ingredient.ingredient"
+      [amount]="ingredient.amount"
+      (click)="onShoplistItemClick(index)"
+      ></app-shopping-list-item>
+
+
+
+
+
+
+
+
+
+
+
+
+      --> ou seja,
+
+      FAZÍAMOS  
+       
+
+
+
+       UM LOOP POR DENTRO DE 'INGREDIENTS'.. --> mas esses ingredients 
+
+       aí 
+
+       eram os ingredient em um ARRAY, o nosso state antigo,
+
+
+
+
+E _ COMO __ AGORA NÃO TEMOS MAIS ESSE ARRAY AÍ,
+
+
+
+
+
+E SIM UM OBSERVABLE,
+
+
+
+O CÓDIGO QUEBRA...
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS PARA SOLUCIONAR ESSE PROBLEMA,
+
+
+O ANGULAR_ TEM UM negócio.... ----->  PARA 
+
+
+
+
+
+
+
+
+
+
+
+CONSERTARMOS ESSE PROBLEMA,
+
+
+
+DEVEMOS USAR AQUELE 
+
+
+
+
+__PIPE ESPECIAL__ DE 
+
+
+
+
+'async',
+
+
+
+
+
+
+que ESTUDAMOS LÁ NA SECTION DE 'pipes'... 
+
+
+
+
+
+
+
+
+
+
+
+
+-> pipes são coisas que são acessadas assim:
+
+{{ ingredient | upperCase  }}
+
+
+
+
+
+
+
+
+
+--> NO CASO,
+
+
+
+
+PODEMOS __ USAR __ O PIPE DE ' | async ```....
+
+
+
+
+
+
+
+
+
+
+
+
+
+PARA FAZER ISSO, COMEÇAMOS COM O CÓDIGO BASE DE *ngFor:
+
+
+
+
+
+
+
+
+
+*ngFor="let ingredient of ingredients; let i = index" 
+
+
+
+
+
+
+
+--> ok.... AÍ VAMOS __ WRAPPAR_ O NOSSO 'STATE'/observable 
+
+
+
+de 
+
+
+'ingredients'
+
+
+
+
+
+COM __ () (PARÊNTESES),
+
+
+
+
+
+para então ADICIONARMOS O ASYNC PIPE..
+
+
+
+
+
+
+
+
+
+-> O CÓDIGO FICA TIPO ASSIm:
+
+
+
+
+      <app-shopping-list-item
+  
+      *ngFor="let ingredient of (ingredients | async); let index=index"
+      [name]="ingredient.ingredient"
+      [amount]="ingredient.amount"
+      (click)="onShoplistItemClick(index)"
+      ></app-shopping-list-item>
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+*ngFor="let ingredient of (ingredients | async); let index=index"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK, MAS QUAL É O EFEITO DISSO?
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO VAI __ OBRIGAR__ O ANGULAR A FAZER 'SUBSCRIBE'
+
+
+
+a 'ingredients'
+
+
+
+PARA NÓS, 
+
+
+
+O QUE QUER DIZER QUE ELE VAI 'MANAGE THIS SUBSCRIPTION PARA NÓS'.... ---> PQ 
+
+
+
+AÍ 
+
+
+NÃO TEREMOS DE FAZER MANAGE DESSA SUBSCRIPTION POR CONTA PRÓPRAI..
+
+
+
+
+
+
+
+
+
+
+----> AÍ, POR FIM, 
+
+
+
+
+
+o angular vai 'RESOLVE' o value desse negócio, que é resolvido de forma async...
+
+
+
+
+
+
+
+
+
+
+
+--> MAS É CLARO QUE O VALUE BÁSICO DESSE 'ingredients', desse observable 
+
+
+
+do nosso component,
+
+
+
+NÃO NOS INTERESSA (pq não encaixa).. --> não, para  conseguir 
+
+
+
+
+o value do 'state' que realmente nos interessa,
+
+
+
+escrevemos 
+
+
+
+
+
+
+
+
+      <app-shopping-list-item
+  
+      *ngFor="let ingredient of (ingredients | async).ingredients; let index=index"
+      [name]="ingredient.ingredient"
+      [amount]="ingredient.amount"
+      (click)="onShoplistItemClick(index)"
+      ></app-shopping-list-item>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ou seja,
+
+
+
+''''
+
+
+let ingredient of (ingredients | async).ingredients
+
+
+
+
+
+''''
+
+
+
+
+
+
+
+
+
+--> ACESSAMOS ESSA PROPRIEDADE DE 'ingredients' dentro 
+
+dessa propriedade..
+
+
+
+
+
+
+
+--> é por isso que podemos afirmar que o negócio que está 'doing the magic'
+
+
+aqui 
+
+É 
+
+O 
+
+'async pipe',
+
+
+
+
+QUE FAZ SUBSCRIBE AO OBSERVABLE 
+
+
+
+de 
+
+
+
+''''
+
+ingredients: Observable<{ ingredients: Ingredient[] }>
+
+
+
+
+
+
+
+'''',
+
+
+
+e aí 
+
+
+
+nos 
+
+PERMITE 
+ACESSAR ESSE ARRAY DE INGREDIENTS 
+
+QUANDO ESSE VALUE 'ASYNC' TIVER SIDO RESOLVED ADEQUADAMENTE..
+
+
+
+
+
+
+
+
+
+
+
+--> OK, AGORA PODEMOS FINALMENTE VOLTAR AO NOSSO APP...
+
+
+
+-> fazemos login,
+
+
+
+E AÍ ENTRAMOS EM 'shopping list'..
+
+
+
+
+
+
+-->  MAS QUANDO FAZEMOS ISSO, IMEDIATAMENTE _ RECEBEMOS UM ERROR....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK... E NÓS GANHAMOS ESSE ERROR __ NÃO __ PQ NOSSO SETUP ESTÁ
+
+
+ERRADO,
+
+
+E SIM 
+
+
+
+
+PQ _ ESTAMOS __ 
+
+
+
+
+
+
+
+
+COM 1 PEQUENO PEDAÇO __ FALTANDO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE PEDAÇO QUE ESTÁ FALTANDO DEVERÁ EXISTIR LÁ NO REDUCER DE 
+
+
+
+'
+ShoppingListReducer',
+
+
+
+
+
+EM QUE ESTAMOS COM ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export function shoppingListReducer(state = initialState, action: ActionIdentifiers.AddIngredient) {
+
+  switch (action.type) {
+    case ActionIdentifiers.ADD_INGREDIENT:
+      return addIngredient(state, action);
+    break;
+    case ActionIdentifiers.DELETE_INGREDIENT:
+      break;
+    case ActionIdentifiers.EDIT_INGREDIENT:
+
+  
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> O PROFESSOR HAVIA MENCIONADO QUE 
+
+
+
+'''NA PRIMEIRA VEZ QUE NOSSO APP INICIA E ESSE NGRX CARREGA 
+
+
+
+
+O NOSSO REDUCER, 
+
+
+
+NOSSO STATE SERÁ INICIALIZADO COM O INITIALSTATE QUE VOCê DEFINIU NAQUELA CONST'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo... --> e, sim, ele FAZ ISSO,
+
+
+
+MAS NÃO VAI FAZER ISSO DE FORMA 'MÁGICA'... ---> PARA EFETIVAMENTE 
+
+
+UTILIZARMOS AQUELA CONST DE 'initialState'
+
+
+
+como UM __ 'INITIAL STATE',
+
+
+
+
+
+
+
+
+
+
+PARA O __ UTILIZAR__ E ENTAÕ PODER _ 
+
+
+
+
+'RETURN IT SEM MUDANÇAS',
+
+
+
+
+
+
+
+
+
+
+
+PRECISAMOS ADICIONAR UM 'DEFAULT CASE'
+
+
+
+AO NOSSO REDUCER... (
+
+
+
+isso também existia lá no reducer do burgerBuilder,
+
+confira este código:
+
+
+
+
+
+
+
+
+
+
+const orderReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case orderActionTypes.PURCHASE_BURGER_LOADING:
+      return updateObject(state, { loading: true });
+
+    case orderActionTypes.PURCHASE_BURGER_SUCCESS:
+      purchaseBurgerSuccess(state, action);
+      break;
+
+    case orderActionTypes.PURCHASE_BURGER_FAIL:
+      return updateObject(state, { loading: false });
+
+    case orderActionTypes.FETCH_ORDERS_START:
+      return updateObject(state, { loading: true });
+
+    case orderActionTypes.FETCH_ORDERS_SUCCESS:
+      return fetchOrderSuccess(state, action);
+
+    case orderActionTypes.FETCH_ORDERS_FAIL:
+      return updateObject(state, { loading: false });
+    default:
+      return state;
+  }
+};
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+---> NO CASO, VAMOS PRECISAR DE UM 'DEFAULT CASE'
+
+
+
+para o nosso switch statement,
+
+
+PARA HANDLAR _ QUAISQUER _CASES QUE 
+
+
+'''NAÕ ESTAMOS HANDLANDO EXPLICITAMENTE''' --> no caso,
+
+
+O ÚNICO 
+
+CASO QUE NÃO ESTAREMOS HANDLANDO EXPLICITAMENTE 
+
+
+
+É 
+
+
+
+o 
+
+
+
+''''initialState foi definido, sem nenhuma ação sendo dispatcheada, no início 
+
+de nosso app''''
+
+
+
+
+
+
+
+
+
+-----> É POR ISSO QUE VAMOS TER QUE ADICIONAR UM ''default: return state;'',
+
+
+
+
+
+
+
+QUE FARÁ COM QUE ESSE INITIALSTATE REALMENTE SEJA 
+
+APLICADO....
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+export function shoppingListReducer(state = initialState, action: ActionIdentifiers.AddIngredient) {
+  ///////ESSES 2 ARGUMENTOS SÃO SEMPRE 'PASSED IN' pelo próprio angular 'NGRX', contanto que vocÊ defina esse reducer como REDUCER DE SEU APP
+
+  ///state --> é o APPLICATION-WIDE STATE DE SEU APP...
+
+  switch (action.type) {
+    // case 'INGREDIENT_ADD':
+    case ActionIdentifiers.ADD_INGREDIENT:
+      return addIngredient(state, action);
+    break;
+    case ActionIdentifiers.DELETE_INGREDIENT:
+      break;
+    case ActionIdentifiers.EDIT_INGREDIENT:
+        break;
+      default: ////é o case do INITIALIZE DE NOSSO STATE (pq no início de nosso app, será definido/passado o 'initialState', sem o pass de nenhuma actionType...) --> e é aí que entra em jogo esse return de 'state' como o DEFAULT, pq isso significa que nosso state NÃO TERÁ SIDO ALTERADO POR ACTION NENHUMA, MAS QUE AINDA SERÁ 'returned', pq isso será necessário...
+        return state;  
+
+  
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok.... se fizermos isso,
+
+
+
+veremos os ingredients na nossa tela,
+
+sem nenhum error....
+
+
+
+
+
+
+
+
+
+
+
+-> com isso, ficamos com esse GENERAL SETUP
+
+
+
+
+
+--> O PRÓXIMO PASSO É 'VER COMO DISPATCHEAR UMA ACTION'..
+
+
+
+
+
+
+
+--> DEPOIS DISSO,
+
+
+
+PODEMOS VER MAIS DETALHES DO NGRX...
+
+
+
+
+
+
+
+
+-> veremos o dispatching de actions na próxima aula...
+
+
+
+
+
+
+
+-> mas estou com um ERROR NO MEU CÓDIGO:
+
+
+
+
+
+
+https://stackoverflow.com/questions/66165872/types-of-parameters-action-and-action-are-incompatible-property-payload-i
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> escrevi um código BEM BOOTLEG para fazer meu app funcionar...
+
+
+
+
+
+
+ex:
+
+
+
+
+
+import { Action } from '@ngrx/store'; ///precisamos disso para DESCREVER NOSSAS ACTIONS...
+import { Ingredient } from 'src/app/shared/ingredient.model';
+
+export const ADD_INGREDIENT = 'INGREDIENT_ADD'; ////identifiers de nossas actions
+
+export const EDIT_INGREDIENT = 'INGREDIENT_EDIT';
+
+export const DELETE_INGREDIENT = 'INGREDIENT_DELETE';
+
+export class AddIngredient implements Action {
+  readonly type: string = ADD_INGREDIENT;
+
+
+payload?: Ingredient
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok... agora o próximo passo é 
+
+
+'ESCREVER UMA ACTION QUE REALMENTE FUNCIONE',
+
+
+e aí 
+
+fazer o DISPATCH DESSA ACTION, DE ALGUM LUGAR DE NOSSO CÓDIGO (
+
+    provavelmente no 
+
+
+    coiso de 'recipe-edit.component.ts',
+
+
+    no button de 'add/edit'...
+
+
+
+)
+
+
+
+
+
+
+--> devo ver a próxima aula do professor...

@@ -1,0 +1,2114 @@
+
+
+
+
+
+
+
+
+
+
+PARA INVESTIGARMOS O TESTING EM ANGULAR APPS,
+
+
+
+O PROFESSOR CRIOU UM 
+
+
+
+PROJECT COMPLETAMENTE NOVO...
+
+
+
+
+
+
+
+
+
+
+
+
+--> VOU FAZER A MESMA COISA...
+
+
+
+
+
+
+
+
+
+ng new 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR COLOCOU UM ARTIGO DETALHADO, SOBRE USE-CASES DE TESTING...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO, DE VOLTA AO PROJETO,
+
+
+
+
+
+
+
+
+NÓS TEMOS AQUELE COMPONENT DE 'app.component.ts',
+
+
+
+
+MAS TAMBÉM TEMOS AQUELE ARQUIVO 
+
+'app.component.spec.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> POR DEFAULT,
+
+ESSE ARQUIVO NUNCA ESTARÁ VAZIO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E ESSE ARQUIVO AÍ,
+
+IMEDIATAMENTE,
+
+
+JÁ 
+
+TERÁ UM PUNHADO DE UNIT TESTS....
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+import { TestBed } from '@angular/core/testing';
+import { AppComponent } from './app.component';
+
+describe('AppComponent', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [
+        AppComponent
+      ],
+    }).compileComponents();
+  });
+
+  it('should create the app', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    expect(app).toBeTruthy();
+  });
+
+  it(`should have as title 'novoProjetoTesting'`, () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    expect(app.title).toEqual('novoProjetoTesting');
+  });
+
+  it('should render title', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.content span')?.textContent).toContain('novoProjetoTesting app is running!');
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> CADA BLOCO COMEÇANDO COM 'it' 
+
+
+
+
+É _ UM TESTE_....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E COMO PRIMEIRO PARÂMETRO DE CADA 'it',
+
+
+
+
+
+
+
+
+TEMOS A DESCRIÇÃO DE CADA TEST...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM NO INÍCIO,
+
+
+NO CÓDIGO DE 'beforeEach',
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+describe('AppComponent', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [
+        AppComponent
+      ],
+    }).compileComponents();
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+  TEMOS ESSE CÓDIGO AÍ,
+
+
+
+
+  QUE __ É UM CÓDIGO QUE, CONFORME lemos 'beforeEach',
+
+
+
+
+  DEVE 
+
+
+  SER 
+
+  __EXECUTADO_  
+
+
+  ANTES DO RUN DE CADA UM DOS TESTS....
+
+
+
+
+
+
+
+
+
+
+
+  ---------> OK... E AQUI ESTAMOS VENDO UM __ MONTE DE CÓDIGO QUE NUNCA VIMOS ANTES...
+
+
+
+
+
+
+
+
+
+  --> ESTAMOS USANDO UM PUNHADO DE 'ANGULAR-SPECIFIC' TEST UTILITIES 
+
+
+  PARA FAZER NOSSO TEST FUNCIONAR...
+
+
+
+
+
+
+
+
+
+
+
+
+  --> MAS ANTES DE VER ESSAS UTILITIES TÍPICAS DO ANGULAR,
+
+
+
+
+
+  DEVEMOS PENSAR, EM TERMOS LÓGICOS,
+
+  ACERCA DE COMO UM 
+
+  TEST FUNCIONA...
+
+
+
+
+  (
+
+
+    vou pegar o código do curso de react, que também tinha um trecho 
+
+
+    falando sobre isso...
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> na versão REACT DE NOSSO CÓDIGO, usávamos arquivos 
+
+
+  'nomeDoComponent.test.js'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  CÓDIGO 
+
+
+
+
+
+
+
+
+
+  TÍPICO DE UM ARQUIVO DE TEST:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  import { configure } from 'enzyme';
+
+import { shallow } from 'enzyme';
+
+import React from 'react';
+
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+
+import NavigationItems from './NavigationItems';
+
+import NavigationItem from './NavigationItem/NavigationItem';
+
+configure({
+  adapter: new Adapter(),
+});
+
+describe('<NavigationItems />', () => {
+  let wrapper;
+  beforeEach(() => {
+    wrapper = shallow(<NavigationItems />);
+  });
+
+  it('should render two <NavigationItem /> elements if not authenticated', () => {
+    expect(wrapper.find(NavigationItem)).toHaveLength(2);
+  });
+
+  it('should render three <NavigationItem /> elements if authenticated', () => {
+    wrapper.setProps({
+      logout: true,
+    });
+    expect(wrapper.find(NavigationItem)).toHaveLength(3);
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ou seja, tínhamos esse package do 'enzyme',
+
+
+e ele era aplicado ao nosso project...
+
+
+
+
+----> CADA IT CASE DEVE DESCREVER O QUE CADA 'CASE' deve afzer...
+
+
+
+
+
+--> aí tínhamos aquele 'wrapper' para 
+
+
+SELCIONAR O NOSSO ELEMENTO para o testing... 
+
+
+
+
+
+--->  
+
+
+
+
+ISSO VAI RETORNAR OU 'TRUE' OU 'FALSE'...
+
+
+
+
+expect(wrapper.find(NavigationItem)).toHaveLength(2);
+
+
+
+
+
+
+
+
+
+.find() era um operator/method dentro do wrapper... 
+
+
+
+
+
+
+
+--> depois, temos o modificador `toHaveLength`,
+
+
+
+
+e temos mtos modificadores...
+
+
+
+
+
+
+
+
+
+
+
+
+OK... ME LEMBREI... 
+
+
+
+
+
+
+
+a sintaxe era 
+
+
+
+
+
+expect(elemento/Elementos/ElementosModificados).condição()
+
+
+
+
+
+
+
+
+
+
+
+-> E ISSO VAI RETORNAR OU 'TRUE' OU 'FALSE'...
+
+
+
+
+
+
+
+
+
+--> e o run de 1 test SEMPRE VAI CHECAR CADA UMA DESSAS HIPÓTESES, E VAI TE MOSTRAR NO CONSOLE...
+
+
+
+
+
+
+
+
+
+
+ok, mas como funciona isso, no mundo do angular?
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, O CÓDIGO É MT SIMILAR:
+
+
+
+
+
+
+
+
+
+
+import { TestBed } from '@angular/core/testing';
+import { AppComponent } from './app.component';
+
+describe('AppComponent', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [
+        AppComponent
+      ],
+    }).compileComponents();
+  });
+
+  it('should create the app', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    expect(app).toBeTruthy();
+  });
+
+  it(`should have as title 'novoProjetoTesting'`, () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    expect(app.title).toEqual('novoProjetoTesting');
+  });
+
+  it('should render title', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.content span')?.textContent).toContain('novoProjetoTesting app is running!');
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK... MAS VAMOS ENTENDER ISSO MAIS LOGICAMENTE:
+
+
+
+
+
+
+
+
+1) TEMOS NOSSO ANGULAR APP, COM O 'app.module.ts', e o 'app.component.ts',
+
+E ELES RODAM NO BROWSER..
+
+
+
+
+--> DE ALGUMA FORMA, PRECISAMOS RODAR ESSE MESMO 'APP' NO TESTING ENVIRONMENT,
+
+
+E O TEST ENVIRONMENT É SIMPLESMENTE UM SCRIPT RODANDO POR CIMA DESSE CÓDIGO....
+
+
+
+
+
+
+
+
+-> ok... 'NO INTUITO DE SIMULAR O MESMO COMPORTAMENTO DE __ RUN __ DO NOSSO APP',
+
+
+
+precisamos TAMBÉM fazer o 'BOOTSTRAP' de nosso app (fazer ele todo rodar em harmonia, 'JUNTAR' todo ele),
+
+
+
+
+
+PRECISAMOS SETTAR O 'app.module',
+
+
+E AÍ 
+
+
+
+
+
+PRECISAMOS 'EXECUTE ALGUMAS TASKS'
+
+
+
+
+que 
+
+
+
+O USER TALVEZ FAÇA OU VEJA NA NOSSA PÁGINA... ------> E É EXATAMENTE ISSO QUE ESTAMOS FAZENDOAQUI....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+É BOM ANALISAR ESSE ARQUIVO PARA ENTENDER COMO ANGULAR UNIT TESTS FUNCIONAM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> LÁ NO TOPO, 2 coisas SÃO IMPORTADAS LÁ DO 'ANGULAR CORE TESTING':
+
+
+
+
+
+
+import { TestBed } from '@angular/core/testing';
+import { AppComponent } from './app.component';
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> ANGULAR/CORE/TESTING  --> É UMA PACKAGE QUE VEM JUNTO COM O ANGULAR,
+
+
+E QUE CONTÉM DIVERSAS COISAS ÚTEIS QUE OS TESTS ANGULAR USAM,
+
+
+
+
+como 
+
+'TestBed' 
+
+e 
+
+'async'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, ANTES DE MAIS NADA, DESCREVEMOS 'A UNIDADE QUE DEVERÁ SER TESTADA'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> NO NOSSO CASO, É O 'APP',
+
+
+
+
+
+O APP COMPONENT E O MODULE,
+
+POR ISSO QUE ESTÁ ESCRITO ASSIm:
+
+
+
+
+
+describe('AppComponent', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [
+        AppComponent
+      ],
+    }).compileComponents();
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -----> DEPOIS DISSO,
+
+
+  TEMOS UMA _ CLOSURE,
+
+
+
+
+
+
+
+  e todo esse código aí, o describe com todos os 'it',
+
+
+
+  SERÃO EXECUTADOS QUANDO RODARMOS NOSSO TEST, COM O CLI...
+
+
+
+
+
+
+
+  --> digito 'ng help' --> para ver qual comando vai rodar o test..
+
+
+
+
+
+
+
+
+
+  é ng test....
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> ESCREVI 'ng test'...
+
+
+
+
+
+
+
+
+
+
+  --> o angular está rodando meu projeto...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> PARECE QUE A ENGINE DE TESTS É DIFERENTE DA USADA PELO REACT,
+
+
+  PQ AQUI É O 'jasmine/karma',
+
+  E NÃO O 'ENZYME'..
+
+
+
+
+
+
+
+
+
+
+  --> ELE ME DISSE ISTO:
+
+
+
+  
+finished in 0.077s
+3 specs, 0 failures, randomized with seed 57134
+AppComponent
+should render title
+should have as title 'novoProjetoTesting'
+should create the app
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok, sucesso nas 3 hipóteses/cases...
+
+
+
+
+
+
+
+
+
+
+
+
+--> 
+
+
+
+
+
+O PROFESSOR EXPLICA UQE USAMOS O CLI PARA RODAR 
+
+ESSE 
+
+
+TEST,
+
+
+COM NG TEST...
+
+
+
+
+
+
+
+
+
+--> MAS ELE DIZ QUE PODERÍAMOS SETTAR QUALQUER TESTING ENVIRONMENT..
+
+
+
+
+
+
+
+
+
+--> AQUI USAMOS O 'KARMA',
+
+
+
+
+QUE É UM TESTING ENVIRONMENT TÍPICO,
+
+QUE RODA NOSSOS TESTS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo... com 'beforeEach',
+
+
+
+
+
+SEMPRE É EXECUTADO UM CÓDIGO ANTES DE 
+
+
+
+SE CHEGAR A CADA UM DAQUELES 'it' cases..
+
+
+
+
+
+
+
+
+
+
+
+
+--> APESAR DE CADA 'BLOCK' de 'it' 
+
+
+
+
+
+
+SER PRECEDIDO E SUCEDIDO DE OUTRO BLOCK,
+
+
+
+CADA 1 DELES É _ EXECUTADO__ DE FORMA TOTALMENTE__ INDEPENDENTE 
+
+EM RELAÇÃO AOS BLOCKS VIZINHOS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... JÁ SABIA DISSO...
+
+
+
+
+
+
+
+
+
+
+--> e 'beforeEach',
+
+
+PORTANTO, É A  __ ÚNICA COISA__ QUE SERÁ EXECUTADA ANTES DE CADA BLOCK INDIVIDUAL...
+
+
+
+
+
+
+
+
+
+E O CÓDIGO EM beforeEach ESTÁ ASSIM:
+
+
+
+
+
+describe('AppComponent', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [
+        AppComponent
+      ],
+    }).compileComponents();
+  });
+
+
+
+
+
+
+
+
+OU SEJA,
+
+CONFIGURAMOS UM 'TESTING MODULE' POR MEIO DESSE 
+
+
+METHOD,
+ 
+ no 'testBed'... -->
+
+
+
+
+
+
+
+
+
+
+ E 'TESTBED',
+
+ a propósito,
+
+
+ É 
+
+
+  O 'MAIN ANGULAR2 TESTING UTILITY OBJECT'...
+
+
+
+
+
+
+
+
+
+
+
+
+OK, ISSO SIGNIFCA QUE 'TestBed.configure()'
+
+
+BASICAMENTE NOS DEIXA CONFIGURAR O 'MODULE PARA O NOSSO TESTING'...
+
+
+
+
+
+
+
+
+
+
+ELE NOS FORÇA A DECLARAR 'QUAIS COMPONENTS VAMOS QUERER TER NESSE TESTING ENVIRONMENT',
+
+
+
+
+
+
+
+
+
+QUE NO CASO É O 'AppComponent'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NO CASO, ESSE ARQUIVO DE TESTS SE PARECE MT COM O NOSSO 'app.module.ts',
+
+
+
+
+COM AQUELE ARRAY DE DECLARATIONS,
+ 
+
+ ex:
+
+
+
+
+
+
+
+
+ import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS É CLARO QUE NOSSO ARQUIVO DE TESTS NÃO TEM:
+
+
+
+1) IMPORTS
+
+
+
+2) PROVIDES 
+
+
+
+3) BOOSTRAp,
+
+
+
+
+
+
+E ISSO FAZ TOTAL SENTIDO, PQ AQUI 
+
+
+NÃO ESTAMOS FOCANDO NESSA PARTE TRIVIAL (que não vai ter errors),
+
+e sim 
+
+ESTAMOS FOCANDO 
+
+
+NA PARTE DO NOSSO APP EM SI,
+
+
+
+O APP COMPONENT, QUE NÃO VAMOS QUERER RODAR NO BROWSER,
+
+E SIM 
+
+VAMOS QEURER 
+
+
+RODAR 
+NESSE 
+
+TESTING ENVIRONMENT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> A MORAL DO TESTING ENVIRONMENT É QUE ELE VAI __ sIMULAR_ O FUNCIONAMENTO 
+
+do resto 
+
+desses elementos do nosso app....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, ISSO SIGNIFICA QUE O 'TESTBED'
+
+
+
+
+VAI __ INICIALIZAR ESSE COMPONMENT (e quaisquer outros )
+
+
+
+
+QUE DECLARAMOS EM 'declarations'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E DEPOIS DISSO,
+
+
+TEMOS UM PUNHADO DE TESTS...
+
+
+
+
+
+
+
+
+-> O PRIMEIRO DELES CHECA SE O APP FOI CRIADO APROPRIADAMENTE..
+
+
+
+
+
+
+
+
+
+
+
+--> NÓS SEMPRE PRECISAMOS CRIAR O COMPONENT 'EM CADA IT BLOCK',
+
+
+
+
+PQ CADA IT BLOCK É CONTIDO, 
+
+NÃO SE COMUNICA COM OS OUTROS...
+
+
+
+
+
+
+
+
+
+
+
+--> E ISSO É FEITO __ JUSTAMENTE__ 
+
+POR MEIO DA LINHA 
+
+DE CÓDIGO 
+
+
+
+
+'''let fixture = TestBed.createComponent(AppComponent);'''' 
+
+
+
+
+QUE VAI CRIAR ESSE COMPONMENT NO CONTEXTO DE CADA IT BLOCK...
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+import { TestBed } from '@angular/core/testing';
+
+// E 'TESTBED',
+
+// a propósito,
+
+// É
+
+//  O 'MAIN ANGULAR2 TESTING UTILITY OBJECT'...
+
+import { AppComponent } from './app.component';
+
+describe('AppComponent', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({   
+      declarations: [ ////AQUI ESPECIFICAMOS TODOS OS COMPONENTS QUE SERÃO ALVO DE NOSSOS TESTS, enumerados com 'it()' blocks...
+        
+        AppComponent
+      
+      
+      ]
+        
+        
+        ,
+    }).compileComponents();
+  });
+
+  it('should create the app', () => {
+    const fixture = TestBed.createComponent(AppComponent);  //cria 1 de nossos components (podemos testar vários) enumerados em 'declarations', para que então possa ser TESTADO DE FORMA UNITÁRIA (separada do resto dos components)...
+    const app = fixture.componentInstance;
+    expect(app).toBeTruthy();
+  });
+
+  it(`should have as title 'novoProjetoTesting'`, () => {
+    const fixture = TestBed.createComponent(AppComponent); //cria 1 de nossos components (podemos testar vários) enumerados em 'declarations', para que então possa ser TESTADO DE FORMA UNITÁRIA (separada do resto dos components)...
+    const app = fixture.componentInstance;
+    expect(app.title).toEqual('novoProjetoTesting');
+  });
+
+  it('should render title', () => {
+    const fixture = TestBed.createComponent(AppComponent); //cria 1 de nossos components (podemos testar vários) enumerados em 'declarations', para que então possa ser TESTADO DE FORMA UNITÁRIA (separada do resto dos components)...
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.content span')?.textContent).toContain(
+      'novoProjetoTesting app is running!'
+    );
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK.. E AÍ ESSE COMPONENT RECÉM CRIADO É 
+
+GERALMENTE ARMAZENADO NESSA VARIABLE DE NOME 'fixture'... (é o nome comum para isso)...
+
+
+
+
+
+
+
+
+
+
+--> ''''FIXTURE''' --> É GERALMENTE NOSSA 'TESTING UNIT'...
+
+
+
+
+
+
+
+
+
+
+
+--> ok... 
+
+
+
+
+PASSAMOS 'QUAL COMPONENT QUEREMOS CRIAR'
+
+
+como argumento...
+
+
+
+
+
+
+
+
+
+
+
+
+--> PASSAMOS O 'APP',
+
+é claro...
+
+
+
+
+
+
+
+ 
+
+
+CRIADO ESSE COMPONENT E ARMAZENADO EM UMA VARIABEL,
+
+
+
+
+
+
+
+
+
+podemos então fazer 'GET' do nosso app 
+
+
+
+
+
+
+
+
+
+POR MEIO _ DA UTILIZAÇAÕ DESSA 'fixture' 
+
+
+
+
+E O ACESSO à PROPRIEDADE 
+
+
+
+
+'debugElement',
+
+
+
+QUE É 
+
+
+
+UMA PROPRIEDADE QUE 
+
+
+
+ACESSAMOS PARA JUSTAMNETE 
+
+
+CONSEGUIR ACESSO A UM PUNHADO DE ELEMENTOS... ----> O ELEMENTO MAIS IMPORTANTE 
+
+
+
+
+
+dentro de 'debugElement'
+
+
+
+
+é justamente o 
+
+
+
+
+'componentInstance',
+
+
+QUE É A INSTANCE 
+
+ 
+
+ DE APP QUE TERÁ SIDO CRIADA,
+
+
+ E QUE 
+
+ É 
+
+ REALMENTE O NOSSO 'APP'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> POR FIM,
+
+
+ SEMPRE ACABAMOS NOSSO IT BLOCK POR MEIO DO USO DO METHOD DE 'expect'
+
+
+
+ e então um HELPER/finalizaçaõ (como 'toBeTruthy()')....
+
+
+
+
+
+
+
+
+
+
+
+ --> todos esses methods são relacionados ao karma/jasmin... (são methods do JASMINE, mas são usados com o karma)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK... 
+
+
+
+COM ISSO,
+
+
+
+ESPERAMOS QUE NOSSO APP SEJA 'toBeTruthy'( 
+
+
+    ou seja,
+
+    que 'EXISTA',
+
+    em outros termos....
+)
+
+
+
+
+
+
+
+
+
+
+NO PRIMEIRO ARGUMENTO, ESPECIFICAMOS 'O QUE ESSE TEST QUER DESCOBRIR'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo...
+
+
+
+
+
+
+NO PRÓXIMO BLOCK, CHECAMOS SE '''TEM UM TITLE, DIZENDO '''app works!'''?'''
+
+
+
+
+
+-->     expect(app.title).toEqual('novoProjetoTesting');
+
+
+
+
+
+
+
+
+
+
+COM ISSO, ESPERAMOS QUE ESSE APP TENHA UMA PROPRIEDADE DE 'title',
+
+que tenha esse value aí....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... É ASSIM QUE ESCREVEMOS NOSSOS TESTS,
+
+DEVEMOS 'REFLECT' NOSSA PRÓPRIA APPLICATION...
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+O TEST FINAL É ESTE:
+
+
+
+
+
+
+
+
+
+
+
+
+  it('should render title', () => {
+    const fixture = TestBed.createComponent(AppComponent); //cria 1 de nossos components (podemos testar vários) enumerados em 'declarations', para que então possa ser TESTADO DE FORMA UNITÁRIA (separada do resto dos components)...
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.content span')?.textContent).toContain(
+      'novoProjetoTesting app is running!'
+    );
+  });
+
+
+
+
+
+
+
+
+
+
+
+  -----> ESSE TEST VAI CHECAR SE NOSSO CONTEÚDO ESTÁ SENDO RENDERIZADO EM UM ELEMENTO DE 
+
+  TIPO 'span'..
+
+
+
+
+
+
+
+
+
+
+
+--> AQUELE CÓDIGO de 
+
+
+'fixture.detectChanges()'
+
+
+
+
+É IMPORTANTE,
+
+
+
+ 
+
+
+
+
+ PQ PRECISAMOS DESSE METHOD PARA 'TRIGGER CHANGE DETECTION',
+
+
+
+ PQ ESSA É A ÚNICA MANEIRA DE FAZER ISSO, 
+
+
+
+
+ DETECTAR CHANGES NO NOSSO DOM/ELEMENTO...
+
+
+
+
+
+
+
+
+
+ (
+  isso pq essas CHANGES NÃO SERÃO DETECTADAS AUTOMATICAMENTE,
+
+  JUSTAMENTE POR ESSE CÓDIGO NÃO RODAR NO BROWSER...
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> OK... ISSO SIGNIFIICA QUE PRECISAMOS TRIGGAR 'CHANGE DETECTION' AUTOMATICAMENTE,
+
+
+ TUDO PARA QUE 
+
+
+
+
+
+
+ O 
+  
+
+
+
+''' _ TEMPLATE CONSIGA SER RENDERIZADO''' -> 
+
+
+
+
+
+
+
+
+
+
+ISSO FEITO, 
+
+
+
+
+
+HÁ O USO DO CÓDIGO DE 'fixture.debugElement.nativeElement',
+
+
+que vai NOS DAR ACESSO AO NOSSO TEMPLATE EM SI...
+
+
+
+
+
+
+
+
+
+
+
+-> E VAMOS 'EXPECT' QUE ESSE CONTEÚDO VAI CONTER 'app works!'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK.. ESSES SÃO OS 3 'ALREADY EXISTING TESTS',
+
+
+E ESSA É A LÓGICA DE COMO 
+
+
+
+ESSE ARQUIVO É UTILIZADO,
+
+
+
+
+E COMO 
+
+ELE 
+
+
+UTILIZA AS UTILIDADES ANGULAR (como 'async' e 'TestBed') ----> 
+
+
+
+
+
+
+
+LOGO VEREMOS MAIS PECULIARIDADES 
+
+
+
+acerca do TESTING, E DA UTILIDADE   'async'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO....
+
+
+
+
+
+
+
+-> E OS DEFAULT TESTING ENVIRONMENT METHODS,  
+
+
+
+
+
+
+como 'it' e 'expect',
+
+SÃO IMPORTANTES PARA _ ''DESCREVER''' O QUE VAMOS QUERER VER (would like to see),
+
+
+
+
+E TAMBÉM SOBRE 'COMO ESSA UNIDADE DEVE FUNCIONAR'...
+
+
+
+
+
+
+
+
+
+
+
+-> OK, ESSA É A TEORIA...
+
+
+
+
+
+
+
+
+
+--> NA PRÓXIMA AULA ESTUDAREMOS:
+
+
+
+
+
+
+
+1) alguns exemploS PARA O TESTING, 
+
+como uma 'pipe',
+
+
+
+E TAMBÉM UM OUTRO COMPONENT, COMPONENNT QUE TERÁ UM SERVICE 
+
+PRÓPRIO E ETC...
+
+
+
+
+
+
+
+
+
+
+
+2) POR FIM, VEREMOS O QUE AQUELA OPTION DE 'async' 
+
+
+
+
+
+
+FAZ AO NOSSO CÓDIGO, ASSIM Como 
+
+
+OUTRAS UTILIDADES OFERECIDAS A NÓS PELO ANGULAR (GOOGLE),
+
+

@@ -1,0 +1,592 @@
+
+
+
+
+
+
+
+
+
+
+
+NO NOSSO PRIMEIRO APP BÁSICO EM QUE TRABALHAMSO,
+
+
+
+
+
+
+
+EM QUE 
+
+
+
+ADICIONAMOS UM PUNHADO DE COMPONENTS,
+
+
+
+
+COBRIMOS UM 
+
+
+
+
+
+MONTE DE KEY ASPECTS DE UM 
+
+
+
+APP ANGULAR BÁSICO...
+
+
+
+
+
+
+
+
+
+OS BASIC  BUILDING BLOCKS 
+DE  QUALQUER 
+
+
+
+
+APP ANGULAR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS ATÉ AGORA SÓ OUTPUTTAMOS 
+
+
+
+CONTEÚDO ESTÁTICO (p e h1)....
+
+
+
+
+
+
+
+
+
+--> SÓ FIZEMOS O BÁSICO.
+
+
+
+
+
+
+
+-> DEVEMOS 
+
+
+
+FAZER ALGO,
+
+
+DEVEMOS 
+
+
+ADICIONAR LÓGICA 
+
+PARA OUTPUTTAR 
+
+DATA 
+QUE 
+
+
+NÃO É TOTALMENTE ESTÁTICA,
+
+
+
+E SIM UM POUCO DINÂMICA (pq vai usar nosso arquivo 'xx.component.ts'.)...
+
+
+
+
+
+
+
+
+
+
+
+----> OK... --> É HORA DE UM POUCO DE 'DATA BINDING'...
+
+
+
+
+
+
+
+
+ O QUE É ISSO? 
+
+
+
+
+
+
+
+
+
+ -> COMPREENDENDO DATABINDING:
+
+
+
+
+
+
+
+
+
+
+1) DATABINDING PODE SER COMPREENDIDA ESSENCIALMENTE COMO 'COMMUNICATION'...
+
+
+
+
+
+
+
+--> É A COMMUNICATION ENTRE 
+
+
+TYPESCRIPT CODE ( de seu COMPONENT,  SUA BUSINESS LOGIC )
+
+
+
+
+
+
+E 
+
+
+
+O 
+
+
+
+_TEMPLATE_ (que é o HTML, OU O QUE O USER EFETIVAMENTE ENXERGA)... ->  PQ VOCÊ 
+
+
+PODE 
+
+TER ALGUM 
+
+
+'result'
+
+
+
+NO SEU TYPESCRIPT CODE (talvez o FETCH DE CERTA DATA DE ALGUM SERVER, a partir de uma database),
+
+
+
+
+OU ENTÁO 
+
+TERMINOU ALGUM cálculO,
+
+QUE 
+
+VOCÊ 
+
+QUER 
+
+OUTPUTTAR AO USER... -----> pq a ÚNICA COISA QUE O USER VÊ É O TEMPLATE...
+
+
+
+
+
+
+
+
+
+
+
+
+-> É POR ISSO QUE 
+
+ 
+ PRECISAMOS DE ALGUM TIPO DE 
+
+ COMMUNICATION ENTRE AS 2 PIECES PARA 
+
+
+ __REALMENTE_ CONSEGUIRMOS FAZER ALGO NO NOSSO APP... -------> É AÍ QUE 
+ ENTRA 
+
+ O 
+
+ 'DATABINDING',
+
+
+ pq 
+
+ ele 
+ É RESPONSÁVEL
+  
+
+
+
+
+POR ESSE 'COMMUNICATION'...
+
+
+
+
+
+
+
+
+
+
+
+
+-> NÓS TEMOS DIFERENTES TIPOS DE COMMUNICATION, CLARO....
+
+
+
+
+
+EX:
+
+
+
+
+
+1) QUEREMOS OUTPUTTAR DATA QUE EXISTE NO NOSSO CÓDIGO TYPESCRIPT,
+
+DIRETAMENTE NO TEMPLATE/HTML CODE... ---------> PARA ISSO,
+
+
+PODEMOS 
+
+USAR 
+
+
+
+AQUILO QUE O PROFESSOR CHAMA DE 'STRING INTERPOLATION'...  ------> É UM NOME 
+
+
+
+
+ESTRANHO,
+
+MAS SIGNIFICA BASICAMENTE 
+
+
+
+'{{}}' 
+
+
+
+
+
+
+NO DOM 
+
+
+e 
+
+aí 
+
+
+
+
+O NOME DESSA PROPRIEDADE/slot 
+
+
+LÁ 
+
+NO SEU CÓDIGO TYPESCRIPT... (dentro do 'component')...
+
+
+
+
+TIPO ISTO:
+
+
+export class AppComponent {
+  title = 'novoprojeto3';
+  message = 'A MESSAGE, YOU KNOW'
+}
+
+
+
+(
+
+    mas isso me deu um ERROR....
+)
+
+
+
+
+
+
+
+
+
+
+
+2) A SEGUNDA FORMA É 
+
+O 'PROPERTY BINDING',
+
+que veremos 
+
+
+ao longo das próximas lições... 
+
+
+
+
+
+
+
+
+
+
+STRING INTERPOLATION É ASSIM ---> >>>>   {{data}}
+
+
+
+
+
+
+
+PROPERTY BINDING É ASSIM ---> [property] = "data"
+
+
+
+
+
+
+
+
+
+-> A SINTAXE DO PROPERTY BINDING UTILIZA 
+
+ESSES 
+
+'[]' estranhos 
+
+
+
+EM VOLTA DE 
+
+
+HTML ATTRIBUTES...
+
+
+
+
+
+
+
+
+
+
+--> MAS VEREMOS ISSO MAIS TARDE...
+
+
+
+
+
+
+
+
+
+--> ENTRETANTO, EXISTIRÃO CASOS EM QUE O 'CAMINHO INVERSO' é interessante também:
+
+
+
+
+DIGAMOS QUE O USER CLICA EM UM BOTÃO,
+
+
+CLICA EM UM BOTÃO NO TEMPLATE (pq o template é a coisa com que o user interage)... ---> 
+
+
+
+
+
+
+
+
+
+
+SE CLICAMOS EM UM BUTTON,
+
+TVZ QUEIRAMOS _ TRIGGAR ALGO NO NOSSO CÓDIGO JAVASCRIPT... --> 
+
+
+
+
+
+SE QUISERMOS FAZER ISSO,
+
+VAMOS PRECISAR DA 'OUTRA DIRECTION' (sentido oposto),
+
+
+
+
+E NÓS 
+
+
+
+PODEMOS _ 
+
+
+
+CONSEGUIR ESSA OUTRA DIRECTION ( o REACT a USER EVENTS)  
+
+
+
+
+
+
+POR MEIO 
+
+
+
+DA FORMA NÚMERO 3 
+
+
+
+DE DATABINDING,
+
+QUE É 
+
+O 
+
+
+
+
+
+3) EVENT BINDING... -> PODEMOS BINDAR, POR EXEMPLO, UM CLICK EVENT, 
+
+PARA ENTÃO 
+
+
+
+RODAR CÓDIGO SEMPRE QUE ELE OCORRER...
+
+
+
+
+
+ex:
+
+
+(event) = "expression"
+
+
+
+
+
+
+
+
+
+
+---> POR FIM,
+ 
+ TEMOS A ÚLTIMA FORMA DE DATABINDING,
+
+ QUE É 
+
+
+
+
+ A FORMA  __ QUE _ COMBINA__ 
+
+
+
+ AS 2 DIREÇÕES...
+
+
+
+
+
+ (
+
+   as 
+
+   2 direções são:
+
+
+
+
+  ------------> : string interpolation e property binding...
+    OUTPUT DATA 
+
+
+
+  <------------ : EVENT BINDING....
+    REACT TO USER EVENTS
+ )
+
+
+
+
+
+
+
+
+
+
+ A COMBINAÇÃO ENTRE OS 2 'directions'
+
+ É 
+ O 
+
+
+
+
+ 'TWO-WAY-BINDING',
+
+
+
+
+ EM QUE SOMOS CAPAZES DE 'REAGIR A EVENTS'
+
+
+
+ E ENTÃO 
+
+
+
+
+ __ OUTPUTTAR ALGO NO TEMPLATE, TUDO AO MESMO TEMPO..
+
+
+
+
+
+
+
+
+
+
+ -> ISSO TUDO PODE NÃO PARECER TÃO CLARO AGORA,
+
+
+
+
+
+
+ MAS ISSO É ALGO QUE VEREMOS NAS PRÓXIMAS AUALS...

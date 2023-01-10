@@ -1,0 +1,904 @@
+
+
+
+
+
+
+
+
+
+
+
+-----> NA ÚLTIMA AULA, CRIAMOS AQUELE PIPE DE 'filter":
+
+
+
+
+
+
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'filter',
+})
+export class FilterPipe implements PipeTransform {
+
+
+
+  transform(value: any, filterString: string): any {
+    console.log(value);
+    if (value.length === 0 || filterString === '') {
+      return value;
+    }
+
+
+
+    const resultArray = [];
+    for (const item of value) {
+ 
+
+      if (item.status === filterString) {
+        resultArray.push(item);
+      }
+
+  
+    }
+
+    return resultArray;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE PIPE NOS DEIXA FAZER 'FILTER' dos nossos servers, a partir dos seus STATES..
+
+
+
+
+
+
+
+
+
+
+-> MAS TEMOS UM PROBLEMINHA COM ELE, PORÉM.... ---> 
+
+
+
+
+SE NÓS __ PERMITIRMOS_ QUE O USER ADICIONE UM 
+
+
+NOVO SERVER,
+
+
+
+QUE É ALGO QUE O PROFESSOR PERMITIRÁ AGORA..
+
+
+
+
+
+
+
+
+
+
+--> ele adiciona um novo button,
+
+COM 
+
+O 
+DIZER 'ADD A SERVER'...
+
+
+
+
+
+
+
+
+
+
+-->  ISSO VAI EXECUTAR UM NOVO METHOD QUE VAI 
+
+ADICIONAR UM 
+
+NOVO SERVER..
+
+
+
+
+
+
+
+---> tipo assim:
+
+
+
+
+
+
+<button class="btn btn-primary" (click)="onAddServer()">Add Server</button>
+
+
+
+
+
+
+
+  onAddServer() {
+        this.servers.push(
+          {
+            instanceType: 'small',
+            name: 'New Server',
+            status: 'stable',
+            started: new Date(15, 2, 2014)
+          }
+        )
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> SE ADICIONAMOS ESSE NOVO SERVER AO NOSSO ARRAY 
+
+
+
+
+
+
+
+DE 
+
+servers ,
+
+
+
+
+
+
+
+VEREMOS QUE ELE É ADDADO...
+
+
+
+
+
+
+
+
+
+--> MAS O BUG É ASSIM:
+
+
+
+
+
+
+
+
+1) DEIXAMOS O VALUE DE 'stable' dentro do input field...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2) DEPOIS DISSO, CLICAMOS NO BOTÃO DE 'ADD SERVER'..
+
+
+
+
+
+
+3) quando isso acontecer,
+
+
+
+O 'NEW SERVER', que tem esse status de 'stable',
+
+
+
+__ NÃO SERÁ ADICIONADO IMEDIATAMENTE AO 
+
+
+ARRAY DE 'TRANSFORMED ITEMS/SERVERS'
+
+
+que é displayado 
+
+
+
+na nossa página...
+
+
+
+
+
+
+
+
+
+
+--> mesmo que isso aconteça,
+
+
+
+
+SE EU REMOVER O INPUT LA´DO INPUT FIELD,
+
+VEREI QUE ESSE 'NEW SERVER' terá sido adicionado, e que 
+
+
+
+ele só não foi displayado, por alguma razão....
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> MAS PQ ISSO ACONTECE?
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS PQ DIABOS OS ' new SERVERS' __ NÃO __ FORAM ADICIONADOS 'ENQUANTO ESTAVAMOS NO PROCESSO DE FILTERING DE NOSSO ARRAY DE SERVERS'? 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+->_ O PROFESSOR EXPLICA QUE ISSO OCORREU/OCORRE 
+
+
+
+
+
+
+
+NÃO POR CULPA DE UM BUG,
+
+
+E SIM 
+
+PELO COMPORTAMENTO DEFAULT DOS PIPES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> A RAZÃO PARA ESSE PROBLEMA/COMPORTAMENTO É:
+
+
+
+
+
+
+'''O ANGULAR NÃO VAI (THANKFULLY) RE-RODAR 
+
+
+
+ESSE NOSSO PIPE NA NOSSA DATA,  SEMPRE QUE ESSA DATA (o array, no caso) MUDAR'''.....
+
+
+
+
+
+
+
+
+
+
+
+
+
+->  
+
+
+
+
+
+SE VOCê __ MUDAR _ O __ INPUT_ DO PIPE (a string que é o 'FILTRO'),
+
+
+
+
+VOCÊ 
+
+
+
+VAI TRIGGAR UMA 'RECALCULATION' DA PIPE,
+
+
+
+ISSO É VERDADE, SIM...
+
+
+
+
+
+
+
+
+
+--> ENTRETANTO,
+
+
+
+O_ CHANGE__ DA DATA A QUE VOCÊ APLICOU O PIPE,
+
+
+
+
+nesse nosso caso o __ ARRAY__ DE ELEMENTOS 'server',
+
+
+
+ISSO 
+
+
+___ NÃO TRIGGARÁ 
+
+
+ESSA 'RE-CALCULATION'...
+
+
+
+
+
+
+
+
+
+
+RESUMINDO:
+
+
+
+1) SE O __PARÂMETRO __ DO PIPE MUDA (como nosso 'filterString'), ISSO __ INCIDE EM UMA RECALCULATION DO PIPE (o pipe vai ser aplicado a DATA MAIS UMA VEZ)..
+
+
+
+
+
+
+
+2) mas se o PARÂMETRO DO PIPE _ NÃO MUDAR, MAS _ A 'DATA EM QUE APLICAMOS O PIPE' mudar, ISSO _ _NÃO VAI INICIDIR EM UMA RECLCULATION....
+
+
+
+
+
+
+
+
+
+
+
+
+OU SEJA,
+
+
+''''UPDATES DE ARRAYS E OBJECTS EM QUE VOCê APLICA PIPES,
+
+ISSO NUNCA FAZ COM QUE O PIPE SEJA TRIGGADO''''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> e isso é um comportamento mt bom,
+
+PQ 
+
+
+
+CASO 
+FOSSE 
+
+
+DESSA FORMA,
+ 
+
+FOSSE 'reload a partir de QUALQUER CHANGE DE DATA EM NOSSA PÁGINA, DE QUALQUER PARTE''',
+
+
+
+O PIPE 
+
+SERIA 
+
+
+
+FORÇADO A SER __ REEXECUTADO __ SEMPRE QUE 
+
+QUALQUER 
+
+
+
+
+change na página ocorresse ---------> E ISSO SERIA __ MUITO RUIM,
+
+
+
+PQ CUSTARIA UM MONTE DE PERFORMANCE..
+
+
+
+
+
+
+
+
+
+
+
+---> E ESSA É __ A EXATA RAZÃO DE NENHUM 'BUILT-IN PIPE' 
+
+
+
+
+DE 'FILTER' existir,
+
+
+
+
+
+
+
+PQ _ __ A ANGULAR TEAM __ DECIDIU CONTRA,
+
+
+
+PQ 
+
+
+
+
+UM FILTER DESSES ,
+
+
+
+OBTIDO POR UM PIPE,
+
+
+
+
+
+TIPICAMENTE 
+
+
+POSSUI UM CUSTO MT ALTO DE PERFORMANCE,
+
+
+
+
+
+
+
+
+MT ALTO SE VOCÊ QUER O COMPORTAMENTO DE 'FORÇAR O UPDATE DA PÁGINA SE NÓS ESTIVERMOS NO FILTER MODE E A DATA MUDAR'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... --> ISSO SIGNIFICA QUE __ POR DEFAULT ESSE COMPORTAMENTO NÃO EXISTE/NÃO FUNCIOAN,
+
+
+
+
+MAS ISSO NAÕ QUER DIZER QUE É IMPOSSÍVEL O CODAR...
+
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS __ FORÇAR_ nossa page a REINICIAR/REEXECUTAR 
+
+
+
+1 PIPE de 'filter' SEMPRE QUE A DATA DO ARRAY/OBJECT EM QUE 
+
+
+É APLICADO 
+
+
+
+FOR ALTERADA 
+
+
+
+
+
+
+
+
+
+
+-----> PODEMOS MUDAR ISSO, SIM,
+
+
+
+MAS DEVEMOS TER EM MENTE 
+
+
+
+
+
+
+QUE __ ESSA CHANGE AÍ,
+
+
+
+
+
+BEM BRUTAL,
+
+
+
+FARÁ 
+COM QUE 
+
+
+''''QUALQUER CHANGE DE DATA NA NOSSA PAGE VAI FORÇAR O PIPE A SER __ RECALCULATED''' 
+
+
+
+
+
+
+
+
+
+--> E ISSO PODE LEVAR A PERFORMANCE ISSUES...
+
+
+
+
+
+
+
+
+
+
+-> PODEMOS FORÇAR ESSE PIPE A SER UPDATADO  __ _ SEMPRE_ QUE 
+
+QUALQUER DATA 
+
+
+FOR ALTERADA NA PÁGINA,
+
+
+
+por meio 
+
+
+DO PASS DE UMA SEGUNDA PROPRIEDADE AO DECORATOR de 
+
+'@Pipe({})'
+
+
+
+
+
+
+
+
+
+
+-> É A PROPRIEDADE DE 'pure:',
+
+
+
+
+E VOCÊ PODE DEFINIR SEU VALUE COMO 'true/false'.... --------> 
+
+
+
+
+
+
+
+
+O VALUE DEFAULT É 'true',
+
+
+
+
+E VOCê PODE DEFINIR COMO 'false' PARA CONSEGUIR 
+
+ESSE 
+
+
+COMPORTAMENTO DE 'REEXECUTE DE PIPES A PARTIR DE QUAISQUER CHANGES DE DATA NA NOSSA PÁGINA'..
+
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+@Pipe({  ////PIPE COM COMPORTAMENTO ALTERADO... reloads alterados...
+  name: 'filter',
+  pure: false ///USE ISSO SE VOCê QUISER QUE __ SEU PIPE SEJA REEXECUTADO SEMPRE QUE OCORRER QUALQUER CHANGE DE DATA NA SUA PÁGINA.... (pode causar performance-issues, mas a página é UPDATADA AO MESMO TEMPO QUE VOCÊ VAI DIGITANDO DATA NO INPUT FIELD PARA 'fltrar' os servers)
+})
+export class FilterPipe implements PipeTransform {
+
+
+
+  transform(value: any, filterString: string): any {
+    console.log(value);
+    if (value.length === 0 || filterString === '') {
+      return value;
+    }
+
+
+
+    const resultArray = [];
+    for (const item of value) {
+ 
+
+      if (item.status === filterString) {
+        resultArray.push(item);
+      }
+
+  
+    }
+
+    return resultArray;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> OK, SE FIZERMOS ISSO E ENTAÕ DIGITARMOS 
+
+ALGO NO INPUT FIELD __ ENQUNATO__ 
+
+
+
+
+
+VAMOS ADICIONANDO NOVOS SERVER ITEMS COM 'ADD SERVER' button,
+
+
+VEREMOS QUE 
+
+A LIST 
+
+
+
+
+DE SERVERS VAI SENDO UPDATADA 
+
+
+
+SIMULTANEAMENTE --> A RAZÃO SIMPLESMENTE É QUE 
+
+
+
+O PIPE ACABA 'RECALCULATED' sempre que 
+
+
+
+A DATA SUBMETIDA AO PIPE ACABA ALTERADA (comportamento contrário ao padrão, que é 'SÓ REEXECUTAR O PIPE SE __ O PARÂMETRO, O VALOR DO PARÂMETRO DELE, FOR ALTERADO')...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO PODE LEVAR A PERFORMANCE ISSUES,
+
+
+
+
+
+MAS àS VEZES PODE 
+
+SER ÚTIL..
+
+
+
+
+
+
+
+
+
+--> ESSE É O USO DESSA PROPRIEDAED DE 'pure',
+
+
+
+
+
+
+
+QUANDO SETTADA COMO  'false'..
+
+
+
+
+
+
+
+
+
+
+
+------->  'PURE: TRUE' ---------> '''PURELY FOCUSES ON WHETHER THE PIPE ARGUMENTS CHANGED''''
+
+
+
+
+
+
+
+
+
+
+É POR ISSO QUE O PURE:TRUE GERALMENTE É PREFERIDO,
+
+
+
+
+
+MAS SE VOCÊ SABE O QUE ESTÁ FAZENDO,
+
+
+VOCÊ PODE DEFINIR ESSE 'pure' COMO FALSE,
+
+
+
+e aí vocÊ estará 
+
+READY TO GO... (só se você tiver certeza que não vai ficar com PERFORAMNCE ISSUES)...

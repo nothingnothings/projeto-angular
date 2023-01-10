@@ -1,0 +1,475 @@
+
+
+
+
+
+
+
+
+
+
+
+
+----> NÓS CRIAMOS TODOS ESSES COMPONENTS...
+
+
+
+
+
+
+
+
+
+
+
+--> DEVEMOS COMEÇAR A OS UTILIZAR...
+
+
+
+
+
+
+
+
+
+-> VAMOS ATÉ 'app.component.html',
+
+
+
+
+EM QUE 
+
+VAMOS QUERER USAR 
+
+
+O 
+
+COMPONENT DE 
+
+'app-recipes'...
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+<app-header-component>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <app-recipe-list></app-recipe-list>
+        <app-shopping-list></app-shopping-list>
+      </div>
+    </div></div
+></app-header-component>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SALVAMOS TUDO ISSO...
+
+
+
+
+
+
+
+
+
+
+
+-------> PERCEBEMOS QUE 
+
+
+'SHOPPING LIST'
+ 
+ e 
+
+
+ 'RECIPES'
+
+
+ também...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> AGORA VAMOS COMEÇARA A MEXER 
+
+
+
+ NAS NOSSAS RECIPES,
+
+ as 
+
+ 'recipe' individuais...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> QUEREMOS TER AS 'RECIPE LIST' 
+
+
+ e 
+
+ 'RECIPE DETAIL' 
+
+
+ um do lado do outro...
+
+
+
+
+
+
+
+
+
+
+
+ --> EU HAVIA ESCRITO ASSIM:
+
+
+
+
+ <app-recipe-list>
+    <app-recipe-item></app-recipe-item>
+    <app-recipe-detail></app-recipe-detail>
+</app-recipe-list>
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS NÃO SEI SE ESTÁ CERTO...
+
+
+
+
+
+
+
+
+
+
+
+O PROFESSOR ESCREVE DE FORMA DIFERENET, 
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+<div class="row">
+    <div class="col-md-5">
+    </div>
+    <div class="col-md-7">
+
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+    COL-MD-5 --> ISSO FARÁ COM QUE 
+
+
+
+
+    SEJA CRIADA UMA COLUNA MENOR NA ESQUERDA....
+
+
+
+
+
+
+
+
+
+    COL-MD-7 --> vai criar uma COLUNA _ _MAIOR _NA DIREITA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O RECIPE BOOK,
+
+
+no caso,
+
+
+ficou tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+    <div class="col-md-5">
+        <app-recipe-list></app-recipe-list>
+    </div>
+    <div class="col-md-7">
+        <app-recipe-detail></app-recipe-detail>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> 2 colunas, uma  NA ESQUERDA ('MENOR'),
+
+com a RECIPE LIST,
+
+
+
+e 
+
+aí 
+
+uma 
+
+na DIREITA ("MAIOR")
+
+
+
+com 
+
+
+
+o recipe-detail....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok.... 
+
+
+
+
+
+
+
+
+
+
+-. isso está funcionando...
+
+
+
+
+
+
+
+
+
+
+
+--> NO COMPONENT DE 'recipe-list',
+
+O PROFESSOR QUER INCLUIR AQUELE CMOPONENT 
+
+
+de 
+
+'recipe-Item'...
+
+
+
+
+
+
+
+
+
+É POR ISSO QUE 
+
+
+ELE VAI SÓ escrever 
+
+
+
+<app-recipe-item></app-recipe-item>
+
+
+
+
+
+
+DENTRO do 
+
+
+'recipe-list-component'...
+
+
+
+
+
+
+
+
+
+
+--> PROFESSOR ADICIONA este código aqui 
+
+em 
+
+'shopping-list':
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-10">
+      <app-shop-list-edit></app-shop-list-edit>
+      <hr>
+      <p>The List!</p>
+    </div>
+</div>
+
+
+
+
+
+
+
+-------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> DEVEMOS TRABALHAR NO HEADER, NA PRÓXIMA AULA.... 
+
+
+
+
+
+
+
+
+
+-> VAMOS DEIXÁ-LO QUASE COMPLETADO, LOGO DE INÍCIO....

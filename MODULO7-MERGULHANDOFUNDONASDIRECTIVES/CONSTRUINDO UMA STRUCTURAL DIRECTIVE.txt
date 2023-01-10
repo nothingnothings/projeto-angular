@@ -1,0 +1,1500 @@
+
+
+
+
+
+
+
+
+
+
+
+
+--> agora que entendemos o role de  '*'...
+
+
+
+
+
+
+
+PODEMOS __ ESCREVER NOSSA PRÓPRIA STRUCTURAL DIRECTIVE...
+
+
+
+
+
+
+
+
+--> para criar nossa primeira structural directive,
+
+
+
+
+
+BASTA USARMOS 
+
+AQUELE 
+
+COMANDO DE 
+
+ng g d ,
+
+
+
+
+
+E AÍ 
+
+
+COLOCAR O NOME DE UMA DIRECTIVE NOVA que queremos criar...
+
+
+
+
+
+
+
+
+
+
+
+
+--> CRIAMOS UMA NOVA DIRECTIVE,
+
+DE NOME 'unless'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSA DIRECTIVE 
+
+
+
+__ VAI ___ 
+
+
+
+ANEXAR ALGO AO DOM _ APENAS__ SE A CONDITION FOR 'FALSE' ( ou seja, é o OPOSTO DO FUNCIONAMENTO DE 'NGIF')...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+
+CRIAMOS UM NOVO FOLDER...,
+
+
+
+
+
+folder de 'unless'...
+
+
+
+
+
+
+
+----> o código começa assim:
+
+
+
+
+
+
+import { Directive } from '@angular/core';
+
+@Directive({
+  selector: '[appUnless]'
+})
+export class UnlessDirective {
+
+  constructor() { }
+
+}
+
+
+
+
+
+
+
+
+
+
+--> TUDO FINE COM O SELECTOR...
+
+
+
+
+
+
+
+
+--> __ mas_ aqui, no caso dessa directive,
+
+
+
+DEVEMOS/SOMOS OBRIGADOS A CONSEGUIR A 
+
+
+'CONDITION' como 
+
+um _ _INPUT__ 
+
+
+
+de nossa directive...
+
+
+
+
+
+
+
+
+
+---> É POR ISSO QUE O PROFESSOR VAI USAR UM 
+
+
+'@Input()'...
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+import { Directive } from '@angular/core';
+
+@Directive({
+  selector: '[appUnless]'
+})
+export class UnlessDirective {
+
+
+
+            @Input() 
+
+
+
+
+  constructor() { }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> CERTO.... --> aí, nesse 'Input',
+
+
+
+O PROFESSOR DIZ QUE ELE VAI QUERER BINDAR A UMA PROPRIEDADE CHAMADA 
+
+de 
+
+
+'unless'... -----> essa será simplesmente nossa 'condition'...
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+import { Directive } from '@angular/core';
+
+@Directive({
+  selector: '[appUnless]'
+})
+export class UnlessDirective {
+
+
+
+            @Input() unless
+
+
+
+
+  constructor() { }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-->  SEMPRE QUE ESSA CONDITION FOR MUDAR (
+
+
+
+    o que vai ocorrer SEMPRE QUE 
+
+
+    NOSSO PARAMETER DE 'Input' for alterado, no caso
+),
+
+
+VAMOS 
+
+
+
+__ QUERER__ 
+
+
+_ EXECUTAR UM METHOD ESPECÍFICO... -> 
+
+
+
+
+
+
+
+
+
+
+PARA QUE ESSE METHOD REALMENTE SEJA EXECUTADO A PARTIR DO CHANGE DA PROPRIEDADE/INPUT de 
+
+'unless',
+
+
+
+O PROFESSOR __ DEFINE UM 'SETTER',
+
+
+por meio 
+
+
+
+da keyword de 'set'... ---> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+A ESCRITA FICA TIPO ASSIM:
+
+
+
+
+
+import { Directive } from '@angular/core';
+
+@Directive({
+  selector: '[appUnless]'
+})
+export class UnlessDirective {
+
+
+
+            @Input() set unless() {
+            }
+
+
+
+
+  constructor() { }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+--------> ISSO VAI TRANSFORMAR __ A NOSSA PROPRIEDADE EM UM 'METHOD',
+
+EMBORA TECNICAMENTE (e isso é importante de entender) 
+
+
+
+
+__ ESSE NEGÓCIO _ NÃO DEIXA_ DE SER UMA PROPERTY.... (
+
+    a única diferença é que 
+
+    O SETTER DESSA PROPERTY, 
+
+    QUE É UM METHOD QUE É 
+
+    EXECUTADO _ SEMPRE QUE ESSA PROPERTY FOR ALTERADA..
+) ----------> e essa property,
+
+
+é claro,
+
+só vai mudar QUANDO O INPUT __ EXTERNO_ A ESSA DIRECTIVE _ REALMENTE FOR MUDADO (
+
+
+     
+
+     ou
+
+     seja,
+
+
+     se a condition QUE PASSAMOS TIVER SIDO ALTERADA,
+
+     DEIXAR DE SER 'unless xxx',
+
+
+     aí vamos querer que o CÓDIGO DENTRO DO method de 'unless() {}' SEJA EXECUTADO...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> é por isso que o method de 'unless' 
+
+DEVERÁ _ RECEBER O VALUE QUE A PROPERTY NORMALMENTE RECEBERIA ___ COMO UM _ INPUT/parâmetro...
+
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+@Input() set unless(value: boolean) {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+--> E, SIM, SABEMOS QUE A COISA QUE SERÁ RECEBIDA AQUI _ _SERÁ UM BOOLEAN (true ou false),
+
+
+
+
+pq essa coisa será nossa 'CONDITION', no final das contas..
+
+
+
+
+
+
+
+
+
+--> é por isso que escrevemos assim:
+
+
+
+
+
+
+@Input() set unless(condition: boolean) {
+
+}
+
+
+
+
+
+
+
+
+
+
+----> SE A CONDITION NÃO FOR TRUE (que é o case EM QUE QUERO _ DISPLAYAR ALGO, SIM, PQ___ UNLESS É O CONTRÁRIO DE NGIF ).....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> vai ficando assim:
+
+
+
+
+
+
+import { Directive } from '@angular/core';
+
+@Directive({
+  selector: '[appUnless]'
+})
+export class UnlessDirective {
+
+
+
+            @Input() set unless(condition: boolean) {
+
+
+                if (!condition) {
+
+                } else {
+                    return;
+                }
+            }
+
+
+
+
+  constructor() { }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+-------> SE A CONDITION FOR 'true' (else case),
+
+VAMOS QUERER DISPLAYAR PORRA NENHUMA, POR ISSO O RETURN DE NADA...
+
+
+
+
+
+
+
+
+
+
+----> OK, MAS COMO DISPLAYAMOS ALGO NO TEMPLATE, A PARTIR DO CÓDIGO DESSA STRUCTURAL DIRECTIVE?
+
+
+
+
+
+
+
+
+
+--> BEM, NOSSA DIRECTIVE DE 'unless'
+
+VAI 
+
+FICAR 
+
+POSICIONADA 
+
+DENTRO DE 
+
+
+
+UM COMPONENT 
+
+TIPO 
+
+
+<ng-template>...
+
+
+
+
+
+
+
+
+
+
+--> é por isso que PRECISAMOS 
+
+
+
+
+
+1) DE ACESSO A ESSE COMPONENT 'ng-template'
+
+
+
+
+
+
+
+2) PRECISAMOS _ DE ACESSO AO LUGAR NO DOCUMENT/DOM EM QUE QUEREMOS 
+
+RENDERIZAR ESSE COMPONENT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ambas essas coisas podem ser __ INJETADAS __ 
+
+
+
+no nosso structural directive...
+
+
+
+
+
+
+
+
+--> O TEMPLATE PODE SER INJETADO 
+
+POR MEIO 
+
+
+DO CONSTRUCTOR,
+
+
+
+BASTA ADICIONAR UM PARAMETER 
+
+de 
+
+
+'private templateRef: TemplateRef'...
+
+
+
+
+
+
+
+
+
+
+
+
+ISSO PQ 
+'ElementRef' --> NOS DAVA ACESSO AO '''ELEMENT EM QUE A DIRECTIVE ESTAVA POSICIONADA'''.
+
+
+
+
+
+
+
+
+'TemplateRef' -> NOS _ DÁ __ ACESSO __ AO '''NG-TEMPLATE EM QUE NOSSA  DIRECTIVE ESTARÁ POSICIONADA''...
+
+
+
+
+
+
+
+
+
+
+--> PARA ESCREVER O TYPE DE 'TempalteREf',
+
+
+basta escrever assim:
+
+
+
+
+
+
+
+
+
+
+private templateRef: TemplateRef<any>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> OK,
+
+
+
+
+
+
+
+
+ESSE 'TemplateRef'
+
+REPRESENTA A PRIMEIRA COISA, A 'COISA A SER INSERIDA/ALTERADA'..
+
+
+
+
+
+
+
+
+
+
+
+JÁ 
+
+
+
+
+
+
+AGORA PRECISAMOS DA COISA 2,
+
+QUE É 
+
+
+
+'''O CONTAINER NO QUAL ESSA DIRECTIVE/STRUCTURAL DIRECTIVE 
+
+DEVE SER RENDERIZADA'.... ------------->
+
+
+
+
+
+
+
+
+
+
+
+
+TEMPLATE -> IS THE 'WHAT'
+
+
+
+
+
+
+XXXX --> IS THE 'WHERE'...
+
+
+
+
+
+
+
+
+
+PARA CONSEUGIR O _ LOCAL__,
+
+
+o professor 
+
+
+escreve 
+
+
+
+
+
+''''private viewContainerReference'',
+
+
+
+
+E O __ TYPE SERÁ DE 'ViewContainerRef'...
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+import { Directive } from '@angular/core';
+
+@Directive({
+  selector: '[appUnless]'
+})
+export class UnlessDirective {
+
+
+
+            @Input() set unless(condition: boolean) {
+
+
+                if (!condition) {
+
+                } else {
+                    return;
+                }
+            }
+
+
+
+
+  constructor(private templateRef: TemplateRef<any>, private viewContainerReference: ViewContainerRef) { }
+
+}
+
+
+
+
+----------------------------------------
+
+
+
+
+
+
+
+
+--> OK, O SEGUNDO PARÂMETRO REPRESENTA O 'LOCAL EM QUE COLOCAMOS ESSA DIRECTIVE LÁ NO DOCUMENT'.... --> 
+
+
+você pode observar isso se checar as dev tools..
+
+
+
+
+
+
+
+
+
+
+--> COM ESSAS 2 FERRAMENTAS DISPONÍVEIS,
+
+
+
+
+O PROFESSOR DIZ QUE PODEMOS 
+
+CONTINUAR LÁ no '@Input()',
+
+
+E 
+
+AÍ 
+
+
+
+
+
+SEMPRE QUE A '''CONDITION''' FOR ALTERADA,
+
+PODEMOS CHAMAR 
+
+
+
+o 
+
+
+'
+this.viewContainerReference'
+
+
+
+E ENTAÕ O METHOD de 
+
+''createEmbeddedView()'''' --> ISSO FAZ EXATAMENTE O QUE O NOME SUGERE,
+
+
+
+]__ CRIA_ UM VIEW__ DENTRO __ DESSE VIEW CONTAINER... --------> e o VIEW QUE QUEREMOS 
+
+
+CRIAR É JUSTAMENTE O NOSSO 
+
+
+'this.templateRef',
+
+
+que 
+
+
+
+
+É SIMPLESMENTE A REFERENCE AO TEMPLATE QUE QUEREMOS INSERIR..
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+
+
+import { Directive } from '@angular/core';
+
+@Directive({
+  selector: '[appUnless]'
+})
+export class UnlessDirective {
+
+
+
+            @Input() set unless(condition: boolean) {
+
+
+                if (!condition) {
+                        this.viewContainerReference.createEmbeddedView(this.templateRef);
+                } else {
+                    return;
+                }
+            }
+
+
+
+
+  constructor(private templateRef: TemplateRef<any>, private viewContainerReference: ViewContainerRef) { }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+--------------------------
+
+
+
+
+
+
+
+
+
+
+E SE A CONDITION FOR TRUE,
+
+
+VAMOS QUERER 
+
+SIMPLESMENTE 
+
+
+CHAMAR O METHOD DEW 
+
+'this.viewContainerReference.clear()'
+
+
+
+PARA _ SIMPLESMENTE _ LIMPAR TODO ESSE NEGÓCIO (esse 'slot do template')
+
+de nosso DOM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO, NOSSA DIRECTIVE CUSTOM ESTÁ CRIADA,
+
+
+
+BASTA DECLARAR ISSO LÁ EM 'app.module.ts'
+
+E ENTAÕ 
+
+O UTILIZAR LÁ NO COMPONENT DE 
+
+'app.component.html'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> EX:
+
+
+
+
+
+
+
+
+
+
+import { Directive } from '@angular/core';
+
+import { Input } from '@angular/core';
+
+import { TemplateRef } from '@angular/core';
+
+import { ViewContainerRef } from '@angular/core';
+
+@Directive({
+  selector: '[appUnless]',
+})
+export class UnlessDirective {
+  @Input() set unless(condition: boolean) {
+    if (!condition) {
+      this.viewContainerReference.createEmbeddedView(this.templateRef);
+    } else {
+      this.viewContainerReference.clear()
+    }
+  }
+
+  constructor(
+    private templateRef: TemplateRef<any>,
+    private viewContainerReference: ViewContainerRef
+  ) {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK, AÍ O PROFESSOR VAI QUERER EDITAR O HTML...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ele 
+
+cria 
+
+
+
+
+
+uma DIV QUALQUER, E AÍ ESCREVE ASSIM:
+
+
+
+
+
+
+
+
+
+<div *appUnless="!onlyAdd">
+
+
+
+
+
+
+
+
+
+
+
+PROFESSOR DIZ QUE 
+
+__DEVEMOS _ USAR 
+
+
+
+ESSA ESTRELA,
+
+
+pq 
+
+ela é necessária (se você não usar a estrela, É OBRIGADO A USAR A SINTAXE DO 'ng-template' )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK.... MAS AÍ TROCAMOS '!onlyOdd',
+
+
+
+
+COLOCAMOS 
+
+'onlyOdd' (o contrário de antes)...
+
+
+
+
+
+
+
+
+
+
+
+
+-> O CÓDIGO FICA TIPO ASSIm:
+
+
+
+
+
+
+
+
+        <div *appUnless="onlyOdd">
+          <li
+            class="list-group-item"
+            *ngFor="let even of evenNumbers"
+            [ngStyle]="{
+              backgroundColor: even % 2 !== 0 ? 'yellow' : 'transparent'
+            }"
+            [ngClass]="{ odd: even % 2 !== 0 }"
+          >
+            {{ even }}
+          </li>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS AÍ O PROFESSOR GANHA UM ERRO:
+
+''não podemos bindar a 'appUnless',
+
+pq NÃO É UMA KNOWN PROPERTY'' 
+
+
+
+
+
+
+
+
+
+
+
+
+qual é a razão desse error? 
+
+
+
+
+
+
+
+
+-------> ACONTECEU PQ 
+
+nomeamos nossa propriedade como 'unless',
+
+QUANDO DEVERIA ESTAR COM O NOME 'appUnless' (mesmo nome do selector)...
+
+
+
+
+
+
+
+--> OK, RECARREGAMOS E FICAMOS COM O MESMO CMOPORTAMENTO
+
+
+DE ANTES,
+
+
+MAS AGORA COM ESSA STRUCUTRAL DIRECTIVE CUSTOMIZADA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VOCÊ É _ OBRIGADO__ A USAR A ESTRELA,
+
+
+
+pq 
+
+
+
+
+ISSO, POR TRÁS DAS CENAS,
+
+É TRANSFORMADO PELO ANGULAR...
+
+
+
+
+
+
+
+
+
+---> OK... FAREMOS ISSO COM TODOS OS OUTROS USE CASES...
+
+
+
+
+
+
+
+
+
+
+
+FICARÁ TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+      <div [ngSwitch]="value">
+        <p *ngSwitchCase="5">value is 5</p>
+        <p *ngSwitchCase="10">value is 10</p>
+        <p *ngSwitchCase="100">value is 100</p>
+        <p *ngSwitchCase="value">value is default</p>
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+  ----> MAS __ ISSO __ESTÁ UM POUCO ERRADO... --> NO CASO 
+
+
+
+
+  Do 
+
+
+  'DEFAULT CASE' (em que 'VALUE IS DEFAULT'),
+
+
+
+
+  O PROFESSOR DIZ QUE DEVEMOS USAR 
+
+
+  o structural directive de 
+
+
+
+  '*ngSwitchDefault'"   (sempre que sua CONDITION estiver com o seu valor DEFAULT/NORMAL, será TRIGGADO O COMPONENT EM QUE VOCÊ COLOCOU ESSA DIRECTIVE)..
+
+
+
+
+
+
+
+
+
+
+
+  --> salvamos tudo e testamos,
+
+  fica tipo assim:
+
+
+
+
+
+  
+
+
+
+      <div [ngSwitch]="value">
+        <p *ngSwitchCase="5">value is 5</p>
+        <p *ngSwitchCase="10">value is 10</p>
+        <p *ngSwitchCase="100">value is 100</p>
+        <p *ngSwitchCaseDefault>value is default</p>
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... VEREMOS SÓ O 'value is 5',
+
+quando salvarmos nossa page...
+
+
+
+
+
+
+
+--> mas SE TROCARMOS O VALUE DE 'value' no nosso component,
+
+outro <p>,
+
+o de 10,
+por exemplo,
+
+
+será mostrado...
+
+
+
+
+
+
+
+
+
+
+--> ESSE É O NGSWITCH.... --> ELE É ÚTIL EM SITUAÇÕES EM QUE VOCê TEM UM MONTE DE NGIF CONDITIONS... --> pode ser 
+
+
+a melhor solução...
+
+
+
+
+
+
+
+
+
+
+
+--> OK, ACABAMOS COM AS STRUCUTRAL DIRECTIVES...
+
+
+
+
+
+--> APRENDEMOS UM MONTE SOBRE DIRECTIVES...- -> o professor espera que isso nos ajude a criar um monte de directives 
+
+boas para nossos apps,
+
+nos casos em que 
+
+os 
+
+structural directives padrão não são suficientes (casos raros)..
+
+
+
+
+
+
+
+
+
+------> ADICIONAREMOS UMA DIRECTIVE AO 
+
+
+
+'RECIPE BOOK NA PRÓXIMA SECTION' (provavelmente o DROPDOWN, o open e close do dropdown, a partir de um button),
+
+
+
+
+PARA  AÍ SEGUIRMOS COM O CURSO...

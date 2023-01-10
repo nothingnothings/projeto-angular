@@ -1,0 +1,724 @@
+
+
+
+
+
+
+
+
+
+
+TENTAR FAZER ISSO POR CONTA PRÓPRIA...
+
+
+
+
+--> template-driven approach (começamos pelo html)....
+
+
+
+
+
+
+
+
+--> começamos com este código:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <form (ngSubmit)="onFormSubmit(localFormReference)"  #localFormReference="ngForm">
+      <div class="row">
+        <div class="col-sm-5 form-group">
+          <label for="name">Name</label>
+          <input type="text" 
+          id="name" 
+          class="form-control" 
+          name="name"
+          required
+          minlength="5"
+          ngModel
+          #nameReference="ngModel"
+          
+            />
+            <span  [ngStyle]="{ color: 'red' }"  *ngIf="nameReference.errors?.['required'] && nameReference.touched">Username is required
+            </span>
+            <span  [ngStyle]="{ color: 'red' }"  *ngIf="!nameReference.valid && nameReference.value && nameReference.touched ">Username must have at least 5 characters
+            </span>
+
+        </div>
+        <div class="col-sm-2 form-group">
+          <label for="amount">Amount</label>
+          <input type="number" 
+          id="amount" 
+          class="form-control"
+          name="amount"
+          ngModel
+          required
+          #amountReference="ngModel"
+
+          />
+          <span  [ngStyle]="{ color: 'red' }"  *ngIf="amountReference.errors?.['required'] && amountReference.touched">Please enter a ingredient amount
+          </span>
+          <span  [ngStyle]="{ color: 'red' }"  *ngIf="!amountReference.valid && amountReference.value && amountReference.touched ">Please enter a valid ingredient amount
+          </span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <button class="btn btn-success" type="submit" >Add</button>
+          <button class="btn btn-danger">Delete</button>
+          <button class="btn btn-primary" type="button">Clear</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E AÍ ESCREVI ESTE CÓDIGO TS:
+
+
+
+
+
+
+
+
+
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
+
+import { NgForm } from '@angular/forms';
+
+import { Ingredient } from 'src/app/shared/ingredient.model';
+
+import { ShoppingListService } from 'src/app/shoppingList.service';
+
+@Component({
+  selector: 'app-shop-list-edit',
+  templateUrl: './shop-list-edit.component.html',
+  styleUrls: ['./shop-list-edit.component.css'],
+})
+export class ShopListEditComponent implements OnInit {
+  // @ViewChild('nameInput', { static: false }) nameInputRef: ElementRef;
+  // @ViewChild('amountInput', { static: false }) amountInputRef: ElementRef;
+
+  // @Output() ingredientAdded = new EventEmitter<{
+  //   name: string;
+  //   amount: number;
+  // }>();
+
+  // @Output() ingredientAdded = new EventEmitter<Ingredient>();
+
+  constructor(private shoppingListService: ShoppingListService) {}
+
+  ngOnInit(): void {
+
+
+
+  }
+
+  // onAddItem() {
+  //   const newIngredient = new Ingredient(
+  //     this.nameInputRef.nativeElement.value,
+  //     this.amountInputRef.nativeElement.value
+  //   );
+
+  //     this.shoppingListService.onIngredientAdd(newIngredient);
+  //     // console.log(this.shoppingListService.getIngredients());
+
+
+  //   // this.ingredientAdded.emit(newIngredient);
+  // }
+
+
+
+
+
+
+  onFormSubmit(form: NgForm) {
+
+
+    console.log(form);
+    const newIngredient = new Ingredient(
+      // this.nameInputRef.nativeElement.value,
+      // this.amountInputRef.nativeElement.value
+      form.value['name'],
+      form.value['amount']
+
+    );
+
+
+    this.shoppingListService.onIngredientAdd(newIngredient);
+
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO PARECE TER DADO CERTO...
+
+
+
+
+
+
+
+----> temos outra form que 
+
+
+
+
+pode ser adicionada, a form da page de 
+
+
+
+'new recipe'...
+
+
+
+
+
+-> MAS ACHO QUE FAREMOS ISSO DEPOIS..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... O professor COMEÇA O TRABALHO NA FORM DE 'SHOPLIST'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> 
+
+ELE QUER USAR O TEMPLATE DRIVEN APPROACH..
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR MENCIONA 
+
+QUE 
+
+
+JÁ TÍNHAMOS UM CÓDIGO 
+
+
+
+QUE FAZIA HANDLE DE NOSSAS FORMS,
+
+
+
+MAS 
+
+
+
+
+
+QUE 
+
+AGORA 
+
+
+VAMOS NOS LIVRAR DAS 
+
+
+
+LOCAL REFERENCES,
+
+
+
+TIRAR O CLICK LISTENER NO BUTTON DE ADD,
+
+
+PARA AÍ 
+
+
+usar 
+
+
+
+
+(ngSubmit)
+
+
+
+
+
+LÁ 
+
+
+NO ELEMENTO '<form>',
+
+
+
+
+
+PARA AÍ EXECUTAR 'onFormSubmit()',
+
+
+METHOD CRIADO POR NÓS...
+
+
+
+
+
+
+
+
+
+--> 
+AÍ 
+
+
+O PROFESSOR QUER GANHAR ACESSO à FORM CRIADA PELO 
+
+
+ANGULAR...
+
+
+
+
+
+
+
+
+-> por isso ele digita assim:
+
+
+
+<form (ngSubmit)="onFormSubmit()" #localFormReference="ngForm">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> POR MEIO DA ESCRITA DE 'localFormReference'
+
+
+e vínculo a 'ngForm',
+
+
+
+
+GANHAMOS ACESSO A ESSE JAVASCRIPT OBJECT QUE o 
+
+ANGULAR CRIA POR TRÁS DAS CENAS...
+
+
+
+
+
+
+
+--. E AÍ PODEMOS 
+PASSAR ESSA REFERENCE AO METHOD DE 'onFormSubmit()',
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+<form (ngSubmit)="onFormSubmit(localFormReference)" #localFormReference="ngForm">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> depois disso,
+
+ELE COLOCA AS DIRECTIVES DE 
+
+'ngModel' 
+
+e 
+'name'
+
+
+EM CADA 
+
+
+1 DOS INPUTS PERTINENTES DE NOSSA PAGE,
+
+TIPO ASSIM:
+
+
+
+
+
+          <input type="text" 
+          id="name" 
+          class="form-control" 
+          name="name"
+          required
+          minlength="5"
+          ngModel
+          #nameReference="ngModel"
+          
+            />
+
+
+
+
+
+
+
+
+
+
+
+
+            E ASSIM:
+
+
+
+
+
+                      <input type="number" 
+          id="amount" 
+          class="form-control"
+          name="amount"
+          ngModel
+          required
+          #amountReference="ngModel"
+
+          />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          --> CERTO...
+
+
+
+
+
+
+
+
+
+
+AGORA DEVEMOS TER ESSE CONTROL ADICIONADO A NOSSA FORM, TAMBÉM...
+
+
+
+
+
+
+
+
+
+--> NOSSO BUTTON,
+
+NO CASO, 
+
+
+
+
+
+ESTÁ COM ESTE CÓDIGO:
+
+
+
+
+ <button class="btn btn-success" type="submit" [disabled]="!localFormReference.valid" >Add</button>
+          <button class="btn btn-danger" type="button">Delete</button>
+          <button class="btn btn-primary" type="button" >Clear</button>
+
+
+
+
+
+
+
+          ----> NO CASO,
+
+
+
+
+          APENAS 
+
+          AQUELE 
+
+          BUTTON 
+          DE 
+
+
+          'add'
+
+
+          VAI 
+
+          FAZER O SUBMIT DE NOSSA FORM,
+
+
+          JUSTAMENTE 
+
+          PQ 
+
+          OS 
+          OUTROS 2 BUTTONS SÃO DE TYPE 'button',
+
+          E NÃO 'submit' como ele...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ---> CERTO..
+
+
+
+
+
+
+
+
+    --> já em 
+
+    'onFormSubmit',
+
+
+
+
+
+
+
+    ESCREVEMOS SÓ A ESCRITA DA  INSTANCIAÇÃO DO INGREDIENT,
+
+    MAS AGORA VAMOS USAR A DATA EXTRAÍDA DA FORM...
+
+
+
+
+
+
+
+
+    ex:
+
+
+
+
+
+
+
+
+
+
+
+
+      onFormSubmit(form: NgForm) {
+
+
+    console.log(form);
+    const newIngredient = new Ingredient(
+      // this.nameInputRef.nativeElement.value,
+      // this.amountInputRef.nativeElement.value
+      form.value['name'],
+      form.value['amount']
+
+    );
+
+
+    this.shoppingListService.onIngredientAdd(newIngredient);
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OK... USAMOS 'name' e 'amount',
+
+  pq foi isso que especificamos na directive de 'name',
+
+
+  em cada 1 de nossos input fields/controls, no nosso template..
+
+
+
+
+
+
+
+
+
+  --> OK... 
+
+
+
+
+se digitamos algo nos 2 fields e clicamos em 'add',
+
+
+
+
+CONSEGUIMOS O MESMO 
+
+
+COMPORTAMENTO DE ANTES,
+
+MAS AGORA 
+
+
+COM UM APPROACH MELHOR,
+
+PQ USAMOS 
+
+
+
+'THE BUILTIN TOOLS OF ANGULAr'..
+
+
+
+
+
+
+
+
+--> QUANTO AO VALIDATION DESSA FORM, VEREMOS ISSO NA PRÓXIMA AULA...

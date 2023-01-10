@@ -1,0 +1,733 @@
+
+
+
+
+
+
+
+
+
+
+
+------> NÃO IMPORTA COMO VOCÊ HANDLA SEU ERROR.... --> 
+
+
+
+
+
+OU SEJA,
+
+
+NÃO INTERESSA 
+
+SE VOCÊ 
+
+ESTÁ USANDO O APPROACH 
+
+
+
+
+1) DE HANDLE POR MEIO DO SEGUNDO PARÂMETRO DE '.subscribe()' e o OBJECT DE 'error' (com status, error.message, etc)..
+
+
+
+
+
+
+
+
+
+2) DE HANDLE POR MEIO DE __ SUBJECT, SUBJECT-BASED APPROACH, em que vocÊ tem um SUBJECT/vários subjects 
+
+lá no SEU SERVICE, em uma propriedaed, e aí 
+
+VOCÊ TEM MÚLTIPLOS LOCAIS DE SEU CÓDIGO QUE PODEM ESTAR INTERESSADOS EM 1 MESMO ERROR, 
+
+
+em 1 mesmo error  que vai ser outputtado/retrievado/emittado por meio desse subject específico, que 
+
+será conectado a todos eles COm 
+
+'.next()" E COM _ '.subscribe()' (nos locais dos components em que vamos querer UTILIZAR ESSES ERRORS)...
+
+
+
+
+
+
+
+
+
+
+
+--> em ambos os cases,
+
+
+HÁ UM 
+
+OPERATOR __ ESPECIAL _ QUE PODE TE AJUDAR COM O HANDLE DE ERRORRS...
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE OPERATOR ESPECIAL PODE SER IMPORTADO LÁ DE 
+
+'rxjs/operators'...
+
+
+
+
+
+
+
+
+
+
+---> É O OPERATOR DE 'catchError'...
+
+
+
+
+
+
+
+
+
+--> DEVMOS O IMPORTAR LÁ EM 'posts.service.ts'...
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs';
+
+import { Post } from './post.model';
+
+import { catchError } from 'rxjs';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS COMO PODEMOS USAR ESSE OPERATOR? 
+
+
+
+
+
+
+
+
+-----> BEM, DIGAMOS LÁ EM 'fetchPosts',
+
+
+
+EM QUE 
+
+
+
+
+TEMOS ESTE CÓDIGO AUQI:
+
+
+
+
+
+
+
+
+
+  private fetchPosts() {
+    ///outsourcing.
+    return this.http
+      .get<{ [name: string]: Post }>(
+        'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json'
+      )
+      .pipe(
+        map((responseData) => {
+          const transformedPostsArray: Post[] = [];
+
+          for (const key in responseData) {
+            if (responseData.hasOwnProperty(key)) {
+              ///VAI CHECAR SE ISSO NÃO É UM 'PROTOTYPE' dentro da 'responseData'...
+              transformedPostsArray.push({ ...responseData[key], id: key });
+            }
+          }
+
+          return transformedPostsArray; ///return de 'observable' (Faça SUBSCRIPTION lá nos seus COMPONENTS, para pegar o resultado da subscription)...
+        })
+      );
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> COMO VOCÊ PODE OBSERVAR, NESSE 
+
+
+  METHOD NÓS JÁ FAZEMOS O 'PIPE' DE 
+
+
+  UM BOCADO DE DATA,
+
+
+  O QUE QUER DIZER QUE 
+
+
+  _ JÁ __ USAMOS UM 'operator',
+
+
+  que é esse 
+
+  'map()"
+
+  AÍ...
+
+
+
+
+
+
+
+
+
+
+
+  ------> OK... -> MAS DIGAMOS QUE 
+
+
+  NESSA FUNCTION NÓS VAMOS GANHAR UM _ ERROR__,
+   
+   E QUE 
+
+   AÍ VAMOS QUERER HANDLÁ-LO...
+
+
+
+
+
+
+
+
+
+
+
+
+   --> PARA ISSO,
+
+   PODEMOS SIMPLESMENTE 
+
+
+   ESCREVER 
+
+   AQUELE OPERATOR DE 
+
+
+   'catchError'
+
+
+   AO FINAL 
+
+
+   DO ROL 
+
+
+
+   de OPERATORS (ou seja, depois de 'map()')...
+
+
+
+
+
+
+
+
+
+
+
+
+   --> ESCREVERÍAMOS ASSIM:
+
+
+
+
+
+
+
+
+     private fetchPosts() {
+    ///outsourcing.
+    return this.http
+      .get<{ [name: string]: Post }>(
+        'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json'
+      )
+      .pipe(
+        map((responseData) => {
+          const transformedPostsArray: Post[] = [];
+
+          for (const key in responseData) {
+            if (responseData.hasOwnProperty(key)) {
+              ///VAI CHECAR SE ISSO NÃO É UM 'PROTOTYPE' dentro da 'responseData'...
+              transformedPostsArray.push({ ...responseData[key], id: key });
+            }
+          }
+
+          return transformedPostsArray; ///return de 'observable' (Faça SUBSCRIPTION lá nos seus COMPONENTS, para pegar o resultado da subscription)...
+        }),
+        catchError(
+            (errorRes) => {
+
+            }
+        )
+      );
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OU SEJA,
+
+  SEPARAMOS OS 2 OEPRATORS COM um ','
+
+
+
+
+  E AÍ 
+
+
+  CONTINUAMOS ESSE SISTEMA 'PIPELINE'/'MIDDLEWARE'...
+
+
+
+
+
+
+--> NESSE ARGUMENTO DE 'errorRes',
+
+
+VAMOS RECEBER ________A EXATA MESMA __ DATA 
+
+
+
+
+
+QUE RECEBERÍAMOS/RECEBEMOS 
+
+
+
+LÁ NO SEGUNDO PARÂMETRO DO METHOD de '.subscribe()'
+
+
+(
+
+    OU SEJA,
+
+
+    AQUELE PARÂMETRO DE 
+
+
+'''''''''''''''''''
+    .subscribe(
+        (data) => {
+
+            console.log(data)
+        },
+
+        (error) => { //////////ESTE PARÂMETRO AQUI, essa data aqui..
+            console.log(error)
+        }
+    )
+
+
+
+ '''''''''''''''''''''''
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok.... aí,
+
+DENTRO DESSE 
+
+
+
+
+
+
+CÓDIGO DA FUNCTION DE 'catchError',
+
+
+
+PODEMOS FAZER COISAS COMO 
+
+
+
+'''SEND DATA TO AN ANALYTICS SERVER'''
+ 
+
+
+ ou qualquer coisa do gênero,
+
+ OU SEJA,
+
+
+
+ __ FAZER 
+
+
+
+ UMAS TASKS 
+
+
+
+ DE ERROR HANDLING GENÉRICAS...
+
+
+
+
+
+
+
+
+
+
+
+
+ ---> FAZER TAREFAS 
+
+ QUE TALVEZ NÃO TENHAM RELAÇÃO ESTRITA COM A UI,
+
+
+
+
+
+
+
+
+ COMO POR EXEMPLO 'SOME BEHIND THE SCENES STUFF YOU WANNA DO',
+
+
+
+
+
+ COISAS QUE VOCÊ QUER FAZER QUANDO UM ERRO OCORRER,
+
+
+ COMO O LOGGAR EM ALGUM LUGAR ('analytics server')
+
+
+
+ OU QUALQUER COISA DO GÊNERO..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> E ASSIM QUE VOCê TERMINAR O HANDLE DESSE ERROR,
+
+
+
+
+ é _  LÓGICO __ QUE 
+
+
+
+ VOCê DEVE 'PASS IT ON',
+ passar 
+
+ ESSE ERROR ADIANTE.. ------> ISSO PQ ESSE ERROR _ DEVERÁ _ 
+
+
+
+
+ SER CAPAZ DE ALCANÇAR O 'subscribe()'
+
+
+ LÁ DE SEU COMPONENT,
+
+
+
+
+
+
+
+
+ por isso que você vai TER QUE 
+
+ EXECUTAR ALGUMA LÓGICA PARA 
+
+
+
+
+ _CONSEGUIR _ PASSAR ESSE 'ERROR'/'ERROR DATA'
+
+
+
+ PARA FRENTE NO FLOW DE SEU CÓDIGO,
+
+ PARA QUE 
+
+
+ ELE CONSIGA ATINGIR O 'subscribe'  que vem logo depois,
+
+
+ para que 
+
+ ENTÃO ESSE ERROR SEJA HANDLADO 
+
+
+
+
+ NA UI também (''serviço de analytics-store + handle na ui''', esse é o sonho)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS COMO PODEMOS 'PASSAR ISSO PARA FRENTE'? ------> NÃO BASTA CHAMAR 'return errorResponse'....
+
+
+
+
+
+
+
+
+
+
+
+----> PARA CONSEGUIR FAZER ISSO,
+
+
+
+O PROFESSOR DIZ QUE _ PRECISAMOS _ CRIAR UM NOVO 
+
+
+
+
+___ OBSERVABLE__ QUE WRAPPE ESSE ERROR... (pq isso não acontece automaticamente)... -----> 
+
+
+
+
+
+PARA ISSO,
+
+
+VOCÊ PRECISA IMPORTAR UMA OUTRA COISA LÁ DE 'rxjs',
+
+
+QUE 
+
+SERÁ 
+
+
+
+
+'throwError' -------> ESSA É UMA FUNCTION QUE _ VAI 
+
+
+
+'YIELD'
+
+
+UM _ NOVO OBSERVABLE...
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+@Injectable()
+export class PostsHttpService {
+  constructor(private http: HttpClient) {}
+
+  private fetchPosts() {
+    ///outsourcing.
+    return this.http
+      .get<{ [name: string]: Post }>(
+        'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json'
+      )
+      .pipe(
+        map((responseData) => {
+          const transformedPostsArray: Post[] = [];
+
+          for (const key in responseData) {
+            if (responseData.hasOwnProperty(key)) {
+              ///VAI CHECAR SE ISSO NÃO É UM 'PROTOTYPE' dentro da 'responseData'...
+              transformedPostsArray.push({ ...responseData[key], id: key });
+            }
+          }
+
+          return transformedPostsArray; ///return de 'observable' (Faça SUBSCRIPTION lá nos seus COMPONENTS, para pegar o resultado da subscription)...
+        }),
+        catchError(
+          (errorRes) => {
+
+            return throwError(() => new Error(errorRes))
+          }
+        )
+      );
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  -->  POR MEIO DESSA 
+
+
+
+
+  'catchError',
+
+  portanto,
+
+  PODEMOS FAZER HANDLING MAIS ESPECÍFICO DE ERROR...
+
+
+
+
+
+
+
+
+
+
+---> VOCÊ PODE USAR 
+
+
+
+
+
+
+
+ESSE 'catchError'
+
+se _ VOCÊ TIVER ALGUMA 'GENERIC ERROR HANDLING TASK' que você talvez queira executar (
+
+
+    como 'LOG YOUR ERROR INTO AN ANALYTICS SERVER'.
+)
+

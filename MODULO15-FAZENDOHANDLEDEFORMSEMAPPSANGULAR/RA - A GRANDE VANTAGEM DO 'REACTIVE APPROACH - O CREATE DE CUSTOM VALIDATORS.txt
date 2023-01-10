@@ -1,0 +1,2228 @@
+
+
+
+
+
+
+
+
+
+
+
+
+----> NAS ÚLTIMAS LIÇÕES,
+
+
+APRENDEMOS SOBRE:
+
+
+
+
+
+
+
+1) CREATION 
+
+
+2) CONFIGURATION
+
+
+
+
+
+
+3) USAGE 
+
+
+
+
+
+
+de nossas PRÓPRIAS FORMS REACTIVE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------> AGORA DEVEMOS USAR OUTRA FEATURE LEGAL
+ 
+
+
+
+ QUE PODEMOS FACILMENTE IMPLEMENTAR QUANDO 
+
+
+ USAMOS O  REACTIVE APPRAOCH....
+
+
+
+
+
+
+
+
+
+
+
+ -----> É O ADD DE NOSSOS PRÓPRIOS VALIDATORS...
+
+
+
+
+
+
+
+
+
+ --->  ATÉ AGORA,
+
+ SEMPRE UTILIZAMOS NOSSOS PRÓPRIOS 'CUSTOM VALIDATORS'..
+
+
+
+
+
+
+
+
+
+
+ ----> e, honestamenet,
+
+
+ os built-in ones 
+
+
+
+ JÁ COBREM GRANDE PARTE DOS USE-CASES...
+
+
+
+
+
+
+
+
+
+
+
+ ---> MAS DIGAMOS QUE TEMOS ALGUNS USERNAMES QUE 
+
+
+ __ NÃO QUEREMOS QUE O USER UTILIZE..
+
+
+
+
+
+
+
+
+
+
+
+
+ -----> para bloquear esses values de userName,
+
+
+
+
+
+ PODEMOS IR ATÉ O 
+
+ nosso 
+
+
+ 'app.component.ts'
+
+
+
+ E AÍ 
+
+ ADICIONAR UMA NOVA PROPRIEDADE,
+
+
+
+ 'forbiddenUsernames',
+
+
+
+
+ tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms'; /// NO REACTIVE APPROACH, usamos UM MONTE DAS CLASSES OFERECIDAS POR ESSA PACKAGE...
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent implements OnInit {
+  genders = ['Male', 'Female'];
+
+
+  forbiddenUsernames: string[] = ['Chris', 'Anna'];
+
+  signupForm: FormGroup; //nossa 'overall form' sempre será isso, um 'FORM GROUP', um grande COMPILADO DE TODOS OS input fields, selects, textareas, radio buttons, etc
+
+  ///VERSÃO SEM NESTING...
+  // ngOnInit(): void {   ////é bem melhor inicializar iniicalmente nossa form AQUI, em 'ngOnInit()'....
+
+  //   this.signupForm = new FormGroup({  /////ISSO VAI __ CRIAR UMA _ NOVA FORM _ QUASe__ VÁLIDA...
+
+  //     ////sempre wrappe o nome de seus input fields em _ STRINGS_...
+  //     'username': new FormControl(  ////é usado para CRIAR A REPRESENTAÇÃO DESSE INPUT FIELD em si... e ele tem VÁRIOS ARGUMENTOS QUE DEVEM SER PASSADOS..
+
+  //     null, //// 1/////// O PRIMEIRO PARÂMETRO É o 'INITIAL VALUE' de seu input field... colocamos 'null' pq queremos que fique EM BRANCO...
+
+  //     [ Validators.required, Validators.minLength(5)]
+
+  //     ),
+
+  //     'email': new FormControl( ///user input de 'email'
+
+  //       null,
+
+  //       ///não EXECUTE esses methods de '.required' e '.email', pq esses methods DEVEM SER EXECUTADOS AUTOMATICAMENTE PELO ANGULAR, QUANDO ELE DETECTAR QUE o input DESSE 'FormControl' ESPECÍFICO foi mudado..
+  //   [   Validators.required, Validators.email ]      ///O SEGUNDO PARÂMETRO É OU 1 ÚNICO VALIDATOR, OU UMA LISTA DELES..  --> esses validators são importados lá de 'angular/forms'...
+
+  //     ),
+
+  //     'gender': new FormControl(this.genders[0] //queremos definir o 'initial value', value default, como sendo 'male' no início...
+  //       ,
+
+  //       [Validators.required]
+  //       )
+
+  //   }
+
+  //   );
+  // }
+
+  ////VERSÃO COM NESTING DE NOSSOS 'FormControl's em FormGroups dentro de nosso outer FormGroup:
+
+
+
+
+
+  ngOnInit(): void {
+    this.signupForm = new FormGroup({
+
+      'userData': new FormGroup({ ////AQUI É POSSÍVEL OBSERVAR O 'NESTING' de 1 form GROUP dentro do nosso 'OVERALL FORM GROUP' (que representa nossa FORM INTEIRA)...
+        'username': new FormControl(null, [Validators.required, Validators.minLength(5)]
+        ),
+        'email': new FormControl(  null, [Validators.required, Validators.email]),
+      }),
+      'gender': new FormControl(this.genders[0], [Validators.required]),
+      'hobbies': new FormArray([])
+    });
+  }
+
+  onSubmitForm() {
+    //checar arquivo html, no '(ngSubmit)="onSubmitForm()"'
+
+    console.log(this.signupForm.value); ///com isso, COM a form ARMAZENADA NESSA PRORPIEDAED no arquivo typescript, podemos a referenciar a qualquer hora no código typescript...
+  }
+
+
+
+
+
+
+
+
+
+  onAddHobby() {
+    // (this.signupForm.get('hobbies') as FormArray).push(new FormControl(null, [Validators.minLength(5)]))
+
+
+    ///esse código de type casting é bem raro....s
+      const newControl: FormControl = new FormControl(null, [Validators.required, Validators.minLength(5)]);
+
+    (<FormArray>this.signupForm.get('hobbies')).push(newControl);
+  }
+
+
+
+
+  getControls() {  ///ver anotações em 'RA - ANTES DA AULA DE ARRAYS DE FORM CONTROLS'
+      return (<FormArray>this.signupForm.get('hobbies')).controls;
+  }
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok... CHRIS E ANNA SÃO OS USERNAMES PROIBIDOS...
+
+
+
+
+
+
+
+
+
+
+
+---> QEUREMOS CRIAR UM VALIDATOR CUSTOMIZADO,
+
+QUE VAI CHECAR 
+
+
+SE 
+
+O
+ QUE O USER INPUTTOU É EQUIVAELENTE 
+
+
+
+ AOS VALUES QUE TEMOS NESSE ARRAY...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> e um validator, na verdade,
+
+
+ PODE SER ADICIONADO DE FORMA BEM SIMPLES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> UM VALIDATOR,
+
+ NO FINAL DAS CONTAS,
+
+
+ É APENAS _ UMA FUNCTION _ QUE 
+
+
+ ACABA EXECUTADA _ PELO ANGULAR AUTOMATICAMENTE,
+
+
+
+
+
+
+
+
+
+
+ ACABA EXECUTADA PELO ANGULAR QUANDO ELE CHECA   __ a validity 
+
+   
+
+   de um __ FORM CONTROL,
+
+
+
+
+   E ELE __ VAI CHECAR__ ESSA VALIDITY __ SEMPRE QUE VOCÊ 
+
+
+   __ALTERAR __ O VALUE _ DAQUELE GIVEN CONTROL....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok.. isso significa que 
+
+
+ 
+ UM VALIDATOR __ É SIMPLESMENTE UMA FUNCTION,
+
+
+ UM CODE SNIPPET...
+
+
+
+
+
+
+
+
+
+
+
+ --> VAMOS CHAMAR NOSSO VALIDATOR DE 
+
+
+
+ 'forbiddenNames'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA QUE UM VALIDATOR FUNCIONE CORRETAMENTE,
+
+
+NO CÓDIGO ANGULAR,
+
+
+
+ELE __ PRECISA_ DE UM ARGUMENTO ESPECÍFICO,
+
+
+
+QUE SERÁ UM ARGUMENTO 
+
+
+
+
+ 
+
+ COM TYPE DE 
+
+ 'FormControl' -------> ESSE SERÁ O INPUT/FORMCONTROL
+
+
+
+CUJA 
+
+
+
+
+VALIDITY ELE CHECARÁ..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> fica tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+forbiddenNamesValidator(control: FormControl) {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> UM __ VALIDATOR__ TAMBÉM __ PRECISA __ RETORNAR ALGUMA COISA... --> 
+
+
+
+ELE VAI _ RETORNAR UMA _ EXPRESSÃO,
+
+
+É CLARO.... ---> E ESSA EXPRESSÃO 
+
+
+
+VAI RESULTAR EM TRUE OU FALSE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+vamos querer checar se 
+
+
+O VALUE DE 'control.value'
+
+
+
+É ALGO QUE APARECE NAQUELE NOSSO ARRAY DE 'forbiddenNames',
+
+
+
+nesse nosso exemplo aqui...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TIPO ALGO ASSIM, ACHO;
+
+
+
+
+
+
+  
+forbiddenNamesValidator(control: FormControl) {
+    
+
+  return this.forbiddenUsernames.find(
+    (username) => {
+        return control.value == username;
+    }
+  )
+}
+
+
+
+
+
+
+
+
+
+-------------------------------
+
+
+
+
+
+
+OK... 
+
+
+
+
+MAS EU ERREI, AQUI...
+
+
+
+
+
+
+
+
+
+
+-> O QUE ESSE VALIDATOR RETORNARÁ __ NÃO SERÁ 'true' ou false',
+
+
+
+
+
+
+
+E SIM _ retornará um _ OBJECT JAVASCRIPT....
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE 
+
+
+VAMOS ESPECIFICAR ISSO NA NOSSA FUNCTION, TIPO ASSIM:
+
+
+
+
+
+
+
+  
+forbiddenNamesValidator(control: FormControl) {
+    
+
+
+}: {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... ----> AÍ, DENTRO DESSE OBJECT JAVASCRIPT,
+
+
+
+TEMOS QUE ADICIONAR A SEGUINTE NOTAÇÃO:
+
+
+
+
+
+
+{
+    [s: string]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+ISSO SIMPLESMENTE É SINTAXE TYPESCRIPT EM QUE DIZEMOS 
+
+
+'''queremos um key-value pair em que 
+
+
+
+A KEY __ É INTERPRETADA COMO UMA STRING''..
+
+
+
+
+
+-> MAS MAIS IMPORTANTE É A SEGUNDA PARTE,
+
+
+O VALUE 
+
+
+
+DO KEY-VALUE PAIR, 
+
+
+que deverá 
+
+SER UMA BOOLEAN... 
+
+
+
+
+
+
+PORTANTO, A ESCRITA FICA ASSIM:
+
+
+
+
+
+
+{
+    [s: string]: boolean
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CÓDIGO COMPLETO:
+
+
+
+
+
+
+
+
+  
+forbiddenNamesValidator(control: FormControl): {
+    [s: string]: boolean
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+forbiddenNamesValidator(control: FormControl): {  //ISSO SIGNIFICA QUE ESSE METHOD DEVERÁ NOS RETORNAR UM OBJECT com formato como ''{nameIsForbidden: true}'''
+    [s: string]: boolean
+} {
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ISSO SIGNIFICA QUE 
+
+
+
+ESSE 
+
+METHOD VAI SER OBRIGADO A NOS RETORNAR UM OBJECT COM UMA KEYNAME QUE SERÁ UMA STRING,
+
+
+E AÍ COM UM VALUE QUE SERÁ UM BOOLEAN...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+forbiddenNamesValidator(control: FormControl): {  //ISSO SIGNIFICA QUE ESSE METHOD DEVERÁ NOS RETORNAR UM OBJECT com formato como ''{nameIsForbidden: true}'''
+    [s: string]: boolean
+} {
+
+
+
+
+
+  return
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO, MAS AGORA PRECISAMOS 
+
+
+
+COLOCAR LÓGICA NESSA FUNCTION...
+
+
+
+
+
+
+
+--> NO NOSSO CASO,
+
+QUEREMOS CHECAR 
+
+SE 
+
+
+
+__ O VALUE __ 
+
+de 
+'control'
+
+
+
+
+
+APARECE _ DENTRO DAQUELE ARRAY DE 'forbiddenUsernames'...
+
+
+
+
+
+
+
+
+
+
+
+-> POR ISSO ESCREVO ASSIm:
+
+
+
+
+
+
+
+
+
+
+forbiddenNamesValidator(control: FormControl): {  //ISSO SIGNIFICA QUE ESSE METHOD DEVERÁ NOS RETORNAR UM OBJECT com formato como ''{nameIsForbidden: true}'''
+    [s: string]: boolean
+} {
+
+
+
+  return {
+    'isForbidden': this.forbiddenUsernames.includes(control.value)
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OU SEJA,
+
+
+
+
+
+RETORNEI UM OBJECT QUE É 
+
+{
+
+    isForbidden: true/false
+},
+
+
+
+
+
+
+
+
+QUE VAI DEPENDER 
+
+
+
+
+
+DO FIND daquele value em ''control.value''
+
+
+
+
+
+
+
+DENTRO DE NOSSO ARRAY DE 'forbiddenUsernames'... (
+
+    uso do method de '.includes()',
+
+    que é bem ÚTIL...
+
+)
+
+
+
+
+
+
+
+
+
+
+-> ok, e como ficou a versão do professor?
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ele 
+
+
+
+
+
+USOU IF CHECKS COM 
+
+
+
+'indexOf'...
+
+
+
+
+
+
+
+
+
+
+
+ele escreveu basicament assim:
+
+
+
+
+
+
+
+
+forbiddenNamesValidator(control: FormControl): {  //ISSO SIGNIFICA QUE ESSE METHOD DEVERÁ NOS RETORNAR UM OBJECT com formato como ''{nameIsForbidden: true}'''
+    [s: string]: boolean
+} {
+
+
+
+    if (this.forbiddenUsernames.indexOf(control.value)) {
+
+
+            return {
+                'isForbidden': true
+            }
+    }
+
+
+    return null;
+     
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> OU SEJA,
+
+
+
+
+
+
+___ SE O ELEMENT FOR __ ACTUALLY__ ENCONTRADO__ 
+
+
+
+
+DENTRO 
+
+DE NOSSO 
+
+
+ARRAY (caso em que a validation FALHOU, PQ ESSE __ NAME AÍ É _ PROIBIDO),
+
+
+
+
+
+
+
+
+
+VAMOS QUERER __ RETORNAR __ 'true'.... (meio PARADOXAL)...
+
+
+
+
+
+
+
+
+
+--> JÁ __ SE A VALIDATION __ FOI BEM SUCEDIDA,
+
+SE O VALUE QUE O USER INPUTTOU _ É VÁLIDO__,
+
+
+
+VAMOS QUERER 
+
+RETORNAR 'nothing' ou 'null'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OU SEJA,
+
+
+AQUI ___ NÃO PODEMOS USAR '.includes()',
+
+
+pq o INCLUDES VAI SEMPRE RETORNAR OU 'TRUE' OU 'FALSE'  (e no caso de VALIDATION BEM SUCEDIDA, QUEREMOs 'nothing' ou 'null', e não 'false' em si)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE CORRIGIMOS NOSSO CÓDIGO, E ELE FICA ASSIm:
+
+
+
+
+
+forbiddenNamesValidator(control: FormControl): {  //ISSO SIGNIFICA QUE ESSE METHOD DEVERÁ NOS RETORNAR UM OBJECT com formato como ''{nameIsForbidden: true}'''
+    [s: string]: boolean
+} {
+
+
+
+  if (this.forbiddenUsernames.indexOf(control.value)) { ////SE NOSSA VALIDATION __ FALHAR_, vamos querer retornar 'true'... (paradoxal, eu sei)...
+    return {'isForbiddenName': true }
+  }
+
+
+
+  return null;  //SE NOSSA VALIDATION __ FOR BEM SUCEDIDA, VAMOS QUERER RETORNAR 'null' ou 'nothing'... ( ou seja, VOCÊ NAÕ DEVE RETORNAR ESSE OBJECT com algo como '{'nameIsForbidden: false'}' )
+}
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS ESSE CÓDIGO AINDA ESTÁ DANDO PROBLEMA, TUDO POR CONTA DAQUELE TYPE 'boolean' 
+
+no return type de 
+
+
+[s: string]: boolean
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA CONSERTAR ISSO,
+
+
+
+
+VOCê  DEVE 
+
+
+
+
+COLOCAR O TYPE DE 'any',
+
+e não 'BOOLEAN'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> FINALMENTE CONSERTEI O PROBLEMA;
+
+
+
+
+
+EU TINHA DE DEFINIR 'any' e depois um 
+
+
+PIPE( |) 
+
+
+
+E AÍ 
+
+
+
+o 
+
+TYPE DE 'null', que é o que retorno naquele case de 'VALIDATION BEM SUCEDIDA'...
+
+
+
+
+
+
+
+
+
+
+
+--> NA VERDADE, POSSO MANTER O BOOLEAN,
+AÍ O CÓDIGO FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+forbiddenNamesValidator(control: FormControl): {  //ISSO SIGNIFICA QUE ESSE METHOD DEVERÁ NOS RETORNAR UM OBJECT com formato como ''{nameIsForbidden: true}'''
+    [s: string]: boolean} | null 
+    
+    
+    {
+
+
+
+  if (this.forbiddenUsernames.indexOf(control.value)) { ////SE NOSSA VALIDATION __ FALHAR_, vamos querer retornar 'true'... (paradoxal, eu sei)...
+    return {'isForbiddenName': true }
+  }
+
+
+
+  return null;  //SE NOSSA VALIDATION __ FOR BEM SUCEDIDA, VAMOS QUERER RETORNAR 'null' ou 'nothing'... ( ou seja, VOCÊ NAÕ DEVE RETORNAR ESSE OBJECT com algo como '{'nameIsForbidden: false'}' )
+}
+
+
+
+
+
+
+
+
+
+certo...
+
+
+
+
+
+
+
+
+quando retornamos 'null',
+
+
+dizemos ao angular que 
+
+
+
+O INPUT DO USER É __VÁLIDO....
+
+
+
+
+
+
+
+
+--> BEM, E ISSO É TUDO, COM ISSO CRIAMOS NOSSO PRÓPRIO VALIDATOR CUSTOMIZADO...
+
+
+
+
+
+
+
+
+
+
+--> aGORA SÓ TEMOS QUE _O UTILIZAR__ COMO 
+
+
+
+
+VALIDATOR 
+
+
+EM ALGUM DE NOSSOS 'FormControl',
+
+
+
+
+tipo  assim:
+
+
+
+
+
+
+
+  ngOnInit(): void {
+    this.signupForm = new FormGroup({
+
+      'userData': new FormGroup({ ////AQUI É POSSÍVEL OBSERVAR O 'NESTING' de 1 form GROUP dentro do nosso 'OVERALL FORM GROUP' (que representa nossa FORM INTEIRA)...
+        'username': new FormControl(null, [Validators.required, this.forbiddenNamesValidator, Validators.minLength(5)]
+        ),
+        'email': new FormControl(  null, [Validators.required, Validators.email]),
+      }),
+      'gender': new FormControl(this.genders[0], [Validators.required]),
+      'hobbies': new FormArray([])
+    });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> EU ESCREVI ASSIM:
+
+
+
+
+    'username': new FormControl(null, [Validators.required, this.forbiddenNamesValidator, Validators.minLength(5)]
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> MAS NÃO SEI SE ISSO FUNCIONARÁ....
+
+
+
+
+
+
+
+
+
+
+
+
+    -> bem, parece que o PROFESSOR FEZ EXATAMENTE ISSO QUE EU FIZ...
+
+
+
+
+
+
+
+    --> colocou uma reference ao 'this.forbiddenNamesValidator'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> CERTO, MAS ISSO __ NOS DEU UM ERROR....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> E É UM ERROR DIFÍCIL DE IDENTIFICAR:
+
+
+
+
+
+
+
+    core.mjs:6494 ERROR TypeError: Cannot read properties of undefined (reading 'forbiddenUsernames')
+    at forbiddenNamesValidator (app.component.ts:118:12)
+    at forms.mjs:811:40
+    at Array.map (<anonymous>)
+    at executeValidators (forms.mjs:811:23)
+    at FormControl._composedValidatorFn (forms.mjs:842:28)
+    at FormControl._runValidator (forms.mjs:2534:38)
+    at FormControl.updateValueAndValidity (forms.mjs:2511:32)
+    at new FormControl (forms.mjs:2892:14)
+    at AppComponent.ngOnInit (app.component.ts:62:21)
+    at callHook (core.mjs:2551:1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O QUE ACCONTECEU AQUI?
+
+
+
+
+
+
+
+
+
+
+
+
+-> talvez seja pq eu defini aquele array de 
+
+
+''  forbiddenUsernames: string[] = ['Chris', 'Anna']; '''
+
+
+
+
+
+
+
+
+
+
+
+diretamente no ROOT DE MEU app.component.ts,
+
+
+
+e naõ no CONSTRUCTOR...
+
+
+
+
+
+
+
+
+
+
+
+
+-> tentar mudar isso, definir no constructor....
+
+
+
+
+
+
+
+
+
+
+
+
+-> não, não posso fazer isso... --> não posso fazer isso pq 'AppComponent'
+
+NÃO  ACEITA UM CONSTRUCTOR... (não tem a decoration de '@Component({})')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> isso significa que o error de 
+
+
+
+
+
+
+
+
+
+
+
+core.mjs:6494 ERROR TypeError: Cannot read properties of undefined (reading 'forbiddenUsernames')
+    at forbiddenNamesValidator (app.component.ts:118:12)
+    at forms.mjs:811:40
+    at Array.map (<anonymous>)
+    at executeValidators (forms.mjs:811:23)
+    at FormControl._composedValidatorFn (forms.mjs:842:28)
+    at FormControl._runValidator (forms.mjs:2534:38)
+    at FormControl.updateValueAndValidity (forms.mjs:2511:32)
+    at new FormControl (forms.mjs:2892:14)
+    at AppComponent.ngOnInit (app.component.ts:62:21)
+    at callHook (core.mjs:2551:1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+está sendo causado por OUTRA COISA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O QUE DEU DE ERRADO?
+
+
+
+
+
+
+
+
+
+----> ESSE É UM __ PROBLEMA_ RELACIONADO __ AO MODO _ PELO QUAL _ 
+
+
+JAVASCRIPT HANDLA A KEYWORd 'this'....
+
+
+
+
+
+
+(um  velho problema)...
+
+
+
+
+
+
+
+
+
+
+
+----> ISSO SIGNIFICA QUE 
+
+
+
+
+
+ESTAMOS ACESSANDO UM 'this'
+
+QUE ESTÁ SE REFERINDO A ALGO COMPLETAMENTE DIFERENTE, AQUI NESSA LINHA:
+
+
+
+
+if (this.forbiddenUsernames.indexOf(control.value))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ISSO PODE PARECER 'ALL RIGHT'
+
+
+pq estamos DENTRO DE NOSSA CLASS,
+
+E DENTRO DESSE METHOD DESSA CLASS... mas isso não está ok...
+
+
+
+
+
+
+
+
+
+----> PENSE EM ''''QUEM ESTÁ CHAMANDO ESSE METHOD DE forbiddenNames....''''
+
+
+
+
+
+
+
+
+--> por acaso é o 'AppComponent'?
+
+
+
+
+
+
+
+-> fiz um console.log desse 'this',
+
+e ele 
+
+me retornou 'UNDEFINED'... -> ou seja, esse 'this' naõ está se referindo a ninguém?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> isso quer dizer que esse 'this'
+
+
+ESTÁ SE REFEERINDO A ALGO ERRADO ___ _SOMENTE__ 
+
+
+NO CALL DESSE VALIDATOR 
+
+
+
+CUSTOMIZADO...
+
+
+
+
+
+
+
+
+
+---> MAS PQ ISSO ACONTECE?
+
+
+
+
+
+
+
+
+---> é bem simples, lembre-se do local em que esse validator é executado:
+
+
+
+
+  ngOnInit(): void {
+    this.signupForm = new FormGroup({
+
+      'userData': new FormGroup({ ////AQUI É POSSÍVEL OBSERVAR O 'NESTING' de 1 form GROUP dentro do nosso 'OVERALL FORM GROUP' (que representa nossa FORM INTEIRA)...
+        'username': new FormControl(null, [Validators.required, this.forbiddenNamesValidator, Validators.minLength(5)]
+        ),
+        'email': new FormControl(  null, [Validators.required, Validators.email]),
+      }),
+      'gender': new FormControl(this.genders[0], [Validators.required]),
+      'hobbies': new FormArray([])
+    });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> é bem ali,
+
+
+
+
+
+
+naquele array de Validators... ----> 
+
+
+
+
+
+
+
+
+
+e o problema é que estamos só passando a referência de 
+
+'this.forbiddenNamesValidator',
+
+
+
+
+
+e AÍ
+
+
+
+
+
+__ É O ANGULAR (comando central)
+
+
+
+
+que está 
+
+executando ESSE VALIDATOR PARA NÓS,
+
+
+e naõ 
+
+
+a própria class de 'component'...
+
+
+
+
+
+
+
+
+
+-> ok... essa é a causa.... mas como CONSERTAR?
+
+
+
+
+
+
+
+
+--> talvez com o uso de 'bind'? 
+
+
+
+
+
+this.forbiddenNamesValidator.bind(this)
+
+
+
+
+
+
+
+
+
+
+
+tipo assim....
+
+
+
+
+
+
+
+
+
+---> CHUTEI QUE ESSE CÓDIGO FUNCIONARIA, ____e FUNCIONOU_____....
+
+
+
+
+
+
+
+O CÓDIGO COMPLETO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+ ngOnInit(): void {
+    this.signupForm = new FormGroup({
+      ///////this.forbiddenNamesValidator.bind(this)  --> com isso, consertamos aquele bug dos custom validators, que não se referem ao 'this' de nossa class IMEDIATAMENTE; é necessário esse bind aí...
+      'userData': new FormGroup({ ////AQUI É POSSÍVEL OBSERVAR O 'NESTING' de 1 form GROUP dentro do nosso 'OVERALL FORM GROUP' (que representa nossa FORM INTEIRA)...
+        'username': new FormControl(null, [Validators.required, this.forbiddenNamesValidator.bind(this), Validators.minLength(5)]
+        ),
+        'email': new FormControl(  null, [Validators.required, Validators.email]),
+      }),
+      'gender': new FormControl(this.genders[0], [Validators.required]),
+      'hobbies': new FormArray([])
+    });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> com isso,
+
+conseguimos bindar 
+
+
+
+
+o 
+
+
+'this'
+
+
+
+dos validators
+
+AO _ THIS __ DO CONTEXTO 
+
+
+
+DE NOSSA CLASS....
+
+
+
+
+
+ 
+
+
+ this.forbiddenNames.bind(this).....
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ---. OK, RECOMPILAMOS, E AÍ PERCEBEMOS QUE O ERROR SUMIU...
+
+
+
+
+
+
+
+
+
+
+ --> AGORA PODEMOS CHECAR 
+
+
+ 
+
+
+ SE NOSSO CUSTOM VALIDATOR 
+ 
+
+ FUNCIONOU/FUNCIONA....
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> MAS O PROFESSOR EXPLICA QUE NOSSO CÓDIGO ESTÁ DANDO PROBLEMA...
+
+
+
+
+
+
+
+
+ --> o problema está na própria lógica de validation:
+
+
+
+
+
+
+   if (this.forbiddenUsernames.indexOf(control.value)) {
+    return {'isForbiddenName': true }
+  }
+
+  return null;  
+}
+
+
+
+
+
+
+
+
+
+
+
+AQUI, ESTAMOS CHECANDO SE O VALUE DO CONTROL _ FAZ 
+__ PARTE __ DAQUELE ARRAY... ------> 
+
+
+
+
+E AÍ,
+
+O NEGÓCIO V('indexOf')
+
+
+
+VAI RETORNAR 
+
+
+'-1' 
+
+
+
+SE __ O ELEMENTO REALMENTE FIZER PARTE DESSE ARRAY (case em que é INVÁLIDO O INPUT DO USER)..
+
+
+
+
+
+
+
+
+
+
+
+--> mas o problema é que 
+
+'-1' 
+
+
+
+É CONSIDERADO __ COMO TRUTHY,
+
+
+
+POR ISSO PRECISAMOS _ CHECAR 
+
+
+
+
+''''' SE O  
+
+
+value NÃO FOR IGUAL A 
+
+
+-1, VAMOS QUERER RETORNAR 'true'''' (para que fique como INVÁLIDO)...
+
+
+
+
+
+
+
+
+
+Ex:
+
+
+
+
+
+
+
+
+
+      ///'this' dentro dessa class estará _ ERRADO__....
+  if (this.forbiddenUsernames.indexOf(control.value) !== -1) { ////SE NOSSA VALIDATION __ FALHAR_, vamos querer retornar 'true'... (paradoxal, eu sei)...
+    return {'isForbiddenName': true }
+  }
+
+
+
+  return null;  //SE NOSSA VALIDATION __ FOR BEM SUCEDIDA, VAMOS QUERER RETORNAR 'null' ou 'nothing'... ( ou seja, VOCÊ NAÕ DEVE RETORNAR ESSE OBJECT com algo como '{'nameIsForbidden: false'}' )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+OK... AGORA, COM ISSO, NOSSO CUSTOM VALIDATOR FINALMENTE FUNCIONOU...
+
+
+
+
+
+
+
+
+
+
+
+
+SE TENTAMOS DIGITAR 'CHRIS' OU 'ANNA',
+
+
+NOSSO INPUT FIELD FICA INVÁLIDO...
+
+
+
+
+
+
+
+
+
+--------> NA PRÓXIMA AULA,
+
+
+
+VEREMOS 
+
+
+
+
+
+
+AQUELE '''ESTRANHO CÓDIGO DE ERRO'''',
+
+
+
+E COMO PODEMOS O UTILIZAR....

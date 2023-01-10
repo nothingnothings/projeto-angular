@@ -1,0 +1,774 @@
+
+
+
+
+
+
+
+
+
+
+-> AGORA ENTRAMOS  A 'KIND OF' 
+
+
+
+SEGUNDA PARTE DESSE MÓDULO...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ATÉ AGORA DEMOS UMA BOA OLHADA EM COMO PODEMOS ENVIAR HTTP REQUESTS,
+
+
+
+COMO PODEMOS FAZER HANDLE DE ERRORS,
+
+
+
+
+
+COMO PODEMOS 
+
+
+TRABALHAR COM A DATA QUE RECEBEMOS DE VOLTA __ QUANDO NÃO FICAMOS COM ERRORS, ETC ETC...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> AGORA O PROFESSOR NOS MOSTRARÁ ALGUMAS DAS PARTES MAIS AVANÇADAS DO HTTP CLIENT,
+
+
+
+E COMO 
+
+
+
+VOCÊ PODE CONFIGURAR 
+
+
+
+SEUS REQUESTS,
+
+
+
+E QUAIS DIFERENTES TIPOS DE RESPONSE 
+
+VOCÊ 
+
+PODE CONSEGUIR DE VOLTA,
+
+
+ETC..
+
+
+
+
+
+
+
+
+
+
+
+
+-> VAMOS COMEÇAR POR _ HEADERS__...
+
+
+
+
+
+
+
+
+-----> NOSSOS HTTPS REQUESTS SÃO CONFIGURADOS NO SERVICE DE 'postsHttpService'....
+
+
+
+
+
+
+
+
+
+
+
+
+--> QUANDO CONFIGURAMOS HTTP REQUESTS,
+
+DEFINIMOS COISAS COMO :
+
+
+
+
+1) A URL TARGETTADA 
+
+
+
+
+2) O VERB 
+
+
+
+3) A DATA ANEXADA AO SEU REQUEST...
+
+
+
+
+
+
+
+MAS às VEZES VOCê TAMBÉM PRECISA 
+
+
+
+
+
+
+SETTAR ALGUNS HEADERS ESPECIAIS --------> EXEMPLO:
+
+
+
+
+
+
+VOCÊ TEM UMA BACKEND QUE REQUER 
+
+'AUTHORIZATION',
+
+
+E QUE ENTÃO VAI PROCURAR POR UM HEADER DE 'AUTHORIZATION'....
+
+
+
+
+
+
+
+
+
+'Authorization' : 'XXX' '  
+
+
+
+
+
+
+
+
+
+
+
+--> OU, ENTAÕ,
+
+
+
+VOCÊ PRECISA DEFINIR SEU PRÓPRIO 'CONTENT-TYPE',
+
+
+ 
+
+ OU ENTAÕ 
+
+
+
+ VOCê 
+
+ PRECISA ANEXAR UM 'CUSTOM HEADER',
+
+
+
+ pQ A API QUE VOCÊ ESTÁ TARGETTANDO NECESSITA DISSO..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> BEM, 
+
+
+ FAZER O SET DE SEUS PRÓPRIOS HEADERS NOS SEUS HTTP REQUESTS É ALGO __ EXTREMAMENTE SIMPLES...
+
+
+
+
+
+
+
+
+ --> QUALQUER __ HTTP REQUEST _ 
+ METHOD 
+
+
+
+ PODE RECEBER 
+
+
+
+ HEADERS....
+
+
+
+
+
+
+
+ ---> .get()),
+
+
+
+ .post(),
+
+
+
+ .put(),
+
+
+
+ .patch(),
+
+
+
+
+ e TODOS OS OUTROS,
+
+
+
+
+
+ TODOS ELES POSSUEM UM _ ÚLTIMO ARGUMENTO,
+
+
+
+
+
+
+
+
+ QUE _ É UM __ OBJECT__ EM QUE __ PODEMOS __ CONFIGURAR _ 
+
+
+
+
+ O REQUEST EM SI...
+
+
+
+
+
+
+
+
+ EXEMPLO:
+
+
+
+
+
+
+
+
+ fetchPosts() {
+
+
+     return this.http.get<{[key: string]: Post}>(
+
+         URL,
+
+         { /////////////ESSE É O SEU 'REQUEST CONFIG OBJECT'
+
+         }
+
+          
+     )
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E TEMOS _ UM MONTE __ DE COISAS QUE PODEMOS CONFIGURAR, DENTRO DESSE OBJECT AÍ...
+
+
+
+
+
+
+
+-> A COISA QUE O PROFESSOR VAI QUERER DEFINIR, AGORA, É A KEY DE 'headers'...
+
+
+
+
+
+
+
+
+-> HEADERS ___ _ACEITA/EXIGE _ UM __ OBJECT....  -----. 
+
+
+
+
+
+
+É O _ OBJETO DE  __ 'HEADERS'_....
+
+
+
+
+
+
+
+
+
+
+-----> ESSE OBJECT TE DEIXA DEFINIR OS HEADERS QUE VOCê  VAI QUERER ENVIAR...
+
+
+
+
+
+
+
+
+--> tipo assim:
+
+
+
+
+
+
+
+ fetchPosts() {
+
+
+     return this.http.get<{[key: string]: Post}>(
+
+         URL,
+
+         { /////////////ESSE É O SEU 'REQUEST CONFIG OBJECT'
+
+
+            headers: {
+
+            }
+         }
+
+          
+     )
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA SERMOS MAIS PRECISOS,
+
+
+
+ESSE 
+
+
+object de 'headers'
+
+
+TEM UM TYPE DE 
+
+
+
+
+
+
+
+'HttpHeaders',
+
+
+
+
+
+
+
+
+QUE VOCÊ IMPORTA LÁ DE 
+
+
+'angular/common/http'..
+
+
+
+
+
+
+
+
+--> FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs';
+
+import { Post } from './post.model';
+
+import { catchError } from 'rxjs';///É USADO PARA TASKS COMO 'LOG ERROR MESSAGES TO ANALYTICS SERVER'... é usado em conjunto com 'THROW ERROR' (para que a ERROR DATA consiga ATINGIR/REACH OS NOSSOS COMPONENTS, PARA QUE AÍ O ACTUAL ERROR HANDLING AO USUÁRIO CONSIGA OCORRER)...
+import { throwError } from 'rxjs'; ////é usado para WRAPPAR NOSSA DATA DE ERROR e então __cRIAR_ UM OBSERVABLE  (pq queremos que o '.subscribe()' nos nossos components CONSIGA 'ENCAIXAr' nesse observable)...
+
+
+import { HttpHeaders } from '@angular/common/http';  ////usamos isso para definir nossos HEADERS nos http requests..
+
+
+@Injectable()
+export class PostsHttpService {
+  constructor(private http: HttpClient) {}
+
+  private fetchPosts() {
+    ///outsourcing.
+    return this.http
+      .get<{ [name: string]: Post }>(
+        'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json', ///1o argumento, é a url/route/api endpoint que você quer targettar...
+        
+        {  //2o e ÚLTIMO argumento: é o 'HTTP REQUEST CONFIG' object... --> define várias coisas sobre nosso http request, como OS HEADERS..
+
+          headers: new HttpHeaders()
+        }
+
+
+
+
+
+
+--------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+OK... PARA DEFINIR NOSSOS HEADERS,
+
+
+
+definimos o value desse 'headers'
+
+
+COMO 
+
+
+UM _ 
+
+
+
+CALL DE 'HttpHeaders()',
+
+
+
+
+
+QUE É UMA CONSTRUCTOR FUNCTION QUE VAI EXIGIR O PASS DE UM __ OBJECT COMO PARÂMETRO ... -->
+
+
+
+
+
+
+
+
+
+
+
+DENTRO DESSE OBJECT,
+
+
+PASSAMOS UM MONTE DE _ KEY-VALUE PAIRS,
+
+
+
+
+que serão os SEUS HEADERS.... (pq headers são KEY-VALUE PAIRS, É CLARO)...
+
+
+
+
+
+
+
+O CÓDIGO VAI FICANDO ASSIM:
+
+
+
+
+
+      .get<{ [name: string]: Post }>(
+        'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json', ///1o argumento, é a url/route/api endpoint que você quer targettar...
+        
+        {  
+          headers: new HttpHeaders({})
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> O PROFESSOR DEFINE UM EXEMPLO,
+
+'Custom-Header': 'Hello'
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+      .get<{ [name: string]: Post }>(
+        'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json', ///1o argumento, é a url/route/api endpoint que você quer targettar...
+        
+        {  
+          headers: new HttpHeaders({
+              "Custom-Header": "Hello"
+
+          })
+        }
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+@Injectable()
+export class PostsHttpService {
+  constructor(private http: HttpClient) {}
+
+  private fetchPosts() {
+    ///outsourcing.
+    return this.http
+      .get<{ [name: string]: Post }>(
+        'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json', ///1o argumento, é a url/route/api endpoint que você quer targettar...
+        
+        {  //2o e ÚLTIMO argumento: é o 'HTTP REQUEST CONFIG' object... --> define várias coisas sobre nosso http request, como OS HEADERS..
+
+          headers: new HttpHeaders(
+            {
+              "Custom-Header": "Hello-Example"
+            }
+          )
+        }
+      
+      
+        )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA SE TENTARMOS FETCHEAR POSTS COMO ANTES,
+
+
+SE CHECARMOS NOSSA NETWORK TAB,
+
+VEREMOS QUE 
+
+
+
+
+A RESPONSE TERÁ ESSE HEADER DE 'cUSTOM-HEADER',
+
+
+de value 'hello-example.'...
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+GET /posts.json HTTP/1.1
+Accept: application/json, text/plain, */*
+Accept-Encoding: gzip, deflate, br
+Accept-Language: pt-BR,pt;q=0.9
+Connection: keep-alive
+Custom-Header: Hello-Example
+Host: angularconnectiondummy-default-rtdb.firebaseio.com
+Origin: http://localhost:4200
+Referer: http://localhost:4200/
+Sec-Fetch-Dest: empty
+Sec-Fetch-Mode: cors
+Sec-Fetch-Site: cross-site
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.62 Safari/537.36
+sec-ch-ua: " Not A;Brand";v="99", "Chromium";v="102", "Google Chrome";v="102"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "Windows"
+
+
+
+
+
+
+
+
+
+--> CERTO, FUNCIONOU...
+
+
+
+
+
+
+
+
+
+--> NOSSO CUSTOM HEADER FOI ANEXADO...
+
+
+
+
+
+
+--> E VOCÊ PODE ADICIONAR QUANTOS HEADERS VOCÊ QUISER,
+
+POR MEIO DESSE SIMPLES APPROACH,
+
+BASTA 
+
+ADICIONAR ESSA OPTION/CONFIG DE 
+
+
+'headers'
+
+
+
+A UM OBJECT 
+
+QUE VOCê PASSA 
+
+A ESSE 
+
+
+CONSTRUCTOR FUNCTION de 
+
+'new HttpHeaders()'...
+

@@ -1,0 +1,1378 @@
+
+
+
+
+
+
+
+
+
+
+
+-----> JÁ APRENDEMOS BASTANTE, DEVEMOS VER mais...
+
+
+
+
+
+
+
+
+
+
+
+--> se examinarmos nosso 'app.module.ts',
+
+
+
+
+
+JÁ 
+
+
+PERCEBEMOS
+ 
+
+ QUE 
+
+
+
+ NOSSO 
+
+
+
+
+CONFIG DE ROUTING,
+
+aquele array lá,
+
+
+
+
+__ JÁ 
+
+
+
+TOMA 
+
+BASTANTE ESPAÇO NO NOSSO ARQUIVO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+const appRoutes: Routes = [
+  {
+    path: '', ////localhost:4200/   (É O _ DEFAULT, A HOME PAGE, PQ É o domain.com SEM O PATH depois)...
+    component: HomeComponent,
+  },
+
+
+  // {  ////inválido... --> se quiser redirecionar a partir de '', adicione 'pathMatch: full'...
+  //   path: '',
+  //   redirectTo: '/server'
+  // },
+
+
+
+  // {
+  //   /////é a nossa primeira route... cada object nesse array é uma ROUTE, que é governada por um 'PAGE-COMPONENT' (o page-component é a ROUTE/page, no caso)...
+  //   path: 'users', ///   localhost:4200/users
+  //   component: UsersComponent, ///users.component.html
+  // },
+  // {
+  //   path: 'users/:userId', ////exemplo de DYNAMIC SEGMENTS (carregar user específico, dentro de list de users.... mesma coisa vista no NODEJS)...
+  //   component: UserComponent,
+  // },
+
+
+
+  {
+    /////é a nossa primeira route... cada object nesse array é uma ROUTE, que é governada por um 'PAGE-COMPONENT' (o page-component é a ROUTE/page, no caso)...
+    path: 'users', ///   localhost:4200/users
+    component: UsersComponent, ///users.component.html
+    children: [
+      {
+        path: ':userId',    //localhost:4200/users/:userId
+        component: UserComponent,
+      },
+    ]
+  },
+
+
+
+
+  // {
+  //   path: 'users/:userId/:name',   ////PODEMOS TER MÚLTIPLOS SEGMENTOS DINÂMICOS NAS NOSSAS URLS...
+  //   component: UserComponent
+  // },
+
+  // { /////SEM _ NESTED_ ROUTES_....
+  //   path: 'servers', //localhost:4200/servers
+  //   component: ServersComponent, //servers.component.html
+  // },
+
+
+
+  { ///COM NESTED ROUTES...
+    path: 'servers', //localhost:4200/servers
+    component: ServersComponent, //servers.component.html
+    children: [ ///child routes...
+      {
+        path: ':id',
+        component: ServerComponent,
+      },
+    
+      {
+        path: ':id/edit',
+        component: EditServerComponent,
+      },
+
+
+
+   
+
+    ]
+  },
+
+
+
+
+
+
+{
+  path: 'not-found',
+  component: PageNotFoundComponent
+},
+
+
+{////////////ESSA ROUTE DEVE SER SEMPRE ___ ABSOLUTAMENTE A ÚLTIMA ROUTE DE NOSSO ARRAY DE ROUTES, para ser 'catch-all' de todas as routes que não encaixarem naquelas definidas logo acima....
+  path: '**',   ///o double asterisk significa 'CATCH ALL THE ROUTES THAT ARE NOT DEFINED ABOVE' (ou seja, é usado com pages de erro 404)...
+  redirectTo: 'not-found'  ///USADO _ PARA _ REDIRECIONAR nosso user quando ele digita paths que não existem na url bar... --> vamos redirecionar à page de 'PageNotFoundComponent', que é nossa page de 'erro 404, not found'...
+},
+
+
+
+
+
+  // {
+  //   path: 'servers/:id',
+  //   component: ServerComponent,
+  // },
+
+  // {
+  //   path: 'servers/:id/edit',
+  //   component: EditServerComponent,
+  // },
+];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> TIPICAMENTE,
+
+SE VOCÊ TIVER 
+
+
+MAIS DE 2 OU 3 ROUTES,
+
+
+
+
+VOCÊ _ NÃO VAI AS ADICIONAR 
+
+
+
+
+DIRETAMENTE NO ARQUIVO 
+
+
+'app.module.ts',
+
+
+
+E SIM _ VAI CRIAR UM NOVO ARQUIVO,
+
+
+
+
+UM ARQUIVO NO ROOT DE SEU  APP,
+
+
+
+
+que você 
+
+
+PODE 
+
+
+TIPICAMENTE 
+
+CHAMAR 
+
+
+
+
+de 
+'app-routing.module.ts'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... E O QUE 
+
+
+
+ESSE 
+
+'app-routing.module.ts'
+
+
+
+VAI SEGURAR É __ ACTUALLY_ UM SEGUNDO MODULE...
+
+
+
+
+
+
+
+
+
+------> O PROFESSOR 
+
+
+
+TERÁ UM 'MÓDULO' inteiro 
+
+
+
+sobre 
+
+ANGULAR MODULES 
+
+
+
+,
+
+
+mais tarde no curso..
+
+
+
+
+
+
+
+---> LÁ APRENDEREMOS 
+
+MAIS 
+
+
+SOBRE 
+
+
+COMO FUNCIONAM ANGULAR MODULES,
+
+COMO PODEMOS USAR 
+
+VÁRIOS MODULES,
+
+
+
+DEFINIR VÁRIOS MÓDULOS,
+
+
+etc etc... (é algo complexo)...
+
+
+
+
+
+
+
+
+
+
+--> ESSE USE-CASE É SUPER SIMPLES,
+
+basta você escrever assim:
+
+
+
+
+ 
+
+
+ export class AppRoutingModule {
+
+
+
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ELE COMEÇA ASSIM, SIM,
+
+
+mas aí vai receber um decorator de 
+
+
+'@NgModule({})' 
+
+
+
+
+
+
+
+(QUE É O MESMO DECORATOR UTILIZAOD LÁ EM 'app.module.ts')...
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK,,
+ 
+
+
+VAMOS ESCREVENDO ASSIM, PORTANTO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+
+@NgModule(
+    {
+
+    }
+)
+
+export class AppRoutingModule {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> e esse será um module SUPER  SIMPLES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COMO MENCIONADO, O PROFESSOR 
+
+
+
+COMPLEMENTARÁ ISSO MAIS TARDE..
+
+
+ 
+
+
+
+
+
+
+
+ -> O QUE INTERESSA É QUE ESSE 'MODULE'
+
+ vai segurar 
+
+ TODAS 
+
+ NOSSAS TASKS RELATIVAS AO ROUTING...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> É POR ISSO QUE O PROFESSOR 
+
+
+
+ PEGA 
+
+ AQUELA 
+
+ CONST de 'appRoutes' 
+
+
+
+ E A COLA 
+
+
+
+ dentro desse arquivo, tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+ import { NgModule } from '@angular/core'; ///esse será um MODULE SECUNDÁRIO ADICIONADO AO SEU PROJETO, para managear melhor suas routes...
+import { HomeComponent } from './home/home.component';
+
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { Routes } from '@angular/router';
+
+import { ServerComponent } from './servers/server/server.component';
+import { UsersComponent } from './users/users.component';
+import { ServersComponent } from './servers/servers.component';
+import { EditServerComponent } from './servers/edit-server/edit-server.component';
+import { UserComponent } from './users/user/user.component';
+
+const appRoutes: Routes = [
+  {
+    path: '', ////localhost:4200/   (É O _ DEFAULT, A HOME PAGE, PQ É o domain.com SEM O PATH depois)...
+    component: HomeComponent,
+  },
+
+  // {  ////inválido... --> se quiser redirecionar a partir de '', adicione 'pathMatch: full'...
+  //   path: '',
+  //   redirectTo: '/server'
+  // },
+
+  // {
+  //   /////é a nossa primeira route... cada object nesse array é uma ROUTE, que é governada por um 'PAGE-COMPONENT' (o page-component é a ROUTE/page, no caso)...
+  //   path: 'users', ///   localhost:4200/users
+  //   component: UsersComponent, ///users.component.html
+  // },
+  // {
+  //   path: 'users/:userId', ////exemplo de DYNAMIC SEGMENTS (carregar user específico, dentro de list de users.... mesma coisa vista no NODEJS)...
+  //   component: UserComponent,
+  // },
+
+  {
+    /////é a nossa primeira route... cada object nesse array é uma ROUTE, que é governada por um 'PAGE-COMPONENT' (o page-component é a ROUTE/page, no caso)...
+    path: 'users', ///   localhost:4200/users
+    component: UsersComponent, ///users.component.html
+    children: [
+      {
+        path: ':userId', //localhost:4200/users/:userId
+        component: UserComponent,
+      },
+    ],
+  },
+
+  // {
+  //   path: 'users/:userId/:name',   ////PODEMOS TER MÚLTIPLOS SEGMENTOS DINÂMICOS NAS NOSSAS URLS...
+  //   component: UserComponent
+  // },
+
+  // { /////SEM _ NESTED_ ROUTES_....
+  //   path: 'servers', //localhost:4200/servers
+  //   component: ServersComponent, //servers.component.html
+  // },
+
+  {
+    ///COM NESTED ROUTES...
+    path: 'servers', //localhost:4200/servers
+    component: ServersComponent, //servers.component.html
+    children: [
+      ///child routes...
+      {
+        path: ':id',
+        component: ServerComponent,
+      },
+
+      {
+        path: ':id/edit',
+        component: EditServerComponent,
+      },
+    ],
+  },
+
+  {
+    path: 'not-found',
+    component: PageNotFoundComponent,
+  },
+
+  {
+    ////////////ESSA ROUTE DEVE SER SEMPRE ___ ABSOLUTAMENTE A ÚLTIMA ROUTE DE NOSSO ARRAY DE ROUTES, para ser 'catch-all' de todas as routes que não encaixarem naquelas definidas logo acima....
+    path: '**', ///o double asterisk significa 'CATCH ALL THE ROUTES THAT ARE NOT DEFINED ABOVE' (ou seja, é usado com pages de erro 404)...
+    redirectTo: 'not-found', ///USADO _ PARA _ REDIRECIONAR nosso user quando ele digita paths que não existem na url bar... --> vamos redirecionar à page de 'PageNotFoundComponent', que é nossa page de 'erro 404, not found'...
+  },
+
+  // {
+  //   path: 'servers/:id',
+  //   component: ServerComponent,
+  // },
+
+  // {
+  //   path: 'servers/:id/edit',
+  //   component: EditServerComponent,
+  // },
+];
+
+@NgModule({})
+export class AppRoutingModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> CERTO...
+
+
+
+
+ 
+
+
+
+
+
+ --> DAQUI A POUCO 
+
+
+
+ COLOCAREMOS ESSE MODULE DE 'app-routing.module.ts'
+
+
+
+
+ __DENTRO _ 
+
+
+
+
+
+
+DOS 'imports: [
+    BrowserModule,
+    FormsModule
+]',
+
+
+
+lá no 
+
+'app.module.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OBS::: LÁ EM 
+
+
+'imports: []',
+
+
+REMOVEMOS A LINHA QUE DIZ 
+
+'RouterModule.forRoot(appRoutes)'
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    ServersComponent,
+    UsersComponent,
+    ServerComponent,
+    EditServerComponent,
+    UserComponent,
+    PageNotFoundComponent,
+  ],
+  imports: [BrowserModule, FormsModule, 
+  ],
+  providers: [ServersService, UsersService],
+  bootstrap: [AppComponent],
+})
+
+
+
+
+
+
+
+------------
+
+
+
+
+
+
+
+
+ok.... agora 
+
+
+
+basta CONFIGURAR O ARQUIVO DE 'app-routing.module.ts'...
+
+
+
+
+
+
+
+
+
+
+--> BASICAMENTE VAMOS QUERER 
+
+TER 
+
+'imports',
+
+
+
+e aí 
+
+
+
+nos imports vamos querer ter a mesma coisa,
+
+aqueele mesmo 
+
+
+'RouterModule.forRoot(appRoutes)'..
+
+
+
+
+
+
+
+
+
+
+
+VAI FICAR TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core'; ///esse será um MODULE SECUNDÁRIO ADICIONADO AO SEU PROJETO, para managear melhor suas routes...
+import { HomeComponent } from './home/home.component';
+
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { Router, Routes } from '@angular/router';
+
+import { RouterModule } from '@angular/router';
+
+import { ServerComponent } from './servers/server/server.component';
+import { UsersComponent } from './users/users.component';
+import { ServersComponent } from './servers/servers.component';
+import { EditServerComponent } from './servers/edit-server/edit-server.component';
+import { UserComponent } from './users/user/user.component';
+
+
+
+
+
+
+
+
+const appRoutes: Routes = [
+  {
+    path: '', ////localhost:4200/   (É O _ DEFAULT, A HOME PAGE, PQ É o domain.com SEM O PATH depois)...
+    component: HomeComponent,
+  },
+
+  // {  ////inválido... --> se quiser redirecionar a partir de '', adicione 'pathMatch: full'...
+  //   path: '',
+  //   redirectTo: '/server'
+  // },
+
+  // {
+  //   /////é a nossa primeira route... cada object nesse array é uma ROUTE, que é governada por um 'PAGE-COMPONENT' (o page-component é a ROUTE/page, no caso)...
+  //   path: 'users', ///   localhost:4200/users
+  //   component: UsersComponent, ///users.component.html
+  // },
+  // {
+  //   path: 'users/:userId', ////exemplo de DYNAMIC SEGMENTS (carregar user específico, dentro de list de users.... mesma coisa vista no NODEJS)...
+  //   component: UserComponent,
+  // },
+
+  {
+    /////é a nossa primeira route... cada object nesse array é uma ROUTE, que é governada por um 'PAGE-COMPONENT' (o page-component é a ROUTE/page, no caso)...
+    path: 'users', ///   localhost:4200/users
+    component: UsersComponent, ///users.component.html
+    children: [
+      {
+        path: ':userId', //localhost:4200/users/:userId
+        component: UserComponent,
+      },
+    ],
+  },
+
+  // {
+  //   path: 'users/:userId/:name',   ////PODEMOS TER MÚLTIPLOS SEGMENTOS DINÂMICOS NAS NOSSAS URLS...
+  //   component: UserComponent
+  // },
+
+  // { /////SEM _ NESTED_ ROUTES_....
+  //   path: 'servers', //localhost:4200/servers
+  //   component: ServersComponent, //servers.component.html
+  // },
+
+  {
+    ///COM NESTED ROUTES...
+    path: 'servers', //localhost:4200/servers
+    component: ServersComponent, //servers.component.html
+    children: [
+      ///child routes...
+      {
+        path: ':id',
+        component: ServerComponent,
+      },
+
+      {
+        path: ':id/edit',
+        component: EditServerComponent,
+      },
+    ],
+  },
+
+  {
+    path: 'not-found',
+    component: PageNotFoundComponent,
+  },
+
+  {
+    ////////////ESSA ROUTE DEVE SER SEMPRE ___ ABSOLUTAMENTE A ÚLTIMA ROUTE DE NOSSO ARRAY DE ROUTES, para ser 'catch-all' de todas as routes que não encaixarem naquelas definidas logo acima....
+    path: '**', ///o double asterisk significa 'CATCH ALL THE ROUTES THAT ARE NOT DEFINED ABOVE' (ou seja, é usado com pages de erro 404)...
+    redirectTo: 'not-found', ///USADO _ PARA _ REDIRECIONAR nosso user quando ele digita paths que não existem na url bar... --> vamos redirecionar à page de 'PageNotFoundComponent', que é nossa page de 'erro 404, not found'...
+  },
+
+  // {
+  //   path: 'servers/:id',
+  //   component: ServerComponent,
+  // },
+
+  // {
+  //   path: 'servers/:id/edit',
+  //   component: EditServerComponent,
+  // },
+];
+
+@NgModule({
+
+imports: [
+    RouterModule.forRoot(appRoutes) ///ISSO É NECESSÁRIO. É isso que vai REGISTRAR NOSSAS ROUTES...
+]
+
+})
+export class AppRoutingModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> MAS É CLARO QUE SÓ ISSO,
+
+SÓ ESSE WRITE AÍ,
+
+NAÕ É O SUFICIENTE...
+
+
+
+
+
+
+
+
+
+
+-> É PQ O PROFESSOR QUER USAR ESSE 'app-routing.module.ts'
+
+
+
+
+PARA _ OUTSOURCEAR NOSSAS ROUTES... --> é por isso que adicionei esse 
+
+'Module  especial' 
+
+
+
+DE VOLTA AO 
+
+
+
+MEU 
+
+
+'app.module.ts'
+
+
+
+COMUM....
+
+
+
+
+
+
+
+
+
+--> MAS PARA CONSEGUIRMOS __ EXPORTAR__ 
+
+
+esse 
+
+
+'AppRoutingModule',
+
+
+
+PRECISAMOS 
+
+
+
+
+
+ADICIONAR UMA KEY DE 
+
+'exports: []' 
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIm:
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core'; ///esse será um MODULE SECUNDÁRIO ADICIONADO AO SEU PROJETO, para managear melhor suas routes...
+import { HomeComponent } from './home/home.component';
+
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { Router, Routes } from '@angular/router';
+
+import { RouterModule } from '@angular/router';
+
+import { ServerComponent } from './servers/server/server.component';
+import { UsersComponent } from './users/users.component';
+import { ServersComponent } from './servers/servers.component';
+import { EditServerComponent } from './servers/edit-server/edit-server.component';
+import { UserComponent } from './users/user/user.component';
+
+
+
+const appRoutes: Routes = [
+  {
+    path: '', ////localhost:4200/   (É O _ DEFAULT, A HOME PAGE, PQ É o domain.com SEM O PATH depois)...
+    component: HomeComponent,
+  },
+
+  {
+    /////é a nossa primeira route... cada object nesse array é uma ROUTE, que é governada por um 'PAGE-COMPONENT' (o page-component é a ROUTE/page, no caso)...
+    path: 'users', ///   localhost:4200/users
+    component: UsersComponent, ///users.component.html
+    children: [
+      {
+        path: ':userId', //localhost:4200/users/:userId
+        component: UserComponent,
+      },
+    ],
+  },
+
+
+  {
+    path: 'servers', //localhost:4200/servers
+    component: ServersComponent, //servers.component.html
+    children: [
+      {
+        path: ':id',
+        component: ServerComponent,
+      },
+
+      {
+        path: ':id/edit',
+        component: EditServerComponent,
+      },
+    ],
+  },
+
+  {
+    path: 'not-found',
+    component: PageNotFoundComponent,
+  },
+
+  {
+    
+    path: '**', ///o double asterisk significa 'CATCH ALL THE ROUTES THAT ARE NOT DEFINED ABOVE' (ou seja, é usado com pages de erro 404)...
+    redirectTo: 'not-found', ///USADO _ PARA _ REDIRECIONAR nosso user quando ele digita paths que não existem na url bar... --> vamos redirecionar à page de 'PageNotFoundComponent', que é nossa page de 'erro 404, not found'...
+  },
+
+];
+
+@NgModule({
+
+imports: [
+    RouterModule.forRoot(appRoutes) ///ISSO É NECESSÁRIO. É isso que vai REGISTRAR NOSSAS ROUTES...
+],
+
+exports: [] ////EIS O CÓDIGO EM QUESTÃO.
+
+
+})
+export class AppRoutingModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+imports: [
+    RouterModule.forRoot(appRoutes) ///ISSO É NECESSÁRIO. É isso que vai REGISTRAR NOSSAS ROUTES...
+],
+
+exports: [] ////EIS O CÓDIGO EM QUESTÃO.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok....
+
+
+
+
+
+
+
+MAS O QUE FAZ ISSO AÍ?
+
+
+
+
+
+
+
+
+
+-->  ISSO AÍ FAZ 
+
+
+'''SE EU FOSSE ADICIONAR ESSE MODULE DE AppRoutingModule 
+
+
+
+AOS _ IMPORTS_ DE OUTRO MODULE,
+
+
+
+
+O QUE __ DEVERÁ SER __ACESSÍVEL_ A ESSE MODULE QUE ESTÁ IMPORTANDO ESTE MODULO AQUI?'''
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COMO A _ÚNICA COISA QUE QUEREMOS DEIXAR COMO 'ACESSIBLE'
+
+
+é 
+
+nosso ROUTERMODULE,
+
+
+
+
+escrevemos exatamente assim:
+
+
+
+
+
+
+imports: [
+    RouterModule.forRoot(appRoutes) ///ISSO É NECESSÁRIO. É isso que vai REGISTRAR NOSSAS ROUTES...
+],
+
+exports: [RouterModule] ////EIS O CÓDIGO EM QUESTÃO.
+
+
+
+
+
+export class AppRoutingModule {
+
+}
+
+
+
+
+
+
+
+
+---------------------------------
+
+
+
+
+
+
+
+
+
+
+--> PRECISAMOS DECLARAR ISSO NOS 'exports'
+
+para 
+
+
+QUE 
+
+
+
+
+o 'RouterModule.forRoot(appRoutes)'
+
+
+
+QUE ESCREVEMOS/DEFINIMOS LOGO ACIMA __ 
+
+
+
+
+CONSIGA_ SER EXPORTADO AO arquivo 'app.module.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, FINALMENTE,
+
+LÁ EM 'app.module.ts',
+
+
+esse 
+
+MODULE DE ROUTING OUTSOURCEADO É 
+
+
+
+_ 
+INCORPORADO,
+
+
+por meio 
+
+
+deste código:
+
+
+
+
+
+
+
+
+
+
+
+
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    ServersComponent,
+    UsersComponent,
+    ServerComponent,
+    EditServerComponent,
+    UserComponent,
+    PageNotFoundComponent,
+  ],
+  imports: [BrowserModule, FormsModule, 
+    AppRoutingModule //checar arquivo de 'app-routing.module.ts', em que OUTSOURCEAMOS O MANAGE DE NOSSAS ROUTES E AS ROUTES EM SI...
+    // RouterModule.forRoot(AppRoutes)
+
+ 
+  ], 
+  providers: [ServersService, UsersService],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+com isso,
+
+FICAMOS COM O MESMO SETUP DE ANTES,
+
+
+MAS COM UM 
+
+
+
+'app.module.ts'
+
+MAIS LEAN,
+
+e com 
+
+NOSSA FUNCTIONALITY 
+
+
+DE ROUTING 
+
+
+OUTSOURCEADA 
+
+NESSE ARQUIVO SEPARADO...  (deixa nossos arquivos mais fáceis de ler)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SE SEU APP FICA MAIS COMPLEXO,
+
+SE TORNAR MAIS COMPLEXO,
+
+SÃO ESSAS PEQUENAS COISAS QUE O TORNAM 
+
+
+
+MAIS FÁCIL DE SER COMPREENDIDO...

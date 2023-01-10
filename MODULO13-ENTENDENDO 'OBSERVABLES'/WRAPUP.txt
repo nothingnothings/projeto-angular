@@ -1,0 +1,262 @@
+
+
+
+
+
+
+
+
+
+
+ACABAMOS COM OBSERVABLES...
+
+
+
+
+
+
+
+
+
+
+
+-> VIMOS COMO PODEMOS CONSTRUIR NOSSOS PROPRIOS OBSERVABLES,
+
+
+PARA TER UMA IDEIA DE 'O QUE ACONTECE POR TRÁS DAS CENAS'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> vimos _ COMO __ PODEMOS _FAZER 'SUBSCRIBE' 
+
+
+a
+ 
+
+
+ esses observables,
+
+
+
+ E AÍ 
+ PROVIDENCIAR DIFERENTES FUNCTIONS, QUE FARÃO DIFERENTES COISAS DEPENDENDO DA DATA EMITIDA PELO 
+
+
+ OBSERVABLE,
+
+ TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+ this.customObservable = customIntervalObservable.pipe(
+      
+      filter((data: any) => {
+        // return true;
+        // return false; //hardcoded
+         return data > 3;       //return de uma expression --> vai retornar 'TRUE' OU 'FALSE', pq esse 'data' é/será um number... --> os values que resultam em 'true' passam, os que resultam em 'false' são barrados...
+
+
+      }),
+
+      
+      
+      map((filteredData) => { return `Round: ${filteredData}`})).subscribe(  //////////OBSERVER (COM UM OPERATOR ACOPLADO A SI)
+    (count) => {
+      console.log(count);
+      console.log(
+        'DATA --  data package emitted by observable. We can run some logic for EACH data packet that is emitted.'
+      );
+    },
+    (error) => {
+      console.log(error);
+      console.log(
+        'ERROR -- "ERROR" data package emitted by observable. Observable data emissions stopped.'
+      );
+    },
+    () => {
+      console.log(
+        'COMPLETED -- "completed" data package emitted by observable. Observable data emissions stopped/killed.'
+      );
+    }
+  );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> TAMBÉM
+
+
+
+
+APRENDEMOS SOBRE 'OPERATORS',
+
+QUE 
+
+
+são 
+
+adicionados/incorporados a um observable por meio 
+
+
+do method de 
+
+
+
+'pipe()',
+
+
+que 
+
+EXIGE QUE VOCÊ 
+
+PASSE OS OPERATORS NO SEU INTERIOR...
+
+
+
+
+
+
+
+
+
+
+--> O PIPE CRIA UMA VERDADEIRA PIPELINE/MIDDLEWARES,
+
+
+EM QUE 
+
+A DATA VAI SENDO PROCESSADA 
+AO LONGO DOS OPERATORS..
+
+
+
+
+
+
+
+
+
+--> OS OPERATORS SERÃO SUPER ÚTEIS AO LONGO DO CURSO,
+
+PQ 
+
+
+
+DEIXAM FÁCIL O MAKE DE CODE STRUCTURES 
+
+
+
+EM QUE 
+
+
+
+FICAMOS COM UMA ESTRUTURA/ORGANIZAÇÃO DE ETAPAS
+
+
+
+DE TRANSFORMAÇÃO A APLICAR SOBRE A DATA RECEBIDA DOS OBSERVABLSE...
+
+
+
+
+
+
+
+
+
+
+--> MT FORTE...
+
+
+
+
+
+
+
+
+--> APRENDEMOS TAMBÉM SOBRE 'SUBJECTS',
+
+
+
+que no final das contas são 
+
+
+
+
+UNS EVENT EMITTERS MELHORADOS...
+
+
+
+
+
+
+
+
+
+--> CMO ISSO,
+
+TEMOS UMA BOA FUNDAÇÃO SOBRE OBSERVABLES...
+
+
+
+
+
+
+
+
+--> VEJA OS RECURSOS AVANÇADOS,
+
+SE VOCÊ QUER VER BEM MAIS SOBRE ISSO...
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+Useful Resources:
+
+Official Docs: https://rxjs-dev.firebaseapp.com/
+
+RxJS Series: https://academind.com/learn/javascript/understanding-rxjs/
+
+Updating to RxJS 6: https://academind.com/learn/javascript/rxjs-6-what-changed/

@@ -1,0 +1,2818 @@
+
+
+
+
+
+
+
+https://angularconnectiondummy-default-rtdb.firebaseio.com/
+
+
+--> ANEXADA A ESTA LIÇAÕ,
+
+
+TEMOS UM SIMPLES PROJETO,
+
+
+
+EM QUE TEMOS UMA TEMPLATE-DRIVEN FORM,
+
+
+
+
+
+em que PODEMOS INPUTTAR UM TITLE,
+
+ UM CONTENT 
+
+ e AÍ 
+
+ TEMOS OS BUTTONS:
+
+
+
+
+
+
+ 1) SEND POST 
+
+
+
+
+ 2) FETCH POSTS 
+
+
+
+
+ 3) CLEAR POSTS....
+
+
+
+
+
+
+
+
+
+
+
+
+ -> CADA POST TEM AS PRORPEIDADES 'title' e 'contnet'...
+
+
+
+
+
+
+
+
+
+ --> DEPOIS ADICIONAREMOS LÓGICA PARA APAGAR TODOS OS POSTS NA NOSSA REALTIME DATABASE DO FIREBASE...
+
+
+
+
+
+
+
+
+
+
+
+
+--> VOU VER O CÓDIGO DO PROFESSOR,
+
+
+ANALISAR CALMAMENTE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-md-6 col-md-offset-3">
+      <form (ngSubmit)="onCreatePost(postForm.value)" #postForm="ngForm">
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input type="text" 
+          class="form-control"
+          id="title"
+          required 
+          ngModel
+          name="title"
+          >
+        </div>
+        <div class="form-group">
+          <label for="content">Content</label>
+          <textarea type="text" 
+          class="form-control"
+          id="content"
+          required 
+          ngModel
+          name="content"
+          >
+        </div>
+        <button
+        class="btn btn-primary"
+        type="submit"
+        [disabled]="!postForm.valid">Send Post</button>
+
+      </form>
+    </div>
+  </div>
+  <hr>
+  <div class="row">
+    <div class="col-xs-12 col-md-6 col-md-offset-3">
+      <button class="btn btn-primary" 
+      type="button" 
+      (click)="onFetchPosts()">Fetch Posts
+    </button>
+
+    <button 
+    class="btn btn-danger"
+    [disabled]="loadedPosts.length < 1"
+    (click)="onClearPosts()"
+    > Clear Posts</button>
+
+    </div>
+  </div>
+<div class="row">
+  <div class="col-xs-12 col-md-6 col-md-offset-3">
+
+    <p>No posts available!</p>
+  </div>
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> CERTO..
+
+
+
+é um html comum...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO....
+
+
+
+
+
+
+--> MAS GANHEI UM ERROR ESTRANHO:
+
+
+
+
+
+Error: src/app/app.component.html:55:7 - error NG5002: Unexpected character "EOF"
+
+55 </div>
+
+
+
+-> CONSERTEI, ERA A CLOSING TAG DE '<textarea>'...
+
+
+
+
+
+
+
+--> TEMOS SÓ O APP COMPONENT,
+
+
+E AÍ 
+
+
+DENTRO DESSE NEGÓCIO TEMOS 
+
+
+
+
+
+
+
+UMA FORM...
+
+
+
+
+
+
+
+
+
+
+
+
+--> NOS METHODS, TEMOS UM POUCO DE LÓGICA:
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+
+import { HttpClient } from '@angular/common/http'
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+
+
+
+
+    loadedPosts = [];
+
+
+    constructor(private http: HttpClient) {
+
+    }
+
+
+    ngOnInit() {
+
+    }
+
+
+    onCreatePost(postData: {title: string, content: string}) {
+
+      //send HTTP POST request  
+
+
+      console.log(postData);
+
+
+
+    }
+
+
+    onFetchPosts() {
+      //send HTTP GET request...
+    }
+
+
+
+
+    onClearPosts() {
+      //send HTTP request 
+    }
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... MAS AQUELE 
+
+
+
+
+'' HttpClient',
+
+
+
+
+SE EU NÃO PROVIDENCIO NADA A ELE,
+
+
+ELE ME DÁ IMEDIATAMENTE UM ERRO,
+
+
+POR ISSO EU 
+
+TEMPORARIAMENTE O COMENTEI PARA FORA DO CÓDIGO...
+
+
+
+
+
+
+
+
+
+-> O STYLING DE MINHA PÁGINA TAMBÉM AINDA ESTÁ RUIM...
+
+
+
+
+
+OK, AGORA CONSERTEI, ERAM STYLES NO ARQUIVO GLOBAL 'app.component.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, TESTAMOS O 'SEND' DE UM NOVO POST..
+
+Ex:
+
+
+
+
+{title: 'asdsdaasd', content: 'asdsdaasdsda'}
+content: "asdsdaasdsda"
+title: "asdsdaasd
+
+
+
+
+
+
+
+
+
+
+--> ok, isso está funcionando, está 'perfeito'... --> 
+
+
+eu coloco também um 'form.reset()',
+
+
+para RESETTAR ESSA FORM 
+
+_ DEPOIS _ DE
+
+
+A ENVIARMOS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+    onCreatePost(formReference: NgForm) {
+
+      //send HTTP POST request  
+
+
+      console.log(formReference.value);
+
+
+
+
+    const postData = formReference.value;
+
+
+
+
+
+
+      
+
+
+      formReference.reset(); //resetta os values de todos os fields a partir de um submit bem sucedido...
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+    E ASSIM:
+
+
+
+
+
+
+
+
+
+
+          <form (ngSubmit)="onCreatePost(postForm)" #postForm="ngForm">
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> ok...
+
+
+
+
+
+
+
+
+-> O OBJETIVO AGORA É 
+
+
+
+
+FAZER MAIS DO QUE UM CONSOLE.LOG,
+
+
+
+
+
+FAZER O SEND__ DE UM HTTP REQUEST...
+
+
+
+
+
+
+
+
+
+--> PARA FAZER O SEND DE UM HTTP REQUEST,
+
+PRECISAMOS DA AJUDA DO ANGULAR, É CLARO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA SERMOS MAIS PRECISOS,
+
+
+
+
+PRECISAMOS DESBLOQUEAR UMA 'NOVA FEATURE'
+
+
+DO ANGULAR....
+
+
+
+
+
+
+
+
+
+--> PRECISAMOS __ ,
+
+LÁ EM 
+
+'app.module.ts',
+
+
+
+IMPORTAR __ UM NOVO MÓDULO... --> É O MODULE DE '
+
+
+
+
+HttpClientModule..
+
+
+
+
+
+
+
+
+
+
+--> O CÓDIGO FICA ASSIM:
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { HttpClientModule } from '@angular/common/http';
+
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    HttpClientModule
+  ],
+  providers: [
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> ok...
+
+
+
+
+
+
+
+
+
+ESSE PACKAGE NAME É 
+
+
+
+'angular/common/http'...
+
+
+
+
+
+
+
+--> E VOCÊ  O ESCREVE DENTRO DO ARRAY DE 'imports'...
+
+
+
+
+
+
+
+
+
+--> ISSO DESBLOQUEIA O CLIENT QUE O ANGULAR NOS OFERECE,
+
+
+
+
+OFERECE 
+
+__ AO NOSSO PROJETO _ INTEIRO...
+
+
+
+
+
+
+--> A PARTIR DISSO,
+
+
+
+PODEMOS 
+
+
+IR ATÉ O COMPONENT DE 'app.component.ts'
+
+
+E ENTÃO PODEMOS 
+
+
+
+__FAZER __ INJECT__ DO 
+
+
+
+'HTTP CLIENT'
+ 
+
+
+ LÁ 
+
+
+
+ NO NOSSO CONSTRUCTOR,
+
+
+
+ TIPO ASSIM:
+
+
+
+
+
+
+
+ constructor(private http: HttpClient) {
+
+
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+ -------> E ESSE 'HttpClient'
+
+
+
+ é importado 
+
+ LÁ 
+
+ DE 
+
+ 'angular/common/http',
+
+
+ TAMBÉM...
+
+
+
+
+
+
+
+
+
+
+ Ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+ import { Component } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+
+import { HttpClient } from '@angular/common/http';   ///DEVE SER UTILIZADO, JUNTO DE 'HttpClientModule', lá em 'angular.module.ts', PARA CONSEGUIRMOS FAZER SEND DE HTTP REQUESTS...
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+
+
+
+
+    loadedPosts = [];
+
+
+    // constructor(private http: HttpClient) {
+      constructor( http: HttpClient) {
+
+    }
+
+
+    ngOnInit() {
+
+    }
+
+
+    onCreatePost(formReference: NgForm) {
+
+      //send HTTP POST request  
+
+
+      console.log(formReference.value);
+
+
+
+
+    const postData = formReference.value;
+
+
+
+
+
+
+      
+
+
+      formReference.reset(); //resetta os values de todos os fields a partir de um submit bem sucedido...
+
+
+
+
+    }
+
+
+    onFetchPosts() {
+      //send HTTP GET request...
+    }
+
+
+
+
+    onClearPosts() {
+      //send HTTP request 
+    }
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> cERTO... COM ELE IMPORTADO,
+
+
+
+PODEMOS O UTILIZAR PARA _ FAZER__ SEND _DE HTTP REQUESTS...
+
+
+
+
+
+
+
+
+
+--> OK, MAS COMO ISSO FUNCIONA? 
+
+
+
+
+
+
+
+
+
+--> VAMOS EXEMPLIFICAR LÁ EM 
+
+
+
+'onCreatePost'...
+
+
+
+
+
+
+
+
+
+
+
+
+-> O OBJECT DE 'HttpClient'
+
+
+
+possui os SEGUINTES METHODS:
+
+
+
+
+
+
+
+delete 
+
+
+get 
+
+
+
+head 
+
+
+
+jsonp 
+
+options 
+
+
+patch 
+
+
+
+post 
+
+
+put 
+
+
+request ..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> 
+
+
+
+
+---> A GRANDE PARTE DESSES METHODS POSSUI NAMES EQUIVALENTES AOS HTTP VERBS, como get e post...
+
+
+
+
+
+
+
+
+
+
+--> VAMOS USAR O DE 'POST',
+
+
+É CLARO...
+
+
+
+
+
+
+
+--> ISSO VAI TE DEIXAR ENVIAR DIFERENTES TIPOS DE REQUESTS..
+
+
+
+
+--> A DESCRIÇÃO DO METHOD DE 'POST'
+
+
+É ESTA:
+
+
+
+
+Constructs a POST request that interprets the body as an ArrayBuffer and returns an ArrayBuffer.
+
+@return — An Observable of the response, with the response body as an ArrayBuffer.
+
+
+
+
+
+
+
+
+-->
+ ESCREVEMOS ASSIM:
+
+
+
+
+
+
+  onCreatePost(formReference: NgForm) {
+    //send HTTP POST request
+
+    console.log(formReference.value);
+
+    const postData = formReference.value;
+
+    this.http.post(
+
+    );
+
+    formReference.reset(); //resetta os values de todos os fields a partir de um submit bem sucedido...
+  }
+
+
+
+
+
+
+
+
+  --------------------------
+
+
+
+
+
+
+
+  
+  OK... MAS ESSE METHOD EXIGE ALGUNS ARGUMENTS..
+
+
+
+
+
+
+
+  --> O PRIMEIRO ARGUMENT É A __ URL __ A QUE VOCÊ VAI QUERER ENVIAR 
+
+
+  ESSE REQUEST...
+
+
+
+
+
+
+
+  --> E AÍ,
+
+
+  VAMOS QUERER USAR A URL DO 
+
+
+
+  NOSSO FIREBASE REALTIME DATABASE,
+
+  que é :
+
+  
+
+
+https://angularconnectiondummy-default-rtdb.firebaseio.com/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NA VERDADE, ESSA URL É UMA __ PARTE__ DA URL A QUE VAMOS QUERER ENVIAR O REQUEST...
+
+
+
+
+
+
+
+
+---> COLAMSO ISSO 
+
+
+
+
+
+COMO PRIMEIRO ARGUMENTO,
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+  onCreatePost(formReference: NgForm) {
+    //send HTTP POST request
+
+    console.log(formReference.value);
+
+    const postData = formReference.value;
+
+    this.http.post(
+'https://angularconnectiondummy-default-rtdb.firebaseio.com/'
+    );
+
+    formReference.reset(); //resetta os values de todos os fields a partir de um submit bem sucedido...
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO....
+
+
+
+
+
+
+
+
+
+
+MAS ___ É CLARO_ QUE 
+
+
+ESSA NÃO É A URL COMPLETA...
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR EXPLICA QUE 
+
+EM 
+
+'CUSTOM/ REST APIS 
+
+
+DIFERENTES' ,
+
+
+
+
+
+
+você 
+
+vai TER 
+
+
+
+ENDPOINTS  __ CLARAMENTE DEFINIDOS,
+
+
+COMO 
+
+
+
+
+
+'https://burgerbuilder.io/add-burger' 
+
+
+
+
+ou 
+
+
+'https://burgerbuilder.io/burger/1',
+
+
+
+ou COISAS ASSIM...
+
+
+
+
+
+
+
+
+
+
+----> E OS OFFICIAL DOCS DA API 
+
+
+
+COM QUE VOCê ESTÁ TRABALHANDO VÃO TE DIZER QUAIS URLS COLOCAR Aí..
+
+
+
+
+
+
+
+
+
+
+--> MAS O ENDPOINT DO FIREBASE É BEM DIFERENTE,
+
+
+ELE TE DÁ 
+
+
+ESSE 
+
+
+
+
+ENDPOINT 'BASE',
+
+
+que é 
+
+
+
+
+
+https://angularconnectiondummy-default-rtdb.firebaseio.com/
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> A PARTIR DESSA 'FUNDAÇÃO' inicial,
+
+
+VOCê 
+
+PODE ADICIONAR 
+
+SEUS PRÓPRIOS SEGMENTS DEPOIS DELE,
+
+
+
+E AÍ 
+
+
+
+ESSES 
+
+
+
+SEGMENTS SERÃO REPLICADOS COMO 'FOLDERS'
+
+
+
+NA SUA DATABASE ... ->  E ISSO PODE __ DAR A IMPRESSÃO 
+
+
+
+
+DE QUE 
+
+VOCÊ 
+
+ESTÁ 
+
+
+'SE COMUNICANDO DIRETAMENTE COM A DATABASE',
+
+
+
+
+
+
+MAS 
+
+VOCÊ DEVE TER EM MENTE QUE 
+
+
+
+
+
+A ÚNICA COISA QUE O FIREBASE FAZ É 'ABSTRACT' ESSA COMUNICAÇÃO PARA LONGE DE VOCÊ:
+
+
+
+
+
+ISSO SIGNIFICA QUE VOCÊ _ AINDA_ ESTÁ SE COMUNICANDO COM UM BACKEND 
+
+COMUM, COM O BACKEND DO FIREBASE,
+
+
+
+
+
+
+SÓ _ '''PARECE'''__ QUE NÃO ,
+
+
+
+
+
+PQ 
+
+
+ELES VÃO TRADUZIR O PATH QUE VOCê ESTÁ ESCREVENDO NO SITE DO GOOGLE 
+
+
+
+
+EM 
+
+UMA FOLDER STRUCTURE NA SUA DATABASE...
+
+
+
+
+
+
+
+
+
+
+
+(
+    ISSO QUER DIZER QUE NÃO ESTAMOS NOS COMUNICANDO DIRETAMENTE COM UMA DATABASE..
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+--> VOCÊ NUNCA VAI ESTABELECER UMA CONEXÃO ANGULAR-DATABASE
+
+,
+
+
+e sim vai usar 
+
+
+
+angular-server-databse...
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK... 
+
+
+
+SE QUEREMOS CRIAR 'POSTS'
+
+
+
+
+NA NOSSA DATABASE/API DO FIREBASE,
+
+
+
+
+
+O IDEAL É 
+SÓ COLOCAr 
+
+
+'/posts'
+
+AO FINAL DESSA URL QUE 
+
+ESCREVEMOS NO METHOD , TIPO ASSIM:
+
+
+
+
+
+
+  onCreatePost(formReference: NgForm) {
+    //send HTTP POST request
+
+    console.log(formReference.value);
+
+    const postData = formReference.value;
+
+    this.http.post(
+'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts'
+    );
+
+    formReference.reset(); //resetta os values de todos os fields a partir de um submit bem sucedido...
+  }
+
+
+
+
+
+
+---------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... MAS AQUI ESQUECI UM NEGÓCIO QUE É __ ESSENCIAL,
+
+
+
+E QUE 
+
+
+
+
+REALMENTE PRECISA SER FEITO,
+QUANDO O ASSUNTO É FIREBASE --> PRECISAMOS 
+
+
+COLOCAr 
+
+'.json'
+
+NO FINAL 
+
+
+
+DO NOSSO PATH,
+
+
+
+
+PARA QUE 
+
+
+ESSA NOSSA URL 
+
+CONSIGA SER LIDA PELO FIREBASE..
+
+
+
+
+
+
+ex:
+
+
+
+
+  onCreatePost(formReference: NgForm) {
+    //send HTTP POST request
+
+    console.log(formReference.value);
+
+    const postData = formReference.value;
+
+    this.http.post(
+'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json'
+    );
+
+    formReference.reset(); //resetta os values de todos os fields a partir de um submit bem sucedido...
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, FICA ASSIm:
+
+
+
+
+
+
+
+
+
+
+  onCreatePost(formReference: NgForm) {
+    //send HTTP POST request
+
+    console.log(formReference.value);
+
+    const postData = formReference.value;
+
+    this.http.post('https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json',    //// '/posts.json' --> é uma IDIOSSINCRASIA DO 'FIREBASE', e não do angular --> precisamos definir um 'NOVO PATH' para armazenar nossos posts diretamente, e aí, AO FINAL DESSA ROUTE, SOMOS OBRIGADOS A ESCREVER '.json' (coisa do FIREBASE , que é MALUCO)...
+    
+    
+    
+    
+    );
+
+    formReference.reset(); //resetta os values de todos os fields a partir de um submit bem sucedido...
+  }
+
+
+
+
+
+
+
+
+
+  ----------------------------
+
+
+
+
+
+
+
+
+
+
+
+  E ISSO VAI NOS DEIXAR ENVIAR UM __ POST_ REQUEST 
+
+
+  A NOSSA URL...
+
+
+
+
+
+
+
+
+
+
+  -> MAS COMO ISSO É UM __ POST REQUEST,
+
+
+
+
+  A QUESTÕA É QUE 
+
+
+  ELE _ EXIGE__ MAIS DO QUE APENAS UMA 
+
+
+  API ROUTE E SEU VERB,
+
+
+
+  PQ 
+
+
+  ELE __ TAMBÉM VAI PRECISAR DE UM 'REQUEST BODY',
+
+
+  QUE CONTENHA 
+
+
+  A DATA QUE ELE VAI QUERER ENVIAR AO BACKEND...
+
+
+
+
+
+
+
+
+
+
+
+
+  -----> BEM, ESSE POST METHOD FUNCIONA DE MODO QUE _ ELE _ ACEITA _ 
+
+
+
+
+  ___ PELO MENOS _ 2 'REQUIRED ARGUMENTS'...
+
+
+
+
+
+
+
+
+  --> O SEGUNDO ARGUMENTO SERÁ JUSTAMENTE O 'REQUEST BODY'....
+
+
+
+
+
+
+
+
+  --> É POR ISSO QUE PASSAMOS O ARGUMENTO , QUE SERÁ 
+
+  'postData'...
+
+
+
+
+
+
+
+
+
+
+
+
+  ex:
+
+
+
+
+
+
+
+
+
+
+
+      this.http.post('https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json',    //// '/posts.json' --> é uma IDIOSSINCRASIA DO 'FIREBASE', e não do angular --> precisamos definir um 'NOVO PATH' para armazenar nossos posts diretamente, e aí, AO FINAL DESSA ROUTE, SOMOS OBRIGADOS A ESCREVER '.json' (coisa do FIREBASE , que é MALUCO)...
+    
+    postData
+    
+    
+    
+    );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ----> OK, MAS AQUI TEMOS UM DETALHE __ MUITO IMPORTANTE__.... -->>
+
+
+
+
+
+
+    GERALMENTE, QUANDO ENVIAMOS ALGO AO BACKEND EM UM REQUEST, NO REQUEST BODY,
+
+
+
+    NÓS ENVIAMOS 'JSON DATA',
+
+
+
+    E ISSO 
+
+    É CONCRETIZADO 
+
+
+    COM A ADIÇÃO DO HEADER DE 'Content-Type': 'Application/json' 
+    ' 
+
+
+
+
+
+
+
+
+    E __ TAMBÉM _ O PUT DE JSON DATA_ DENTRO 
+
+    DE 
+
+
+
+    NOSSO REQUEST BODYT...
+
+
+
+
+
+
+
+
+
+
+    --------> E AQUI, NA VERDADE,
+
+
+    ISSO ACONTECE TAMBÉM,
+
+
+    MAS 
+    O 
+
+
+    ANGULAR HTTP CLIENT VAI PEGAR NOSSO OBJECT JAVASCRIPT E ENTÃO VAI O CONVERTER EM JSON DATA 
+
+
+    _AUTOMATICAMENTE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> BEM, COM ISSO NOSSO REQUEST DEVE TER TODA A DATA DE QUE ELE PRECISA...
+
+
+
+
+
+
+
+
+
+
+    OK, 
+
+
+
+    EXECUTAMOS ISSO, E AÍ ENVIAMOS ESSA DATA,
+
+    POR MEIO DO CLICK NO BUTTON DE 'SEND POST'..
+
+
+
+
+
+
+
+
+
+
+    --> PARA CHECAR SE ALGO REALMENTE ACONTECEU,
+    PARA CHECAR 
+
+    SE 
+
+
+    ESSE REQUEST REALMENTE FOI OBTIDO LÁ EM 'FIREBASE' 
+
+
+    e 
+
+    se 
+
+
+    ele realmente criou um novo object de 'post',
+
+
+
+
+    CHECAMOS 
+
+
+
+    O FIREBASE..
+
+
+
+
+
+
+
+
+
+
+
+
+    -------> MAS NÃO PERCEBEMOS NADA LÁ 
+
+
+    NO FIREBASE... (e deveríamos ter percebido)...
+
+
+
+
+
+
+
+
+AO CHECAR A TAB DE 'NETWORK,'
+
+ 
+
+
+
+
+
+
+
+
+ percebemos _ que _ nada_ __ foi enviado...
+
+
+
+
+
+ -> 
+
+
+ NENHUM HTTP REQUEST FOI DISPARADO..
+
+
+
+
+
+ --> ISSO SIGNIFIAC QUE 
+
+ NOSSO HTTP REQUEST __ NÃO ESTÁ SENDO ENVIADO, POR ALGUMA RAZÃO...
+
+
+
+
+
+
+
+
+
+
+
+
+----> E ISSO _ ACONTECE_ DE PROPÓSITO...
+
+
+
+
+
+--> ACONTECE DE PROPÓSITO __ JUSTAMENTE_ PQ o 
+
+
+ 
+
+ _ANGULAR__ FAZ _ USO PESADO _ DE OBSERVABLES....
+
+
+
+
+
+
+
+
+
+ -----> E HTTP REQUESTS, NO CASO,
+
+
+ _ TAMBÉM _ SÃO MANAGEADOS __ POR OBSERVABLESa...
+
+
+
+
+
+
+
+
+
+
+
+ --> OS HTTP REQUESTS 
+
+
+ TAMBÉM SÃO MANAGEADOS POR 
+
+
+ observables....
+
+
+
+
+
+ -> SÃO MANAGEADOS POR OBSERVABLES PQ _ ELES SÃO UM CENÁRIO PERFEITO/USE-CASE 
+
+
+ PERFEITO PARA OBSERVABLES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> PODEMOS OS WRAPPAR (os http requests) 
+
+
+
+ PARA _ AÍ 
+
+ FICARMOS INFORMADOS SOBRE AS 'RESPONSE',
+
+
+
+ E TAMBÉM PARA HANDLAR ERRORS,
+
+ E ASSIM POR DIANTE...
+
+
+
+
+
+
+
+
+
+ ------> MAS O PROBLEMA É:
+
+
+ O ANGULAR É 
+
+ '''ESPERTo''' ----> SE VOCê 
+
+
+ _ NÃO ESTÁ 
+
+ FAZENDO 
+ 'SUBSCRIBE'
+
+
+ àQUELE 
+
+
+
+
+ HTTP REQUEST 'PREPARADO'
+
+
+
+ DE 
+
+
+ '
+
+
+     this.http.post('https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json',    //// '/posts.json' --> é uma IDIOSSINCRASIA DO 'FIREBASE', e não do angular --> precisamos definir um 'NOVO PATH' para armazenar nossos posts diretamente, e aí, AO FINAL DESSA ROUTE, SOMOS OBRIGADOS A ESCREVER '.json' (coisa do FIREBASE , que é MALUCO)...
+    
+    postData
+    
+    );, 
+
+
+
+
+
+
+
+
+
+
+
+
+    OU SEJA,
+
+    SE VOCÊ NÃO ESTÁ FAZENDO SUBSCRIBE A _
+     esSE __ 
+
+     OBSERVABLE _ QUE FAZ __ WRAP_ _DO SEU HTTP REQUEST,
+
+
+
+
+
+     _ SE ISSO ACONTECE,
+      
+
+      O ANGULAR E O RXJS 
+
+      _SABEM___ 
+
+
+
+
+      QUE NINGUÉM NO SEU APP POSSUI INTERESSE PELA RESPONSE,
+
+
+
+
+
+
+
+
+
+
+-> o que fará com que, consequentemnte, 
+
+QUE ATÉ MESMO O REQUEST 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OS HTTP REQUESTS _tAMBÉM  _ SÃO 'Managed'
+
+
+por 
+
+observables,
+
+
+PQ ELES SÃO UM PERFECT USE-CASE PARA OBSERVABLES --> ISSO PQ 
+
+
+
+VAMOS OS WRAPPAR,
+
+PARA AÍ 'GET INFORMED' QUANDO>:
+
+
+
+
+
+
+
+1) GANHAMOS UMA RESPONSE A PARTIR DO SEND DO REQUEST 
+
+
+
+
+2) GANHAMOS UM ERROR A PARTIR DO SEND DO REQUEST...
+
+
+
+
+
+
+
+
+
+
+-----> A QUESTÕA:
+
+
+
+
+O ANGULAR É ESPERTO... ----> 
+
+
+
+
+
+
+
+SE VOCê NÃO ESTÁ FAZENDO 'SUBSCRIBE'
+
+
+
+
+ao código de 
+
+
+'this.http.post('url', data)',
+
+
+
+ 
+
+
+
+
+ SE VOCê NÃO 
+
+
+ ESTÁ 
+
+ FAZENDO OBSERVE DISSO AI´,
+
+
+
+ O ANGULAR E O RXJS 
+
+
+
+ VÃO ENTENDER QUE 
+
+
+
+
+ '''''NINGUÉM ESTÁ INTERESSADO PELA RESPONSE DESSE REQUEST'''' --> a consequência direta disso,
+
+ no caso,
+
+
+ é que 
+
+ o 
+
+
+ REQUEST _ NÃO SERÁ 
+
+ NEM MESMO UPLOADADO... --> PQ SE  NINGUÉM ESTÁ INTERESSADO PELA RESPONSE,
+
+ É INÚTIL ENVIAR O 
+
+
+
+ REQUEST...
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+ ---------> E É __ EXATAMETNE _ _POR ESSA RAZÃO QUE 
+
+
+
+ 'this.http.post'
+
+
+ VAI NOS RETORNAR UM _ OBSERVABLE...
+
+
+
+
+
+
+
+
+
+ ----> ISSO QUER DIZER QUE 
+
+
+ __ ELE NÃO NOS DÁ A 
+
+
+
+
+ 'RESPONSE' OU QUALQUER COISA DO GÊNERO COMO RETURN VALUE,
+
+
+
+ E SIM 
+
+
+
+ NOS DÁ UM __ 'OBSERVABLE QUE WRAPPA O REQUEST'...
+
+
+
+
+
+
+
+
+
+
+
+ ------> PARA __ CONSEGUIRMOS ACESSO à 
+
+
+ 'ACTUAL RESPONSE'
+
+ desse request,
+
+
+
+ SOMOS _ OBRIGADOS__ 
+
+
+ A USAR/CHAMAR O METHOD DE '.subscribe()'
+
+
+
+
+
+ NESSE OBSERVABLE retornado por 'this.http.post()'...
+
+
+
+
+
+
+ TIPO ASSIM:
+
+
+
+
+
+
+
+      this.http.post('https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json',   
+    
+    postData
+    
+    ).subscribe()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> E É _ CLARO QUE __ O 'SUBSCRIBE'
+
+
+    vai TER UMA FUNÇÃO INTERNA, 
+
+
+
+    QUE VAI 
+
+
+    RETORNAR A NOSSA RESPONSE...
+
+
+
+
+
+    tipo assim:
+
+
+
+
+
+
+
+
+
+    .subscribe(
+        (responseData) => {
+
+        }
+    )
+
+
+
+
+
+
+
+
+
+
+
+    --> OK.... E MAIS: 
+
+
+
+    O ANGULAR VAI FAZER MAIS DO QUE SIMPLESMENTE 'TE ENTREGAR A RESPONSE':
+
+
+
+ELE__ TAMBÉM __ VAI AUTOMATICAMENTE 
+
+
+
+EXTRAIR A DATA ANEXADA à RESPONSE,
+
+
+
+O VULGO 'RESPONSE BODY',
+
+
+
+E AÍ 
+
+ _ _TE ENTREGAR ISSO... (dentro de 'responseData')....
+
+
+
+
+
+
+
+ -------> OK... ----> ISSO QUER DIZER QUE 
+
+ 'responseData' será O NOSSO BODY, 
+
+
+
+
+
+ O BODY DA 'RESPONSE',
+
+ bem simples..
+
+
+
+
+
+ --> MAIS TARDE VEREMOS MANEIRAS 
+
+ DE 
+
+
+ CONSEGUIR __ OS OUTROS PEDAÇOS DE DATA RETORNADOS POR RESPONSES (pq o angular não compila tudo dentro de um objetão, esse 'responseData' NÃO VAI SEGURAR TUDo...)
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> OK... 
+
+
+
+ POR ENQUANTO, VAMOS SÓ CONSOLE.LOGGAR ESSA 
+
+ RESPONSE DATA....
+
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+    .subscribe(
+        (responseData) => {
+            console.log(data);
+        }
+    )
+
+
+
+
+
+
+
+ --> OUTRO DETALHE:
+
+
+
+
+
+
+ SUBSCRIPTIONS FEITAS EM CIMA DE 'this.http.post()'
+
+
+
+ _ NÃO PRECISAM SER UNSUBSCRIBED POR MEIO 
+
+
+
+
+ DE 
+
+ 'ngOnDestroy()",
+
+
+ PQ 
+
+
+ ELAS SE DESTROEM AUTOMATICAMENTE...
+
+
+
+
+
+
+
+
+
+
+
+
+ -----> ISSO É UM OBSERVABLE PROVIDENCIADO PELO ANGUKLAR,
+
+
+ POR ISSO VOCÊ NUNCA PRECISA 
+
+ MANAGEAR 
+
+
+ AS SUSBSCRIPTIONS DELE...
+
+
+
+
+
+
+
+ ----> OK...
+
+
+
+
+
+
+
+
+ EU ENVIEI ESSE 'POST'...
+
+
+
+
+ -> DEPOIS DE ALGUNS SEGUNDOS, FOI ESTE OUTPUT QUE RECEBI:
+
+
+
+
+
+ {name: '-N3GfPqIRHavO6XQcakl'}
+name: "-N3GfPqIRHavO6XQcakl"
+
+
+
+
+
+
+
+
+
+
+
+
+----->  É UM OBJECT JAVASCRIPT,
+
+
+
+
+
+A NOSSA RESPONSE NESSE CASO... --> ELE NOS DÁ UMA KEY DE 'name',
+
+
+com um valor 
+
+
+
+
+
+estranho...
+
+
+
+
+
+
+
+
+
+> MAS SE EXAMINARMOS A TAB DE NETWORK,
+
+
+VEMOS 
+
+
+
+
+2 POST REQUESTS 
+
+
+AO ENDPOINT DO firebase..
+
+
+
+
+
+
+
+-> BROWSERS SEMPRE ENVIAM 2 requests ( o primeiro é de tipo 'OPTIONS', o segundo é de tipo 'POST')...
+
+
+
+
+
+
+
+
+
+
+STATUS CODE 200 --> succeed.....
+
+
+
+
+
+
+---> AÍ TEMOS OS REQUEST HEADERS QUE FORAM ENVIADOS:
+
+
+
+
+Accept: application/json
+
+Content-Type: application/json 
+
+
+
+Origin:
+
+Referer 
+
+
+
+
+
+
+
+
+
+--> ESSES REQUESTS FORAM ENVIADOS PELO ANGULAR...
+
+
+
+
+
+
+
+
+
+
+--> também é possível ver a response...
+
+
+
+
+
+
+
+
+
+--> OK,
+
+
+
+
+ALÉM DAS 
+
+
+
+IDIOSSINCRASIAS DE SINTAXE,
+
+
+
+O MAIN TAKEAWAY É QUE 
+
+
+'''REQUESTS  SÓ SÃO ENVIADOS SE VOCê REALMENTE FAZ SUBSCRIBE  A ELES''...
+
+
+
+
+
+
+
+
+
+
+
+o código ficou assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+import { HttpClient } from '@angular/common/http'; ///DEVE SER UTILIZADO, JUNTO DE 'HttpClientModule', lá em 'angular.module.ts', PARA CONSEGUIRMOS FAZER SEND DE HTTP REQUESTS...
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  loadedPosts = [];
+
+  // constructor(private http: HttpClient) {
+  constructor(private http: HttpClient) {}
+
+  ngOnInit() {}
+
+
+
+
+  /////////////ISTO NÃO FUNCIONARÁ, POIS NÃO ESTAMOS USANDO OBSERVABLES COM ESSE HTTP REQUEST...
+  // onCreatePost(formReference: NgForm) {
+  //   //send HTTP POST request
+
+  //   console.log(formReference.value);
+
+  //   const postData = formReference.value;
+
+  //   this.http.post('https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json',    //// '/posts.json' --> é uma IDIOSSINCRASIA DO 'FIREBASE', e não do angular --> precisamos definir um 'NOVO PATH' para armazenar nossos posts diretamente, e aí, AO FINAL DESSA ROUTE, SOMOS OBRIGADOS A ESCREVER '.json' (coisa do FIREBASE , que é MALUCO)...
+    
+  //   postData ///NOSSO OBJECT JAVASCRIPT SERÁ CONVERTIDO EM JSON DATA AUTOMATICAMENTE...
+    
+    
+    
+  //   );
+
+  //   formReference.reset(); //resetta os values de todos os fields a partir de um submit bem sucedido...
+  // }
+
+
+
+  onCreatePost(formReference: NgForm) { ///VAI FUNCIONAR, PQ USAMOS _ OBSERVABLES COM ESSE HTTP REQUEST....
+    //send HTTP POST request
+
+    console.log(formReference.value);
+
+    const postData = formReference.value;
+
+
+      //você não precisa chamar 'ngOnDestroy()' para dar unsubscribe em subscriptions feitas em cima de 'this.http.post()'...
+    ///this.http.post VAI NOS RETORNAR UM __ OBSERVABLE, SEMPRE... E AÍ VAMOS TER DE FAZER __ SUBSCRIBE __ A ELE..
+    this.http.post('https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json',    //// '/posts.json' --> é uma IDIOSSINCRASIA DO 'FIREBASE', e não do angular --> precisamos definir um 'NOVO PATH' para armazenar nossos posts diretamente, e aí, AO FINAL DESSA ROUTE, SOMOS OBRIGADOS A ESCREVER '.json' (coisa do FIREBASE , que é MALUCO)...
+    
+    postData ///NOSSO OBJECT JAVASCRIPT SERÁ CONVERTIDO EM JSON DATA AUTOMATICAMENTE...
+    
+    
+    
+    ).subscribe(
+      (responseData) => {  //// 'responseData' --> é o equivalente ao nosso 'BODY' da response... não vai reunir TUDO TUDO da response (coisas como headers e tal, essas coisas são acessadas por OUTROS METHODS DA RESPONSE, NO ANGULAR)...
+ 
+
+          console.log(responseData);
+      }
+    )
+
+    formReference.reset(); //resetta os values de todos os fields a partir de um submit bem sucedido...
+  }
+
+
+
+
+  onFetchPosts() {
+    //send HTTP GET request...
+  }
+
+  onClearPosts() {
+    //send HTTP request
+  }
+}

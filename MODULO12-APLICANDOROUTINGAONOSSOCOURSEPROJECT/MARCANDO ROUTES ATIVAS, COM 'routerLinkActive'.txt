@@ -1,0 +1,484 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> NA ÚLTIMA AULA,
+
+ATIVAMOS NAVIGATION, 
+
+E AGORA 
+PODEMOS 
+
+SWITCHAR 
+
+
+ENTRE NOSSAS PAGES,
+
+
+
+
+O QUE JÁ É ÓTIMO..
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS AGORA O PROFESSOR QUER 'MARK' A ROUTE QUE FICA 'ACTIVE'...
+
+
+
+
+
+
+
+
+
+
+-> o professor explica que 'bootstrap'
+
+JÁ NOS DÁ 
+
+UMA CLASS,
+
+'active',
+
+
+PARA 
+
+MARCAR 
+
+NOSSOS LINKS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA FAZER CMO QUE 
+
+
+
+
+
+
+ESSE LINK SEJA INTERATIVO,
+
+
+
+USAMOS 
+
+O 
+
+'routerLinkActive',
+
+
+
+QUE 
+
+
+NOS DEIXA 
+
+
+
+DEFINIR 
+
+
+''A CLASS QUE QUERMOS 
+
+ATTACHAR CONDICIONALMENTE A ESSE ELEMENTO'' ---> no caso,
+
+é 
+
+a class de 
+'active',
+
+
+
+
+por isso escrevemos 
+
+
+
+
+
+
+
+
+'routerLinkActive="active"' 
+
+
+
+
+
+
+
+
+
+
+
+-> AGORA SEMPRE QUE O LINK _ DENTRO __  DESSE ELEMENT,
+
+OU O 
+
+
+
+
+LINK __ NESTEADO _ DENTRO DE UM ELEMENT NESTEADO NESSE ELEMENT
+
+
+
+
+FOR O MESMO DA ROUTE QUE 
+
+
+
+ESTIVERMOS,
+
+
+
+
+
+o ELEMENT FICARÁ SELECIONADO..
+
+
+
+
+
+O CÓDIGO FICA ASSIM:
+
+
+
+
+
+
+          <li routerLinkActive="active"><a [routerLink]="['/recipe-book']" (click)="collapsed = !collapsed">Recipes</a></li>
+          <li routerLinkActive="active"><a [routerLink]="['/shop-list']"(click)="collapsed = !collapsed" >Shopping List</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> AGORA O PROFESSOR QUER QUE QUANDO CLIQUEMOS EM um 
+
+
+
+    '
+    recipe-item' 
+
+
+
+
+    _ 
+
+
+
+    SEJA _ CARREGADA A DATA DESSE 
+
+
+    RECIPE-ITEM LÁ EM 'recipe-detail',
+
+
+
+    por meio de 'params' 
+
+
+
+
+    no 
+
+
+    'this.route.params.subscribe()'.....
+
+
+
+
+
+
+    -> veremos isso na próxima aula...
+
+
+
+
+
+
+
+
+
+
+
+
+    -> TAMBÉM TEMOS QUE FAZER ISSO COM O 'DROPDOWN' do header....
+
+
+
+
+
+
+
+
+
+
+    Ex:
+
+
+
+
+
+
+
+
+
+
+
+      <nav class="navbar navbar-default"> <!-- COM O USO DE ROUTING -->
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" (click)="collapsed = !collapsed">
+            <span class="icon-bar" *ngFor="let iconBar of [1, 2, 3]"></span>
+          </button>
+          <a routerLink="/" class="navbar-brand" (click)="collapsed = !collapsed">Recipe Book</a>
+      </div>
+      <!-- <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true"> -->
+        <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true">
+        <ul class="nav navbar-nav">
+          <!-- <li (click)="onRecipeBook()"><a href="#">Recipes</a></li>
+          <li (click)="onShopList()"><a href="#">Shopping List</a></li> -->
+          <li routerLinkActive="active"><a [routerLink]="['/recipe-book']" (click)="collapsed = !collapsed">Recipes</a></li>
+          <li routerLinkActive="active"><a [routerLink]="['/shop-list']"(click)="collapsed = !collapsed" >Shopping List</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown" appDropdown #dropdown>
+                <a class="dropdown-toggle" role="button">Manage<span class="caret"></span></a>
+                <ul class="dropdown-menu" style="cursor: pointer;">
+                    <!-- <li><a href="#">Save Data</a></li>
+                    <li><a href="#">Fetch Data</a></li> -->
+                    <li><a>Save Data</a></li>
+                    <li><a>Fetch Data</a></li>
+                </ul>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OK... AGORA TUDO ISSO ESTÁ FUNCIONANDO,
+
+
+  E NOSSO APP ESTÁ FUNCIONANDO MAIS UMA VEZ...
+
+
+
+
+
+
+
+
+
+
+  --> com tudo isso settado,
+
+
+
+  NOSSAS 'ROOT ROUTES'
+
+  parecem 
+
+  ESTAR 'WORKING FINE',
+
+
+
+  MAS AGORA É 
+
+
+   
+
+
+   HORA _ DE MUDAR A MANEIRA PELA QUAL 
+
+   NÓS 
+
+   'LOAD THE RECIPE' 
+
+
+
+   QUANDO CLICAMOS EM UMA DAS RECIPES NA LIST..
+
+
+
+
+
+
+
+
+
+
+   --> O PROFESSOR QUER ACTUALLY 
+
+   CARREGAR ISSO POR MEIO DE CHILD ROUTING,
+
+
+
+TIPO COMO EU FIZ:
+
+
+
+
+
+
+
+
+  {
+    path: '',
+    redirectTo: '/recipe-book',
+    pathMatch: 'full'  /// (COMMON GOTCHA) evita o error de 'SEMPRE VAI REDIRECIONAR PARA ESSA ROUTE DE recipe-book' (pq o padrão é 'prefix' em vez de 'full'; ou seja, é o MESMO COMPORTAMENTO DEFAULT DO REACT ROUTER)...
+  },
+  {
+    path: 'recipe-book',
+    component: RecipeBookComponent,
+    children: [
+      {
+        path: ':id',
+        component: RecipeDetailComponent,
+      },
+
+      // {
+      //     path: 'new-recipe',
+      // }
+    ],
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> ISSO QUER DIZER QUE O PROFESSOR TAMBÉM VAI QUERER TER A OPÇÃO DE 
+
+
+
+  CLICAR EM 
+
+  '
+  new-recipe',
+
+
+
+  uma CHILD ROUTE PARA ESSA OPÇÃO AÍ..
+
+
+
+
+
+
+
+
+
+  ---> E __ ELE __ TAMBÉM _ VAI QUERER __TER UMA OPTION PARA O 
+
+  'EDIT',
+
+  uma child route para 
+
+
+  'edit-recipe',
+
+
+
+
+  QUE PROVAVELMENTE UTILIZARÁ QUERY PARAMS..
+
+
+
+
+
+
+
+
+
+
+
+  --> O PROFESSOR QUER CERTAMENTE ADICIONAR ESSAS CHILD ROUTES...
+
+
+
+  VEREMOS ISSO NA PRÓXIMA AULA...

@@ -1,0 +1,1267 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+AGORA SABEMOS SOBRE 'LAZY-LOADING'...
+
+
+
+
+
+
+
+AGORA O PROFESSOR PODE FINALMENTE EXPLICAR A 'PARTE ESPECIAL SOBRE SERVICES E MODULES',.
+
+
+
+
+
+
+pq 
+
+ele 
+
+
+
+HAVIA MENCIONADO QUE HÁ ALGO 
+
+
+
+IMPORTANTE ESSES 2 CONSTRUCTS...
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR QUER NOS EXPLICAR:
+
+
+a) EM QUE LUGAR PODEMOS PROVIDENCIAR 'SERVICES',
+
+
+E COMO  __ ISSO_ _ AFETA___ 
+
+
+
+
+AS 'INSTANCES' DOS SERVICES COM QUE VOCê   ESTÁ TRABALHANDO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR EXPLICA:
+
+
+
+
+
+1) podemos adicionar services TANTO EM 
+
+
+'AppModule'
+
+
+
+
+COMO 
+
+
+
+
+em 
+
+'AppComponent'  OU OUTROS COMPONENTS (como recipeBookComponent, etc etc)..
+
+
+
+
+
+
+
+-> VIMOS ISSO NOS OUTROS MÓDULOS DO CURSO,
+
+
+
+COMO NA SEÇÃO DE 'SERVICES',
+
+
+
+
+
+
+
+EM QUE PODÍAMOS  ADICIONAR AQUELA KEY DE 'providers'
+
+
+
+AO COMPONENT DECORATOR DE 'recipeBook',
+
+etc etc....
+
+
+
+
+
+
+
+
+
+
+
+
+--> E NÓS PODEMOS, TAMBÉM:
+
+
+
+2) CARREGAR/ADICIONAR SERVICES 
+
+
+
+
+_ A PROVIDERS_ 
+
+
+
+
+DE QUAISQUER MODULES CARREGADOS DE FORMA 'NORMAL' (OU SEJA, 'EAGERLY LOADED', E NÃO LAZILY-LOADED)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ISSO QUER DIZER QEU 
+
+
+
+PODEMOS 
+
+ADICIONAR SERVICES 
+
+
+
+EM COISAS COMO O 'recipeBookMOdule',
+
+
+
+na sua forma ANTES DE TER SIDO IMPLEMENTADO O LAZY LOADING..
+
+
+
+
+
+
+
+------> 3 )  POR FIM,
+
+
+
+
+
+
+
+
+
+AGORA O PROFESSOR NOS EXPLICA QUE TAMBÉM SOMOS CAPAZES DE 'PROVIDE SERVICES'
+
+
+PARA _ PROVIDERS _ 
+
+
+
+
+DE 
+
+
+'LAZILY-LOADED MODULES'... -->  É CLARO QUE 
+
+
+
+TAMBÉM PODEMOS PROVIDENCIAR SERVICES A ESSES LAZILY-LOADED 
+
+
+
+MODULES POR MEIO 
+
+
+DAQUELA CONFIG DE 
+
+
+
+(
+    {
+        providedIn: 'root'
+    }
+)
+
+
+
+
+NOS NOSSOS SERVICES, NO DECORATOR DE '@Injectable()',
+
+
+
+
+
+
+
+
+
+
+
+
+(E ESSA É DE FATO A MANEIRA MAIS RECOMENDADA PARA TODOS OS SERVICES QUE VOCÊ PLANEJA 
+
+EM FAZER PROVIDE DENTRO DE 'app.module.ts')..... ----> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO... --> MAS QUANDO VOCÊ PROVIDENCIA UM SERVICE 
+
+
+EM 
+
+'app.module.ts' ou 
+
+com 
+
+{
+    providedIn: 'root'
+},
+
+
+
+
+
+
+
+
+
+
+
+O SERVICE FICA DISPONÍVEL 'APPLICATION-WIDE',
+
+
+
+
+
+
+E POR SERVICE O PROFESSOR QUER DIZER A 'INSTANCE', A EXATA MESMA INSTANCE 
+
+
+DESSE SERVICE,
+
+EM TODOS OS OUTROS COMPONENTS/MODULES DE SEU APP -----> 
+
+
+
+
+
+
+
+
+
+
+
+ok.. sempre trabalharemos com a mesma sSINGLE INSTANCE..
+
+
+
+
+
+
+
+
+
+
+--> MAS SE VOCÊ PROVIDENCIAR UM SERVICE DENTRO DE 1 COMPONENT,
+
+
+
+NÃO INTERESSA SE ISSO É O APP COMPONENT OU OUTRO COMPONENT,
+
+
+
+É ÓBVIO QUE 
+
+
+
+
+ESSE SERVICE SÓ FICARÁ DISPONÍVEL PARA 'DEPENDENCY INJECTION' DENTRO 
+
+
+DESSA 
+
+COMPONENT TREE ESPECÍFICA (
+
+
+
+
+    E TODOS OS COMPONENTS DA TREE 
+
+
+    VAO COMPARTILHAR ESSA MESMA INSTANCE,
+
+
+    MAS 
+
+
+    É CLARO QUE ESTAMOS FALANDO APENAS DESSA COMPONENT TREE...
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E SE VOCÊ FIZER PROVIDE DE UM SERVICE 
+
+
+EM  
+
+MÚLTIPLOS SIBLING COMPONENTS DO SEU APP,
+
+
+TODOS 
+
+ESSES 'SIBLING COMPONENT TREES'
+
+
+TERÁ ACESSO A ESSE SERVICE ISNTANCE,
+
+ 
+
+
+
+
+
+
+
+
+ MAS __ APENAS__ DESSA __ INSTANCE ESPECÍFICA DO SERVICE (aí ficaremos com múltiplas intances, o que é uma bosta, e extremamente confusop)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> MAS A PARTE INTERESSANTE DISSO, QUANDO FALAMOS EM LAZY-LOADING,
+
+
+ É QUE 
+
+
+
+
+
+
+SE VOCê 
+
+ADICIONAR UM SERVICE AOS 
+
+'providers'
+
+
+
+DE UM EAGERLY LOADED MODULE (module que não é carregado lazily, e sim é carregado DE PRONTO, QUANDO A PAGE INICIA),
+
+
+
+
+ 
+
+
+
+
+
+
+
+ VOCê TALVEZ PODE PENSAR QUE 
+
+ '''ESSE SERVICE SÓ VAI FICAR DISPONÍVEL DENTRO DESSE MODULE CARREGADO _EAGERLY'.... --> aí,
+
+
+
+ nessa lógica (errada),
+
+
+
+ TODO MODULE EM QUE VOCê ADICIONA UM SERVICE AOS SEUS PROVIDERS __ TERÁ __ SUA PRÓPRIA 
+
+INSTANCE DESSE SERVER...
+
+
+
+
+
+
+
+
+
+
+
+--> MAS ESSE NÃO É O CASO, ISSO ESTÁ ERRADO: 
+
+
+
+
+SE UM ___ MODULE É 'EAGER LOADED',
+
+
+
+TUDO É BUNDLADO, INICIALMENTE,
+
+
+
+E AÍ 
+
+
+
+
+__TODOS _OS SERVICES QUE VOCÊ ADICIONA/PROVIDENCIA A PROVIDERS 
+
+
+
+
+
+
+
+
+DE 
+
+um 
+
+
+'eager loaded module',
+
+
+como 'recipe-book' carregado EAGERLY para dentro do app-module,
+
+
+
+
+
+
+QUALQUER SERVICE ADICIONADO LÁ 
+
+
+
+FICARÁ DISPONÍVEL 'APPLICATION-WIDE ', com uma e a mesma instance-------> 
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+ É POR ISSO QUE 
+
+
+
+
+
+
+
+
+__ ADICIONAR UM SERVICE A 'PROVIDERS'
+
+
+
+
+DE UM EAGERLY LOADED MODULE 
+
+
+
+__ TEM ___  
+
+O EXATO MESMO EFEITO DE 
+
+
+
+
+
+
+
+ESCREVER esse service no 'app.module.ts'
+
+
+
+
+OU ESCREVER '{providedIn: 'root'}' 
+
+
+
+
+
+
+
+
+NO INJECTABLE DESSE SERVICE...
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO.... -------> MAS 1 GRANDE DIFERENÇA PODE 
+
+
+
+SER VISTA 
+
+
+SE VOCê 
+
+
+TENTAR ADICIONAR UM SERVICE AOS 'providers'
+
+
+
+DE UM __ LAZILY-LOADED MODULE.. ------->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+RECAPITULANDO:
+
+
+
+
+
+
+
+
+
+SERVICE COLOCADO NO PROVIDERS DE 'app.module.ts' -----> SERVICE FICA DISPONÍVEL 'APPLICATION-WIDE'...
+
+
+
+
+
+
+SERVICE COLOCADO NO 'AppComponent', ou em outros components -----> SERVICE DISPONÍVEL APENAS NA 'COMPONENT-TREE' DESSE COMPONENT.
+
+
+
+
+
+service colocado NO PROVIDERS DE 'EAGER-LOADED MODULE' (Qualquer module, feature module) ---------> SERVICE TAMBÉM FICA DISPONÍVEL 'APPLICATION-WIDE'...
+
+
+
+
+
+
+
+
+
+
+
+
+E AGORA, A QUARTA HIPÓTESE:
+
+
+
+
+
+
+
+
+
+
+
+SERVICE COLOCADO EM UM 'LAZY-LOADED MODULE '------> COM ISSO, O SERVICE FICARÁ DISPONÍVEL __ APENAS_ NO 'LOADED MODULE', MODULE CARREGADO LAZILY....
+
+
+
+
+
+
+
+
+
+
+
+----> ISSO QUER DIZER QUE 
+
+O 
+
+
+SERVICE VAI FICAR PROVIDENCIADO APENAS DENTRO DESSE LOADED MODULE ESPECÍFFCO,
+
+
+
+E QUE 
+
+
+AÍ 
+
+
+ESSE SERVICE VAI ENTAÕ RECEBER UMA 
+
+INSTANCE ESPECÍFICA PARA ESSE MODULE (
+
+
+
+    e se 
+
+    nós mais tarde tentássemos 
+
+
+    PROVIDENCIAR UM 
+
+    SERVICE TANTO 
+
+
+    em 'app.module.ts'
+
+
+
+    COMO NESSE 'lazyModule.module.ts',
+
+
+
+
+
+
+
+
+
+
+É EVIDENTE QUE OS 2 FICARÃO DISPONÍVEIS 'APPLICATION-WIDE',
+
+
+
+
+MAS É CLARO QUE 
+
+
+O 
+
+
+'lazyModule.module.ts'
+
+
+VAI FICAR COM UMA  INSTANCE SEPARADA,
+
+UMA 
+
+
+
+
+
+INSTANCE QUE NÃO SERÁ A MESMA QUE VOCê USA/USARÁ NO RESTO DO APP..
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+--> àS VEZES ISSO PODE SER DESEJÁVEL,
+
+
+
+
+
+
+
+
+MAS __ EM __ OUTROS CASOS ISSO PODE LEVAR A UM COMPORTAMENTO ESTRANHO EM QUE 
+
+
+''ESPERÁVAMOS TRABALHAR COM UMA ÚNICA INSTANCE, MAS NÃO ACABAMOS'....
+
+
+
+
+
+
+
+
+
+
+
+----. A RAZÃO PARA ISSO ACONTECER É QUE 
+
+
+
+
+QUANDO 
+
+
+
+VOCê 
+
+PROVIDENCIA UM SERVICE 
+
+
+
+
+
+NOS PROVIDERS EM 
+
+
+
+em 
+
+
+
+'app.module.ts'
+
+
+ou 
+
+
+'{providedIn: 'root'},
+
+
+
+
+
+
+
+VOCe^
+
+ACABA USANDO O 
+
+
+
+
+
+
+
+
+
+'ROOT INJECTOR',
+
+
+QUE É UM 
+
+
+
+'ROOT DEPENDENCY INJECTION MECHANISM' 
+
+
+
+
+
+
+
+DO ANGULAR... -----> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> JÁ QUANDO VOCê FAZ 'PROVIDE' DE SEU SERVICE EM 1 __ COMPONENT ESPECÍFICO,
+
+
+
+VOCÊ ACABA USANDO O 'COMPONENT-SPECIFIC INJECTOR',
+
+
+
+
+
+
+
+
+
+QUE NÃO É O ROOT INJECTOR,
+
+
+
+O QUE 
+
+FAZ COM QUE 
+
+
+O SEU APP INTEIRO _ NÃO __ CONSIGA_ ACESSO 
+
+
+
+A ESSE SERVICE/INSTANCE 
+
+
+
+
+
+
+,
+
+
+
+
+
+
+
+NÃO FICA 'APPLICATION-WIDE'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NOVAEMNTE,
+
+
+EM UM 'EAGERLY LOADED MODULE',
+
+
+
+
+
+
+O ROOT INJECTOR É USADO AUTOMATICAMENTE... (como o PROVIDERS no 'app.module.ts', ou  '{providedIn: 'root'}' )
+
+
+
+
+
+
+
+
+
+
+
+-----> MAS COM O LAZILY-LOADED MODULE,
+
+
+
+UM 
+
+
+'CHILD INJECTOR' ESPECÍFICO É CRIADO PARA AQUELE MODULE ESPECÍFICO,
+
+
+
+O QUE FAZ COM QUE ESSE MODULE TENHA SUA PRÓPRIA INSTANCE DESSE SERVICE..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----. PORTNATO, AQUI,
+
+
+
+
+
+__ O DEFAULT __ DEVE 
+
+
+SER QUE VOCÊ VAI 
+
+
+'''USAR O APP.MODULE.TS'''' para fazer o provide de services...
+
+
+
+
+
+
+
+
+
+
+-> ESSA É A MELHOR OPÇÃO..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS É CLARO QUE EVENTUALMENTE 
+
+VOCê 
+
+TALVEZ TENHA 
+
+
+
+
+
+
+
+CENÁRIOS EM QUE SUA COMPONENT TREE 
+
+
+VENHA
+
+
+A PRECISAR DE SEUS 'OWN SERVICES',
+
+
+
+
+
+
+
+
+
+
+COMO POR EXEMPLO 'THAT COMPONENT TREE SOMEHOW HAS A SERVICE TAHT 
+
+
+ONLY MATTERS FOR THESE COMPONENTS'
+
+
+
+
+(
+
+    NESSES CASES, NÃO HÁ NECESSIDADE DE PROVIDENCIAR ESSE SERVICE APPLICATION-WIDE...
+)
+
+
+
+
+
+
+(
+
+    NESSES CASES, É OK FAZER PROVIDE DESSES SERVICES 
+
+
+    dentro DE COMPONENTS 'CHEFES', e naõ dentro do 'AppModule'....
+)
+
+
+
+
+
+
+
+
+
+
+
+----> CERTO.. MAS EAGERLY LOADED MODULES,
+
+
+VOCÊ 
+
+
+
+PRATICAMENTE NUNCA  DEVE FAZER PROVIDE DE SERVICES NELES,
+
+
+
+
+
+
+
+
+PQ OS EFEITOS _ SÃO IDÊNTICOS AO PROVIDE NO ARQUIVO DE 'app.module.ts',
+
+
+
+
+
+MAS COMO É MEIO INESPERADO E COMUM O WRITE DO SEU SERVICE 
+
+
+NESSES 
+
+
+LOCAIS, TENTE EVITAR (outros devs podem se confundir)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> POR FIM,
+
+
+
+
+COM 'LAZY LOADED MODULES',
+
+
+
+É CLARO QUE PODEMOS ADICIONAR 
+
+
+
+
+1 SERVICE AOS 'providers' desse tipo de modules,
+
+
+
+
+
+__ MAS__ SE VOCê DESEJAR FAZER ISSO,
+
+
+
+VOCê _ 
+
+
+
+
+
+PRECISA TER UMA SITUAÇÃO EM QUE VOCÊ DELIBERADAMENTE VAI QUERER TER UMA 
+'SEPARATE INSTANCE'
+
+
+
+
+DO SEU 
+
+SERVICE,
+
+
+
+
+NESSE LAZY LOADED MODULE... 
+
+
+
+
+
+
+
+(
+
+    ONLY USE this if service should be scoped to loaded module, lazily loaded module... 
+)
+
+
+
+
+
+--> CASO CONTRÁRIO, VOCê TERÁ BUGS ESTRANHJOS..
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS COMO REGRA GERAL,
+
+
+VOCê 
+
+
+
+VAI QUERER ASSEGURAR QUE 
+
+
+SEUS SERVICES SEMPRE FICAM DISPONÍVEIS APPLICATION-WIDE,
+
+
+
+
+POR MEIO 
+
+
+DO WRITE DE 'providers: [
+    serviceName
+]' 
+
+
+
+
+
+lá no 'app.module.ts',
+
+
+ou então 
+
+
+
+a escrita, no service, de '{providedIn: 'root'}' 
+
+
+
+
+
+
+
+
+
+
+
+
+--> VOCÊ PRECISA 
+
+TER CERTEZA/BOA RAZÃO PARA ADICIONAR 1 SERVICE APENAS A UM 'COMPONENT TREE ESPECÍFICO',
+
+
+ou a uM 
+
+
+LAZILY-LOADED MODULE ESPECÍFICO...
+
+
+
+
+
+
+
+
+---> POR FIM,
+
+O PROFESSOR REPETE QUE NUNCA DEVEMOS ADICIONAR/PROVIDENCIAr SERVICES DENTRO DE 
+
+um 
+
+
+'EAGERLY-LOADED MODULE.'...

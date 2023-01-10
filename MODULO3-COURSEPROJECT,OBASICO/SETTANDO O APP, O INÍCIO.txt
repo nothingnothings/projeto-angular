@@ -1,0 +1,379 @@
+
+
+
+
+
+
+
+
+
+
+O PROFESSOR COMEÇA UM PROJETO INTEIRAMENTE NOVO com o CLI....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> CRIE UM NOVO PROJETO...
+
+
+
+
+
+
+
+
+
+
+-> 'novoprojeto5'..
+
+
+
+
+
+
+
+
+
+--> DEPOIS LIMPE o 'app.component.ts',
+
+
+
+LIMPE o 'App.component.html'
+
+
+
+
+
+
+e é isso..
+
+
+
+
+
+
+
+
+
+
+
+-> INSTALE O BOOTSTRAP,
+
+
+
+EQUIPE O BOOTSTRAP..
+
+
+
+
+
+
+
+
+
+
+
+
+--> até agora, tudo certo...
+
+
+
+
+
+
+
+
+
+
+-----> PROFESSOR REITERA QUE QUEREMOS USAR O BOOTSTRAP..
+
+
+
+
+
+
+
+
+
+----. vamos querer focar no ANGULAR E NÃO NO STYLING..
+
+
+
+
+
+
+
+--> aí adicione aquela config do bootstrap,
+
+lá em '.angular-cli.json'...
+
+
+
+
+
+
+
+
+
+
+
+-> lá na key de 'styles: []' 
+
+
+
+
+
+
+
+
+
+
+certo..
+
+
+
+
+
+
+
+
+
+
+
+Ex:
+
+
+
+
+
+
+
+
+
+            "styles": [
+              "src/styles.css",
+              "./node_modules/bootstrap/dist/css/bootstrap.min.css"
+            ],
+
+
+
+
+
+
+
+
+
+
+
+--> pegamos o código minifado,
+
+
+mt melhor,...
+
+
+
+
+
+
+
+
+-> AÍ RODAMOS 'ng serve'
+
+PARA SERVIR ESSE PROEJTO EM 'localhost:4200'... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PROFESSOR DIZ QUE PODEMOS CHECAR RAPIDAMNETE SE 
+
+O 
+
+BOOTSTRAP FOI ADICIONADO CORRETAMENTE,
+
+BASTA IR ATÉ O 
+
+
+'app.component.html'
+
+
+
+e aí 
+
+ESCREVER 
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+    </div>
+    </div>
+    </div>
+
+
+
+
+
+
+
+
+
+    'col-md-12' -->  ISSO SPAWNA UMA COLLUMN PARA 
+
+    'MEDIUM SIZE DEVICES', que vai SPAN A COMPLETA WIDTH, POR ENQUANTO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+DESCOBRI UM NOVO SHORTCUT...
+
+
+
+
+
+
+
+
+
+
+-> se você escreve 
+
+
+'.algumaCoisa'
+
+
+
+LÁ NO VISUAL STUDIO CODE,
+
+EM UM ARQUIVO HTML,
+
+
+
+O IDE VAI AUTOMATICAMENTE _ CRIAR_ UMA DIV 
+
+
+com uma class com 
+
+esse name aí como value...
+
+
+
+
+
+
+ex:
+
+
+
+.exemplo
+
+VIRA 
+
+
+
+
+<div class="exemplo"></div>
+
+
+
+
+
+
+
+
+
+--------------------------
+
+
+
+
+
+
+
+
+
+
+OK... MAS O PROFESSOR VAI QUERER ADICIONAR UMA H2 TAG EM QUE DIZEMOS 
+
+'Im working!'...
+
+
+
+
+
+
+
+
+
+Ex:
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12"></div>
+    <h2>I'm Working!</h2>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> COM ISSO, CONSTATAMOS QUE O BOOTSTRAP ESTÁ FUNCIONANDO... (podemos ver isso na font-size, que está correta)... -> todos esses estilos estão vindo do bootsrap.
+
+
+
+
+
+
+
+
+
+---> agora temos que COMEÇAR A CRIAR OS COMPONENTS QUE PASSAREMOS A USAR...

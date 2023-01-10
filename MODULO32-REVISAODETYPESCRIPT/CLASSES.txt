@@ -1,0 +1,270 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PROFESSOR ESCREVE VÁRIAS CLASSES:
+
+
+
+
+
+
+
+
+
+
+
+
+
+class Car {
+    engineName: string;
+    gears: number;
+    private speed: number;
+
+
+
+
+
+
+    constructor(speed: number) {
+
+        this.speed = speed || 0;
+    }
+
+
+
+    accelerate(): void {
+        this.speed++;
+    }
+
+
+    throttle(): void {
+        this.speed--;
+    }   
+
+    getSpeed():void {
+        console.log(this.speed);
+    }
+
+
+    static numberOfWheels(): number {
+        return 4;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK, AÍ O PROFESSOR VAI CRIAR UM OBJECT A PARTIR DESSA CLASSS...
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+let car = new Car(5);  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok.... -----> CRIAMOS UM OBJECT 'CAR' a partir dessa class,
+
+
+
+E AÍ 
+
+
+
+
+NOSSO CAR VAI TER UMA SPEED OU DE 'speed' ou '0'...  (por causa do PIPE symbol)...
+
+
+
+
+
+
+
+O 0 será definido como a speed SE A NOSSA SPEED FOR 'INVÁLIDA', por alguma razão...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> NOSSA PROPRIEDADE PRIVADA 'speed'
+
+NÃO PODE SER ACESSADA DO LADO DE FORA (+ ou -, pq pode ser acessada, só o typescript chora... o typescript não conhece  a keyword 'private')..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+
+
+
+
+--> a speed é definida no constructor,
+
+
+e aí 
+
+
+
+
+
+ELA EXISTE DENTRO DE CADA OBJECT...
+
+
+
+
+
+
+
+
+
+
+
+A FUNCTION DE 'getSpeed'
+
+vai NOS DAR 
+
+A SPEED 
+
+
+
+DE NOSSA 'PRIVATE PROPERTY'... --> através de 'console.log()'
+
+
+
+
+
+---> podemos acessar essa propriedade 'private' em methods no interior de nossa class...
+
+
+
+
+
+
+
+
+
+
+
+
+'numberOfWheels'
+
+
+DEVE SER CHAMADO NA PRÓPRIA CLASS,
+
+
+
+
+
+'utiltiy class'...
+
+
+(
+    podemos acessar esse method SEMPRE QUE QUISERMOS,
+
+
+    sem instanciar um object a partir da class...
+)
+
+
+
+
+
+
+
+
+
+
+
+certo, até aí tudo bem...
+
+
+
+
+
+
+
+
+
+
+--> É ASSIM QUE USAMOS CLASSES NO TYPESCRIPT,
+
+CLASSES IN A NUTSHELL...s

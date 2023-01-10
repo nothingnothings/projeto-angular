@@ -1,0 +1,931 @@
+
+
+
+
+
+
+
+NA ÚLTIMA LIÇÃO, ESCREVMOS NOSSO PRIMEIRO TEST... ---> 
+
+deveoms 
+
+escrever 
+
+outro 
+
+test para 
+
+
+o 
+
+
+
+'NavigationItems'...
+
+
+
+
+
+---> PROFESSOR COPIA 
+
+A 
+
+FUNÇÃO 
+
+
+de 
+
+'it' (Que é nossa função testadora, na verdade)
+
+
+
+E ENTÃO 
+
+
+COLA 
+
+sua cópia dentro desse mesmo call de 
+
+'describe()'...
+
+
+
+
+ex:
+
+
+
+
+
+
+
+describe('<NavigationItems />', 
+
+() => {
+        it('should render two <NavigationItem /> elements if not authenticated', 
+
+        () => {
+            const wrapper = shallow(<NavigationItems/>);
+            expect(wrapper.find(NavigationItem)) /////SIM, COISAS NO INTERIOR DE NOSSO COMPONENT DEVEM SER ESCRITAS ASSIM... (shallowly rendered, por isso não usamos '< JSX />', e sim 'JSX'...)
+            .toHaveLength(2); ///////ESSA É A 'ALMA' DOS NOSSOS TESTS.... ---> SÃO INÚMERAS UTILITY FUNCTIONS EXISTENTES DENTRO DE 'expect' QUE NOS DEIXAM DEFINIR o final da narrativa 'expect xxx ....'  (tipo 'toBe', 'toBeGreaterThan', 'toHaveLength', etc etc...).
+                                ////aqui, no caso, vamos 'expect' que O NÚMERO DE COMPONENTS 'NavigationItem' renderizados SEJA EXATAMENTE de '2'..
+    }
+        )
+
+
+        it('should render two <NavigationItem /> elements if not authenticated', 
+
+        () => {
+            const wrapper = shallow(<NavigationItems/>);
+            expect(wrapper.find(NavigationItem)) /////SIM, COISAS NO INTERIOR DE NOSSO COMPONENT DEVEM SER ESCRITAS ASSIM... (shallowly rendered, por isso não usamos '< JSX />', e sim 'JSX'...)
+            .toHaveLength(2); ///////ESSA É A 'ALMA' DOS NOSSOS TESTS.... ---> SÃO INÚMERAS UTILITY FUNCTIONS EXISTENTES DENTRO DE 'expect' QUE NOS DEIXAM DEFINIR o final da narrativa 'expect xxx ....'  (tipo 'toBe', 'toBeGreaterThan', 'toHaveLength', etc etc...).
+                                ////aqui, no caso, vamos 'expect' que O NÚMERO DE COMPONENTS 'NavigationItem' renderizados SEJA EXATAMENTE de '2'..
+    }
+        )
+}
+
+)
+
+
+---------------------------------------------------
+
+
+
+
+
+
+
+CERTO,
+
+MAS 
+
+
+O QUE 
+
+MAIS 
+
+
+PODEMOS 
+
+
+TESTAR ?
+
+
+
+
+
+
+
+
+
+--> PROFESSOR DIZ QUE OBVIAMENTE PODEMOS TESTAR O CONTRÁRIO... -----> queremos 
+
+
+
+testar 
+
+
+SE NÓS TEMOS 3 'NavigationItem' components.....  --> mais especificamente,
+
+QUEREMOS 
+
+
+__TESTAR_ _ SE NÓS TEMOS 3 NAVITEM RENDERIZADOS ___ SE TIVERMOS __ O PROP DE 
+
+'token'
+
+
+
+PASSADO 
+
+
+
+AO '<NavigationItems />'...
+
+
+
+
+OK,
+
+ A EDIÇÃO VAI FICAR ASSIM:
+
+
+
+
+
+ it('should render three <NavigationItem /> elements if authenticated', 
+
+        () => {
+            const wrapper = shallow(<NavigationItems/>);
+            expect(wrapper.find(NavigationItem)) /////SIM, COISAS NO INTERIOR DE NOSSO COMPONENT DEVEM SER ESCRITAS ASSIM... (shallowly rendered, por isso não usamos '< JSX />', e sim 'JSX'...)
+            .toHaveLength(2); ///////ESSA É A 'ALMA' DOS NOSSOS TESTS.... ---> SÃO INÚMERAS UTILITY FUNCTIONS EXISTENTES DENTRO DE 'expect' QUE NOS DEIXAM DEFINIR o final da narrativa 'expect xxx ....'  (tipo 'toBe', 'toBeGreaterThan', 'toHaveLength', etc etc...).
+                                ////aqui, no caso, vamos 'expect' que O NÚMERO DE COMPONENTS 'NavigationItem' renderizados SEJA EXATAMENTE de '2'..
+    }
+        )
+
+
+
+-------------------------------
+
+
+
+É CLARO QUE 
+
+__ AQUI__ NÃO PODEREMOS CHAMAR 
+'shallow()',
+
+POIS 
+
+
+__VAMOS QUERER__ QUE 
+
+OS 
+
+PROPS 
+
+__ 
+
+DE NOSSO 
+
+APP (do redux, na verdade)
+
+
+SEJAM 
+
+PASSADOS 
+
+A 
+ESSE 
+
+'<NavigationItems />', justamente 
+
+para que 
+
+
+fiquemos 'autenticados' (com o token...)
+
+
+
+
+
+
+
+
+
+--> EU __ACHAVA __ QUE NÃO USARÍAMOS 
+
+
+
+'shallow()',
+
+
+MAS 
+
+
+VAMOS
+
+
+USAR 
+
+DA 
+MESMA 
+
+FORMA... --------> 
+
+
+
+
+
+Vamos usar do mesmo jeito,
+
+mas 
+
+
+com um 
+
+PASS MANUAL DO PROP 
+
+
+DE 
+
+'token'... -------> 
+
+
+
+
+
+
+
+
+EX: 
+
+
+
+
+
+ it('should render three <NavigationItem /> elements if authenticated', 
+
+        () => {
+            const wrapper = shallow(<NavigationItems token/>);   //////////////EIS O CÓDIGO EM QUESTÃO (o mero write de 'token' FAZ COM QUE SEJA UM prop BOOLEAN DE 'true' nesse component aí..)
+            expect(wrapper.find(NavigationItem)) 
+            .toHaveLength(3); 
+                                
+    }
+        )
+
+
+
+
+
+
+
+
+
+        (certo, mas 'token' está errado.... o prop que você usou foi algum outro...) ---> tem razão, o prop correto é 'logout'...
+
+
+
+
+
+
+ it('should render three <NavigationItem /> elements if authenticated', 
+
+        () => {
+            const wrapper = shallow(<NavigationItems logout/>);   //////////////EIS O CÓDIGO EM QUESTÃO (o mero write de 'token' FAZ COM QUE SEJA UM prop BOOLEAN DE 'true' nesse component aí..)
+            expect(wrapper.find(NavigationItem)) 
+            .toHaveLength(3); 
+                                
+    }
+        )
+
+
+-----------------------------
+
+
+
+CERTO, COM 
+
+ISSO,
+
+NOSSO CÓDIGO DEU 
+
+'PASS'
+
+nos 
+
+2 
+
+it cases...
+
+
+
+
+
+----------------
+
+
+--> É CLARO, PODEMOS ESCREVER MÚLTIPLOS tests.... --------> 
+
+
+e é evidente que aqui há uma redundância... ----> nós 
+
+constantemente (haha) escrevemos/usamos 
+
+
+aquele 
+
+wrapper 
+
+de 
+
+
+'const wrapper = shallow(<NavigationItems logout />);' 
+
+
+
+
+em todos os it cases,
+
+por isso podemos 
+
+o colocar lá no início e então apenas 
+
+chamá-lo por sua referência...
+
+
+
+
+
+
+EX:
+
+
+
+
+
+describe('<NavigationItems />', 
+
+() => { 
+    const wrapper = shallow(<NavigationItems />); ////isso está meio errado...
+
+        it('should render two <NavigationItem /> elements if not authenticated', 
+
+        () => {
+            expect(wrapper.find(NavigationItem)) 
+            .toHaveLength(2); 
+                                
+    }
+        )
+
+
+
+
+        it('should render three <NavigationItem /> elements if authenticated', 
+
+        () => {
+            expect(wrapper.find(NavigationItem)) 
+            .toHaveLength(3); 
+                            
+    }
+        )
+}
+
+)
+
+
+
+---------------------------------------------
+
+
+
+
+ok, 
+
+mas 
+
+
+
+isso 
+
+
+aí 
+
+não 
+
+
+vai funcionar de cara, dessa forma... ---> você não pode simplesmente 
+
+
+deixar 
+
+a  constante 
+
+
+do 
+
+wrapper lá em cima e apenas 
+
+chamar sua referência ali embaixo,
+
+mais tarde... ---> não,
+
+para isso 
+
+você 
+
+
+precisa 
+
+do método 
+
+
+'beforeEach()' ------> ESSA É UMA FUNÇÃO QUE, COMO O NOME SUGERE,
+
+
+SEMPRE__ VAI EXECUTAR O SEU PARÂMETRO/CÓDIGO PASSADO DENTRO DO PARÂMETRO_ _ ANTES ___ DE CADA 
+
+UM 
+
+DOS 
+
+SEUS 
+
+'it' cases, ANTES DE CADA UM DOS SEUS TESTS.... (e é exatamente isso que queremos, queremos definir 
+
+o 
+
+wrapper dentro dele para então o reutilizar nos it cases mais abaixo...)
+
+
+
+
+
+
+
+
+
+--> VOCê TAMBÉM TEM uma função 'afterEach()', que é usada 
+
+PARA EXECUTAR __ CÓDIGO __ APÓS TODOS OS IT CASES (é uma função de cleanup, basicamente...)
+
+
+
+
+
+
+
+
+
+-> mas beforeEach() é aparentemente mais importante,
+porque 
+
+dentro dele 
+
+podemos 
+
+fazer 
+
+um certo setup prévio aos nossos tests...
+
+
+
+
+
+--> E O 'beforeEach()' 
+
+EXIGE UMA 
+
+FUNÇÃO INTERNA COMO PARÂMETRO... -->  e é no function body dessa função interna 
+
+
+que 
+
+vamos 
+
+escrever 
+
+
+
+o código que 
+
+será executado anteriormente a cada it case...
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+describe('<NavigationItems />', 
+
+() => { 
+
+            let wrapper; ///////EIS O CÓDIGO EM QUESTÃO.
+
+        beforeEach(  /////////////EIS O CÓDIGO EM QUESTÃO.
+            () => {
+                 wrapper = shallow(<NavigationItems />);  ///isso vai redefinir aquela DECLARAÇÃO INICIAL DE 'wrapper', vai fazer com que seu valor fique como esse call de 'shallow()'...
+            }
+        )
+
+        it('should render two <NavigationItem /> elements if not authenticated', 
+
+        () => {
+            expect(wrapper.find(NavigationItem)) 
+            .toHaveLength(2); 
+                                
+    }
+        )
+
+
+
+
+        it('should render three <NavigationItem /> elements if authenticated', 
+
+        () => {
+            expect(wrapper.find(NavigationItem)) 
+            .toHaveLength(3); 
+                            
+    }
+        )
+}
+
+)
+
+
+-----------------------------------------------------------
+
+
+
+
+
+
+describe('<NavigationItems />', 
+
+() => {
+        let wrapper;
+        beforeEach(() => {
+            wrapper = shallow(<NavigationItems/>);
+        })
+
+        it('should render two <NavigationItem /> elements if not authenticated', 
+
+        () => {
+            expect(wrapper.find(NavigationItem)) /////SIM, COISAS NO INTERIOR DE NOSSO COMPONENT DEVEM SER ESCRITAS ASSIM... (shallowly rendered, por isso não usamos '< JSX />', e sim 'JSX'...)
+            .toHaveLength(2); ///////ESSA É A 'ALMA' DOS NOSSOS TESTS.... ---> SÃO INÚMERAS UTILITY FUNCTIONS EXISTENTES DENTRO DE 'expect' QUE NOS DEIXAM DEFINIR o final da narrativa 'expect xxx ....'  (tipo 'toBe', 'toBeGreaterThan', 'toHaveLength', etc etc...).
+                                ////aqui, no caso, vamos 'expect' que O NÚMERO DE COMPONENTS 'NavigationItem' renderizados SEJA EXATAMENTE de '2'..
+    }
+        )
+
+
+
+
+        it('should render three <NavigationItem /> elements if authenticated', 
+
+        () => {
+                                  //pass MANUAL de prop  PARA UM COMPONENT, para conseguir realizar um test... --> assim estaremos AUTENTICADOS NO TEST, e aí poderemos testar 'avalie se realmente NavItems renderiza 3 NavItem quando estamos autenticados (token/prop logout presente)'... -->  OU SEJA, VAMOS CONTINUAR USANDO 'shallow()', mas com essa maracutaia especial embutida...
+            expect(wrapper.find(NavigationItem)) 
+            .toHaveLength(3); 
+                            
+    }
+        )
+}
+
+)
+
+
+
+
+
+---------------------------------------
+
+
+
+
+
+
+mas é CLARO QUE SE FIZERMOS ISSO,
+
+
+TEREMOS 
+
+
+
+1 
+'FAILED TEST'... ---> failed justamente pq 
+
+AO 
+
+REUTILIZAR/RECICLAR 
+
+O 
+
+
+
+'wrapper' por meio daquele 
+
+'beforeEach()',
+
+NÓS 
+
+
+DEIXAMOS 
+
+DE 
+PASSAR 
+
+O 
+
+PROP 
+
+de 
+
+'logout' 
+
+AO 
+
+'<NavigationItems />' 
+
+
+
+LÁ NO 'it case' 
+
+de 
+
+
+'expect 3 navItems when authenticated'...
+
+
+
+------------------------------------
+
+
+
+
+
+--> OK, MAS COMO PODEMOS SOLUCIONAR ISSO?
+
+
+
+
+
+
+--> PROFESSOR DIZ QUE PODEMOS FAZER 2 COISAS:
+
+
+
+
+
+
+1a coisa) -----> PODEMOS, É CLARO, REDEFINIR  O 
+
+
+VALOR DE 
+
+'wrapper' DENTRO 
+
+
+DAQUELE IT CASE ESPECIAL,
+
+
+
+e aí 
+
+definir 
+
+QUE 
+
+ELE 
+É 
+IGUAL 
+
+A 
+
+'shallow(<NavigationItems logout />);' 
+
+
+
+ex:
+
+
+
+
+
+     it('should render three <NavigationItem /> elements if authenticated', 
+
+        () => {
+            wrapper = shallow(<NavigationItems logout />);  ///////EIS O CÓDIGO EM QUESTÃO.
+            expect(wrapper.find(NavigationItem)) 
+            .toHaveLength(3); 
+                            
+    }
+        )
+
+
+
+
+----------------------------
+
+
+
+
+
+SE FIZERMOS ISSO,
+
+NOSSOS 
+
+2 
+
+TESTS 
+
+
+VAO 'SUCCEED'.... --> contudo,
+
+
+PODEMOS 
+
+USAR UM OUTRO MÉTODO,
+
+
+
+
+UM HELPER METHOD ELEGANTE QUE EXISTE 
+
+
+na package do ENZYME.... -----> para 
+
+isso,
+
+
+DEVEMOS 
+
+ACESSAR 
+
+O 
+
+'wrapper',
+
+
+E AÍ 
+
+DENTRO DELE
+
+
+
+
+
+HÁ UM MÉTODO CHAMADO 
+
+
+'.setProps()' ------> com ELE PODEMOS SETTAR QUAISQUER PROPS NECESSÁRIOS 
+
+
+AOS NOSSOS TESTS ESPECÍFICOS, AOS it cases específicos...
+
+
+
+
+ex:
+
+
+
+
+wrapper.setProps();
+
+
+
+
+
+
+
+---> SETPROPS PODE SER USADO EM QUALQUER 
+
+CONSTANTE QUE 
+SEGURA UM 'SHALLOWLY RENDERED' react element.... (e é usado para complementar essas constantes/react elements... )
+----------------------------------------------
+
+
+
+
+EX:
+
+
+
+
+
+
+
+     it('should render three <NavigationItem /> elements if authenticated', 
+
+        () => {
+            wrapper.setProps(); ///EIS O CÓDIGO EM QUESTÃO.
+            expect(wrapper.find(NavigationItem)) 
+            .toHaveLength(3); 
+                            
+    }
+        )
+    
+
+
+-----------------------
+
+
+
+
+
+E, NO setProps,
+
+
+DEVEMOS 
+
+PASSAR UM 
+
+
+PARâMETRO___ QUE SERÁ UM OBJETO JAVASCRIPT___... --> ESSE 
+
+OBJETO JAVASCRIPT 
+
+TERÁ 
+
+VÁRIOS 
+
+KEY-VALUE PAIRS,
+
+
+CADA UM 
+
+COM 
+
+
+
+UM __PROP___ E SEU VALOR CORRESPONDENTE...
+
+
+
+'key '---> NOMES DOS PROPS 
+
+
+
+'values' ---> OS VALORES DOS PROPS...
+
+
+
+
+
+
+
+aqui, no caso, 
+
+vamos 
+definir 
+
+
+
+
+'
+wrapper.setProps(
+    {
+        logout: true
+    }
+)'
+
+
+
+------------------
+
+E ISSO VAI SOLUCIONAR NOSSO PROBLEMA....
+
+
+
+
+------------------
+
+
+NOSSOS 
+
+
+2 
+TESTS AGORA DERAM 
+
+'PASS'...
+
+
+
+é assim que podemos ESCREVER MÚLTIPLOS TESTS,
+
+
+E FAZER COM QUE 
+
+ELES FUNCIONEM/SEJAM RODADOS BEM, TODOS 
+UM 
+
+AO LADO DO OUTRO...

@@ -1,0 +1,1795 @@
+
+
+O PROFESSOR VOLTA AO 'ZERO',
+
+
+
+
+
+tira o install de 'angular universal' de nosso app...
+
+
+
+
+
+
+
+
+
+
+
+
+--> VOU CRIAR UMA CÓPIA DO MEU APP,
+
+
+
+
+
+
+em que instalarei o angular universal de forma manual...
+
+
+
+
+
+
+
+
+->  MAS QUAL É A OUTRA MANEIRA DE ADICIONAR 'UNIVERSAL RENDERING' (serverside rendering) no angular app?
+
+
+
+
+
+--> É COM O USO DE 'NESTJS'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> NESTJS ---------> NESTJS  É UM SERVERSIDE FRAMEWORK PARA O NODEJS...
+
+
+
+
+
+
+
+
+
+
+
+
+--> OU SEJA,
+
+ O NESTJS
+
+
+
+ NÃO É 
+
+ UMA ANGULAR LIBRARY, E NÃO É UM ANGULAR FRAMEWORK...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> É UM SERVERSIDE FRAMEWORK... --> O PROFESSOR TEM UM VÍDEO NO YOUTUBE EM QUE 
+
+
+ ENSINA O QUE É O NESTJS...
+
+
+
+
+
+
+
+
+
+ --> O 'NESTJS'
+
+
+
+ É UM SERVERSIDE FRAMEWORK, SIM,
+
+
+ MAS __ ELE __ PEGOU VÁRIAS DE SUAS IDEIAS DIRETAMENTE DO ANGULAR,
+
+
+
+ O
+  QUE QUER DIZER  QUE 
+
+
+
+
+
+
+
+  É BASICAMENTE 
+
+
+  ''''ANGULAR PARA O SERVERSIDE''''... -->  
+
+
+
+
+
+
+
+
+
+
+
+
+MAS NÃO É EXATAMENTE ISSO, NÃO CUMPRE EXATAMENTE ESSA FUNÇÃO (por isso as aspas),
+
+
+
+JUSTAMENTE PQ ELE É UM SERVERSIDE FRAMEWORK,
+
+
+E FAZ COISAS TÍPICAS DE UM SERVER...
+
+
+
+
+
+
+
+
+
+
+
+
+--> NESTJS É BEM LEGAL E USA O TYPESCRIPT.... --> PEGA EMPRESTADO  ALGUMAS FEATURES DO ANGULAR...
+
+
+
+
+
+
+
+
+
+
+--> E O TIME POR TRÁS DO 'NESTJS' 
+
+
+
+GOSTA MT DO ANGULAR....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE ESSA TEAM 
+
+
+
+
+TAMBÉM 
+
+
+
+
+
+
+CRIOU UM COMANDO ESEPCIAL NO CONSOLE,
+
+QUE É 
+
+
+
+
+
+'ng add @nestjs/ng-universal' ---------->   VOCê 
+
+
+
+
+
+
+
+
+
+PODE RODAR ESSE COMANDO EM QUALQUER APP ANGULAR,
+
+
+
+E ISSO 
+
+
+
+VAI 
+
+ESSENCIALMENTE '''TAMBÉM SETUP UM SERVERSIDE RENDERING''',
+
+
+
+
+mas de uma forma especial,
+
+pq vai setar esse 
+
+
+
+'universal rendering'  COM _ UM APP __ NESTJS__ 
+
+
+
+ANEXADO 
+
+
+
+
+A ESSE app de serverside rendering....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS QUAL É A DIFERENÇA DISSO PARA O APPROACH ANTERIOR? 
+
+(
+
+    approach de 
+
+    ng add @nguniversal/express-engine  novoprojeto5
+)
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, A DIFERENÇA É QUE ANTES __ NÓS _ TÍNHAMOS SÓ UM 'SIMPLE SERVER',
+
+
+
+
+QEU APENAS FAZIA 'PRE-RENDER' 
+
+
+
+
+DAS  ANGULAR PAGES __ QUANDO VISITÁVAMOS AS PAGES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS AGORA, COM O 'nestjs' sendo usado para INCORPORAR O ANGULAR UNIVERSAL,
+
+
+
+
+AS COISAS FICMA DIFERENTES...
+
+
+
+
+
+
+
+
+
+
+
+-->  ok, vou lá e executo ng add @nestjs/ng-universal
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO.... ---> mas agora devemos ver o que é especial sobre o nestjs...
+
+
+
+
+
+--> MAS GANHEI UM ERROR:
+
+
+
+
+Package subpath './schematics/utils' is not defined by "exports" in
+ A:\projeto8-ANGULAR\MODULO25-BONUS-ANGULARUNIVERSAL\novoprojeto5-versaoqueusaoNESTJSparaimplementaroANGULARUNIVERSAL\node_modules\@nguniversal\express-engine\package.json
+
+
+
+
+
+
+
+
+---> isso tudo está uma bagunça,
+
+
+vou apagar essa cópia do projeto e ficar com uma cópia da versão anterior, que não tinha o 'ng-universal' já instalado....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O QUE O NESTJS FAZ É 
+
+
+'''SETUP UNIVERSAL RENDERING',
+
+
+
+
+
+MAS __ ALÉM DISSO,
+
+
+EM ADIÇÃO,
+
+ELE __ TE DÁ 
+
+
+UM 
+
+
+
+
+COMPLETO 'APP NESTJS' ...
+
+
+
+
+
+
+
+
+
+
+
+
+--> E O 'NESTJS'
+
+
+
+É UM 
+
+
+
+
+_'SERVERSIDE FRAMEWORK' 
+
+
+QUE VOCê 
+
+
+
+
+
+
+
+PODE USAR PARA CONSEGUIR CRIAR UMA 'API'...
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO,
+
+
+
+VOCê FICARIA COM UM APPROACH SIMPLES QUE 
+
+
+
+
+TE ENTREGARIA UM __ ANGULAR APP __ FULL STACK... (tipo o NEXTJS),
+
+
+
+
+
+
+EM QUE VOCÊ FICA 
+
+
+
+
+COM MAIS DO QUE O FRONTEND DO BROWSER,
+
+
+
+PQ VOCÊ 
+
+
+TAMBÉM 
+
+
+
+
+FICA COM TUDO NECESSÁRIO PARA SETTAR UM BACKEND/SERVERSIDE API 
+
+
+
+
+
+com o qual seu app frontend pode/poderia se comunicar..
+
+
+
+
+
+
+
+
+
+
+-> MAS É CLARO QUE VOCê NÃO É OBRIGADO A USAR O NESTJS ... --> VOCê PODERIA/PODE 
+
+
+
+
+CONSTRUIR UM API COM NODEEXPRESS, 
+
+COM PHP, 
+COM JAVA, 
+COM PYTHON, 
+
+OU ENTAÕ USAR UM SERVIÇO COMO 'FIREBASE',
+
+
+
+OU ENTAÕ TER UM APP QUE NEM MESMO REQUER UMA API...
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS SE VOCÊ QUER CONSTRUIR UM FULL STACK APP EM QUE 
+
+VOCe^
+
+
+TAMBÉM 
+
+
+
+ESCREVE SEU PRÓPRIO CÓDIGO SERVERSIDE,
+
+
+
+E EM QUE 
+
+
+VOCÊ 
+
+
+
+
+CONSTRÓI SUA PRÓPRIA API COM A QUAL SEU FRONTEND VAI CONVERSAR,
+
+
+
+ESSA É UMA MANEIRA FÁCIL DE 
+
+
+
+COMEÇAR, com o angular...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK... COM ISSO ACABADO,
+
+
+
+FICAMOS COM NOSSO APP,
+
+SIM,
+
+
+
+MAS TAMBÉM 
+
+
+
+FICAMOS 
+
+
+COM UM 
+FOLDER DE 
+
+'SERVER',
+
+
+
+
+
+em que teremos o SETUP BÁSICO PARA UM APP NESTJS...
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA VOU TENTAR INSTALAR ESSE 'NEST-JS' mais uma vez...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> erros? --> sim.... --> erros de depedency, mais uma vez...
+
+
+
+
+
+
+
+
+
+
+-> devo rodar aquele comando mais uma vez:
+
+
+
+
+update @angular/core@14 @angular/cli@14
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> tentei instalar o nestjs mais uma vez.... 
+
+
+
+
+
+
+
+o mesmo erro:
+
+
+
+Package subpath './schematics/utils' is not defined by "exports" in A:\projeto8-ANGULAR\MODULO25-BONUS-ANGULARUNIVERSAL\novoprojeto5-VersaoDoNossoAppQueUsaONESTJSparaImplementarOAngularUniversal\node_modules\@nguniversal\express-engine\package.json
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+3
+
+AFAIK i think it an error from the @nestjs/ng-universal side.
+
+as a quick & dirty solution start by installing @nguniversal/express-engine then go to node_modules/@nguniversal/express-engine/package.json and :
+
+remove : "type": "module"
+add in exports:
+    "./schematics/utils": {
+      "types": "./schematics/utils/index.d.ts",
+      "esm2020": "./schematics/utils/index.js",
+      "es2020": "./schematics/utils/index.js",
+      "es2015": "./schematics/utils/index.js",
+      "node": "./schematics/utils/index.js",
+      "default": "./schematics/utils/index.js"
+    }
+
+then ng add @nestjs/ng-universal should work fine and by updating the packages it should revert the changes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+https://stackoverflow.com/questions/70052219/angular-13-does-not-work-with-nestjs-ng-universal-but-works-correctly-with-ngu
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+consegui...
+
+
+
+
+
+
+
+
+
+
+
+
+
+agora devo ter isso instalado....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO.... MAS COMO 
+
+
+
+SETTAMOS NOSSO APP NESTJS?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, O CÓDIGO DO 'app.module.ts'
+
+É ESTE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Module } from '@nestjs/common';
+import { AngularUniversalModule } from '@nestjs/ng-universal';
+import { join } from 'path';
+import { AppServerModule } from '../src/main.server';
+
+@Module({
+  imports: [
+    AngularUniversalModule.forRoot({
+      bootstrap: AppServerModule,
+      viewsPath: join(process.cwd(), 'dist/novoprojeto5/browser')
+    })
+  ]
+})
+export class AppModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR EXPLICA QUE 
+
+
+ISSO _ JÁ _ ESTÁ SETTADO 
+
+PARA 
+
+'PRE-RENDER OUR APP ON THE FLY'... -> ISSO QUER DIZER QUE 
+
+
+
+
+
+
+
+
+
+
+
+
+O EFEITO DESSE CÓDIGO AÍ, NO MOMENTO,
+
+
+
+É __ EXATAMENTE_ O QUE 
+
+
+TIVEMOS 
+
+
+
+
+
+COM O APPROACH _ ANTERIOR 
+
+
+
+
+,
+
+
+
+do 'ANGULAR UNIVERSAL' instalado com 
+
+
+
+
+
+'''ng  add @nguniversal/express-engine  novoprojeto5'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------> OK...MAS A ÚNICA DIFERENÇA EM RELAÇAÕ AO NOSSO APPROACH ANTERIOR É 
+
+
+
+
+
+
+QUE AGORA FICAMOS '''COM A POSSIBILIDADE DE FACILMENTE TRANSFORMAR 
+
+
+ESSE APP EM UMA FULL STACK APPLICATION''',
+
+
+
+
+
+
+POR MEIO DO ADD DE SERVERSIDE CODE A ESSE ARQUIVO DE 'app.module.ts'
+
+
+
+
+em 'server'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK.. MAS TENHA ISSO EM MENTE:
+
+
+
+
+
+
+
+
+VOCÊ DEVE ASSEGURAR QUE, COMO ANTES,
+
+
+LÁ EM 
+
+
+
+'app.server.module.ts' (no folder do app angular comum)
+
+
+
+VOCÊ 
+
+
+ESTÁ COM AQUELE MODULE DE 'ModuleMapLoaderModule'  (NÃO SEI SE ISSO É REALMENTE NECESSÁRIO)
+
+
+
+
+
+
+
+
+ADICIONADO NO 'imports',  
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(aCHO QUE ISSO REALMENTE NAÕ É NECESSÁRIO)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> se for necessário, instale a pakcage 
+
+
+
+com npm install @nguniversal/module-map-ngfactory-loader --save-dev 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------> ok....
+
+
+
+
+
+
+
+
+
+ISSO FEITO,
+
+REPLICAMOS A MESMA COISA QUE 
+
+FIZEMOS NA AULA PASSADA,
+
+
+
+
+
+PEGAMOS E USAMOS AQUELE 
+
+
+
+
+
+CHECK DE 'IF ISBROWSER',
+
+
+
+
+para aí 
+
+EVITAR DE EXECUTAR AQUELE CÓDIGO DE 'AUTOLOGIN' (pq o código de 'autologin' usa o recurso/APi de 'LOCAL STORAGE', que é algo que SÓ EXISTE NO BROWSER, E NÃO EXISTE NO BACKEND... por isso nõa vamos querer que esse código seja executado lá na versão PRE-RENDERIZADA E EXECUTADA NO BACKEND, PQ ISSO VAI CRASHAR O BACKEND)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO, COLOCAMOS ESSE CHECK LÁ EM 'app.component.ts',
+
+TIPO ASSIM:
+
+
+
+
+
+
+import { Component, OnInit, PLATFORM_ID } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { AppState } from '.';
+import { AuthService } from './auth/auth.service';
+import { LoggingService } from './logging.service';
+
+import * as AuthActions from './auth/store/authActions';
+import { Inject } from '@nestjs/common';
+import { isPlatformBrowser } from '@angular/common';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent implements OnInit {
+  constructor(
+    private authService: AuthService,
+    private loggingService: LoggingService,
+    private store: Store<AppState>,
+    @Inject(PLATFORM_ID) private platformId
+  ) {}
+
+  ngOnInit(): void {
+    this.loggingService.printLog('Hello From AppComponent NgOnInit!');
+
+    if (isPlatformBrowser(this.platformId)) {
+      ///ver código do 'novoprojeto5'...
+
+      this.store.dispatch(new AuthActions.AutoLogin());
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO... 
+
+
+
+
+
+
+--> PARA EXECUTAR  
+
+
+
+
+ISSO AÍ,
+
+
+
+ESSE NOSSO CÓDIGO,
+
+
+VOCÊ 
+
+
+
+
+
+EXECUTA O MESMO COMANDO USADO LÁ EM 'ANGULAR UNIVERSAL APP' comum...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ou seja,
+
+vocÊ 
+
+
+roda 
+
+
+'npm run build:ssr'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO VAI CRIAR 1 BUILD DE SEU APP QUE VAI TER 'SERVERSIDE RENDERING' junto com o app comum angular... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO FEITO, VOCê VAI EXECUTAR 
+
+
+
+'npm run serve:ssr'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> e se você quiser DEPLOYAR ESSE APP DE VERDADE,
+
+
+VOCê É OBRIGADO 
+
+
+
+A O DEPLOYAR EM UM 'NODEJS SERVER',
+
+
+
+como o heroku.... (ou seja, mesmo esquema de um angular universal app COMUM)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+
+
+
+
+ASSIM QUE ISSO TERMINAR,
+
+O
+ PROFESSOR 
+
+
+ RODA 'npm run serve:ssr'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> ok, mas eu recebi um MONTE DE ERROS, AGORA...
+
+
+
+
+
+
+ EX:
+
+
+
+
+
+
+
+ ./node_modules/@nestjs/common/pipes/validation.pipe.js:14:15-30 - Error: Module not found: Error: Can't resolve 'util' in 'A:\projeto8-ANGULAR\MODULO25-BONUS-ANGULARUNIVERSAL\novoprojeto5-VersaoDoNossoAppQueUsaONESTJSparaImplementarOAngularUniversal\node_modules\@nestjs\common\pipes'
+
+
+
+
+
+
+
+
+
+
+
+--> um monte de errors...
+
+
+errors cabeludos...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> finalmente consertei.... eram um monte de errors...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+mas ainda tenho errors:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+./node_modules/@nestjs/common/utils/load-package.util.js:16:35-55 - Warning: Critical dependency: the request of a dependency is an expression
+
+./node_modules/@nestjs/core/helpers/load-adapter.js:16:35-59 - Warning: Critical dependency: the request of a dependency is an expression
+
+./node_modules/@nestjs/core/helpers/optional-require.js:10:35-55 - Warning: Critical dependency: the request of a dependency is an expression
+
+
+
+Error: server/main.ts:7:32 - error TS4111: Property 'PORT' comes from an index signature, so it must be accessed with ['PORT'].       
+
+7   await app.listen(process.env.PORT || 4000);
+                                 ~
+
+
+
+
+
+
+INFORMAÇÃO:
+
+
+
+  You can ignore these warnings - the application will work properly.
+
+
+
+
+
+
+
+
+
+
+
+ainda errors...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> parece que CONSEGUI DEPLOYAR O  APP, MESMO COM ESSES ERRORS/AVISOS....
+
+
+
+
+
+
+
+
+
+
+--> ENTRETANTO,
+
+PARECE QUE O CÓDIGO DO 'CHECK PELO BROWSER' não está funcionando,
+
+pq no 
+
+TERMINAL DO 'SERVER' RECEBI ISTO:
+
+
+
+
+
+
+ERROR ReferenceError: localStorage is not defined
+    at Object.next (A:\projeto8-ANGULAR\MODULO25-BONUS-ANGULARUNIVERSAL\novoprojeto5-VersaoDoNossoAppQueUsaONESTJSparaImplementarOAngularUniversal\dist\novoprojeto5\server\main.js:22053:36)
+    at ConsumerObserver.next (A:\projeto8-ANGULAR\MODULO25-BONUS-ANGULARUNIVERSAL\novoprojeto5-VersaoDoNossoAppQueUsaONESTJSparaImplementarOAngularUniversal\dist\novoprojeto5\server\main.js:117828:25)
+    at SafeSubscriber.Subscriber._next (A:\projeto8-ANGULAR\MODULO25-BONUS-ANGULARUNIVERSAL\novoprojeto5-VersaoDoNossoAppQueUsaONESTJSparaImplementarOAngularUniversal\dist\novoprojeto5\server\main.js:117789:22)
+    at SafeSubscriber.Subscriber.next (A:\projeto8-ANGULAR\MODULO25-BONUS-ANGULARUNIVERSAL\novoprojeto5-VersaoDoNossoAppQueUsaONESTJSparaImplementarOAngularUniversal\dist\novoprojeto5\server\main.js:117754:12)
+    at A:\projeto8-ANGULAR\MODULO25-BONUS-ANGULARUNIVERSAL\novoprojeto5-VersaoDoNossoAppQueUsaONESTJSparaImplementarOAngularUniversal\dist\novoprojeto5\server\main.js:121990:20
+    at OperatorSubscriber._this._next (A:\projeto8-ANGULAR\MODULO25-BONUS-ANGULARUNIVERSAL\novoprojeto5-VersaoDoNossoAppQueUsaONESTJSparaImplementarOAngularUniversal\dist\novoprojeto5\server\main.js:120532:9)
+    at OperatorSubscriber.Subscriber.next (A:\projeto8-ANGULAR\MODULO25-BONUS-ANGULARUNIVERSAL\novoprojeto5-VersaoDoNossoAppQueUsaONESTJSparaImplementarOAngularUniversal\dist\novoprojeto5\server\main.js:117754:12)
+    at A:\projeto8-ANGULAR\MODULO25-BONUS-ANGULARUNIVERSAL\novoprojeto5-VersaoDoNossoAppQueUsaONESTJSparaImplementarOAngularUniversal\dist\novoprojeto5\server\main.js:122786:18
+    at OperatorSubscriber._this._next (A:\projeto8-ANGULAR\MODULO25-BONUS-ANGULARUNIVERSAL\novoprojeto5-VersaoDoNossoAppQueUsaONESTJSparaImplementarOAngularUniversal\dist\novoprojeto5\server\main.js:120532:9)
+    at OperatorSubscriber.Subscriber.next (A:\projeto8-ANGULAR\MODULO25-BONUS-ANGULARUNIVERSAL\novoprojeto5-VersaoDoNossoAppQueUsaONESTJSparaImplementarOAngularUniversal\dist\novoprojeto5\server\main.js:117754:12)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ok... qual a razão disso?
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+  --> ok, mas MESMO ASSIM, NOSSO APP NÃO ESTÁ FUNCIONANDO BEM, PQ O CÓDIGO QUE DEVE SER EXECUTADO 'APENAS NO BROWSER 'ainda está sendo executado, por alguma razão..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OK, ACHO QUE AGORA ENTENDI A RAZÃO DO PROBLEMA... --> é pq estou executando 'localStorage.getItem()"
+
+
+
+  LÁ NO HEADER COMPONENT TAMBÉM..
+
+
+
+
+
+
+
+
+  --> basta alterar esse código, fazer ccom que ele só seja executado no browser, e não no server, tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  CONSERTEI O CÓDIGO, FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  import { Component, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { AppState } from '..';
+
+import { Inject } from '@angular/core';
+
+import { RecipeBookService } from '../recipeBook.service';
+
+import * as AuthActions from '../auth/store/authActions';
+
+import * as RecipeBookActions from '../recipeBook/store/recipeBookActions';
+import { Recipe } from '../recipeBook/recipe.model';
+import { isPlatformBrowser } from '@angular/common';
+
+@Component({
+  templateUrl: './headerComponent.app.html',
+  styleUrls: ['./headerComponent.app.css'],
+  selector: 'app-header-component',
+})
+export class HeaderComponent implements OnInit, OnDestroy {
+  collapsed: boolean = true;
+
+  isAuth: boolean = false;
+
+  userEmitted: Subscription;
+
+  recipesEmitted: Subscription;
+
+  loadedRecipes: Recipe[];
+
+  constructor(
+    private recipeService: RecipeBookService,
+
+    private store: Store<AppState>,
+
+    @Inject(PLATFORM_ID) private platformId  ///EIS O CÓDIGO EM QUESTÃO.
+  ) {}
+
+  ngOnInit(): void {
+    this.recipesEmitted = this.store
+      .select('recipeBook')
+      .subscribe((recipeBookData) => {
+        this.loadedRecipes = recipeBookData.recipes;
+      });
+
+
+    
+
+
+      if (isPlatformBrowser(this.platformId)) {
+
+        this.userEmitted = this.store.select('auth').subscribe((user) => {
+          if (user.token) {
+            this.isAuth = true;
+          } else {
+    
+      
+            const loadedUser = localStorage.getItem('token');
+    
+            if (loadedUser) {
+              this.isAuth = true;
+            } else {
+              this.isAuth = false;
+            }
+          }
+        });
+
+
+      }
+
+    // this.userEmitted = this.store.select('auth').subscribe((user) => {
+    //   if (user.token) {
+    //     this.isAuth = true;
+    //   } else {
+
+  
+    //     const loadedUser = localStorage.getItem('token');
+
+    //     if (loadedUser) {
+    //       this.isAuth = true;
+    //     } else {
+    //       this.isAuth = false;
+    //     }
+    //   }
+    // });
+  }
+
+  onLoadData() {
+    console.log('TEST');
+
+    this.store.dispatch(new RecipeBookActions.StartFetchRecipes());
+  }
+
+  onSaveData() {
+    this.store.dispatch(new RecipeBookActions.SaveRecipesStart());
+  }
+
+  onLogout() {
+    this.store.dispatch(new AuthActions.AuthLogout());
+  }
+
+  ngOnDestroy(): void {
+
+
+    if (isPlatformBrowser(this.platformId)) {
+      this.userEmitted.unsubscribe();
+    }
+ 
+    this.recipesEmitted.unsubscribe();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+--> VOU TER QUE ADICIONAR A MESMA COISA LÁ na versão 'ANGULAR UNIVERSAL'...
+
+
+
+
+
+
+
+
+CERTO, FIZ ISSO..
+
+
+
+
+
+
+
+
+
+--> LEMBRE-SE QUE NOSSO SERVER DE DEV VAI RODAR EM 'localhost:4000'...
+
+
+
+
+
+
+
+
+PARA CONSEGUIR DEPLOYAR ESSE SITE,
+PRECISAMOS DE:
+
+
+
+
+Hence you need a host that does - for example AWS ElasticBeanstalk or Heroku.
+
+
+
+
+
+
+
+
+To these hosts, you need to upload your dist/ folder along with the package.json file. On the web server, you then have to ensure that npm install is executed, followed by npm serve:ssr.
+
+
+That's it - your app is now up and running on a web server!
+
+
+
+
+
+
+Here's an example how you could host Universal apps via Firebase Cloud Functions (NOT Firebase Hosting): https://www.udemy.com/the-complete-guide-to-angular-2/learn/lecture/15267340#questions/7482486
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,1081 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ADICIONAMOS NOSSO PRIMERIO REDUCER, QUE FICOU COM UM CÓDIGO TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+let ingredients: Ingredient[] = [];
+
+const initialState = {
+  ////queremos ter esse 'INITIALSTATE' de nosso app, que antes existia lá no SERVICE DE 'shoppingList.service.ts', CONSIDERADO NESSE NOSSO REDUCER/SISTEMA DO CENTRAL STORE...
+
+  ingredients: ingredients,
+};
+
+
+
+
+
+
+
+
+
+export function shoppingListReducer(state = initialState, action: Action) {
+
+  switch (action.type) {
+    case 'INGREDIENT_ADD':
+      return {
+
+        ...state,
+        ingredients: [
+          ...state.ingredients,
+
+        ]
+      }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O PROBLEMA É QUE, ATÉ AGORA, ELE NÃO VAI TER EFEITO ALGUM...
+
+
+
+
+
+
+
+
+
+
+-> A PRÓXIMA ETAPA É 
+
+
+ESCREVER ACTIONS QUE TRIGGEM ESSE REDUCER...
+
+
+
+
+
+
+
+
+
+----> PRECISAMOS CODAR A ACTION DE 'INGREDIENT_ADD'...
+
+
+
+
+
+
+
+
+
+
+
+--> QUEREMOS SER CAPAZES DE FAZER 'DISPATCH' DESSA ACTION...
+
+
+
+
+
+
+
+
+--> E PARA 
+
+FAZERMOS DISPATCH DE UMA ACTION DE FORMA __ CONFIÁVEL (sempre da mesma forma),
+
+
+
+
+
+
+
+
+COM 
+
+
+O SEND SEMPRE DE UMA MESMA ESPÉCIE DE ACTION (com um IDENTIFIER como 'ADD_INGREDIENT', em que ELIMINAMOS TYPOS, etc),
+
+
+
+
+
+E TAMBÉM 
+
+
+COM O HOLD DO PAYLOAD CORRETO PARA CADA DISPATCH DE 'ADD_INGREDIENT' (com o ingredient adequado),
+
+
+
+
+
+
+
+
+
+PARA ISSO, PRECISAMSO 
+
+
+'STANDARDIZAR'
+
+
+ESSE PROCESSO DE CRIAÇAÕ DE ACTIONS,
+
+
+
+
+OU ENTÃO 'COMO UMA ACTION DEVE SE PARECER'...
+
+
+
+
+
+
+
+
+
+
+
+---------> ISSO PQ, AGORA,
+
+
+
+SE QUISÉSSEMOS DISPATCHEAR ESSA ACTION _ DE QUALQUER LUGAR DE NOSSO CÓDIGO,
+
+
+
+
+
+TERÍAMOS DE NOS CERTIFICAR DE QUE 
+
+
+ESSA ''''ACTION''' que escrevemos nesse lugar aí
+
+
+
+
+
+
+está com uma ESCRITA BEM CERTINHA DE 
+
+
+{
+
+    type: 'ADD_INGREDIENT',
+    payload: xxxx
+}
+
+
+
+
+
+
+
+---> E, COMO VOCÊ PODE IMAGINAR, SE SEU APP É GRANDE, É FÁCIL 
+
+
+
+
+ESQUECER ALGUM CARACTER,
+
+E AÍ 
+
+
+
+ISSO CAUSARÁ UM BUG SUPER DIFÍCIL DE CORRIGIR,
+
+
+
+
+SUPER DIFÍCIL DE ENCONTRAR,
+
+E AÍ VOCÊ PERDERÁ HORAS PROCURANDO POR ESSE TYPO...
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA EVITAR ESSES TYPOS,
+
+
+O 
+
+
+NGRX 
+
+
+
+NOS FORÇA A 
+
+SEGUIR UM 
+
+
+PROCEDIMENTO (pattern) 
+
+BEM CLARO 
+
+
+
+
+DE CREATE E PROVIDE DE ACTIONS...
+
+
+
+
+
+
+
+
+
+-> PARA USARMOS/CRIARMOS ACTIONS,
+
+
+CRIAMOS 
+
+
+
+UM ARQUIVO CHAMADO DE 'shoppingListActions.actions.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO.... E COMO ''AS ACTIONS E O REDUCER''
+
+
+
+todos possuem relação/fazem parte do store,
+
+
+
+CRIAMOS UM NOVO FOLDER NA AREA DE 'shoppingList',
+
+
+
+que será 
+
+
+
+CHAMADO DE 'store', e que tratará especificamente disso....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok.. FICAMOS COM ESSES ARQUIVOS NESSE FOLDER,
+
+
+
+E AGORA PRECISAMOS 
+
+
+
+
+CRIAR ALGUMAS ACTIONS DENTRO DESSE ARQUIVO DE 'shopping-listActions.ts'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ISSO FEITO,
+
+O PROFESSOR VAI QUERER __ PEGAR _ AQUELE IDENTIFIER DE 'ADD_INGREDIENT'
+
+
+
+E ENTÃO 
+
+O 
+
+
+ESCREVER 
+
+
+NO ARQUIVO DE ACTIONS,
+
+PARA QUE 
+
+
+ELIMINEMOS TODOS OS 'TYPOS' DE ACTIONS DE NOSSO APP..
+
+
+
+
+
+
+
+
+
+
+
+
+--> aí o professor nos lembra daquela convenção de 
+
+
+
+naming de actions,
+
+que é tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export const ADD_INGREDIENT = 'ADD_INGREDIENT' 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> COM ISSO, PODEMOS ESCREVER TODOS OS IDENTIFIERS DAS ACTIONS PERTINENTES NESSE NOSSO ARQUIVO 
+
+MESMO,
+
+e aí 
+
+apenas importar um 'OBJECT DE ACTIONS'
+
+
+
+lá no reducer,
+
+em que vamos especificar bem 'qual action vai resultar no que/qual código'....
+
+
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+export const ADD_INGREDIENT = 'INGREDIENT_ADD';
+
+export const EDIT_INGREDIENT = 'INGREDIENT_EDIT';
+
+export const DELETE_INGREDIENT = 'INGREDIENT_DELETE';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> AGORA BASTA IMPORTAR O 'OBJECT ACTIONS' lá de 
+
+
+
+'shoppingListActions'...
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Action } from '@ngrx/store';
+
+
+
+import * as ActionIdentifiers from './shoppingListActions'; ////nossa collection de POSSÍVEIS ACTIONS/action identifiers...
+import { Ingredient } from '../../shared/ingredient.model';
+
+import { updateObject } from '../../utility/updateObject'
+
+
+
+let ingredients: Ingredient[] = [];
+
+const initialState = {
+  ////queremos ter esse 'INITIALSTATE' de nosso app, que antes existia lá no SERVICE DE 'shoppingList.service.ts', CONSIDERADO NESSE NOSSO REDUCER/SISTEMA DO CENTRAL STORE...
+
+  ingredients: ingredients,
+};
+
+
+
+
+
+
+
+
+
+const addIngredient = (state: {ingredients: Ingredient[]}, action: {type: string, ingredient: Ingredient}) => {
+
+    const updatedIngredients = {
+        ...state.ingredients
+    }
+
+
+    updatedIngredients.push(action.ingredient)
+
+
+    return updateObject(state, {
+
+        ingredients: updatedIngredients
+
+    })
+
+
+}
+
+
+
+
+
+////POR MEIO DA FEATURE typescript (next gen javascript) de 'state = initialState', DEFINIMOS O 'initial state' considerado no nosso reducer _cOMO _ SENDO O MESMO STATE QUE DEFINIMOS LOGO ACIMA, NAQUELA CONST...
+export function shoppingListReducer(state = initialState, action: any) {
+  ///////ESSES 2 ARGUMENTOS SÃO SEMPRE 'PASSED IN' pelo próprio angular 'NGRX', contanto que vocÊ defina esse reducer como REDUCER DE SEU APP
+
+  ///state --> é o APPLICATION-WIDE STATE DE SEU APP...
+
+  switch (action.type) {
+    // case 'INGREDIENT_ADD':
+    case ActionIdentifiers.ADD_INGREDIENT:
+      return addIngredient(state, action);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------> ok... 
+
+
+
+
+
+
+ESSE É O PRIMEIRO PASSO.... --> MAS ISSO NÃO VAI ASSEGURAR QUE 
+
+
+'TEREMOS O PAYLOAD CORRETO'....
+
+
+
+
+
+
+
+
+
+
+
+--> PARA SOLUCIONAR ESSE PROBLEMA (que é um problema do typescript),
+
+
+
+PRECISAMOS IMPORTAr__ OUTRA_ COISA QUE 
+
+VAI 
+
+
+
+'DESCREVER O NOSSO OBJECT ACTION EM SI' (que contém o 'type' e um POSSÍVEL PAYLOAD)...
+
+
+
+
+
+
+
+
+
+
+
+----> É POR ISSO QUE COMEÇAMOS PELO IMPORT DO TYPE DE 'Action' 
+
+
+,
+
+
+que tiramos de 'shoppingListReducer'
+
+
+
+E COLOCAMOS EM 'shoppingListActions'....
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+import { Action } from "@ngrx/store";  ///precisamos disso para DESCREVER NOSSAS ACTIONS...
+
+
+export const ADD_INGREDIENT = 'INGREDIENT_ADD';
+
+export const EDIT_INGREDIENT = 'INGREDIENT_EDIT';
+
+export const DELETE_INGREDIENT = 'INGREDIENT_DELETE';
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> ISSO FEITO,
+
+O PROFESSOR NOS DIZ QUE 
+
+
+PODEMOS ESCREVER UMA NOVA CLASS,
+
+
+
+
+QUE SERÁ 
+
+DE NOME 
+
+
+'addIngredient'..
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+
+export class AddIngredient {
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ESSA ACTION VAI BASICAMENTE 'CONTER' O IDENTIFIER DE 
+
+
+
+
+'ADD_INGREDIENT'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É UMA CLASS, SIM, E ESSA CLASS PRECISA _ OBRIGATORIAMENTE_ IMPLEMENTAR A INTERFACE DE 
+'Action' (
+
+
+que vai te obrigar a adicionar a propriedade de 'type'...
+)
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+
+import { Action } from "@ngrx/store";  ///precisamos disso para DESCREVER NOSSAS ACTIONS...
+
+
+export const ADD_INGREDIENT = 'INGREDIENT_ADD'; ////identifiers de nossas actions
+
+export const EDIT_INGREDIENT = 'INGREDIENT_EDIT';
+
+export const DELETE_INGREDIENT = 'INGREDIENT_DELETE';
+ 
+
+
+
+
+
+
+
+
+export class addIngredient implements Action {
+
+
+
+
+    type: string = ADD_INGREDIENT;
+
+
+
+    
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------> certo... 
+
+
+
+MAS UMA NOTAÇÃO EXTRA __ QUE _ DEVE  SER ADICIONADA NESSA NOSSA CLASS É 
+
+
+
+
+
+
+o write de 'readonly' NESSA PROPRIEDADE DE 'type'..
+
+
+
+
+
+
+
+
+
+
+'READONLY' --> ESSA É UMA FEATURE TYPESCRIPT UQE 
+
+INDICA QUE 
+
+'ESSA PROPRIEDAED NUNCA DEVE SER ALTERADA DO LADO DE FORA DA SUA CLASS/OBJECt.'..
+
+
+
+
+
+
+
+
+-----> SE TENTARMOS ALTERAR ESSA PROPRIEDAED DO LADO DE FORA,
+
+FICAMOS COM UM ERROR (isso melhora o type safety)..
+
+
+
+
+
+
+
+
+
+-> OK.... MAS É CLARO QUE ESSA CLASS PRECISA MAIS DO QUE 
+
+O 
+'type',
+
+
+pq ela vai precisar também de 'PAYLOAD', QUE 
+
+SERÁ RELATIVO, AQUI, AO  __INGREDIENT QUE VOCÊ VAI QUERER ADICIONAR__..
+
+
+
+
+
+
+
+
+
+
+
+
+
+-. É POR ISSO QUE PODEMOS ADICIONAR UMA SEGUNDA PROPRIEDADE, DE NOME 'payload',
+
+
+
+
+
+
+QUE DEVERÁ _ SER DE TYPE 'Ingredient',
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+import { Action } from "@ngrx/store";  ///precisamos disso para DESCREVER NOSSAS ACTIONS...
+import { Ingredient } from "src/app/shared/ingredient.model";
+
+
+export const ADD_INGREDIENT = 'INGREDIENT_ADD'; ////identifiers de nossas actions
+
+export const EDIT_INGREDIENT = 'INGREDIENT_EDIT';
+
+export const DELETE_INGREDIENT = 'INGREDIENT_DELETE';
+ 
+
+
+
+
+
+
+
+
+export class addIngredient implements Action {
+
+
+
+
+   readonly type: string = ADD_INGREDIENT;   ///precisa ser adicionada a essa class typescript.. (feature própria do typescript)...
+
+
+   payload: Ingredient; ///é opcional, o payload é opcional...
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ------> ok..
+
+
+
+
+
+
+ COM ISSO,
+
+
+
+ ACABAMOS COM NOSSA 'ACTION DEFINITION'...
+
+
+
+
+
+
+
+
+--> ESTAMOS QUASE ACABADOS COM ISSO.... --. VAMOS USAR 
+
+
+
+ESSA ACTION LÁ 
+
+
+
+NO REDUCER de 'shoppingListReducer',
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+export function shoppingListReducer(state = initialState, action: any) {
+
+
+  switch (action.type) {
+
+    case ActionIdentifiers.ADD_INGREDIENT:
+      return {
+
+
+
+        ...state,
+        ingredients: [...state.ingredients, payload] ///eis o código em questão
+      }
+  } 
+
+
+
+
+
+
+
+
+
+
+
+
+  --> COM ISSO, FINALMENTE PODEMOS 'EXTRACT THE PAYLOAD'
+
+
+  e aí 
+
+
+ FINALMENTE PODEMOS TRABALHAR NO 'EXTRACT DO PAYLOAD'
+
+
+
+
+ E ENTAÕ 
+
+
+
+
+ O TRABALHO DE 'REGISTER THE APPLICATION STORE' (Além DO SELECT DE NOSSO STATE E O _DISPATCH DE ACTIONS)

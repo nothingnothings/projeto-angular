@@ -1,0 +1,1272 @@
+
+
+
+
+
+
+
+
+
+
+
+como o professor mencionou, ao final da última lição,
+
+seria nice 
+se 
+
+pudéssemos 
+
+
+
+
+
+
+
+validar o user input... 
+
+
+
+
+
+
+
+
+
+
+--> ISSO É MT IMPORTANTE,
+
+EM QUALQUER APP QUE VOCÊ CONSTRUIR..
+
+
+
+
+
+
+
+
+
+--> EMBORA VOCÊ TENHA DE VALIDAR 
+
+O 
+
+USER INPUT 
+
+
+NO BAKCEND,
+
+
+
+
+PQ 
+
+
+O FRONTEND PODE SER TRICKED,
+
+
+
+
+
+VOCê 
+
+
+PODE 
+
+MELHORAR BASTANTE A USER 
+
+EXPERIENCE 
+
+
+POR MEIO DE VALIDATION...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> AGORA QUEREMOS QUE NENHUM DOS FIELDS FIQUE 'EMPTY',
+
+e também que 
+
+O 
+
+
+
+
+EMAIL SEJA UM 'VALID EMAIL ADDRESS'...
+
+
+
+
+
+
+
+
+
+
+
+-. para isso,
+
+
+
+
+podemos usar aquele velho approach de 'trim',
+
+eu acho..
+
+
+
+
+
+
+
+tipo 
+
+
+
+
+
+
+
+if (xxxx.trim() === '') {
+
+throw new Error()
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> CERTO...
+
+
+
+
+
+
+
+
+
+
+
+MAS ESSE É O APPROACH _ NORMAL, 'OLD-SCHOOL',
+
+de adicionar 
+
+validation...
+
+
+
+
+
+
+
+
+
+
+
+--> QUANDO O ASSUNTO É ANGULAR,
+
+
+O PROFESSOR DIZ QUE DEVEMOS IR _ ATÉ O TEMPLATE 
+
+
+
+
+
+
+
+E __ AÍ ADICIONAR VALIDATORS DIRETAMENTE NELE..
+
+
+
+
+
+
+
+
+
+
+
+- COMO ESTAMOS USANDO O 'TEMPLATE-DRIVEN APPROACH',
+
+
+
+
+O
+ ÚNICO LUGAR 
+
+
+
+ EM QUE 
+
+ PODEMOS 
+
+ COLOCAR VALIDATORS É _ DIRETAMENTE 
+
+
+ NO TEMPLATE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> COMO EXEMPLO DE 1 ATTRIBUTE MUITO ÚTIL,
+
+ TEMOS 
+
+ 'required',
+
+ que pode ser adicionado 
+
+
+
+
+ a inputs diversos em nossa page...
+
+
+
+
+
+ eX:
+
+
+
+
+
+
+             <input
+              type="text"
+              id="username"
+              class="form-control"
+              ngModel 
+              name="username" 
+              required
+            />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> 'REQUIRED', no caso,
+
+    é um DEFAULT HTML ATTRIBUTE QUE VOCê SEMPRE PODE ADICIONAR A ALGUM INPUT...
+
+
+
+
+
+
+
+
+
+
+    -> entretanto, aqui,
+
+
+    no código angular do template,
+
+
+
+    O ANGULAR_ _ VAI DETECTAR__ ESSE 
+
+
+
+    'required',
+
+
+
+
+    E ENTAÕ 
+
+
+
+
+
+    _ VAI __ TRATAR ESSE 'required'
+
+
+
+    COMO UM 
+
+
+
+    ___ SELECTOR__ PARA UMA DE SUAS BUILT-IN DIRECTIVES..
+
+
+
+
+
+
+
+
+
+
+    -> UMA DAS DIRECTIVES QUE SHIPPA COM O ANGULAR...
+
+
+
+
+
+
+
+
+
+
+    --> SUA FORM SERÁ AUTOMATICAMENTE CONFIGURADA 
+
+    PARA 
+
+    LEVAR ISSO EM CONSIDERAÇÃO,
+
+
+    PPARA 
+
+    _ GARANTIR __ QUE 
+
+
+
+
+
+    _ESSA FORM _ AÍ _ SERÁ TRATADA COMO 'INVALID'
+
+
+
+
+    SE _ ELA ESTIVER __ VAZIA...
+
+
+
+
+
+
+
+
+
+
+    --> PODEMOS ADICIONAR 'required'
+
+    tanto a 'name'
+    como 
+
+    'email'... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> EXISTEM OUTRAS DIRECTIVES 
+
+
+
+
+QUE SÃO TIPO 'VALIDATORS'...
+
+
+
+
+
+
+-----> OUTRA DIRECTIVE/VALIDATOR 
+
+
+
+
+
+QUE É UTILIZADA COM FREQUÊNCIA É 'email',
+
+
+
+
+
+
+
+
+E 
+
+'email'
+
+NÃO É UM BUILT-IN HTML ATTRIBUTE,
+
+
+
+É UMA DIRECTIVE 
+
+DISPONIBILIZADA 
+
+
+
+PELO ANGULAR,
+
+
+
+
+
+QUE _ 
+
+
+
+
+
+_ASSEGURA__ QUE 
+
+
+
+A FORM SÓ PODERÁ SER ENVIADA SE 
+
+O INPUT DO USER 
+
+
+
+NESSE INPUT FIELD É UM 'VALID EMAIL ADDRESS'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... NOSSO CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+
+
+      <form (ngSubmit)="onSubmitForm(formReference)" #formReference="ngForm" >  <!-- ESSA DIRECTIVE VAI CAPTURAR O 'TRIGGER DO SUBMIT' de sua form e então vai o utilizar para RODAR OS METHODS QUE VOCê DEFINIU LÁ NO ARQUIVO '.ts'..-->
+        <!-- NO ANGULAR, VOCÊ NUNCA COLOCA 'action=xxx' na sua tag de FORM, pq sua form vai ser handldada PELO ANGULAR EM SI... é por isso que não temos 'action' APONTANDO A ALGUMA ROUTE DE NOSSO APP.. NÓS TAMBÉM NÃO VAMOS COLOCAR 'method=POST', esse outro attribute famoso...-->
+
+        <!-- VOCÊ TAMBÉM PRECISA DEFINIR O VALOR DE SUA LOCAL REFERENCE COMO EQUIVALENTE A 'ngForm', para CONSEGUIR PASSAR A _ ACTUAL_ REPRESENTAÇÃO JAVASCRIPT DE SUA FORM AO seu method em 'xxx.ts', ao código typescript-->
+        <div id="user-data">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              class="form-control"
+              ngModel 
+              name="username" 
+              required
+            /> <!-- required É UM DEFAULT HTML ATTRIBUTE, mas quando você o escreve em código angular, É USADO COMO UM SELECTOR PARA UMA DAS DIRECTIVES BUILT-IN DO ANGULAR...-->
+          </div>
+          <button class="btn btn-default" type="button">
+            Suggest an Username
+          </button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              ngModel 
+              name="email" 
+              required
+              email
+            /> <!-- 'EMAIL' é outra DIRECTIVE DO ANGULAR, UMA DAS 'VALIDATOR DIRECTIVES', pq é algo que assegura a validation dos inputs do user, e que NÃO É UM DEFAULT HTML ATTRIBUTE, E SIM UMA DIRECTIVE...-->
+            <!-- o angular vai RECONHECER ESSE INPUT FIELD como um dos 'CONTROLS' da REPRESENTAÇAÕ TYPÉSCRIPT DA FORM SE VOCê ADICIONAR 'ngModel' como directive-->
+            <!-- VOCÊ TAMBÉM PRECISA DE 'name', essa directive/attribute que vai dizer ao ANGULAR __ como _ deverá ser o nome desse control/input na REPRESENTAÇÃO TYPESCRIPT DESSA FORM.. .-->
+          </div>
+          <div class="form-group">
+            <label for="secret">Secret Questions</label>
+            <select id="secret" 
+            class="form-control" 
+            name="secret" 
+            ngModel>
+              <option value="pet">Your first Pet?</option>
+              <option value="teacher">Your first teacher?</option>
+            </select>
+          </div>
+          <button class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> CERTO..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS MESMO QUE NOSSOS INPUT FIELDS ESTEJAM FORRADOS COM DATA INVÁLIDA,
+
+
+NOSSO BUTTON DE 'SUBMIT'
+
+ainda está funcionando (não está ficando 'disabled')...
+
+
+
+
+
+
+
+
+
+
+---> OU SEJA,
+
+
+AINDA PODEMOS SUBMITTAR NOSSA FORM,
+
+
+JUSTAMETNE PQ 
+
+
+AINDA NÃO SETTAMOS 
+
+LÓGICA ALGUMA 
+
+QUE 
+
+NOS PREVINA 
+
+
+DE FAZER ESSE 
+
+SEND EM CASO DE INVALID DATA...
+
+
+
+
+
+
+
+
+
+-> MAS SE CHECARMOS O ATTRIBUTE DE 'valid',
+
+
+DENTRO 
+
+
+
+DO NOSSO OBJECT JAVASCRIPT REPRESENTATIVO DE NOSSA FORM,
+
+
+veremos 
+
+'false'....
+
+
+
+
+
+
+
+
+
+
+
+
+-> E SE DIGITARMOS ALGO NO EMAIL E EM USERNAME,
+
+
+
+
+
+
+
+
+
+
+SE DIGITARMOS 
+
+ALGO 
+
+
+
+
+QUE NÃO É UM EMAIL 
+
+
+
+
+
+NO CAMPO DE 'EMAIL',
+
+
+
+a form AINDA ESTARÁ COMO 
+
+
+'invalid'm,
+
+O
+
+
+
+
+'valid' ainda estará COMO FALSE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ok... ISSO QEUR DIZER QUE 
+
+
+O ANGULAR 'CORRRECTLY TRACKS THE STATE OF THIS FORM'
+
+
+
+
+E ENTÃO 
+
+
+CORRECTLY NOS 
+INFORMA
+
+
+
+
+SE ESSA FORM É VÁLIDA OU NÃO...
+
+
+
+
+
+
+
+
+
+
+
+----> E, ACTUALLY,
+
+
+ESSA 
+
+VALIDATION/TRACK DA VALIDITY 
+
+
+
+
+É FEITA EM UM NÍVEL PROFUNDO,
+
+
+
+
+
+pq 
+
+podemos 
+até 
+
+
+
+
+mesmo checar 
+
+OS 
+
+'CONTROLS'
+
+
+dentro 
+
+dessa form,
+
+
+
+COMO 
+O 
+
+
+CONTROL DE 'email' 
+
+
+
+e 
+
+'name',
+
+
+pARA VER QUAL 
+
+DELES
+ 
+
+
+
+
+
+
+
+FICOU COM UM 'valid' de value 'false',
+
+
+
+
+etc etc..
+
+
+
+
+
+
+
+
+
+
+
+
+ OU SEJA,
+
+ O ANGULAR 
+
+ TRACKA  A VALIDITY DE NOSSA FORM EM UM 
+
+ 'PER-CONTROL' level... ->  E TAMBÉM
+
+
+
+
+ TRACKA EM UM 'FORM LEVEL' 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ou seja,
+
+ tracka de forma ESPECÍFICA (each control/ input or select)
+
+
+
+
+
+
+ e __ GERAL__ (A FORM INTEIRA)....
+
+
+
+
+
+
+
+
+
+
+
+ --> E, ALÉM DISSO,
+
+
+ HÁ 
+
+ TAMBÉM OUTRO LOCAL
+
+
+
+
+ EM QUE 
+
+ O 
+
+ ANGULAR 
+
+TRACKA 
+
+
+
+
+_ E NOS AJUDA COM ISSO...
+
+
+
+
+
+
+
+
+
+
+
+---> SE INSPECIONARMOS NOSSO 
+
+
+
+
+
+
+ELEMENTO HTML 
+
+
+DE 'input',
+
+
+
+
+NO NOSSO BROWSER,
+
+
+
+
+
+
+VEREMOS 
+
+QUE 
+
+
+
+
+_ O ANGULAR_ TERÁ ADICIONADO UM MONTE DE CLASSES 
+
+
+
+
+
+
+
+
+AO 
+
+
+NOSSO INPUT ELEMENT...
+
+
+
+
+
+
+eX:
+
+
+
+
+
+
+
+
+<input ngcontent-ubm-0 class="form-control ng-dirty ng-touched ng-valid" 
+
+
+
+
+
+
+
+
+
+
+-----> TODAS ESSAS CLASSES QUE VÊM 
+
+
+
+depois 
+
+
+
+
+DE 'form-control',
+
+
+
+
+
+COMO ng-dirty,
+
+ng-valid 
+
+
+e 
+
+ng-touched,
+
+
+
+
+
+
+
+
+
+
+
+TODAS ELAS SÃO CLASSES QUE FORAM ADICIONADAS PELO ANGULAR.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------> MAS PRESTE ATENÇÃO:
+
+
+
+
+
+
+
+
+
+----> O QUE ACONTECE 
+
+
+
+
+
+
+
+
+
+SE O PROFESSOR DEIXAR UM INPUT FIELD
+
+_INVÁLIDO,
+
+O QUE ACONTECE COM ESSAS CLASSES?
+
+
+
+
+
+
+
+
+-_> bem, acontece isto:
+:
+
+
+
+
+
+
+
+
+
+
+<input ngcontent-ubm-0 class="form-control ng-dirty ng-touched ng-valid" >
+
+
+
+
+VIRA ISTO :
+
+<input ngcontent-ubm-0 class="form-control ng-dirty ng-touched ng-invalid" >
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OU SEJA,
+
+
+
+
+O 'ng-valid'
+
+
+
+TROCOU PARA FICAR 'ng-valid'...
+
+
+
+
+
+
+
+
+
+
+
+
+---> o 'NG-INVALID' foi adicionado,
+
+e o 
+
+'ng-valid'
+
+FOI REMOVIDO...
+
+
+
+
+
+
+
+
+
+
+--> ISSO SIGNIFICA QUE 
+O ANGULAR DINAMICAMENTE 
+
+ADICIONA ALGUMAS CLASSES,
+
+NOS DANDO 
+INFORMATION,
+
+ALGUMAS CSS CLASSES
+
+
+
+
+
+QUE _ NOS DÃO INFO SOBRE O  
+
+
+
+STATE 
+
+DE 
+CADA 
+
+'INDIVIDUAL CONTROL'
+
+
+
+
+NA NOSSA FORM... (info acerca da DIRTYNESS DO INPUT,
+
+
+OU ACERCA DE SE FOI TOUCHED OU NÃO,
+
+
+E SE É VALID OU NÃO)..
+
+
+
+
+
+
+
+
+
+
+--> E, 
+
+com essa INFO,
+
+
+PODEMOS __ 
+
+ESTILIZAR 
+
+
+
+ESSES 
+
+
+
+INPUTS _ CONDICIONALMENTE...
+
+
+
+
+
+
+
+
+--> VOCÊ PODE FAZER ISSO ATÉ MESMO NO ARQUIVO 
+
+'app.component.css'
+
+
+DE SEU 
+
+
+
+
+APP,
+
+
+
+OU EM 
+
+ARQUIVOS 
+CSS 
+
+MAIS LOCAIS....
+
+
+
+
+
+
+
+
+
+--> NA PRÓXIMA AULA,
+
+
+TIRAREMOS 
+
+
+VANTAGEM DO FATO DE QUE 
+
+
+O 
+
+
+ANGULAR 'TRACKS THE STATE' 
+
+
+
+
+DA VALIDITY 
+
+
+
+E 
+
+
+
+DA 'FORM EM GERAL',
+
+
+E AÍ 
+
+MUDAR O STYLING E BEHAVIOR QUE O USER EXPERIENCIA 
+
+
+
+
+
+_ COM ESSA FORM....

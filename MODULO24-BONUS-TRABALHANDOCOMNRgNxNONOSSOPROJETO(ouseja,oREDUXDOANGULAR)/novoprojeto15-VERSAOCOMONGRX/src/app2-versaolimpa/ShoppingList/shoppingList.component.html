@@ -1,0 +1,34 @@
+<div class="row">
+  <div class="col-xs-10">
+    <app-shop-list-edit 
+    
+    ></app-shop-list-edit>
+    <hr />
+    <ul class="list-group">
+      <!-- <a class="list-group-item" 
+      style="cursor: pointer"
+      *ngFor="let ingredient of ingredients"
+      > {{ingredient.name}} ({{ingredient.amount}})
+      </a> -->
+
+
+
+      <!-- <app-shopping-list-item  /////SEM O USO DE 'NGRX'...
+  
+      *ngFor="let ingredient of ingredients; let index=index"
+      [name]="ingredient.ingredient"
+      [amount]="ingredient.amount"
+      (click)="onShoplistItemClick(index)"
+      ></app-shopping-list-item> -->
+
+      <!-- COM O USO DE NGRX  --- SOMOS OBRIGADOS A USAR O PIPE DE 'async', que é especial. -->
+      <app-shopping-list-item  
+  
+      *ngFor="let ingredient of (ingredients | async)?.ingredients; let index=index"
+      [name]="ingredient.ingredient"
+      [amount]="ingredient.amount"
+      (click)="onShopListItemClick(index)"
+      ></app-shopping-list-item>
+    </ul>
+  </div>
+</div>

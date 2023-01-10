@@ -1,0 +1,443 @@
+
+
+
+
+
+
+
+O PRÓXIMO OBJETIVO É IMPLEMENTAR   
+CHILD ROUTING PARA NOSSAS 'RECIPE ROUTES',
+
+para que 
+quando cliquemos em uma das 
+
+
+
+recipes,
+
+
+
+
+SEJA 
+
+
+
+CARREGADO 1 LINK TIPO 
+
+
+
+'localhost:4200/recipes/1',
+
+
+
+
+
+
+
+
+
+
+QUE ENTÃO FARÁ COM QUE 
+
+SEJA 
+
+CARREGADA 
+
+
+
+A 
+RECIPE APROPRIADA (com esse number/identificador)
+
+
+
+LÁ NO 
+
+COMPONENT DE 
+'recipe-detail',
+
+QUE 
+
+
+TAMBÉM FARÁ PARTE DE UMA CHILD ROUTE DE 'recipeBook'... (recipeBook é uma das 'chief routes')...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> EU JÁ CONSEGUI IMPLEMENTAR ISSO....
+
+
+
+
+
+
+
+FICOU ASSIM:
+
+
+
+
+
+
+CÓDIGO DE 'recipeBook.component.html':
+
+
+
+
+
+
+
+<div class="row" >
+    <div class="col-md-5">
+        <app-recipe-list>
+
+        </app-recipe-list>
+    </div>
+    <div class="col-md-7" [ngStyle]="{'margin-top': '36px'}">
+        <!-- <app-recipe-detail></app-recipe-detail> -->
+        <router-outlet></router-outlet>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+(
+
+    OS COMPONENTS 'edit-recipe' 'recipe-item' (individual) 
+
+
+
+    e 'new-recipe'
+
+
+    SERÃO CARREGADOS NESSE 'router-outlet',
+
+
+    A DEPENDER DO 'PATH' 
+
+
+    _ DE CADA UMA DESSAS CHILD ROUTES....
+)
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR DIZ QUE 
+
+SERIA NICE 
+
+
+ADICIONAR UMA CHILD ROUTE PARA 'EDIT RECIPE',
+
+
+
+
+
+
+MAS QUE PARA ISSO 
+
+
+
+PRECISAMOS 
+
+
+
+IMPLEMENTAR UM NOVO COMPONENT,
+
+QUE 
+
+SERÁ 
+
+ADICIONADO 
+
+MAIS TARDE...
+
+
+
+
+
+
+
+
+
+
+
+
+--> A PRIMEIRA ETAPA É IMPLEMENTAR 
+
+
+
+
+
+O 'CLICK' DESSES RECIPE ITEMS,
+
+E AÍ 
+O LOAD 
+
+
+DO 'recipe-detail' component COMO UMA CHILD ROUTE
+
+
+
+EM 
+
+
+1 NOVO 'router-outlet'.... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS NÓS VAMOS PRECISAR DE UM NOVO COMPONENT, UMA STARTING PAGE,
+
+PQ É ÓTIMO TER ISSO...
+
+
+
+
+
+
+
+
+
+-> PRECISAMOS DE UM STARTING COMPONENT/PAGE,
+
+
+QUE TALVEZ DIGA 
+
+
+''Please select a recipe''',
+
+
+MAS NÃO SEI COMO IMPLEMENTAR 
+
+ISSO 
+
+
+
+
+__ NO _START _DE NOSSO APP (antes de uma das CHILD ROUTES ser selecionada)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O QUE TENHO QUE FAZER É ISSO,
+
+CRIAR UM COMPONENT QUE DIZ 
+
+'PLEASE SELECT A RECIPE'
+ 
+
+ E ENTÃO LOAD _ OU _ ESSE COMPONENT __ OU O 'recipe-detail',
+
+
+ A DEPENDER SE 
+
+
+ UM DE NOSSOS 'recipes' FOI CLICADO OU NÃO (ou seja, se as outras child routes foram triggadas ou não)....
+
+
+
+
+
+ -> 
+
+
+ eu fiz isso POR MEIO DO ADD DE AINDA OUTRA 
+
+
+
+ 'CHILD ROUTE'
+
+ ao 'recipeBook',
+
+
+ uma route 
+
+
+ COM PATH DE '' (empty string),
+
+
+ que 
+
+ é 
+ tipo o 
+
+ 'DEFAULT' 
+
+
+
+
+
+ dessa route de 'recipeBook' (
+
+
+     ou seja, é 
+     mostrado 
+
+     'please select a recipe'
+
+
+     quando a url é 
+
+
+     'localhost:4200/recipe-book'...
+
+
+
+
+ )
+
+
+
+
+
+
+
+
+
+ficou tipo assim:
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { GenericErrorPageComponent } from './generic-error-page/generic-error-page.component';
+import { HomePageComponent } from './home-page/home-page.component';
+import { RecipeBookComponent } from './recipeBook/recipe-book.component';
+import { RecipeDetailComponent } from './recipeBook/recipe-detail/recipe-detail.component';
+import { SelectARecipeComponent } from './recipeBook/select-a-recipe/select-a-recipe.component';
+import { ShoppingListComponent } from './ShoppingList/shoppingList.component';
+
+const appRoutes: Routes = [
+  // {   ///approach que USA UMA HOME PAGE COMO ROUTE DE '/'...
+  //   path: '',
+  //   component: HomePageComponent,
+  // },
+
+  {
+    path: '',
+    redirectTo: '/recipe-book',
+    pathMatch: 'full'  /// (COMMON GOTCHA) evita o error de 'SEMPRE VAI REDIRECIONAR PARA ESSA ROUTE DE recipe-book' (pq o padrão é 'prefix' em vez de 'full'; ou seja, é o MESMO COMPORTAMENTO DEFAULT DO REACT ROUTER)...
+  },
+  {
+    path: 'recipe-book',
+    component: RecipeBookComponent,
+    children: [
+      {
+        path: '',
+        component: SelectARecipeComponent
+      },
+      {
+        path: ':id',
+        component: RecipeDetailComponent,
+      },
+
+      // {
+      //     path: 'new-recipe',
+      // }
+    ],
+  },
+
+  {
+    path: 'shop-list',
+    component: ShoppingListComponent,
+  },
+
+  {
+    path: 'not-found',
+    component: GenericErrorPageComponent,
+    data: {
+      message: 'The requested page could not be found.',
+    },
+  },
+  {
+    path: '**',
+    redirectTo: '/not-found',
+  },
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(appRoutes)],
+
+  exports: [RouterModule],
+})
+export class AppRoutingModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> certo... o próximo passo, agora, é PROVAVELMENTE CONSERTAR 
+
+
+
+ O 
+
+
+ NEGÓCIO DE 'manage recipe -> edit recipe'...

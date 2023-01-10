@@ -1,0 +1,1855 @@
+
+
+
+
+
+
+
+
+-> TENTAR FAZER ISSO SOZINHO....
+
+
+
+
+
+
+
+
+
+-> BASTA CRIAR UM SERVICE NO NOSSO ROOT,
+
+
+tvz com um nome de 
+
+
+'data.service.ts'....
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+export class DataService {
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------
+
+
+
+
+
+
+
+
+
+
+--> OK...AGORA VEREMOS OUTRO USE-CASE TÍPICO PARA UM SERVICE,
+
+QUE É o 
+ 
+
+
+ 'STORE' E 'MANAGE' DE DATA...
+
+
+
+
+
+
+
+
+-------> POR EXEMPLO, NOSSAS ACCOUNTS... --> POR ENQUANTO, ELAS ESTÃO 
+
+SENDO ARMAZENADAS LÁ NO 'app.component.ts',
+
+
+
+
+POR MEIO DESSE CÓDIGO AQUi:
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  accounts = [
+    {
+      name: 'Master Account',
+      status: 'active',
+    },
+
+    {
+      name: 'Test Account',
+      status: 'inactive',
+    },
+
+    {
+      name: 'Hidden Account',
+      status: 'unknown',
+    },
+  ];
+
+  onAccountAdded(newAccount: { name: string; status: string }) {
+    this.accounts.push(newAccount);
+  }
+
+  onStatusChanged(updateInfo: { id: number; newStatus: string }) {
+    this.accounts[updateInfo.id].status = updateInfo.newStatus;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+-> AÍ UTILIZAMOS UM MONTEE DE PROPERTY E EVENT BINMDING,
+
+
+TUDO 
+PARA _ CONSEGUIR_ ENVIAR DATA AO APP COMPONENT,
+
+
+TUDO PARA QUE CONSIGAMOS 'UPDATE OUR ACCOUNTS' lá no component de 'app'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> criamos um service para isso....
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+export class DataService {
+    
+}
+
+
+
+
+
+
+
+
+--> MAS O PROFESSOR NOMEIA DE 'ACCOUNTSSSERVICE'...
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+export class AccountsService {
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... A PRIMEIRA COISA QUE O PROFESSOR FAZ É COPIAR AQUELE ARRAY DE 'ACCOUNTS' QUE TEMOS LÁ 
+
+
+EM 
+
+
+
+
+'app.component.ts',
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+export class AccountsService {
+    
+
+
+
+    accounts = [ //tirados lá de 'app.component.html'...
+        {
+          name: 'Master Account',
+          status: 'active',
+        },
+    
+        {
+          name: 'Test Account',
+          status: 'inactive',
+        },
+    
+        {
+          name: 'Hidden Account',
+          status: 'unknown',
+        },
+      ];
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK.. AÍ O PROFESSOR ADICIONA UM METHOD DE 'addAccount()'
+
+
+nesse service,
+
+em que 
+
+
+SIMPLESMENTE VAMOS 'EXPECT' RECEBER UM:
+
+
+
+
+
+A) ACCOUNTNAME
+
+
+
+
+
+
+
+B) ACCOUNTSTATUS..
+
+
+
+
+
+
+
+
+
+
+
+
+POR FIM, 
+
+O PROFESSOR VAI ADICIONAR UM METHOD DE 
+
+'UPDATESTATUS',
+
+em que 
+
+
+
+VAMOS EXPECT RECEBER O ID DO ACCOUNT QUE QUEREMOS UPDATAR,  E 
+
+
+AÍ O STATUS A SER SETTADO...
+
+
+
+
+
+
+
+
+
+
+--> A lógica DESSES METHODS E DO ARRAY SERÁ _ ESSENCIALMENTE A MESMA _ LÁ DO COMPONENT DE 'app.component.ts',
+
+
+mas translocada para esse 
+
+
+
+service...
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+export class AccountsService {
+  accounts = [
+    //tirados lá de 'app.component.html'...
+    {
+      name: 'Master Account',
+      status: 'active',
+    },
+
+    {
+      name: 'Test Account',
+      status: 'inactive',
+    },
+
+    {
+      name: 'Hidden Account',
+      status: 'unknown',
+    },
+  ];
+
+  addAccount(name: string, status: string) {}
+
+  updateStatus(name: string, status: string) {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO...
+
+
+
+
+
+
+
+
+
+--> AÍ, LÁ EM APP.COMPONENT.TS,
+
+
+
+PODEMOS TIRAR TODOS AQUELES METHODS/ARRAY, acho...
+
+
+
+
+
+
+
+
+
+
+
+
+--->  PARA O METHOD DE 'ADD ACCOUNT',
+
+
+VAMOS QUERER SIMPLESMENTE EMPURRAR UMA NOVA 'account' ao 
+
+
+nosso 
+
+
+
+
+ARRAY DE 'ACCOUNTS'...
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+export class AccountsService {
+  accounts = [
+    //tirados lá de 'app.component.html'...
+    {
+      name: 'Master Account',
+      status: 'active',
+    },
+
+    {
+      name: 'Test Account',
+      status: 'inactive',
+    },
+
+    {
+      name: 'Hidden Account',
+      status: 'unknown',
+    },
+  ];
+
+  addAccount(name: string, status: string) {
+    this.accounts.push({
+      name: name,
+      status: status,
+    });
+  }
+
+  updateStatus(updateInfo: { id: number; status: string }) {
+    this.accounts[updateInfo.id].status = updateInfo.status;
+  }
+}
+
+
+
+
+
+
+
+
+------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo... 
+
+
+
+
+É A MESMA LÓGICA DE ANTES,
+
+MAS AGORA EM UM SERVICE..
+
+
+
+
+
+
+
+
+
+COM ISSO,
+
+
+ESSE SERVICE 
+
+PARECE 'ALL RIGHT'...
+
+
+
+
+
+
+
+
+
+
+
+-> MAS É CLARO QUE NOSSO APP ESTÁ QUEBRADO.... -> 
+
+
+
+
+
+
+POSSO REMOVER TODO AQUELE CÓDIGO LÁ DE 'app.component.ts',
+
+
+
+MAS AGORA _ PRECISO, DE ALGUMA FORMA, REFERENCIAR O ARRAY DE 
+
+
+
+
+'accounts' 
+
+e 
+
+os methods de 
+
+
+'service.addAccount'
+
+
+e 
+
+'service.updateStatus'
+
+
+
+LÁ NO 'app.component.ts'...
+
+
+
+
+
+
+
+
+
+
+
+-> MAS COMO FAZER ISSO?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> BEM, O 'APP.COMPONENT.TS' FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  // accounts = [  ////outsourceado para o SERVICE de 'accounts.service.ts'...
+  //   {
+  //     name: 'Master Account',
+  //     status: 'active',
+  //   },
+
+  //   {
+  //     name: 'Test Account',
+  //     status: 'inactive',
+  //   },
+
+  //   {
+  //     name: 'Hidden Account',
+  //     status: 'unknown',
+  //   },
+  // ];
+
+  // onAccountAdded(newAccount: { name: string; status: string }) { ////outsourceado para o SERVICE de 'accounts.service.ts'...
+  //   this.accounts.push(newAccount);
+  // }
+
+  // onStatusChanged(updateInfo: { id: number; newStatus: string }) { ////outsourceado para o SERVICE de 'accounts.service.ts'...
+  //   this.accounts[updateInfo.id].status = updateInfo.newStatus;
+  // }
+
+
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> e o professor ressalta que _ 
+
+
+DEVEMOS DELETAR/REMOVER OS METHODS QUE CHAMAMOS DE 'app.component.ts'
+
+
+LÁ NO TEMPLATE 'app.component.html',
+
+PQ 
+
+O ANGULAR VAI TENTAR OS RECONHECER/CHAMAR,
+
+E ELES NÃO MAIS EXISTIRÃO..
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container"> <!--COM SERVICES PARA A 'DATA' DAS ACCOUNTS-->
+  <div class="row">
+    <div class="col-xs-12 col-md-8 col-md-offset-2">
+      <app-new-account></app-new-account>
+      <hr>
+      <app-account
+      *ngFor="let acc of accounts; let i=index"
+      [account]="acc"
+      [id]="i"
+      ></app-account>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------> OK, REMOVI OS METHODS, MAS UM PROBLEMA QUE 
+
+
+
+ENFRENTAREI, AGORA,
+
+É QUE 
+
+
+
+__- EU AINDA ESTOU FAZENDO 'LOOP THROUGH'
+
+
+
+em todas as ACCOUNTS de 'this.accounts' no 'app.component.ts',
+
+
+
+
+
+
+__ MAS _ 
+
+
+
+A QUESTÃO É QUE ESSE ARRAY NÃO EXISTE MAIS LÁ,
+
+portanto esse código de 'loop through' vai FALHAR...
+
+
+
+
+
+
+
+
+
+
+
+----> COMO NÓS ESTAMOS COM NOSSO ARRAY 'accounts = []'
+
+
+
+
+
+
+
+
+LÁ EM 
+
+
+
+
+'accounts.service.ts',
+
+
+
+
+
+TALVEZ 
+
+
+
+
+
+
+SEJA NECESSÁRIO 
+
+
+
+
+
+
+
+
+
+
+__ READICIONAR__ 
+
+
+
+
+
+O ARRAY DE 'ACCOUNTS' em 'app.component.ts',
+
+
+MAS DE ALGUMA FORMA ALTERADA (uma reference ao service, talvez)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+
+O PROFESSOR QUER DEFINIR O TYPE DE 
+
+
+'accounts'
+
+
+
+como 
+
+sendo um 
+
+ARRAY 
+
+de 
+
+
+{
+    name:string,
+    status: string
+}[] = []
+
+
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  providers: [AccountsService]  ///1o passo para USAR UM SERVICE em 1 de nossos components...
+})
+export class AppComponent {
+
+
+
+  accounts: {name: string, status: string}[] = []; //como agora temos esse array de 'accounts' lá em 'accounts.service.ts', DEVEMOS _ INJETAR_ ESSE SERVICE AQUI, nesse component...
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> POR MEIO DESSE CÓDIGO, OBJETIVAMOS 
+
+
+___INJETAR__ 
+NOSSO SERVICE NESSE COMPONENT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS É CLARO QUE NESSE CÓDIGO AÍ AINDA FALTA UMA COISINHA... -> 
+
+
+
+
+
+
+
+
+o professor 
+
+
+
+
+tem que ADICIONAR AQUELES PARÂMETROS 'LÁ DO SERVICE'
+
+no constructor desse component, tipo assim:
+
+
+
+
+
+
+
+
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  providers: [AccountsService]  ///1o passo para USAR UM SERVICE em 1 de nossos components...
+})
+export class AppComponent {
+
+
+
+  accounts: {name: string, status: string}[] = []; //como agora temos esse array de 'accounts' lá em 'accounts.service.ts', DEVEMOS _ INJETAR_ ESSE SERVICE AQUI, nesse component...
+
+
+
+
+
+    constructor(private accountsService: AccountsService) {}
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+import { AccountsService } from './accounts.service';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  providers: [AccountsService]  ///1o passo para USAR UM SERVICE em 1 de nossos components...
+})
+export class AppComponent {
+
+
+  accounts: {name: string, status: string}[] = []; //como agora temos esse array de 'accounts' lá em 'accounts.service.ts', DEVEMOS _ INJETAR_ ESSE SERVICE AQUI, nesse component...
+
+
+
+  constructor(private AccountsService: AccountsService) {} //precisamos disso para INFORMAR o angular de que VAMOS QUERER USAR ESSE SERVICE de 'AccountsService' (que contém nosso ARRAY DE SERVICES E OS METHODS NECESSÁRIOS) dentro desse nosso component...
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------
+
+
+
+
+
+
+
+
+
+
+
+OK, MAS AGORA__ COMO PODEMOS__ 
+
+
+
+
+VINCULAR O ARRAY DE 'accounts' 
+
+de 
+
+
+'AppComponent'
+
+
+ao 
+
+array 
+
+de 
+
+'accounts'
+
+LÁ 
+
+
+
+de 
+
+'accounts.service.ts'?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------->  BEM, O PROFESSOR DIZ QUE DEVEMOS ADICIONAR 
+
+
+'onInit()',
+
+
+
+
+
+
+
+
+PQ _, COMO ELE NOS EXPLICOU HÁ TEMPOS,
+
+
+
+
+__ A GRANDE MAIORIA DA INITIALIZATION DE NOSSOS COMPONENTS DEVE 
+
+SER 
+
+FEITA 
+
+DENTRO 
+
+DESSE HOOK DE 'onInit()',
+
+e não 
+
+
+NO ROOT DE NOSSO COMPONENT...
+
+
+
+
+
+
+
+
+
+
+
+
+--> dentro de 
+
+'ngOnInit',
+
+
+
+PROFESSOR DEFINE 
+
+
+
+
+'this.accounts'
+
+
+COMO SENDO __ EQUIVALENTE A 
+
+
+'this.accountsService.accounts',
+
+
+
+
+QUE SERÁ ESSE SERVICE QUE AGORA PASSOU A EXISTIR/SER VINCULADO 
+
+
+
+
+AO NOSSO COMPONENT 'app.component.ts'...
+
+
+
+
+
+
+eX:
+
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+import { AccountsService } from './accounts.service';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  providers: [AccountsService]  ///1o passo para USAR UM SERVICE em 1 de nossos components...
+})
+export class AppComponent {
+
+
+  accounts: {name: string, status: string}[] = []; //como agora temos esse array de 'accounts' lá em 'accounts.service.ts', DEVEMOS _ INJETAR_ ESSE SERVICE AQUI, nesse component...
+
+
+
+  constructor(private AccountsService: AccountsService) {} //precisamos disso para INFORMAR o angular de que VAMOS QUERER USAR ESSE SERVICE de 'AccountsService' (que contém nosso ARRAY DE SERVICES E OS METHODS NECESSÁRIOS) dentro desse nosso component...
+
+
+
+
+
+    ngOnInit() {
+        this.accounts = this.accountsService.accounts;
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+import { AccountsService } from './accounts.service';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  providers: [AccountsService]  ///1o passo para USAR UM SERVICE em 1 de nossos components...
+})
+export class AppComponent {
+
+
+  accounts: {name: string, status: string}[] = []; //como agora temos esse array de 'accounts' lá em 'accounts.service.ts', DEVEMOS _ INJETAR_ ESSE SERVICE AQUI, nesse component...
+
+
+
+  constructor(private accountsService: AccountsService) {} //precisamos disso para INFORMAR o angular de que VAMOS QUERER USAR ESSE SERVICE de 'AccountsService' (que contém nosso ARRAY DE SERVICES E OS METHODS NECESSÁRIOS) dentro desse nosso component...
+
+
+
+
+  ngOnInit() {
+    this.accounts = this.accountsService.accounts;
+}
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, MAS AQUI O PROFESSOR QUER 
+
+
+FAZER UM COMENTÁRIO:
+
+
+
+
+
+
+
+
+
+
+
+COMO 
+
+
+
+
+AQUELE 'accounts'
+
+
+É _ UM  __ _ARRAY,
+
+
+
+
+ELE É UM _ REFERENCE TYPE...  --> JAVASCRIPT BEHAVIOR NORMAL... ->  É POR ISSO QUE 
+
+
+
+QUANDO 
+
+
+ESCREVEMOS,
+
+
+dentro de 'app.component.ts',
+
+
+
+
+
+
+this.accounts = this.accountsService.accounts,
+
+
+
+
+
+
+
+
+
+
+__ ESTAMOS _ GANHANDO ACESSO _ AO EXATO MESMO ARRAY QUE 
+
+FOI ARMAZENADO LÁ 
+
+
+em 
+
+
+'accounts.service.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK, COM ISSO TEMOS ACESSO ÀS ACCOUNTS...
+
+
+
+
+
+
+
+
+
+
+-----> NOSSO APP AINDA VAI FUNCIONAR,
+
+
+SÓ _ OS BUTTONS QUE NÃO VAO MAIS FUNCIONAR,
+
+PQ O PROFESSOR REMOVEU OS EVENTLISTENERS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS EM GERAL,
+
+
+
+NOSSA PAGE ESTÁ ALRIGHT (conseguimos ver os 3 objects 'account', armazenados lá em 'accounts.service.ts' e repassados a 'app.component.ts')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... --> COMO REFLEXO DE _ NÃO TERMOS __ MAIS 
+
+
+OS METHODS DE 
+
+'addAccount'
+
+
+
+e 
+
+
+
+'updateStatus'
+
+
+
+LÁ 
+
+
+EM 
+
+
+'app.component.ts',
+
+
+
+
+
+
+
+O USO __ 
+
+
+
+DOS HELPER METHODS DE 
+
+
+
+'onCreateAccount' 
+
+
+
+
+
+e 
+
+
+'onStatusChanged',
+
+
+
+LÁ 
+
+
+
+NOS COMPONENTS DE 'NewAccountComponent'
+
+
+
+
+e 
+
+'AccountComponent'
+
+
+
+,
+
+
+
+__ NÃO SÃO MAIS NECESSÁRIOS...
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE VAMOS ATÉ LÁ __ E AÍ _ VAMOS 
+
+
+
+ALTERAR_ _ OS METHODS,
+
+ALTERÁ-LOS __ PARA __ QUE FAÇAM REFERÊNCIA AO NOSSO 'SERVICE' DE 'accounts.service.ts',
+
+
+
+
+
+AOS METHODS QUE TEMOS LÁ,
+
+E NÃO MAIS 
+
+
+__ DISPAREM __ 
+
+
+EVENTS (emit de events) ,
+
+
+
+COMO FIZEMOS ANTERIORMENTE,...
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+
+O CÓDIGO ATUAL, QUE É ESTE:
+
+
+
+
+
+import { Component, OnInit, Output } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+import { LoggingService } from '../logging.service';
+
+// import { LoggingService } from '../logging.service';   //services NÃO DEVEM SER IMPORTADOS E USADOS ASSIM (com instanciação da class... isso é errado)..
+
+@Component({
+  selector: 'app-new-account',
+  templateUrl: './new-account.component.html',
+  styleUrls: ['./new-account.component.css'],
+  providers: [LoggingService]   //// 1 NECESSÁRIO PARA IMPORTAR SERVICES NO SEU COMPONENT (component de 'NewAccountComponent')....
+})
+export class NewAccountComponent implements OnInit {
+
+  @Output() accountAdded = new EventEmitter<{name: string, status: string}>();
+
+  onCreateAccount(accountName: string, accountStatus: string) {
+    this.accountAdded.emit(
+      {
+        name: accountName,
+        status: accountStatus
+      }
+    );
+    // console.log('A server status changed, new status: ' + accountStatus);
+
+    // const service = new LoggingService();  /////MANEIRA ERRADA DE USAR UM 'SERVICE'... -> você NÃO DEVE CRIAR AS INSTANCES MANNUALMENTE, DIZ O PROFESSOR..
+    // service.logStatusChange(accountStatus);
+    this.LoggingService.logStatusChange(accountStatus);  ///// 3 uso de SERVICE NO NOSSO CÓDIGO... ('LoggingService')..
+    
+
+  }
+
+  constructor(private LoggingService: LoggingService) {   /// 2 É ASSIM _ QUE__ USAMOS O 'dependency  injector' do ANGULAR --> é assim que usamos SERVICES, nós os INCORPORAMOS COMO PROPRIEDADES DE NOSSOS COMPONENTS...
+
+
+
+   }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> TERÁ _ _DE SER ALTERADO,
+
+
+
+
+
+
+VAI FICAR PROVAVELMENTE ASSIM:
+
+
+
+
+
+
+
+
+
+
+@Component({    /////////////COM USO DE 'SERVICES' para o transfer de data das accounts...
+  selector: 'app-new-account',
+  templateUrl: './new-account.component.html',
+  styleUrls: ['./new-account.component.css'],
+  providers: [LoggingService, AccountsService]   //// 1 NECESSÁRIO PARA IMPORTAR SERVICES NO SEU COMPONENT (component de 'NewAccountComponent')....
+})
+export class NewAccountComponent implements OnInit {
+
+  @Output() accountAdded = new EventEmitter<{name: string, status: string}>();
+
+  onCreateAccount(accountName: string, accountStatus: string) {
+
+    this.loggingService.logStatusChange(accountStatus);  ///// 3 uso de SERVICE NO NOSSO CÓDIGO... ('LoggingService')..
+    this.accountsService.addAccount(accountName, accountStatus)  ////outro uso de SERVICE no nosso código...
+    
+  }
+
+
+
+  constructor(private loggingService: LoggingService, private accountsService: AccountsService) {   /// 2 É ASSIM _ QUE__ USAMOS O 'dependency  injector' do ANGULAR --> é assim que usamos SERVICES, nós os INCORPORAMOS COMO PROPRIEDADES DE NOSSOS COMPONENTS...
+
+
+   }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... 
+
+
+
+
+
+ISSO CUIDOU DE 'new-account.component.ts'...
+
+
+
+
+
+
+
+
+
+
+--> PRECISAMOS FAZER ____ A MESMA COISA COM 'account.component.ts'...
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> por fim, precisamos COLOCAR ESSES METHODS EM CLICK LISTENERS, LÁ NO PRÓPRIO TEMPLATE DELES...
+
+
+
+
+
+
+
+
+
+
+
+-> ok, mas isso está causando um problema de lógica, e a página não está updatando ( o alter do 'status' de cada account não está alterando o string interpolation...)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR FALA DESSE PROBLEMA... --> NÓS __ NÃO RECEBEMOS UM ERRO,
+
+
+
+MAS __ TAMBÉM __ OS COMPONENTS NÃO SÃO ALTERADOS NA PAGE (
+
+
+
+
+    continuamos com 3 accounts, sem adicionar uma quarta,
+
+
+
+
+    também a mesma coisa para os updates do 'state' 
+
+    de 
+    cada 
+
+
+
+    COMPONENT, que 
+    C
+    ONTINUAM COM OS MESMOS STATUS....
+)
+
+
+
+
+
+
+
+
+
+
+
+-> OK.... ISSO SIGNIFICA QUE AS CHANGES QUE REALIZAMOS LÁ NO ARRAY DE 'accounts',
+
+no nosso 
+
+'accounts.services.ts',
+
+
+
+NÃO ESTÃO SENDO REFLETIDAS NO TEMPLATE... --> ALGUMA COISA NÃO ESTÁ DANDO CERTo...
+
+
+
+
+--> VEREMOS A RAZÃO PARA ESSE ERRO _ NA PRÓXIMA AULA....
+
+
+
+
+
+(
+
+    talvez seja um HOOK...
+)

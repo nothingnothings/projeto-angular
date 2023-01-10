@@ -1,0 +1,1849 @@
+
+
+
+
+
+
+
+
+
+--> NA ÚLTIMA LIÇÃO,
+
+
+
+CRIAMOS NOSSA PRIMEIRA BASIC DIRECTIVE... -----> E ESTÁ FAZENDO SEU TRABALHO:
+
+
+
+1) APRENDEMOS A CRIAR UM SELECTOR 
+
+
+
+(
+
+    arquivo 'basic-highlight.directive.ts',
+
+
+
+
+    CÓDIGO ESTE:
+
+
+
+
+
+import { Directive, ElementRef } from '@angular/core';
+
+import { OnInit } from '@angular/core';
+@Directive({
+  selector: '[appBasicHighlight]',
+})
+export class BasicHighlightDirective implements OnInit {
+  constructor(private elementRef: ElementRef) {}
+
+  ngOnInit(): void {
+    this.elementRef.nativeElement.style.backgroundColor = 'green';
+  }
+}
+
+
+
+
+
+)
+
+
+
+2) COMO USAR ESSE SELECTOR 
+
+
+
+
+(
+
+    lá no template,
+
+
+    visto em 
+
+
+    <p BasicHighlightDirective>My Stylized element</p>
+)
+,
+
+
+
+
+
+COMO _ UM 'ATTRIBUTE DIRECTIVE', viabilizado por um 'ATTRIBUTE SELECTOR' ( isto: '''selector: '[appBasicHighlight]''' )
+
+
+
+3) TAMBÉM APRNEDEMOS 
+
+QUE SEMPRE DEVEMOS REGISTRAR 
+
+
+NOSSAS DIRECTIVES NOVAS LÁ EM 
+
+'app.module.ts',
+
+nas DECLARATIONS...
+
+_ 
+
+
+
+
+
+
+
+
+4) TAMBÉM APRENDEMOS A 'GANHAR ACESSO' AO ELEMENT EM QUE 
+
+
+A DIRECTIVE É POSICIONADA,
+
+POR MEIO 
+
+
+DO DEFINE 
+
+
+
+
+de 'elementRef'
+
+LÁ NO CONSTRUCTOR DA CLASS/DIRECTIVE,
+
+
+aqui:
+
+
+
+
+
+
+
+  constructor(private elementRef: ElementRef) {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E FIZEMOS O CHANGE DO STYLE LÁ EM 'ngOnInit',
+
+
+
+
+nessa linha aqui:
+
+
+
+
+            ngOnInit(): void {
+                this.elementRef.nativeElement.style.backgroundColor = 'green';  //com isso, conseguimos MUDAR PROPRIEDADES DE NOSSO ELEMENTO DURANTE SUA INICIALIZAÇÕA, POR MEIO DE NOSSA DIRECTIVE...
+            }
+
+
+
+
+
+
+
+
+
+---> MAS ESSA, É CLARO,
+
+
+NÃO É A MELHOR _ MANEIRA _ DE MUDAR ESSE STYLE.... -> pq,
+
+
+
+se você se lembrar de 
+
+UMA 
+
+AULA 
+
+
+
+
+
+
+
+
+ANTERIOR DE NOSSO CURSO,
+
+
+ACESSAR ELEMENTS DIRETAMENTE,
+
+
+
+COM ESCRITAS COMOO 
+
+
+
+'this.elementRef.nativeElement.xxx'
+
+,
+
+
+
+
+_ NÃO É UMA GOOD PRACTICE -----------> EM VEZ DISSO,
+
+
+
+VOCÊ 
+
+
+
+DEVE USAR 
+
+
+UMA FERRAMENTA DIFERENTE,
+
+
+OFERECIDA PELO ANGULAR,
+
+QUE O PROFESSOR 
+
+LOGO 
+
+
+
+NOS ENSINARÁ...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ISSO PQ _ O ANGULAR É __ACTUALLY__ 
+
+
+CAPAZ _ DE 
+
+TAMBÉM __ RENDERIZAR NOSSOS TEMPLATES 
+
+
+
+
+'''''''''''SEM UM DOM'''''''''''' -----> nesse caso,
+
+
+
+
+de renderizar 
+
+
+SEUS TEMPLATES 'SEM UM DOM',
+
+
+essas propriedades 
+
+
+
+NÃO ESTARIAM/NÃO FICARIAM/NÃO FICARÃO DISPONÍVEIS NO MOMENTO EM QUE VOCÊ QUER AS DEFINIR...
+
+
+
+
+
+
+
+
+--> ESSA COISA AI, ESSE PROBLEMÃO,
+
+PODE__ ACONTECER__ 
+
+
+
+QUANDO USAMOS SERVICE WORKERS.... --------> OU SEJA,
+
+
+
+ISSO É VISTO EM ALGUNS ADVANCED USE CASES,
+
+
+
+
+
+
+
+MAS __ AINDA ASSIM NÃO É UMA BOA PRÁTICA 
+
+
+
+ACESSAR SEUS ELEMENTS DIRETAMENTE..
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS COMO PODEMOS OS ACESSAR, ENTÃO? 
+
+
+
+
+
+
+
+
+
+
+---> BEM,
+
+
+
+HÁ _ OUTRO 'HELPER' 
+
+QUE VOCÊ PODE INJETAR 
+
+
+
+NA SUA DIRECTIVE/CLASS,
+
+QUE É 
+
+
+O HELPER DE 
+
+
+'renderer' ..
+
+
+
+
+
+
+
+
+
+
+----> PROFESSOR DIZ QUE DEVEMOS FAZER ISSO, SIM,
+
+
+__ MAS_ _NÃO FAREMOS ISSO 
+
+
+NA NOSSA 
+
+'BASIC 
+
+HIGHLIGHT DIRECTIVE',
+
+
+E SIM 
+
+
+
+
+__ EM UMA __ NOVA DIRECTIVE.... 
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR FARÁ ISSO POR MEIO DE UM COMANDO DO ANGULAR BEM BOM,
+
+que é 
+
+
+
+ng g d 
+
+
+
+(
+
+    angular generate directive....
+)
+
+
+
+
+
+
+
+--> O QUE ESSE COMANDO FAZ É CRIAR UM FOLDER COM UMA DIRECTIVE COM O NOME QUE VOCê EESCOLHER,
+
+E AÍ 
+
+
+
+
+
+_ COLOCAR ESSA DIRECTIVE COMO UMA DAS DECLARATIONS LÁ EM 
+
+'app.module.ts'...
+
+
+
+
+
+
+
+
+
+
+
+------->  OK, MAS QUAL NOME ESCOLHEMOS?
+
+
+
+
+
+
+--> O PROFESSOR COLOCA 
+
+
+'betterHighlight'..
+
+
+
+
+
+
+A:\projeto8-ANGULAR\MODULO7-MERGULHANDOFUNDONASDIRECTIVES>ng g d betterHighlight
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+PS A:\projeto8-ANGULAR\MODULO7-MERGULHANDOFUNDONASDIRECTIVES\novoprojetoexemplo8> ng g d betterHighlight
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS ISSO AÍ _ CRIOU _ 
+
+ESSE ARQUIVO 
+
+
+'SOLTO' no nosso project folder...
+
+
+
+
+
+
+
+
+--> O PROFESSOR DELETA O ARQUIVO DE TESTES,
+
+E AÍ 
+
+COLOCA 
+
+
+ESSE ARQUIVO DIRECTIVE 
+
+EM UM FOLDER SEPARADO...
+
+
+
+
+
+
+
+
+
+
+
+--> PROFESSOR MENCIONA QUE TAMBÉM É POSSÍVEL CRIAR UM FOLDER SEPARADO DE 'directives' em 'app',
+
+em que 
+
+você colocaria todas suas shared directives....
+
+
+
+
+
+
+
+
+-> para melhor visualização, colocamos em múltiplos folders....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> CERTO.... AÍ A LÓGICA DE 'betterHighlight'
+
+
+SERÁ DIFERENTE....
+
+
+
+
+
+
+
+
+
+
+--> O CÓDIGO COMEÇA ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+import { Directive } from '@angular/core';
+
+@Directive({
+  selector: '[appBetterHighlight]'
+})
+export class BetterHighlightDirective {
+
+  constructor() { }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> AÍ O PROFESSOR DECIDE 
+
+
+
+USAR AQUELA 'FERRAMENTA MELHOR' DE QUE ELE ESTAVA FALANDO..
+
+
+
+
+
+
+
+
+
+
+
+--> é o parâmetro 'renderer',
+
+que é 
+
+
+
+DE UM TYPE 
+'
+Renderer2'...
+
+
+
+
+
+
+
+
+--> esse 'Renderer2'
+
+
+
+PRECISA SER IMPORTADO 
+
+LÁ 
+
+DE 
+
+'@angular/core',
+
+
+
+
+
+
+
+
+
+e o código fica assim:
+
+
+
+
+
+
+
+
+
+import { Directive } from '@angular/core';
+
+import { Renderer2 } from '@angular/core';  ////uma ferramenta melhor do que utilizar 'elementRef.nativeElement.xxx' para definir coisas de nossos elements...
+
+@Directive({
+  selector: '[appBetterHighlight]'
+})
+export class BetterHighlightDirective {
+
+  constructor(private renderer: Renderer2) { }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------> COM ISSO INJETADO,
+
+PODEMOS O UTILIZAR,
+
+usar essa ferramenta de 'renderer'...
+
+
+
+
+
+
+
+
+--> o que o professor fará 
+
+
+
+
+
+É IMPORTAR NOVAMENTE 'ngOnInit',
+
+
+pq 
+
+
+
+
+ESSE HOOK 
+É MT BOM DE SER UTILIZADO COM DIRECTIVES...
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+import { Directive } from '@angular/core';
+
+import { Renderer2 } from '@angular/core';  ////uma ferramenta melhor do que utilizar 'elementRef.nativeElement.xxx' para definir coisas de nossos elements...
+
+import { OnInit } from '@angular/core';  ///é mt comum usar esse hook para ESCREVER NOSSAS DIRECTIVES...
+
+
+@Directive({
+  selector: '[appBetterHighlight]'
+})
+export class BetterHighlightDirective implements OnInit {
+
+  constructor(private renderer: Renderer2) { }
+
+
+
+
+
+  ngOnInit(): void {
+    
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------> DE NOVO,
+
+É BEM MELHOR FAZER INITIALIZATION WORK EM 
+
+'ngOnInit',
+
+
+
+
+e não 
+
+em 
+
+'constructor(){}' 
+
+
+
+
+
+
+
+
+
+-----> OK.... AÍ IMPLEMENTAMOS NGONINIT,
+
+
+
+E AÍ 
+
+VAMOS COMEÇAR 
+
+ A 
+ USAR O RENDERER LÁ EM 
+
+ 'ngOnInit',...
+
+
+
+
+
+
+
+
+
+ FICA TIPO ASSIM:
+
+
+
+
+
+ 
+
+
+
+import { Directive } from '@angular/core';
+
+import { Renderer2 } from '@angular/core';  ////uma ferramenta melhor do que utilizar 'elementRef.nativeElement.xxx' para definir coisas de nossos elements...
+
+import { OnInit } from '@angular/core';  ///é mt comum usar esse hook para ESCREVER NOSSAS DIRECTIVES...
+
+
+@Directive({
+  selector: '[appBetterHighlight]'
+})
+export class BetterHighlightDirective implements OnInit {
+
+  constructor(private renderer: Renderer2) { }
+
+
+
+
+
+  ngOnInit(): void {
+
+
+        this.renderer; ///tipo assim....
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+DENTRO DE RENDERER,
+
+
+temos um MONTE DE HELPER METHODS PARA 
+
+NOS AJUDAR A TRABALHAR COM O DOM,
+
+
+
+basiacmente,....
+
+
+
+
+
+
+-> TEMOS DE TUDO:
+
+
+
+
+
+'addClass',
+
+
+
+'appendChild',
+
+
+'
+createElement',
+
+
+
+'createText',
+
+
+etc..
+
+
+
+
+
+
+
+
+
+
+
+--> MAS UM METHOD PELO QUAL O PROFESSOR TEM INTERESSE É O METHOD DE 
+
+
+
+'setStyle'...
+
+
+
+
+
+SETSTYLE --> NOS DEIXA SETTAR O STYLE DE ALGUM ELEMENT...
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+  ngOnInit(): void {
+    // this.renderer        ////é assim que acessamos o renderer na nossa directive....  --> e ele nos dá um MONTE DE METHODS para manipular nosso element...
+
+    this.renderer.setStyle()  /// nos deixa SETTAR O STYLE DE ALGUM ELEMENT...
+  } 
+
+
+
+
+
+
+
+
+
+----> OK... ISSO NOS DEIXA SETTAR O STYLE PARA ALGUM ELEMENT... --> MAS O PROBLEMA É QEU 
+
+
+
+
+ISSO DEMANDA QUE _ NÓS _ TENHAMOS '''' O ELEMENTO''' 
+
+CUJO STYLE QUEREMOS MUDAR, SETTAR...
+
+
+
+
+
+
+(method) Renderer2.setStyle(el: any, style: string, value: any, flags?: RendererStyleFlags2 | undefined): void
+
+
+
+
+
+
+
+
+
+
+
+
+---> É CLARO QUE NO __ ANGULAR__ EXISTEM __ DIFERENTES MANEIRAS DE CONSEGUIR 
+
+UM ELEMENT DESSES,
+
+
+
+mas _ aqui,
+ 
+
+ NA DIRECTIVE,
+
+
+
+
+ É _ EXCEPCIONALMENTE SIMPLES... -> NÓS JÁ VIMOS COMO CONSEGUIR 
+
+
+
+
+ ACESSO AO NOSSO ELEMENT LÁ NAQUELA 
+
+
+ DIRECTIVE DE 'basic-highlight',
+
+
+
+ QUE 
+
+
+ ficou tipo assim:
+
+
+
+     constructor(private elementRef: ElementRef) {  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> isso aí, esse código antigo,
+
+NOS DAVA/DÁ ACESSO AO ELEMENTO 
+
+
+
+VINCULADO à directive... . (e o armazenava em uma propriedade de nome 'elementRef')...
+
+
+
+
+
+
+
+
+
+
+------> PODEMOS REPLICAR ESSA SINTAXE NESSA 
+
+
+
+DIRECTIVE MAIS BONITA DE 'better-highlight',
+
+
+
+
+
+BASTA 
+
+
+
+
+COPIAR O CÓDIGO NO CONSTRUCTOR, TIPO ASSIM:
+
+
+
+
+
+
+
+
+import { Directive } from '@angular/core';
+
+import { Renderer2 } from '@angular/core'; ////uma ferramenta melhor do que utilizar 'elementRef.nativeElement.xxx' para definir coisas de nossos elements...
+
+import { OnInit } from '@angular/core'; ///é mt comum usar esse hook para ESCREVER NOSSAS DIRECTIVES... (mt melhor fazer initialization work lá em 'ngOnInit', e não em 'constructor()')
+
+import { ElementRef } from '@angular/core';
+
+@Directive({
+  selector: '[appBetterHighlight]',
+})
+export class BetterHighlightDirective implements OnInit {
+  constructor(private elementRef: ElementRef, private renderer: Renderer2) {}
+
+  ngOnInit(): void {
+    // this.renderer        ////é assim que acessamos o renderer na nossa directive....  --> e ele nos dá um MONTE DE METHODS para manipular nosso element...
+
+    this.renderer.setStyle(); /// nos deixa SETTAR O STYLE DE ALGUM ELEMENT...  --> o element que nos interessa, em que COLOCAMOS ESSA NOSSA DIRECTIVE, segue sendo referenciado por 'this.elementRef'....
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> OK, BASTA INJETARMOS A 'elementRef',
+
+
+
+em outras palavras....
+
+
+
+
+
+
+
+aí basta passar isso como argumento de 'setStyle'...
+
+
+
+
+
+
+ex:
+
+
+
+
+
+import { Directive } from '@angular/core';
+
+import { Renderer2 } from '@angular/core'; ////uma ferramenta melhor do que utilizar 'elementRef.nativeElement.xxx' para definir coisas de nossos elements...
+
+import { OnInit } from '@angular/core'; ///é mt comum usar esse hook para ESCREVER NOSSAS DIRECTIVES... (mt melhor fazer initialization work lá em 'ngOnInit', e não em 'constructor()')
+
+import { ElementRef } from '@angular/core';
+
+@Directive({
+  selector: '[appBetterHighlight]',
+})
+export class BetterHighlightDirective implements OnInit {
+  constructor(private elementRef: ElementRef, private renderer: Renderer2) {}
+
+  ngOnInit(): void {
+    // this.renderer        ////é assim que acessamos o renderer na nossa directive....  --> e ele nos dá um MONTE DE METHODS para manipular nosso element...
+
+    this.renderer.setStyle(this.elementRef, ); /// nos deixa SETTAR O STYLE DE ALGUM ELEMENT...  --> o element que nos interessa, em que COLOCAMOS ESSA NOSSA DIRECTIVE, segue sendo referenciado por 'this.elementRef'....
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+--------> MAS NÃO ACABAMOS...
+
+
+
+
+
+
+
+
+
+DENTRO DE 'this.elementRef',
+
+
+queremos 
+
+
+
+__ ACESSAR __ A PROPRIEDADE 
+
+'nativeElement',
+
+
+
+
+__ E ISSO É BEM IMPORTANTE:::::::: VOCê SEMPRE DEVE PASSAR/GANHAR ACESSO 
+
+AO 
+
+
+'UNDERLYING ELEMENT',
+
+
+
+
+__ E NÃO AO 'ELEMENT REFERENCE ITSELF'  
+
+
+
+
+
+
+
+
+
+
+--> AÍ O CÓDIGO FICA ASSIM:
+
+
+
+
+
+import { Directive } from '@angular/core';
+
+import { Renderer2 } from '@angular/core'; ////uma ferramenta melhor do que utilizar 'elementRef.nativeElement.xxx' para definir coisas de nossos elements...
+
+import { OnInit } from '@angular/core'; ///é mt comum usar esse hook para ESCREVER NOSSAS DIRECTIVES... (mt melhor fazer initialization work lá em 'ngOnInit', e não em 'constructor()')
+
+import { ElementRef } from '@angular/core';
+
+@Directive({
+  selector: '[appBetterHighlight]',
+})
+export class BetterHighlightDirective implements OnInit {
+  constructor(private elementRef: ElementRef, private renderer: Renderer2) {}
+
+  ngOnInit(): void {
+    // this.renderer        ////é assim que acessamos o renderer na nossa directive....  --> e ele nos dá um MONTE DE METHODS para manipular nosso element...
+
+    this.renderer.setStyle(this.elementRef.nativeElement, ); /// nos deixa SETTAR O STYLE DE ALGUM ELEMENT...  --> o element que nos interessa, em que COLOCAMOS ESSA NOSSA DIRECTIVE, segue sendo referenciado por 'this.elementRef'....
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ex:
+
+
+this.renderer.setStyle(this.elementRef.nativeElement, ); /// nos deixa SETTAR O STYLE DE ALGUM ELEMENT...  --> o element que nos interessa, em que COLOCAMOS ESSA NOSSA DIRECTIVE, segue sendo referenciado por 'this.elementRef'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX;
+
+
+
+
+
+
+
+
+
+
+
+import { Directive } from '@angular/core';
+
+import { Renderer2 } from '@angular/core'; ////uma ferramenta melhor do que utilizar 'elementRef.nativeElement.xxx' para definir coisas de nossos elements...
+
+import { OnInit } from '@angular/core'; ///é mt comum usar esse hook para ESCREVER NOSSAS DIRECTIVES... (mt melhor fazer initialization work lá em 'ngOnInit', e não em 'constructor()')
+
+import { ElementRef } from '@angular/core';
+
+@Directive({
+  selector: '[appBetterHighlight]',
+})
+export class BetterHighlightDirective implements OnInit {
+  constructor(private elementRef: ElementRef, private renderer: Renderer2) {}
+
+  ngOnInit(): void {
+    // this.renderer        ////é assim que acessamos o renderer na nossa directive....  --> e ele nos dá um MONTE DE METHODS para manipular nosso element...
+
+    this.renderer.setStyle(this.elementRef.nativeElement, ); /// nos deixa SETTAR O STYLE DE ALGUM ELEMENT...  --> o element que nos interessa, em que COLOCAMOS ESSA NOSSA DIRECTIVE, segue sendo referenciado por 'this.elementRef'....
+        //você deve passar 'this.elementRef.nativeElement' (o underlying element dessa ELEMENT REFERENCE), e não 'this.elementRef' em si...
+  
+  
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> ok... COMO PRIMIERO PARÂMETRO, DEFINIMOS 'QUAL ELEMENT QUEREMOS ESTILIZAR'...
+
+
+
+
+
+
+--> JÁ O SEGUNDO PARÂMETRO É 
+
+
+
+'''QUAL STYLE QUEREMOS SETTAR'''...
+
+
+
+
+
+--> o style que queremos settar,
+
+no caso,
+
+é 
+
+
+'background-color'..
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+import { Directive } from '@angular/core';
+
+import { Renderer2 } from '@angular/core'; ////uma ferramenta melhor do que utilizar 'elementRef.nativeElement.xxx' para definir coisas de nossos elements...
+
+import { OnInit } from '@angular/core'; ///é mt comum usar esse hook para ESCREVER NOSSAS DIRECTIVES... (mt melhor fazer initialization work lá em 'ngOnInit', e não em 'constructor()')
+
+import { ElementRef } from '@angular/core';
+
+@Directive({
+  selector: '[appBetterHighlight]',
+})
+export class BetterHighlightDirective implements OnInit {
+  constructor(private elementRef: ElementRef, private renderer: Renderer2) {}
+
+  ngOnInit(): void {
+    // this.renderer        ////é assim que acessamos o renderer na nossa directive....  --> e ele nos dá um MONTE DE METHODS para manipular nosso element...
+
+    this.renderer.setStyle(this.elementRef.nativeElement, 'background-color'  ); /// nos deixa SETTAR O STYLE DE ALGUM ELEMENT...  --> o element que nos interessa, em que COLOCAMOS ESSA NOSSA DIRECTIVE, segue sendo referenciado por 'this.elementRef'....
+        //você deve passar 'this.elementRef.nativeElement' (o underlying element dessa ELEMENT REFERENCE), e não 'this.elementRef' em si...
+  
+  
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+ this.renderer.setStyle(this.elementRef.nativeElement, 'background-color'  ); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> POR FIM,
+
+ O TERCEIRO 
+
+ VALOR/PARÂMETRO É 
+
+
+ o 
+
+
+ 'VALUE QUE QUEREMOS ASSIGNAR A ESSA PROPRIEDADE/style'...
+
+
+
+
+
+
+
+ --> O PROFESSOR DEFINE O VALOR COMO 'blue'...
+
+
+
+
+ --> 
+
+ POR FIM,
+
+ O QUARTO PARÂMETRO É UM 
+
+
+
+ PARÂMETRO DE 
+
+ 'FLAGS',
+
+
+
+ QUE É O LOCAL EM QUE 
+
+ PODEMOS, OPCIONALMENTE,
+
+ DEFINIR UM PUNHADO DE FLAGS 
+
+
+
+ PARA ESSE STYLE...
+
+
+
+
+
+
+
+
+
+
+
+ -> UMA FLAG QUE EXISTE É "!important',
+
+ que faz com que esse style OVERWRITTE outros styles, etc...
+
+
+
+
+
+
+
+
+
+
+
+ -----> OK... MAS NOSSO CÓDIGO FICOU REALMENTE ASSIM:
+
+
+  this.renderer.setStyle(this.elementRef.nativeElement, 'background-color', 'blue'  ); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+  <div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <button class="btn btn-primary" (click)="onlyOdd = !onlyOdd">
+        Only show odd numbers
+      </button>
+      <br /><br />
+      <ul class="list-group">
+        <div *ngIf="onlyOdd">
+          <li
+            class="list-group-item"
+            *ngFor="let odd of oddNumbers"
+            [ngStyle]="{
+              backgroundColor: odd % 2 !== 0 ? 'yellow' : 'transparent'
+            }"
+            [ngClass]="{ odd: odd % 2 !== 0 }"
+          >
+            {{ odd }}
+          </li>
+        </div>
+        <div *ngIf="!onlyOdd">
+          <li
+            class="list-group-item"
+            *ngFor="let even of evenNumbers"
+            [ngStyle]="{
+              backgroundColor: even % 2 !== 0 ? 'yellow' : 'transparent'
+            }"
+            [ngClass]="{ odd: even % 2 !== 0 }"
+          >
+            {{ even }}
+          </li>
+        </div>
+      </ul>
+      <p appBasicHighlight>Style me with basic attribute directive!</p> 
+      <p appBetterHighlight >Style me with a better attribute directive!</p> 
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+import { Directive } from '@angular/core';
+
+import { Renderer2 } from '@angular/core'; ////uma ferramenta melhor do que utilizar 'elementRef.nativeElement.xxx' para definir coisas de nossos elements...
+
+import { OnInit } from '@angular/core'; ///é mt comum usar esse hook para ESCREVER NOSSAS DIRECTIVES... (mt melhor fazer initialization work lá em 'ngOnInit', e não em 'constructor()')
+
+import { ElementRef } from '@angular/core';
+
+@Directive({
+  selector: '[appBetterHighlight]',
+})
+export class BetterHighlightDirective implements OnInit {
+  constructor(private elementRef: ElementRef, private renderer: Renderer2) {}
+
+  ngOnInit(): void {
+    // this.renderer        ////é assim que acessamos o renderer na nossa directive....  --> e ele nos dá um MONTE DE METHODS para manipular nosso element...
+
+    this.renderer.setStyle(this.elementRef.nativeElement, 'background-color', 'blue'); /// nos deixa SETTAR O STYLE DE ALGUM ELEMENT...  --> o element que nos interessa, em que COLOCAMOS ESSA NOSSA DIRECTIVE, segue sendo referenciado por 'this.elementRef'....
+        //você deve passar 'this.elementRef.nativeElement' (o underlying element dessa ELEMENT REFERENCE), e não 'this.elementRef' em si...
+  
+
+          //1o parâmetro --> element que queremos estilizar...
+          ///2o parametro --> estilo que queremos definir 
+          /////3o parametro --> VALOR do estilo que queremos definir 
+          ///4o parametro --> FLAGS opcionais que queremos definir para esse style... (tag de '!important', para que o style overwritte outro style), 
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> SALVAMOS TUDO ISSO...
+
+
+
+
+
+isso quer dizer que a better directive está FUNCIONANDO, E AGORA ESTAMOS USANDO O 
+
+'RENDERER',
+
+que é um APPROACH MELHOR DE ACESSAR O DOM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> MAS PQ É UM APPROACH MELHOR DE ACESSAR O DOM? 
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É __ PQ _ O ANGULAR __ 
+
+
+
+NÃO SE LIMITA AO 'RUN IN THE BROWSER'' ->  ISSO QUER DIZER QUE _ ELE __ TAMBÉM TRABALHA COM 
+
+
+'''SERVICE WORKERS'''...
+
+
+
+
+
+
+
+
+
+--> SERVICE WORKERS --> SÃO ENVIRONMENTS EM QUE VOCê TALVEZ NÃO TENHA ACESSO AO DOM.... --> EM ENVIRONMENTS 
+
+
+
+COMO ESSES,
+
+
+SE VOCÊ TENTA 
+
+'ACESSAR E ALTERAR O DOM',
+
+
+como fizemos 
+
+
+LÁ NO CÓDIGO 
+
+
+
+
+DE 'basic-highlight',
+
+
+
+
+
+NESSA LINHA AQUI:
+
+
+
+
+
+
+
+
+import { Directive, ElementRef } from '@angular/core';
+
+import { OnInit } from '@angular/core';
+@Directive({
+  selector: '[appBasicHighlight]',
+})
+export class BasicHighlightDirective implements OnInit {
+  constructor(private elementRef: ElementRef) {}
+
+  ngOnInit(): void {
+    this.elementRef.nativeElement.style.backgroundColor = 'green';  ////NESSA LINHA AQUi
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    this.elementRef.nativeElement.style.backgroundColor = 'green';  ////NESSA LINHA AQUi
+
+
+
+
+
+
+
+
+
+
+--> NESSA LINHA,
+
+ACESSAMOS DIRETAMENTE O STYLE NESSE UNDERLYING ELEMENT... -----> EM ALGUMAS CIRCUNSTÂNCIAS BEM NICHO,
+
+
+
+
+vocÊ receberá errors por fazer isso.... ---> MAS O PROFESSOR 
+
+
+DIZ QUE 
+
+
+NA GRANDE MAIORIA DOS CASOS ISSO NÃO ACONTECERá....  -----> e vocÊ provavelmente 
+
+saberá/sabe 
+
+se um 
+
+
+given code 
+
+VAI RODAR NO BROWSER OU NÃO.... --> AINDA ASSIM,
+
+
+É MELHOR:
+
+
+
+
+1) USAR O RENDERER PARA O DOM ACCESS...
+
+
+
+
+
+
+2) USAR __ OS METHODS _ QUE O DOM NOS PROVIDENCIA,
+
+PARA ACESSAR O DOM... 
+
+
+
+
+(
+
+
+    e também usar 'ngOnInit'...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS APRENDER MAIS SOBRE O RENDERER EM UM ARTIGO QUE O PROFESSOR NOS DÁ:
+
+
+
+
+
+
+
+https://angular.io/api/core/Renderer2
+
+
+
+
+
+
+
+
+----------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> O RENDERER MUDOU DE 'rendererv2' PARA 
+
+
+'renderer2'....

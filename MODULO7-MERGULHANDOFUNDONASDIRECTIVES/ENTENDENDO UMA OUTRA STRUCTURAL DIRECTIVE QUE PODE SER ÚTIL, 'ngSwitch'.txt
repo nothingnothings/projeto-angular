@@ -1,0 +1,492 @@
+
+
+
+
+
+
+
+
+
+
+
+-> ESSA STRUCTURAL DIRECTIVE PODE SER ÚTIL, DE TEMPOS EM TEMPOS..
+
+
+
+
+--> É O NGSWITCH...
+
+
+
+
+
+
+
+
+
+
+
+--> IMAGINE QUE TEMOS A SEGUINTE SITUAÇÃO, lá com o 
+
+'appComponent'...
+
+
+
+
+
+
+
+
+
+
+--> temos aquele array de 'oddNumbers',
+
+
+aquele de 'evenNumbers',
+
+e agora uma 
+
+
+PROPRIEDADE DE 'value',
+
+que terá um value de '10'...
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+export class AppComponent {
+
+  oddNumbers = [1, 3, 5]; 
+  evenNumbers = [2, 4];
+
+  onlyOdd = false;
+
+  value = 10;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+-----> AGORA DIGAMOS QUE TEMOS UM __ LOCAL EM NOSSO __ APP,
+
+
+no html,
+
+
+que 
+
+ESSE 'VALUE' muda... ---------> E TEMOS 
+
+
+
+
+UM PUNHADO 
+
+
+
+DE DIFERENTES 'MESSAGES' QUE QUEREMOS DISPLAYAR,
+
+DE ACORDO 
+
+
+
+COM CADA 1 DESSES 'VALUES'....
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+PARA ESSE USE-CASE,
+
+
+
+PODEMOS USAR 
+
+
+'NGSWITCH'...
+
+
+
+
+
+
+
+
+
+
+
+-_> o professor escreve uma nova div,
+
+
+
+
+
+
+e 
+
+o 
+
+professor usa assim:
+
+
+
+
+
+
+
+
+
+<div [ngSwitch]> 
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NOS FAZEMOS __ UM __ BINDING __ AO NGSWITCH,
+
+
+USANDO 'PROPERTY BINDING'...  (e sem estrelas, até agora ),
+
+
+
+
+
+E AÍ 
+
+
+
+__BINDAMOS__ O 
+
+
+'ngSwitch' 
+
+
+
+
+
+À PROPRIEDADE DE 'value'.... -------> 'VALUE', no caso,
+
+
+
+SERÁ __ NOSSA CONDITION... --> É A COISA QUE SERÁ __ CHECADA...
+
+
+
+
+
+
+
+
+
+
+
+eX:
+
+
+
+
+
+
+<div [ngSwitch]="value"> 
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> E AÍ VOCÊ DEVE PENSAR: 'HM, SWITCH DEVE TER UM PUNHADO DE CASES QUE PODEMOS COVER''....
+
+
+
+
+
+
+
+
+
+
+
+
+--> vamos ter alguns PARAGRAPHS nessa div,
+
+
+
+
+<p>
+ 
+
+
+ que dizem
+
+
+ 'value is 5',
+
+
+ 'value is 10',
+
+
+
+ 'value is 100',
+
+
+
+ 'value is Default'...
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... --> E VAMOS QUERER __ ADICIONAR ALGUMA COISA A ESSES PARÁGRAFOS,
+PARA CONTROLAR 
+
+
+'QUAL PARAGRAPH ACABA MOSTRADO''' ----------> PQ APENAS 1 DESSES '<p>'
+
+
+
+DEVERÁ SER MOSTRADO,
+
+
+EM 1 DETERMINADO MOMENTO...
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+<div [ngSwitch]="value"> 
+<p>value is 5</p>
+<p>value is 10</p>
+<p>value is 100</p>
+<p>value is default</p>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSA COISA QUE DEVEMOS ADICIONAR, AQUI,
+
+
+
+É __ UMA 'STRUCTURAL DIRECTIVE',
+
+
+
+é o 
+
+
+
+'*ngSwitch',
+
+
+
+
+
+
+
+
+__ MAS NO CASO,
+
+
+
+
+
+SERÁ O 
+
+
+'*ngSwitchCase=" 
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> AÍ, AO LADO DELE,
+ 
+ NO SLOT DO VALOR,
+
+ VOCÊ 
+
+ VAI COLOCAR 
+
+
+
+
+ A __ CONDIÇÃO __ que 
+
+
+
+
+
+triggará o render 
+
+
+
+desse elemento.... --> 
+
+
+
+
+
+
+
+por exempplo,
+
+
+
+
+
+<p *ngSwitchCase="5">Value is 5</p>
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO,
+
+
+
+ESSE P SÓ SERÁ _ RENDERIZADO _ SE 
+
+
+
+O VALUE DE 'value' 
+
+REALMENTE 
+
+FOR 
+
+
+'5'...
+
+
+
+
+--> E ISSO FUNCIONA COM TODOS OS OUTROS 'p',
+
+É CLARO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+<div [ngSwitch]="value"> 
+<p *ngSwitchCase="5">value is 5</p>
+<p>value is 10</p>
+<p>value is 100</p>
+<p>value is default</p>
+</div>

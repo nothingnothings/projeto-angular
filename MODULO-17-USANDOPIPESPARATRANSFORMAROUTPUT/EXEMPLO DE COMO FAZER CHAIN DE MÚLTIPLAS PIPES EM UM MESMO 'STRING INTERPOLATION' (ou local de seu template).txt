@@ -1,0 +1,381 @@
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA QUE 
+
+
+SABEMOS COMO ADICIONAR PIPES E OS 'PARAMETRIZE',
+
+
+
+COMO VISTO POR NOSSO CÓDIGO EXEMPLO:
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="list-group">
+        <li class="list-group-item"
+        *ngFor="let server of servers"
+        [ngClass]="getStatusClasses(server)"
+        >
+          <span class="badge" >{{ server.status }}</span>
+          <strong>{{ server.name  }}</strong> | {{ server.instanceType | uppercase }} |
+          {{ server.started }} |
+          {{ server.started | date }} |
+          {{server.started | date: 'fullDate' }}
+        </li> <!-- AQUI CONSTATAMOS O USO DE ALGUNS PIPES (uppercase e DATE... Aug 9, 1920)-->
+            <!-- PIPES _ TAMBÉM ACEITAKM PARÂMETROS, E ELES SÃO PASSADOS COM ESTA SINTAXE, de ':' :  '''{{ server.started | date: 'xxx' }}'''' -->
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+,
+
+
+
+
+
+
+
+
+
+
+COM ISSO,
+
+AGORA É 
+
+
+
+
+
+HORA DE 
+
+SABER QUE 
+
+
+
+__ VOCê __ TAMBÉM PODE ___ COMBINAR __ PIPES __ NO ANGULAR...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ATÉ AGORA,
+
+NÓS SÓ USAMOS PIPES 
+
+
+DE FORMA 'STANDALONE',
+
+tipo assim:
+
+
+
+
+{{ server.instanceType | uppercase }} |
+
+          {{ server.started | date }} |
+          {{server.started | date: 'fullDate' }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS PODEMOS CHAINAR MÚLTIPLOS PIPES A 
+
+
+UM 
+
+MESMO OUTPUT..
+
+
+
+
+
+
+--> OU SEJA,
+
+
+
+PODEMOS FAZER UMA DATE FICAR UPPERCASE,
+
+
+
+AO MESMO TEMPO QUE O PIPE DE 'date' É APLICADO SOBRE ELA...
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+          {{server.started | date: 'fullDate' | uppercase }}
+
+
+
+
+
+
+
+
+
+
+
+
+          ---> OK, COM ISSO PODEMOS CHAINAR MÚLTIPLOS PIPES, SIM,....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --- MAS AQUI HÁ UM DETALHE:
+
+
+
+    A ORDER __ GERALMENTE__ SERÁ IMPORTANTE,
+
+
+
+    A ORDER DE PARSING DOS 
+
+    SEUS PIPES 
+
+    É 
+
+    IMPORTANTE,
+
+    E  É CONSIDERADA..
+
+
+
+
+
+
+
+
+
+
+
+
+    --> ISSO QUER DIZER QUE 
+
+
+    o pipe de 'date' 
+
+
+    
+    É APLICADO __ ANTEs__ DO PIPE DE 'uppercase'...
+
+
+
+
+
+
+
+
+
+
+    -> O PROFESSOR TESTA ISSO AÍ:
+
+
+
+
+
+    ELE INVERTE A ORDER DE 'uppercase' e 
+
+    'date',
+
+    TIPO ASSIM:
+
+
+
+
+
+
+
+              {{server.started | date: 'fullDate' | uppercase }}
+            {{server.started | uppercase | date: 'fullDate' }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+            -> SE FIZERMOS ISSO,
+
+
+
+            __ GANHAMOS _ UM ERROR:
+
+
+
+            Error: src/app/app.component.html:15:13 - error TS2769: No overload matches this call.
+
+
+
+
+
+
+
+
+
+
+            -> GANHAMOS UM ERROR JUSTAMENTE 
+
+
+
+
+
+
+        PQ 
+
+
+
+        O argumento de 
+
+        'Mon Aug 09 1920 00:00:00' 
+
+
+
+
+
+        NÃO CONSEGUE SER MODIFICADO POR 'uppercase' pipe,
+
+        PQ 
+
+
+
+        ISSO AÍ NÃO É UMA STRING,
+
+
+        E SIM É UMA __ DATE__...
+
+
+
+
+
+
+
+
+
+        --> EXISTEM ELEMENTS, COMO 'DATES',
+
+        que NAÕ CONSEGUEM SER  TRANSFORMADOS EM UPPERCASE...
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE É IMPORTANTE 'WATCH THE ORDER'
+
+
+de nossos pipes...
+
+
+
+
+
+
+--> DEVEMOS ADICIONAR PIPES NA  __ ORDER_ 
+
+
+
+PELA QUAL QUEREMOS OS TRANSFORMAR...
+
+
+
+
+--->  VOCÊ NÃO DEVE TENTAR USAR 
+
+
+
+
+PIPES _ PARA TRANSFORMAR EM COISAS INCOMPATÍVEIS A CADA 'TYPE' DE DATA ...
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA DEVEMOS ESTUDAR __ COMO _ É FEITA A CRIAÇAÕ DE UMA PIPE,
+
+PARA 
+
+
+CASES EM QUE 
+
+
+
+__ OS PIPES _ DO ANGULAR _ NÃO _  POSSUEM A FUNCIONALIDADE QUE DESEJAMOS USAR...

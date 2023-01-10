@@ -1,0 +1,1234 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MINHA VERSÃO DO CÓDIGO FICOU ASSIM:
+
+
+
+
+
+const appRoutes: Routes = [
+  {
+    path: '',
+    component: HomePageComponent,
+  },
+  {
+    path: 'recipe-book',
+    component: RecipeBookComponent,
+    children: [
+      {
+        path: ':id',
+        component: RecipeDetailComponent,
+      },
+
+      // {
+      //     path: 'new-recipe',
+      // }
+    ],
+  },
+
+  {
+    path: 'shop-list',
+    component: ShoppingListComponent,
+  },
+
+  {
+    path: 'not-found',
+    component: GenericErrorPageComponent,
+    data: {
+      message: 'The requested page could not be found.',
+    },
+  },
+  {
+    path: '**',
+    redirectTo: '/not-found',
+  },
+];  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR DIZ QUE DEVEMOS COMEÇAR PELAS ROOT ROUTES, COMO SEMPRE...
+
+
+
+
+
+
+
+--> DEPOIS VEREMOS AS CHILD ROUTES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> JÁ APRENDEMOS A FAZER ISSO...
+
+
+
+
+
+
+
+E EU FIZ ISSO...
+
+
+
+
+
+
+
+
+
+
+--> A SOLUÇÃO DO PROFESSOR:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR ADICIONOU UM ARQUIVO DE 
+
+'app-routing.module.ts.'..
+
+
+
+
+
+
+
+
+
+
+
+
+-_> DENTRO DESSE ARQUIVO EXPORTAMOS UMA 
+
+
+CLASS 
+
+
+
+
+
+
+
+'AppRoutingModule'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+export class AppRoutingModule {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR 
+
+MENCIONA QUE PRECISAMOS DE 
+
+
+'@NgModule(
+    {}
+)
+'
+
+
+
+
+DECORATOR 
+
+
+PARA 
+
+
+TRANSFORMAR 
+
+ESSE NEGÓCIO DE UMA 
+
+CLASS NORMAL 
+
+PARA 
+
+
+UM 
+
+
+
+MODULE...
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+
+
+
+
+
+
+
+@NgModule(
+    {
+
+    }
+)
+
+
+
+
+export class AppRoutingModule {
+
+}
+
+
+
+
+
+
+
+
+
+------------------------------
+
+
+
+
+
+
+
+--> CRIAMOS UMA CONST DE 
+
+
+'appRoutes'..
+
+
+
+
+
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+const appRoutes: Routes = [
+    {path: 'recipe-book'}
+] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> QUANDO VISITARMOS 'recipe-book',
+
+
+vamos querer 
+
+
+CARREGAR O COMPONENT DE 'RecipeBookComponent'
+
+
+
+
+
+
+
+
+
+
+----> CERTO... ATÉ AÍ, TUDO BEM...
+
+
+
+
+
+
+
+
+Ex:
+
+
+
+
+
+
+
+
+
+
+const appRoutes: Routes = [
+    {path: 'recipe-book',
+    component: 'RecipeBookComponent'
+    
+    
+    
+    }
+] 
+
+
+
+
+
+
+
+
+
+--> no segundo path,
+
+
+vamos colocar 
+
+'shopping-list'...
+
+
+
+
+
+
+
+ex:
+
+
+
+const appRoutes: Routes = [
+    {   path: 'recipe-book',
+    component: 'RecipeBookComponent'
+    
+    },
+
+        {   path: 'recipe-book',
+    component: 'ShoppingListComponent'
+    
+    }
+
+
+] 
+ 
+
+
+
+
+
+
+
+ ----> certo...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ MAS ASSIM QUE 'ADICIONARMOS' ESSAS ROUTES,
+
+ TEREMOS UM PROBLEMA...
+
+
+
+
+
+
+
+
+
+
+ --> assim que ABRIRMOS NOSSO APP,
+
+
+
+ não teremos page inicial nenhuma,
+
+
+
+
+
+
+
+ PQ 
+
+ visitamos 
+
+ 'localhost:4200',
+
+
+ MAS 
+
+
+
+ NÃO COLOCAMOS NENHUM '<router-outlet>'
+
+
+ lá em 
+
+ '
+ app.component.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -->  E TAMBÉM PRECISAMOS DE OUTRA ROUTE,
+
+ UMA ROUTE QUE 
+
+ SEJA 
+ O 
+
+ 'localhost:4200' ------> 
+
+
+
+
+
+ O PROFESSOR DIZ QUE TEMOS 2 OPÇÕES:
+
+
+
+
+
+
+
+ 1) CARREGAR UM COMPONENT DE 'HOME' (foi o que eu fiz)
+
+
+
+
+ 2) REDIRECIONAR O USER à route de 'recipeBook', para que o component de 'recipeBook' seja CARREGADO...
+
+
+
+
+
+
+
+--> ESSE SEGUNDO APPROACH _ É 
+
+MELHOR, DIZ O PROFESSOR...
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { GenericErrorPageComponent } from './generic-error-page/generic-error-page.component';
+import { HomePageComponent } from './home-page/home-page.component';
+import { RecipeBookComponent } from './recipeBook/recipe-book.component';
+import { RecipeDetailComponent } from './recipeBook/recipe-detail/recipe-detail.component';
+import { ShoppingListComponent } from './ShoppingList/shoppingList.component';
+
+const appRoutes: Routes = [
+  // {   ///approach que USA UMA HOME PAGE COMO ROUTE DE '/'...
+  //   path: '',
+  //   component: HomePageComponent,
+  // },
+
+  {
+    path: '',
+    redirectTo: '/recipe-book'
+  },
+  {
+    path: 'recipe-book',
+    component: RecipeBookComponent,
+    children: [
+      {
+        path: ':id',
+        component: RecipeDetailComponent,
+      },
+
+      // {
+      //     path: 'new-recipe',
+      // }
+    ],
+  },
+
+  {
+    path: 'shop-list',
+    component: ShoppingListComponent,
+  },
+
+  {
+    path: 'not-found',
+    component: GenericErrorPageComponent,
+    data: {
+      message: 'The requested page could not be found.',
+    },
+  },
+  {
+    path: '**',
+    redirectTo: '/not-found',
+  },
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(appRoutes)],
+
+  exports: [RouterModule],
+})
+export class AppRoutingModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> certo... é claro que 
+
+
+dentro de 
+
+
+
+
+'@NgModule'
+
+
+também é necessário colocar aquele 
+
+
+
+
+
+negócio de 
+
+
+'imports: []',
+
+
+
+E AÍ 
+
+DECLARAR 
+
+o 
+
+
+'RouterModule',
+
+
+
+
+
+e aí chamar o 
+
+'forRoot()'
+
+PARA _ 
+
+
+
+REGISTRAR ESSAS ROUTES DE NOSSA CONST COMO ROUTES DE NOSSO APP..
+
+
+
+
+
+
+
+-> FICA TIPO ASSIM:
+
+
+
+@NgModule({
+  imports: [RouterModule.forRoot(appRoutes)],
+
+  exports: [RouterModule],
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS COMO ESTAMOS EM UM 'EXTRA MODULE' aqui 
+
+
+e queremos ENFIAR ESSE MODULE  NO MODULE DE 'app.module.ts',
+
+
+
+NOSSO 'MAIN MODULE',
+
+
+
+
+__ PRECISAMOS _ 
+EXPORTAR 
+
+
+
+
+ESSE ROUTER AÍ..
+
+
+
+
+
+
+
+
+
+--> é por isso que escrevemos:
+
+
+
+
+@NgModule({
+  imports: [RouterModule.forRoot(appRoutes)],
+
+  exports: [RouterModule],
+})
+
+
+
+export class AppRoutingModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-_>OK, LÁ EM 
+
+'app.module.ts',
+
+
+DEVE 
+
+
+SER 
+
+IMPORTADO
+ 
+ NOSSO 
+
+
+
+ module 
+ de 
+
+ 'AppRoutingModule',
+
+
+
+ naquele 
+
+ array de 
+
+ 'imports':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppComponent } from './app.component';
+
+import { HeaderComponent } from './headerComponent/headerComponent.app';
+
+import { RecipeBookComponent } from './recipeBook/recipe-book.component';
+import { RecipeItemComponent } from './recipeBook/recipe-list/recipe-item/recipe-item.component';
+import { RecipeListComponent } from './recipeBook/recipe-list/recipe-list.component';
+import { RecipeDetailComponent } from './recipeBook/recipe-detail/recipe-detail.component';
+import { ShoppingListComponent } from './ShoppingList/shoppingList.component';
+import { ShopListEditComponent } from './ShoppingList/shop-list-edit/shop-list-edit.component';
+import { ShoppingListItemComponent } from './ShoppingList/shopping-list-item/shopping-list-item.component';
+import { FormsModule } from '@angular/forms';
+import { DropdownDirective } from './dropdownDirective/dropdown.directive';
+import { RecipeBookService } from './recipeBook.service';
+import { ShoppingListService } from './shoppingList.service';
+import { GenericErrorPageComponent } from './generic-error-page/generic-error-page.component';
+import { AppRoutingModule } from './app-routing.module';
+import { HomePageComponent } from './home-page/home-page.component';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+    RecipeBookComponent,
+    RecipeItemComponent,
+    RecipeListComponent,
+    RecipeDetailComponent,
+    ShoppingListComponent,
+    ShopListEditComponent,
+    ShoppingListItemComponent,
+    DropdownDirective,
+    GenericErrorPageComponent,
+    HomePageComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule, //lembre-se de adicionar isso se for usar 'ngModel()'..
+    AppRoutingModule  //módulo de routing, customizado por nós...
+  ],
+  providers: [RecipeBookService, ShoppingListService],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR DIZ QUE O PRÓXIMO PASSO É TER UM LOCAL PARA 
+
+QUE O 
+
+
+
+
+ANGULAR _ RENDERIZE NOSSAS ROUTES...
+
+
+
+
+
+
+
+
+
+
+
+-> PARA ISSO,
+
+O PROFESSOR VAI ATÉ 
+
+'app.component.html'
+
+E SUBSTITUI 
+
+O LOCAL 
+
+
+
+
+EM QUE 
+
+TEMOS 
+
+
+
+
+ESTE CÓDIGO DE 'ngIf':
+
+ 
+
+
+
+
+
+
+
+        <!-- <app-recipe-book
+        *ngIf="selectedPage === 'recipeBook' "
+        ></app-recipe-book>
+        <app-shopping-list
+        *ngIf="selectedPage === 'shopList' "
+        ></app-shopping-list> -->
+       
+
+
+
+
+
+
+
+
+
+
+
+       ----> REMOVEMOS ESSA LINHA E COLOCAMOS UM 
+
+
+       '<router-outlet>',
+
+       que é uma das partes 
+
+
+       MAIS IMPORTANTES DE NOSSO APP..
+
+
+
+
+
+
+       ex:
+
+
+
+
+
+
+
+    
+      <app-header-component></app-header-component> <!-- COM O USO DE ROUTING-->
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <router-outlet></router-outlet>
+      </div>
+    </div></div>
+
+
+
+
+
+--------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo, será nesse lugar que 
+o 
+
+
+ANGULAR VAI RENDERIZAR NOSSAS ROUTES,
+
+A DEPENDER DA 
+
+
+PATH EM QUE 
+
+
+ESTAMOS...
+
+
+
+
+
+
+
+
+
+-> OK, TEMOS UM LUGAR PARA CARREGAR NOSSAS 'CHIEF ROUTES'..
+
+
+
+
+
+
+
+
+
+
+
+---> MAS AINDA NAÕ TEMOS NENHUM 'LINK' 
+
+para essas routes (serão posicionados em 'header')..
+
+
+
+
+
+
+
+
+
+
+
+
+--> no nosso app,
+
+o professor recarrega,
+
+
+
+e 
+
+aí 
+
+
+
+
+GANHA UM ERRO NO CONSOLE:
+
+
+
+
+
+
+
+
+---> O PROBLEMA É QUE 
+
+
+
+
+
+NOSSO CÓDIGO, DA FORMA COMO ESTÁ ESCRITO AGORA,
+
+
+VAI SEMPRE ACABAR REDIRECIONANDO PARA 
+
+
+
+
+'recipe-book',
+
+
+pq 
+
+
+
+
+_TODAS NOSSAS ROUTES_ COMEÇAM COM '', e aí isso 
+
+
+SEMPRE SATISFAZERÁ 
+
+
+ESSA ROUTE AQUI:
+
+
+
+
+
+
+  {
+    path: '',
+    redirectTo: '/recipe-book'
+  },
+
+
+
+
+
+
+
+
+
+
+  --> PARA CONSERTAR ESSE PROBLEMA,
+
+  PRECISAMOS 
+
+  DEFINIR 
+
+
+
+  UMA PROPRIEDADE 
+
+
+
+  de 
+
+
+
+'pathMatch: full',
+
+
+PARA QUE 
+O PATH INTEIRO 
+
+SEJA 
+
+
+considerado como CONDIÇÃO PARA 
+CARREGAR ESSA ROUTE,
+
+e 
+
+
+
+para que não seja levada em consideração o approach 'prefix' (''routes começam com xxx'')
+
+
+
+
+
+
+
+
+
+
+
+-> O CÓDIGO FICA ASSIM:
+
+
+
+
+
+  {
+    path: '',
+    redirectTo: '/recipe-book',
+    pathMatch: 'full'
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+OK, A NAVIGATION INICIAL FUNCIONA...
+
+
+
+
+
+
+
+-> AGORA O PRÓXIMO OBJETIVO É 'HOOK UP' OS LINKS NA NOSSA NAVIGATION (mas já fiz isso)....

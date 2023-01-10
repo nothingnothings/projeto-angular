@@ -1,0 +1,1155 @@
+
+
+
+AO LONGO DAS ÚLTIMAS LIÇÕES, O PROFESSOR NOS MOSTROU COMO 
+
+ESCREVER TESTS BÁSICOS...
+
+
+
+
+
+
+
+
+
+
+
+--> professor vai nos mostrar outros tests, é claro...
+
+
+
+
+
+
+--> mas como você vai escrever tests por conta própria?
+
+
+
+
+
+----> COMO SABER QUE EXISTE UM MÉTODO 'find()' no 
+
+WRAPPEr? 
+
+
+
+---> COMO SABER O QUE 
+
+O 
+MÉTODO 
+
+'it()' faz em detalhes?
+
+
+
+
+---> BEM, A DOCUMENTAÇÃO OFICIAL TE AJUDA COM ISSO...
+
+
+
+
+--> para o testing,
+
+
+
+PROFESSOR 
+
+RECOMENDA LER OS 
+
+
+DOCS OFICIAIS... --> 
+
+
+TAMBÉM 
+
+LER 
+UNS 
+
+
+RESOURCES DEDICADOS,
+
+
+
+COMO COURSES ESPECÍFICOS E 
+
+TUTORIAIS LEGAIS...
+
+
+
+
+
+
+
+DOCUMENTAÇÃO DO JEST... ----> 'Getting Started'... --> JEST NÃO É BOUND AO REACT,
+
+NEM 
+
+
+AO 
+
+'CREATE-REACT-APP'... 
+
+
+
+
+
+--> você pode usar o o jest em QUALQUER 
+
+PROJETO JAVASCRIPT.... 
+
+
+
+
+
+
+--> os docs te dão uma ideia de como ele funciona...
+
+
+
+
+
+--> 'API REFERENCE '---> a parte de 
+
+'expect' 
+
+É 
+
+
+__ESPECIALMENTE __ ÚTIL__...  ----> isso 
+
+
+TE MOSTRA 
+
+OS MÉTODOS/FUNÇÕES QUE 
+
+VOCÊ 
+
+PODE 
+
+
+
+CHAINAR/COMBINAR COM ELE.... (como 'toHaveLength'),
+
+
+
+
+e etc etc.... ---> você verá instruções 
+
+e exemplos...
+
+
+
+
+---> há documentação 
+
+PARA 
+
+
+TODOS 
+
+OS MÉTODOS 
+
+QUE FICAM AQUI...
+
+
+
+
+
+
+
+
+
+
+
+
+--> VOCÊ TAMBÉM ENCONTRA DOCUMENTAÇÃO SOBRE COMO 'MOCK' ALGUMAS COISAS... (mock = replace) --> 
+
+isso 
+é 
+
+ESPECIALMENTE ÚTIL QUANDO VOCÊ TRABALHA COM CÓDIGO ASSÍNCRONO... ---> 
+
+você 
+
+não quer 
+
+
+ter que 
+
+fazer 'reach out' à web,
+
+você quer 
+
+'MOCK' isso aí,
+
+para não perder tempo...
+
+
+
+
+
+
+
+
+
+---> VOCÊ QUER 'STEP IN' E 
+
+
+SUBSTITUIR 
+
+a função por uma 
+
+função que retorna alguma 'dummy data' com a qual voc~e pode trabalhar... --> isso pq 
+
+você nem sempre vai testar um serviço inteiro, 
+
+e sim 
+
+
+uma parte dele,
+ parte que 
+
+ não vai 
+
+ usar/depender 
+
+ especificamente 
+
+ da parte 'async' do seu código...
+
+
+
+
+
+
+
+
+
+ --> HÁ DOCS PARA O ENZYME, TAMBÉM... --> os docs 
+
+ nos mostram 
+
+
+ como 
+
+ INSTALAR 
+
+
+ ENZYME COM 
+
+ OUTRAS VERSÕES DO REACT,
+
+ E COM OUTROS 
+
+
+ 'TEST RUNNERS', test runners que NÃO SÃO O JEST (como 'Mocha', 'Webpack', etc etc..)
+
+
+
+
+
+
+
+ --> VOCÊ 
+
+ TAMBÉM 
+
+ TEM O 
+
+ 
+
+
+ 'API Reference'... -----> 
+
+ LÁ 
+
+
+ VEMOS 
+
+
+ AS 
+
+ NOSSAS 
+ 3 
+
+ OPÇÕES 
+
+
+ DE 
+
+ 'rendering' 
+
+
+ de components/wrapper... --> 
+ temos o 
+
+
+
+
+
+ 'Shallow()', (SHALLOW RENDERING)
+
+ o 
+
+
+ 'mount()'  (FULL RENDERING)
+
+
+ e 
+
+
+ o 
+
+
+ 'render()'     (STATIC RENDERING)
+
+
+
+
+
+ ----------------------------------
+
+
+
+
+
+
+ --> FULL RENDERING ---> É ÚTIL SE VOCê __REALMENTE __ QUER RENDERIZAR __ 
+
+A COMPONENT TREE INTEIRA... ---> é raramente utilizado, MAS EXISTIRÃO ALGUMAS 
+CIRCUNSTÂNCIAS EM QUE VOCÊ DESEJARÁ TESTAR ALGUMA 'CROSS-COMPONENT DEPENDENCY'...  ---> ENTRETANTO,
+VOCÊ SEMPRE DEVE VER SE VOCÊ CONSEGUE RESOLVER COM UM SIMPLES UNIT TEST (shallow) ANTERIORMENTE...
+
+
+
+
+
+
+
+
+
+
+
+--> shallow rendering API --> 
+
+
+SE VOCÊ CLICAR NELE,
+VOCÊ VERÁ NA ESQUERDA __TODOS OS HELPER __ METHODS DE SHALLOW --> 
+
+
+
+
+nós 
+
+
+usamos 
+
+apenas 
+
+
+ o 
+
+ 'find()',
+
+ MAS 
+
+ EXISTEM MUITOS E MUITOS MAIS....
+
+
+
+
+
+
+ ---> há coisas como 'first()',
+
+ 'last()',
+
+
+ etc etc...
+
+
+
+
+ ------------------
+
+ PROFESSOR 
+
+ COMEÇA 
+
+
+ A NOS EXPLICAR ALGUNS DELES,
+
+ COMEÇANDO 
+
+ PELO 
+
+ MÉTODO 
+
+
+ 'contains()'...
+
+
+
+
+
+
+
+
+
+ --> PROFESSOR QUER NOS MOSTRAR UM OUTRO PEQUENO TEST __ antes ___ de sairmos 
+
+ do tópico do nosso component 
+
+ 'NavigationItems'...
+
+
+
+
+
+
+
+
+
+ --> LÁ, PROFESSOR JÁ TESTOU MUITAS COISAS 
+
+ do 
+
+'NavigationItems';
+
+
+
+agora o professor quer testar 
+
+algo mais ESPECÍFICO,
+
+ESPECÍFICO A 
+
+
+'NavigationItem'....
+
+
+
+
+
+
+
+--->  SE OLHARMOS ESSE ARQUIVO,
+
+VEREMOS 
+
+
+
+
+QUE EXISTE UM COMPONENT 
+
+'LOGOUT' ('link="/logout")  
+
+
+
+QUE 
+
+
+SÓ 
+
+__ESTARÁ __ PRESENTE NO NOSSO DOM __ SE 
+
+REALMENTE 
+
+ESTIVERMOS 
+
+LOGGADOS (se a 'token' estiver como true, se estivermos autenticados....).
+
+
+
+
+
+
+
+---------> O PROFESSOR QUER CHECAR SE ESSE '<NavigationItem />'
+
+
+
+ESPECÍFICO 
+
+
+ESTARÁ 
+
+LÁ 
+
+QUANDO ESTAMOS AUTENTICADOS.... -----> E, PARA ISSO, PODEMOS 
+
+JUSTAMENTE 
+
+USAR 
+
+ESSE 
+
+HELPER 
+
+DE 
+
+'contains()'
+
+
+
+
+
+
+'
+.contains(nodeOrNodes) => Boolean' ----------> ISSO 
+
+PQ O 
+
+
+
+'contains()',
+
+ao contrário de 'find()',
+
+
+NÃO 
+
+ACEITA 
+
+UM 
+
+'ELEMENT TYPE' ou  CSS SELECTOR (class selectors css)
+
+PARA 
+
+
+realizar sua operação,
+
+
+
+
+MAS 
+
+
+
+SIM 
+
+EXIGE UM 
+
+
+
+'node', um NODE DE VERDADE (' a real node')  ---> e aí,
+ por meio desse 
+
+ TEST,
+
+ você pode checar 
+
+ SE VOCÊ 
+
+ TEM 
+
+
+ UM 
+
+ MATCH EXATO...
+
+
+
+
+
+
+
+ PROFESSOR COPIA 
+
+  O CÓDIGO DE UM DOS IT CASES,
+
+  para então 
+
+
+
+
+
+  ESCREVER UM TERCEIRO TEST....
+
+
+
+
+  ex:
+
+
+  
+     it('should render three <NavigationItem /> elements if authenticated', 
+
+        () => {
+            expect(wrapper.find(NavigationItem)) 
+            .toHaveLength(3); 
+                            
+    }
+        )
+    
+
+
+    ------------------------------------------
+
+
+
+
+
+    CERTO... agora 
+
+
+    o professor vai querer USAR 
+
+    O MÉTODO 
+
+
+    'contains' nesse 
+
+
+'wrapper' aí...
+
+
+ex:
+
+
+
+
+
+  
+     it('should render three <NavigationItem /> elements if authenticated', 
+
+        () => {
+            expect(wrapper.contains())  //////EIS O CÓDIGO EM QUESTÃO.
+            .toHaveLength(3); 
+                            
+    }
+        )
+    
+
+
+
+-----------------------------------------
+
+
+
+
+O PROFESSOR ENTÃO VAI QUERER CHECAR 
+PELA 
+
+EXISTÊNCIA 
+
+
+
+dAQUELE 
+
+NAVIGATION ITEM ESPECÍFICO DE 'logout' 
+
+
+dentro 
+
+de 
+
+nosso 
+
+'NavigationItems',
+
+quando estivermos 
+
+AUTENTICADOS (prop 'logout' presente nesse component...)
+
+
+
+
+
+
+
+-> COMO NÓS __NÃO USAMOS __ SELETORES (css selectors)
+
+PARA 
+
+
+O PARÂMETRO 
+
+DESSE '.contains()',
+
+
+O PROFESSOR 
+
+SIMPLESMENTE 
+USARÁ 
+
+
+
+um código 
+
+de 
+
+ 
+'<NavigationItem />' -------> MAS 
+
+PROFESSOR 
+
+__NÃO VAI QUERER_ __ ESCREVER 
+
+UM 
+
+
+
+NAVIGATION ITEM ASSIM,
+
+
+
+e 
+sim 
+
+
+vai querer escrever assim, com as opening e closing tags:
+
+
+
+
+
+
+
+ex:
+
+
+expect(wrapper.contains(<NavigationItem>Logout</NavigationItem>)).toHave(3);
+
+
+
+
+
+
+
+
+
+
+
+--> COMO NÓS ___SABEMOS___ QUE ESSE 'NavigationItem'
+
+ESPECÍFICO __VAI TER UM TEXTO 
+
+DE 
+
+'Logout' 
+
+
+
+NO MEIO DE SUAS OPENING E CLOSING TAGS,
+
+devemos 
+
+nos aproveitar dessa informação no nosso TEST,
+
+NO WRITE DE NOSSO TEST....
+
+
+
+--> esse test estará dizendo:
+
+
+'cheque se WRAPPER/component que está na const wrapper 
+
+POSSUI UM ___ COMPONENT 'NavigationItem' com uma CAPTION/'props.children' 
+
+EQUIVALENTE 
+
+A STRING 
+
+DE 
+
+'Logout'.... ------>  
+
+
+MAS NÃO É SÓ ISSO;
+
+PRECISAMOS 
+
+colocar 
+
+TAMBÉM 
+
+O PROP 
+
+QUE 
+
+ESSE 'NavigationItem' possui, que no caso é o prop de 
+
+'link="/logout"....
+
+
+
+
+ex:
+
+
+
+
+
+expect(wrapper.contains(<NavigationItem link="/logout" >Logout</NavigationItem>)).toHave(3);
+
+
+
+
+
+
+
+
+
+
+
+--> OU SEJA, PROFESSOR 
+
+ESTARÁ 
+
+__eSCREVENDO ESSENCIALMENTE ___ O MESMO CÓDIGO QUE TEMOS NO 
+
+INTERIOR 
+
+DO 
+'NavigationItems' component,
+
+
+
+
+para esse 'NavigationItem' específico, alvo do test...
+
+
+
+
+
+
+---> COM ISSO,
+
+PROFESSOR 
+
+
+VAI CHECAR 
+
+SE 
+ISSO 
+
+REALMENTE 
+
+FAZ PARTE DO WRAPPER.... ---> e ele SÓ VAI FAZER ISSO, SÓ VAI CHECAR ESSE PEQUENO DETALHE... -----> 
+
+para isso,
+
+diz o professor, 
+
+
+
+ELE PODE 
+
+
+
+COLOCAR 
+
+'toHaveLength(1)',
+
+
+para 
+
+especificar que SÓ VAI ESPERAR 1 COMPONENT 'NavigationItem' 
+
+
+dentro 
+
+de 
+
+'NavigationItems'... ----> ou, para 'mix it up',
+
+professor 
+
+
+diz que 
+poderia 
+
+
+CHECAR 
+
+
+
+'toEqual(true)' -----------------> OU SEJA,
+
+
+
+
+ELE VAI QUERER 
+CHECAR 
+
+SE NÓS ESTAMOS AUTENTICADOS, ou seja, se A PROPRIEDADE/prop 'logout' está definida/passada como 'true' a esse component...
+
+
+
+
+
+EX:
+
+
+Use .toEqual to compare recursively all properties of object instances (also known as "deep" equality). It calls Object.is to compare primitive values, which is even better for testing than === strict equality operator.
+
+For example, .toEqual and .toBe behave differently in this test suite, so all the tests pass:
+
+
+
+
+-------------------------------------------
+
+
+
+
+EX:
+
+
+
+
+
+  
+     it('should render <NavigationItem>Logout</NavigationItem> if AUTHENTICATED', 
+
+        () => {
+            expect(wrapper.contains(<NavigationItem link="/logout" >Logout</NavigationItem>)))  //////EIS O CÓDIGO EM QUESTÃO.
+            .toEqual(true);
+                            
+    }
+        )
+    
+
+
+
+---------------------------
+
+
+NÓS VAMOS 
+
+RODAR 
+ESSE 
+
+TEST AÍ... ----> E ESSE RUN 
+
+
+__VAI APARECER 
+
+COMO 
+
+'FAILED' NO CONSOLE... --> ué, mas pq 
+
+APARECEU 
+
+COMO 
+
+'FAIL'? 
+
+
+
+
+
+
+
+
+
+----> BEM....A RAZÃO É _SIMPLES:__ O PROFESSOR 
+
+DELETOU 
+
+AQUELE CÓDIGO DE 
+
+
+'wrapper.setProps({logout: true})' 
+
+QUE 
+
+ESTAVA ESCRITO
+ 
+ DENTRO 
+
+ DESSE 'IT CASE', antes do EXPECT... ---------> 
+
+
+
+
+ E O PROFESSOR FEZ ISSO __ DE PROPÓSITO__... ---> DE PROPÓSITO PQ 
+
+
+ ELE 
+
+ QUERIA 
+
+ NOS MOSTRAR QUE CADA TEST,
+  DE FATO,
+
+
+
+  __rODA ___ INDEPENDENTE __ DOS OUTROS.... --------> a única coisa 
+
+  COMUM 
+
+
+  A __tODOS ESSES TESTS, NO NOSSO CASO___, É 
+
+
+  A ESCRITA DE 
+
+
+
+  'beforeEach()' E 
+
+  SEU 
+
+  CÓDIGO 
+
+
+  DE 
+
+
+
+  'beforeEach(() => {
+      wrapper = shallow(<NavigationItems />);
+  })'
+,
+
+
+PQ 
+
+
+
+ISSO VAI SIGNIFICAR QUE 
+
+ESSE 
+
+CÓDIGO AÍ ESTÁ SENDO executado 
+EM 
+CADA
+UM 
+
+DOS TESTS/IT CASES,
+
+
+e como 
+
+
+NÓS ESTAMOS 
+
+
+DEFININDO UM COMPONENT ___ SEM OS PROPS EMBUTIDOS__, sem 
+
+
+a AUTENTICAÇÃO QUE ESTAVA/ESTÁ PRESUMIDA... --> 
+
+
+para 
+
+
+consertar 
+
+esse problema,
+
+devemos 
+
+simplesmente 
+
+reintroduzir o código 
+
+de 
+
+'wrapper.setProps({logout: true})'
+
+
+
+DENTRO DESSE NOSSO TERCEIRO 'IT CASE'/test...
+
+
+
+ex:
+
+
+
+
+     it('should render <NavigationItem>Logout</NavigationItem> if authenticated', 
+
+        () => {
+            wrapper.setProps({logout: true});
+            expect(wrapper.contains(<NavigationItem link="/logout" >Logout</NavigationItem>)))  //////EIS O CÓDIGO EM QUESTÃO.
+            .toEqual(true);
+                            
+    }
+        )
+
+
+
+
+-----------------------------------------
+
+
+
+
+
+
+CERTO, COM ISSO,
+
+AMBOS TESTS VÃO 'SUCCEED'... -> vão ser bem sucedidos 
+
+os 
+tests 
+
+PQ 
+
+CADA 1 
+
+
+DELES 
+
+VAI RODAR 
+
+'INDEPENDENTE DO OUTRO',
+
+
+
+
+
+E A KEY-POINT 
+
+DESSA 
+
+LIÇÃO É ___JUSTAMENTE __ QUE PODEMOS USAR 
+
+DIFERENTES
+ 
+ MÉTODOS 
+
+ DO 
+
+ ENZYME (como 'contains()' e 'find()') PARA __ TESTAR DIFERENTES COISAS___... ---> 
+
+
+ E PODEMOS 
+
+ COMBINAR ESSES MÉTODOS 
+
+ do 
+
+ 'enzyme' COM OS MÉTODOS 
+
+ DO 
+
+ JEST (como 'toHaveLength()' e 'toBeGreaterThan()'... )
+
+
+
+
+
+
+
+
+
+ --> COM O TESTING, SEMPRE DEVEMOS MISTURAR OS METHODS 
+
+ DO ENZYME COM OS 
+
+ DO 
+
+ JEST... 
+
+
+
+
+ --> VEREMOS MAIS UMAS DICAS SOBRE ISSO _ NA PRÓXIMA AULA___...

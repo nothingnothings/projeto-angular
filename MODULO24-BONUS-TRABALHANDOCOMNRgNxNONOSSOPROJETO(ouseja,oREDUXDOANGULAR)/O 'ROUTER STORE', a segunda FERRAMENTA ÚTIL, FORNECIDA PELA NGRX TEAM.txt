@@ -1,0 +1,740 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM O 'STORE DEVTOOLS' adicionado,
+
+
+
+
+
+
+
+
+
+O PROFESSOR QUER NOS MOSTRAR OUTRA PACKAGE, A QUAL PODE SER ÚTIL EM ALGUNS APPS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR QUITA NOSSO APP 
+
+ 
+
+ e então instala um novo package,
+
+
+
+ 'npm install --save @ngrx/router-store
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> certo... mas estou com um ERRO DE BUILD NO MEU ANGULAR...
+
+
+
+
+
+ CONFLITO ENTRE A BUILD FEITA PELO 'ANGULAR DE NOSSA MÁQUINA' e o ANGULAR LOCAL (do projeto)...
+
+
+
+
+
+
+
+
+ ok, mas como posso CONSERTAR ESSE PROBLEMA?
+
+
+
+
+
+
+
+
+
+
+ --> a primeira coisa a se fazer, provavelmente, é ATUALIZAR O ANGULAR-CLI DE NOSSA MÁQUINA....
+
+
+
+
+
+
+ Your global Angular CLI version (14.0.2) is greater than your local version (13.3.4). The local Angular 
+CLI version is used.
+
+
+
+
+
+
+
+
+
+
+
+
+The local install of the CLI is used after an application has been built. 
+This way, when new versions of the CLI are available, you can update your global install,
+ and not affect the local install. This is good for the stability of a project. Most ng commands only make sense with the local version, like lint, build and serve, etc.
+
+
+
+
+
+
+
+
+
+
+
+
+ok.. dei commits, aí atualizei o angular com isto aqui:
+
+
+
+
+
+
+
+https://update.angular.io/?v=13.0-14.0
+
+
+
+
+E ESTA DICA:
+
+
+
+
+
+
+
+Run ng update @angular/core@14 @angular/cli@14 which should bring you to version 14 of Angular.
+
+
+
+
+
+
+
+
+
+certo... hora de testar o app mais uma vez...
+
+
+
+
+
+
+
+
+agora funcionou...
+
+
+
+
+
+
+
+
+
+
+
+CERTO... agora vou instalar essa nova ferramenta que o professor mencionou..
+
+
+
+
+
+
+
+
+-> mas primeiro, tenho que testar o 'devtools redux'...
+
+
+
+store-devtools, ou algo assim....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSA FEATURE PODE SER BOA EM ALGUNS APPS...
+
+
+
+
+
+
+
+--> instale com 
+
+
+
+
+
+
+
+
+
+npm install --save @ngrx/router-store...
+
+
+
+
+
+
+
+
+
+
+--> ESSA _ tAMBÉM É UMA 'OFFICIAL PACKAGE',
+
+
+UMA PACKAGE QUE TAMBÉM FAZ 'PARTE' 
+
+
+
+DA SUITE DO NGRX...
+
+
+
+
+
+
+
+
+
+
+
+--> ok, mas o que ela faz?
+
+
+
+
+
+-> ELA TE AJUDA COM O REACT A _  
+
+
+
+
+
+
+__ 'ROUTING ACTIONS'... -----> ISSO QUER DIZER QUE 
+
+
+
+ELE (o 'RouterStore')
+
+
+
+
+
+VAI DISPATCHEAR ALGUMAS ACTIONS_ _ AUTOMATICAMEWNTE,
+
+
+
+
+TUDO 
+
+
+
+COM BASE NO 'ANGULAR ROUTER'... -->  ISSO, NO CASO,
+
+
+
+
+
+
+
+TE DEIXA __ ESCREVER 
+
+'CÓDIGO NO NOSSO REDUCER',
+
+
+
+
+
+OU 'CÓDIGO NOS NOSSOS EFFECTS',
+
+
+
+
+
+que _ ENTÃO _ vAI _ SER EXECUTADO _ 
+
+
+
+
+QUANDO 
+
+ALGUMA 'ROUTING ACTION ACONTECER',
+
+
+
+se você usar 
+
+
+
+essa feature/package de 
+
+
+
+
+
+
+
+
+'RouterStore'...
+
+
+
+
+
+
+Ex:
+
+
+
+
+
+
+
+
+npm install --save @ngrx/router-store
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> ok.. o professor reinicia nosso código e instala ESSE PACKAGE..
+
+
+
+
+
+
+
+
+
+
+--> PARA CONSEGUIRMOS USAR ESSA PACKGE,
+
+
+PRECISAMOS IMPORTAR ALGO LÁ EM 'app.module.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> você vai escrever assim:
+
+
+
+
+
+
+
+
+
+import { StoreRouterConnectingModule } from '@ngrx/router-store';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK.. E VOCê VAI ESCREVER ESSE 'IMPORT'
+
+
+
+LOGO DEPOIS DO DAQUELE CÓDIGO QUE FOI USADO PARA SETAR O REDUX DEV TOOLS:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  imports: [
+    // AuthModule, ///outsourcing em essa 'feature module'...  ////depois removemos esse import daqui, pq passamos a fazer LAZYLOADING desse module, com a ajuda de 'app-routing.module.ts'...
+    
+    
+    // StoreModule.forRoot( ////é o 'CENTRAL STORE' de nosso app, implementado com NGRX...  //// aqui, precisamos dizer 'QUAIS REDUCERS VÃO SER USADOS NO NOSSO APP, QUE VÃO COMPOR NOSSA CENTRAL STORE, essencialmente'...
+    //   { ///1 identifier para cada 'PARTE/REDUCER' do seu app, cada parte do state do seu app....
+    //      shoppingList: shoppingListReducer       
+    //   }
+    // ),
+    
+    StoreModule.forRoot(
+      reducers
+    ),
+    StoreDevtoolsModule.instrument({logOnly: environment.production}), ////USADO COM A EXTENSÃO 'REDUX DEV TOOLS' do chrome/firefox... --> E SEMPRE ADICIONE ESSA 'FEATURE' DEPOIS  DO SET DO REDUCER (código de ''StoreModule.forRoot(reducers)' ), PQ CASO CONTRÁRIO ISSO _NÃO FUNCIONARÁ...
+    EffectsModule.forRoot([AuthEffects]), //essencial para o run de código async com nossos reducers (Suportando nossos reducers com código async)...
+                    ///nesse 'forRoot()" do EffectsModule vocÊ deve passar um ARRAY DE SEUS 'ROOT' EFFECTS /effect classes...
+    BrowserModule,
+ 
+    AppRoutingModule,  //módulo de routing, customizado por nós...
+    HttpClientModule,
+ 
+    SharedModule,
+ 
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production })   ///outsourcing...
+
+    StoreRouterConnectingModule()
+  ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> CERTO... MAS ESSE 
+
+'StoreRouterConnectingModule'
+
+
+
+ESTÁ ERRADO,
+
+
+
+
+
+PQ __ O PROFESSOR DIZ QUE DEVEMOS CHAMAR '.forRoot()'
+
+
+
+
+
+
+NELE...
+
+
+
+
+
+
+--> ENTRETANTO, A ESSE 'forRoot' NAÕ PRECISAMOS PASSAR ARGUMENTO ALGUM,
+
+e se agora 
+
+SALVARMOS TUDO E VOLTARMOS AO NOSSO APP...
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+StoreRouterConnectingModule.forRoot()
+
+
+
+
+
+
+
+
+
+
+
+-> OK, SALVAMOS TUDO ISSO E VOLTAMOS AO NOSSO AP..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS SE VOLTAMOS AO NOSSO APP,
+
+
+
+
+
+
+VEMOS QUE _ EXISTEM VÁRIAS ACTIONS SENDO DIPSATCHED..
+
+
+
+
+
+
+
+-> HÁ VÁRIAS..
+
+
+
+
+
+
+
+
+
+--> na verdade, há mais de 2 socoe que mike tyson desferiu...
+
+
+
+
+
+
+
+
+
+
+
+
+-> TEMOS VÁRIAS ACTIONS, como 
+
+
+
+
+
+
+
+
+@ngrx/router-store/request
+@ngrx/router-store/navigation
+@ngrx/router-store/Navigated
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SE EXAMINARMOS O CONTEÚDO DE CADA UMA DAS ACTIONS,
+
+ 
+ VEREMOS QUE CADA UMA DELAS TEM PROPRIEDADES PRÓPRIAS..
+
+
+
+
+
+
+
+
+ ---> COMO EXEMPLO DISSO,
+
+ LÁ NA 'ROUTER STORE NAVIGATION',
+
+
+ NÓS RECEBEEMOS INFO SOBRE O 'ROUTER STATE',
+
+
+
+
+GANHAMSO O ROUTER STATE E 'A URL 
+ 
+
+
+
+A QEU ESTAMOS TENTANDO FAZER 'NAVIGATE TO'...
+
+
+
+
+
+
+
+
+
+
+
+E 
+
+
+
+
+
+
+
+
+-> E CADA ACTION TEM UM PAYLOAD,
+
+
+
+PODEMOS VER  
+
+
+
+
+
+
+
+
+'ROUTER-STORE REQUEST',
+
+
+
+'ROUTER-STORE/NAVIGATION'... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok...
+
+
+
+
+
+
+
+
+
+É CLARO QUE NÃO RPECISAMOS DE 'router-store/request'
+
+
+NO NOSSO APP ATUAL,
+
+
+
+
+MAS SE VOCê ESTÁ CONSTRUINDO UM APP,
+
+ISSO PODERIA SER CONVENIENTE,
+
+
+
+
+
+
+
+
+O 'STATE' deese sl
+PODERIA TE DAR UMA MANEIRA FÁCIL E RÁPIDA DE FAZER 'REACT' A diferentes 'ROUTING EVENTS'
+
+
+e DATA DIFERENTE ANEXADA A ESSES DOCUMENTSd..

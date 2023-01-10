@@ -1,0 +1,426 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VAMOS COMEÇAR COM INTERFACES..
+
+
+
+
+
+
+
+
+
+--> críamos um arquivo de 
+
+
+interfaces..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> começamos assim:
+
+
+
+
+
+
+
+
+
+interface User {
+
+
+    username: string;
+    password: string;
+    confirmPassword?: string;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> eSSA É UMA INTERFACE --> UMA INTERFACE É COMO UM 'CONTRATO' --> 
+
+
+
+
+todos os objects que implementarem essa interface 
+
+DEVERÃO 
+
+TER 
+
+
+
+ESSA ESTRUTURA AÍ (2 propriedades obrigatórias, uma opcional)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO..
+
+
+
+
+
+
+--> MAS PQ USAR INTERFACES?
+
+
+
+
+
+
+
+
+--> PQ NOS DEIXAM CRIAR UMA FORMA DE COMMUNICATION SAFE  ENTRE 
+
+
+DIVERSOS 
+
+OBJECTS...
+
+
+
+
+---> PQ SE SABEMOS QUE 1 CERTO 
+
+
+OBJECT IMPLEMENTA UM CERTO METHOD/PROPERTY,
+
+
+PODEMOS 
+
+A
+CESSAR 
+
+
+FACILMENTE ESSE METHOD/PROPERTY..
+
+
+
+
+
+
+
+
+
+
+VEREMOS ISSO VÁRIAS VEZES AO LONGO DO CURSO, COMO COM 'ngOnInit()'...
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO, PODEMOS DIZER AOS OUTROS METHODS QUE 
+
+ELES DEVEM USAR SOMENTE ESSAS PROPRIEDADES AÍ...
+
+
+
+
+
+
+
+
+
+
+
+
+--->OK.... AÍ O PROFESSOR ESTÁ CRIANDO ESSE USER 
+
+
+
+COM ESSAS PROPRIEDADES,
+
+
+
+
+E AÍ 
+
+
+
+ESTÁ ESCREVENDO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+interface User {
+
+
+    username: string;
+    password: string;
+    confirmPassword?: string;
+}
+
+
+
+
+
+
+
+let user: User 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> agora se TENTARMOS ASSIGNAR ALGO A ESSA VARIABLE DE 'user',
+
+
+ela deverá OBRIGATORIAMENTE TER AQUELAS PROPRIEDADES (as 2, e a terceira é optional)...
+
+
+
+
+
+
+
+
+
+
+
+aí o professor escreve:
+
+
+
+
+
+
+
+
+
+
+
+
+interface User {
+
+
+    username: string;
+    password: string;
+    confirmPassword?: string;
+}
+
+
+
+
+
+
+
+let user: User 
+
+
+
+
+
+
+
+user = { username: 'anything', confirmPassword: 5}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS ESTIPULAR METHODS DENTRO DE NOSSAS INTERFACESs:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+interface CanDrive {
+    accelerate(speed:number): void;
+}
+
+
+
+
+
+
+
+
+
+-----> esse OBJECT DEVE OBRIGATORIAMENTE TER ESSE METHOD,
+
+
+e ele deve aceitar 'speed' como um number, e  RETORNAR 'VOID'..  (
+
+
+    descrevemos um method e 
+
+
+    como ele deve ser implemnetado...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+é por isso que podemos escrever 
+
+
+
+
+
+
+
+
+
+
+let car:CanDrive = {
+
+
+    accelerate(number:number) {
+
+
+            console.log('nothing');
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SE COMPILAMOS ESSE CÓDIGO,
+
+NOSSO ARQUIVO JAVASCRIPT VAI SER OUTPUTTADO,
+
+E ELE FICARÁ BEM MAIS LEAN...
+
+
+
+
+
+
+
+
+
+
+os types e interfaces NÃO SÃO REPRODUZIDOS NO CÓDIGO JAVASCRIPT...
+
+
+
+
+

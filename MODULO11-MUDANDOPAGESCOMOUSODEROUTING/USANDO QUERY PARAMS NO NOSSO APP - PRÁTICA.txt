@@ -1,0 +1,1657 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NA ÚLTIMA LIÇÃO,
+
+ADICIONAMOS CHILD ROUTING...
+
+
+
+
+
+O CÓDIGO, LÁ EM 'users' (e também em 'servers') ficou assim:
+
+
+
+
+<div class="row">
+  <div class="col-xs-12 col-sm-4"></div>
+  <div class="list-group">
+    <a [routerLink]="['/users', user.id ]" 
+    class="list-group-item" 
+    *ngFor="let user of users"
+    
+    >
+    
+    
+    {{ user.name }}</a>
+  </div>
+</div>
+<div class="col-xs-12 col-sm-4">
+  <!-- <app-user></app-user> -->
+  <router-outlet></router-outlet>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA VAMOS MELHORAR AINDA MAIS NOSSO CÓDIGO...
+
+
+
+
+
+
+
+
+
+
+--> NO COMPONENT DE 'servers',
+
+temos 
+
+
+
+AQUELES 
+
+
+INDIVIDUAL LINKS,
+
+que são assim:
+
+
+
+<div class="row">
+  <div class="col-xs-12 col-sm-4">
+    <div class="list-group">
+      <div *ngFor="let server of servers; let index=index">
+      <a
+      
+      class="list-group-item" 
+      [routerLink]="['/servers', server.id]"
+      [queryParams]="{allowEdit: '1'}"
+      [fragment]="'loading'"
+      
+      > 
+        {{ server.name }} 
+      </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+      --> E ESSES LINKS AÍ CARREGAM 
+
+
+
+
+      NOSSO COMPONENT INDIVIDUAL 'server.component.html/ts' 
+
+
+      com data dinâmica, através do router...
+
+
+
+
+
+
+
+
+
+
+      -> E ESSES LINKS CARREGAM 
+
+
+
+
+      ESSE COMPONENT 
+
+      lá no slot 
+
+      '<router-outlet></router-outlet>',
+
+
+      nesse 'servers.component.ts/html'...
+
+
+
+
+
+
+
+      ex:
+
+
+
+
+      <div class="row">
+  <div class="col-xs-12 col-sm-4">
+    <div class="list-group">
+      <div *ngFor="let server of servers; let index=index">
+      <a
+      
+      class="list-group-item" 
+      [routerLink]="['/servers', server.id]"
+      [queryParams]="{allowEdit: '1'}"
+      [fragment]="'loading'"
+      
+      > <!-- [queryParams] É UMA _ PROPRIEDADE __ DE 'routerLink', e não uma NOVA DIRECTIVE... queryparams são ?allowEdit=1, na sua URL...-->
+      <!-- FRAGMENT É O '#' que Às vezes pode aparecer/ser parseado nas suas urls.... OBS: só é possível ter 1 ÚNICO FRAGMENT por 'link'/route.... -->
+        {{ server.name }} 
+      </a>
+      <button class="btn btn-primary" [routerLink]="['/servers', server.id, 'edit']" [ngStyle]="{}">Edit</button>
+      <hr>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4">
+    <router-outlet></router-outlet> <!-- ESSE OUTLET é o segundo outlet de nosso projeto, e é um NESTED OUTLET, pq existe outro (o 'global', 'topmost level'); É CLARO QUE USAREMOS ESSE 'NESTED OUTLET' para fazer o render de nossas NESTED ROUTES, as nested routes do component 'servers'... -->
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+----------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> é por isso que 
+
+
+
+
+DENTRO DO 'SERVER COMPONENT' vamos adicionar UM CONTEÚDO LEGAL,
+
+vamos adicionar um BUTTON,
+
+
+pq 
+
+
+
+ATÉ AGORA NÃO TEMOS NENHUM BUTTON QUE DIZ 'EDIT SERVER'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> bem, com isso,
+
+
+
+agora quando eu selecionar um 
+
+
+SERVER em 'servers',
+
+
+
+SERÁ MOSTRADO UM 
+
+'app-server'
+
+
+
+
+COM UM __ BUTTON__ logo abaixo, dizendo 'edit'....
+
+
+
+
+
+
+
+
+
+
+
+o professor escreve um 
+
+
+
+button de 
+
+
+
+<button>Edit Server</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O PROFESSOR FEZ ALGO DIFERENTE NESSE BUTTON, PQ EM VEZ DE ELE USAR 'routerLink',
+
+AQUI ELE USOU 
+
+
+
+
+
+'onEdit()', vinculou um 
+
+
+
+(click)="onEdit()",
+
+
+para executar um method desses lá em 
+
+'server.component.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ok... ISSO SIGNIFICA QUE O PROFESSOR VAI QUERER SEGUIR UM APPROACH DE 'NAVIGATE PROGRAMMATICALLY'...
+
+
+
+
+
+
+-> o código vai ficando assim:
+
+
+
+
+
+
+
+
+<h5>{{ server.name }}</h5>
+<p>Server status is {{ server.status }}</p>
+<button class="btn btn-primary" (click)="onEdit()" [ngStyle]="{}">Edit Server</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { ServersService } from '../servers.service';
+import { Params } from '@angular/router';
+
+@Component({
+  selector: 'app-server',
+  templateUrl: './server.component.html',
+  styleUrls: ['./server.component.css']
+})
+export class ServerComponent implements OnInit {
+
+  server: {id: number, name: string, status: string};
+
+  constructor(private serversService: ServersService, private route: ActivatedRoute) { }
+
+  ngOnInit(): void {
+    // this.server = this.serversService.getServer(1)!;
+
+    const serverId = +this.route.snapshot.params['id'];
+
+    this.server = this.serversService.getServer(serverId)!;
+
+
+    this.route.params.subscribe( ///versão/modalidade usada para quando 'SEUS PARAMS FOREM ALTERADOS DURANTE A VIDA DE SEU COMPONENT/PAGE  de server'.... --> aí isso vai ALTERAR O CONTENT DA PÁGINA, sem reloads, intuitivamente (pq é um observable, async code, roda no background e detecta CHANGES NOS SEUS 'params' na url, durante o runtime/vida desse component/page de 'server')...
+      (params: Params) => {
+        this.server = this.serversService.getServer(+params['id'])!;
+      }
+    )
+      
+    
+
+
+  
+
+}
+
+
+onEdit() {
+  
+}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... DENTRO DESSE COMPONENT, O QUE VAMOS QUERER FAZER É 
+
+
+
+incorporar/injetar 
+
+o 
+
+pacote de 
+
+
+
+'router',
+
+para aí 
+
+CONSEGUIRMOS REDIRECIONAR O USER COM 
+
+
+'this.router.navigate()'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> o ccódigo vai ficando assim:
+
+
+
+
+
+
+
+
+
+
+
+
+onEdit() {
+
+  this.router.navigate(
+    ['edit'], {
+      relativeTo: this.route,
+
+      queryParams: {allowEdit: 1 }
+    }
+  )
+}
+
+
+
+
+
+
+
+
+
+
+--> eu escrevi assim, mas não sei se está certo...
+
+
+
+
+
+
+
+
+
+
+--. O PROFESSOR QUER 'NAVIGATE' até o component de 
+'edit-server'..
+
+
+
+
+
+
+
+
+
+
+
+--> o professor injetou o router, tudo certo....
+
+
+
+
+
+
+
+
+
+
+
+--> O 'onEdit' é usado para navigate...
+
+
+
+
+
+
+
+
+--> o professor escreveu 
+
+
+
+
+
+
+
+
+this.router.navigate(['edit'])
+
+
+
+
+
+
+
+
+
+
+--> MAS AÍ ELE NOS DIZ QUE SE VOCÊ QUER USAR UM RELATIVE PATH COM ESSE METHOD,
+
+você precisa 
+
+
+
+do segundo paRâmetro,
+
+
+de 
+
+'relativeTo',
+
+
+
+e aí passar a ATUAL ROUTE carregada, 
+
+'this.route',
+
+como 
+
+
+ROUTE QUE TERÁ 
+
+'edit' 
+
+apensa ao final de sua route...
+
+
+
+
+
+
+
+
+
+-> QUANDO CLICAMOS EM 'EDIT SERVER',
+
+
+a page de 'edit server' é selecionada...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, ISSO FUNCIONOU....
+
+
+
+
+
+
+
+
+
+
+--> NÓS CONSEGUIMOS CARREGAR PAGES COMo 
+
+
+
+
+localhost:4200/servers/1/edit 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA QUEREMOS:
+
+1) CONTROLAR SE O USER _ É CAPAZ/PERMITIDO 
+
+
+A 
+
+
+'UPDATAR' O SERVER OU NÃO..
+
+
+
+
+
+
+
+
+
+
+
+2) O PROBLEMA É QUE _ 
+TEORICAMENTE JÁ TEMOS NOSSOS QUERY PARAMS POSICIONADOS 
+
+
+
+NESSA ROUTE de 'você selecionou um server',
+
+
+
+
+
+pq a url 
+
+
+
+fica como 
+
+
+
+'localhost:4200/servers/1?allowEdit=1#loading'
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS ESSA INFO, ESSE 'query Param',
+
+É __ PERDIDO_ 
+
+
+
+BEM NA HORA EM QUE CLICAMOS EM 
+
+'edit server'...
+
+
+
+
+
+
+
+
+
+
+
+--> E É __ POR ISSO _QUE 
+
+
+
+
+
+ESSA É UMA _ INFO _ QUE PRECISAMOS __ CONSERTAR 
+
+
+ANTES DE SERMOS CAPAZES DE USAR A INFO 
+
+dos nossos server lá em 
+'edit-server'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> VAMOS CONSERTAR ESSE PROBLEMA DO 'PASS DOS QUERY PARAMS' NA 
+_ PRÓXIMA AULA...
+
+
+
+
+
+
+
+
+
+
+--> VAMOS CONSERTAR O RESTO DA LÓGICA, AGORA...
+
+
+
+
+
+
+
+
+
+
+
+--> lá em 'servers.component.html',
+
+
+PRFOFESSOR 
+
+DIZ QUE 
+
+
+NÃO É NECESSÁRIO SEMPRE definir 
+
+'allowEdit' COMO SENDO 1... --> ISSO PQ QUEREMOS __ DEFINIR/DECIDIR 
+
+
+ACERCA DE 
+
+
+''QUEREMOS OU NÃO PERMITIR O EDITING'
+
+
+
+
+
+A DEPENDER DO SERVER ID... -->  ou seja,
+
+
+
+
+SÓ SE O _ SERVER.ID 
+
+FOR IGUAL A 3 
+
+
+
+VAMOS QUERER PERMITIR A EDIÇÃO DE ALGUM COMPONENT 'server'...
+
+
+
+
+
+
+
+
+
+--> CASO O NÚMERO REALMENTE SEJA '3',
+
+VAMOS QUERER DEFINIR 
+
+
+O 
+
+VALOR DE 'allowEdit' 
+
+
+COMO _ SENDO 
+
+1,
+
+caso contrário VAMOS QUERER _ QUE SEJA 0..
+
+
+
+
+
+
+
+
+-> O RESULTADO DESSA LÓGICA É ESTE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <div class="row">
+  <div class="col-xs-12 col-sm-4">
+    <div class="list-group">
+      <div *ngFor="let server of servers; let index=index">
+      <a
+      
+      class="list-group-item" 
+      [routerLink]="['/servers', server.id]"
+      [queryParams]="{allowEdit: server.id === 3 ? '1' : '0' }"
+      [fragment]="'loading'"
+      
+      > <!-- [queryParams] É UMA _ PROPRIEDADE __ DE 'routerLink', e não uma NOVA DIRECTIVE... queryparams são ?allowEdit=1, na sua URL...-->
+      <!-- FRAGMENT É O '#' que Às vezes pode aparecer/ser parseado nas suas urls.... OBS: só é possível ter 1 ÚNICO FRAGMENT por 'link'/route.... -->
+        {{ server.name }} 
+      </a>
+      <button class="btn btn-primary" [routerLink]="['/servers', server.id, 'edit']" [ngStyle]="{}">Edit</button>
+      <hr>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4">
+    <router-outlet></router-outlet> <!-- ESSE OUTLET é o segundo outlet de nosso projeto, e é um NESTED OUTLET, pq existe outro (o 'global', 'topmost level'); É CLARO QUE USAREMOS ESSE 'NESTED OUTLET' para fazer o render de nossas NESTED ROUTES, as nested routes do component 'servers'... -->
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM, UMA TERNARY EXPRESSION CCHECANDO 
+
+O 
+
+SERVERID,
+
+
+
+
+e SE ELE NÃO FOR IGUAL A 3,
+VAMOS QUERER O EDEFINIR COMO '0'...
+
+
+
+
+
+
+
+e:
+
+
+
+
+
+
+
+
+
+
+
+
+      <a
+      
+      class="list-group-item" 
+      [routerLink]="['/servers', server.id]"
+      [queryParams]="{allowEdit: server.id === 3 ? '1' : '0' }"
+      [fragment]="'loading'"
+      
+
+
+
+
+
+
+
+
+é um set dinâmico  de nossos queryParams..
+
+
+
+
+
+
+
+
+COM ISSO, SÓ SERÁ PERMITIDO O 'EDIT' 
+
+
+DE NOSSO COMPONENT/SERVER 
+
+
+
+
+SE ELE __TIVER UM ID DE '3'...
+
+
+
+
+
+
+
+
+
+
+
+
+-----> JÁ EM 'edit-server' component,
+
+QUERMOS SER 
+
+CAPAZES DE _ RETRIEVAR OS QUERY PARAMS,
+
+
+
+
+
+
+
+
+
+
+
+E O CÓDIGO ATUALMENTE ESTÁ ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { ServersService } from '../servers.service';
+
+@Component({
+  selector: 'app-edit-server',
+  templateUrl: './edit-server.component.html',
+  styleUrls: ['./edit-server.component.css'],
+})
+export class EditServerComponent implements OnInit {
+  server: { id: number; name: string; status: string };
+
+  serverName = '';
+  serverStatus = '';
+
+  constructor(private serversService: ServersService, private route: ActivatedRoute) {}
+
+  ngOnInit(): void {
+    // this.server = this.serversService.getServer(1)!;
+
+//aqui temos 2 MANEIRAS DE RETRIEVAR A DATA PASSADA POR QUERY PARAMS, EXATAMENTE COMO ANTES (a maneira que usa o approach de 'subscribe' ao 'this.route.queryParams' ou algo do gênero, ou então o APPROACH QUE TIRA UMA SNAPSHOT DO MOMENTO EM QUE ESSE COMPONENT É RENDERIZADO....)
+
+   const serverId =  this.route.snapshot.queryParams['allowEdit'];
+   const fragmentLoading = this.route.snapshot.fragment;
+
+   console.log(serverId, fragmentLoading)
+
+
+
+  this.server = this.serversService.getServer(1)!;
+    this.serverName = this.server.name;
+    this.serverStatus = this.server.status;
+  }
+
+  onUpdateServer() {
+
+    this.serversService.updateServer(this.server.id, {
+      name: this.serverName,
+      status: this.serverStatus,
+    });
+  }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> finalmente editaremos 
+
+
+aquele 
+
+
+
+
+'this.route.queryParams.subscribe',
+
+
+
+
+
+pq agora 
+
+
+
+vamos DETERMINAR SE SEREMOS CAPAZES DE 'EDIT' ou naõ,
+
+
+a partir 
+
+dos nossos query params recebidos nesse component....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ficou tipo assim:
+
+
+
+
+
+
+
+
+
+  ngOnInit(): void {
+//aqui temos 2 MANEIRAS DE RETRIEVAR A DATA PASSADA POR QUERY PARAMS, EXATAMENTE COMO ANTES (a maneira que usa o approach de 'subscribe' ao 'this.route.queryParams' ou algo do gênero, ou então o APPROACH QUE TIRA UMA SNAPSHOT DO MOMENTO EM QUE ESSE COMPONENT É RENDERIZADO....)
+
+   const serverId =  this.route.snapshot.queryParams['allowEdit'];
+   const fragmentLoading = this.route.snapshot.fragment;
+
+
+   this.route.queryParams.subscribe(
+     (queryParams) => {
+        if (+queryParams === 3) {
+
+          this.server = this.serversService.getServer(3)!;
+          this.serverName = this.server.name;
+          this.serverStatus = this.server.status;
+        }
+     }
+   )
+
+
+
+
+
+
+
+
+
+
+
+
+
+vamos fazer 'subscribe', procurando por CHANGES NOS NOSSOS QUERY PARAMS...
+
+
+
+
+
+
+-> SE OS QUERY PARAMS 
+TEM O VALOR DE 
+
+'3',
+
+
+vamos querer 
+
+
+
+DEIXAR O USER EDITAR ESSE 
+
+
+server... (de identificador '3')...
+
+
+
+
+
+
+
+
+
+
+---> mas o professor escreve de maneira um pouco diferente,....
+
+
+
+
+
+
+
+--> ele estabelece uma propriedade inicial de 'allowEdit: false',
+
+
+
+E AÍ 
+
+
+ELE VAI QUERER DEFINIR ESSA PROPRIEDADE como 'true'
+
+
+
+se for detectado '3' no nosso queryParames...
+
+
+
+
+
+
+Ex:
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { ServersService } from '../servers.service';
+
+@Component({
+  selector: 'app-edit-server',
+  templateUrl: './edit-server.component.html',
+  styleUrls: ['./edit-server.component.css'],
+})
+export class EditServerComponent implements OnInit {
+  server: { id: number; name: string; status: string };
+
+  serverName = '';
+  serverStatus = '';
+
+  allowEdit = false;
+
+  constructor(private serversService: ServersService, private route: ActivatedRoute) {}
+
+  ngOnInit(): void {
+    // this.server = this.serversService.getServer(1)!;
+
+//aqui temos 2 MANEIRAS DE RETRIEVAR A DATA PASSADA POR QUERY PARAMS, EXATAMENTE COMO ANTES (a maneira que usa o approach de 'subscribe' ao 'this.route.queryParams' ou algo do gênero, ou então o APPROACH QUE TIRA UMA SNAPSHOT DO MOMENTO EM QUE ESSE COMPONENT É RENDERIZADO....)
+
+   const serverId =  this.route.snapshot.queryParams['allowEdit'];
+   const fragmentLoading = this.route.snapshot.fragment;
+
+
+   this.route.queryParams.subscribe(
+     (queryParams: Params) => {
+        if (+queryParams === 3) {
+
+          this.server = this.serversService.getServer(3)!;
+          this.serverName = this.server.name;
+          this.serverStatus = this.server.status;
+        }
+     }
+   )
+
+  }
+
+  onUpdateServer() {
+
+    this.serversService.updateServer(this.server.id, {
+      name: this.serverName,
+      status: this.serverStatus,
+    });
+  }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+VAI FICAR TIPO ASSIM:
+
+
+
+
+
+
+
+
+allowEdit = false;
+
+
+
+
+   this.route.queryParams.subscribe(
+     (queryParams: Params) => {
+          this.allowEdit = queryParams['allowEdit'];
+     }
+   )
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ou seja,
+   será CHECADA a propriedade/queryParam 
+   de 
+
+   'allowEdit=1/0'
+
+
+
+   que definimos 
+
+
+
+ LÁ EM 'servers.component.html':
+
+
+
+
+
+
+
+
+
+
+
+
+ <div class="row">
+  <div class="col-xs-12 col-sm-4">
+    <div class="list-group">
+      <div *ngFor="let server of servers; let index=index">
+      <a
+      
+      class="list-group-item" 
+      [routerLink]="['/servers', server.id]"
+      [queryParams]="{allowEdit: server.id === 3 ? '1' : '0' }"
+      [fragment]="'loading'"
+      
+      > 
+        {{ server.name }} 
+      </a>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4">
+
+    <router-outlet></router-outlet> 
+  </div>
+</div>
+
+
+
+
+
+
+
+FOI NESTE TRECHO AQUI:
+
+
+
+
+
+
+
+
+
+      <a
+      
+      class="list-group-item" 
+      [routerLink]="['/servers', server.id]"
+      [queryParams]="{allowEdit: server.id === 3 ? '1' : '0' }"
+      [fragment]="'loading'"
+      
+      > 
+        {{ server.name }} 
+      </a>
+
+
+
+
+
+
+
+
+
+
+
+
+      -> os 'queryParams',
+
+
+      portnato,
+
+
+      são de 
+
+      'allowEdit',
+
+
+      que possui aquele valor dinâmico (ou é 1, ou é 0, a depender do valor do 'server.id' desse component 'server' aí)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... E A PARTIR DE 
+
+'allowEdit = false/true',
+
+
+
+PODEMOS 
+
+
+RENDERIZAR CONDICIONALMENTE O COMPONENT DE 
+
+
+'edit-server',
+
+usando 
+
+
+'*ngIf'....
+
+
+
+
+
+
+
+
+
+
+
+ex(código de minha autoria):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div *ngIf="allowEdit else notAllowed">
+<div class="form-group" >
+  <label for="name">Server Name</label>
+  <input type="text" class="form-control" [(ngModel)]="serverName" />
+  </div>
+<div class="form-group">
+  <label for="status">Server Status</label>
+  <select id="status" class="form-control" [(ngModel)]="serverStatus">
+    <option value="online">Online</option>
+    <option value="offline">Offline</option>
+  </select>
+<button class="btn btn-primary" (click)="onUpdateServer()">
+  Update Server
+</button>
+</div>
+</div>
+<ng-template #notAllowed>
+<p>You have no editing rights</p>
+</ng-template>
+
+
+
+
+
+
+
+
+
+-> certo, mas aqui estou com um problema... --> 
+
+
+
+sempre está sendo carregado 
+
+
+
+'<p>you have no editing rights</p>',
+
+
+por alguma razão....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> esse problema 
+
+
+
+
+é 
+
+observado pelo professor,
+
+
+
+que diz que isso está acontecendo pq 
+
+
+NOSSOS QUERY PARAMS ESTÃO 'SUMINDO' quando clicamos no button de 
+
+'Edit Server'....
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO DE 'edit-server', por enquanto, ficou assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
+import { ServersService } from '../servers.service';
+
+@Component({
+  selector: 'app-edit-server',
+  templateUrl: './edit-server.component.html',
+  styleUrls: ['./edit-server.component.css'],
+})
+export class EditServerComponent implements OnInit {
+  server: { id: number; name: string; status: string };
+
+  serverName = '';
+  serverStatus = '';
+  allowEdit = false;
+
+  constructor(private serversService: ServersService, private route: ActivatedRoute) {}
+
+  ngOnInit(): void {
+   this.route.queryParams.subscribe(
+     (queryParams: Params) => {
+       console.log(queryParams['allowEdit']);
+          this.allowEdit = queryParams['allowEdit'] === '1' ? true : false ;
+     }
+   )
+   }
+   }
+
+
+
+
+
+
+
+
+
+
+
+   -----------------
+
+
+
+
+
+VAMOS CONSERTAR ESSE ESTADO DE SEMPRE 'YOU ARE NOT ALLOWED TO EDIT'..
+
+
+
+
+
+
+
+-> VAMOS VER __ COMO PODEMOS ACTUALLY 'PRESERVE'
+
+
+nossos query params 
+
+no momento em que 
+
+fazemos 'navigate'...
+
+
+
+
+(
+
+    ué, eu achava que 
+
+
+    por meio do 
+
+    write de 
+
+    '[queryParams]' = 'xxxxx' 
+
+    nos components,
+
+    
+
+
+
+    nossos queryParams eram mantidos quando fazíamos navigate, mas aparentemetne 
+
+
+    isso está errado....
+)

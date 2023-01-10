@@ -1,0 +1,388 @@
+
+
+
+
+
+
+
+
+
+--> DEVEMOS TRABALHAR NO COMPONENT DE 'EDIT SHOPPING LIST'..
+
+
+
+
+
+
+
+
+
+-_> no template adicionamos outra row,
+
+
+aí uma column,
+
+
+fica assim, como sempre...
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+<div class="row">
+    <div class="col-xs-12">
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DENTRO DESSE NEGÓCIO, PROFESSOR QUER UM ELEMENTO 'FORM'...
+
+
+
+
+
+
+--> QUANTO AO ELEMENTO 'form',
+
+QUEREMOS __ REMOVER__ A ACTION,
+
+
+
+PQ NÃO VAMOS ENVIAR UM REQUEST AO SERVER QUANDO 
+
+NOSSA FORM FOR SUBMITTADA (comportamento padrão)... ---> MAS 
+
+
+DAREMOS UMA OLHADA NO 'SUBMIT DE FORMS'
+
+
+MAIS TARDE NO CURSo,
+
+
+
+
+
+EM QUE 
+
+
+
+TEMOS UMA SECTION INTEIRA SOBRE ISSO,
+
+
+ 
+
+
+VEREMOS COMO 
+
+TRABALHAR COM ESSAS FORMS...
+
+
+
+
+
+
+
+ex:
+
+
+
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="row">
+            <div class="col-sm-5 form-group">
+
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> DENTRO DESSA DIV,
+
+teremos uma LABEL,
+
+
+LABEL PARA O NAME DOS ITEMS..
+
+
+
+
+
+--> TAMBÉM TEREMOS UM INPUT DE TYPE TEXT,
+
+
+COM ID DE NAME (para que essa label se refira a ela)..
+
+
+
+--> QUANTO à CLASS,
+
+
+ISSO DEVERÁ RECEBER A 'FORM-CONTROL'...
+
+
+
+
+
+EX:
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <div class="row">
+      <div class="col-sm-5 form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" class="form-control" />
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+----> EM BAIXO DESSE ROW,
+
+
+
+
+VAMOS QUERER TER OUTRA DIV,
+
+
+com 
+
+
+
+
+col-sm-2,
+
+
+
+pq será um INPUT MT PEQUENO,..
+
+
+
+
+
+-> dentro dessa div colocamos outro 'form-group' class,
+
+
+e aí 
+
+colocamos outra label e input,...
+
+
+
+
+
+
+
+
+
+Ex:
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <div class="row">
+      <div class="col-sm-5 form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" class="form-control" />
+      </div>
+      <div class="col-sm-2 form-group">
+        <label for="amount">Amount</label>
+        <input type="number" id="amount" class="form-control" />
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+----> OK... ISSO NOS DÁ OS INPUTS QUE O USER UTILIZARÁ PARA MAIS TARDE ADICIONAR INGREDIENTS....
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR ENTÃO ADICIONA UM OUTRO ROW,
+
+
+
+EM QUE 
+
+QUER TER UM PUNHADO DE BUTTONS QUE 
+
+NOS DEIXEM 
+
+'MANAGE'1 
+
+
+ESSE 
+
+PROCESSO DE CRIAÇAÕ/EDIT DE 
+
+INGREDIENTS...
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+<div class="row">
+    <div class="col-xs-12">
+        <button class="btn btn-success" type="submit">Add<button>
+        <button class="btn btn-danger" type="submit">Delete<button>
+        <button class="btn btn-primary" type="button">Clear</button>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <form>
+      <div class="row">
+        <div class="col-sm-5 form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" class="form-control" />
+        </div>
+        <div class="col-sm-2 form-group">
+          <label for="amount">Amount</label>
+          <input type="number" id="amount" class="form-control" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <button class="btn btn-success" type="submit">Add</button>
+          <button class="btn btn-danger" type="submit">Delete</button>
+          <button class="btn btn-primary" type="button">Clear</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+-> SÓ NÃO GOSTEI DO ESPAÇAMENTO ENTRE OS BUTTONS... (seria bom ter um espaço maior, estão colados)..
+
+
+
+
+
+
+
+
+
+
+CONSERTEI FACILMENTE, NO ARQUIVO CSS:
+
+
+
+
+
+
+button {
+    margin-right: 6px;
+}
+
+
+

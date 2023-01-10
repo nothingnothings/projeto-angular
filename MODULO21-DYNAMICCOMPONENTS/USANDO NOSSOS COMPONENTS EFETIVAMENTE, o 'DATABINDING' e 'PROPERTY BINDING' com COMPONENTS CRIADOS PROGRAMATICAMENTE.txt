@@ -1,0 +1,1119 @@
+
+
+
+
+
+
+
+
+--> JÁ CONSEGUIMOS RENDERIZAR NOSSA 'MENSAGEM DE ERROR',
+
+
+
+
+mas um problema é que:
+
+
+
+
+
+
+1) NÃO CONSEGUIMOS, AINDA, PASSAR NOSSA MENSAGEM DE ERRO PARA DENTRO DELA...
+
+
+
+
+
+
+
+
+
+2) AINDA NÃO CONSEGUIMOS FAZER 'DISMISS' DESSE COMPONENT, AO CLICAR 
+
+
+NO BUTTON DE 'close' ( ou no backdrop)...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO ACONTECE PQ 
+
+NO NOSSO ALERT COMPONENT, TEMOS SÓ ESTE CÓDIGO AQUI:
+
+
+
+
+<div class="backdrop"></div>
+<div class="alert-box">
+  <p>{{ message }}</p>
+  <div class="alert-box-actions">
+    <button class="btn btn-primary">Close</button>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> NÃO SEI SE PODEMOS USAR PROPERTY OU EVENT BINDING,
+
+
+
+
+PQ ESSE NOSSO COMPONENT É 'NOVINHO',
+
+
+FOI CRIADO DIRETAMENTE 
+
+
+
+
+NO CÓDIGO '.ts',
+
+
+
+POR MEIO DESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+      private showErrorAlert(errorMessage: string,) {   //METHOD
+
+    
+          const alertComponentFactory = this.componentFactoryResolver.resolveComponentFactory(AlertDynamicComponent);  /////usamos isso para CRIAR NOSSO COMPONENT DINAMICAMENTE/PROGRAMATICAMENTE, DENTRO DO CÓDIGO 'ts'...
+          const hostViewContainerRef = this.dynamicAlertBoxHost.viewContainerRef;  
+          hostViewContainerRef.clear(); 
+
+        hostViewContainerRef.createComponent(alertComponentFactory); ///cria um NOVO COMPONENT, COM (por meio de) ESSA FACTORY ESPECÍFICA, nesse 'local' (hostViewContainerRef) DE NOSSO TEMPLATE...
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, MAS COMO PODEMOS FAZER 'PASS' DE DATA PARA DENTRO DESSE COMPONENT,
+
+
+
+
+
+
+
+
+OU ENTAÕ 'COMO PODEMOS LISTEN TO AN EVENT'
+
+
+nesse component aí,
+
+para então o remover?
+
+
+
+
+
+
+
+
+
+
+--> BEM, NÓS SIMPLESMENTE PRECISAMOS __ ARMAZENAR_ 
+
+
+
+
+
+O __ COMPONENT __ QUE É CRIADO NESSE METHOD 
+
+
+
+
+de 
+
+'showErrorAlert',
+
+
+
+_ 
+
+ARMAZENAR 
+
+
+
+
+__DENTRO __ DE UMA CONSTANT,
+
+
+
+
+
+
+
+UMA CONST COM QUE PODEREMOS TRABALHAR MAIS TARDE...
+
+
+
+
+
+
+
+
+
+--> TIPO ASSIM:
+
+
+
+
+
+const componentReference = hostViewContainerRef.createComponent(alertComponentFactory); ///cria um NOVO COMPONENT, COM (por meio de) ESSA FACTORY ESPECÍFICA, nesse 'local' (hostViewContainerRef) DE NOSSO TEMPLATE...
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, COM ISSO TEREMOS UMA REFERÊNCIA A ESSE COMPONENT...
+
+
+
+
+
+
+
+
+
+--> AGORA _ PODEMOS_ INTERAGIR COM ESSE COMPONMENT...
+
+
+
+
+
+
+--> PODEMOS USAR ESSE 
+
+
+
+
+COMPONENT, PARA ENTÃO CHAMAR VÁRIOS METHODS...
+ 
+
+
+
+
+
+
+
+
+
+
+
+ componentRefere.instance,
+
+
+
+
+
+
+
+
+ O '.instance'
+
+
+
+
+
+
+
+ NOS DÁ ACESSO DIRETO às PROPRIEDADES 
+
+
+
+DA INSTANCE DO COMPONENT QUE FOI CRIADO NO NOSSO TEMPLATE...
+
+
+
+
+
+
+
+
+--> SE COLOCARMOS AS  PROPRIEDADES 
+
+
+
+'message' 
+
+
+
+e 
+
+'close'
+ 
+
+
+
+
+ LÁ 
+
+
+ NO NOSSO COMPONENT DE 'AlertDynamicComponent',
+
+
+
+ tipo assim:
+
+
+
+
+
+
+
+ import { Component, Input, Output } from '@angular/core';
+import { AuthService } from 'src/app/auth.service';
+import { EventEmitter } from '@angular/core';
+
+@Component({
+  selector: 'app-alert',
+  templateUrl: './alert.component.html',
+  styleUrls: ['./alert.component.css'],
+})
+export class AlertDynamicComponent {/////ESSA É A VERSÃO IMPERATIVA de nossa alert box (menos prática, tipo 'legacy')....
+
+
+
+
+  @Input() message: string; ////Colocamos 'Input()' PQ QUEREMOS QUE ESSA MESSAGE DESSA BOX CONSIGA SER SETTADA DO LADO DE FORA....
+  @Output() close = new EventEmitter<boolean>();
+
+
+  constructor(private authService: AuthService) {}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COLOCAMOS ESSES 2 NEGÓCIOS, ESSAS propriedades,
+
+
+
+dentro do nosso component, o que significa que 
+
+AGORA PODEMOS _ ACESSAR AS DUAS,
+
+
+ATRAVÉS DESTE CÓDIGO:
+
+
+
+
+
+
+
+
+      private showErrorAlert(errorMessage: string,) {   //METHOD
+
+    
+          const alertComponentFactory = this.componentFactoryResolver.resolveComponentFactory(AlertDynamicComponent);  /////usamos isso para CRIAR NOSSO COMPONENT DINAMICAMENTE/PROGRAMATICAMENTE, DENTRO DO CÓDIGO 'ts'...
+          const hostViewContainerRef = this.dynamicAlertBoxHost.viewContainerRef;  
+          hostViewContainerRef.clear(); 
+
+     const componentReference = hostViewContainerRef.createComponent(alertComponentFactory); ///cria um NOVO COMPONENT, COM (por meio de) ESSA FACTORY ESPECÍFICA, nesse 'local' (hostViewContainerRef) DE NOSSO TEMPLATE...
+
+
+
+    componentReference.instance.message;
+
+    componentReference.instance.close;
+
+   
+   }
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+    componentReference.instance.message;
+
+    componentReference.instance.close;
+
+
+
+
+
+
+------>  AGORA, POR EXEMPLO, PODEMOS DEFINIR O VALUE DESSE 'MESSAGE'
+
+
+
+
+
+
+como sendo a MESSAGE QUE RECEBEMOS COMO 'string' nesse 
+
+call de 
+
+'showErrorAlert',
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+      private showErrorAlert(errorMessage: string) {   //METHOD
+
+    
+          const alertComponentFactory = this.componentFactoryResolver.resolveComponentFactory(AlertDynamicComponent);  /////usamos isso para CRIAR NOSSO COMPONENT DINAMICAMENTE/PROGRAMATICAMENTE, DENTRO DO CÓDIGO 'ts'...
+          const hostViewContainerRef = this.dynamicAlertBoxHost.viewContainerRef;  
+          hostViewContainerRef.clear(); 
+
+     const componentReference = hostViewContainerRef.createComponent(alertComponentFactory); ///cria um NOVO COMPONENT, COM (por meio de) ESSA FACTORY ESPECÍFICA, nesse 'local' (hostViewContainerRef) DE NOSSO TEMPLATE...
+
+
+
+    componentReference.instance.message = errorMessage;
+
+    componentReference.instance.close;
+
+   
+   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo...
+
+
+
+
+
+só não sei como fazer o __ EVENT__ BINDING __ com esse component, mas o pass/transmit da message  REALMENTE FUNCIONA....
+
+
+
+
+
+
+tentei isto:
+
+
+
+
+   componentReference.instance.emit(true)
+
+
+
+
+
+
+
+
+
+
+   ,
+
+   MAS AINDA NÃO FUNCIONOU..
+
+
+
+
+
+
+
+
+
+
+   --> talvez seja pq eu não defini uma propriedade, em 'authPage.component.ts',
+
+
+
+
+
+como 'error' (que segurava nosso error),
+
+
+
+
+o que significa que 
+
+
+
+o emit de um event de 'close' 
+
+
+não fará nada no momento, pq 
+
+
+
+
+esse component não depende de um state para ser renderizado...
+
+
+
+
+
+
+
+
+
+
+ok, mas então, como fazer isso?
+
+
+
+
+
+
+
+
+
+
+
+
+-> realmente, para o 'event binding', as coisas são mais difíceis, com esse tipo de component.
+
+
+
+
+
+
+
+--> para isso, nós temos que 
+
+
+
+'MANUALMENTE FAZER LISTEN TO '
+
+
+
+ao nosso close event, dentro desse method...
+
+
+
+
+
+
+
+
+
+
+--> para isso,
+
+
+o 
+
+
+professor 
+
+
+
+
+realmente 
+
+
+
+faz o que eu fiz,
+
+
+
+escreve assim:
+
+
+
+
+
+   componentReference.instance.emit(true)
+
+
+
+
+
+
+
+
+
+
+
+---> NO PASSADO, O PROFESSOR HAVIA NOS EXPLICADO QUE SEMPRE DEVEMOS COLOCAR 'EventEmitters'
+
+
+
+
+nos nossos códigos com 
+
+
+
+
+AQUELE 
+
+
+
+
+DECORATOR DE '@Output()',
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+  @Output() close = new EventEmitter<boolean>();
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> certo... MAS AGORA, COM OS DYNAMIC COMPONENTS, 
+
+  OBSERVAMOS A ÚNICA EXCEÇÃO A ESSA REGRA,
+
+
+
+PQ 
+
+
+AQUI 
+
+
+PODEMOS 
+
+
+
+FAZER 
+
+O SUBSCRIBE __ MANUAL__ 
+
+
+AO 
+
+
+
+
+EVENT EMITIDO POR NOSSO COMPONENT, DIRETAMENTE,
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+     componentReference.instance.close.subscribe(
+         () => {
+
+         }
+     )
+
+
+
+
+
+
+
+
+
+--> DENTRO DESSE 'subscribe',
+
+
+
+BASICAMENTE QUEREMOS FAZER 'CLEAR'
+
+
+DESSA NOSSA COMPONENT REFERENCE,
+
+
+
+BASICAMENTE __ A REMOVER DO NOSSO DOM (esconder o 'alertBox' , essencialmente)..
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+
+
+
+ANTES DE MAIS NADA DEVEMOS _ ARMAZENAR ESSA SUBSCRIPTION,
+
+PQ 
+
+
+QUEREMOS QUE ELA SEJA REMOVIDA A PARTIR DE 'PAGE CHANGES/DESTROYS DE NOSSO COMPONENT'
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, É POR ISSO QUE VAMOS FAZER ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+alertBoxSubscription: Subscription 
+
+
+
+
+
+
+
+
+
+
+      private showErrorAlert(errorMessage: string) {   //METHOD
+
+    
+          const alertComponentFactory = this.componentFactoryResolver.resolveComponentFactory(AlertDynamicComponent);  /////usamos isso para CRIAR NOSSO COMPONENT DINAMICAMENTE/PROGRAMATICAMENTE, DENTRO DO CÓDIGO 'ts'...
+          const hostViewContainerRef = this.dynamicAlertBoxHost.viewContainerRef;  
+          hostViewContainerRef.clear(); 
+
+     const componentReference = hostViewContainerRef.createComponent(alertComponentFactory); ///cria um NOVO COMPONENT, COM (por meio de) ESSA FACTORY ESPECÍFICA, nesse 'local' (hostViewContainerRef) DE NOSSO TEMPLATE...
+
+
+
+    componentReference.instance.message = errorMessage;
+
+ this.alertBoxSubscription = componentReference.instance.close.subscribe(
+        () => {
+
+            this.alertBoxSubscription.unsubscribe();
+            hostViewContainerRef.clear();
+        }
+    )
+
+
+
+
+   
+   }
+
+
+
+       
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   OU SEJA,
+
+   ESTES CÓDIGOS:
+
+
+
+               this.alertBoxSubscription.unsubscribe();
+            hostViewContainerRef.clear();
+
+
+
+
+
+
+
+
+            --> VÃO REMOVER NOSSA SUBSCRIPTION,
+
+
+
+            E TAMBÉM 
+
+
+
+
+            REMOVER NOSSO COMPONENT DO DOM....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O CÓDIGO DE NOSSO COMPONENT, NO CASO, FICOU ASSIm:
+
+
+
+
+
+
+
+
+
+
+
+<div class="backdrop" (click)="onClose()"></div>
+<div class="alert-box">
+  <p>{{ message }}</p>
+  <div class="alert-box-actions">
+    <button class="btn btn-primary" (click)="onClose()">Close</button>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+E ASSIm:
+
+
+
+
+
+
+
+import { Component, Input, Output } from '@angular/core';
+import { AuthService } from 'src/app/auth.service';
+import { EventEmitter } from '@angular/core';
+
+@Component({
+  selector: 'app-alert',
+  templateUrl: './alert.component.html',
+  styleUrls: ['./alert.component.css'],
+})
+export class AlertDynamicComponent {/////ESSA É A VERSÃO IMPERATIVA de nossa alert box (menos prática, tipo 'legacy')....
+
+
+
+
+  @Input() message: string; ////Colocamos 'Input()' PQ QUEREMOS QUE ESSA MESSAGE DESSA BOX CONSIGA SER SETTADA DO LADO DE FORA....
+  @Output() close = new EventEmitter<boolean>();
+
+
+  constructor(private authService: AuthService) {}
+
+
+
+
+
+
+  onClose() {
+      this.close.emit(true);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+---------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo.... É ASSIM QUE:
+
+
+
+1) CRIAMOS 1 COMPONENT...
+
+
+
+2) MANAGEAMOS ESSE COMPONENT 
+
+
+
+3) FAZEMOS PASS DE DATA POR DATABINDING (property e event binding) 
+
+
+
+
+
+4) REMOVEMOS ESSE COMPONENT..
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS AQUI FALTA UMA PEQUENA COISINHA,
+
+
+
+QUE É 
+
+
+
+
+_ SE LIVRAR DAQUELE 'SUBSCRIBE'
+
+
+
+
+de 'alertBoxSubscription'
+
+
+
+NO CASO DE NÓS 'GET RID OF THE AUTH COMPONENT' (reloads de página e destroys do componment de 'auth')...
+
+
+
+
+
+
+
+
+
+--. para isso,
+
+PRECISAMOS USAR O ngOnDestroy,
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+  ngOnDestroy(): void {
+    this.closeAlertBoxSubscription.unsubscribe();
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> certo...
+
+
+
+
+MAS AQUI ESQUECI UMA COISA:
+
+esse 'ngOnDestroy'
+
+
+SÓ DEVE
+
+
+EXECUTAR ESSE 'unsubscribe'
+
+
+SE _  REALMENTE TIVERMOS ESSE 'alertBoxSubscription' presente no nosso app, anteriormente,
+
+
+
+por isso escrevemos assim:
+
+
+
+
+
+
+
+
+
+
+  ngOnDestroy(): void {
+
+    if (this.closeAlertBoxSubscription) {  ////vai dar unsubscribe nisso aí apenas se ele existir...
+      this.closeAlertBoxSubscription.unsubscribe();
+    }
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> COM ISSO, PODEMOS FECHAR TUDO ISSO E ENTÃO 
+
+
+
+
+
+
+  ERRAR NOSSA SENHA PARA VER ESSE ALERT BOX...
+
+
+  

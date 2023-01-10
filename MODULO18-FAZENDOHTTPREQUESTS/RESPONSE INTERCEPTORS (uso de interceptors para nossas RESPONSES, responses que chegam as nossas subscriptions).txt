@@ -1,0 +1,562 @@
+
+
+
+
+
+
+
+
+
+NA ÚLTIMA AULA,
+
+
+VIMOS O USO DE INTERCEPTORS 
+
+
+
+NOS NOSSOS REQUESTS:
+
+
+
+
+
+
+
+import {
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest,
+} from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+export class AuthInterceptorService implements HttpInterceptor {
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+    const requestCopy = req.clone({
+      headers: req.headers.append('Auth', 'true'),
+    });
+
+    console.log('Request is on its way!');
+
+    return next.handle(requestCopy);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------> MAS AGORA VAMOS VER O USO DE INTERCEPTORS PARA NOSSOS RESPONSES... --. 
+
+
+
+
+
+
+
+
+
+
+ISSO PQ PODEMOS _ INTERAGIR _ COM A NOSSA RESPONSE, COM INTERCEPTORS,
+
+TAMBÉM...
+
+
+
+
+
+
+
+
+--> PARA CONSEGUIR __ FAZER O HANDLE __ 
+
+
+
+DE __ SUa__ RESPONSE _ com algum interceptor,
+
+
+tudo depende daquele call de 
+
+
+
+
+'return next.handle(modifiedRequest)' ....
+
+
+
+
+
+
+
+
+
+
+-----> ISSO É POSSÍVEL JUSTAMENTE PQ ESSE METHOD DE 'handle'
+
+
+
+NOS _ RETORNA _ UM __ OBSERVABLE... --> 
+
+
+
+
+
+
+
+__ ISSO FAZ SENTIDO,
+
+PQ, NO FINAL DAS CONTAS 
+
+
+
+SEU _ REQUEST_ NÃO DEIXA DE SER UM 'OBSERVABLE'
+
+
+a
+ que você faz 'subscribe'..
+
+
+
+
+
+
+
+ ----> OK... --> ISSO QUER DIZER, EM OUTRAS PALAVRAS,
+
+
+
+ QUE 
+
+
+
+ 'return next.handle(modifiedRequest)'
+
+
+
+
+ É _ BASICAMENTE 
+
+ O 
+
+ 'REQUEST COM A RESPONSE AGLUTINADA JUNTO'...
+
+
+
+
+
+
+
+
+
+
+
+
+ -------> É POR ISSO QUE 
+
+
+ PODEMOS JÁ 
+
+
+ usar 
+
+ '.pipe()'
+
+
+
+
+ NESSE 
+
+
+ 'next.handle()',
+
+
+
+
+
+
+
+
+
+ E AÍ USAR __ ESSE PIPE,
+
+
+
+ E AÍ 
+
+
+ 'DO SOMETHING WITH THAT RESPONSe',
+
+
+
+
+ se assim o desejarmos...
+
+
+
+
+
+
+
+ --> VOCê PODE, POR EXEMPLO,
+
+
+
+ ADICIONAR O OPERATOR DE 'map'
+
+
+
+
+
+
+
+
+
+
+
+
+
+ TIPO ASSIM:
+
+
+
+
+
+
+
+ 
+    return next.handle(requestCopy)  ////se digitamos '.pipe()' nesse OBSERVABLE (o next.handle() RETORNA UM OBSERVABLE), conseguimos CONFIGURAR A RESPONSE QUE VAI CHEGAR AO NOSSO APP, fazer coisas como APLICAR OPERATORS na nossa response...
+        .pipe(
+           map(
+           )
+        )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> você poderia usar o map para MUDAR A RESPONSE... --> 
+
+
+
+
+
+MAS É CLARO QUE VOCê DEVE TER CUIDADO,
+
+
+PQ VOCê NÃO DEVE ALTERAR SEU APP DE MANEIRA 
+
+A QUEBRAR SEU FUNCIONAMENTO...
+
+
+
+
+
+
+
+
+
+-> EM VEZ DISSO,
+
+
+O PROFESSOR SIMPLESMENTE USA 'tap()',
+
+
+PARA PODER 
+
+'LOOK INTO THE RESPONSE',
+
+
+
+
+
+para poder 'LOOK INTO THE EVENT', também..
+
+
+
+
+
+
+
+--> para isso, ele escreve assim:
+
+
+
+
+
+
+
+
+
+    return next.handle(requestCopy)  ////se digitamos '.pipe()' nesse OBSERVABLE (o next.handle() RETORNA UM OBSERVABLE), conseguimos CONFIGURAR A RESPONSE QUE VAI CHEGAR AO NOSSO APP, fazer coisas como APLICAR OPERATORS na nossa response...
+        .pipe(
+        //    map(  ///cuidado cmo isso, pode quebrar seu app, se você transformar seu response body em algo incompatível
+        //    )
+
+        tap( ///usamos isso para 'look into' no nosso RESPONSE DATA e NA EVENT DATA dessa response..
+
+        (event) => 
+        {
+            
+
+
+        }
+        )
+        )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        --> ok... o professor nos explica QUE NO INTERCEPTOR NÓS __ SEMPRE VAMOS 
+
+
+        FAZER 'GET' de um EVENT como parâmetro..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        EX:
+
+
+
+        //// no interceptor, nós SEMPRE CONSEGUIMOS UM 'EVENT' como argumento...
+
+
+
+        
+
+
+--> ISSO ACONTECE PQ O ANGULAR QUER NOS DAR O ACESSO MAIS GRANULAR POSSÍVEL 
+
+
+à RESPONSE...
+
+
+
+
+
+
+
+--> o professor checa 
+
+
+
+if (event.type === HttpEventType.Response) {
+
+
+}
+
+
+
+
+
+
+
+PQ TALVEZ NÓS SÓ NOS IMPORTAMOS COM ESSA RESPONSE...
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+import {
+  HttpEvent,
+  HttpEventType,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest,
+} from '@angular/common/http';
+import { map, tap, Observable } from 'rxjs';
+
+export class AuthInterceptorService implements HttpInterceptor {
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+    const requestCopy = req.clone({
+      headers: req.headers.append('Auth', 'true'),
+    });
+
+    console.log('Request is on its way!');
+
+    return next.handle(requestCopy).pipe(
+      tap((event) => {
+        console.log(event);
+        if (event.type === HttpEventType.Response) {
+          console.log('Response arrived, body data: ');
+          console.log(event.body);
+        }
+      })
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> mas o professor explica/aponta que aqui poderíamos usar, sim, 
+
+
+
+o operator de 'map' para transformar nossa response,
+
+isso 
+
+
+seria possível, sim...
+
+
+
+
+
+
+
+
+-----> OK... SALVAMOS TUDO ISSO E VOLTAMOS,
+
+
+
+VOLTAMOS AO CONSOLE...
+
+
+
+
+
+
+---> NO OUTPUT, ENXERGAMOS:
+
+
+
+
+
+
+
+
+
+'Request is on its way' 
+
+
+{type: 0}   (EVENT DE 'request SENT')..
+
+
+
+HttpResponse {
+    ..
+}
+
+
+
+
+Response arrived, body data:
+
+
+
+
+{
+    BODY DATA...
+}
+
+
+
+
+
+
+
+
+
+
+--> OK... ISSO É POSSÍVEL TAMBÉM,
+
+VOCê PODE INTERAGIR COM A RESPONSE NO 
+
+SEU INTERCEPTOR,
+
+VOCê PODE LOGGAR SUA DATA,
+
+
+MANIPULÁ-LA,
+
+
+
+
+qualquer coisa que você quiser... 

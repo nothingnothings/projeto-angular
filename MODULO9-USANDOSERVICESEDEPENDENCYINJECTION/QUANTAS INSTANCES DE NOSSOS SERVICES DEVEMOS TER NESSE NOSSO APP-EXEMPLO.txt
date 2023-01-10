@@ -1,0 +1,338 @@
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -----> NA ÚLTIMA LIÇÃO,
+
+ APRENDEMOS SOBRE AQUELE 'HIERARCHICAL INJECTOR',
+
+
+
+
+
+
+
+
+ E ACTUALLY  ESSE INJECTOR BEHAVIOR 
+
+
+
+
+
+
+
+
+
+é mt bom...
+
+
+
+
+
+
+
+
+
+
+---> ISSO NÃO É UM BUG:
+
+
+
+VOCÊ PODE TER UM APP EM QUE VOCÊ QUER TER VÁRIAS 
+
+INSTANCES DE UM MESMO SERVICE,
+
+
+EM QUE 
+VOCe^
+
+
+ABSOLUTAMENTE NÃO VAI QUERER TER A MESMA INSTNACE,
+
+
+APESAR DE QUE 
+
+
+
+
+
+_ EXISTIRÃO CASES EM QUE VOCê _ VAI QUERER TER A MESMA INSTANCE,
+
+COMO 
+
+É 
+O 
+
+CASO,
+
+
+
+NO NOSSO EXEMPLO...
+
+
+
+
+
+
+
+
+
+
+
+
+--> QEUREMOS QUE TODO NOSSO APP COMPARTILHE DA MESMA INSTANCE DO SERVICE 'accounts.service.ts',
+
+
+POR ISSO 
+
+
+A ESCREVEMOS LÁ EM 
+
+'app.component.ts',
+
+
+
+
+
+
+
+
+
+
+
+
+NO ARRAY DE PROVIDERS:
+
+
+
+
+import { Component } from '@angular/core';
+import { AccountsService } from './accounts.service';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  providers: [AccountsService]  ///1o passo para USAR UM SERVICE em 1 de nossos components... --> queremos que essa instance seja usada/compartilhada/passed down a TODOS OS CHILD COMPONENTS DE 'app.component.ts'...
+})
+export class AppComponent {
+
+
+  accounts: {name: string, status: string}[] = []; //como agora temos esse array de 'accounts' lá em 'accounts.service.ts', DEVEMOS _ INJETAR_ ESSE SERVICE AQUI, nesse component...
+
+
+
+  constructor(private accountsService: AccountsService) {} //precisamos disso para INFORMAR o angular de que VAMOS QUERER USAR ESSE SERVICE de 'AccountsService' (que contém nosso ARRAY DE SERVICES E OS METHODS NECESSÁRIOS) dentro desse nosso component...
+
+
+
+
+  ngOnInit() {  ///é executado quando esse component É INICIALIZADO (mas APÓS o constructor)...
+
+
+    this.accounts = this.accountsService.accounts;   ///assim conseguimos DEFINIR O NOSSO ARRAY DE 'accounts', tipo VAZIO, começa vazio, como tendo um valor EQUIVALENTE A ESSE ARRAY DE 'accounts' que temos LÁ NO SERVICE FILE de 'accounts.service.ts'...
+    ///esse é um exemplo de OUTSOURCING extremamente efetivo.
+  }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NO RESTO DE NOSSO APP,
+
+
+
+EM TODOS OS CHILD COMPONENTS DE 'app.component.ts',
+
+
+NÃO ESCREVEMOS ESSE 'SERVICE' dentro da lista de 
+
+providers (de cada component)....
+
+
+
+
+
+
+
+eX:
+
+
+
+
+
+@Component({    /////////////COM USO DE 'SERVICES' para o transfer de data das accounts...
+  selector: 'app-new-account',
+  templateUrl: './new-account.component.html',
+  styleUrls: ['./new-account.component.css'],
+  providers: [LoggingService]   //// 1 NECESSÁRIO PARA IMPORTAR SERVICES NO SEU COMPONENT (component de 'NewAccountComponent')....
+})
+export class NewAccountComponent implements OnInit {
+
+  @Output() accountAdded = new EventEmitter<{name: string, status: string}>();
+
+  onCreateAccount(accountName: string, accountStatus: string) {
+    this.loggingService.logStatusChange(accountStatus);  ///// 3 uso de SERVICE NO NOSSO CÓDIGO... ('LoggingService')..
+    this.accountsService.addAccount(accountName, accountStatus)  ////outro uso de SERVICE no nosso código...
+    
+  }
+
+
+
+  constructor(private loggingService: LoggingService, private accountsService: AccountsService) {   /// 2 É ASSIM _ QUE__ USAMOS O 'dependency  injector' do ANGULAR --> é assim que usamos SERVICES, nós os INCORPORAMOS COMO PROPRIEDADES DE NOSSOS COMPONENTS...
+
+
+   }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+--------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+PRECISAMOS DE APENAS 1 ÚNICA INSTANCE DE 
+
+
+'accounts.service.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+QUEREMOS TER A MESMA INSTANCE, NESSE PROJETO EXEMPLO...
+
+
+
+
+
+
+
+
+
+
+
+-> REMOVEMOS O NEGÓCIO DOS ARRAYS DE 'providers',
+
+
+
+
+
+
+mas __ ABSOLUTAMENTE O DEIXAMOS LÁ NO CONSTRUCTOR,
+
+
+PQ 
+
+
+
+ISSO DIZ 
+
+
+AO ANGULAR QUE 
+
+'QUEREMOS TER ESSA INSTANCE',
+
+
+
+
+
+
+essa instance COMPARTILHADA... (e 'engatada' por app.component.ts)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AMBOS BEHAVIORS SÃO VÁLIDOS,
+
+
+O 
+
+DE 
+'
+MÚLTIPLAS INSTANCES, INDEPENDENTES' 
+
+
+
+daquele service,
+
+
+
+
+
+
+__ E TAMBÉM O 
+
+
+DE 
+'UMA ÚNICA INSTANCE DESSE SERVICE,
+
+PARA TODOS OS COMPONENTS/SERVICES/DIRECTIVES'...

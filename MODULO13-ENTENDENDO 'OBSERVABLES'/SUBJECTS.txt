@@ -1,0 +1,2650 @@
+
+
+
+
+
+
+
+
+
+
+AGORA QUE APRENDEMOS UM MONTE SOBRE 
+
+
+
+
+
+OBSERVABLES,
+
+
+
+
+
+
+
+quase acabamos com essa section,
+
+
+
+
+e 
+
+quase prontos para continuar...
+
+
+
+
+
+
+
+
+
+
+
+
+MAS HÁ OUTRO CONSTRUCT 
+
+
+IMPORTANTE QUE NÃO PODEMOS 
+
+
+
+DEIXAR DE COMPREENDER,
+
+QUE É 
+O 
+
+'SUBJECT'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O QUE SÃO 
+
+
+
+SUBJECTS?
+
+
+
+
+
+
+
+
+
+
+--> bem, digamos que 
+
+LÁ NO NOSSO COMPONENT DE 'user', 
+
+o page component,
+
+TEMOS 
+
+
+
+
+1 BUTTON 
+TIPO ASSIM:
+
+
+
+
+
+
+
+<button class="btn btn-primary">Activate</button> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> A IDEIA É QUE QUANDO ESSE BUTTON É/SERÁ PRESSIONADO,
+
+
+
+
+
+
+SEJA ALTERADO ALGO EM OUTRO COMPONENT,
+
+
+
+
+
+NO COMPONENT DE 'app.component.ts',
+
+
+
+
+
+
+
+
+
+
+
+
+em um COMPONENT DIFERENTE,
+
+
+
+
+
+
+
+
+
+
+TALVEZ UM SIMPLES PRINT DE 'activate'
+
+
+nesse outro component...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo, o código fica assim:
+
+
+
+
+
+
+<p>
+  User with <strong>ID {{ id }}</strong> was loaded
+</p>
+<button class="btn btn-primary">Activate</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSim:
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <a routerLink="/">Home</a> |
+      <a [routerLink]="['user', 1]">User 1</a> |
+      <a [routerLink]="['user', 2]">User 2</a> 
+    </div>
+  </div>
+
+  <hr />
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> OK...
+
+
+
+
+
+
+
+
+QUEREMOS SIMPLESMENTE PRINTAR 
+
+'activated'
+
+
+ali..
+
+
+
+
+
+
+
+
+
+
+
+--. tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <a routerLink="/">Home</a> |
+      <a [routerLink]="['user', 1]">User 1</a> |
+      <a [routerLink]="['user', 2]">User 2</a> 
+    </div>
+  </div>
+  <hr />
+  <p>Activated!</p>
+  <hr />
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS SÓ QUEREMOS MOSTRAR ESSE '<P>'
+
+
+
+
+
+
+SE 
+
+CLICARMOS 
+
+
+
+
+
+NO COMPONENT DE 'USER'..
+
+
+
+
+
+
+
+
+
+
+
+--------> MAS COMO PODEMOS FAZER ISSO FUNCIONAR?
+ 
+
+
+
+
+
+
+
+
+ -> através 
+
+
+
+ DO USO DE UM 
+
+
+
+ __ SERVICE E DE UM EVENT EMITTER,
+
+
+ ALGO QUE 
+
+ APRENDEMOS 
+
+ MAIS CEDO...
+
+
+
+
+
+
+
+ --> VAMOS TENTAR FAZER ISSO POR CONTA PRÓPRIA...
+
+
+
+
+
+
+
+
+
+ --> basta ir até 'app.component.ts',
+
+
+
+
+ e aí 
+
+
+
+
+ colocar um novo state,
+
+ como 'ActivatedShow',
+
+ ou algo assim....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ MEU CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ import { Injectable, Output } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+@Injectable()
+export class ActivateService {
+  @Output() activateEmitter = new EventEmitter<boolean>();
+
+  onActivateService() {
+    this.activateEmitter.emit(true);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <a routerLink="/">Home</a> |
+      <a [routerLink]="['user', 1]">User 1</a> |
+      <a [routerLink]="['user', 2]">User 2</a> 
+    </div>
+  </div>
+  <hr />
+<p *ngIf="activated">Activated!</p>
+  <hr />
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+ E ASSIM:
+
+
+
+
+
+
+
+
+
+
+ import { Component, Input, OnInit } from '@angular/core';
+import { ActivateService } from './activate.service';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent implements OnInit {
+  activated: boolean = false;
+
+  constructor(private activatedService: ActivateService) {}
+
+  ngOnInit() {
+    this.activatedService.activateEmitter.subscribe((data) => {
+      this.activated = data;
+    });
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
+import { ActivateService } from '../activate.service';
+
+@Component({
+  selector: 'app-user',
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.css']
+})
+export class UserComponent implements OnInit {
+  id: number;
+
+
+  constructor(private route: ActivatedRoute, private activatedService: ActivateService) { }
+
+  ngOnInit(): void {
+
+    this.route.params.subscribe(
+      (params: Params) => {
+        this.id = +params['id'];
+      }
+    )
+  }
+
+
+
+
+  onButtonClicked() {
+        this.activatedService.onActivateService();
+  }
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>
+  User with <strong>ID {{ id }}</strong> was loaded
+</p>
+<button class="btn btn-primary" (click)="onButtonClicked()">Activate</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E FUNCIONOU, AGORA QUANDO CLICAMOS NAQUELE BUTTON,
+
+aquele element é mostrado...
+
+
+
+--> professor usa ngIf 
+
+
+para 
+
+renderizar condicionalmente 
+
+
+
+
+o 
+
+
+elemento,
+
+a partir 
+
+do 
+
+state 
+
+de 
+
+
+'App'...
+
+
+
+
+
+
+
+
+
+
+--> ESSE É O  APPROACH VELHO, 
+
+
+
+COM O 'EVENT EMITTER'..
+
+
+
+
+
+
+
+
+--> e esse É UM APPROACH QUE VOCÊ PODERIA USAR, SIM...
+
+
+
+
+
+
+
+
+
+
+--> MAS HÁ UM APPROACH MELHOR DO QUE ESSE, 
+
+
+
+MAIS RECOMENDADO,
+
+QUE O PROFESSOR 
+
+
+NOS MOSTRARÁ AGORA...
+
+
+
+
+
+
+
+
+
+
+
+
+-> QUE APPROACH É ESSE?
+
+
+
+
+
+
+
+
+
+
+
+
+--> É O APPROACH QUE USA UM 'SUBJECT'...
+
+
+
+
+
+
+
+
+
+
+--> BEM,
+
+
+
+'SUBJECT' É UM CONSTRUCT QUE 
+
+
+
+IMPORTAMOS LÁ 
+
+
+
+DO 
+
+
+
+
+
+
+'rxjs'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> VAMOS ATÉ O COMPONENT DE 'USER.SERVICE.TS'
+
+
+
+
+
+e aí 
+
+
+
+IMPORTAMOS 
+
+
+
+
+
+O 'SUBJECT'..
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+
+import { Subject } from 'rxjs';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO....
+
+
+
+
+
+
+
+
+
+AGORA, NO LUGAR DE UM 'EventEmitter',
+
+
+
+VOCÊ 
+
+VAI CRIAR UM __ SUBJECT,
+
+com 
+
+'new Subject()' 
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+import { Injectable, Output } from '@angular/core';
+
+import { Subject } from 'rxjs';  //// VAMOS QUERER USAR UM SUBJECT, EM VEZ DE UM EVENT EMITTER, pq é mais recomendaod...
+
+@Injectable()
+export class ActivateService {
+
+
+  activatedEmitterWithSubject = new Subject()
+
+
+  onActivateService(boolean: boolean) {
+    this.activateEmitter.emit(boolean);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------
+
+
+
+
+
+
+
+
+
+
+MAS ESSE 
+
+subject sempre será um GENERIC TYPE,
+
+
+POR ISSO PRECISAMOS DEFINIR, em '<>',
+
+
+O 
+
+TYPE DA DATA QUE SERÁ EMITIDA....
+
+
+
+
+
+
+
+
+
+
+-> NESSE CASO,
+
+VAMOS QUERER 
+
+
+EMITTAR UM 
+
+
+
+
+_BOOLEAN...
+
+
+
+
+
+
+
+
+
+
+
+
+--> COMO VOCÊ PODE OBSERVAR, ATÉ AGORA 
+
+O FUNCIONAMENTO/ESCRITA DE 'Subject' 
+
+É 
+
+BEM SIMILAR AO 
+
+DE 
+
+
+'EventEmitter'...
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+import { Injectable, Output } from '@angular/core';
+// import { EventEmitter } from '@angular/core';
+
+import { Subject } from 'rxjs';  //// VAMOS QUERER USAR UM SUBJECT, EM VEZ DE UM EVENT EMITTER, pq é mais recomendaod...
+
+@Injectable()
+export class ActivateService {
+//   @Output() activateEmitter = new EventEmitter<boolean>();
+
+
+  activatedEmitterWithSubject = new Subject<boolean>()  ///vai emitir um BOOLEAN, exatamente como 'eventEmitter'...
+
+
+  onActivateService(boolean: boolean) {
+    this.activateEmitter.emit(boolean);
+  }
+}
+
+
+
+
+
+
+
+
+
+---------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O USO DE PROPRIEDADES QUE SEGURAM 
+
+
+'subject's 
+
+
+também 
+
+
+é 
+
+__BEM SIMILAR_ 
+
+
+
+AO USO 
+
+DE PROPRIEDADES QUE SEGURAM EVENTEMITTERs...
+
+
+
+
+
+
+
+----> MAS 
+
+
+
+
+
+
+HÁ UMA DISTINÇÃO,
+
+UMA DIFERENÇA... --->  
+
+
+
+
+
+
+
+
+lá 
+
+
+
+NO METHOD EM QUE VOCê 
+
+CHAMA/CHAMAVA 
+
+O 
+
+
+EMITTER,
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+
+  onActivateService(boolean: boolean) {
+    this.activateEmitter.emit(boolean);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> VOCÊ NÃO VAI MAIS CHAMAR 
+
+
+
+
+
+
+
+  '.emit()'
+
+  NESSA PROPRIEDADE,
+
+
+  E SIM 
+
+
+  VAI CHAMAR 
+
+
+
+
+  'next()'..................
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OU SEJA,
+
+  VAI CHAMAR ASSIM:
+
+
+
+
+  
+  onActivateService(boolean: boolean) {
+    this.activateEmitter.next(boolean);
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- VOCÊ VAI CHAMAR '.next()'
+
+
+PQ 
+
+
+1 SUBJECT _ _É 
+
+UM 
+
+
+''''TIPO ESPECIAL DE OBSERVABLE'''',
+ 
+
+
+
+
+
+
+
+
+
+ VOCÊ PODERIA DIZER... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> NÓS JÁ CONHECEMOS OBSERVABLES,
+
+ E SABEMOS QUE PODEMOS FAZER 'SUBSCRIBE A ELES',
+
+
+
+
+ como neste esquema:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ OBSERVER
+
+
+
+
+ I
+ I 
+ I
+ I subscription
+ I
+ I
+ V 
+
+
+OBSERVABLE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NÓS PODEMOS FAZER SUBSCRIBE AOS 'OBSERVABLE',
+
+
+
+MAS 1 PROBLEMA DOS OBSERVABLES É QUE 
+
+
+
+
+'POR ELES MESMOS'
+
+
+eles são MEIO SIMPLES,
+
+
+MEIO PASSIVOS/ESTÁTICOS...
+
+
+
+
+
+
+
+
+
+
+
+
+--> A CORE IDEIA DE 'OBSERVABLES' É SEMPRE QEU 
+
+WRAPPAMOS 'ALGUMA COISA' COM ELES...
+
+
+
+
+
+
+----> ESSA COISA PODE SER UM CALLBAKC, UM EVENT, QUALQUER COISA...
+
+
+
+
+
+
+
+
+
+-------> JÁ 1 'SUBJECT' É UM POUCO DIFERENTE,
+
+
+ele:
+
+
+
+
+
+1) TAMBÉM É UM OBJECT A QUE VOCÊ PODE 'SUBSCRIBE TO' (Assim como observables comuns),
+
+
+
+
+
+mas 
+
+
+
+ELE _ É MAIS _ ATIVO _ DO QUE 'OBSERVABLES',
+
+
+
+
+
+
+É MAIS ATIVO _ PQ _ VOCÊ _ PODE 
+
+
+
+
+'ACTIVELY' chamar 'next' NESSE OBJECT MESMO NO LUGAR DE FORA 
+
+
+
+
+
+DO OBSERVABLE..
+
+
+
+
+
+-----> 
+
+
+
+
+
+
+
+
+
+A DIFERENÇA DE 'subject' PARA UM __ OBSERVABLE_ COMUM É QUE 
+
+
+
+
+
+ELE É UM OBSERVABLE espceial, E UQE ,
+
+
+
+NÓS __ PODEMOS CHAMAR 'next()'
+
+
+
+
+
+
+
+DO LADO DE FORA NOSSO COMPONENT
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> COMO RESULTADO DISSO,
+
+
+PODEMOS CHAMAR '.next()'
+
+
+LÁ NAQUELE CALL de '
+
+
+user.componnet.ts',
+
+
+
+NO 'onActivateService' 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- CERTo...
+
+
+
+
+
+
+
+
+
+
+
+NÓS AINDA CONTINUAMOS COM AQUELE CÓDIGO DE 'this.userService.activatedEmitterWithSubject',
+
+
+
+
+
+
+
+pq 
+
+
+
+
+
+NOSSO 'onActivateServic
+
+
+n
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O SUBJECT É UM TIPO __ESPECIAL__ DE OBSERVABLE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS OBSERVABLES SÃO PASSIVOS...
+
+
+
+
+
+
+
+
+--> UM SUBJECT É MEIO _ ATIVO__....
+
+
+
+
+
+
+
+
+
+--> O SUBJECT TAMBÉM É UM OBJECT A QUE VOCÊ PODE 'SUBSCRIBE TO',
+
+
+
+MAS ELE É MAIS ACTIVE,
+
+
+
+PQ VOCÊ 
+
+PODE 
+
+
+
+'ACTIVELY' chamar 
+
+o 
+
+method 
+
+
+'.next()'
+
+
+
+em cima dele,
+
+
+
+no lugar de _ FORA_ dele (
+
+  ou seja,
+
+
+
+  ele é armazenado em coisas como 
+
+  
+  'yourSubject: new Subject<boolean>()' ,,
+
+
+
+
+
+  e aí 
+
+
+
+  É
+
+  'SUBSCRIBED TO' 
+
+
+  em outros 
+
+  lugares,
+
+
+
+  com uma 
+
+  sintaxe de 
+
+
+
+  
+  'service.yourSubject.next(true)', 
+
+  etc....
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> A DIFERENÇA 
+
+
+
+DE 
+
+OBSERVABLES comuns 
+
+
+
+
+
+para 
+
+
+
+
+
+
+o 'subject'
+
+
+é 
+
+
+
+
+
+que 
+
+
+
+
+
+
+
+
+nós 
+
+chamamos 'next()'
+
+
+DE DENTRO __ DOS NOSSOS OBSERVABLES,
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+const customIntervalObservable = new Observable((observer) => {
+      let count = 0;
+      setInterval(() => {
+        observer.next(count);
+
+        if (count == 2) {
+          observer.complete();
+        }
+
+        if (count > 3) {
+          observer.error(new Error('Count is greater than 3!'));
+        }
+      }, 1000);
+
+      count++;
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> JÁ COM OS 
+
+'subject',
+
+
+
+NÓS ESCREVEMOS 
+
+
+
+
+esse '.next()'
+
+
+
+
+DO _ LADO __ DE FORA 
+
+
+
+DO DEFINE DESSE OBSERVABLE.... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-_> resumindo:
+
+
+
+
+
+
+
+
+
+OBSERVABLE ----> É MAIS 'PASSIVE', E _WRAPPA__ UM CALLBACK, UM EVENT, ETC... (data sources)....
+
+
+
+
+
+SUBJECT --> É MAIS 'ACTIVE', e pode ser TRIGGADO __ AO LONGO DO SEU CÓDIGO, em lugares diversos....
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> NO CASO, A ESTRUTURA DO CÓDIGO, QUANDO USAMOS SUBJECTS,
+
+FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+SERVICE COM SUBJECT:
+
+
+
+
+
+import { Injectable, Output } from '@angular/core';
+
+
+import { Subject } from 'rxjs';  //// VAMOS QUERER USAR UM SUBJECT, EM VEZ DE UM EVENT EMITTER, pq é mais recomendaod...
+
+@Injectable()
+export class ActivateService {
+
+
+  activatedEmitterWithSubject = new Subject<boolean>();  ///vai emitir um BOOLEAN, exatamente como 'eventEmitter'...
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+AGORA NOSSO COMPONENT 'user.component.ts',
+
+em que 
+
+fazemos USO DO SUBJECT,
+
+para chamar 
+
+'.next()' em cima dele e então 
+
+
+PASSAR UM VALUE DE 'true' (boolean) ----> ISSO FAZ COM QUE 
+
+
+
+O SUBJECT, QUE É UM OBSERVABLE,
+seja triggado 
+
+E EMITA 
+
+
+_ UM 'event/data packet' 
+
+de 
+
+
+'boolean'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> essencialmente,
+
+
+trocamos 
+
+
+
+
+
+
+thisService.eventEmitter.emit(xxx)
+
+
+
+
+
+
+
+por 
+
+
+
+
+thisService.subject.next(xxx)
+
+
+
+
+
+
+
+
+
+
+
+---> o professor explica que esse 'OBSERVABLE ATIVO'
+
+
+é perfeito
+
+
+
+
+
+para hipóteses em que queremos o utilizar como um 
+
+'EVENT EMITTER' ----> ou seja,
+
+
+não será um 
+
+'PASSIVE EVENT SOURCE',
+
+
+como um http request ou dom events,
+
+
+
+
+
+
+
+
+
+
+MAS SE TEMOS ALGO QUE __ ATIVAMENTE _ PRECISA SER TRIGGADO POR NÓS 
+
+
+
+
+EM NOSSO APP (
+  como um button
+) 
+
+
+
+
+
+
+
+
+
+-> É POR ISSO QUE podemos chamar 
+
+
+
+
+
+
+
+this.userService.activatedEmitterWithSubject.next(true),
+
+
+
+
+
+
+
+
+
+
+
+em 
+
+
+  
+
+
+
+
+
+
+  onActivate() {
+
+    this.userService.activatedEmitterWithSubject.next(true); 
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> E, LÁ EM 
+
+
+  'app.component.ts',
+
+
+
+
+
+  AINDA É CHAMADO 
+
+
+
+  O 
+
+
+
+
+MESMO _ CÓDIGO,
+
+
+
+
+PQ _ 
+
+
+
+
+NOSSO 'SUBJECT' SEGUE SENDO UM OBSERVABLE,
+
+
+
+
+razão pela qual podemos 
+
+
+SEGUIR FAZENDO SUBSCRIBE COM ESTE CÓDIGO AQUI:
+
+
+
+
+
+
+
+
+  ngOnInit() {
+    this.activatedService.activateEmitter.subscribe((data) => {
+      this.activated = data;
+    });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> SE AGORA SALVARMOS TUDO E 
+
+
+
+  CLICARMOS EM 'ACTIVATE ' MAIS UMA VEZ,
+
+
+
+
+
+  E TUDO FUNCIONARÁ COMO ANTES...
+
+
+
+
+
+
+
+  funcioanrá como antes,
+
+  mas agora usando um SUBJECT..
+
+
+
+
+
+
+
+
+
+
+
+  --> EMBORA SEJAM SIMILARES,
+
+
+  SUBJECTS SÃO BEM MELHORES DO QUE EVENT EMITTERS,
+
+
+  PQ SÃO MAIS EFICIENTES...
+
+
+
+
+
+
+
+
+
+  --> SUBJECTS SÃO MAIS EFICIENTES POR TRÁS DAS CENAS,
+
+  E TAMBÉM TE DÃO TODOS ESSES OPERATORS LEGAIS.... -->  
+
+
+
+  UM SUBJECT NÃO DEIXA DE SER UM OBSERVABLE,
+
+
+   POR ISSO 
+
+   VOCÊ PODE USAR OS OPERATORS NELES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+   --> CERTO.... USE SUBJECTS EM VEZ DE 'OBSERVABLES' E 'EVENT EMITTERS'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ----> certo...
+
+
+
+
+
+
+
+
+   MAS A ÚNICA DESVANTAGEM DOS 
+
+
+   'subjects'
+
+   É QUE 
+
+
+   ,
+
+   ASSIM COMO 
+
+   OBSERVABLES,
+
+
+
+   _VOCê _ DEVE FAZER_ UNSUBSCRIBE
+
+
+
+   DELES,
+
+
+   SEMPRE QUE VOCÊ 
+
+
+
+
+   _ NÃO PRECISAR DELES...
+
+
+
+
+
+
+
+
+
+
+   --> É POR ISSO QUE PRECISAMOS ADICIONAR 
+
+
+
+   'onDestroy'
+
+
+
+   LÁ 
+
+   em 
+
+   'app.component.ts',
+
+
+
+   PARA QUE 
+
+
+
+   __SEJA_ DESTRUÍDA 
+
+
+
+
+   ESSA SUBSCRIPTION/OBSERVABLE 
+
+
+   de 
+
+
+   'this.userService.activatedEmitterWithSubject.subscribe(() => {})'
+
+
+
+
+
+   QUANDO TENTARMOS SAIR DESSA PAGE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+   FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+   
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { ActivateService } from './activate.service';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent implements OnInit, OnDestroy {
+  activated: boolean = false;
+
+
+
+   private activatedSubscription: Subscription;  //////////EIS O CÓDIGO EM QUESTÃO.
+
+  constructor(private activatedService: ActivateService) {}
+
+  ngOnInit() {
+   this.activatedSubscription = this.activatedService.activateEmitter.subscribe((data) => {  /////EIS O CÓDIGO EM QUESTÃO.
+      this.activated = data;
+    });
+  }
+
+
+  ngOnDestroy(): void {
+    this.activatedSubscription.unsubscribe();  ////////EIS O CÓDIGO EM QUESTÃO.
+  }
+
+}
+
+
+
+
+
+
+-----------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+basta armazenar a subscription e depois dar unsubscribe nela,
+
+
+
+
+como fizemos até agora....
+
+
+
+
+
+
+
+
+
+COM ISSO, VOCÊ FICA COM UM APP MT BOM,
+
+SEM NENHUM MEMORY LEAK OU QUALQUER COISA DO GÊNERO...
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO,
+
+MAS 1 DETALHE FINAL 
+
+SOBRE O USO DE SUBJECTS NO LUGAR DE EVENT EMITTERS:
+
+
+
+
+
+
+
+
+
+----> TUDO ISSO APENAS CONTA SE VOCÊ ESTIVER UTILIZANDO 
+
+
+
+SEUS SUBJECTS COMO 
+
+
+'CROSS-COMPONENT EVENT EMITTERS',
+
+
+
+em que 
+
+VOCÊ 
+
+
+
+MANUALMENTE CHAMA 
+
+'.next()'
+
+
+ou 
+
+'.emit()'
+
+
+
+
+
+
+
+
+
+
+
+-------------> ISSO QUER DIZER QUE __ VOCê __ NÃO VAI USAR _ 
+
+
+'Subjects'
+
+
+em vez de 
+
+'EventEmitter'
+
+
+
+QUANDO VOCÊ ESTÁ USANDO 
+
+
+
+
+AQUELE 
+
+'@Output'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> ISSO QUER DIZER QUE 
+
+SE VOCÊ 
+
+
+
+
+
+ESTÁ USANDO 
+
+'@Output()'
+
+
+EM ALGUM 
+
+
+DE SEUS COMPONENTS,
+
+
+
+VOCÊ 
+
+
+AINDA VAI USAR O EVENT EMITTER LÁ,
+
+
+pq 
+
+
+O 
+
+SUBJECT 
+
+NÃO É ADEQUADO PARA ISSO... 
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER QUE VOCê _ _ SÓ USA _ SUBJECTS __ 
+
+
+
+PARA 
+
+SE COMUNICAR 'ACROSS COMPONENTS, MAS _ USANDO __ SERVICES''....  -----> OU SEJA,
+
+
+
+
+
+POR MEIO DE UM MECANISMO EM QUE VOCÊ, NO FINAL DAS CONTAS,
+
+
+FAZ 
+
+
+'SUBSCRIBE' 
+
+A ALGUM LUGAr,
+
+
+
+
+
+
+
+COMO AQUI,
+
+
+
+
+NO COMPONENT  DE 
+
+
+
+'app.component.ts',
+
+
+
+EM QUE ESCREVEMOS ASSIM:
+
+
+
+
+
+
+
+   this.activatedSubscription = this.activatedService.activateEmitter.subscribe((data) => {
+      this.activated = data;
+    });
+
+
+
+
+
+
+
+
+
+--> SE VOCÊ NÃO ESTIVER 
+
+
+
+FAZENDO 'SUBSCRIBE' A UM EVENT EMITTER,
+
+
+
+É BEM PROVÁVEL QUE ESSE EVENT EMITTER É DE TIPO '@Output',
+
+
+
+
+
+E 
+
+
+SE VOCÊ 
+
+
+
+
+PLANEJA FAZER 'SUBSCRIBE' A UM 
+
+
+
+
+NEGÓCIO,
+
+MANUALMENTE,
+
+
+ISSO 
+
+
+
+
+PROVAVELMENTE _ SERÁ _ UM SUBJECT  (pq é mais optimal)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok, isso quer dizer que DEVEMOS COMEÇAR A USAR APENAS __ SUBJECTS_ 
+
+
+nos nossos services,
+
+para 
+
+fazer 
+
+
+esses trabalhos 'async',
+
+como 
+
+
+CLICKS 
+
+
+
+em buttons QUE TOGGLAM STATES DE COISAS...

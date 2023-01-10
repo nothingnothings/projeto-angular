@@ -1,0 +1,276 @@
+
+
+
+
+
+
+
+
+
+ANTES DE COMEÇARMOS A ENVIAR REQUESTS,
+
+
+É IMPORTANTE 
+
+ENTENDER 
+
+A
+ ANATOMIA 
+
+ DE UM HTTP REQUEST...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> UM HTTP REQUEST 
+
+
+
+ __ É FEITO DE UM MONTE DE CORE PARTS,
+
+
+
+
+ QUE VEREMOS NESSE MÓDULO...
+
+
+
+
+
+
+
+
+
+
+ --> A PARTE MAIS IMPORTANTE DE UM REQUEST 
+
+
+ É A 'URL' a que vocÊ vai enviar o request,
+
+ O __ PATH_....
+
+
+
+
+
+
+
+
+
+ --> ISSO TAMBÉM É CHAMADO DE 'API ENDPOINT'...
+
+
+
+
+
+
+
+
+ -_> é algo como 
+
+
+
+ '/posts/1'...
+
+
+
+
+
+
+
+
+
+ --> O PATH EXATO DEPENDE DA API COM QUE VOCÊ ESTÁ INTERAGINDO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> O HTTP VERB TAMBÉM INTERESSA -->
+
+
+
+ GET 
+
+ POST 
+
+
+
+ PUT 
+
+ PATCH....
+
+
+
+
+
+
+
+
+
+ --> MAS ISSO SEMPRE DEPENDE 
+ 
+
+ DA API QUE VOCÊ ESTÁ USANDO PARA SE COMUNICAR,
+
+ OS 
+
+
+
+ VERBS 
+
+ E COISAS QUE FICAM AVAILABLE.. -->  (http verbs disponíveis)..
+
+
+
+
+
+
+
+
+
+ --> CERTO... MAS QUANDO ENVIAMOS UM REQUESTR,
+
+
+
+ É BOM SABER A QUE LUGAR, E COM QUE VERB ENVIAR ISSO AÍ...
+
+
+
+
+
+
+
+
+
+
+
+ -> MAS TAMBÉM É BOM SABER SOBRE OS 'HEADERS' 
+
+ DO REQUEST.. --> 
+
+
+
+
+
+ALGUNS SÃO OPTIONAL -->
+
+
+
+
+
+
+
+
+ALGUNS DEFAULT HEADERS SEMPRE SERÃO APPENDED  AO HEADER AUTOMATICAMENET,
+
+PELO BROWSER E PELO ANGUALR...
+
+
+
+
+
+
+-> MAS HÁ  ALGUNS QUE 
+
+DEVEMOS ADICIONAR NÓS MESMOS...
+
+
+
+
+
+
+
+
+
+
+OS HEADERS, DENTRO DO REQUEST, FICAM ASSIM:
+
+{
+    "Content-Type": "application/json"
+}
+
+
+
+
+
+
+
+
+
+
+
+--> POR FIM,
+ 
+ TEMOS O BODY,
+
+ QUE É A CORE DATA QUE É ANEXADA A UM REQUEST --> POST REQUESTS 
+
+
+
+
+ QUE CRIAM NOVAS COISAS 
+
+
+ NO SERVER,
+
+
+
+ NA DATABSE,
+
+
+
+ VOCÊ FAZ ISSO POR MEIO DO REQUEST BODY (
+
+
+     é colocado em POST, PUT E PATCH..
+ )
+
+
+
+
+ ----> REQUESTS DE TIPO GET NÃO POSSUEM REQUEST BODY...
+
+
+
+
+
+
+
+
+ ----> OK.... AGORA DEVEMOS VER:
+
+
+
+ 1) COMO O ANGULAR NOS AJUDA A ESCREVER/CRIAR REQUESTS DESSESS 
+
+
+
+
+ 2) COMO __ PODEMOS TRABALHAR COM ESSES REQUESTS 
+
+
+
+
+ 3) COMO PODEMOS TRABALHAR COM AS RESPONSES DOS REQUESTS,
+
+
+
+  e mais...

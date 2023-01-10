@@ -1,0 +1,333 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PARA CRIAR UMA LIBRARY,
+
+RODAMOS 
+
+'ng generate library'  (em vez de 'generate application')...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... DIGAMOS QUE QUEREMOS FAZER UMA LIBRARY DE BUTTONS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> QUEREMOS COMPARTILHAR MEU COMPONENT  DE 'BUTTON',
+
+
+
+que poderá ser usado por outros 
+
+
+
+apps..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O QUE É UMA LIBRARY?
+
+
+
+
+
+
+
+
+
+
+
+----> LIBRARY É DIFERENTE DE UM APP NO SENTIDO DE QUE 
+
+
+
+
+''AINDA ESCREVEMOS 
+
+
+CÓDIGO ANGULAR, COMPONENTS ANGULAR,
+
+
+AGRUPAR COMPONENTS EM MODULES,
+
+ADICIONAR DIRECTIVES''',
+
+
+
+etc etc,
+''''
+
+
+
+
+
+
+TUDO ISSO NÃO MUDA,
+
+
+
+
+
+
+MAS 
+
+
+
+
+
+
+
+
+A QUESTÃO É QUE LIBRARIES 
+
+
+
+NÃO 
+
+
+
+
+SÃO FEITAS PARA SEREM RODADAS 'AS A STANDALONE WEBAPP',
+
+
+
+
+
+
+
+E SIM 
+
+
+SÃO FEITAS PARA 
+
+
+
+TER ALGUM CÓDIGO QUE CONSEGUE SER _ COMPARTILHADO_ ENTRE MÚLTIPLOS ANGULAR 
+
+
+
+APPs...
+
+
+
+
+
+
+
+
+
+
+
+
+-> EXEMPLO PERFEITO É O ANGULAR MATERIAL,
+
+QUE É 
+
+UMA ANGULAR LIBRARY QUE VOCÊ PODE USAR EM QUALQUER APP...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PRIMEIRO PASSO PARA CRIAR UMA LIBRARY É O run de 'ng generate library nome'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> QUANDO VOCÊ CRIA UMA LIBRARY,
+
+
+O OUTPUT DO ANGULAR CLI É MAIS OU MENOS O MESMO,
+
+
+
+
+MAS HÁ ALGUMAS DIFERENÇAS:
+
+
+
+
+
+
+
+
+
+
+POR EXEMPLO, TEMOS UMA FILE 'ng-package.json',
+
+
+
+
+QUE NOS DEIXA __ CONFIGURAR __ ESSA LIBRARY DE CERTA FORMA...
+
+
+
+
+
+
+
+
+
+
+
+
+--> no folder de 'src',
+
+
+temos uma file 
+
+'public-api.ts',
+
+
+
+
+
+
+
+
+    EM QUE EXPORTAMOS AS DIFERENTES COISAS QUE COMPÕEM 
+
+
+
+
+    NOSSA LIBRARY...
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> NO FOLDER DE 'lib',
+
+
+
+
+
+
+    temos as nossas starting files,
+
+
+
+
+
+
+
+
+
+
+    como um arquivo de 'nome.component.ts',
+
+
+    EM QUE PODEMOS ESCREVER NOSSO PRÓPRIO LIBRARY COMPONENT (que já terá sido adicionado a um MODULE),
+
+
+    e também um service,
+
+
+
+
+    QUE PODEMOS USAR OU NÃO...
+
+
+
+
+
+
+
+
+
+
+
+    --> OK.. --> VOCÊ PODE SHIPPAR SUA LIBRARY AO NPM, mas é necessário fazer algumas coisas...
+
+
+
+
+
+
+
+
+
+
+
+com isso, ficamos capazes de construir e shippar libraries a outros users...

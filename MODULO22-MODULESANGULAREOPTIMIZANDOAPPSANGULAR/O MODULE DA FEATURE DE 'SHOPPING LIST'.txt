@@ -1,0 +1,749 @@
+
+
+
+
+
+
+
+
+
+
+
+
+--> VIMOS, NAS ÚLTIMAS AULAS,
+
+COMO CRIAR E 
+
+
+
+
+
+SPLITTAR NOSSO CÓDIGO EM  MÚLTIPLOS 'FEATURE MODULES'.
+
+
+
+
+
+
+
+
+
+
+
+-> FIZEMOS ISSO COM O MODULE DE 'RECIPEBook'.. --> virou um 'FEATURE MODULE'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA DEVEMOS PRATICAR ISSO POR CONTA PRÓPRIA.. -> DEVEMOS PEGAR O 'SHOPPING LIST' 
+
+
+
+
+
+E __ CRIAR _ UM FEATURE MODULE PARA ELE.. (outsource de código)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O CÓDIGO FOI FICANDO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { ShopListEditComponent } from './shop-list-edit/shop-list-edit.component';
+import { ShoppingListItemComponent } from './shopping-list-item/shopping-list-item.component';
+import { ShoppingListRoutingModule } from './shoppingList-routing.module';
+import { ShoppingListComponent } from './shoppingList.component';
+
+@NgModule({
+  declarations: [
+    ShoppingListComponent,
+    ShoppingListItemComponent,
+    ShopListEditComponent,
+  ],
+  imports: [CommonModule, RouterModule, FormsModule, ShoppingListRoutingModule],
+})
+export class ShoppingListModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+
+import { RouterModule, Routes } from '@angular/router';
+import { ShoppingListComponent } from './shoppingList.component';
+
+const shoppingListRoutes: Routes = [
+  {
+    path: 'shop-list',
+    component: ShoppingListComponent,
+  },
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(shoppingListRoutes)],
+
+  exports: [RouterModule],
+})
+export class ShoppingListRoutingModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> agora devo importar esse 'ShoppingListModule'
+
+
+
+
+LÁ EM 'app.module.ts',
+
+tipo assim:
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
+
+import { AppComponent } from './app.component';
+
+import { HeaderComponent } from './headerComponent/headerComponent.app';
+
+// import { RecipeBookComponent } from './recipeBook/recipe-book.component'; ///OUTSOURCEADOS
+// import { RecipeItemComponent } from './recipeBook/recipe-list/recipe-item/recipe-item.component';
+// import { RecipeListComponent } from './recipeBook/recipe-list/recipe-list.component';
+// import { RecipeDetailComponent } from './recipeBook/recipe-detail/recipe-detail.component';
+// import { SelectARecipeComponent } from './recipeBook/select-a-recipe/select-a-recipe.component';
+// import { RecipeEditComponent } from './recipeBook/recipe-edit/recipe-edit.component';
+
+
+
+// import { ShoppingListComponent } from './ShoppingList/shoppingList.component'; //////OUTSOURCEADOS
+// import { ShopListEditComponent } from './ShoppingList/shop-list-edit/shop-list-edit.component';
+// import { ShoppingListItemComponent } from './ShoppingList/shopping-list-item/shopping-list-item.component';
+
+import { DropdownDirective } from './dropdownDirective/dropdown.directive';
+import { RecipeBookService } from './recipeBook.service';
+import { ShoppingListService } from './shoppingList.service';
+import { GenericErrorPageComponent } from './generic-error-page/generic-error-page.component';
+import { AppRoutingModule } from './app-routing.module';
+import { HomePageComponent } from './home-page/home-page.component';
+
+import { AuthPageComponent } from './auth-page/auth-page.component';
+import { SpinnerComponent } from './auth-page/spinner/spinner.component';
+import { HttpInterceptorService } from 'src/app/httpInterceptor.service';
+// import { AuthGuardService } from './auth-guard.service';
+import { AlertDynamicComponent } from './shared/alertVersaoNgIf (bem mais pratica)/alert.component';
+
+
+import { PlaceholderDirective } from './placeholderDirective/placeholder.directive';
+import { RecipeBookModule } from './recipeBook/recipe-book.module';
+import { ShoppingListModule } from './ShoppingList/shoppingList.module';
+// import { AlertDynamicComponent } from './shared/alertVersaoNgIf (bem mais pratica)/alert.component';
+
+
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+    // RecipeBookComponent, ////OUTSOURCEADO
+    // RecipeItemComponent,
+    // RecipeListComponent,
+    // RecipeDetailComponent,
+    // SelectARecipeComponent,
+    // RecipeEditComponent,
+
+
+    // ShoppingListComponent,  ////OUTSOURCEADO
+    // ShopListEditComponent,
+    // ShoppingListItemComponent,
+
+
+    DropdownDirective,
+    GenericErrorPageComponent,
+    HomePageComponent,
+
+    AuthPageComponent,
+    SpinnerComponent,
+    AlertDynamicComponent,
+    PlaceholderDirective
+    // AlertDynamicComponent
+  ],
+  imports: [
+    BrowserModule,
+    ReactiveFormsModule,
+    FormsModule, //lembre-se de adicionar isso se for usar 'ngModel()'..
+    AppRoutingModule,  //módulo de routing, customizado por nós...
+    HttpClientModule,
+    RecipeBookModule,  ///////OUTSOURCING, EM UM MODULE SEPARADO...
+    ShoppingListModule   ////OUTSOURCING, EM OUTRO MODULE SEPARADO...
+  ],
+  entryComponents: [   ///usado com o RENDER DE COMPONENTS DENTRO DE NOSSO CÓDIGO TS... --> ou seja, components que não vão usar um 'selector' para serem renderizados, nem o ROUTE CONFIG (paths e etc) para serem renderizados... eles vão simplesmente ser 'DROPPADOS' no código, por meio de uma directive especializada e por meio de uma 'ComponentFactory' própria...
+  AlertDynamicComponent
+],
+
+  providers: [RecipeBookService, ShoppingListService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpInterceptorService,
+      multi: true
+    }
+  
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK, MAS AQUI ESTOU COM UM PROBLEMA....
+
+
+
+
+
+
+
+--> A ROUTE DE 
+
+
+
+
+shoppingList
+
+
+
+
+NÃO ESTÁ FUNCIONANDO... (está dando 'the requested page could not be found' )...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ainda assim, o negócio não deu certo...
+
+
+
+
+
+
+
+
+
+
+
+
+--> é pq o professor não ensinou uma coisinha...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ele aparentemente escreveu a route de 'shop-list'
+
+
+DENTRO DO CÓDIGO DE 
+
+
+
+
+'RouterModule.forChild()'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+ELE COMEÇA COM ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+// import { RouterModule } from '@angular/router';
+import { ShopListEditComponent } from './shop-list-edit/shop-list-edit.component';
+import { ShoppingListItemComponent } from './shopping-list-item/shopping-list-item.component';
+import { ShoppingListRoutingModule } from './shoppingList-routing.module';
+import { ShoppingListComponent } from './shoppingList.component';
+
+@NgModule({
+  declarations: [
+    ShoppingListComponent,
+    ShoppingListItemComponent,
+    ShopListEditComponent,
+  ],
+  imports: [CommonModule, FormsModule]
+
+
+
+})
+export class ShoppingListModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-->  na versão do professor do código, ele decidiu escrever o 'ROUTING' 
+
+
+do
+
+
+
+
+'ShoppingList' feature __ DENTRO _ 
+
+
+
+DO PRÓPRIO ARQUIVO DE 'shoppingList.module.ts',
+
+
+
+sem usar 
+
+
+um 
+
+
+ARQUIVO SEPARADO PARA O ROUTING DESSA FEATURE (mas eu fiz diferente, é claro)..
+
+
+
+
+
+
+(ele fez isso pq esse module é menor do que o de 'recipes')....
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO DO PROFESSOR, NO CASO, FICOU ASSIM:
+
+
+
+
+
+
+
+
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+// import { RouterModule } from '@angular/router';
+import { ShopListEditComponent } from './shop-list-edit/shop-list-edit.component';
+import { ShoppingListItemComponent } from './shopping-list-item/shopping-list-item.component';
+import { ShoppingListRoutingModule } from './shoppingList-routing.module';
+import { ShoppingListComponent } from './shoppingList.component';
+
+@NgModule({
+  declarations: [
+    ShoppingListComponent,
+    ShoppingListItemComponent,
+    ShopListEditComponent,
+  ],
+  imports: [CommonModule, FormsModule,
+  
+  
+  RouterModule.forChild(
+    [
+      {path: 'shop-list', component: ShoppingListComponent}
+    ]
+  )
+  
+  ]
+
+
+
+})
+export class ShoppingListModule {}
+
+
+
+
+
+
+
+
+
+
+---------------------------
+
+
+
+
+
+
+
+
+
+
+o código dele funcionou, o nosso não..
+
+
+
+
+
+
+
+
+
+
+a versão do professor funciona....
+
+
+
+
+
+
+
+
+
+
+
+--> tentar consertara nossa...
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> hmmm.... mas esse problema existe NÃO SÓ 
+
+
+
+
+
+com o '/shop-list',
+
+
+
+existe TAMBÉM COM O 
+
+
+'/recipe-book',
+
+
+PQ 
+
+
+
+SE 
+
+EU 
+
+
+ESCREVO 
+
+'localhost:4200/recipe-book'
+
+
+em vez de 
+
+'localhost:4200/',
+
+
+
+
+EU TAMBÉM IMEDIATAMENTE RECEBO A PAGE DE 'page not found'..
+
+
+
+
+
+
+
+
+
+
+
+
+--> isso significa que há algo de ERRADO com o código do professor...
+
+
+
+
+
+
+
+
+
+tenho que analisar os arquivos dele, aprofundadamente...
+
+
+
+
+
+
+
+
+https://stackoverflow.com/questions/53581951/routes-not-working-in-angular-for-feature-module
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... AGORA MEU CÓDIGO ESTÁ FUNCIONANDO COMO O DO PROFESSOR...
+
+
+
+
+
+2 DETALHES:
+
+
+
+
+
+
+1) O PROFESSOR TEVE DE REMOVER AS ROUTES DE 'not-found' e 'catch-all' (not found) lá do app-routing.module.ts, 
+
+pq elas estavam BUGANDO NOSSO CÓDIGO (tvz um conflito entre o routing do 'app-routing.module.ts' e o routing dos modules menores.... acho que é isso)..
+
+
+
+
+
+
+
+
+2) A PARTE DE 'AUTH' DO NOSSO APP, COM AS AUTH GUARDS, ESTÁ COMPLETAMENTE QUEBRADA.. (
+
+
+  o nosso app agora está sem guards, podemos entrar em 'auth/recipeBook/shoplist' 
+
+
+
+  SEM PROBLEMA ALGUM/SEM BLOCKS, O QUE É RUIM....
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> mas é claro que nosso app está mais lean, por enquanto...
+
+
+
+
+
+
+
+
+--> HMMM MAS O ESTRANHO É QUE O GUARD DE 'recipe-book' AINDA FUNCIONA,
+
+
+MAS APENAS SE TENTAMOS ENTRAR 
+
+
+
+DIRETAMENTE COM 
+
+'localhost:4200/recipe-book'...

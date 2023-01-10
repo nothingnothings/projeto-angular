@@ -1,0 +1,458 @@
+
+
+
+
+
+
+
+
+
+
+O PROFESSOR APENSA UM NOVO PROJETO A ESSA AULA...
+
+
+
+
+
+
+
+
+
+
+
+--> O PROJETO TEM 2 BOTÕES,
+
+'animate' 
+
+e 
+
+'shrink'
+
+
+,
+
+
+QUE NÃO FAZEM COISA ALGUMA, POR ENQUANTO...
+
+
+
+
+
+
+
+
+
+--> MAIS TARDE VOLTAREMOS A ESSES BUTTONS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO, E AÍ TEMOS 2 LISTS,
+
+
+E PODEMOS  
+
+
+
+
+
+ADICIONAR NOVOS ITEMS POR MEIO DO INPUT FIELD COM O 'add'..
+
+
+
+
+
+
+
+
+
+
+certo... (é uma boa tentar ESCREVER ESSE CÓDIGO TODO POR CONTA PRÓPRIA)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MOSTRAREMOS  AS DIFERENTES ANIMAÇÕES 
+
+
+
+NESSAS LISTS AÍ,
+
+MAIS TARDE...
+
+
+
+
+
+
+
+--> O PROFESSOR QUER COMEÇAR PELOS 2 BUTTONS LÁ DE CIMA,
+
+
+E AÍ 
+
+COM O BÁSICO DAS ANIMATIONS...
+
+
+
+
+
+
+
+
+
+
+
+--> SIDENOTE --> O PROJETO ESTÁ ANEXADO A ESTA LIÇÃO..
+
+
+
+
+
+
+
+
+--> MAS COMO COMEÇAMOS,
+
+
+
+COMO FUNCIONA EM GERAL O 
+
+SISTEMA DE ANIMATIONS DO ANGULAR? 
+
+
+
+
+
+
+
+
+
+
+--> EXAMINAMOS O SOURCE CODE,
+
+
+em 'app.component.ts'....
+
+
+
+
+
+
+
+
+
+-----> VEMOS QUE TEMOS OS 2 BUTTONS,E AÍ TEMOS 
+
+
+AQUELA EMPTY DIV...
+
+
+
+
+
+
+
+-> ESSA EMPTY DIV AÍ,
+
+
+
+É ELA QUE O PROFESSOR VAI QUERER 'ANIMATE',
+
+
+
+
+E EM QUE O PROEFSSOR QUER MOSTRAR COMO AS ANIMATIONS DO ANGULAR GERALMENTE FUNCIONAM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok, vamos começar um novo project..
+
+
+
+
+
+
+
+
+--> escrevemos:
+
+
+
+
+
+ng new novoProjetoAnimations...
+
+
+
+
+
+
+
+
+
+
+--> coloquei um 'ANGULAR ROUTING - NO ' 
+
+
+
+
+'
+CSS STYLE --> CSS'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... O PRIMEIRO PASSO É RODAR 'npm install --save bootstrap@3'...
+
+
+
+
+
+
+
+--> depois vamos até o 'angular.json' e adicionamos a pasta de node_modules do bootstrap3 
+
+
+
+
+
+ao 'styles',
+
+para que funcione...
+
+
+
+
+
+
+
+
+CERTO....
+
+
+
+
+
+começamos bem....
+
+
+
+
+
+
+agora devemos codar a página do professor...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, SETTEI A PAGE INICIAL:
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  items: string[] = ['Milk', 'Sugar', 'Bread'];
+
+  constructor() {}
+
+  onDeleteItem() {}
+
+  onAddItem(item: string) {
+    this.items.push(item);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <h1>Animations</h1>
+      <button class="btn btn-primary">Animate!</button>
+      <button class="btn btn-primary">Shrink!</button>
+      <hr />
+      <div></div>
+    </div>
+  </div>
+</div>
+<hr />
+<div class="row">
+  <div class="col-xs-12">
+    <input type="text" #input />
+    <button class="btn btn-primary" (click)="onAddItem(input.value)">
+      Add Item!
+    </button>
+    <hr />
+    <ul class="list-group">
+      <li
+        class="list-group-item"
+        (click)="onDelete(item)"
+        #ngFor="let item of list"
+      >
+        {{ item }}
+      </li>
+    </ul>
+  </div>
+</div>
+<hr />
+<div class="row">
+  <div class="col-xs-12">
+    <ul class="list-group">
+      <li
+        class="list-group-item"
+        (click)="onDeleteItem(item)"
+        *ngFor="let item of list"
+      >
+        {{ item }}
+      </li>
+    </ul>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> aí rodo 'ng serve' para rodar esse app..
+
+
+
+
+
+
+
+
+
+
+--> ok, mas o styling está fodido...
+
+
+adicionei algum style incorretamente, provavelmente...
+
+
+
+
+
+
+
+
+
+
+-> não, mas tudo está certo... não sei a razão dessa discrepância..
+
+
+
+
+
+
+
+
+
+--> ERA O CONTAINER, O CONTAINER ESTAVA BUGADO...
+
+
+
+
+
+
+
+
+
+
+-> OK, HORA DE ASSISTIR A PRÓXIMA AULA...

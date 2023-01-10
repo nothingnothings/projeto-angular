@@ -1,0 +1,1072 @@
+
+
+
+
+
+
+
+
+
+
+
+
+-> NA ÚLTIMA LIÇÃO,
+
+CRIAMOS NOSSO PRÓPRIO COMPONENT,
+O 
+
+'server component',
+
+
+QUE POSSUI ESTE CÓDIGO TS:
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core'; ////ISTO É NECESSÁRIO, PQ COMUNICA AO TYPESCRIPT QUE vamos querer definir um component/usar aqule decorator de COMPONENT..
+////angular é subdividido em diversas PACKAGES, uma delas é o 'core', que é SUPER IMPORTANTE...
+
+@Component(
+  //uma das partes MAIS IMPORTANTES DO ANGULAR...
+  {
+    selector: 'app-server',
+    templateUrl: './server.component.html'
+  }
+)
+export class ServerComponent {}
+
+
+
+
+
+
+
+
+
+--------------------
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO...
+
+
+
+
+
+
+
+
+
+
+
+--> ESTÁ QUASE PRONTO PARA SER UTILIZAADO,
+
+
+
+
+
+MAS PARA SER UTILIZADO, FALTA FAZER UMA COISINHA LÁ NO 
+
+
+
+'app.module.ts'...
+
+
+
+
+
+
+------> MAS O QUE É ISSO, 
+
+O QUE DEVEMOS FAZER PARA USAR ESSE COMPONENT? 
+
+
+
+
+
+
+
+
+
+
+-----> O QUE DIABOS É UM 'app.module', um 'APP MODULE?' 
+
+
+
+
+
+
+
+
+
+
+
+
+
+-_> BEM, O ANGULAR USA COMPONENTS __ PARA __ 
+
+CONSTRUIR WEBPAGES,
+
+
+E USA 
+
+MODULES 
+
+PARA 
+
+
+__BASICAMENTE 'BUNDLAR' 
+
+
+
+DIFERENTES PEDAÇOS DE coisas COMO COMPONENTS DE SEU APP 
+
+
+
+em 
+
+PACKAGES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSA É UMA FEATURE AVANÇADA,
+
+
+MAS MAIS TARDE NO CURSO TERMOS UM MÓDULO 
+
+
+INTEIRO SOBRE MODULES...
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS NA MAIOR PARTE DESSE CURSO,
+
+USAREMOS SÓ O  
+
+
+'AppModule',
+
+
+
+como 
+
+escrito em 'app.module.ts':
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppComponent } from './app.component';
+
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> ISSO, NA VERDADE,
+
+
+JÁ É SUFICIENTE PARA UMA GRANDE PARTE 
+
+
+DOS PROJETOS... -> apenas em projetos 
+
+MAIORES
+
+
+vocÊ 
+
+terá DE SPLITTAR 
+
+
+
+SEU APP EM MÚLTIPLOS MODULES...
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS O QUE É UM 'MODULE'?
+
+
+
+
+
+
+
+
+--> É UM 
+
+
+BUNDLE __ DE FUNCIONALIDADES 
+
+DE 
+
+NOSSO APP,
+
+
+
+E BASICAMENTE 
+
+DÁ AO ANGULAR 
+
+
+
+A INFORMATION 
+
+
+
+
+
+__ ACERCA_ DE QUAIS __ FEATURES MEU APP TEM E UTILIZA...
+
+
+
+
+
+
+
+
+
+
+
+------> COMO VOCÊ PODE VER,
+
+
+
+
+O NOSSO MODULE DE 'aPP'
+
+
+é 
+
+UMA CLASS VAZIA,
+
+exatamente como nosso component 'ServerComponent':
+
+
+
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+---> E, COMO O COMPONENT, EXATAMENTE COMO ELE,
+
+
+
+NÓS 
+
+
+TRANSFORMAMOS 
+
+
+ESSA 
+
+CLASS 
+
+
+EM 
+
+'ALGO DIFERENTE' (uma coisa diferente de uma CLASS PADRÃO)
+
+
+
+
+
+__ POR MEIO __ DA ESCRITA 
+
+
+
+DE 
+
+
+
+UM _ DECORATOR no seu início,
+
+tipo isso aqui:
+
+
+
+
+
+
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> É ESSE 'ngModule' DECORATOR QUE 
+
+
+
+ESTÁ _ MODIFICANDO 
+
+
+o comportamento daquela CLASS dew 'AppModule',
+
+
+E A TRANSFORMANDO EM UM 
+
+
+MODULE....
+
+
+
+
+
+
+
+
+--> NgModule --> É UM __ ANGULAR MODULE...
+
+
+
+
+
+
+
+
+
+
+
+--> 'NgModule' TAMBÉM É UM OBJECT/DECORATOR IMPORTADO LÁ DO 'angular/core'...
+
+
+
+
+
+
+
+
+
+
+------> DENTRO  de 
+
+
+
+'NgModule',
+
+OBSERVAMOS 4 PROPRIEDADES 
+
+NESSE 
+
+
+'CONFIG-OBJECT'
+
+QUE PASSAMOS A ELE:
+
+
+
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  1) DECLARATIONS 
+
+
+
+  2) IMPORTS 
+
+
+
+
+  3) PROVIDERS 
+
+
+  4) BOOTSTRAP
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ** OBS, o 'HttpModule' foi alterado, hoje é 
+
+
+
+import { HttpClientModule } from '@angular/common/http'
+
+
+
+
+
+
+
+
+
+O CÓDIGO VAI FICANDO ASSIM:
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { FormsModule } from '@angular/forms';
+
+import { HttpClientModule } from '@angular/common/http'
+
+import { AppComponent } from './app.component';
+
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    HttpClientModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK, MAS O QUE CADA UMA DESSAS KEYS NESSE CONFIG-OBJECT fazem?
+
+
+
+
+
+
+
+
+
+
+
+
+  1) DECLARATIONS 
+
+
+
+  2) IMPORTS 
+
+
+
+
+  3) PROVIDERS 
+
+
+  4) BOOTSTRAP
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> BOOSTRAP --> é responsável pela comunicação ao angular de 
+
+
+
+'HEY, QUE COMPONENT VOCÊ DEVE 
+
+LER/CONSIDERAR _ NO MOMENTO EM QUE _ 
+
+O APP INTEIRO É INICIADO...' 
+
+
+
+
+
+
+-> ESSENCIALMENTE,
+
+
+O 
+'bootstrap'
+
+É O 
+
+
+''COMPONENT/ELEMENTO HTML QUE DEVERÁ SER LIDO 
+
+LÁ 
+
+NO 
+
+
+INDEX.HTML'' ----> esse será ESSENCIALMENTE O 'AppComponent'... (
+
+
+    só vamos, nesse curso,
+    basicamente trabalhar com esse AppComponent
+
+
+    como 
+
+
+    elemento lido/considerado
+     
+
+     no DOM durante o runtime...
+)
+ 
+
+
+
+
+
+
+
+
+---> NÓS NÃO VAMOS ADICIONAR MAIS NENHUM 'component selector' (como '<app-root>' )
+
+
+
+
+AO INDEX.HTML...  --------> NÃO É ASSIM QUE O 
+
+
+ANGULAR FUNCIONA.... POR ISSO NÃO 
+
+
+
+VAMOS ENCOSTAR  NESSE ARRAY DE 
+
+
+
+'boostrap: [AppComponent]'  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> ainda assim,
+
+
+NÓS ACABAMOS ADICIONANDO MAIS 1 COMPONENT AO ANGULAR,
+
+e esse NOVO COMPONENT 
+
+
+
+DEVE OBRIGATORIAMENTE SER REGISTRADO 
+
+
+
+NESSE 'Module' 
+
+
+
+
+
+
+,
+
+
+module representado/escrito em 
+
+
+'app.module.ts' ---->  PRECISAMOS FAZER ISSO PARA 
+
+
+
+
+CERTIFICAR QUE 
+O 
+
+ANGULAR 
+
+
+SABERÁ 
+
+QUE 
+
+
+ESSE COMPONENT EXISTE,
+
+
+
+
+E IMPORTANTE:
+
+
+
+
+
+__ POR DEFAULT,
+O ANGULAR_ NÃO VAI ESCANEAR TODAS SUAS FILES NO FOLDER DO SEU PROJETO... -> ISSO QUER DIZER QUE 
+
+SE VOCê 
+
+NÃO COMUNICAR AO
+
+
+ANGULAR QUE ESSE COMPONENT DE 
+
+'ServerComponent'
+
+
+EXISTE,
+
+
+ELE NÃO VAI O CONSIDERAR,
+NÃO VAI O CONHECER...
+
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE 
+
+
+PRECISAMOS REGISTRAR ESSE 
+
+
+'ServerComponent'
+
+
+nesse 'NgModule',
+
+
+para 
+
+
+
+
+ASSEGURAR AO ANGULAR QUE 
+
+
+__ ''''PARTE__ DESSE MODULE  SERÁ ESSE ServerComponent'...
+
+
+
+
+
+
+
+
+
+
+OK... TEMOS QUE REGISTRAR 
+
+ESSE COMPONENT 
+
+
+
+NESSE ARRAY DE 'declarations'...
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { FormsModule } from '@angular/forms';
+
+import { HttpClientModule } from '@angular/common/http'
+
+import { AppComponent } from './app.component';
+import { ServerComponent } from './server/server.component';
+
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    ServerComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    HttpClientModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]  
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> OU SEJA,
+
+IMPORTAMOS ESSE MODULE E AÍ O COLOCAMOS NO 
+
+'declarations' array... --> 
+
+
+
+
+
+
+
+
+
+
+1) COM O IMPORT, SATISFAZEMOS O __ 'TYPESCRIPT'...
+
+
+
+
+
+2) COM O 'declarations', SATISFAZEMOS O 'ANGULAR'...
+
+
+
+
+
+
+
+
+
+certo... isso funcionou...
+
+
+
+
+
+
+
+O ANGULAR USA O WEBPACK...
+
+
+
+
+
+
+
+
+
+
+
+----> OK... O IMPORT É UMA TYPESCRIPT FEATURE...
+
+
+
+
+
+
+
+
+
+---> ANGULAR, QUANDO RODA,
+
+SABE 
+
+QUE TEMOS 
+
+UM SERVER COMPONENT,
+E QUE ELE FAZ 
+
+PARTE 
+
+DO 
+
+NOSSO APP....
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO, PODEMOS FINALMENTE USAR NOSSO COMPONENT, QUE É O QUE FAREMOS NA PRÓXIMA LIÇÃO...
+
+
+
+
+
+
+
+
+
+
+
+-> OK, MAS O QUE 'imports' 
+
+e 
+
+'providers'
+
+
+
+FAZEM, nesse 
+
+arquivo 
+
+'app.module.ts'?
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, 'imports',
+
+
+APENAS 
+
+
+
+É UMA KEY _ QUE _ TE DEIXA 
+
+
+
+''''ADICIONAR OUTROS MODULES A ESSE MODULE DE app.module'''....
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { FormsModule } from '@angular/forms';
+
+import { HttpClientModule } from '@angular/common/http'
+
+import { AppComponent } from './app.component';
+import { ServerComponent } from './server/server.component';  ///Component criado por nós...
+
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    ServerComponent  ////todo novo component adicionado ao seu projeto deve ser declarado aqui, sob pena de não ser reconhecido/executado...
+  ],
+  imports: [
+    BrowserModule,   ///aqui você deve especificar todos os MODULES extras que deverão ser CONSIDERADOS/incorporados ao seu module primário (app.module.ts) ----> você apenas referencia os modules que pretende usar .... ---> feature de SPLITTAR MODULES E DEIXAR MODULES MAIS 'LEAN', outsourcing de conteúdo a outros modules... --> ATÉ MESMO O ANGULAR TRABALHA COM MODULES, E VOCê TEM QUE IMPORTAR MODULES QUE VOCÊ DESEJA UTILIZAR...
+      ///BrowserModule é usado para conseguir a FUNCIONALIDADE BÁSICA PARA INICIAR NOSSO APP...
+
+      //já esses são modules extras, que você importa de acordo com o que aquer no projeto...
+    FormsModule,
+    HttpClientModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]   ////geralmente (80% dos projetos) temos 1 único component a ser 'bootstrappado', considerado DURANTE O RUNTIME DE NOSSO APP...
+})
+export class AppModule { }  ///nosso component em questão.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

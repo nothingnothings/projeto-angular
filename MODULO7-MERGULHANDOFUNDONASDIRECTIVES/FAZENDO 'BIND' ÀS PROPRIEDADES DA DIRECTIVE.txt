@@ -1,0 +1,1528 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> nossa directive ESTÁ SE PARECENDO MT BOA,
+
+E ESTÁ ASSIM, NO PRESENTE:
+
+
+
+
+
+
+
+
+import { Directive, Host } from '@angular/core';
+
+import { Renderer2 } from '@angular/core';
+
+import { OnInit } from '@angular/core';
+
+import { ElementRef } from '@angular/core';
+
+import { HostListener } from '@angular/core';
+
+import { HostBinding } from '@angular/core';
+
+@Directive({
+  selector: '[appBetterHighlight]',
+})
+export class BetterHighlightDirective implements OnInit {
+  @HostBinding('style.backgroundColor') backgroundColor2: string =
+    'transparent';
+
+  constructor(private elementRef: ElementRef, private renderer: Renderer2) {}
+
+  ngOnInit(): void {
+    this.renderer.setStyle(
+      this.elementRef.nativeElement,
+      'background-color',
+      'blue'
+    );
+  }
+
+  @HostListener('mouseenter') mouseOver(eventData: Event) {
+    this.renderer.setStyle(
+      this.elementRef.nativeElement,
+      'background-color',
+      'red'
+    );
+    this.backgroundColor2 = 'yellow';
+  }
+
+  @HostListener('mouseleave') mouseLeave(eventData: Event) {
+    this.renderer.setStyle(
+      this.elementRef.nativeElement,
+      'background-color',
+      'transparent'
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, QUASE LÁ,
+
+
+
+
+MAS HÁ UMA FUNCIONALIDADE QUE O PROFESSOR QUER ADICIONAR...
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA, NOSSO STYLE 
+
+
+ESTÁ DINÂMICO NA MEDIDA 
+
+QUE PODEMOS 
+
+'MOUSEOVER'
+
+
+
+o elemento e então fazer 'mouseleave',
+
+
+
+MAS O PROBLEMA É QUE 
+
+NÃO PODEMOS 
+
+
+
+
+'''SELECIONAR AS CORES QUE ACABAM UTILIZADAS'''..
+
+
+
+
+
+
+
+
+
+
+------> BEM, SE NOSSA DIRECTIVE FOSSE ALGO QUE GOSTARÍAMOS DE FAZER 'SHIP',
+
+
+
+entregar/uploadar a um monte de usuários,
+
+
+
+como uma third-party package,
+
+
+
+
+
+
+
+
+O _ USER_,
+
+
+
+O 
+
+DEVELOPER USANDO ESSA DIRECTIVE AÍ,
+
+
+
+DEVERÁ __ SER CAPAZ DE 'DYNAMICALLY SET THE VALUE'...  ------> TALVEZ NÓS QUEIRAMOS ATÉ MESMO FAZER ISSO 
+
+
+
+
+NO NOSSO PRÓPRIO APP,
+
+
+
+
+TALVEZ PQ 
+
+
+A COR QUE QUEREMOS SETTAR 
+
+
+
+
+__ MUDARÁ__ A DEPENDER DE OUTROS PARÂMETROS EM NOSSO APP... ------> POR ENQUANTO,
+
+
+
+
+A COLOR ESTÁ _ HARDCODADA no nosso código,
+
+
+
+
+
+
+
+
+
+como vemos por 
+
+
+
+'@HostBinding('style.backgroundColor') backgroundColor: string = 'transparent';
+
+
+
+
+
+
+
+@HostListener ('mouseenter') mouseover(eventData: Event) {
+    this.backgroundColor: 'blue' 
+}
+
+
+
+
+
+
+
+
+
+--> OU SEJA,
+
+É 
+
+'TRANSPARENT' inicialmente,
+
+e ai´se torna AZUL quando fazemos 
+
+
+'MOUSEOVER'
+
+sobre esse element...
+
+
+
+
+
+
+
+
+
+
+
+----> ISSO É ALGO QUE JÁ PODEMOS MELHORAR,
+
+E 
+
+__ PODEMOS MELHORAR _ COM UMA __ FERRAMENTA QUE JÁ APRENDEMOS,
+
+
+
+
+
+'''CUSTOM PROPERTY BINDING''' --> COMO UMA SIDENOTE,
+
+
+
+
+
+
+'CUSTOM EVENT BINDING' também __ FUNCIONA __ 
+
+
+
+em directives... (mas isso é raramente utilizado)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS COMO PODEMOS USAR CUSTOM PROPERTY BINDING?
+
+
+
+
+
+
+
+
+
+--> BEM, DEVEMOS ADICIONAR 2 PROPRIEDADES DE NOSSA 'DIRECTIVE'
+
+a que 
+
+
+
+
+
+podemos 
+
+BINDAR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+O PROFESSOR 
+
+
+ESCREVE 
+
+
+
+'@Input()'...
+
+
+
+
+
+
+
+
+
+
+
+--> AÍ ELE NOMEIA O PRIMEIRO COMO 'defaultColor',
+
+
+
+
+
+que terá um type de string e 
+
+
+
+UM VALUE INICIAL DE 'transparent'...
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Directive, Host } from '@angular/core';
+
+import { Renderer2 } from '@angular/core';
+
+import { OnInit } from '@angular/core';
+
+import { ElementRef } from '@angular/core';
+
+import { HostListener } from '@angular/core';
+
+import { HostBinding } from '@angular/core';
+
+@Directive({
+  selector: '[appBetterHighlight]',
+})
+export class BetterHighlightDirective implements OnInit {
+
+
+    @Input() defaultColor: string = 'transparent';
+
+
+
+  @HostBinding('style.backgroundColor') backgroundColor2: string =
+    'transparent';
+
+  constructor(private elementRef: ElementRef, private renderer: Renderer2) {}
+
+  ngOnInit(): void {
+    this.renderer.setStyle(
+      this.elementRef.nativeElement,
+      'background-color',
+      'blue'
+    );
+  }
+
+  @HostListener('mouseenter') mouseOver(eventData: Event) {
+    this.renderer.setStyle(
+      this.elementRef.nativeElement,
+      'background-color',
+      'red'
+    );
+    this.backgroundColor2 = 'yellow';
+  }
+
+  @HostListener('mouseleave') mouseLeave(eventData: Event) {
+    this.renderer.setStyle(
+      this.elementRef.nativeElement,
+      'background-color',
+      'transparent'
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+export class BetterHighlightDirective implements OnInit {
+  @Input() defaultColor: string = 'transparent';   /////como fazer BIND A PROPRIEDADES DE NOSSA DIRECTIVE...
+
+  @Input() highlightColor: string = 'blue';
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OK... --> ISSO SIGNIFICA QUE 
+
+  TEMOS 2 'DEFAULT VALUES' 
+
+  que podemos usar (
+
+
+      transparent e blue 
+  ),
+
+
+
+  mas a diferença 
+
+
+
+  de agora e antes é que 
+
+
+
+
+AGORA PODEREMOS DEFINIR ESSAS __ PROPRIEDADES_ DO LADO__ DE FORA 
+
+
+DE NOSSA DIRECTIVE (customizar a directive, em outras palavras)...
+
+
+
+
+
+
+
+
+
+
+
+---------> PARA _ MUDAR O VALUE desse 
+
+
+'defaultColor,'
+
+
+
+O PROFESSOR 
+
+
+COLOCA QUE O VALOR DE 
+
+
+
+'@HostBinding'
+
+
+
+
+vai passar a ser isso aí,
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+export class BetterHighlightDirective implements OnInit {
+  @Input() defaultColor: string = 'transparent';   /////como fazer BIND A PROPRIEDADES DE NOSSA DIRECTIVE...
+
+  @Input() highlightColor: string = 'blue';
+
+
+
+    @HostBinding('style.backgroundColor') backgroundColor: string = this.highlightColor;
+
+
+
+
+
+        @HostListener('mouseenter') mouseOver(eventData: Event) {
+
+            this.backgroundColor = this.highlightColor;
+        }
+
+
+
+
+
+
+            @HostListener('mouseleave') mouseLeave(eventData: Event) {
+
+            this.backgroundColor = this.defaultColor
+        }
+
+}
+
+
+
+
+
+
+
+
+
+
+-----> OK...
+
+
+
+
+
+
+
+COM ISSO, TUDO FUNCIONARÁ EXATAMENTE COMO ANTES,
+
+
+mas agora com esse caráter 'dinâmico'
+
+
+
+
+
+de binding às cores que 
+
+serão 
+
+
+
+inseridas como 'defaultColor' 
+
+
+e 
+
+'highlightColor'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+eX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Directive, Host } from '@angular/core';
+
+import { Renderer2 } from '@angular/core'; ////uma ferramenta melhor do que utilizar 'elementRef.nativeElement.xxx' para definir coisas de nossos elements...
+
+import { OnInit } from '@angular/core'; ///é mt comum usar esse hook para ESCREVER NOSSAS DIRECTIVES... (mt melhor fazer initialization work lá em 'ngOnInit', e não em 'constructor()')
+
+import { ElementRef } from '@angular/core';
+
+import { HostListener } from '@angular/core';   ////é usado para ESCREVER LÓGICA A PARTIR DE 'EVENTS' que ocorrerem nesse nosso element (como 'click', 'hover', etc)...
+
+
+import { HostBinding } from '@angular/core';
+
+import { Input } from '@angular/core';
+
+@Directive({
+  selector: '[appBetterHighlight]',
+})
+export class BetterHighlightDirective implements OnInit {
+  @Input() defaultColor: string = 'transparent';   /////como fazer BIND A PROPRIEDADES DE NOSSA DIRECTIVE...
+
+  @Input() highlightColor: string = 'blue';
+
+  // @HostBinding('style.backgroundColor') backgroundColor2: string = 'transparent';
+
+  @HostBinding('style.backgroundColor') backgroundColor2: string = this.defaultColor;
+
+
+  constructor(private elementRef: ElementRef, private renderer: Renderer2) {}
+
+
+
+
+
+
+
+  ngOnInit(): void {
+    // this.renderer        ////é assim que acessamos o renderer na nossa directive....  --> e ele nos dá um MONTE DE METHODS para manipular nosso element...
+
+    this.renderer.setStyle(this.elementRef.nativeElement, 'background-color', 'blue'); /// nos deixa SETTAR O STYLE DE ALGUM ELEMENT...  --> o element que nos interessa, em que COLOCAMOS ESSA NOSSA DIRECTIVE, segue sendo referenciado por 'this.elementRef'....
+        //você deve passar 'this.elementRef.nativeElement' (o underlying element dessa ELEMENT REFERENCE), e não 'this.elementRef' em si...
+  
+
+          //1o parâmetro --> element que queremos estilizar...
+          ///2o parametro --> estilo que queremos definir 
+          /////3o parametro --> VALOR do estilo que queremos definir 
+          ///4o parametro --> FLAGS opcionais que queremos definir para esse style... (tag de '!important', para que o style overwritte outro style), 
+  }
+
+
+
+
+  @HostListener('mouseenter') mouseOver(eventData: Event) { ///quando o event especificado em 'hostListener' acontecer ('hover', nesse exemplo), O METHOD DA DIREITA SERÁ DISPARADO...
+            //// a eventData é RECEBIDA NESSA PARÂMETRO, SE ASSIM O DESEJARMOS...
+
+
+            // this.renderer.setStyle(this.elementRef.nativeElement, 'background-color', 'red')
+            // this.backgroundColor2 = 'yellow';
+
+          this.backgroundColor2 = this.highlightColor;
+  }
+
+
+
+  @HostListener('mouseleave') mouseLeave(eventData: Event) { 
+
+    // this.renderer.setStyle(this.elementRef.nativeElement, 'background-color', 'transparent');
+
+      this.backgroundColor2 = this.defaultColor;
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ok, 
+
+FUNCIONA EXATAMENTE COMO ANTES,
+
+MAS AGORA TEMOS A POSSIBILIDADE DE FAZER 'BIND'
+
+DO LADO DE FORA...
+
+
+
+
+
+
+
+
+
+
+
+
+-------> PARA __ BINDAR__ A NOSSA DIRECTIVE, àS PROPRIEDADES DE NOSSA DIRECTIVE,
+
+
+
+basta ir até o template de app.component.html
+
+
+
+
+e então 
+
+
+
+
+
+
+MEXER NAQUELE COMPONENT/ELEMENT EM QUE ENFIAMOS A ATTRIBUTE DIRECTIVE...
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+<p    appBetterHighlight> Style me with a better directive!</p>
+
+
+
+
+
+
+
+
+
+
+--> CERTO... --> para BINDARMOS 
+
+A NOSSAS PROPRIEDADES QUE 
+
+TEMOS LÁ 
+
+
+
+
+NESSA DIRECTIVE DE 
+
+
+'appBetterHighlight',
+
+
+
+BASTA USAR AQUELE PROPERTY BINDING COMUM,
+
+
+
+
+
+
+
+escervendo coisas como 
+
+
+
+[defaultColor]="yellow" 
+
+
+
+[highlightColor]="red"
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <button class="btn btn-primary" (click)="onlyOdd = !onlyOdd">
+        Only show odd numbers
+      </button>
+      <br /><br />
+      <ul class="list-group">
+        <div *ngIf="onlyOdd">
+          <li
+            class="list-group-item"
+            *ngFor="let odd of oddNumbers"
+            [ngStyle]="{
+              backgroundColor: odd % 2 !== 0 ? 'yellow' : 'transparent'
+            }"
+            [ngClass]="{ odd: odd % 2 !== 0 }"
+          >
+            {{ odd }}
+          </li>
+        </div>
+        <div *ngIf="!onlyOdd">
+          <li
+            class="list-group-item"
+            *ngFor="let even of evenNumbers"
+            [ngStyle]="{
+              backgroundColor: even % 2 !== 0 ? 'yellow' : 'transparent'
+            }"
+            [ngClass]="{ odd: even % 2 !== 0 }"
+          >
+            {{ even }}
+          </li>
+        </div>
+      </ul>
+      <p appBasicHighlight>Style me with basic attribute directive!</p> 
+      <p appBetterHighlight [defaultColor]="'yellow'" [highlightColor]="'red'" >Style me with a better attribute directive!</p> 
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> ok... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O PROFESSOR DIZ QUE AQUI TEMOS UM BUG.... -> 
+
+
+
+
+NO INÍCIO, NOSSO ELEMENT ESTÁ COMO 'white'.... 
+
+
+
+
+
+
+
+
+
+--> ISSO ACONTECE PQ O 'HostBinding'
+
+
+está ESCRITO NO ROOT DO COMPONENT,
+
+
+e naõ 
+
+lá em 
+
+'ngOnInit'..
+
+
+
+
+
+
+--> consertamos assim:
+
+
+
+
+
+@HostBinding('style.backgroundColor') backgroundColor2: string;
+
+
+
+ngOnInit() {
+    this.backgroundColor2 = this.defaultColor;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok, agora funciona direito,
+
+temos o 'yellow' por default...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS HÁ UM PUNHADO DE COISAS INTERESSANTES QUE PODEMOS OBSERVAR 
+
+
+
+ACERCA DA MANEIRA PELA QUAL FAZEMOS 'PASS DOWN'
+
+
+desses values lá em 
+
+
+
+''   <p appBetterHighlight [defaultColor]="'yellow'" [highlightColor]="'red'" >Style me with a better attribute directive!</p> '''
+
+
+
+
+
+
+
+
+
+--> A PRIMEIRA COISA INTERESSANTE É que 
+
+TEMOS 
+
+DUAS 
+
+
+''''DIRECTIVE-LIKE LOOKING THINGS'''' 
+
+
+
+
+
+lá no paragraph (
+
+
+    o [defaultColor]
+
+
+    e 
+     O
+
+     [highlightColor]
+)
+
+
+
+
+
+
+
+
+
+
+----> E ISSO, TECNICAMENTE, É UM SIMPLES 'PROPERTY BINDING'... -----> MAS A QUESTÃO É:
+
+
+
+
+
+
+
+
+
+
+
+''''COMO DIABOS O ANGULAR SABE  QUE ESTAMOS TENTANDO 
+
+
+BINDAR A UMA PROPERTY DA DIRECTIVE,
+
+
+E NÃO 
+
+
+DO ELEMENTO <p> (que não tem essa propriedade) '''' ?
+
+
+
+
+
+
+
+
+--> A RESPOSTA É:
+
+
+
+'''ELE SE VIRA'''',
+
+
+
+ele simplesmente CHECA AS PRÓPRIAS DIRECTIVES (checa se existem propriedades nas directives)   
+
+
+
+e 
+
+
+tudo mais antes 
+
+
+de 
+
+ 
+
+
+chegar As native properties dos elements.... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E ISSO NOS LEVA A OUTRO TAKEAWAY:
+
+
+
+
+
+
+
+
+É POSSÍVEL A NÓS 
+
+
+'bindar propertties 
+
+
+
+A NOSSAS DIRECTIVES 
+
+POR MEIO 
+
+DO SIMPLES 
+
+PLACE DELAS 
+
+
+NO MESMO ELEMENT EM QUE 
+
+TAMBÉM ACESSAMOS/ALTERAMOS PROPERTIES (do element em si)'... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ou seja, fica 'TUDO MISTURADO',
+
+
+em outras palavras...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK, MAS AÍ ENCONTRAMOS/PERECBEMOS OUTRA BIZARRICE:
+
+
+
+
+
+
+
+
+pq diabos 
+
+
+'ngStyle'
+
+e 
+
+'ngClass'
+
+
+
+
+,
+
+QUE SÃO _ DIRECTIVES, SIM,
+
+
+
+
+
+__ PRECISAM SER ESCRITAS COM 
+'[]',
+
+
+
+
+
+EM VEZ DE 
+
+só soltas 
+como 
+
+'ngClass' ? ---------> são exceções,
+
+
+
+
+
+pq SOMOS OBRIGADOS A ENVOLVÊ-LAS com 
+
+'[]'
+
+
+
+
+
+
+
+
+---> NESSES CASES,
+
+A DIRECTIVE EM SI ACABA 'ENCLOSED IN SQUARE BRACKETS' ----->  E ESSE É USE CASE TÍPICO __ PRINCIPALMENTE__
+
+
+
+SE VOCÊ 
+
+
+TEM 
+
+APENAS 
+
+1 ÚNICA 'PROPERTY PARA BINDAR',
+
+
+
+ou entaõ 
+
+apenas uma ÚNICA 'MAIN PROPERTY'... ---------> NESSES CASES,
+
+VOCê PODE PROVIDENCIAR 
+
+UM 
+
+
+'ALIAS'
+
+
+PARA SUA PROPRIEDADE DE DIRECTIVE,
+
+ e aí SIMPLESMENTE 
+
+
+
+ DEFINIR 
+
+
+ ISSO COMO __ O SELECTOR__ DE SUA DIRECTIVE...
+
+
+
+
+
+
+
+
+
+
+
+ -> PARA ATIVAR ESSA 'feature secreta',
+
+
+ basta escrever assim:
+
+
+
+
+
+
+
+@Directive(
+    {
+        selector: '[appBetterHighlight]'
+    }
+)
+
+
+
+
+
+
+
+ @Input('appBetterHighlight') highlightColor: string = 'blue';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ---> isso vai acabar VINCULANDO O NOME 'appBetterHighlight'
+
+
+
+ A ESSA PROPRIEDADE AÍ...
+
+
+
+
+
+
+
+
+
+ --> o elemento p, então, se  você quisesse CUSTOMIZAR ESSA PROPRIEDADE DE SUA DIRECTIVE,
+
+ FICARIA ASSIM:
+
+
+ <p  [appBetterHighlight]="'red'" [defaultColor]="'yellow'" >Style me with a better attribute directive!</p> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> MAS É IMPORTANTE __ ENTENDER_ QUE ESSA É _ APENAS UMA OPÇÃO... ----> TEMOS O MESMO COMPORTAMENTO DE ANTES,
+
+
+ MAS AGORA 
+
+ FICAMOS COM ESSE MESMO STYLE 
+
+ DE 'ENCLOSING THE DIRECTIVE ITSELF WITH SQUARE BRACKETS'...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> MAS É SÓ UMA OPTION,
+
+ VOCÊ PODE DEFINIR ESSE ALIAS  SE VOCÊ QUISER,
+
+
+ MAS ISSO 
+
+
+
+ NÃO É OBRIGATÓRIO....- --> E, POR DEFAULT, COMO VOCÊ VIU ANTES,
+
+ A DIRECTIVE NAME NÃO É 
+
+
+ ENCLOSADA EM '[]',
+
+
+
+ só acaba enclosada SE VOCÊ QEUR 
+ BINDAR A UMA PROPRIEDADE QUE TEM O MESMO NAME/alias  DO SELECTOR DE SUA DIRECTIVE...
+
+
+
+
+
+
+
+
+
+
+
+ --> MAIS 1 COISA SOBRE O PASS DE DATA,
+
+
+
+
+ E 
+
+
+
+ _ QUE É VERDADE, SOBRE _ O PROPERTY BINDING EM GERAL:
+
+
+  
+
+
+
+
+
+  -----> SE VOCÊ FIZER 'PASS DOWN' 
+
+  de uma string,
+
+
+  como fizemos agora como 
+
+
+
+  '[appBetterHighlight]',
+
+
+
+
+   <p  [appBetterHighlight]="'red'" [defaultColor]="'yellow'" >Style me with a better attribute directive!</p> ,
+
+
+
+
+
+
+
+
+
+
+
+
+   -> SE VOCÊ ESTÁ FAZENDO PROPERTY BINDING DE UMA STRING, E SÓ DE UMA STRING,
+
+   VOCê PODE REMOVER o '[]',
+
+
+   e depois 
+
+   o 
+   '' dentro do ""...
+
+
+
+
+   eX:
+
+
+
+
+
+
+   <p  [appBetterHighlight]="'red'" defaultColor="yellow" >Style me with a better attribute directive!</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   -----> ISSO É POSSÍVEL, SIM...
+
+
+
+
+
+
+
+
+
+
+
+   --> você podfe usar isso, sim,
+
+
+
+   O PROFESSOR USARÁ MAIS TARDE NO CURSO,
+
+   COM OFFICIAL ANGULAR DIRECTIVES ---------> MAS VOCÊ TEM QUE CUIDAR:
+
+
+
+
+
+
+   SE VOCÊ USAR ISSO,
+
+   FICA BEM CLARO QUE ISSO É PROPERTY BINDING,
+
+
+
+   E QUE __ NINGUÉM VAI PENSAR QUE ESSE PODERIA SER UM 'REAL ATTRIBUTE'
+
+
+   PARA O ELEMENT EM QUE VOCÊ POSICIONOU ESSA PROPERTY...
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ok... acabamos com essa parte das directives...

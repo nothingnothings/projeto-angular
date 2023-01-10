@@ -1,0 +1,2160 @@
+
+
+
+CRIO UM NOVO PROJETO,
+
+
+E AÍ COPIO O CÓDIGO DO 
+
+
+PROFESSOR...
+
+
+
+
+
+
+
+
+
+
+
+
+copiei tudo...
+
+
+
+
+
+
+
+
+
+
+
+
+--> agora só falta 
+
+
+
+
+
+
+ver o código dele...
+
+
+
+
+
+
+
+
+
+
+
+---------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA CRIAR NOSSO PRÓPRIO OBSERVABLE,
+
+
+devemos ir até o component de 'home',
+
+
+e aí 
+
+
+,
+
+
+dentro de 
+
+'ngOnInit',
+
+
+
+
+
+
+O PROFESSOR VAI QUERER _ CRIAR UM NOVO 'OBSERVABLE'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, OBSERVABLES_ _ NÃO SÃO UMA FEATURE 
+
+
+'BAKED' NO JAVASCRIPT OU TYPESCRIPT...
+
+
+
+
+
+
+
+
+
+------> OBSERVABLES, EM VEZ DISSO,
+
+
+
+
+SÃO ADICIONADOS POR UMA PACKAGE CHAMADA DE 'rxjs'....
+
+
+
+
+
+
+
+
+
+
+
+
+ ->  É EXATAMENTE POR ISSO QUE EM PROJETOS ANGULAR VOCê PODE ENCONTRAR,
+ LÁ EM 
+
+ 'package.json',
+
+
+
+
+
+
+ a dependency de 
+
+ 'rxjs'...
+
+
+
+
+
+
+ ex:
+
+
+
+
+   "dependencies": {
+    "@angular/animations": "~13.3.0",
+    "@angular/common": "~13.3.0",
+    "@angular/compiler": "~13.3.0",
+    "@angular/core": "~13.3.0",
+    "@angular/forms": "~13.3.0",
+    "@angular/platform-browser": "~13.3.0",
+    "@angular/platform-browser-dynamic": "~13.3.0",
+    "@angular/router": "~13.3.0",
+    "bootstrap": "^3.4.1",
+    "rxjs": "~7.5.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.11.4"
+  }, 
+
+
+
+
+
+
+
+
+
+
+  RxJS is a library for composing asynchronous and event-based programs by using observable sequences. 
+  
+  It provides one core type, the Observable, ...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> BEM, NO COMPONENT 'HOME',
+
+  O PROFESSOR QUER 
+
+  CRIAR 
+
+
+
+  UM 
+
+
+  OBSERVABLE NOVO...
+
+
+
+
+
+
+
+
+
+
+
+
+  --> para isso,
+
+
+  DEVEMOS IMPORTAR 
+
+
+  COISAS LÁ DA PACKAGE DE 'rxjs'...
+
+
+
+
+
+
+
+
+
+
+  --> SE QUEREMOS CRIAR NOVOS OBSERVABLES,
+
+
+  PRECISAMOS 
+
+  DE CERTAS FEATURES 
+
+
+  LÁ DA PACAKGE DE 
+
+  'rxjs'...
+
+
+
+
+
+
+
+
+
+
+  ---> ESSA PACKAGE ACTUALLY NOS DÁ ALGUMAS DIFERENTES MANEIRAS DE CRIAR 1 'OBSERVABLE'...
+
+
+
+
+
+
+
+
+
+
+
+  -> UMA DAS MANEIRAS MAIS 
+
+
+
+  FÁCEIS DE CRIAR UM 'OBSERVABLE'
+
+
+  é através 
+
+  da function de 
+
+
+
+
+  'interval'... -----> 
+
+ É UM METHOD/INTERVAL...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> escreva assim:
+
+
+
+
+
+
+ import { interval } from 'rxjs';
+
+
+
+
+
+
+
+
+
+
+
+ ngOnInit() {
+
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ----->  CERTO... IMPORTADA ESSA FUNCTION,
+
+ VOCÊ DEVE A CHAMAR E ENTÃO PASSAR _ UM NUMBER A ELA....
+
+
+
+
+
+
+
+
+
+
+
+ EX:
+
+
+
+
+
+
+ 
+ import { interval } from 'rxjs';
+
+
+
+
+
+
+
+
+
+
+
+ ngOnInit() {
+
+        interval()
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+----> CERTO... -> PASSE 1 NUMBER...
+
+
+
+
+
+
+
+
+
+-> O 'interval()"
+
+
+FUNCIONA DE FORMA PARECIDA COM 'setInterval()',
+
+
+ou seja,
+
+
+
+
+COMO 
+
+ESSA OUTRA FUNCTION,
+
+
+VOCÊ PASSA 
+
+
+1 
+
+
+
+
+NUMBER, EM MILISSEGUNDOS,
+
+
+QUE 
+
+
+
+
+_ VAI _ 
+
+DISPARAR _ 
+
+
+1 'EVENT'
+
+A CADA 
+
+
+'X' 
+
+MILISSEGUNDOS....
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok.... 
+
+
+
+
+O CÓDIGO FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+ 
+ import { interval } from 'rxjs';
+
+
+
+
+
+
+
+
+
+
+
+ ngOnInit() {
+
+        interval(period: 1000)
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> AGORA, PASSADO ESSE '1000',
+
+
+A CADA __ SEGUNDO,
+
+
+1 NOVO EVENT SERÁ EMITIDO...
+
+
+
+
+
+
+
+--> 
+
+
+
+
+
+
+
+
+CERTO....
+
+
+
+
+
+
+e 'interval(1000)'
+
+
+
+
+JÁ NOS DÁ UM OBSERVABLE,
+
+
+
+E IMEDIATAMENTE PODEMOS 
+
+FAZER 'SUBSCRIBE' a ele...
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { interval } from 'rxjs';  ///maneira mais fácil de criar um observable...
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+
+
+    interval(1000).subscribe()
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+--------------------------------
+
+
+
+
+
+
+
+
+OK.... INTERVAL vai emitir esse 'event' a cada segundo....
+
+
+
+
+
+
+
+
+
+
+
+--> LÁ NO METHO DE 'subscribe()',
+
+
+
+O PROFESSOR PASSA COMO ARGUMENTO UMA FUNCTION TIPO 
+
+
+
+(count) => {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+--> O PRIMEIRO ARGUMENTO QUE PODEMOS PASSAR A 'SUBSCRIBE'
+
+É 
+
+SEMPRE UMA _ 
+
+
+ANONYMOUS FUNCTION (ou uma function diversa)....
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { interval } from 'rxjs';  ///maneira mais fácil de criar um observable...
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+
+
+    interval(1000).subscribe(
+
+      (count) => {  ///o primeiro argumento de 'subscribe' é sempre uma FUNCTION/ANON FUNCTION...
+
+      }
+    )
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ESSA 'ANON FUNCTION' é o HANDLER para _ TODOS OS 'DATA VALUES' que 
+
+são/serão emitidos...
+
+
+
+
+
+
+
+
+
+
+--> OK... PASSAMOS ESSE NEGÓCIO AÍ...
+
+
+
+
+
+
+-> 
+
+
+
+
+
+
+
+
+
+
+
+ngOnInit() {
+  interval(1000).subscribe(
+    (count) => {
+
+    }
+  )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O ARGUMENTO DESSA ANON FUNCTION É 
+
+
+O 'VALUE QUE É EMITIDO' 
+
+
+por aquele 
+
+
+
+
+'observable'
+
+
+
+
+de 'interval',
+
+que vai emitir 
+
+
+
+
+1 event a cada 1s...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> o parâmetro count será um NÚMERO,
+
+
+um número que 
+
+vai 
+
+ser gradualmente incrementado....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> escrevo assim:
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { interval } from 'rxjs';  ///maneira mais fácil de criar um observable...
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+
+
+    interval(1000).subscribe(
+
+      (count) => {  ///o primeiro argumento de 'subscribe' é sempre uma FUNCTION/ANON FUNCTION...
+
+        console.log(count);
+      }
+    )
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok... isso realmente funciona...
+
+
+
+
+
+
+esse parâmetro count 
+
+vai fazer com que apareça,
+
+no nosso console,
+um número que vai constantemente aumentando..
+
+
+
+
+
+
+
+1 2 3 4 5 6 7 8 9,
+
+
+a cada 
+
+
+1 segundo transcorrido (porque passamos '1000' como seu value)...
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAIS TARDE 
+
+
+VAMOS CONSTRUIR UM 
+
+'OBSERVABLE'
+
+totalmente do 0,
+
+
+
+EM QUE 
+
+
+
+
+__VAMOS __ 
+
+
+
+CONTROLAR__ TOTALMENTE __ OS 'EMITTED VALUES'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> aqui, por enquanto,
+
+
+usamos essa 'half-measure',
+
+
+por meio 
+
+dessa 'built-in' function 
+
+
+do rxjs,
+
+
+
+que é 'interval',
+
+
+que 
+
+
+é 
+
+essa function/method que constantemente 
+
+
+
+emite 
+
+
+esse event de 'count'...
+
+
+
+
+
+
+
+
+
+'INTERVAL' --> é um observable....
+
+
+
+'.subscribe' --> é um OBSERVER....
+
+
+
+
+
+
+
+
+
+--> o 'interval' ainda é mais 'básico' do que 
+
+
+
+os observables que o angular nos dá...
+
+
+
+
+
+
+
+
+--> ok... aqui temos interval,
+
+que vai disparar 1 value a cada segundo..
+
+
+
+
+
+
+
+
+
+
+
+
+-_> a ideia aqui é que 
+
+VAMOS GANHAR 1 NOVO VALUE, EMITIDO A CADA SEGUNDO,
+
+E AÍ VAMOS CONSOLE.LOGGAR ISSO AÍ.
+
+
+
+
+
+
+
+
+
+
+--> ok...
+
+
+
+
+
+
+
+até aí, tudo bem, 
+
+
+
+
+é isso que acontece, o console.log de 
+
+
+
+
+1 value a cada segundo... ----> E ISSO, É CLARO,
+
+
+
+VEM DAQUELA FUNCTION DE 'interval',
+
+QUE NOS DÁ 
+
+
+
+1 
+'OBSERVABLE'...
+
+
+
+
+
+
+
+
+
+
+--> ESSE NÃO É UM OBSERVABLE QUE 'CONSTRUÍMOS FROM THE GROUND Up',
+
+
+mas é algo bem próximo disso....
+
+
+
+
+
+
+
+
+
+-->  AGORA, QUANDO O PROFESSOR 
+
+
+
+
+TROCA A 'PAGE',
+
+troca para o 
+
+
+user de 
+
+'user 1',
+
+
+
+
+
+
+O OBSERVABLE _ CONTINUA 'CONTANDO',
+
+continua 
+
+emitindo suas data packages... ----> E ISSO __ É ALGO QUE __ DEVEMOS 
+
+
+
+
+'BE  AWARE OF'... --> TEMOS QUE 
+
+
+
+TER EM MENTE/CONSIDERAR QUE 
+
+
+
+
+nossos observables nunca são 'limpados' automaticamente;
+
+
+
+eles continuam rodando no background de nosso app,
+
+
+emitindo suas data packages,
+
+
+
+até que 
+
+
+nós 
+
+
+
+OS LIMPEMOS, por meio daquela gambiarra que o professor nos mostrou... (vou tentar replicar ela, agora)..
+
+
+
+
+
+
+
+
+
+-> as únicas exceções, observables que NÃO DEMANDAM 'clean-up',
+
+
+SÃO AQUELES OFERECIDOS PELO ANGULAR...
+
+
+
+
+
+
+VEJA O CÓDIGO EXEMPLO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { UsersService } from '../users.service';
+
+import { Params } from '@angular/router';
+
+import { Subscription } from 'rxjs'; // é usado para ARMAZENARMOS NOSSA SUBSCRIPTION, PARA POSTERIORMENTE NÓS A REMOVERMOS COM 'ngOnDestroy()'...
+///isso pq NOSSOS COMPONENTS SÃO DESTRUÍDOS QUANDO TROCAMOS DE '''PAGE'''', MAS AS 'SUBSCRIPTIONS' não....
+@Component({
+  selector: 'app-user',
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.css'],
+})
+export class UserComponent2 implements OnInit, OnDestroy {
+  user: { id: number; name: string };
+
+    paramsSubscription: Subscription;
+
+  constructor(
+    private route: ActivatedRoute,
+    private usersService: UsersService
+  ) {}
+
+  ngOnInit(): void {
+    const selectedUserId: string = this.route.snapshot.params['userId'];
+
+    console.log(selectedUserId);
+
+    const selectedUser = this.usersService.users.find((user) => {
+      return user.id.toString() === selectedUserId;
+    });
+
+    this.user = selectedUser!;
+
+   this.paramsSubscription = this.route.params.subscribe((newParams: Params) => {
+      console.log(newParams);
+      this.user.id = newParams['userId'];
+    });
+  }
+
+
+
+  ngOnDestroy(): void {  ///é aqui que vamos querer DESTRUIR NOSSA SUBSCRIPTION...
+
+    this.paramsSubscription.unsubscribe();
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> para 'LIMPAR' um observable de nosso app,
+
+podemos seguir este approach:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnDestroy, OnInit } from '@angular/core';
+
+import { interval, Subscription } from 'rxjs'; ///maneira mais fácil de criar um observable...
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css'],
+})
+export class HomeComponent implements OnInit, OnDestroy {
+  intervalSubscription: Subscription;
+
+  constructor() {}
+
+  ngOnInit(): void {
+    this.intervalSubscription = interval(1000).subscribe((count) => {
+      ///o primeiro argumento de 'subscribe' é sempre uma FUNCTION/ANON FUNCTION...
+
+      console.log(count);
+    });
+  }
+
+  ngOnDestroy(): void {    /////SE VAMOS CRIAR UM 'OBSERVABLE', temos que saber COMO _ CANCELAR UMA DE NOSSAS 'SUBSCRIPTIONS' a nosso observable custom.... ---> é assim que podemos fazer; armazenamos essa subscription em uma propriedade, aí mais tarde, nesse hook de 'NgOnDestroy()', FAZEMOS UNSUBSCRIBE nessa subscription específica (pq o 'ngOnDestroy' é executado quando TROCAMOS DE PAGE, QUANDO NOSSO PAGE-COMPONENT É DESTRUÍDO, ESSENCIALMENTE)...
+    
+    this.intervalSubscription.unsubscribe();
+  }
+}
+
+
+
+
+
+-----------------------
+
+
+
+
+
+
+
+
+
+
+--> ISSO QUER _ DIZER QUE 
+
+
+'OBSERVABLES'
+
+
+
+NÃO NECESSARIAMENTE VÃO PARAR 
+
+
+DE 
+
+'EMIT VALUES'
+
+
+
+SÓ PQ 
+
+
+
+__VOCÊ NÃO TEM MAIS INTERESSE NELES/NISSO...
+
+
+
+
+
+
+
+
+
+--> HÁ CERTOS OBSERVABLES, SIM, 
+
+
+
+QUE __ 
+
+
+EMITEM UM VALUE __UMA __ ÚNICA VEZ 
+
+E 
+AÍ 
+
+'THEY ARE DONE',
+
+
+
+
+COMO POR EXEMPLO O OBSERVABLE DE 'http',
+
+
+
+
+
+
+PQ COM HTTP REQUESTS VOCÊ VAI 'GET BACK A RESPONSE',
+
+
+E AÍ _ aCABOU.... -----> 
+
+
+
+
+
+
+
+
+
+
+MAS HÁ OUTROS OBSERVABLES 
+
+
+
+
+_ QUE VÃO CONTINUAR 'EMITTING VALUES'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA IMPEDIR ESSE PROCESSO,
+
+PARAR O EMIT DE VALUES POR 1 OBSERVABLE,
+
+
+
+PARA _ CONSEGUIR __ EVITAr_ MEMORY LEAKS (bem importante),
+
+
+
+
+VOCÊ DEVE 'UNSUBSCRIBE'
+
+
+
+de quaisquer OBSERVABLES cujos valores VOCÊ JÁ NÃO SE INTERESSA MAIS....
+
+
+
+
+
+
+
+
+
+
+
+
+--> E ISSO É MT  IMPORTANTE,
+
+
+
+PQ 
+
+
+
+
+
+
+AGORA DEVEMOS TESTAR:
+
+
+
+
+
+
+
+
+
+
+-> VEJA O QUE ACONTECE 
+
+
+
+
+SE O PROFESSOR _ SAI _ DA PAGE DE 'HOME'
+
+
+
+E AÍ _ ENTRA DE NOVO....
+
+
+
+
+
+
+
+
+
+
+--> VOCÊ VERÁ UM OUTPUT ASSIM NO CONSOEL:
+
+
+
+
+
+0
+80
+1
+81
+2
+82
+3
+83 
+
+
+
+
+
+
+-----> ISSO SIGNIFICA QUE 
+
+_CADA __ VEZ QUE ENTRARMOS NESSA PAGE DE 'HOME',
+
+
+
+
+
+
+VAMOS _ FICAR _ COM MAIS E MAIS OBSERVABLES,
+
+
+
+
+SENDO MANIPULADOS POR NOSSOS 'OBSERVERS'... ---> E ISSO É __ MUITO MUITO RUIM....
+
+
+
+
+
+
+
+
+
+--> se ISSO AÍ ACONTECE POR TRÁS DAS CENAS,
+
+
+VOCÊ RAPIDAMENTE FICA 'SEM RECURSOS',
+
+
+
+E AÍ 
+
+VOCÊ 
+
+
+
+
+DEIXA SEU APP __TREMENDAMENTE LENTO,
+
+
+PQ VOCÊ INTRODUZ UM MEMORY LEAK...
+
+
+
+
+
+
+
+
+
+--> SUA MEMÓRIA ACABA 
+
+OCUPADA PRA CARAMBA,
+
+
+COM ALGO 
+
+
+DE QUE NÃO PRECISA...
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE VOCÊ SEMPRE PRECISA FAZER 'CLEAR' DE SUAS SUBSCRIPTIONS em seus observables...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+e você faz isso justamente por meio daquele 
+
+exemplo de código que o professor nos mostrou:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnDestroy, OnInit } from '@angular/core';
+
+import { interval, Subscription } from 'rxjs'; ///maneira mais fácil de criar um observable...
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css'],
+})
+export class HomeComponent implements OnInit, OnDestroy {
+  intervalSubscription: Subscription;
+
+  constructor() {}
+
+  ngOnInit(): void {
+    this.intervalSubscription = interval(1000).subscribe((count) => {
+      ///o primeiro argumento de 'subscribe' é sempre uma FUNCTION/ANON FUNCTION...
+
+      console.log(count);
+    });
+  }
+
+  ngOnDestroy(): void {    /////SE VAMOS CRIAR UM 'OBSERVABLE', temos que saber COMO _ CANCELAR UMA DE NOSSAS 'SUBSCRIPTIONS' a nosso observable custom.... ---> é assim que podemos fazer; armazenamos essa subscription em uma propriedade, aí mais tarde, nesse hook de 'NgOnDestroy()', FAZEMOS UNSUBSCRIBE nessa subscription específica (pq o 'ngOnDestroy' é executado quando TROCAMOS DE PAGE, QUANDO NOSSO PAGE-COMPONENT É DESTRUÍDO, ESSENCIALMENTE)...
+    
+    this.intervalSubscription.unsubscribe();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NÓS ARMAZENAMOS NOSSA SUBSCRIPTION EM UMA PROPRIEDADE 
+
+PRIVADA 
+
+
+
+DE NOSSOS COMPONENTS,
+
+
+
+
+
+
+como 
+
+esse 
+
+
+
+'intervalSubscription'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> NO CASO, A VERSÕA DO PROFESSOR FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+import { Component, OnDestroy, OnInit } from '@angular/core';
+
+import { interval, Subscription } from 'rxjs'; ///maneira mais fácil de criar um observable...
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css'],
+})
+export class HomeComponent implements OnInit, OnDestroy {
+  private firstObsSubscription: Subscription;
+
+  constructor() {}
+
+  ngOnInit(): void {
+    this.firstObsSubscription = interval(1000).subscribe((count) => {
+      ///o primeiro argumento de 'subscribe' é sempre uma FUNCTION/ANON FUNCTION...
+
+      console.log(count);
+    });
+  }
+
+  ngOnDestroy(): void {    /////SE VAMOS CRIAR UM 'OBSERVABLE', temos que saber COMO _ CANCELAR UMA DE NOSSAS 'SUBSCRIPTIONS' a nosso observable custom.... ---> é assim que podemos fazer; armazenamos essa subscription em uma propriedade, aí mais tarde, nesse hook de 'NgOnDestroy()', FAZEMOS UNSUBSCRIBE nessa subscription específica (pq o 'ngOnDestroy' é executado quando TROCAMOS DE PAGE, QUANDO NOSSO PAGE-COMPONENT É DESTRUÍDO, ESSENCIALMENTE)...
+    
+    this.firstObsSubscription.unsubscribe();
+  }
+}
+
+
+
+
+
+
+
+
+-------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+OK...
+
+
+
+
+
+
+
+BASICAMENTE USAMOS ESSE TYPE DE 'Subscription',
+
+
+
+para aí 
+
+
+ARMAZENAR E DEPOIS 
+
+
+
+DAR 
+
+UNSUBSCRIBE NESSE 
+
+
+
+
+
+
+'ngOnDestroy'...
+
+
+
+
+
+
+> OU SEJA,
+
+
+
+
+
+QUANDO FAZEMOS SUBSCRIBE,
+
+
+
+
+
+
+
+como com o código 
+
+
+de 
+
+
+
+
+
+interval(1000).subscribe(() => {})
+
+
+
+
+
+
+,
+
+
+
+PODEMOS 
+
+
+ARMAZENAR ESSA SUBSCRIPTION 
+
+
+
+
+EM UMA PROPRIEDADE,
+
+
+
+
+
+
+
+
+
+..... --> É CLARO QUE ___ ISSO NÃO É O STORE DO OBSERVABLE EM SI,
+
+
+
+
+
+PQ O OBSERVABLE É ACTUALLY 'interval()'...
+
+
+
+
+
+
+
+
+--> NO CASO,
+
+
+
+NÃO ESTAMOS ARMZENANDO O 
+
+'OBSERVABLE EM SI',
+
+
+
+e sim 
+
+
+
+ARMAZENAMOS 
+
+
+
+''' A COISA QUE É RETORNADA POR .subscribe()''' --> E 
+
+
+
+
+O '.subscribe()"
+
+
+SEMPRE _ RETORNA UMA SUBSCRIPTION,
+
+
+
+
+
+É ISSO QUE ACABAMOS ARMAZENAANDO 
+
+ 
+
+ em 
+
+
+ 'private firstObsSubscription',
+
+
+
+
+ POR MEIO DO CÓDIGO DE 
+
+
+
+
+ 'this.firstObsSubscription = interval(() => {...})' 
+
+
+
+
+
+
+
+
+
+
+
+ -> OK.... AÍ O PROFESSOR IMPORTA 
+
+
+
+ O HOOK DE 'NgOnDestroy',
+
+
+
+
+
+ PARA 
+
+
+ AÍ 
+
+
+
+
+
+
+
+
+ __ CHAMAR A PROPRIEDADE QUE SEGURA NOSSA 
+
+
+
+ SUBSCRIPTION,
+
+
+
+
+
+
+
+ PARA AÍ CHAMAR 
+ '.unsubscribe()"',
+
+
+
+ PARA __ LIMPAR ESSA SUBSCRIPTION E _PREVENIR _ 
+
+
+
+ MEMORY LEAKS,
+
+
+ pq 
+
+ agora quando sairmos dessa PAGE,
+
+
+ 'old subscriptions'
+
+
+ SERÃO DELETADAS,
+ NÃO SERÃO MAIS MANTIDAS... (vão parar de 'observe' o nosso observable, essencialmente... )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK, AGORA SE SALVARMOS NOSSO CODIGO,
+
+ABRIRMOS O APP -->
+
+
+
+
+
+
+
+AGORA QUANDO ENTRARMOS EM 'HOME',
+
+SERÁ MANTIDO 1 
+
+
+OBSERVABLE,
+
+SIM,
+
+
+__ MAS ASSIM QUE SAIRMOS DA PAGE,
+
+
+ESSE 
+
+
+
+OBSERVABLE FICARÁ 'DEAD',
+
+
+
+
+pq 
+
+
+
+teremos dado 
+
+
+'UNSUBSCRIBE'...
+
+
+
+
+
+
+
+
+
+-> OK, ESSE É UM PASSO IMPORTANTE 
+
+
+NO SENTIDO DE ENTENDER OBSERVABLES...
+
+
+
+
+
+
+
+
+
+--> CERTO, MAS AQUI TEMOS UMA PERGUNTA:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS PQ DIABOS NÃO FAZEMOS UNSUBSCRIBE LÁ NO COMPONENT DE 
+
+
+'user.component.ts',
+
+
+NAQUELE CÓDIGO DE 
+
+
+
+
+
+
+
+
+'ngOnInit() {
+
+
+  this.route.params.subscribe(
+    (params: Params) => {
+      this.id = +params['id'];
+
+    }
+  )
+}
+
+'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OU SEJA,
+
+PQ É MANTIDO ESSE SUBSCRIBE AÍ,
+
+PQ NÃO CHAMAMOS 'OnDestroy'
+
+
+
+e removemos essa subscription aí, também? 
+
+
+
+
+
+
+
+
+
+
+
+
+-> essa é uma questão válida,
+
+mas a resposta é que 
+
+
+
+O ANGULAR 
+
+SIMPLESMENTE FAZ ISSO PARA NÓS.... -> PARA OS OBSERVABLES PROVIDENCIADOS PELO ANGULAR,
+
+
+COMO 
+
+
+'PARAMS'
+,
+
+
+mas também QUALQUER OUTRO OBSERVABLE PROVIDENCIADO POR UMA ANGULAR PACKAGE,
+
+
+
+TODOS ESSES ANGULAR OBSERVABLES SÃO _ MANAGEADOS _ PELO ANGULAR,
+
+
+
+
+
+
+E É POR ISSO QUE 
+
+NÃO PRECISAMOS FAZER UNSUBSCRIBE MANUALMENTE,
+
+NESSES CASOS...

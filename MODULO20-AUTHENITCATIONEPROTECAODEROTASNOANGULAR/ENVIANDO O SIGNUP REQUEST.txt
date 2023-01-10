@@ -1,0 +1,874 @@
+
+
+
+
+
+
+
+
+
+
+
+
+JÁ FIZ ISSO......
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  onAuthFormSubmit(form: NgForm) {
+    this.isLoading = true;
+
+    const email = form.form.get('email')?.value;
+
+    const password = form.form.get('password')?.value;
+
+    const userData = {
+      email: email,
+      password: password,
+      returnSecureToken: true,
+    };
+
+    if (this.isSignup) {
+      this.authService.onCreateAccount(userData).subscribe(
+        (responseData) => {
+          this.isLoading = false;
+          form.reset();
+          this.router.navigate(['/auth']);
+        },
+
+        (errorData) => {
+          this.isLoading = false;
+
+          if (errorData.error.error.message === 'EMAIL_EXISTS') {
+            confirm(
+              'Entered email already exists, please create an account with a different email.'
+            );
+          }
+          console.log(errorData);
+        }
+      );
+    } else {
+      this.authService.onLogin(userData).subscribe(
+        (responseData) => {
+          console.log(responseData);
+          const expirationDate = new Date(
+            new Date().getTime() + +responseData.expiresIn * 1000
+          ); ////lembre-se de adicionar '* 1000', pois o JAVASCRIPT SEMPRE CONSIDERA 'TEMPO' EM MILISSEGUNDOS, E NÃO EM SEGUNDOS.... (só o 'expiresIn' que é mostrado em segundos....)
+          localStorage.setItem('token', responseData.idToken);
+          localStorage.setItem('expirationDate', expirationDate.toString());
+          localStorage.setItem('userId', responseData.localId);
+          localStorage.setItem('email', responseData.email);
+
+          this.isLoading = false;
+
+          this.router.navigate(['/recipe-book']);
+        },
+
+        (error) => {
+          console.log(error);
+
+          this.isLoading = false;
+        }
+      );
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+nós extraímos nossa data da form,
+
+
+
+e aí a submittamos...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> o professor coloca 
+
+
+
+um 
+código de 
+
+
+
+
+
+'ANTI ANTI-VALIDATION',
+
+
+
+
+que é a linha de 
+
+
+
+'if (!form.valid) {
+    return; 
+}
+'
+
+
+
+
+
+
+
+
+
+
+
+--> É UMA VALIDATION STEP EXTRA, QUE NUNCA MACHUA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> SE O USER FAZ BYPASS DESSE 
+
+
+
+
+'if (!form.valid)',
+
+
+
+
+
+A 
+
+DATA INCORRETA SERÁ SIMPLESMENTE ENVIADA AO SERVER,
+
+
+
+
+
+LOCAL EM QUE 
+
+SERÁ REJEITADA (
+
+
+    o backend vai bloquear essa data, 
+
+    e retoranr um código de erro..
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SE UM USER QUER UMA BAD USER EXPERIENCE E QUER 
+
+FORÇAR ISSO,
+
+
+
+
+NÃO PODEMOS FAZER NADA..
+
+
+
+
+
+
+
+
+
+
+
+-> INJETAMOS O SERVICE DE 'auth.service.ts',
+
+
+
+
+
+tudo normal..
+
+
+
+
+
+
+
+
+O CÓDIGO VAI FICANDO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../auth.service';
+
+@Component({
+  selector: 'app-auth-page',
+  templateUrl: './auth-page.component.html',
+  styleUrls: ['./auth-page.component.css'],
+})
+export class AuthPageComponent implements OnInit {
+  isSignup: boolean = true;
+
+  isLoading: boolean = false;
+
+  constructor(private authService: AuthService, private router: Router) {}
+
+  ngOnInit(): void {}
+
+  onAuthFormSubmit(form: NgForm) {
+
+
+    if (!form.valid) {  ///extra validaton, bem básica (caso em que o user hackeia nossos form controls; nesse caso, mesmo assim teremos essa step extra de validation)...
+      return; 
+  }
+
+
+
+
+    this.isLoading = true;
+
+
+
+    const email = form.form.get('email')?.value;
+
+    const password = form.form.get('password')?.value;
+
+    const userData = {
+      email: email,
+      password: password,
+      returnSecureToken: true,
+    };
+
+    if (this.isSignup) {
+      this.authService.onCreateAccount(userData).subscribe(
+        (responseData) => {
+          this.isLoading = false;
+          form.reset();
+          this.router.navigate(['/auth']);
+        },
+
+        (errorData) => {
+          this.isLoading = false;
+
+          if (errorData.error.error.message === 'EMAIL_EXISTS') {
+            confirm(
+              'Entered email already exists, please create an account with a different email.'
+            );
+          }
+          console.log(errorData);
+        }
+      );
+    } else {
+      this.authService.onLogin(userData).subscribe(
+        (responseData) => {
+          console.log(responseData);
+          const expirationDate = new Date(
+            new Date().getTime() + +responseData.expiresIn * 1000
+          ); ////lembre-se de adicionar '* 1000', pois o JAVASCRIPT SEMPRE CONSIDERA 'TEMPO' EM MILISSEGUNDOS, E NÃO EM SEGUNDOS.... (só o 'expiresIn' que é mostrado em segundos....)
+          localStorage.setItem('token', responseData.idToken);
+          localStorage.setItem('expirationDate', expirationDate.toString());
+          localStorage.setItem('userId', responseData.localId);
+          localStorage.setItem('email', responseData.email);
+
+          this.isLoading = false;
+
+          this.router.navigate(['/recipe-book']);
+        },
+
+        (error) => {
+          console.log(error);
+
+          this.isLoading = false;
+        }
+      );
+    }
+  }
+
+  onSwitchAuth() {
+    this.isSignup = !this.isSignup;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> certo...
+
+
+
+
+
+QUANTO AOS CASES DE ERROR,
+
+o professor 
+
+realmente se utiliza do segundo parâmetro de '.subscribe()'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COM TUDO ISSO FORA DO CAMINHO,
+
+
+
+
+NOSSO CÓDIGO DEVE ESTAR FUNCIONANDO...
+
+
+
+
+
+
+
+--> VAMOS ENVIAR REQUESTS DIFERENTES DE ACORDO COM O STATE DE 'isSignup'...
+
+
+
+
+
+
+ 
+
+ --> PODEMOS DEIXAR 'form.reset()'
+
+
+ ao final, para os 2 cases,
+ pq isso é algo que SEMPRE VAMOS QUERER FAZER...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> CERTO... TUDO ISSO ESTÁ FUNCIONANDO..
+
+
+
+
+
+
+
+
+
+
+
+
+ --> RECEBEMOS DE VOLTA UMA RESPONSE, QUADO FAZEMOS 'SIGNUp',
+
+
+
+
+
+
+
+
+
+
+
+ UM 
+
+ OBJECT QUE TEM s 
+
+
+
+
+
+
+
+
+
+ email 
+
+ expiresIn
+
+
+
+ idToken
+
+
+
+ kind 
+
+
+ localId
+
+
+
+
+
+ refreshToken..
+
+
+
+
+
+
+
+
+
+
+ -----> se examinamos nosso web console do firebase,
+
+
+ VEREMOS QUE UM USER TERÁ SIDO CRIADO..
+
+
+
+
+
+
+
+ -> ISSO PARECE MT BOM, E PARECE ESTAR FUNCIONANDO...
+
+
+
+
+
+
+
+
+ -> E SE VOCê TENTAR USAR O MESMO EMAIL ADDRESS + UMA VEZ,
+
+
+ VOCê GANHA 1 ERROR,
+
+
+
+
+ PQ 
+
+
+
+
+
+
+ O EMAIL JÁ EXISTE... (message property de 'EMAIL_EXISTS') ----> PODEMOS USAR ISSO 
+
+
+
+ PARA FAZER SHOW DE UMA MENSAGEM DE ERRO (
+
+
+
+     já fiz isso,
+
+
+     POR MEIO DESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    if (this.isSignup) {
+      this.authService.onCreateAccount(userData).subscribe(
+        (responseData) => {
+          this.isLoading = false;
+          // form.reset();
+          this.router.navigate(['/auth']);
+        },
+
+        (errorData) => {
+          this.isLoading = false;
+
+          if (errorData.error.error.message === 'EMAIL_EXISTS') {
+            confirm(
+              'Entered email already exists, please create an account with a different email.'
+            );
+          }
+          console.log(errorData);
+        }
+      );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> O PROFESSOR QUER QUE TAMBÉM SEJA CARREGADO UM 'LOADING SPINNER'
+
+
+
+ ENQUANTO ESPERAMOS PELO SEND-RESPONSE DESSES 
+
+
+ HTTP REQUESTS...
+
+
+
+
+
+
+
+
+
+ E EU JÁ CONSEGUI FAZER ISSO,
+
+ POR MEIO DESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+ HTML:
+
+
+
+
+
+
+
+
+
+
+
+       <div [ngStyle]="{ display: 'flex', 'justify-content': 'center' }" *ngIf="!isLoading">
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="!localFormReference.valid"
+        >
+          {{ isSignup ? "SIGN UP" : "LOGIN" }}
+        </button>
+        <button
+          class="textBtn"
+          (click)="onSwitchAuth()"
+          [ngStyle]="{ cursor: 'pointer' }"
+        >
+          {{ isSignup ? "Switch to Login" : "Switch to Signup" }}
+        </button>
+      </div>
+      <app-spinner *ngIf="isLoading"></app-spinner>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      --> OU SEJA,
+
+
+      ESSE LOADING SPINNER É MOSTRADO _ NO LUGAR DOS BUTTONS, ESSENCIALMENTE (quando ele aparece, é claro)...
+
+
+
+
+
+
+
+
+
+      ----> o CÓDIGO TS FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+      export class AuthPageComponent implements OnInit {
+  isSignup: boolean = true;
+
+  isLoading: boolean = false;
+
+  constructor(private authService: AuthService, private router: Router) {}
+
+  ngOnInit(): void {}
+
+  onAuthFormSubmit(form: NgForm) {
+
+
+    if (!form.valid) {  ///extra validaton, bem básica (caso em que o user hackeia nossos form controls; nesse caso, mesmo assim teremos essa step extra de validation)...
+      return; 
+  }
+
+
+
+
+    this.isLoading = true;
+
+
+
+    const email = form.form.get('email')?.value;
+
+    const password = form.form.get('password')?.value;
+
+    const userData = {
+      email: email,
+      password: password,
+      returnSecureToken: true,
+    };
+
+    if (this.isSignup) {
+      this.authService.onCreateAccount(userData).subscribe(
+        (responseData) => {
+          this.isLoading = false;
+          // form.reset();
+          this.router.navigate(['/auth']);
+        },
+
+        (errorData) => {
+          this.isLoading = false;
+
+          if (errorData.error.error.message === 'EMAIL_EXISTS') {
+            confirm(
+              'Entered email already exists, please create an account with a different email.'
+            );
+          }
+          console.log(errorData);
+        }
+      );
+    } else {
+      this.authService.onLogin(userData).subscribe(
+        (responseData) => {
+          console.log(responseData);
+          const expirationDate = new Date(
+            new Date().getTime() + +responseData.expiresIn * 1000
+          ); ////lembre-se de adicionar '* 1000', pois o JAVASCRIPT SEMPRE CONSIDERA 'TEMPO' EM MILISSEGUNDOS, E NÃO EM SEGUNDOS.... (só o 'expiresIn' que é mostrado em segundos....)
+          localStorage.setItem('token', responseData.idToken);
+          localStorage.setItem('expirationDate', expirationDate.toString());
+          localStorage.setItem('userId', responseData.localId);
+          localStorage.setItem('email', responseData.email);
+
+          this.isLoading = false;
+
+          this.router.navigate(['/recipe-book']);
+        },
+
+        (error) => {
+          console.log(error);
+
+          this.isLoading = false;
+        }
+      );
+    }
+
+
+    form.reset();
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  

@@ -1,0 +1,1900 @@
+
+
+
+
+
+
+ATÉ AGORA, só tivemos 
+
+TESTES BEM SIMPLES,
+
+
+QUE CHECAVAM SE OS COMPONENTS HAVIAM SIDO CRIADOS E ETC...
+
+
+
+
+
+
+
+
+
+
+-> vamos 'spice it up',
+
+
+
+VAMOS ADICIONAR UM SERVICE AO 
+
+
+NOSSO user folder..
+
+
+
+
+
+
+
+
+
+
+
+--> basta criar um service 
+
+
+com 
+
+
+ng g s exemplo 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok...
+
+
+
+
+
+
+
+com nosso service,
+
+JÁ TEMOS ESTE CÓDIGO DE TESTING:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { TestBed } from '@angular/core/testing';
+
+import { ExemploService } from './exemplo.service';
+
+describe('ExemploService', () => {
+  let service: ExemploService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(ExemploService);
+  });
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+--> ou seja,
+
+
+nós 
+
+BASICAMENTE 'CRIAMOS UMA TESTBED'
+
+
+para aí 
+
+
+
+INJETARMOS NOSSO SERVICE NELA...
+
+
+
+
+
+
+
+
+
+
+
+
+OK....
+
+
+
+
+
+
+
+
+MAS O QUE TEREMOS NESSE SERVICE?
+
+
+
+
+
+
+
+
+
+
+
+
+-> PROFESSOR COLOCA UMa propriedade 
+
+
+
+'user',
+
+com name de 'max'..
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class ExemploService {
+  user = {
+    name: 'Max',
+  };
+
+  constructor() {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> OK....
+
+
+
+
+
+
+
+
+
+
+AÍ LÁ EM 'exemplo.component.ts',
+
+
+
+
+
+O PROFESSOR VAI QUERER 
+
+
+
+
+
+
+
+
+PEGAR __  O VALUE_ _DESSE SERVICE,
+
+
+
+LÁ EM 'ngOnInit'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ele vai querer DEFINIR O 'this.user.name' como sendo igual ao 'user.name' 
+
+
+LÁ 
+
+
+
+DO SERVICE,
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ExemploService } from '../exemplo.service';
+
+@Component({
+  selector: 'app-exemplo',
+  templateUrl: './exemplo.component.html',
+  styleUrls: ['./exemplo.component.css'],
+})
+export class ExemploComponent implements OnInit {
+  example: {
+    name: string;
+  };
+
+  isLoggedIn = false;
+
+  constructor(private exemploService: ExemploService) {}
+
+  ngOnInit(): void {
+    this.example.name = this.exemploService.user.name;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+
+
+
+
+
+É CLARO QUE ISSO NÕA É NENHUMA ASYNC TASK OU ALGO DO GÊNERO, pq 
+
+OCORRE SINCRONAMENTE,
+
+
+
+MAS O QUE INTERESSA É QUE HOUVE UM 'INJECTION'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA QUE ISSO FUNCIONE,
+
+
+
+É NECESSÁRIO FAZER PROVIDE DESSE SERVICE OU EM 'app.module.ts',
+
+ou em 'exemplo.component.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS COMO ESCREVEMOS UM TEST PARA NOSSO SERVICE?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, PRIMEIRAMENTE:
+
+
+
+
+
+
+1) O 'name' é obtido lá do SERVICE, 
+
+por isso vamos ESCREVER UM TEST PARA CHECAR SE ESSE SERVICE EXISTE, E SE REALMENTE TEM ESSA PROPRIEDADE,
+
+E SE ESSA PROPRIEDADE REALMENTE TEM AQUELE VALUE lá...
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+import { TestBed } from '@angular/core/testing';
+
+import { ExemploService } from './exemplo.service';
+
+describe('ExemploService', () => {
+  let service: ExemploService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(ExemploService);
+  });
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+
+  it('should have property "exemplo" with name property of "Max" ', () => {
+    expect(service.user.name).toEqual('Max');
+  });
+
+
+});
+
+
+
+
+
+
+
+
+
+------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok... MAS ESSE ERA UM TESTING __ sOBRE_ O SERVICE, diretamente no arquivo do service...
+
+
+
+
+
+
+
+
+
+
+
+--> E SE QUISERMOS RODAR UM TEST LÁ NO 'exemplo.component.ts',
+
+
+
+CHECANDO __ PELO INJECT _ ADEQUADO __ 
+
+
+
+DO VALUE VINDO LÁ DO SERVICE?
+
+
+
+
+
+
+
+
+
+--> bem, aí deve-se escrever assim, lá em 'exemplo.component.spec.ts':
+
+
+
+
+
+
+
+
+
+
+
+
+  it('should use the user name from the service "exemploService"',
+
+  () => {
+
+    expect()
+  }
+  
+  
+  
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS COMO VAMOS ESCREVER A LÓGICA PARA ESSE 'expect'? 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> VAMOS usar os mesmos 'fixture' e 'component',
+
+ 
+  mesma coisa...
+
+
+
+
+
+
+
+
+
+  --> MAS AGORA QUEREMOS FAZER 'INJECT' do nosso service DENTRO DO NOSSO COMPONENT/FIXTURE,
+
+
+  para que 
+
+
+  essa 'CONDIÇÃO' fique incluída no nosso test ( incluir a condição de 'estamos com esse service injetado no nosso component' no test)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  TALVEZ POR MEIO DESTE CÓDIGO...:
+
+
+
+
+
+    TestBed.inject(ExemploService);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ERREI...
+
+
+
+
+
+
+
+
+
+
+
+para conseguir fazer isso,
+
+
+
+
+
+
+o professor criou uma NOVA VARIABLE,
+
+
+de nome 
+
+
+
+
+
+
+
+
+
+
+
+'userService',
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+let userService = ..
+
+
+
+
+
+
+
+
+
+
+
+
+--> O VALUE DESSA VARIABLE SERÁ DE 'fixture',
+
+
+
+
+
+
+
+
+
+
+
+
+depois de 
+
+
+
+'debugElement',
+
+
+
+
+
+
+
+
+e depois de 
+
+'.injector' 
+
+
+
+
+
+
+
+
+(
+
+    PARA CONSEGUIRMOS __ACESSO _ AO ANGULAR INJECTOR...
+)
+
+
+
+
+
+
+
+
+
+--> finalmente, acessamos o method de '.get()'
+
+
+
+
+nesse injectoR,
+
+
+
+
+PARA AÍ CONSEGUIRMOS 
+
+
+
+
+
+
+acesso ao SERVICE DE 'exemploService'...
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  it('should use the user name from the service "exemploService"',
+
+  () => {
+
+let exemploService = fixture.debugElement.injector.get(ExemploService); /////é assim que TESTAMOS A UTILIZAÇAÕ DE services externos aos nossos components, sua utilzaçaõ nos nossos components...
+
+    expect()
+  }
+  
+  
+  
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O QUE ISSO FAZ, NO CASO, É 
+
+
+
+
+'''UTILIZA O ANGULAR2 INJECTOR,
+
+
+
+QUE EXISTE E QUE AGORA FAZ PARTE DESSE COMPONENT QUE CRIAMOS'''' --> E AÍ 
+
+DIZ A ESSE 
+
+INJECTOR '''POR FAVOR, NOS ENTREGUE UMA INSTANCE DESSE SERVICE ESPECÍFICO''...
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE EXISTEM DIFERENTES MANEIRAS DE GANHAR ACESSO 
+
+
+A ESSE 
+
+SERVICE, tudo na documentaçaõ do angular...
+
+
+
+
+
+]------> CERTO,
+
+GANHAMOS ACESSO A ESSE exemploService...
+
+
+
+
+
+
+
+
+
+
+-----> COM ISSO, 
+
+o professor 
+
+
+
+escreve que 
+
+vai 
+
+
+'EXPECT'
+
+
+que o 'exemploService.user.name'
+
+
+
+VAI SER IGUAL A 'component.user.name' ...
+
+
+
+
+
+
+
+(
+
+    ou seja,
+
+    ASSIM TESTAMOS SE __ O VALUE DA PROPRIEDADE QUE 
+
+    ESTÁ LÁ NO NOSSO SERVICE REALMENTE É INJETADA COM SUCESSO NO NOSSO 
+
+    COMPONENT...
+)
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+  it('should use the user name from the service "exemploService"', () => { ///testamos se a propriedade do service realmente é injetada com sucesso nesse component...
+    let exemploService = fixture.debugElement.injector.get(ExemploService); /////é assim que TESTAMOS A UTILIZAÇAÕ DE services externos aos nossos components, sua utilzaçaõ nos nossos components...
+
+    expect(exemploService.user.name).toEqual(component.example.name);
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> ok, mas ALGUMA COISA ESTÁ DANDO TERRIVELMENTE ERRAOD,
+
+  PQ ESTOU GANHANDO 'FAIL' EM TODOS OS TESTS...
+
+
+
+
+  ExemploComponent
+should be defined
+should have "example" property
+"example" property should have a value of "EXEMPLO"
+should use the user name from the service "exemploService"
+should create
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TODOS OS TESTS DE 'exemploComponent' ESTÃO FALHANDO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O QUE ESTAVA CAUSANDO O ERRO ERA O INJECT DO SERVICE NO MEU COMPONENT, NO 'MUNDO REAL'...
+
+
+
+
+
+(
+    ou seja,
+
+    se eu ESCREVO O INJECT DESSE SERVICE 'DE VERDADE' no meu component, recebo esse erro...
+
+
+
+
+
+
+
+)
+
+
+
+
+
+
+-> talvez isso esteja ocorrendo pq o 'SERVICE ACABA SENDO INJETADO 2x' (é uma possibilidade...).
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> acho que uma das soluções é NÃO INJETAR o service dentro do component, e aí 
+
+
+
+
+
+TESTAR NO PRÓPRIO ARQUIVO DE TESTS, O funcionamento do inject do service no component...
+
+
+
+
+
+
+
+
+
+
+
+
+--> não, mas isso está errado...
+
+
+
+
+
+
+
+
+
+
+devemos injetar, sim, o service dentro do 'component de verdade'... essa é a moral, na verdade...
+
+
+
+
+
+
+
+
+
+
+
+
+AGORA, ESTRANHAMENTE, ESTÁ FUNCIONANDO... FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ExemploService } from '../exemplo.service';
+import { ExemploComponent } from './exemplo.component';
+
+describe('ExemploComponent', () => {
+  let component: ExemploComponent;
+  let fixture: ComponentFixture<ExemploComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [
+        ExemploComponent, //aqui vamos DECLARAR TODOS OS COMPONENTS QUE VAO SER ALVOS DE NOSSO TESTING..
+      ],
+    }).compileComponents(); ///devemos chamar isso....
+
+    fixture = TestBed.createComponent(ExemploComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  ////SINTAXE NOVA DO ANGULAR PARA CONSEGUIR ACESSO AO ELEMENT (ts e dom)
+
+  // fixture: ComponentFixture<ExemploComponent>; ///COMPONENT NO NOSSO DOM.. (DOM SIMULADO, É COMO SE CRIÁSSEMOS UM DOM ADICIONAL, E AÍ RENDERIZÁSSEMOS ESSE ELEMENT NELE)...
+  // component: ExemploComponent; ///COMPONENT EM SI
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should be defined', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should have "example" property', () => {
+    expect(component.example).toBeDefined();
+  });
+
+  // it('"example" property should have a name value of "EXEMPLO"', () => {
+  //   expect(component.example.name).toEqual('EXEMPLO');
+  // });
+
+  it('should use the user name from the service "exemploService"', () => { ///testamos se a propriedade do service realmente é injetada com sucesso nesse component...
+    const exemploService = fixture.debugElement.injector.get(ExemploService); /////é assim que TESTAMOS A UTILIZAÇAÕ DE services externos aos nossos components, sua utilzaçaõ nos nossos components... (checamos/testamos se o value REALMENTE FOI INJETADO NO NOSSO COMPONENT)...
+
+    expect(exemploService.user.name).toEqual(component.example.name);
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+E NO COMPONENT:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ExemploService } from '../exemplo.service';
+
+@Component({
+  selector: 'app-exemplo',
+  templateUrl: './exemplo.component.html',
+  styleUrls: ['./exemplo.component.css'],
+})
+export class ExemploComponent implements OnInit {
+  example = {
+    name: 'EXEMPLO1'
+  };
+
+  isLoggedIn = false;
+
+  constructor(
+    // private exemploService: ExemploService  ///quando estiver testando UNITARIAMENTE, não injete o service dentro do seu component... faça isso APENAS NO PRÓPRIO 'component.spec.ts', dentro da 'testBed' apropriada (que vai representar seu component)...
+    
+    private exemploService: ExemploService
+    ) {}
+
+  ngOnInit(): void {
+    // this.example.name = this.exemploService.user.name;
+    this.example.name = this.exemploService.user.name;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS O PROFESSOR GANHOU UM ERROR... -> PQ?
+
+
+
+
+
+
+
+
+
+
+
+
+--> É PQ ESSE VALUE DEVERIA SER RECEBIDO DO SERVICE,
+
+
+
+
+
+sim,
+
+
+
+MAS AQUI ESTÁ FALTANDO ALGO.... ALGO QUE SEMPRE ACONTECE NO BROWSER,
+
+
+
+
+AUTOMATICMAENTE,
+
+
+MAS QUE NÃO ACONTECE AQUI... -->  O QUE É ISSO?
+
+
+
+
+
+
+
+
+
+--> É O RUN DE 'fixture.detectChanges()',
+
+
+
+
+_ para _ UPDATAR__ AS NOSSAS PROPRIEDADES DEPOIS DO INJECT DESSES VALUES(
+
+
+
+
+    conforme este código aqui:
+
+
+
+
+
+
+
+describe('ExemploComponent', () => {
+  let component: ExemploComponent;
+  let fixture: ComponentFixture<ExemploComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [
+        ExemploComponent, //aqui vamos DECLARAR TODOS OS COMPONENTS QUE VAO SER ALVOS DE NOSSO TESTING..
+      ],
+    }).compileComponents(); ///devemos chamar isso....
+
+    fixture = TestBed.createComponent(ExemploComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges(); //// isso DETECTA O CHANGE DE NOSSAS PROPRIEDADES (como o change ocorrido com o INJECT DO SERVICE NO NOSSO COMPONENT, isso é o change de properties, por exemplo)....
+  });
+
+
+
+
+
+
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+COMO EU ESCREVI ESSE CÓDIGO DE 'detectChanges'
+
+
+
+LOGO NO INÍCIO DO MEU TESTING,
+
+ele é aplicado a todos os 'it' cases, 
+
+
+a
+ todos 
+
+ os tests em questão..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> certo... MAS AGORA FICAMOS COM UM TEST BEM SUCEDIDO,
+
+
+
+ pq 
+
+ AGORA UPDATAMOS AS NOSSAS PROPRIEDADES E ETC... 
+
+
+
+
+
+
+
+ --> DEPOIS DO RUN DESSE UPDATE DAS NOSSAS PROPRIEDAES,
+
+ 
+ OBTEMOS UM TEST BEM SUCEDIDO,
+
+
+ PQ 
+
+
+
+ AGORA ESTAMOS TENTANDO ACESSAR A PROPRIEDADE 'user'
+
+
+ dentro do component _ DEPOIS __ 
+
+ DE ELE TER SIDO UPDATADO (
+
+
+
+
+    e precisamos o updatar, pq 
+
+
+    ele não está/estará 
+
+
+    NO MESMO STATE 
+
+EM QUE ESTAVA 
+
+
+NO INÍCIO DO APP, pq 
+
+
+
+ele obteve data do nosso service...
+
+
+ )
+
+
+
+
+
+
+
+
+
+
+
+ --> com isso,
+
+ agora seria interessante 
+
+
+
+
+
+
+
+ __CHECAR__ 
+
+
+
+
+
+
+ SE NOSSO 
+
+
+ USO DE 
+
+
+ 'ngIf'
+
+
+
+ FUNCIONA CORRETAMENTE...
+
+
+
+
+
+
+
+
+
+
+ --> LEMBRE-SE DE NOSSO CÓDIGO:
+
+
+
+
+
+
+
+
+ <div *ngIf="isLoggedIn">
+  <h1>Logged in</h1>
+  <p>User is: {{exemplo}}</p>
+</div>
+<div *ngIf="!isLoggedIn" >
+    <h1>User not logged in</h1>
+    <p>Please log in first!</p>
+  </div>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> OK..
+
+
+
+
+
+
+  AQUI, VAMOS QUERER CHECAR:
+
+
+
+
+
+
+
+
+
+
+1) SE CONSEGUIMOS __ ENXERGAR __ O 'user.name' naquela string interpolation 
+
+
+_ se estamos LOGGED IN,
+
+
+
+
+E:
+
+
+
+2) SE __ REALMENTE NÃO É POSSÍVEL ENXERGAR O 'user.name',
+
+SE __ NAÕ 
+
+
+ESTIVERMOS LOGGED IN (comportamento correto)...
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+DEVEMOS CRIAR NOVOS TESTS.... 
+
+
+
+
+
+
+
+
+
+
+
+1 PARA CADA 'HIPÓTESE'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COMEÇAMOS ASSIM:
+
+
+
+
+
+
+
+  it('should display user.name in a string interpolation, if user is logged in', 
+  
+  () => {
+
+    const exemploService = fixture.debugElement.injector.get(ExemploService);
+
+
+    fixture.detectChanges();
+
+    let compiledTemplate = fixture.debugElement.nativeElement as HTMLElement;
+
+
+
+    expect(compiledTemplate.querySelector('p')?.textContent).toContain(component.example.name);
+
+  }
+  
+  
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> É CLARO QUE ESSE NEGÓCIO FALHOU INICIALMENTE,
+
+  tipo assim:
+
+
+  ✔ Browser application bundle generation complete.
+Chrome 103.0.5060.66 (Windows 10) ExemploComponent should display user.name in a string interpolation, if user is logged in FAILED
+        Expected 'Please log in first!' to contain 'EXEMPLO'.
+            at <Jasmine>
+            at UserContext.apply (src/app/exemplo/exemplo.component.spec.ts:66:62)
+            at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:372:26)
+            at ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:287:39)       
+Chrome 103.0.5060.66 (Windows 10): Executed 11 of 11 (1 FAILED) (0.084 secs / 0.068 secs)
+TOTAL: 1 FAILED, 10 SUCCESS
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> falhou pq NÃO DEFINIMOS A CONDIÇÃO DE QUE 
+
+
+
+'''isLoggedIn estará como TRUE'''...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok, mas como podemos estipular essa condição?
+
+
+
+
+
+
+
+
+
+
+
+--> tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+  it('should display user.name in a string interpolation, if user is logged in', 
+  
+  () => {
+
+ 
+
+
+  component.isLoggedIn = true;
+
+  fixture.detectChanges();
+  
+  const compiledTemplate = fixture.debugElement.nativeElement as HTMLElement;
+
+
+    expect(compiledTemplate.querySelector('p')?.textContent).toContain(component.example.name);
+
+  }
+  
+  
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ou seja,
+
+
+DEFINI O 'isLoggedIn'
+
+
+COMO TRUE, PREVIAMENTE...
+
+
+
+
+
+
+
+
+-> MAS ISSO NÃO ESTÁ FUNCIONANDO...
+
+
+
+na teoria, deveria funcionar,
+
+
+
+
+MAS ESTÁ DANDO ESTE ERRO:
+
+
+
+Chrome 103.0.5060.66 (Windows 10) ExemploComponent should display user.name in a string interpolation, if user 
+is logged in FAILED
+        Expected 'User is: ' to contain 'EXEMPLO'.
+            at <Jasmine>
+            at UserContext.apply (src/app/exemplo/exemplo.component.spec.ts:69:62)
+            at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:372:26)
+            at ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:287:39)
+Chrome 103.0.5060.66 (Windows 10): Executed 11 of 11 (1 FAILED) (0.055 secs / 0.044 secs)
+TOTAL: 1 FAILED, 10 SUCCESS
+
+
+
+
+
+
+
+
+
+
+
+
+CONSEGUI, ERA MEU 
+
+
+
+html que estava com um name errado na string interpolation...
+
+
+
+
+
+
+
+
+certo..
+
+
+
+
+AGORA SÓ PRECISO DO CASE INVERSO,
+
+PARA O CASE 
+
+
+
+
+
+DE 
+
+'USER NÃO ESTÁ LOGGED IN, NÃO QUEREMOS QUE 
+
+
+
+SEU NAME SEJA ENCONTRADO NO CÓDIGO'...
+
+
+
+
+
+
+
+
+
+
+
+--> para isso, podemos usar o recurso 'not' 
+
+
+do JASMINE:
+
+
+
+
+
+According to the documentation, you can use not:
+
+getJasmineRequireObj().not.toContain
+
+
+
+
+
+
+--> para isso, o código fica assim:
+
+
+
+
+
+
+
+
+
+
+
+
+  it('should not display user.name in a string interpolation, if user is not logged in', 
+  
+  () => {
+
+ 
+
+
+  // const exemploService = fixture.debugElement.injector.get(ExemploService);
+
+  fixture.detectChanges();
+
+  ///'isLoggedIn' já vai estar como false, no caso... 
+  
+  const compiledTemplate = fixture.debugElement.nativeElement as HTMLElement;
+  
+
+  expect(compiledTemplate.querySelector('p')?.textContent).not.toContain(component.example.name);
+
+  }
+  
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> OK... FOI UM GRANDE SUCESSO...
+
+
+
+
+
+
+
+
+
+  -> agora hora de ver mais umas coisas...
+
+
+
+
+
+
+
+
+
+
+  -> NA PRÓXIMA AULA,
+
+  
+
+
+
+  SIMULAREMOS 'ASYNC TASKS'....
+
+
+
+
+  

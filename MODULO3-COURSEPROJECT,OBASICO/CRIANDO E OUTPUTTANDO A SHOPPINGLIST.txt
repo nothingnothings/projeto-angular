@@ -1,0 +1,317 @@
+
+
+
+
+
+
+
+--> EU JÁ ESCREVI UM ARRAY INICAL DE 
+
+
+
+
+'INGREDIENTS':
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { Ingredient } from '../shared/ingredient.model';
+
+@Component({
+  selector: 'app-shopping-list',
+  templateUrl: './shoppingList.component.html',
+  styleUrls: ['./shoppingList.component.css'],
+})
+export class ShoppingListComponent implements OnInit {
+  ingredients: Ingredient[] = [];
+
+  constructor() {}
+
+  ngOnInit(): void {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> AGORA BASTA INSTANCIAR ESSE CONSTRUCTOR AÍ,
+
+coisa simples...
+
+
+
+
+
+
+ex:
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { Ingredient } from '../shared/ingredient.model';
+
+@Component({
+  selector: 'app-shopping-list',
+  templateUrl: './shoppingList.component.html',
+  styleUrls: ['./shoppingList.component.css'],
+})
+export class ShoppingListComponent implements OnInit {
+  ingredients: Ingredient[] = [
+
+
+      new Ingredient('Potato', 1)
+  ];
+
+  constructor() {}
+
+  ngOnInit(): void {}
+}
+
+
+
+
+
+
+
+-> AGORA SÓ FALTA ESCREVER UM CÓDIGO em 
+
+
+'ShoppingList' 
+
+
+
+PARA __ OUTPUTTAR _ 
+
+
+
+
+
+TODOS OS ELEMENTOS/OBJECTS EM 
+
+
+
+'ingredients'
+
+
+
+
+
+COMO __ ELEMENTOS <LI> 
+
+
+
+NA NOSSA LIST....
+
+
+
+
+
+
+
+
+
+O CÓDIGO ATUAL É ESTE:
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-10">
+    <app-shop-list-edit></app-shop-list-edit>
+    <hr />
+    <ul class="list-group">
+      <a class="list-group-item" style="cursor: pointer"></a>
+    </ul>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR EXPLICA QUE SIM,
+
+VOCÊ PODERIA COLOCAR ISSO EM UM PRÓPRIO COMPONENT (component de 'shoppingListiTEM', ou algo assim)...
+
+
+
+
+
+
+
+-> MAS COMO ESSE SERÁ UM ITEM EASY, STRAIGHTFORWARD,
+
+PROFESSOR 
+NÃO 
+
+ACHA NECESSÁRIO OUTSOURCEAR 
+
+
+
+
+
+a um component próprio..
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE O PROFESSOR COLOCA UM NGFOR 
+
+diretamnete 
+
+na anchor tag,
+
+PARA FAZER UM LOOP POR DENTRO DE TODOS OS INGREDIENTS...
+
+
+
+
+
+
+
+
+
+
+
+PRONTO, FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { Ingredient } from '../shared/ingredient.model';
+
+@Component({
+  selector: 'app-shopping-list',
+  templateUrl: './shoppingList.component.html',
+  styleUrls: ['./shoppingList.component.css'],
+})
+export class ShoppingListComponent implements OnInit {
+  ingredients: Ingredient[] = [
+
+    new Ingredient('Potato', 1),
+    new Ingredient('Tomato', 2),
+    new Ingredient('Banana', 5)
+
+  ];
+
+  constructor() {}
+
+  ngOnInit(): void {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-10">
+    <app-shop-list-edit></app-shop-list-edit>
+    <hr />
+    <ul class="list-group">
+      <a class="list-group-item" 
+      style="cursor: pointer"
+      *ngFor="let ingredient of ingredients"
+      > {{ingredient.name}} ({{ingredient.amount}})
+      </a>
+    </ul>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> A ÚLTIMA PARTE QUE O PROFESSOR QUER ADICIONAR É UMA 
+
+
+
+PARTE DE 
+
+'SHOPPINGLIST EDIT',
+
+
+
+QUE 
+
+
+NOS DEVE MOSTRAR UM INPUT FIELD QUE 
+
+NOS DEIXA 
+
+'EDIT ITEMS' 
+
+ou 
+
+então 
+
+'ADD NEW ITEMS'... ---> MAIS TARDE NO CURSO ISSO FUNCIONARÁ...

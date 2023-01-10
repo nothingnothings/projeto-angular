@@ -1,0 +1,622 @@
+
+
+
+
+
+
+
+
+
+
+
+
+--> DENTRO DE UM INTERCEPTOR,
+
+
+TEMOS ESTA ESTRUTURA:
+
+
+
+
+
+
+
+
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http"; 
+import { Observable } from "rxjs";
+
+
+export class AuthInterceptorService implements HttpInterceptor { 
+
+    
+
+    intercept(req: HttpRequest<any>, next: HttpHandler):  
+    Observable<HttpEvent<any>> {
+        
+
+        
+
+
+
+
+    
+
+
+
+
+    console.log('Request is on its way!'); 
+
+
+    return next.handle(req); 
+    }
+     
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS DENTRO DELE,
+
+dentro do FUNCTION BODY DE 'intercept',
+
+
+PODEMOS 
+
+FAZER MAIS DO QUE APENAS UM SIMPLES CONSOLE.LOG,
+
+podemos 
+
+
+
+__ TAMBÉM__ 'MODIFY THE REQUEST OBJECT'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS MODIFICAR O OBJETO DE 'request',
+
+
+
+colocar COISAS ADICIONAIS NELE,
+
+
+
+
+
+
+ou remover coisas....
+
+
+
+
+
+
+----> MAS O DETALHE, AQUI, É QUE 
+
+
+
+O 
+
+
+
+OBJECT DE 'request'
+
+
+
+EM SI __ É __ IMMUTABLE____.... ------> ISSO QUER DIZER QUE 
+
+
+
+VOCÊ NÃO PODE DEFINIR 
+
+
+algo como 
+
+
+
+'req.url = 'a new url';' 
+
+
+
+
+
+
+
+
+--> VOCÊ NÃO PODE DEFINIR UMA NOVA URL, POR EXEMPLO...
+
+
+
+
+
+
+
+
+
+--> EM VEZ DISSO,
+
+
+
+SE VOCÊ QUER 
+
+
+__ MODIFICAR_ O REQUEST,
+
+
+
+VOCê É OBRIGADO A CRIAR UM NOVO REQUEST,
+
+
+
+
+
+
+por meio de uma constante..
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+intercept(req: HttpRequest<any>, next: HttpHandler) {
+
+
+    console.log('Request on its way');
+
+    const modifiedRequest = req.clone();
+
+
+    return next.handle(req);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OU SEJA,
+
+VOCÊ PODE __ CRIAR __ UMA CÓPIA DO REQUEST,
+
+
+POR MEIO DO USO 
+
+
+DO method de '.clone()'
+
+
+dentro do request....
+
+
+
+
+
+
+
+
+
+
+
+-------> CERTO....
+
+
+
+
+
+
+
+E, DENTRO DESSE 'req.clone()',
+
+
+
+
+VOCÊ PODE PASSAR, COMO PARÂMETRO,
+
+
+UM JAVASCRIPT OBJECT __ EM QUE 
+
+
+VOCê PODE __ OVERWRITTAR TODAS AS 'CORE THINGS' 
+
+
+do seu request...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER QUE VOCê PODE SETTAR UMA NOVA URL,
+
+
+
+OU
+
+
+
+ENTÃO ADICIONAR NOVOS HEADERS...
+
+
+
+
+
+
+
+
+
+OU ENTÃO ADICIONAR NOVOS PARAMS...
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+    const requestCopy = req.clone( ////com o pass de um OBJECT JAVASCRIPT dentro desse 'clone', podemos CONFIGURAR/OVERWRITTAR TODAS AS 'CORE THINGS' de nosso REQUEST ORIGINAL, nessa cópia aí..
+        {
+            // body,
+            // headers,
+            // headers: req.headers.append() /// assim você pode manter os antigos headers...
+            // params,
+            // method,
+            // url
+
+            
+        }
+ 
+    );   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> COMO O PROFESSOR QUER ADICIONAR UM __ NOVO HEADER_,
+
+
+
+
+ele acessa 
+
+
+'headers:'
+
+
+
+
+
+
+e aí 
+
+
+
+
+VAI CHAMAR 'req.headers.append()'
+
+
+PARA FAZER O APPEND/ADD DE UM NOVO HEADER AOS HEADERS QUE JÁ EXISTIAM ANTES...
+
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+    const requestCopy = req.clone( ////com o pass de um OBJECT JAVASCRIPT dentro desse 'clone', podemos CONFIGURAR/OVERWRITTAR TODAS AS 'CORE THINGS' de nosso REQUEST ORIGINAL, nessa cópia aí..
+        {
+            headers: req.headers.append('Auth', 'true')
+  
+
+        }
+ 
+    );   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> POR FIM,
+
+
+É IMPORTANTE DESTACAR QUE, AO FINAL,
+
+NÃO VAMOS FORWARDAR O REQUEST ORIGINAL, E SIM VAMOS FORWARDAR ESSE 'REQUEST ALTERADO',
+
+que 
+
+teve esse novo header de 'Auth' adicionado...
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import {
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest,
+} from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+export class AuthInterceptorService implements HttpInterceptor {
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+    const requestCopy = req.clone({
+      headers: req.headers.append('Auth', 'true'),
+    });
+
+
+
+    console.log('Request is on its way!');
+
+    return next.handle(requestCopy); //////////EIS O Código em questão.
+  }
+}
+
+
+
+
+
+
+
+
+Ex:
+
+
+
+
+
+
+
+
+import {
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest,
+} from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+export class AuthInterceptorService implements HttpInterceptor {
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+    const requestCopy = req.clone({
+      headers: req.headers.append('Auth', 'true'),
+    });
+
+    console.log('Request is on its way!');
+
+    return next.handle(requestCopy);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E ESSE É UM TÍPICO USE-CASE 
+
+
+PARA UM INTERCEPTOR:
+
+
+
+VOCê 
+
+
+
+__ RECEBE_ O REQUEST,
+
+
+O MODIFICA (com 'const copiaDoReuqest = req.clone({}) '),
+
+E AÍ 
+
+O PASSA ADIANTE COm 'next.handle(copiaDoRequest)'
+
+
+
+
+
+
+
+
+
+
+
+--> e se você quiser/quisesse 
+
+
+
+FAZER APPEND DAQUELE HEADER ESPECIAL APENAS _ PARA __ ALGUMAS URLS,
+
+
+
+vocÊ pode 
+
+
+
+USAR UM IF CHECK com 
+
+
+'if (req.url === 'xxx')  {
+
+}
+'
+
+
+
+
+
+
+PARA AÍ 
+
+
+FAZER COISAS DIFERENTES,
+
+PASSAR ADIANTE 
+
+
+requests diferentes (levemente modificados)...
+
+
+
+
+
+
+
+--. SE EXAMINARMOS A NETWORK TAB,
+
+
+
+VEREMOS QUE 
+
+
+
+
+nosso interceptor estará adicionando 'Auth: xyz'
+
+
+A TODOS NOSSOS OUTGOING HTTP REQUESTS...

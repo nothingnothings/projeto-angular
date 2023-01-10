@@ -1,0 +1,586 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK... NÓS HAVÍAMOS CRIADO NOSSA FORM TS,
+
+
+E AGORA 
+
+É HORA 
+
+
+DE a
+SINCRONIZAR 
+
+
+
+COM O CÓDIGO 
+
+
+
+
+
+HTML..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> COLOCAMOS O MODULE DE 'ReactiveFormsModule'
+
+
+LÁ EM 
+
+'app.module.ts'...
+
+
+
+
+
+
+
+-_> PRECISAMOS DISSO POR CAUSA DAS DIRECTIVES ESPECIAIS..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> NOSSO CÓDIGO HTML COMEÇA ASSIM:
+
+
+
+
+
+
+
+
+
+<form [formGroup]="recipeForm" (ngSubmit)="onFormSubmit()">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK,ISSO DIZ AO ANGULAR QUE  ELE NÃO DEVE CRIAR UMA FORM AUTOMATICCAMENTE,
+
+E SIM USAR AQUELA QUE JÁ CRÍAMOS NO ARQUIVO TS...
+
+
+
+
+
+
+
+
+
+
+
+
+--> AÍ O PROFESSOR COLOCA A DIRECTIVE DE 'formControlName'
+
+
+LÁ 
+
+NO NOSSO INPUT DE 'name'....
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+<input 
+
+type=text
+id="name"
+formControlName="name"
+class="form-control"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> certo...
+
+
+AGORA DEVEMOS VER SE TUDO FUNCIONA...
+
+
+
+
+
+
+
+
+
+
+-> TUDO ESTÁ FUNCIONANDO 'OK',
+
+
+
+o name foi prepopulated,
+
+imagePath TAMBÉM..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok... isso está funcionando.... (o professor cometeu um erro)...
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PRÓXIMO PASSO, BEM MAIS DIFÍCIL, 
+
+É FAZER OS NOSSOS INGREDIENTS CONSEGUIREM
+
+
+FUNCIONAREM JUNTOS..
+
+
+
+
+
+
+
+
+
+
+-> eu consegui fazer isso, mas o problema é o HANDLE DAS MENSAGENS DE ERRO A PARTIR DO VALIDATION,
+
+que não ficaram boas...
+
+
+
+
+
+
+
+
+
+O CÓDIGO TS FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit, Input } from '@angular/core';
+import {
+  Form,
+  FormArray,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  NgForm,
+  Validators,
+} from '@angular/forms';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { RecipeBookService } from 'src/app/recipeBook.service';
+import { Recipe } from '../recipe.model';
+
+@Component({
+  selector: 'app-recipe-edit',
+  templateUrl: './recipe-edit.component.html',
+  styleUrls: ['./recipe-edit.component.css'],
+})
+export class RecipeEditComponent implements OnInit {
+  editableRecipe: Recipe;
+  recipeId: number;
+  editMode: boolean = false;
+
+  recipeForm: FormGroup;
+
+  constructor(
+    private recipeBookService: RecipeBookService,
+    private route: ActivatedRoute,
+  ) {}
+
+  ngOnInit(): void {
+    // this.recipeForm = new FormGroup({
+    //   recipeName: new FormControl(null, [
+    //     Validators.required,
+    //     Validators.minLength(3),
+    //   ]),
+    //   imagePath: new FormControl(null, [Validators.required]),
+    //   description: new FormControl(null, [
+    //     Validators.required,
+    //     Validators.minLength(10),
+    //   ]),
+
+    //   ingredients: new FormArray([
+    //     new FormGroup({
+    //       ingredient: new FormControl(null, [Validators.required]),
+    //       amount: new FormControl(null, [
+    //         Validators.required,
+    //         Validators.min(1),
+    //       ]),
+    //     }),
+    //   ]),
+    // });
+
+    this.route.params.subscribe((params: Params) => {
+      this.recipeId = +params['id'];
+
+      this.editMode = params['id'] != null;
+
+
+      this.initForm();
+    });
+
+    // if (this.editMode) {
+    //   this.editableRecipe = this.recipeBookService.getRecipe(this.recipeId);
+    // }
+
+    // this.getRecipeFormGroups();
+
+   
+  }
+
+  onSubmitForm() {
+    console.log(this.recipeForm);
+    console.log(this.recipeForm.get('ingredients.0')?.value.ingredient);
+  }
+
+  onAddIngredient() {
+    const newFormGroup: FormGroup = new FormGroup({
+      ingredient: new FormControl(null, [
+        Validators.required,
+        Validators.minLength(5),
+      ]),
+      amount: new FormControl(null, [Validators.required, Validators.min(1)]),
+    });
+
+    (<FormArray>this.recipeForm.get('ingredients')).push(newFormGroup);
+  }
+
+  getRecipeFormGroups() {
+    return (<FormArray>this.recipeForm.get('ingredients')).controls;
+  }
+
+
+
+
+
+
+
+
+  private initForm() {
+
+
+    if (this.editMode) {
+
+
+      this.editableRecipe = this.recipeBookService.getRecipe(this.recipeId);
+
+    const ingredientObjectArray = this.editableRecipe.ingredients.map(
+        (ingredient) => {
+          return new FormGroup({
+            'ingredient': new FormControl(ingredient.name, [Validators.required]),
+            'amount': new FormControl(ingredient.amount, [Validators.required, Validators.min(1)] )
+          })
+        }
+      )
+
+      this.recipeForm = new FormGroup({
+        recipeName: new FormControl(this.editableRecipe.name, [
+          Validators.required,
+          Validators.minLength(3),
+        ]),
+        imagePath: new FormControl(this.editableRecipe.imagePath, [Validators.required]),
+        description: new FormControl(this.editableRecipe.description, [
+          Validators.required,
+          Validators.minLength(10),
+        ]),
+        ingredients: new FormArray(ingredientObjectArray),
+        // ingredients: new FormArray([
+        //   new FormGroup({
+        //     ingredient: new FormControl(null, [Validators.required]),
+        //     amount: new FormControl(null, [
+        //       Validators.required,
+        //       Validators.min(1),
+        //     ]),
+        //   }),
+        // ]),
+     
+      });
+    }   else  {
+
+      this.recipeForm = new FormGroup({
+        recipeName: new FormControl(null, [
+          Validators.required,
+          Validators.minLength(3),
+        ]),
+        imagePath: new FormControl(null, [Validators.required]),
+        description: new FormControl(null, [
+          Validators.required,
+          Validators.minLength(10),
+        ]),
+  
+        ingredients: new FormArray([
+          new FormGroup({
+            ingredient: new FormControl(null, [Validators.required]),
+            amount: new FormControl(null, [
+              Validators.required,
+              Validators.min(1),
+            ]),
+          }),
+        ]),
+      });
+
+
+
+    }
+
+
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E O CÓDIGO HTML FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <form (ngSubmit)="onSubmitForm()" [formGroup]="recipeForm">
+      <div class="row">
+        <div class="col-xs-12"></div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="name">Recipe Name</label>
+            <input
+              type="text"
+              id="name"
+              formControlName="recipeName"
+              class="form-control"
+            />
+          </div>
+        </div>
+      </div>
+      <span *ngIf="!recipeForm.get('recipeName')?.value &&
+      recipeForm.get('recipeName')?.touched"
+      [ngStyle]="{ color: 'red' }"
+      
+      >Recipe Name is required!</span>
+      <span *ngIf="(recipeForm.get('recipeName')?.errors?.['minlength']) &&
+      recipeForm.get('recipeName')?.touched"
+      [ngStyle]="{ color: 'red' }"
+      
+      >Recipe Name must have at least 3 characters!</span>
+      <div class="row" [ngStyle]="{ 'margin-top': '12px' }">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="imagePath">Image URL</label>
+            <input
+              type="text"
+              id="imagePath"
+              class="form-control"
+              formControlName="imagePath"
+            />
+          </div>
+        </div>
+      </div>
+      <span *ngIf="!recipeForm.get('imagePath')?.valid &&
+      recipeForm.get('imagePath')?.touched"
+      [ngStyle]="{ color: 'red' }"
+      
+      >Image URL is required!</span>
+      <div class="row" *ngIf="!editMode">
+        <div class="col-xs-12">
+          <img
+            *ngIf="recipeForm.get('imagePath')?.value"
+            [src]="recipeForm.get('imagePath')?.value"
+            class="img-responsive"
+            alt="image"
+          />
+        </div>
+      </div>
+      <div class="row" [ngStyle]="{ 'margin-top': '12px' }">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="desc">Description</label>
+            <textarea
+              type="text"
+              formControlName="description"
+              id="description"
+              rows="6"
+              class="form-control"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+      <span *ngIf="!recipeForm.get('description')?.value &&
+      recipeForm.get('description')?.touched"
+      [ngStyle]="{ color: 'red' }"
+      
+      >Description is required!</span>
+      <span *ngIf="(recipeForm.get('description')?.errors?.['minlength']) &&
+      recipeForm.get('description')?.touched"
+      [ngStyle]="{ color: 'red' }"
+      
+      >Your description must have at least 10 characters!</span>
+
+      <div class="row" formArrayName="ingredients" [ngStyle]="{ 'margin-top': '12px' }">
+        <div class="col-xs-12">
+          <label for="ingredients">Ingredients</label>
+          <!-- <div class="row" *ngFor="let recipeControl of getRecipeControls(); let index=index" > -->
+            <div class="row" *ngFor="let recipeControl of getRecipeFormGroups(); let index=index" [ngStyle]="{'margin-bottom': '12px'}" >
+              <div formGroupName="{{index}}">
+              <div class="col-xs-8" >
+                <input 
+                type="text"
+                formControlName="ingredient"
+                class="form-control">
+              </div>
+              <div class="col-xs-2">
+                <input 
+                formControlName="amount"
+                [min]="1"
+                type="number"
+                class="form-control">
+              </div>
+            </div>
+              <div class="col-xs-2" [ngStyle]="{ 'display': 'flex', 'margin-bottom': '10px' }">
+                <button class="btn btn-primary" [ngStyle]="{ 'flex-grow': '9', 
+                  'margin-right': '12px'}" (click)="onAddIngredient()"  *ngIf="index === 0">Add</button>
+                <button class="btn btn-danger" [ngStyle]="{ 'flex-grow': '1' }" >X</button>
+              </div>
+              <!-- <span *ngIf="(recipeForm.get('ingredients.index')?.value?.ingredient.length > 3)"
+              [ngStyle]="{ color: 'red', 'margin-left': '14px' }"
+              
+              >Ingredients must have at least 3 characters!</span>  NÃO FUNCIONA -->
+          </div>
+          <!-- <span *ngIf="!recipeForm.get('ingredients')?.valid &&
+          recipeForm.get('ingredients')?.touched && !recipeForm.get('ingredients.index')?.controls?.amount?.errors?.['required']"
+          [ngStyle]="{ color: 'red' }"
+          
+          >Ingredient information is required!</span> -->
+  
+
+        </div>
+
+      </div>
+
+      <div [ngStyle]="{ 'margin-top': '20px' }">
+        <button type="submit" 
+        class="btn btn-success" 
+
+        [ngStyle]="{ 'margin-right': '6px' }">Save</button>
+        <button type="button" class="btn btn-danger">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>

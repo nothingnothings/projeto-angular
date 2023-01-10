@@ -1,0 +1,4673 @@
+
+
+
+
+
+
+
+
+
+-> AINDA NÃO ADICIONAMSO NGRX 
+
+
+A UMA DAS AREAS..
+
+
+
+
+
+
+
+
+
+
+-->  É O 'RECIPEBOOK'..
+
+
+
+
+
+
+
+
+
+
+NA VERDADE, EU JÁ FIZ ISSO, JÁ ADICIONEI ESSE 'SLICE' DO NOSSO STATE...
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO QUE EU ESCREVI FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+LÁ EM 'store':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Recipe } from '../recipe.model';
+
+import { updateObject } from 'src/app/utility/updateObject';
+
+// import * as RecipeBookActions from './recipeBookActions';
+
+import * as fromRecipeBook from './recipeBookActions';
+
+export interface RecipeBookState {
+  recipes: Recipe[];
+  selectedRecipe: Recipe | null;
+  selectedRecipeIndex: number;
+  isLoading: boolean;
+}
+
+// export interface AppState {
+//   recipeBook: RecipeBookState;
+// }
+
+const initialState: RecipeBookState = {
+  recipes: [],
+  selectedRecipe: null,
+  selectedRecipeIndex: -1,
+  isLoading: false,
+};
+
+export function recipeBookReducer(
+  state: RecipeBookState = initialState,
+  action: fromRecipeBook.RecipeBookActions
+) {
+  switch (action.type) {
+
+    case fromRecipeBook.START_FETCH_RECIPES:
+      return startFetchRecipes(state, action as fromRecipeBook.StartFetchRecipes);
+    case fromRecipeBook.FETCH_RECIPES:
+      return fetchRecipes(state, action as fromRecipeBook.FetchRecipes);
+    case fromRecipeBook.ADD_RECIPE:
+      return addRecipe(state, action as fromRecipeBook.AddRecipe);
+    case fromRecipeBook.EDIT_RECIPE:
+      return editRecipe(state, action as fromRecipeBook.EditRecipe);
+    case fromRecipeBook.SELECT_RECIPE:
+      return selectRecipe(state, action as fromRecipeBook.SelectRecipe);
+    case fromRecipeBook.DELETE_RECIPE:
+      return deleteRecipe(state, action as fromRecipeBook.DeleteRecipe);
+    default:
+      return state;
+  }
+}
+
+const addRecipe = (
+  state: RecipeBookState,
+  action: fromRecipeBook.AddRecipe
+) => {
+  const updatedRecipes = [...state.recipes];
+
+  updatedRecipes.push(action.payload);
+
+  return updateObject(state, { recipes: updatedRecipes });
+};
+
+const editRecipe = (
+  state: RecipeBookState,
+  action: fromRecipeBook.EditRecipe
+) => {
+  const updatedRecipes = [...state.recipes];
+
+  updatedRecipes[state.selectedRecipeIndex] = action.payload;
+
+  return updateObject(state, {
+    recipes: updatedRecipes,
+    selectedRecipeIndex: -1,
+    selectedRecipe: null,
+  });
+};
+
+const selectRecipe = (
+  state: RecipeBookState,
+  action: fromRecipeBook.SelectRecipe
+) => {
+  return updateObject(state, {
+    selectedRecipeIndex: action.payload.index,
+    selectedRecipe: action.payload.recipe,
+  });
+};
+
+const deleteRecipe = (
+  state: RecipeBookState,
+  action: fromRecipeBook.DeleteRecipe
+) => {
+  const updatedRecipes = [...state.recipes];
+
+  updatedRecipes.splice(state.selectedRecipeIndex, 1);
+
+  return updateObject(state, {
+    recipes: updatedRecipes,
+    selectedRecipeIndex: -1,
+    selectedRecipe: null,
+  });
+};
+
+const startFetchRecipes = (
+  state: RecipeBookState,
+  action: fromRecipeBook.StartFetchRecipes
+) => {
+  return updateObject(state, { isLoading: true });
+};
+
+const fetchRecipes = (
+  state: RecipeBookState,
+  action: fromRecipeBook.FetchRecipes
+) => {};
+
+
+
+const endFetchRecipes = (
+  state: RecipeBookState,
+  action: fromRecipeBook.EndFetchRecipes
+) => {
+  return updateObject(state, { isLoading: false});
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E EM 'actions' (não no reducer):
+
+
+
+
+
+
+
+
+
+import { Action } from '@ngrx/store';
+import { Recipe } from '../recipe.model';
+
+export const START_FETCH_RECIPES = '[RecipeBook] START_FETCH_RECIPES';
+
+export const FETCH_RECIPES = '[RecipeBook] FETCH_RECIPES';
+
+export const END_FETCH_RECIPES = '[RecipeBook] END_FETCH_RECIPES';
+
+export const ADD_RECIPE = '[RecipeBook] ADD_RECIPE';
+
+export const DELETE_RECIPE = '[RecipeBook] DELETE_RECIPE';
+
+export const EDIT_RECIPE = '[RecipeBook] EDIT_RECIPE';
+
+export const SELECT_RECIPE = '[RecipeBook] SELECT_RECIPE';
+
+export class StartFetchRecipes implements Action {
+  readonly type = START_FETCH_RECIPES;
+
+  constructor() {}
+}
+
+export class FetchRecipes implements Action {
+  readonly type = FETCH_RECIPES;
+
+  constructor() {}
+}
+
+export class EndFetchRecipes implements Action {
+  readonly type = END_FETCH_RECIPES;
+
+  constructor() {}
+}
+
+export class AddRecipe implements Action {
+  readonly type = ADD_RECIPE;
+
+  constructor(public payload: Recipe) {}
+}
+
+export class EditRecipe implements Action {
+ readonly type = EDIT_RECIPE;
+
+  constructor(public payload: Recipe) {}
+}
+
+export class DeleteRecipe implements Action {
+  readonly type = DELETE_RECIPE;
+
+  constructor() {}
+}
+
+export class SelectRecipe implements Action {
+readonly  type = SELECT_RECIPE;
+
+  constructor(public payload: { recipe: Recipe; index: number }) {}
+}
+
+export type RecipeBookActions =
+  | AddRecipe
+  | SelectRecipe
+  | DeleteRecipe
+  | EditRecipe
+  | StartFetchRecipes
+  | FetchRecipes
+  | EndFetchRecipes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS EU NÃO SEI SE O PROFESSOR VAI QUERER USAR EFFECTS COM ESSA PARTE DE NOSSO PROJECT... PROVAVELMENTE SIM,
+
+
+
+PQ 
+
+
+
+TEMOS ALGUMAS ASYNC ACTIONS COM ESSA PARTE DO NOSSO APP (save e fetch de recipes)...
+
+
+
+
+
+
+
+
+
+
+
+
+é verdade...
+
+
+
+
+
+
+
+
+bem, para isso tenho que adicionar um arquivo 'recipeBook.effects.ts'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+DEI UMA ATUALIZADA NO CÓDIGO DO REDUCER:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Recipe } from '../recipe.model';
+
+import { updateObject } from 'src/app/utility/updateObject';
+
+// import * as RecipeBookActions from './recipeBookActions';
+
+import * as fromRecipeBook from './recipeBookActions';
+
+export interface RecipeBookState {
+  recipes: Recipe[];
+  selectedRecipe: Recipe | null;
+  selectedRecipeIndex: number;
+  isLoading: boolean;
+  error: string | null;
+}
+
+// export interface AppState {
+//   recipeBook: RecipeBookState;
+// }
+
+const initialState: RecipeBookState = {
+  recipes: [],
+  selectedRecipe: null,
+  selectedRecipeIndex: -1,
+  isLoading: false,
+  error: null
+};
+
+export function recipeBookReducer(
+  state: RecipeBookState = initialState,
+  action: fromRecipeBook.RecipeBookActions
+) {
+  switch (action.type) {
+
+    case fromRecipeBook.START_FETCH_RECIPES:
+      return startFetchRecipes(state, action as fromRecipeBook.StartFetchRecipes);
+    case fromRecipeBook.FETCH_RECIPES_SUCCESS:
+      return recipesFetchSuccess(state, action as fromRecipeBook.RecipesFetchSuccess);
+      case fromRecipeBook.FETCH_RECIPES_FAIL:
+        return recipesFetchFail(state, action as fromRecipeBook.RecipesFetchFail);
+    case fromRecipeBook.ADD_RECIPE:
+      return addRecipe(state, action as fromRecipeBook.AddRecipe);
+    case fromRecipeBook.EDIT_RECIPE:
+      return editRecipe(state, action as fromRecipeBook.EditRecipe);
+    case fromRecipeBook.SELECT_RECIPE:
+      return selectRecipe(state, action as fromRecipeBook.SelectRecipe);
+    case fromRecipeBook.DELETE_RECIPE:
+      return deleteRecipe(state, action as fromRecipeBook.DeleteRecipe);
+    default:
+      return state;
+  }
+}
+
+const addRecipe = (
+  state: RecipeBookState,
+  action: fromRecipeBook.AddRecipe
+): RecipeBookState => {
+  const updatedRecipes = [...state.recipes];
+
+  updatedRecipes.push(action.payload);
+
+  return updateObject(state, { recipes: updatedRecipes });
+};
+
+const editRecipe = (
+  state: RecipeBookState,
+  action: fromRecipeBook.EditRecipe
+): RecipeBookState => {
+  const updatedRecipes = [...state.recipes];
+
+  updatedRecipes[state.selectedRecipeIndex] = action.payload;
+
+  return updateObject(state, {
+    recipes: updatedRecipes,
+    selectedRecipeIndex: -1,
+    selectedRecipe: null,
+  });
+};
+
+const selectRecipe = (
+  state: RecipeBookState,
+  action: fromRecipeBook.SelectRecipe
+): RecipeBookState => {
+  return updateObject(state, {
+    selectedRecipeIndex: action.payload.index,
+    selectedRecipe: action.payload.recipe,
+  });
+};
+
+const deleteRecipe = (
+  state: RecipeBookState,
+  action: fromRecipeBook.DeleteRecipe
+): RecipeBookState => {
+  const updatedRecipes = [...state.recipes];
+
+  updatedRecipes.splice(state.selectedRecipeIndex, 1);
+
+  return updateObject(state, {
+    recipes: updatedRecipes,
+    selectedRecipeIndex: -1,
+    selectedRecipe: null,
+  });
+};
+
+const startFetchRecipes = (
+  state: RecipeBookState,
+  action: fromRecipeBook.StartFetchRecipes
+): RecipeBookState => {
+  return updateObject(state, { isLoading: true });
+};
+
+const recipesFetchSuccess = (
+  state: RecipeBookState,
+  action: fromRecipeBook.RecipesFetchSuccess
+): RecipeBookState => {
+
+
+
+
+  return updateObject(state, {});
+};
+
+
+
+const recipesFetchFail = (
+  state: RecipeBookState,
+  action: fromRecipeBook.RecipesFetchFail
+): RecipeBookState => {
+
+
+return updateObject(state, {})
+
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E O CÓDIGO DOS EFFECTS ESTÁ FICANDO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+import { Actions } from '@ngrx/effects';
+
+@Injectable()
+export class RecipeBookEffects {
+  constructor(actions$: Actions) {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> AGORA SÓ PRECISO DOS EFFECTS,
+
+
+
+e
+ 
+
+
+
+
+ da lógica de HTTP REQUESTS AO MEU BACKEND, QUE ATUALMENTE ESTÁ NO SERVICE DE 'recipeBook'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+FICOU UM NEGÓCIO MAIS OU MENOS ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Recipe } from '../recipe.model';
+
+import { updateObject } from 'src/app/utility/updateObject';
+
+// import * as RecipeBookActions from './recipeBookActions';
+
+import * as fromRecipeBook from './recipeBookActions';
+
+export interface RecipeBookState {
+  recipes: Recipe[];
+  selectedRecipe: Recipe | null;
+  selectedRecipeIndex: number;
+  isLoading: boolean;
+  error: string | null;
+}
+
+// export interface AppState {
+//   recipeBook: RecipeBookState;
+// }
+
+const initialState: RecipeBookState = {
+  recipes: [],
+  selectedRecipe: null,
+  selectedRecipeIndex: -1,
+  isLoading: false,
+  error: null,
+};
+
+export function recipeBookReducer(
+  state: RecipeBookState = initialState,
+  action: fromRecipeBook.RecipeBookActions
+) {
+  switch (action.type) {
+    case fromRecipeBook.START_FETCH_RECIPES:
+      return startFetchRecipes(
+        state,
+        action as fromRecipeBook.StartFetchRecipes
+      );
+    case fromRecipeBook.FETCH_RECIPES_SUCCESS:
+      return recipesFetchSuccess(
+        state,
+        action as fromRecipeBook.RecipesFetchSuccess
+      );
+    case fromRecipeBook.FETCH_RECIPES_FAIL:
+      return recipesFetchFail(state, action as fromRecipeBook.RecipesFetchFail);
+    case fromRecipeBook.ADD_RECIPE:
+      return addRecipe(state, action as fromRecipeBook.AddRecipe);
+    case fromRecipeBook.EDIT_RECIPE:
+      return editRecipe(state, action as fromRecipeBook.EditRecipe);
+    case fromRecipeBook.SELECT_RECIPE:
+      return selectRecipe(state, action as fromRecipeBook.SelectRecipe);
+    case fromRecipeBook.DELETE_RECIPE:
+      return deleteRecipe(state, action as fromRecipeBook.DeleteRecipe);
+    default:
+      return state;
+  }
+}
+
+const addRecipe = (
+  state: RecipeBookState,
+  action: fromRecipeBook.AddRecipe
+): RecipeBookState => {
+  const updatedRecipes = [...state.recipes];
+
+  updatedRecipes.push(action.payload);
+
+  return updateObject(state, { recipes: updatedRecipes });
+};
+
+const editRecipe = (
+  state: RecipeBookState,
+  action: fromRecipeBook.EditRecipe
+): RecipeBookState => {
+  const updatedRecipes = [...state.recipes];
+
+  updatedRecipes[state.selectedRecipeIndex] = action.payload;
+
+  return updateObject(state, {
+    recipes: updatedRecipes,
+    selectedRecipeIndex: -1,
+    selectedRecipe: null,
+  });
+};
+
+const selectRecipe = (
+  state: RecipeBookState,
+  action: fromRecipeBook.SelectRecipe
+): RecipeBookState => {
+  return updateObject(state, {
+    selectedRecipeIndex: action.payload.index,
+    selectedRecipe: action.payload.recipe,
+  });
+};
+
+const deleteRecipe = (
+  state: RecipeBookState,
+  action: fromRecipeBook.DeleteRecipe
+): RecipeBookState => {
+  const updatedRecipes = [...state.recipes];
+
+  updatedRecipes.splice(state.selectedRecipeIndex, 1);
+
+  return updateObject(state, {
+    recipes: updatedRecipes,
+    selectedRecipeIndex: -1,
+    selectedRecipe: null,
+  });
+};
+
+const startFetchRecipes = (
+  state: RecipeBookState,
+  action: fromRecipeBook.StartFetchRecipes
+): RecipeBookState => {
+  return updateObject(state, { isLoading: true, error: null });
+};
+
+const recipesFetchSuccess = (
+  state: RecipeBookState,
+  action: fromRecipeBook.RecipesFetchSuccess
+): RecipeBookState => {
+  return updateObject(state, {
+    error: null,
+    isLoading: false,
+    recipes: action.payload.recipes,
+  });
+};
+
+const recipesFetchFail = (
+  state: RecipeBookState,
+  action: fromRecipeBook.RecipesFetchFail
+): RecipeBookState => {
+  return updateObject(state, { error: action.payload });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> é claro que aqui já estou fazendo o início da lógica 
+
+
+
+
+de 'fetch de nossas recipes'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> já a lógica de 'update' do state COMUM, do state que NAÕ ESTÁ VINCULADO AO BACKEND,
+
+parece estar indo bem...
+
+
+
+
+
+
+
+
+
+
+
+
+O DISPATCH DA ACTION PARA 'START FETCHING RECIPES'
+
+
+vai ocorrer lá no component de 'recipeBOok' ( a recipe book page component)...
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnDestroy, OnInit, Output } from '@angular/core';
+// import { EventEmitter } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { LoggingService } from '../logging.service';
+
+// import { RecipeBookService } from '../recipeBook.service';
+
+
+import * as fromRecipeBook from './store/recipeBookActions';
+// import { AppState } from './store/recipeBook.reducer';
+
+import { AppState
+ } from '..';
+import { Subscription } from 'rxjs';
+
+// import { Recipe } from './recipe.model';
+
+@Component({
+  selector: 'app-recipe-book',
+  templateUrl: './recipe-book.component.html',
+  styleUrls: ['./recipe-book.component.css'],
+})
+export class RecipeBookComponent implements OnInit {
+
+
+
+  constructor(
+    // private recipeBookService: RecipeBookService, 
+    private route: ActivatedRoute, 
+    private store: Store<AppState>,  ///USO DO NGRx....
+    
+    private loggingService: LoggingService) {}
+
+  ngOnInit(): void {
+
+
+      this.loggingService.printLog('Hello from recipeBookModule');
+      // this.recipeBookService.loadRecipes(); ///substituído pelo NGRX...
+
+
+     this.store.dispatch(new fromRecipeBook.StartFetchRecipes());
+      // console.log(this.recipeBookService.getRecipes(), 'RECIPES');
+
+  
+
+  }
+
+
+  
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> certo...
+
+
+
+
+
+
+
+agora basta ADICIONAR O EFFECT QUE VAI CONSEGUIR FAZER 'FETCH' DAS NOSSAS RECIPES.
+
+
+
+
+
+
+
+
+
+
+--> vou lá no 'effects':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
+import { catchError, map, of, switchMap } from 'rxjs';
+import { AppState } from 'src/app';
+import { Recipe } from '../recipe.model';
+
+import * as RecipeBookActions from '../store/recipeBookActions';
+
+@Injectable()
+export class RecipeBookEffects {
+  constructor(private actions$: Actions, private http: HttpClient, private store: Store<AppState>) {}
+
+  fetchRecipes$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(RecipeBookActions.START_FETCH_RECIPES),
+
+      switchMap(
+        (startFetchRecipeAction: RecipeBookActions.StartFetchRecipes) => {
+          const requestHeaders = new HttpHeaders();
+
+          return this.http 
+            .get<{ [name: string]: Recipe }>(
+              // 'https://recipebookdummyproject-default-rtdb.firebaseio.com/recipes.json' ///VERSÃO DUMMY, SEM AUTHENTICATE RULES NO FIREBASE API
+              'https://recipebookdeployproject-default-rtdb.firebaseio.com/recipes.json', //VERSÃO DEPLOY, com o uso de AUTHENTICATE RULES no firebase api (restrição de acesso a contas com email)...
+
+              {
+                headers: requestHeaders,
+              }
+            ).pipe(
+                map(
+                    (data) => {
+                        const transformedRecipesArray: Recipe[] = [];
+              
+              
+                        for (const key in data) {
+                          if (data.hasOwnProperty(key)) {
+                            transformedRecipesArray.push({ ...data[key] });
+                          }
+                        }
+              
+                        transformedRecipesArray.map((recipe) => {  
+                          return {
+                            ...recipe,
+                            ingredients: recipe.ingredients ? recipe.ingredients : [],   ////////SE NOSSA PROPRIEDADE 'ingredients' dessa recipe específica NÃO EXISTIR (um bug possível), VAMOS QUERER QUE OS INGREDIENTS SEJAM SETTADOS COMO UM EMPTY ARRAY....
+                          };
+                        });
+                        // return transformedRecipesArray;
+
+
+                        return new RecipeBookActions.RecipesFetchSuccess({recipes: transformedRecipesArray})
+                      }
+                ),
+
+
+                catchError(
+                    (errorRes: any) => {
+
+                        let errorMessage = 'An unknown error has occured.';
+                        console.log(errorRes);
+        
+                        if (!errorRes.error || !errorRes.error.error) {
+                          return of(new RecipeBookActions.RecipesFetchFail(errorMessage));
+                        }
+        
+                        // switch (errorRes.error.error.message) {  ///ainda não sei quais errors são possíveis, na realtime database api do firebase...
+                        //   case 'EMAIL_NOT_FOUND':
+                        //     errorMessage = 'No user found for the entered email!';
+                        //     break;
+                        //   case 'INVALID_PASSWORD':
+                        //     errorMessage = 'Invalid password, please try again.';
+                        //     break;
+                        //   case 'EMAIL_ALREADY_EXISTS':
+                        //     errorMessage = 'Email already exists, please try again.';
+                        // }
+        
+                        return of(new RecipeBookActions.RecipesFetchFail(errorMessage));
+
+
+                    }
+                )
+            )
+        }
+      )
+    );
+  },
+  {dispatch: true}
+  
+  
+  );
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> acho que esse código funcionará...
+
+
+
+
+
+
+
+
+-> SIM, FUNCIONARÁ, MAS ANTES DISSO PRECISO ADICIONAR 'RecipeBookEffects'
+
+LÁ NAQUELE ARRAY DE 
+
+
+'EffectsModule.forRoot()',
+
+
+
+
+LÁ NO APP.MODULE.TS,
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+  imports: [
+    // AuthModule, ///outsourcing em essa 'feature module'...  ////depois removemos esse import daqui, pq passamos a fazer LAZYLOADING desse module, com a ajuda de 'app-routing.module.ts'...
+    
+    
+    // StoreModule.forRoot( ////é o 'CENTRAL STORE' de nosso app, implementado com NGRX...  //// aqui, precisamos dizer 'QUAIS REDUCERS VÃO SER USADOS NO NOSSO APP, QUE VÃO COMPOR NOSSA CENTRAL STORE, essencialmente'...
+    //   { ///1 identifier para cada 'PARTE/REDUCER' do seu app, cada parte do state do seu app....
+    //      shoppingList: shoppingListReducer       
+    //   }
+    // ),
+    
+    StoreModule.forRoot(
+      reducers
+    ),
+    StoreDevtoolsModule.instrument({logOnly: environment.production}), ////USADO COM A EXTENSÃO 'REDUX DEV TOOLS' do chrome/firefox... --> E SEMPRE ADICIONE ESSA 'FEATURE' DEPOIS  DO SET DO REDUCER (código de ''StoreModule.forRoot(reducers)' ), PQ CASO CONTRÁRIO ISSO _NÃO FUNCIONARÁ...
+    EffectsModule.forRoot([AuthEffects, RecipeBookEffects]), //essencial para o run de código async com nossos reducers (Suportando nossos reducers com código async)...
+                    ///nesse 'forRoot()" do EffectsModule vocÊ deve passar um ARRAY DE SEUS 'ROOT' EFFECTS /effect classes...
+    BrowserModule,
+ 
+    AppRoutingModule,  //módulo de routing, customizado por nós...
+    HttpClientModule,
+ 
+    SharedModule,
+ 
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),   ///outsourcing...
+
+    StoreRouterConnectingModule.forRoot()  //o 'forRoot' fica em branco mesmo.. --> e 'StoreRouterConnectingMOdule' PRECISA SER ESCRITO/IMPLEMENTADO 1) DEPOIS DO SET DO SEU STORE; 2) DEPOIS DO SET DAS 'REDUX DEVTOOLS' por meio de 'StoreDevToolsModule'...  
+  ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+
+
+
+
+COM ISSO, NOSSOS 'EFFECTS' de recipeBook 
+
+FORAM ADICIOANDOS AO NOSSO PROJETo..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> E FOI UM SUCESSO, PQ AGORA OS RECIPE ITEMS REALMENTE SÃO CARREGADOS NO STARTUP DO NOSSO APP,
+
+GRAÇAS AO FLOW DE :
+
+
+
+
+
+
+
+
+
+
+recipeBook.component.ts:
+
+
+
+
+
+
+NG ON INIT (fazemos dispatch da ACTION 'StartFetchRecipes').... -------> ISSO FAZ COM QUE: 1) o código ATIVE O REDUCER, que troca o 'error' para null, e o 'isLoading para true'; 2) FAZ COM QUE O EFFECT DE 'fetchRecipes$' SEJA ATIVADO, e esse effect vai dispatchear ou 'RecipesFetchSuccess' OU 'RecipesFetchFail', a depender do êxito no retrieve dos dados.. -> e isso atualiza o nosso state, em outras palavras...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok...
+
+
+
+
+
+
+
+
+
+MAS AINDA FALTA UM NEGOCIO... --> seria bom colocar UM SPINNER TAMBÉM NESSA PAGE DE 'RecipeBook',
+
+
+QUE SERÁ MOSTRADO ENQUANTO NOSSOS ITEMS SÃO FETCHEADOS... --> e esse spinner, local, será vinculado ao state global de 'isLoading'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+pronto... até mesmo adicionei um spinner... bem legal (lá em recipeList)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> agora restam mais algumas actions e effects, como o 'load recipes'...
+
+
+
+
+
+
+
+
+
+
+
+-> mas antes, devo testar a funcionalidade do 'add' 'delete' e 'edit' recipes...
+
+
+
+
+
+
+
+
+
+
+
+-> o problema é que meu item está sendo adicionado como '-1' quando tento editar...
+
+
+
+
+
+
+
+
+ok, e quando tento ADICIONAR?
+
+
+
+
+
+
+
+o add funciona, só o edit está quebrado...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CONSERTEI A LÓGICA QUE FAZ O 'ACTUAL UPDATE DO STATE',
+
+
+
+e ficou assim:
+
+
+
+
+
+
+
+
+
+
+
+
+const editRecipe = (
+  state: RecipeBookState,
+  action: fromRecipeBook.EditRecipe
+): RecipeBookState => {
+  const updatedRecipes = [...state.recipes];
+
+  console.log(updatedRecipes, 'OLDRECIPES');
+
+  console.log(state.selectedRecipeIndex);
+
+
+    ////eis o problema...
+
+
+  // updatedRecipes[state.selectedRecipeIndex] = action.payload;
+
+
+
+
+  const editedRecipeIndex = updatedRecipes.findIndex(
+    (recipe) => {
+        return recipe.id === action.payload.id;
+    }
+  )
+
+  updatedRecipes[editedRecipeIndex] = action.payload;
+
+  console.log(updatedRecipes, 'NEWRECIPES');
+
+  return updateObject(state, {
+    recipes: updatedRecipes,
+    selectedRecipeIndex: -1,
+    selectedRecipe: null,
+  });
+};
+
+
+
+
+
+
+
+
+
+COM ISSO, ENCONTRO O 'ID' INSERIDO NA MINHA RECIPE, E Í USO AQUELE 'findIndex'
+
+
+para ENCONTRAR ESSE ITEM E O EDITAR..
+
+
+
+
+
+
+
+--> certo, mas o problema, aqui, É QUE 
+
+ISSO _ NÃO ESTÁ ATUALIZANDO MEU STATE 
+
+
+
+DE 
+
+
+
+'recipe-list'..
+
+
+
+
+
+
+(
+  ou seja, essa mudança não é refletida visualmente...
+)
+
+
+
+
+
+
+
+
+
+
+--> PARA CONSERTAR ESSE PROBLEMA, COMEÇAMOS PELO CÓDIGO DE 'RECIPE-LIST COMPONENT':
+
+
+
+
+
+
+
+
+-> não, mas isso AINDA NÃO ESTÁ FUNCIONANDO...
+
+
+
+
+
+
+
+
+
+
+
+
+ok, consegui, eram alguns shenanigans com OS 'recipeId'
+
+
+
+e etc... 
+
+
+
+
+
+
+
+
+
+--> agora que os consertei, a feature de 'EDIT' está funcionando...
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+  onSubmitForm() {
+    console.log(this.recipeForm);
+    console.log(this.recipeForm.get('ingredients.0')?.value.ingredient);
+
+
+    let recipe: Recipe = {
+      name: this.recipeForm.get('recipeName')?.value,
+      description: this.recipeForm.get('description')?.value,
+      imagePath: this.recipeForm.get('imagePath')?.value,
+      ingredients: this.recipeForm.get('ingredients')?.value,
+      // id: Date.now() + Math.random()
+      id: this.recipeId
+
+
+    }
+
+    console.log(recipe);
+
+
+
+    const modifiedIngredients = recipe.ingredients.map(
+      (ingredient) => {
+          return {
+            ...ingredient, 
+            recipeIndex: recipe.id
+          }
+      }
+    )
+
+    recipe.ingredients = modifiedIngredients;
+
+
+    if (this.editMode) {
+      console.log('EDITMODE')
+      // this.recipeBookService.onRecipeEdited(recipe, this.recipeId);
+
+      this.store.dispatch(new fromRecipeBook.EditRecipe(recipe));
+      this.onNavigateAway();
+    } else {
+
+
+
+      recipe = {
+        name: this.recipeForm.get('recipeName')?.value,
+        description: this.recipeForm.get('description')?.value,
+        imagePath: this.recipeForm.get('imagePath')?.value,
+        ingredients: this.recipeForm.get('ingredients')?.value,
+        id: Date.now() + Math.random()
+
+      }
+
+      this.store.dispatch(new fromRecipeBook.AddRecipe(recipe));
+      // this.recipeBookService.onRecipeAdded(recipe);
+
+      this.router.navigate(['/recipe-book'])
+    }
+   
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  AGORA RESTA apenas checar se o 'delete recipe' está funcionando...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> depois disso, tenho que implementar corretamente a feature de 'save recipes'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> para isso, preciso analisar o código...
+
+
+
+
+
+
+
+
+
+
+
+
+  -> primeiro examino o 'delete'...
+
+
+
+
+
+
+  ex:
+
+
+
+
+
+
+
+
+
+
+  
+  onDeleteRecipe() {
+
+    this.store.dispatch(new fromRecipeBook.DeleteRecipe());
+
+
+
+    this.router.navigate(['/recipe-book']);
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CONSEGUI, FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+export class DeleteRecipe implements Action {
+  readonly type = DELETE_RECIPE;
+
+  constructor(public payload: number) {}
+}
+
+
+
+
+
+E LÁ NO HELPER METHOD, NO REDUCER:
+
+
+
+const deleteRecipe = (
+  state: RecipeBookState,
+  action: fromRecipeBook.DeleteRecipe
+): RecipeBookState => {
+  const updatedRecipes = [...state.recipes];
+
+
+  const deletedRecipeIndex = updatedRecipes.findIndex(
+    (recipe) => {
+      console.log(recipe.id, action.payload)
+        return recipe.id === action.payload;
+    }
+  )
+
+
+  updatedRecipes.splice(deletedRecipeIndex, 1);
+
+  return updateObject(state, {
+    recipes: updatedRecipes,
+    // selectedRecipeIndex: -1,
+    // selectedRecipe: null,
+  });
+};
+
+
+
+
+
+
+
+
+
+
+certo.... e isso está funcionando...
+
+
+
+
+
+agora a única coisa que nos resta é implementar a feature de 'save recipes'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO, PRECISAMOS DE UM NOVO EFFECT, COMO 'saveRecipes$'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COMECEI COM ALGO ASSIM:
+
+
+
+
+
+
+
+
+
+
+  saveRecipes$ = createEffect(
+    () => {
+
+      return this.actions$.pipe(
+        ofType(RecipeBookActions.SAVE_RECIPES_START),
+
+
+
+        map(
+          (savedRecipeData: RecipeBookActions.SaveRecipesStart) => {
+
+          
+
+
+
+            
+          }
+        )
+      )
+    }
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+  E ESTAS ACTIONS:
+
+
+
+
+
+
+
+
+
+
+
+  export class SaveRecipesStart implements Action {
+  readonly type = SAVE_RECIPES_START;
+
+  constructor() {}
+}
+
+
+export class SaveRecipesSuccess implements Action {
+  readonly type = SAVE_RECIPES_SUCCESS;
+
+  constructor() {}
+}
+
+
+export class SaveRecipesFail implements Action {
+  readonly type = SAVE_RECIPES_FAIL;
+
+  constructor() {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+ACHO QUE CONSEGUI FAZER TUDO ISSO POR CONTA PRÓPRIA... vou testar...
+
+
+
+
+
+funcionou, sim..
+
+
+
+
+
+
+
+
+
+
+
+
+--> começo adicionando esse case de 'SaveRecipesStart'
+
+
+
+LÁ NO MEU REDUCER, TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Recipe } from '../recipe.model';
+
+import { updateObject } from 'src/app/utility/updateObject';
+
+// import * as RecipeBookActions from './recipeBookActions';
+
+import * as fromRecipeBook from './recipeBookActions';
+
+export interface RecipeBookState {
+  recipes: Recipe[];
+  // selectedRecipe: Recipe | null;
+  // selectedRecipeIndex: number;
+  isLoading: boolean;
+  error: string | null;
+}
+
+// export interface AppState {
+//   recipeBook: RecipeBookState;
+// }
+
+const initialState: RecipeBookState = {
+  recipes: [],
+  // selectedRecipe: null,
+  // selectedRecipeIndex: -1,
+  isLoading: false,
+  error: null,
+};
+
+export function recipeBookReducer(
+  state: RecipeBookState = initialState,
+  action: fromRecipeBook.RecipeBookActions
+) {
+  switch (action.type) {
+    case fromRecipeBook.START_FETCH_RECIPES:
+      return startFetchRecipes(
+        state,
+        action as fromRecipeBook.StartFetchRecipes
+      );
+    case fromRecipeBook.FETCH_RECIPES_SUCCESS:
+      return recipesFetchSuccess(
+        state,
+        action as fromRecipeBook.RecipesFetchSuccess
+      );
+    case fromRecipeBook.FETCH_RECIPES_FAIL:
+      return recipesFetchFail(state, action as fromRecipeBook.RecipesFetchFail);
+      case fromRecipeBook.SAVE_RECIPES_START:
+        return saveRecipesStart(state, action as fromRecipeBook.SaveRecipesStart);
+      case fromRecipeBook.SAVE_RECIPES_FAIL:
+        return saveRecipesFail(state, action as fromRecipeBook.SaveRecipesFail);
+      case fromRecipeBook.SAVE_RECIPES_SUCCESS:
+        return saveRecipesSuccess(state, action as fromRecipeBook.SaveRecipesSuccess)
+    case fromRecipeBook.ADD_RECIPE:
+      return addRecipe(state, action as fromRecipeBook.AddRecipe);
+    case fromRecipeBook.EDIT_RECIPE:
+      return editRecipe(state, action as fromRecipeBook.EditRecipe);
+    // case fromRecipeBook.SELECT_RECIPE:
+    //   return selectRecipe(state, action as fromRecipeBook.SelectRecipe);
+    case fromRecipeBook.DELETE_RECIPE:
+      return deleteRecipe(state, action as fromRecipeBook.DeleteRecipe);
+    default:
+      return state;
+  }
+}
+
+const addRecipe = (
+  state: RecipeBookState,
+  action: fromRecipeBook.AddRecipe
+): RecipeBookState => {
+  const updatedRecipes = [...state.recipes];
+
+  updatedRecipes.push(action.payload);
+
+  return updateObject(state, { recipes: updatedRecipes });
+};
+
+const editRecipe = (
+  state: RecipeBookState,
+  action: fromRecipeBook.EditRecipe
+): RecipeBookState => {
+  const updatedRecipes = [...state.recipes];
+
+  console.log(updatedRecipes, 'OLDRECIPES');
+
+  // console.log(state.selectedRecipeIndex);
+
+
+    ////eis o problema...
+
+
+  // updatedRecipes[state.selectedRecipeIndex] = action.payload;
+
+
+
+
+  const editedRecipeIndex = updatedRecipes.findIndex(
+    (recipe) => {
+      console.log(recipe.id, action.payload.id)
+        return recipe.id === action.payload.id;
+    }
+  )
+
+
+
+  updatedRecipes[editedRecipeIndex] = action.payload;
+
+
+
+
+  console.log(updatedRecipes, 'NEWRECIPES');
+
+  return updateObject(state, {
+    recipes: updatedRecipes,
+    // selectedRecipeIndex: -1,
+    // selectedRecipe: null,
+  });
+};
+
+// const selectRecipe = (
+//   state: RecipeBookState,
+//   action: fromRecipeBook.SelectRecipe
+// ): RecipeBookState => {
+//   return updateObject(state, {
+//     selectedRecipeIndex: action.payload.index,
+//     selectedRecipe: action.payload.recipe,
+//   });
+// };
+
+const deleteRecipe = (
+  state: RecipeBookState,
+  action: fromRecipeBook.DeleteRecipe
+): RecipeBookState => {
+  const updatedRecipes = [...state.recipes];
+
+
+  const deletedRecipeIndex = updatedRecipes.findIndex(
+    (recipe) => {
+      console.log(recipe.id, action.payload)
+        return recipe.id === action.payload;
+    }
+  )
+
+
+  updatedRecipes.splice(deletedRecipeIndex, 1);
+
+  return updateObject(state, {
+    recipes: updatedRecipes,
+    // selectedRecipeIndex: -1,
+    // selectedRecipe: null,
+  });
+};
+
+const startFetchRecipes = (
+  state: RecipeBookState,
+  action: fromRecipeBook.StartFetchRecipes
+): RecipeBookState => {
+  return updateObject(state, { isLoading: true, error: null });
+};
+
+const recipesFetchSuccess = (
+  state: RecipeBookState,
+  action: fromRecipeBook.RecipesFetchSuccess
+): RecipeBookState => {
+  return updateObject(state, {
+    error: null,
+    isLoading: false,
+    recipes: action.payload.recipes,
+  });
+};
+
+const recipesFetchFail = (
+  state: RecipeBookState,
+  action: fromRecipeBook.RecipesFetchFail
+): RecipeBookState => {
+  return updateObject(state, { error: action.payload });
+};
+
+
+
+
+
+
+
+
+
+const saveRecipesStart = (
+  state: RecipeBookState,
+  action: fromRecipeBook.SaveRecipesStart
+): RecipeBookState => {
+
+
+  return updateObject(state, { isLoading: true, error: null})
+
+
+}
+
+
+const saveRecipesFail = (
+  state: RecipeBookState,
+  action: fromRecipeBook.SaveRecipesFail
+): RecipeBookState => {
+  return updateObject(state, { isLoading: false, error: action.payload})
+
+}
+
+
+const saveRecipesSuccess = (
+  state: RecipeBookState,
+  action: fromRecipeBook.SaveRecipesSuccess
+): RecipeBookState => {
+  return updateObject(state, { isLoading: false, error: null})
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> depois disso, adicionei os effects de 'save Recipes' e 'load recipes':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
+import { catchError, map, of, switchMap } from 'rxjs';
+import { AppState } from 'src/app';
+import { Recipe } from '../recipe.model';
+
+import * as RecipeBookActions from '../store/recipeBookActions';
+
+@Injectable()
+export class RecipeBookEffects {
+  constructor(
+    private actions$: Actions,
+    private http: HttpClient,
+    private store: Store<AppState>
+  ) {}
+
+  fetchRecipes$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(RecipeBookActions.START_FETCH_RECIPES),
+
+        switchMap(
+          (startFetchRecipeAction: RecipeBookActions.StartFetchRecipes) => {
+            const requestHeaders = new HttpHeaders();
+
+            return this.http
+              .get<{ [name: string]: Recipe }>(
+                // 'https://recipebookdummyproject-default-rtdb.firebaseio.com/recipes.json' ///VERSÃO DUMMY, SEM AUTHENTICATE RULES NO FIREBASE API
+                'https://recipebookdeployproject-default-rtdb.firebaseio.com/recipes.json', //VERSÃO DEPLOY, com o uso de AUTHENTICATE RULES no firebase api (restrição de acesso a contas com email)...
+
+                {
+                  headers: requestHeaders,
+                }
+              )
+              .pipe(
+                map((data) => {
+                  const transformedRecipesArray: Recipe[] = [];
+
+                  for (const key in data) {
+                    if (data.hasOwnProperty(key)) {
+                      transformedRecipesArray.push({ ...data[key] });
+                    }
+                  }
+
+                  transformedRecipesArray.map((recipe) => {
+                    return {
+                      ...recipe,
+                      ingredients: recipe.ingredients ? recipe.ingredients : [], ////////SE NOSSA PROPRIEDADE 'ingredients' dessa recipe específica NÃO EXISTIR (um bug possível), VAMOS QUERER QUE OS INGREDIENTS SEJAM SETTADOS COMO UM EMPTY ARRAY....
+                    };
+                  });
+                  // return transformedRecipesArray;
+                  // console.log('recipes', transformedRecipesArray);
+
+                  return new RecipeBookActions.RecipesFetchSuccess({
+                    recipes: transformedRecipesArray,
+                  });
+                }),
+
+                catchError((errorRes: any) => {
+                  let errorMessage = 'An unknown error has occured.';
+
+                  if (!errorRes.error || !errorRes.error.error) {
+                    return of(
+                      new RecipeBookActions.RecipesFetchFail(errorMessage)
+                    );
+                  }
+
+                  // switch (errorRes.error.error.message) {  ///ainda não sei quais errors são possíveis, na realtime database api do firebase...
+                  //   case 'EMAIL_NOT_FOUND':
+                  //     errorMessage = 'No user found for the entered email!';
+                  //     break;
+                  //   case 'INVALID_PASSWORD':
+                  //     errorMessage = 'Invalid password, please try again.';
+                  //     break;
+                  //   case 'EMAIL_ALREADY_EXISTS':
+                  //     errorMessage = 'Email already exists, please try again.';
+                  // }
+
+                  return of(
+                    new RecipeBookActions.RecipesFetchFail(errorMessage)
+                  );
+                })
+              );
+          }
+        )
+      );
+    },
+    { dispatch: true }
+  );
+
+  saveRecipes$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(RecipeBookActions.SAVE_RECIPES_START),
+
+        switchMap((savedRecipeData: RecipeBookActions.SaveRecipesStart) => {
+          return this.http
+            .put(
+              //////a url de cima é a versão DE DUMMY DO NOSSO PROJETO, SEM AUTHENTICATION RULES NO FIREBASE API..
+              // 'https://recipebookdummyproject-default-rtdb.firebaseio.com/recipes.json', ////será um request de PUT, e não de 'POST'... --> ISSO PQ QUEREMOS SEMPRE OVERWRITTAR O VALUE ANTIGO DE 'recipes' com o nosso NOVO value...
+              'https://recipebookdeployproject-default-rtdb.firebaseio.com/recipes.json', //VERSÃO DEPLOY, com o uso de AUTHENTICATE RULES no firebase api (restrição de acesso a contas com email)...
+              savedRecipeData.payload
+            )
+            .pipe(
+              map((data) => {
+                return new RecipeBookActions.SaveRecipesSuccess();
+              }),
+
+              catchError((errorRes: any) => {
+                let errorMessage = 'An unknown error has occured.';
+
+                if (!errorRes.error || !errorRes.error.error) {
+                  return of(
+                    new RecipeBookActions.SaveRecipesFail(errorMessage)
+                  );
+                }
+
+                return of(new RecipeBookActions.SaveRecipesFail(errorMessage));
+              })
+            );
+        })
+      );
+    },
+    { dispatch: true }
+  );
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> DEPOIS DISSO, ADICIONEI OS DISPATCHES NOS LUGARES APROPRIADOS,
+
+para que 
+
+
+
+
+
+
+as actions fossem dispatcheadas...
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnDestroy, OnInit, Output } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { AppState } from '..';
+import { AuthService } from '../auth/auth.service';
+// import { EventEmitter } from '@angular/core';
+import { RecipeBookService } from '../recipeBook.service';
+
+import * as AuthActions from '../auth/store/authActions';
+
+
+
+
+
+import * as RecipeBookActions from '../recipeBook/store/recipeBookActions';
+import { RecipeBookComponent } from '../recipeBook/recipe-book.component';
+import { Recipe } from '../recipeBook/recipe.model';
+
+@Component({
+  templateUrl: './headerComponent.app.html',
+  styleUrls: ['./headerComponent.app.css'],
+  selector: 'app-header-component',
+})
+export class HeaderComponent implements OnInit, OnDestroy {
+  collapsed: boolean = true;
+
+  isAuth: boolean = false;
+
+  userEmitted: Subscription;
+
+  recipesEmitted: Subscription;
+
+  loadedRecipes: Recipe[];
+  // @Output() selectedPage = new EventEmitter<string>();
+
+  constructor(
+    private recipeService: RecipeBookService,
+    // private authService: AuthService,
+    private store: Store<AppState>
+  ) {}
+
+  // onShopList() {
+  //   this.selectedPage.emit('shopList');
+  // }
+
+  // onRecipeBook() {
+  //   this.selectedPage.emit('recipeBook');
+  // }
+
+  ngOnInit(): void {
+
+
+
+
+    // this.userEmitted = this.authService.user.subscribe(  ///VERSÃO SEM O USO DE NGRX
+    //   (user) => {
+    //     if (user) {
+    //         this.isAuth = true;
+    //     } else {
+
+
+    //       const loadedUser = localStorage.getItem('token');
+
+    //       if (loadedUser) {
+    //         this.isAuth = true;
+    //       } else {
+
+    //         this.isAuth = false;
+    //       }
+    //     }
+
+    //   }
+    // )
+
+
+    this.recipesEmitted = this.store.select('recipeBook').subscribe(
+      (recipeBookData) => {
+          
+
+        this.loadedRecipes = recipeBookData.recipes;
+
+      }
+    )
+
+
+
+
+
+
+    this.userEmitted = this.store.select('auth').subscribe(  ///VERSÃO COM O USO DO NGRX...
+    (user) => {
+      // if (user) {  ////versão sem NGRX
+      if (user.token) {  ///versão com NGRX
+          this.isAuth = true;
+      } else {
+
+
+        const loadedUser = localStorage.getItem('token');
+
+        if (loadedUser) {
+          this.isAuth = true;
+        } else {
+
+          this.isAuth = false;
+        }
+      }
+
+    }
+  )
+
+
+
+  }
+
+  onLoadData() {
+    console.log('TEST');
+    // this.recipeService.loadRecipes().subscribe(
+    //   (data) =>  {
+
+    //     console.log(data);
+
+    //   }
+    // )
+
+
+
+    ///SUBSTITUÍDO PELO NGRX E  NGRX/EFFECTS...
+    // this.recipeService.loadRecipes().subscribe(); ////não precisamos da data retornada por esse method, especificamente...
+ 
+    
+    this.store.dispatch(new RecipeBookActions.StartFetchRecipes());
+ 
+ 
+  }
+
+  onSaveData() {
+    // this.recipeService.saveRecipes();  ///SUBSTITUÍDO PELO NGRX e NGRX/EFFECTS...
+
+
+
+    this.store.dispatch(new RecipeBookActions.SaveRecipesStart(this.loadedRecipes));
+
+
+
+    // .subscribe( ////podemos deixar esse call lá em 'recipeBook.service.ts'...
+    //   (data) => {
+    //     console.log('Saved Recipes', data);
+    //   }
+    // )
+  }
+
+  onLogout() {
+    // this.authService.logoutUser(); //inutilizado. agora usamos o dispatch de uma action ao nosso store para querer fazer logout (aí usamos effects, a partir desse dispatch, etc)
+
+    this.store.dispatch(new AuthActions.AuthLogout());
+  }
+
+  ngOnDestroy(): void {
+    this.userEmitted.unsubscribe();
+    this.recipesEmitted.unsubscribe();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+e depois isto aqui:
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnDestroy, OnInit, Output } from '@angular/core';
+
+import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { LoggingService } from '../logging.service';
+
+import * as fromRecipeBook from './store/recipeBookActions';
+
+import { AppState } from '..';
+import { Subscription } from 'rxjs';
+
+@Component({
+  selector: 'app-recipe-book',
+  templateUrl: './recipe-book.component.html',
+  styleUrls: ['./recipe-book.component.css'],
+})
+export class RecipeBookComponent implements OnInit {
+  isLoading: boolean = false;
+
+  constructor(
+    private store: Store<AppState>,
+
+    private loggingService: LoggingService
+  ) {}
+
+  ngOnInit(): void {
+    this.loggingService.printLog('Hello from recipeBookModule');
+
+    this.store.dispatch(new fromRecipeBook.StartFetchRecipes());
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+parece que essa parte está pronta, na verdade, mas tenho que assistir os videos do professor...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok, professor começa pelo add do folder de 'store' no nosso recipeBook folder...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> professor adiciona arquivos de actions, reducer e effects (vamos precisar dos 3)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> aí ele adiciona a function de 'reducer',
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+export function recipeBookReducer(
+  state: RecipeBookState = initialState,
+  action: fromRecipeBook.RecipeBookActions
+) {
+  switch (action.type) {
+    case fromRecipeBook.START_FETCH_RECIPES:
+      return startFetchRecipes(
+        state,
+        action as fromRecipeBook.StartFetchRecipes
+      );
+    case fromRecipeBook.FETCH_RECIPES_SUCCESS:
+      return recipesFetchSuccess(
+        state,
+        action as fromRecipeBook.RecipesFetchSuccess
+      );
+    case fromRecipeBook.FETCH_RECIPES_FAIL:
+      return recipesFetchFail(state, action as fromRecipeBook.RecipesFetchFail);
+      case fromRecipeBook.SAVE_RECIPES_START:
+        return saveRecipesStart(state, action as fromRecipeBook.SaveRecipesStart);
+      case fromRecipeBook.SAVE_RECIPES_FAIL:
+        return saveRecipesFail(state, action as fromRecipeBook.SaveRecipesFail);
+      case fromRecipeBook.SAVE_RECIPES_SUCCESS:
+        return saveRecipesSuccess(state, action as fromRecipeBook.SaveRecipesSuccess)
+    case fromRecipeBook.ADD_RECIPE:
+      return addRecipe(state, action as fromRecipeBook.AddRecipe);
+    case fromRecipeBook.EDIT_RECIPE:
+      return editRecipe(state, action as fromRecipeBook.EditRecipe);
+    // case fromRecipeBook.SELECT_RECIPE:
+    //   return selectRecipe(state, action as fromRecipeBook.SelectRecipe);
+    case fromRecipeBook.DELETE_RECIPE:
+      return deleteRecipe(state, action as fromRecipeBook.DeleteRecipe);
+    default:
+      return state;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AÍ ELE FALA QUE VAMOS PRECISAR DE UM 'INITIAL STATE', e que vamos precisar definir a ESTRUTURA 
+
+do initial state...
+
+
+
+
+
+
+
+
+
+
+
+
+-> MEU STATE FICOU COM ESTE FORMATO:
+
+
+
+
+
+
+
+
+export interface RecipeBookState {
+  recipes: Recipe[];
+  isLoading: boolean;
+  error: string | null;
+}
+
+
+const initialState: RecipeBookState = {
+  recipes: [],
+  isLoading: false,
+  error: null,
+};
+
+
+
+
+
+
+
+
+
+
+-------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------> SÓ TEMOS INTERESSE NAS 'RECIPES'... 
+
+
+
+
+
+
+
+
+
+
+-> antigamnte usávamos o 'recipes Subject',
+
+
+
+
+mas agora vamos usar o STATE DE recipes....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok, o professor adiciona 
+
+
+
+
+
+
+
+
+
+
+recipes: Recipe[]..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O INITIALSTATE vai 
+
+
+ter um type que será aquele state ali...
+
+
+
+
+
+
+
+
+
+
+-> e fica tipo assim:
+
+
+
+
+
+
+
+export interface RecipeBookState {
+  recipes: Recipe[];
+  isLoading: boolean;
+  error: string | null;
+}
+
+
+const initialState: RecipeBookState = {
+  recipes: [],
+  isLoading: false,
+  error: null,
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK, AÍ PRECISAMOS DE ACTIONS PARA REALIZAR COISAS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> VAMOS PRECISAR DE ACTIONS PARA:
+
+
+
+
+
+
+
+
+1) ADICIONAR 1 NOVA RECIPE  (DONE)
+
+
+
+2) EDITAR UMA RECIPE ESPECÍFICA  (DONE)
+
+
+
+
+3) DELETAR UMA RECIPE ESPECÍFICA (DONE)
+
+
+
+
+
+4) FETCHEAR TODAS AS RECIPES DO BACKEND (DONE)
+
+
+
+5) SALVAR AS 'CURRENT RECIPES' no nosso backend... (DONE)
+
+
+
+
+
+
+6) 'SEND TO SHOPPING LIST' (enviar todos os ingredients de uma RECIPE ESPECÍFICA aos 'ingredients' que temos lá no state de 'shoppingList', em 'ingredients')..
+
+
+
+
+
+(AINDA NÁO FIZ)
+
+
+
+
+7) também temos 'getRecipes' --> no nosso service, é este method:
+
+
+  getRecipes() {
+    return [...this.recipes];
+  }
+
+
+
+
+(AINDA NÁO FIZ) (Agora fiz)
+
+
+
+
+
+8) também temos/tínhamos 'getRecipe' -> era este method:
+
+
+
+
+
+  getRecipe(id: number): Recipe {
+    // return this.recipes[id];
+
+    const selectedRecipe = this.recipes.find((recipe) => {
+      return recipe.id === id;
+    })!;
+    return selectedRecipe;
+  }
+
+
+
+
+(AINDA NÃO FIZ)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TENTEI ESCREVER UM CÓDIGO MAIS OU MENOS ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ngOnInit(): void {
+
+
+
+    //     const recipeId = this.route.snapshot.params['id'];
+    //     console.log(recipeId);
+
+    ////approach ALTERNATIVA...
+    // const recipeId = +this.route.snapshot.params['id'];
+    // this.loadedRecipe = this.serviceBookService.getRecipes()[recipeId]
+    //this.loadedRecipe = this.serviceBookService.getRecipe(recipeId)
+
+  this.loadedRecipeSubscription = this.store.select('recipeBook').
+    pipe(
+      map(
+        (recipeBookData) => {
+
+          const recipeIndex = recipeBookData.recipes.findIndex((recipe) => {return recipe.id === this.id})
+
+
+          return recipeBookData.recipes[recipeIndex]
+        }
+      )
+    ).
+    subscribe(
+
+      (recipe: Recipe) => {
+
+        console.log('HAPPENED')
+      this.loadedRecipe = recipe;
+      }
+    )
+
+
+    this.route.params.subscribe(
+      (params: Params) => {
+        console.log('TEST');
+        // this.loadedRecipe = this.loadedRecipes[+params['id']];
+
+        // this.loadedRecipe = this.recipeBookService.getRecipes()[+params['id']]
+        this.id = +params['id'];
+        console.log(+params['id'])
+        // console.log(this.recipeBookService.getRecipe(+params['id']), 'LINE');
+        // console.log(this.recipeBookService.getRecipes());
+      
+
+
+        //SUBSTITUÍDO PELO 'NGRX/EFFECTS'...
+        // this.loadedRecipe = this.recipeBookService.getRecipe(+params['id']);
+
+
+
+
+
+  
+      }
+    )
+
+  }
+
+
+
+
+
+
+
+
+MAS ESSE CÓDIGO NÃO FUNCIONOU (a recipe não está sendo carregada em 'recipe-detail component'...)
+
+
+
+
+
+
+--> acho que estou usando o METHOD ERRADO...
+
+
+
+
+
+
+
+
+--> o importante é considerar o 'source of truth' de nosso app,
+
+que agora passará a ser o STORE DO REDUX, E NÃO MAIS O NOSSO SERVICE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> NA VERDADE, BASTOU EU ALTERAR A ORDEM, entre o subscribe do 'router.params' 
+
+
+e o subscribe do 'store',
+
+
+que 
+
+
+
+DO NADA O APP COMEÇOU A FUNCIONAR NORMALMENTE..
+
+
+
+
+
+
+
+(
+
+  só falta adicionar o 'ngOnDestroy',
+
+
+  eu acho...
+)
+
+
+
+
+O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ngOnInit(): void {
+
+
+
+    //     const recipeId = this.route.snapshot.params['id'];
+    //     console.log(recipeId);
+
+    ////approach ALTERNATIVA...
+    // const recipeId = +this.route.snapshot.params['id'];
+    // this.loadedRecipe = this.serviceBookService.getRecipes()[recipeId]
+    //this.loadedRecipe = this.serviceBookService.getRecipe(recipeId)
+
+
+
+    this.route.params.subscribe(
+      (params: Params) => {
+        console.log('TEST');
+        // this.loadedRecipe = this.loadedRecipes[+params['id']];
+
+        // this.loadedRecipe = this.recipeBookService.getRecipes()[+params['id']]
+        this.id = +params['id'];
+        console.log(+params['id'])
+        // console.log(this.recipeBookService.getRecipe(+params['id']), 'LINE');
+        // console.log(this.recipeBookService.getRecipes());
+      
+
+
+        //SUBSTITUÍDO PELO 'NGRX/EFFECTS'...
+        // this.loadedRecipe = this.recipeBookService.getRecipe(+params['id']);
+
+
+
+
+        this.loadedRecipeSubscription = this.store.select('recipeBook').
+        pipe(
+          map(
+            (recipeBookData) => {
+    
+              const recipeIndex = recipeBookData.recipes.findIndex((recipe) => {return recipe.id === this.id})
+    
+    
+              return recipeBookData.recipes[recipeIndex]
+            }
+          )
+        ).
+        subscribe(
+    
+          (recipe: Recipe) => {
+    
+            console.log('HAPPENED', recipe);
+    
+          this.loadedRecipe = recipe;
+          console.log(this.loadedRecipe);
+          }
+        )
+
+  
+      }
+    )
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  E O NGONDESTROY:
+
+
+
+
+
+
+  
+  ngOnDestroy(): void {
+    this.loadedRecipeSubscription.unsubscribe();
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... AGORA SÓ FALTA 'getRecipes' (get de múltiplas recipes) 
+
+
+
+
+
+E O 
+
+'send to shoppingList'....
+
+
+
+
+
+
+
+
+
+
+
+-> quanto ao 'getRecipes', lembro-me que 
+
+
+EU NÃO TINHA ESSE METHOD NO MEU PROJETO,
+
+e sim 
+
+
+que eu rodava 'getRecipe'
+
+múltiplas vezes,
+obtendo o mesmo efeito....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok.... acho que já consegui fazer todas essas features... apenas resta a de 'send to shopping list'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+o 'sendToShoppingList' está ___ QUASE__ FUNCIONNADO...
+
+
+
+
+
+
+--> quase pq:
+
+
+
+
+1) os ingredients já são enviados, mas sempre ocorre o OVERWRITE dos 'old ingredients' com os 'new ingredients'...
+
+
+
+
+
+
+
+
+
+
+-> tenho que fazer um MIX dos OLD com os NEW... (com 'push', provavelmente)..
+
+
+
+
+
+
+
+
+
+
+
+
+AGORA FUNCIONOU... :
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const sendRecipeIngredientsToShoppingList = (state: ShoppingListState, action: fromRecipeBookActions.SendIngredientsToShopList): ShoppingListState => {
+
+
+
+  const updatedIngredients = state.ingredients.slice();
+
+
+  updatedIngredients.push(...action.payload);
+
+]]]
+
+  return updateObject(state, {ingredients: updatedIngredients})
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+certo... acho que não falta muita coisa...
+
+
+
+
+
+
+
+
+
+-> posso fazer comment out de meus methods em 'recipeBook.service.ts'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+o professor escreveu
+
+
+
+
+
+
+
+
+
+uma action tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+export class SetRecipes implements Action {
+
+
+
+  readonly type = SET_RECIPES;
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+-> ESSA ACTION SERÁ RESPONSÁVEL PELO _ SET DE ALGUMAS RECIPES.. --->
+
+
+
+
+
+
+
+
+É POR ISSO QUE DEFINITIVAMENTE VAMOS PRECISAR DE UM PAYLOAD NESSA ACTION...
+
+
+
+
+
+
+
+
+
+
+------> qual será o payload?
+
+
+
+
+
+
+
+-> SERÁ O ARRAY DE RECIPES, ESSENCIALMENTE..
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+export class SetRecipes implements Action {
+
+
+
+  readonly type = SET_RECIPES;
+
+
+
+
+
+
+constructor(public payload: Recipe[]) {}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+POR FIM, O PROFESSOR CRIA UM UNION TYPE 
+
+PARA 
+
+
+
+ASSIGNAR ESSAS ACTIONS FACILMENTE AO REDUCER DE 'recipeBook':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export type RecipesActions = SetRecipes;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> CERTO, O PROFESSOR FALA DO REDUCER DE 'recipeReducer',
+
+
+
+O QUAL ATUALMENTE ESTÁ ASSIM (minha versão):
+
+
+
+
+
+
+
+
+
+
+export function recipeBookReducer(
+  state: RecipeBookState = initialState,
+  action: fromRecipeBook.RecipeBookActions
+) {
+  switch (action.type) {
+    case fromRecipeBook.START_FETCH_RECIPES:
+      return startFetchRecipes(
+        state,
+        action as fromRecipeBook.StartFetchRecipes
+      );
+    case fromRecipeBook.FETCH_RECIPES_SUCCESS:
+      return recipesFetchSuccess(
+        state,
+        action as fromRecipeBook.RecipesFetchSuccess
+      );
+    case fromRecipeBook.FETCH_RECIPES_FAIL:
+      return recipesFetchFail(state, action as fromRecipeBook.RecipesFetchFail);
+      case fromRecipeBook.SAVE_RECIPES_START:
+        return saveRecipesStart(state, action as fromRecipeBook.SaveRecipesStart);
+      case fromRecipeBook.SAVE_RECIPES_FAIL:
+        return saveRecipesFail(state, action as fromRecipeBook.SaveRecipesFail);
+      case fromRecipeBook.SAVE_RECIPES_SUCCESS:
+        return saveRecipesSuccess(state, action as fromRecipeBook.SaveRecipesSuccess)
+    case fromRecipeBook.ADD_RECIPE:
+      return addRecipe(state, action as fromRecipeBook.AddRecipe);
+    case fromRecipeBook.EDIT_RECIPE:
+      return editRecipe(state, action as fromRecipeBook.EditRecipe);
+    // case fromRecipeBook.SELECT_RECIPE:
+    //   return selectRecipe(state, action as fromRecipeBook.SelectRecipe);
+    case fromRecipeBook.DELETE_RECIPE:
+      return deleteRecipe(state, action as fromRecipeBook.DeleteRecipe);
+    default:
+      return state;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------------> 
+
+
+
+
+
+
+
+
+
+
+ok....... 
+
+
+
+o initial state fica assim:
+
+
+
+
+
+
+
+export interface RecipeBookState {
+  recipes: Recipe[];
+  isLoading: boolean;
+  error: string | null;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------> 
+
+
+
+
+
+
+
+
+
+
+
+
+o primeiro  case que vamos querer checar 
+
+
+
+
+
+
+é 'RecipeActions.SET_RECIPES'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> no default case, retornamos nosso state SEM MUDANÇAS..
+
+
+
+
+
+
+
+
+----> OK..
+
+
+
+
+
+
+
+
+
+-> O OBJETIVO DE 'SET_RECIPES' 
+
+
+
+É:
+
+1) COPIAR O EXISTING STATE 
+
+
+
+
+2) OVERWRITTAR AS RECIPES QUE TEMOS LÁ 
+
+
+
+_ COM _aS ACTIONS QUE TEMOS NO ACTUAL PAYLOAD DA NOSSA ACTION,
+
+
+PQ O ACTION PAYLOAD TERÁ SEMPRE UM ARRAY DE RECIPES..
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> fica tipo assim (meu código está mais simplificado e melhor):
+
+
+
+
+
+
+
+switch(action.type) {
+  case RecipesActions.SET_RECIPES:
+    return {
+
+      ...state,
+      recipes: [...action.payload]
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... AGORA O PRÓXIMO PASSO É FAZER __ DISPATCH_ DA ACTION QUE VAI SETTAR _ 
+ESSE STATE __ ASSIM __ QUE __tIVERMOS __eSSAS RECIPES (http requests),
+
+
+E É CLARO QUE TAMBÉM VAMOS QUERER ASSEGURAR QUE 
+
+
+
+
+
+''''PODEMOS SELECT ESSAS RECIPES, PARA ENTÃO FORÇÁ-LAS 
+
+
+
+a serem mostradas na user interface''...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> O DISPATCH, POR ENQUANTO,
+
+
+
+
+SERÁ FEITO LÁ NO SERVICE DE 'data-storage.service.ts' (que eu nem mesmo adicionei ao meu projeto),
+
+ 
+
+
+
+
+
+
+ LÁ 
+
+
+
+ Em 'fetchRecipes()" ------> 
+
+
+
+
+
+
+
+
+
+
+
+ ANTES, ESTÁVAMOS COM UM CÓDIGO DE 'fetchRecipes()', method de NOSSO SERVICE ANTIGO,
+
+ tipo assim:
+
+
+
+
+
+
+
+
+fetchRecipes() {
+
+
+  return this.http.get<Recipe[]>(url)
+  .pipe(
+    map(
+      (recipes) => {
+
+          ...transformação...
+      }
+    ),
+
+    tap((recipes) => {
+
+
+      this.recipeBookService.setRecipes(recipes);
+
+
+    })
+  )
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+ok, mas e o que fazia esse method?
+
+
+
+
+
+FAZIA ISTO:
+
+
+
+
+
+  setRecipes(recipes: Recipe[]) {
+    this.recipes = recipes;
+    this.recipesChanged.next(this.recipes.slice());
+  }
+
+
+
+
+
+
+
+
+
+
+
+  ok, era o mesmo method que _EU _ estava usando,
+
+
+
+
+  que é basicamente um method que define o 'inner state' do nosso service de 'recipeBook'
+
+
+  COMO SENDO IGUAL A ESSE ARRAY DE RECIPES, para então usar aquele BEHAVIOR SUBJECT de 'recipesChanged'
+
+
+
+  PARA __ EMITIR ESSA MUDANÇA AO LONGO DO NOSSO APp..
+
+
+
+
+
+
+
+
+
+  -> CERTO.. E AGORA 
+
+
+
+  VAMOS QUERER INJETAR NOSSA STORE, É CLARO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> E AÍ INJETAMOS ESSA STORE NO NOSSO CONSTRUCTOR...
+
+
+
+
+
+
+
+
+
+
+
+
+-> É CLARO QUE NÃO VAMOS MAIS PRECISAR DESSE METHOD DE getRecipes
+
+
+  EX:
+
+
+
+
+
+
+
+O CÓDIGO FOI FICANDO ASSIM
+
+
+
+
+
+
+
+
+import {
+  ComponentFactoryResolver,
+  EventEmitter, ///TROCAMOS POR 'SUBJECT', que é simplesmente MELHOR como CROSS-COMPONENT COMMUNICATION TOOL....
+  Injectable,
+  Output,
+} from '@angular/core';
+
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import {
+  exhaustMap,
+  map,
+  Subject,
+  take, ////'''VOU QUERER PEGAR APENAS 1 VALUE DESSE OBSERVABLE AÍ, E AÍ VOU QUERER FAZER UNSUBSCRIBE IMEDIATAMENTE DEPOIS''''
+  tap,
+} from 'rxjs';
+import { Recipe } from './recipeBook/recipe.model';
+import { Ingredient } from './shared/ingredient.model';
+import { ShoppingListService } from './shoppingList.service';
+// import { AuthService } from './auth/auth.service';
+
+// import * as ShoppingListActions from './ShoppingList/store/shoppingListActions';
+// import * as fromShoppingList from '../app/ShoppingList/store/shoppingList.reducer';
+import { Store } from '@ngrx/store';
+
+import { AppState } from '.';
+
+@Injectable()
+export class RecipeBookService {
+  private recipes: Recipe[] = [
+    //professor colocou como PRIVATE....
+    // new Recipe(
+    //   'Chicken Wings',
+    //   'Delicious chicken wings',
+    //   'https://www.farmfor.com.br/wp-content/uploads/2022/02/coxinha-da-asa-superbowl.jpg',
+    //   [
+    //     new Ingredient('Potato', 1, 0),
+    //     new Ingredient('Tomato', 2, 0),
+    //     new Ingredient('Banana', 5, 0),
+    //   ],
+    //   0
+    // ),
+    // new Recipe(
+    //   'Pork Chops',
+    //   'Tasty pork chops, check them out',
+    //   'http://t2.gstatic.com/licensed-image?q=tbn:ANd9GcQsRbNYL4S-Noacb27Vi-sbWzURFRjW9YN8VOScbiJ0DxTAiGxTyqlNdG1TWHKN1xWqOV4UhHaFef-fBD8-PGo',
+    //   [
+    //     new Ingredient('Lettuce', 5, 1),
+    //     new Ingredient('Apple', 4, 1),
+    //     new Ingredient('Banana', 1, 1),
+    //   ],
+    //   1
+    // ),
+    // new Recipe(
+    //   'Caesar Salad',
+    //   'Fresh and healthy salad',
+    //   'https://www.confeiteiradesucesso.com/wp-content/uploads/2019/06/ceasarsalad-fb.jpg',
+    //   [
+    //     new Ingredient('Pumpkin', 3, 2),
+    //     new Ingredient('Meat', 9,  2),
+    //     new Ingredient('Avocado', 4, 2),
+    //   ],
+    //   2
+    // ),
+  ];
+
+  constructor(
+    private shoppingListService: ShoppingListService,
+    private http: HttpClient,
+    // private store: Store<{shoppingList: {ingredients: Ingredient[]}}>  /////isso pq agora vamos VINCULAR A NOSSA 'STORE' (que é o nosso SOURCE OF TRUTH, AGORA; é o nosso STATE CENTRAL, em outras palavras) A ESSE SERVICE AÍ...
+    ///declaramos o 'formato que nosso slice de state relativo a 'shoppingList' terá....
+
+    private store: Store<AppState>
+  ) {}
+
+  getRecipes() {
+    return [...this.recipes];
+  }
+
+  loadRecipes() {
+    /////OBS::: A LÓGICA DE 'ADD O USER TOKEN A ESSE HTTP REQUEST' foi colocada lá no 'httpInterceptor.service.ts' (que adiciona esse token a todo e qualquer request disparado por nosso app, que sai de nosso app)....
+
+    const requestHeaders = new HttpHeaders();
+
+    return this.http ///este código NÃO PODE SER colocado dentro daquele '.subscribe()' do call de this.authService.user... (o nesting de observables é IMPOSSÍVEL)...
+      .get<{ [name: string]: Recipe }>(
+        // 'https://recipebookdummyproject-default-rtdb.firebaseio.com/recipes.json' ///VERSÃO DUMMY, SEM AUTHENTICATE RULES NO FIREBASE API
+        'https://recipebookdeployproject-default-rtdb.firebaseio.com/recipes.json', //VERSÃO DEPLOY, com o uso de AUTHENTICATE RULES no firebase api (restrição de acesso a contas com email)...
+
+        {
+          headers: requestHeaders,
+        }
+      )
+      .pipe(
+        map((data) => {
+          const transformedRecipesArray: Recipe[] = [];
+
+          for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+              transformedRecipesArray.push({ ...data[key] });
+            }
+          }
+
+          transformedRecipesArray.map((recipe) => {
+            return {
+              ...recipe,
+              ingredients: recipe.ingredients ? recipe.ingredients : [], ////////SE NOSSA PROPRIEDADE 'ingredients' dessa recipe específica NÃO EXISTIR (um bug possível), VAMOS QUERER QUE OS INGREDIENTS SEJAM SETTADOS COMO UM EMPTY ARRAY....
+            };
+          });
+          return transformedRecipesArray;
+        }),
+        tap((recipes) => {
+          this.recipes = recipes;
+          this.recipeItemsChanged.next([...recipes]);
+        })
+      );
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR ENTÃO INCLUI A SLICE DE 'recipeBook' ao nosso OVERALL STATE,
+
+AO OVERALL APP..
+
+
+
+
+
+
+
+
+--> COM ISSO ,
+
+
+O REDUCER DA GLOBAL APLICATION  está 'updatado'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> mas É CLARO QUE AQUI SÓ VAMOS PRECISAR DO IMPORT DE 'store'
+
+PARA FZER UM DISPATCH ESPECIAL... --> QUANDO CONSEGUIRMOS A RECIPE,
+
+
+
+PODEMOS CHAMAR 'this.store.dispatch()',
+
+
+
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+return this.http
+.get<Recipe[]>(url)
+
+
+.pipe(
+  map((recipes) => {.....}),
+
+
+  tap((recipes )=> {
+
+
+
+    return this.store.dipsatch()
+    
+
+  })
+)
+
+
+
+
+_____
+
+
+
+
+
+
+
+
+
+
+
+-> OK, AGORA PRECISAMOS DAS 'recipeBookActions',
+
+também..
+
+
+
+
+
+
+
+
+-> ok, importei tudo isso...
+
+
+
+
+
+
+
+
+
+
+CERTO
+
+
+
+
+
+
+
+ex:
+
+
+
+
+return this.http
+.get<Recipe[]>(url)
+
+
+.pipe(
+  map((recipes) => {.....}),
+
+
+  tap((recipes )=> {
+
+
+
+    return this.store.dipsatch(new RecipesAction.SetRecipes(recipes))
+    
+
+  })
+)
+
+
+
+
+_____
+
+
+
+
+
+
+
+
+-> ISSO QUER DIZER QUE:
+
+
+
+
+
+
+1) ESTMAOS FAZENDO 'DISPATCH' do começo DO FETCH LÁ NO SERVICE DE 'recipeBook.service.ts' (mas meu códkgo nõa está assim, pq usei 'RX- effects')..
+
+
+--> NESSA ACTION PASSAMOS A DATA QUE OBTIVEMOS LÁ DO SERVER...
+
+
+
+
+
+
+-> OK, AGORA  ESTAMOS DESPATCHEANDO ESSa nova action.. --> e AGORA PRECISAMOS APENAS _ MUDAR
+ 
+
+ OS LOCAIS EM QEU __ TEMOS INTERESSE NESSAS RECIPES...
+
+
+
+
+
+
+
+
+
+ -> MAS EM QUE LUGAR TEMOS INTERESSE?
+
+
+
+
+
+
+
+
+
+
+ --> BEM, UM LUGAR CLÁSSICO É O 'recipe-list' component...
+
+
+
+
+
+
+
+
+
+
+ ------> O CÓDIGO ATUAL DELE ESTÁ ASSIM:
+
+
+
+
+
+
+
+
+ import { Component, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { RecipeBookService } from 'src/app/recipeBook.service';
+
+import { Recipe } from '../recipe.model';
+
+import { AppState } from 'src/app';
+
+@Component({
+  selector: 'app-recipe-list',
+  templateUrl: './recipe-list.component.html',
+  styleUrls: ['./recipe-list.component.css'],
+})
+export class RecipeListComponent implements OnInit, OnDestroy {
+  subscription: Subscription;
+
+  recipes: Recipe[] = [];
+
+  isLoading: boolean = false;
+
+  constructor(
+    private store: Store<AppState>,
+
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.subscription = this.store
+      .select('recipeBook')
+      .subscribe((recipeBookState) => {
+        this.isLoading = recipeBookState.isLoading;
+        this.recipes = recipeBookState.recipes;
+      });
+  }
+
+  onNewRecipe() {
+    this.router.navigate(['/recipe-book', 'new']);
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+--------> ou seja,
+
+
+
+
+
+EU JÁ FIZ UMA SUBSCRIPTION ao 'store' 
+
+
+logo no 'ngONInit',
+
+
+
+
+que faz com que O NOSSO STATE LOCAL (de 'recipeBOok')
+
+SEJA ATUALIZADO A PARTIR DO STATE GLOBAL (do NGRX)...
+
+
+
+
+
+
+
+
+
+
+
+O PROFESSOR FAZ A MESMA COISA: INJETA O NOSSO STORE no constructor,
+
+
+E AÍ 
+
+
+
+
+
+COMEÇA A O UTILIZAR...
+
+
+
+
+
+
+
+
+
+
+
+----> AÍ ELE TIRA AQUELA SUBSCRIPTION DO 'recipeBook Service'
+
+
+
+e aí 
+
+
+coloca 
+
+
+
+
+
+
+
+
+
+o 'this.store.select()'...
+
+
+
+
+
+
+
+
+
+-> AÍ ELE NOS EXPLICA QUE  NESSE OBSERVABLE AÍ __ 
+RECEBEMOS _ 
+
+
+
+
+
+NÃO UMA 'LIST OF RECIPES',
+
+
+E SIM UM 
+
+OBJECT EM QUE TEMOS UMA 'RECIPE KEY'... 
+
+
+
+
+
+
+
+
+--> AÍ ELE NOS EXPLICA QUE COM 'pipe' 
+
+
+e 
+
+'MAP'
+ 
+
+
+ PODEMOS FACILMENTE TRANSFORMAR 
+
+
+ essa data,
+
+
+
+
+
+
+
+ TRANSFORMAR ESSA DATA 
+
+
+
+
+
+ em apenas o 'recipes'... (ué, mas isso ficou uma bosta, pq o 'isLoading' foi deixado de lado)... ---> 
+
+
+
+
+ no meu código, fiz a mesma coisa, mas também peguei o state  de 'isLoading'..
+
+
+
+
+
+
+
+
+
+
+
+ -> OK, SUCESSO...
+
+
+
+
+
+
+
+ PELO VISTO É ASSIM QEU FAZEMOS AS COISAS..
+
+
+
+
+
+
+
+
+
+
+
+ -> DEPOIS DISSO, O PROFESSOR TENTA CLICAR EM ALGUM RECIPE ITEM, 
+
+ MAS AÍ GANHA UM ERRO FEIO --> ISSO FAZ SENTIDO,
+
+ PQ O RESTO DO APP AINDA ES´TA TENTANDO ACESSAR 'RECIPE DATA'
+
+ LÁ DO RECIPE SERVICE,
+
+
+ MAS LÁ NOSSAS RECIPES JÁ NÃO SÃO CARREGADS,
+
+
+
+
+
+
+
+ PQ __ AGORA __ ESTAMOS AS CARREGANDO NA NOSSA 'NGRX STORE' (
+
+  que apenas está funcionando NA MINHA VERSÃO DO ´CODIGO..
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+ -> O PROFESSOR EXPLICA QUE DEVEMOS CONSERTAR OUTRAS PARTES DO APP, NA PRÓXIMA AULA...

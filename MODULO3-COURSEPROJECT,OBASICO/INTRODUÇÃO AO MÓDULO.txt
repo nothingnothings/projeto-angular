@@ -1,0 +1,137 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+HORA DE PRATICAR AS COISAS QUE APRENDEMOS ATÉ AGORA NO NOSSO COURSE PROJECT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O QUE É NOSSO COURSE PROJECT?
+
+
+
+
+
+
+
+
+
+
+-----> O OBJETIVO DO PROFESSOR  É CRIAR UMA 
+
+'RECIPE BOOK' E UMA 
+
+'SHOPPING LIST'  app...
+
+
+
+
+
+
+
+
+
+
+
+
+-> VIMOS ESSE APP NO INTRO VIDEO -->  TEREMOS 
+
+2 SECTIONS,
+
+
+
+SHOPPING LIST E 
+
+RECIPE BOOK..
+
+
+
+
+
+
+
+
+
+
+
+-> SEREMOS CAPAZES DE EXAMINAR NOSSAS RECIPES,
+
+
+
+EXAMINAR SEUS DETALHES E TAMBÉM MANAGE nossa 'shopping list' (
+
+
+    e também 
+
+
+
+    PUSHAR ELEMENTS DE 1 RECIPE 
+
+    DIRETAMENTE À SHOPPING LIST...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+--> VAMOS REVER UM MONTE DE COISAS QUE APRENDEMOS 
+
+AO LONGO DO CURSO...
+
+
+
+
+
+
+
+
+
+--> ANTES DE COMEÇARMOS O APP,
+
+DEVEMOS 
+
+
+
+
+O PLANEJAR.. -> 
+
+PRECISAMOS TER UM PLAN...
+
+
+
+
+
+
+
+
+
+
+
+--> na próxima lição veremos QUAIS COMPONENTS VAMOS PRECISAR PARA AS DIFERENTES FEATURES DESSE APPp....

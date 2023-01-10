@@ -1,0 +1,480 @@
+
+
+
+
+
+
+
+
+OBVIAMENTE,
+
+
+
+ESSA PARTE DO 'NGRX'
+
+
+FOI BEM 
+
+
+LONGA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> E ESSA PARTE TODA DO NGRX FOI BASICAMENTE SOBRE AUTHENTICATION...
+
+
+
+
+
+
+
+
+
+
+-> MAS VOCê DEVE TER EM MENTE QUE PARA ESSE NOSSO APP,
+
+
+
+'AUTHENTICATION'  
+
+
+
+
+
+
+É _- ALGO _ BEM COMPLEXO... -->  PQ TEMOS QUE MANAGEAR O TOKEN LIFETIME,
+
+E ASSIM POR DIANTE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> é claro que agora  PRATICAMENTE TUDO É MANAGEADO PELO NGRX....
+
+
+
+
+
+
+
+
+
+
+
+--> NÓS ESTAMOS USANDO EFFECTS PARA TODOS OS 'SIDE EFFECTS',
+
+
+
+
+PARA COISAS COMO 'HTTP REQUESTS' E 'LOCAL STORAGE',
+
+
+'REDIRECTION'....
+
+
+
+
+
+
+
+
+
+
+--> E NÓS ESTAMOS USANDO O REDUCER PARA O 'GENERAL STATE',
+
+
+
+
+COMO PARA O HOLD DO _ 'AUTHENTICATED USER',
+
+
+
+
+TAMBÉM SE TEMOS 
+
+'ERRORS' OU 'LOADING'...
+
+
+
+
+
+
+
+
+
+
+--> E AÍ, NO CASO,
+
+
+
+O COMPONENT DE 'AUTH Page component'
+
+
+
+FAZ DISPATCCH DE NOSSAS DIFERENTES ACTIONS DE LOGIN/SIGNUP,
+
+
+
+
+e também _ TIRA VANTAGEM 
+DO 
+
+
+
+
+
+'''LOADING E ERROR STATES'''.... (propriedade 'error' e 'isLoading', dentro do state de 'auth')...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> JÁ O AUTH SERVICE É USADO APENAS PARA O MANAGE DO NOSSO 'TOKEN TIMER',
+
+
+
+
+
+
+PARA FAZER O LOGOUT..
+
+
+
+
+
+
+
+
+-> O PROFESSOR ADMITE QUE É POSSÍVEL MOVER A LÓGICA DE 'SET AUTH TOKEN TIMEOUT'
+
+PARA DENTRO 
+
+
+DOS AUTH EFFECTS,
+
+PARA DENTRO 
+
+
+
+
+DO NGRX/EFFECTS,
+
+
+
+MAS _ ISSO 
+
+
+
+
+REQUERIRIA 
+
+
+
+UM MONTE DE 'OBSERVABLE MAGIC',
+
+
+
+
+
+
+
+
+
+
+
+E __ O PROFESSOR ACHA QUE ESSE APPROACH DO MANAGE 
+
+
+POR MEIO DO SERVICE 
+É BEM MAIS 
+
+SIMPLES E 'EASY TO UNDERSTAND'...
+
+
+
+
+
+
+
+
+-->  JÁ O AUTH INTERCEPTOR 
+
+
+
+E O 
+
+
+AUTH GUARD 
+
+
+
+
+
+
+
+
+
+
+__ TIRAM _ _VANTAGEM __ DO NOSSO 
+
+
+
+
+'ngrx/store',
+
+
+
+PQ O SEU CÓDIGO ATUAL ESTÁ ASSIM:
+
+
+
+
+
+import {
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpParams,
+  HttpRequest,
+} from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { exhaustMap, map, Observable, take, tap } from 'rxjs';
+import { AppState } from '.';
+import { AuthService } from './auth/auth.service';
+
+@Injectable({ providedIn: 'root' })
+export class HttpInterceptorService implements HttpInterceptor {
+  constructor(
+    private store: Store<AppState>
+  ) {}
+
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+    return this.store.select('auth').pipe(
+      take(1),
+
+      exhaustMap((userOnDemand) => {
+
+        if (!userOnDemand.token) {
+          return next.handle(req);
+        }
+        const queryParams = new HttpParams()
+          .set('auth', userOnDemand?.token!)
+          .set('recipeBy', userOnDemand?.userId!);
+
+        const requestClone = req.clone({
+          params: queryParams,
+        });
+
+        console.log(requestClone);
+
+        return next.handle(requestClone);
+      })
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+-> E ESSE INTERCEPTOR E O AUTH GUARD TIRAM VANTAGEM DO NGRX STORE...
+
+
+
+
+
+
+
+
+
+
+
+-> PORTANTO, EMBORA TENHA SIDO UM MONTE DE TRABLHO,
+
+
+
+AGORA 
+
+
+
+
+
+_ TODA A LÓGICA DE AUTHENTICATION VIVE DENTRO DO 'NGRX/STORE'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> FOI UM MONTE DE TRABALHO, MAS AGORA TUDO QUE VOCê ADICIONAR VAI SER ADICIONADO
+ 
+
+
+
+
+ COM RELATIVAMENTE POUCO ESFORÇO... ( mas é claro que esse setup todo foi bem trabalhoso)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> CERTO... MAS O QUE O PROFESSOR QUER FAZER, AGORA,
+
+ É UM CLEANUP WORK...
+
+
+
+
+
+
+
+
+
+ --> PROFESSOR VAI IR POR DENTRO DE NOSSOS COMPONENTS,
+
+ E VAI 
+
+
+
+ REMOVER PARTES _QUE JULGAR NÃO SEREM MAIS NECESSÁRIAS..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> OK...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> O APP ESTÁ FUNCIONANDO CORRETAMENTE, E AGORA ESTAMOS USANDO BASTANTE DO NGRX..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> É CLARO QUE A ÁREA DAS 'RECIPES' ESTÁ FALTANDO,
+
+
+ MAS ANTES 
+
+
+ DE 
+
+
+
+
+ TENTARMOS VER ISSO,
+
+
+
+ O PROFESSOR DIZ QUE 
+
+
+ DEVEMOS 
+
+
+
+
+ ESTUDAR _ MAIS 2 OUTRAS 
+
+ PACKAGES QUE 
+
+ SÃO FORNECIDAS PELA 
+
+
+TEAM DO NGRX....

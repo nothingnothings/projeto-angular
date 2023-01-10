@@ -1,0 +1,1141 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, ANTES DE MAIS NADA,
+
+
+DEVEMOS ENTENDER '''' O QUE SÃO SIDE EFFECTS''''....
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS VER ISSO MELHOR LÁ NO SERVICE DE 
+
+
+'auth.service.ts',
+
+
+QUE ATUALMENTE ESTÁ COM ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+
+import { HttpHeaders } from '@angular/common/http';
+
+
+import { Router } from '@angular/router';
+
+import { environment } from '../../environments/environment';
+
+exhaustMap;
+
+import {
+  BehaviorSubject,
+  catchError, 
+  exhaustMap, 
+  Subject,
+  tap,
+} from 'rxjs';
+import { throwError } from 'rxjs'; 
+import { User } from './user.model';
+import { Store } from '@ngrx/store';
+import { AppState } from '..';
+
+import * as fromAuthActions from '../auth/store/authActions';
+
+export interface AuthResponseData {
+  kind: string;
+  email: string;
+  refreshToken: string;
+  idToken: string;
+  localId: string;
+  expiresIn: string;
+  registered?: boolean; 
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AuthService {
+  
+
+  
+
+  
+  
+
+  
+  
+
+  tokenExpirationTimer: any;
+
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private store: Store<AppState>
+  ) {}
+
+  onCreateAccount(authData: {
+    email: string;
+    password: string;
+    returnSecureToken: boolean;
+  }) {
+    const requestHeaders = new HttpHeaders();
+
+    requestHeaders.append('Content-Type', 'application/json');
+
+    
+
+    return this.http
+      .post<AuthResponseData>(
+        
+        
+        url
+        authData,
+        {
+          headers: requestHeaders,
+        }
+      )
+      .pipe(
+        catchError(
+          
+          (errorRes) => {
+            console.log(errorRes);
+            let errorMessage = 'An unknown error has occured.';
+
+            if (!errorRes.error || !errorRes.error.error) {
+              
+              return throwError(() => errorMessage); 
+            }
+
+            switch (errorRes.error.error.message) {
+              case 'EMAIL_EXISTS':
+                errorMessage = 'This email already exists.';
+            }
+
+            return throwError(() => errorMessage);
+          }
+        ),
+
+        tap(
+          
+          
+
+          
+
+          
+          
+          
+
+          
+
+          
+          
+
+          (responseData) => {
+            
+            
+            
+
+            
+
+            this.handleUser(responseData);
+          }
+        )
+      );
+
+    
+    
+
+    
+  }
+
+  onLogin(authData: {
+    email: string;
+    password: string;
+    returnSecureToken: boolean;
+  }) {
+    const requestHeaders = new HttpHeaders();
+
+    requestHeaders.append('Content-Type', 'application/json');
+
+    return this.http
+      .post<AuthResponseData>(
+        
+
+        
+        
+
+        `https:
+        authData,
+
+        {
+          headers: requestHeaders,
+        }
+      )
+      .pipe(
+        catchError((errorRes) => {
+          console.log(errorRes);
+
+          let errorMessage = 'An unknown error has occured.';
+
+          switch (errorRes.error.error.message) {
+            case 'EMAIL_NOT_FOUND':
+              errorMessage = 'No user found for the entered email!';
+              break;
+            case 'INVALID_PASSWORD':
+              errorMessage = 'Invalid password, please try again.';
+          }
+
+          return throwError(() => errorMessage);
+        }),
+
+        tap((responseData) => {
+          
+          
+          
+          
+          
+          console.log(+responseData.expiresIn);
+
+          
+          this.handleUser(responseData);
+          this.storeUserToken(responseData);
+          this.autoLogout(+responseData.expiresIn);
+        })
+      );
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+  }
+
+  private storeUserToken(responseData: AuthResponseData) {
+    const expirationDate = new Date(
+      new Date().getTime() + +responseData.expiresIn * 1000
+    ); 
+    
+    
+    
+    
+
+    
+    const userObject = {
+      token: responseData.idToken,
+      expirationDate: expirationDate.toString(),
+      userId: responseData.localId,
+      email: responseData.email,
+    };
+
+    localStorage.setItem('userData', JSON.stringify(userObject));
+  }
+
+  
+  
+
+  
+
+  
+  
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+  
+  
+
+  
+
+  autoLogin() {
+    
+
+    const userData = JSON.parse(localStorage.getItem('userData')!); 
+
+    if (!userData) {
+      
+
+      console.log('entered');
+      return;
+    }
+
+    const loadedUser = new User(
+      userData.email,
+      userData.userId,
+      userData.token!,
+      new Date(userData.expirationDate)
+    );
+
+    if (loadedUser.token) {
+      
+
+      console.log(typeof userData.expirationDate);
+      const expirationDuration =
+        Date.parse(userData.expirationDate) - new Date().getTime(); 
+
+      this.store.dispatch(new fromAuthActions.AuthSuccess(loadedUser)); 
+
+      console.log(expirationDuration / 1000);
+
+      this.autoLogout(expirationDuration / 1000);
+    }
+  }
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+
+  private handleUser(responseData: AuthResponseData | null) {
+    
+
+    if (responseData === null) {
+      
+
+      this.store.dispatch(new fromAuthActions.AuthLogout());
+    } else {
+      const { email, localId, expiresIn, idToken } = responseData;
+
+      const expirationDate = new Date(new Date().getTime() + +expiresIn * 1000); 
+
+      const newUser = new User(email, localId, idToken, expirationDate);
+
+      
+
+      this.store.dispatch(new fromAuthActions.AuthSuccess(newUser));
+    }
+  }
+
+  logoutUser() {
+    
+    
+    
+    
+
+    
+
+    this.handleUser(null);
+
+    
+
+    this.router.navigate(['/auth']);
+
+    if (this.tokenExpirationTimer) {
+      
+
+      clearTimeout(this.tokenExpirationTimer);
+    }
+
+    this.tokenExpirationTimer = null; 
+  }
+
+  autoLogout(expirationTime: number) {
+    
+
+    this.tokenExpirationTimer = setTimeout(
+      () => {
+        this.logoutUser();
+      },
+      expirationTime * 1000 
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+oK..... SIDE EFFECTS SÃO BASICAMENTE 
+
+
+PARTES NO SEU CÓDIGO EM QUE 
+
+RODAMOS 
+
+LÓGICA 
+
+
+QUE _ CLARAMENTE_ SÃO IMPORTANTES AO NOSSO APP,
+
+
+
+
+
+
+
+
+MAS _ QUE __ NÃO SÃO IMPORTANTES  AO 
+
+
+
+'UPDATE IMEDIATO DO CURRENT STATE'... 
+
+
+
+
+
+
+
+
+
+
+
+
+--> EXEMPLO CLARO DISSO É _ HTTP _ REQUESTS...
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+    return this.http
+      .post<AuthResponseData>(
+        `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`,
+        authData,
+
+        {
+          headers: requestHeaders,
+        }
+      )
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE HTTP REQUESTS SÃO IMPORTANTES....
+
+
+
+
+
+
+
+
+O RESULTADO DOS HTTP REQUESTS INTERESSA... -> É O QUE 
+
+DECIDE 
+
+
+
+SE NÓS 
+
+
+'CRIAMOS UM 
+
+NOVO USER COM SUCESSO'
+
+
+ou não...
+
+
+
+
+
+
+
+--------> MAS PARA ESSE 
+
+
+PROCESSO _ 
+
+
+
+
+
+
+EM QUE _ 'COMEÇAMOS ESSE PROCESSO DE SIGNUP',
+
+
+
+
+
+
+
+O _ ACTUAL_ SEND DO HTTP REQUEST NÃO _ É IMPORTANTE...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER, ESSENCIALMENTE,
+
+QUE PODEMOS 
+
+
+SPLITTAR 
+
+
+
+NOSSO PROCESSO DE SEND DO HTTP REQUEST EM 2 ACTIONS (ou 3)....
+
+
+
+
+
+
+1) START SIGN-UP 
+
+
+
+
+
+
+2) SIGN-UP SUCCESS.....
+
+
+
+
+
+
+3) SIGN-UP FAIL....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> A ACTION DE 'START SIGNUP'
+
+
+seria/é 
+
+
+UMA ACTION 
+
+
+EM QUE 
+
+
+_ A RESPONSE _DESSE HTTP REQUEST _ NAÕ 
+
+
+
+INTERESSA NEM UM POUCO...
+
+
+
+
+NO CASO, O SEND DO HTTP REQUEST __ É APENAS UM 'SIDE EFFECT' 
+
+
+
+AO DISPATCH DESSA ACTION...
+
+
+
+
+
+
+
+
+(ok, acho que estou ententendo... vi isso no burger builder)....
+
+
+
+
+
+
+
+
+
+
+
+
+-> JÁ A ACTION DE 'SIGNUP SUCCESS'
+
+__ TAMBÉM _ É 
+
+
+UMA EM QUE 
+
+'A RESPONSE IMPORTA, SIM, 
+
+MAS _ AINDA ASSIM NÃO VAMOS QUERER TER QUE LIDAR COM _ O SEND_, PROCESSO DE SEND 
+
+DESSE REQUEST E RECEIVE DA RESPONSE'...
+
+
+
+  
+
+
+
+
+
+  --> ISSO QUER DIZER QUE 
+
+
+
+
+  O REQUEST _ EXISTIRÁ EM UM ESPAÇO 'IN-BETWEEN'
+
+
+  das 2 actions
+
+
+
+
+
+
+
+
+
+  -> CADA ACTION SÓ SE IMPORTA COM UM 'PEDAÇO' do processo 
+
+
+  de 
+
+  send do http request... (
+
+    exatamente como visto em 'asyncFetchOrders', ou algo do gênero...
+  )
+
+
+
+
+
+
+
+  --> ESSE 'REQUEST WHILE IS ON ITS WAY'
+
+
+
+  NÃO __ É ALGO PELO QUE 
+
+
+
+
+
+  NOSSO 'STATE'/NOSSO STORE SE IMPORTA...  -------> NÃO QUEREMOS 
+
+  SALVAR ESSE CÓDIGO NO STATE,
+
+
+  E SIM 
+
+
+
+  É APENAS UM SIDE-EFFECT CODE QUE NÓS EXECUTAMOS...
+
+
+
+
+
+
+
+
+
+
+  -> E O MESMO SE APLICA AO CÓDIGO DE 
+
+
+
+
+  localStorage.setItem()
+
+
+
+  e 
+
+  localStorage.getItem()
+
+
+
+
+
+
+
+
+---> MAS ESSES CÓDIGOS DE LOCAL STORAGE _ NÃO ACONTECEM ASSINCRONAMENTE....
+
+
+
+
+
+
+
+-> ESSE ACESSO É FEITO INSTANTANEAMENTE,
+
+
+POR ISSO 
+
+
+
+PODERÍAMOS __ TEORICAMENTE FAZER ISSO NO REDUCER,
+
+
+
+
+
+
+
+__ MAS _ ISSO É UMA PÉSSIMA PRÁTICA...
+
+
+
+
+
+
+
+
+
+
+
+
+--> PQ, DE NOVO,
+
+O ACESSO AO LOCAL STORAGE E WRITE/GET DE ALGO DE LÁ 
+
+
+
+__ É APENAS UM 'SIDE EFFECT'
+
+DO NOSSO APP....
+
+
+
+
+
+
+
+
+-. é claro que 
+
+O 'EFEITO' desse get IMPORTA A NÓS,
+
+
+
+MAS O PROCESSO EM SI _ NÃO É INTERESSANTE A NÓS,
+
+NÃO É INTERESSANTE AO NOSSO REDUCER/state....
+
+
+
+
+
+
+
+
+
+----> É POR ISSO QUE COISAS ASSIM SÃO 'SIDE-EFFECTS',
+
+
+
+e por isso que 
+
+
+
+
+
+PODERÍAMOS HANDLAR ALGUNS DELES (como localStorage) 
+
+
+dentro do reducer (mas isso é ruim),
+
+
+
+
+
+
+
+
+MAS MTOS DELES, COMO HTTP REQUESTS,
+
+NÃO SÃO SUPORTADOS DENTRO DOS REDUCERS...
+
+
+
+
+
+
+(TECNICAMENTE, O HANDLE DE HTTP REQUESTS É POSSÍVEL LÁ, MAS É MT RUIM)...
+
+
+
+
+
+
+
+
+
+
+
+----> É POR ISSO QUE 
+
+EXISTE UMA __ PACKAGE _ __
+
+
+
+
+
+
+
+
+SEPARADA___,
+
+
+QUE TAMBÉM É 
+
+'PROVIDED' 
+
+E 
+
+
+'MAINTAINED'
+
+
+PELA EQUIPE DO NGRX,
+
+
+
+
+
+
+
+
+QUE _ NOS AJUDA COM 
+
+
+O 'DEAL'
+
+
+COM ESSES SIDE EFFECTS
+,
+
+
+TUDO 
+
+
+SEM SAIR DESSE 'MUNDO DO NGRX'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> eSSE PAACKAGE, NO CASO,
+
+
+precisa ser instalado 
+
+
+POR MEIO DO CÓDIGO 
+
+
+
+npm install @ngrx/effects...
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ESSA É UMA PACKAGE QUE NOS DÁ FERRAMENTAS PARA TRABALHAR ELEGANTEMENTE 
+
+
+
+COM SIDE EFFECTS,
+
+
+
+
+
+SIDE EFFECTS ENTRE ACTIONS QUE NÓS 'DISPATCH' E 'RECEIVE',
+
+
+
+
+
+
+TUDO PARA QUE 
+
+CONSIGAMOS  
+DEIXAR NOSSOS REDUCERS 'CLEAN',
+
+E PARA QUE ENTÃO TENHAMOS 
+
+UM BOM 
+
+LUGAR PARA MANAGEAR TODOS ESSES SIDE EFFECTS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR REINIICA NOSSO DEV SERVER COM 'ng serve'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR DESTACA:
+
+
+
+
+
+
+é CLARO QUE PODERÍAMOS CONTINUAR COM O APPROACH EM QUE 
+
+
+''TEMOS 1 SERVICE PARA O SEND DO HTTP REQUEST 
+
+
+E PARA O WORK COM A LOCAL STORAGE''...
+
+
+
+
+
+
+
+
+
+
+----> E AÍ, NESSE CASO,
+
+TERÍAMOS O REDUCER NO 'NGRX'
+
+APENAS PARA FAZER O HANDLE DO CURRENT STATE... (
+
+
+
+    ou seja,
+
+
+
+    BASICAMENTE O SETUP QUE TEMOS NESSE EXATO MOMENTO,
+
+
+
+
+QUE É VÁLIDO...
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ASSIM COMO TUDO RELATIVO AO NGRX,
+
+
+
+isso tem a ver com sua PREFERÊNCIA,
+
+
+PQ 
+
+
+
+VOCê PODERIA CONTINUAR USANDO SERVICES PARA FAZER ESSES CÓDIGOS ASYNC e usos de localStorage...
+
+
+
+
+
+
+
+
+
+-----> MAS O PROFESSOR ACHA QUE 
+
+
+AQUI É MT 
+
+
+BOM 
+
+
+MOVER TODA ESSA LÓGICA DE SIDE EFFECTS (localStorage, http requests)
+
+
+
+
+
+
+PARA DENTRO DO MUNDO NGRX,
+
+
+o máximo POSSÍVEL,
+
+
+
+
+
+
+
+
+
+
+E É POR ISSO QUE 
+
+
+
+É MELHOR USAR ESSES '@ngrx/effects'...

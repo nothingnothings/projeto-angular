@@ -1,0 +1,757 @@
+
+
+
+
+
+
+
+
+
+NÓS VIMOS QUE O modo de 'observe'
+
+
+de nossos OBSERVABLES de '.get()' .post() 
+
+
+
+.put() e .patch()
+
+
+
+
+
+
+
+
+PODEM SER CONFIGURADOS (values de 'body', 'response' e 'events')...
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  onDeletePosts() {
+
+    return this.http.delete(
+        'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json',
+
+
+        {
+          //params: xxxx,
+          //headers: yyyy,
+          //observe: body(default)/response/events...
+
+
+          observe: 'events'///exemplo do uso do value 'events' como DATA A SER OBSERVADA por nossos operators... (operator de 'tap', mais precisamente).... 
+        }
+    ).pipe(
+      tap(
+        (event) => {
+
+          console.log(event); ///isso vai receber a data do 'EVENT'... (por conta de 'observe: events' )
+        
+            ///HttpEventType é apenas um 'helper' para nós, humanos, pq vai nos dizer O QUE CADA UM DOS valores NUMERAIS em 'type' correspondem, em termos de EVENTos... ex: ''4 é o código de uma RESPONSE, 3 é o código de um event de DownloadProgress, etc etc''...
+          if (event.type === HttpEventType.Response) {
+
+            console.log(event.body, 'I GOT A RESPONSE');
+          }
+        
+          if (event.type === HttpEventType.Sent) {  ////sent = '0'...
+
+            console.log(event.type, 'MY REQUEST GOT SENT');
+          }
+
+        
+        
+        
+        
+        
+        }
+      )
+    )
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> EX:
+
+
+
+
+
+
+        {
+
+
+          observe: 'events'///exemplo do uso do value 'events' como DATA A SER OBSERVADA por nossos operators... (operator de 'tap', mais precisamente).... 
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS VOCê PODE CONFIGURAR_ AINDA MAIS COISAS DO QUE O 
+
+'OBSERVE MODE'... -> 
+
+
+
+
+
+
+
+
+
+
+
+VOCê PODE _ CONFIGURAR TAMBÉM O 'responseType'
+
+
+
+
+
+DA SUA RESPONSE PARA AQUELE METHOD/OBSERVABLE...
+
+
+
+
+
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+        {
+
+
+          observe: 'events',
+
+
+          responseType: xxxx
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O VALUE DEFAULT DE 'responseType'
+
+
+
+é 
+
+
+
+'json',
+
+
+
+O
+ QUE SIGNIFICA QUE 
+
+
+
+
+ A __ RESPONSE_ DATA,
+
+
+
+ OU SEJA,
+
+
+
+
+ A _ DATA__  NO __ BODY__ DE SUA RESPONSE,
+
+
+ FICARÁ 
+
+
+
+ NO FORMATO 'json'... -----> E SE VOCÊ 
+
+
+
+
+
+ DEIXA O FORMATO COMO 'JSON',
+
+
+
+ ISSO AUTOMATICAMENTE COMUNICA AO 
+
+ ANGULAR QUE 
+
+
+ ELE _ DEVE_ 
+
+
+
+ PARSEAR ESSA JSON DATA E A TRANSFORMAR EM UM OBJECT JAVASCRIPT..
+
+
+
+
+
+
+
+
+
+ ----------> ENTRETANTO, HÁ TAMBÉM A POSSIBILIDADE DE 
+
+
+
+ ALTERAR ISSO AÍ, 
+
+
+
+ COMUNICAR AO ANGULAR QUE 
+
+
+
+ __ O TIPO DA RESPONSE SERÁ DE 'text',
+
+
+
+ E QUE 
+
+
+ _ ELE _ DEVERÁ_  MANTER COMO TEXT,
+
+
+
+ SEM TENTAR O CONVERTER EM UM OBJECT JAVASCRIPT..
+
+
+
+
+
+
+
+
+
+
+ PARA ISSO,
+
+ A ESCRITA FICA ASSIM:
+
+
+
+
+
+ 
+
+
+        {
+
+
+          observe: 'events',
+
+
+          responseType: 'text' ///pode ser 'json'...
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OUTRA OPÇÃO É 
+
+
+DATA DE TIPO 'blob',
+
+
+
+
+
+SE 
+
+
+
+
+A RESPONSE FOR UMA FILE,
+ 
+ POR EXEMPLO..
+
+
+
+
+
+
+
+ --> NOS OFFICIAL DOCS 
+
+ DO ANGULAR PODEMOS ENCONTRAR MAIS DETALHES SOBRE TODOS OS RESPONSE TYPES DISPONÍVEIS... 
+
+
+
+
+
+
+
+
+
+
+ EX:
+
+
+
+
+
+
+
+
+ responseType: 'arraybuffer' | 'blob' | 'json' | 'text'
+
+
+
+
+
+
+ ok... temos esses quatro tipos...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> CERTO...
+
+
+
+
+
+
+
+ MAS SE TENTAMOS ADICIONAR UM NOVO POST, PARA TESTAR O RECEIVE DESSA DATA DE TIPO 'TEXT',
+
+
+
+
+
+
+
+
+ RECEBEREMOS 'NULL':
+
+
+
+
+
+
+
+
+ENTRETANTO,
+
+VEREMOS QUE O __ BODY_ 
+
+
+
+DE NOSSA RESPONSE TERÁ 
+
+
+FICADO EM UM FORMATO 
+
+
+
+"null"   ( ou seja, uma STRING dizendo 'null', o que quer dizer que A RESPONSE, O RESPONSE BODY, REALMENTE FOI TRATADO COMO TEXT)...
+
+
+
+        (isso pq se tivéssemos o value normal de 'json', a response/response body teria sido trataada como NULL, que é um object que existe no javascript)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> ISSO SE TORNA AINDA MAIS CLARO se tentamos 
+
+
+fazer 
+
+
+isso 
+
+
+
+
+lá 
+
+
+no method de 'fetchPosts',
+
+
+com um request de tipo 'GET',
+
+
+
+
+quando tentamos obter os posts:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  private fetchPosts() {
+    ///outsourcing.
+
+
+    let searchParams = new HttpParams();
+    searchParams = searchParams.append('print', 'pretty');
+    searchParams = searchParams.append('custom', 'key');
+    searchParams = searchParams.append('page' , '1');
+
+    return this.http
+      .get<{ [name: string]: Post }>(
+        'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json', ///1o argumento, é a url/route/api endpoint que você quer targettar...
+        
+        {  //2o e ÚLTIMO argumento: é o 'HTTP REQUEST CONFIG' object... --> define várias coisas sobre nosso http request, como OS HEADERS..
+
+          headers: new HttpHeaders(
+            {
+              "Custom-Header": "Hello-Example"
+            }
+          ),
+
+          params: searchParams //////// é assim que anexamos múltiplos query params a nosso http request...
+
+          // params: new HttpParams().set( ///usado para definir QUERY PARAMs.... --> mas esse approach só nos deixa DEFINIR 1 ÚNICO QUERY PARAM, por isso é inferior... (devemos usar aquele código de 'let searchParams', visto logo acima, que nos deixa COLOCAR MÚLTIPLOS QUERY PARAMS NO NOSSO HTTP REQUEST)...
+
+          //   'print', ///'NOME DO PARAM'  --> 'print' é um queryParam suportado pelo firebase, que vai retornar nossa data em um formato 'pretty'...
+          //   'pretty' ///'VALUE DO PARAM' (print -> pretty)
+          // )
+        }
+      
+      
+        )
+      .pipe(
+        map((responseData) => {
+          const transformedPostsArray: Post[] = [];
+
+          for (const key in responseData) {
+            if (responseData.hasOwnProperty(key)) {
+              ///VAI CHECAR SE ISSO NÃO É UM 'PROTOTYPE' dentro da 'responseData'...
+              transformedPostsArray.push({ ...responseData[key], id: key });
+            }
+          }
+
+          return transformedPostsArray; ///return de 'observable' (Faça SUBSCRIPTION lá nos seus COMPONENTS, para pegar o resultado da subscription)...
+        }),
+        catchError(  ///usado para ERROR HANDLING TASKS GENÉRICAS, COMO 'SAVE DE ERRORS EM LOGS, EM UM ANALYTICS SERVER'....
+          (errorRes) => {
+
+            return throwError(() => errorRes); ///vai passar nossa ERROR DATA ADIANTE, PARA SER USADA/HANDLADA LÁ NOS NOSSOS '.subscribe()'..
+          }
+        )
+      );
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> nesse local,
+
+
+
+
+  O PROFESSOR DECIDE TROCAR O 'responseType'
+
+
+
+  COMO SENDO DE 'text':
+
+
+
+
+
+          { 
+
+          headers: new HttpHeaders(
+            {
+              "Custom-Header": "Hello-Example"
+            }
+          ),
+
+          params: searchParams,
+
+
+          responseType: 'text'
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        --> SE TENTAMOS TROCAR ESSE TYPE, AQUI,
+
+
+        VAMOS OBVIAMENTE GANHAR UM ERRO,
+
+
+        PQ 
+
+
+        NOSSO CÓDIGO DE 'FETCH' NÃO ESTÁ CONFIGURADO PARA 
+
+        TRABALHAR COM UMA 'TEXT RESPONSE' ( e o ide nos indicará isso, pq havíamos declarado que a data retornada nesse method seria de '{ [key:string]: Post}' , ou seja, um OBJECT/ESTRUTURA JAVASCRIPT...)..
+
+
+
+
+
+
+
+
+
+
+---> o typescript vai entender 
+
+
+
+''se você me diz que a data será daquele formato object,
+
+
+ela não vai ser convertida/não conseguirá 
+
+
+se encaixar naquele '''responseType: text'', pq ela não é/não será text..'''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK...
+
+
+
+
+
+
+isso faz sentido...
+
+
+
+REVERTEMOS NOSSO CÓDIGO PARA 'json',
+QUE É o
+
+TYPE CORRETO 
+
+
+DE INTERPRETAÇÃO,
+
+QUE FAZ NOSSO CÓDIGO FUNCIOANR...
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS É IMPORTANTE ENTENDER ESSA OPTION DE 
+
+
+'responseType: text',
+
+
+
+PARA OS CASES EM QUE 
+VOCê  
+
+
+
+TEM CERTEZA ABSOLUTA DE QUE VOCÊ VAI RECEBER 
+
+
+
+
+TEXT E QUE VOCê NÃO VAI QUERER 
+
+QUE O ANGULAR PARSEIE ISSO COMO UM OBJECT JAVASCRIPT...
+
+
+
+
+
+
+
+
+(
+
+
+    OU ENTÃO __ VOCÊ _ ESTÁ DE FATO_ RECEBENDO JSON DATA,
+
+    MAS VOCê _ AINDA ASSIM__ NÃO QUER QUE O ANGULAR O PARSEIE,
+
+    PQ VOCÊ DESEJA O PARSEAR 
+
+
+    POR CONTA PRÓPRIA, EM UM MOMENTO POSTERIOR 
+
+
+    NO TEMPO...
+)
+
+
+
+
+
+
+
+
+o que conta é que o 'responseType' É _ _GERALMENTE JSON (99% dos cases),
+
+
+
+
+e raramente você definirá como 'text'..

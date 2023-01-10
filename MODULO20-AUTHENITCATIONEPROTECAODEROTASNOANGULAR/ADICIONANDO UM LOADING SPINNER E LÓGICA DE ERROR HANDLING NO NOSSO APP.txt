@@ -1,0 +1,852 @@
+
+
+
+
+
+
+
+
+
+
+
+
+---> COMEÇAMOS PELO LOADING SPINNER...
+
+
+
+
+
+
+
+ANOTAÇÕES DA ÚLTIMA PÁGINa>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> O PROFESSOR QUER QUE TAMBÉM SEJA CARREGADO UM 'LOADING SPINNER'
+
+
+
+ ENQUANTO ESPERAMOS PELO SEND-RESPONSE DESSES 
+
+
+ HTTP REQUESTS...
+
+
+
+
+
+
+
+
+
+ E EU JÁ CONSEGUI FAZER ISSO,
+
+ POR MEIO DESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+ HTML:
+
+
+
+
+
+
+
+
+
+
+
+       <div [ngStyle]="{ display: 'flex', 'justify-content': 'center' }" *ngIf="!isLoading">
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="!localFormReference.valid"
+        >
+          {{ isSignup ? "SIGN UP" : "LOGIN" }}
+        </button>
+        <button
+          class="textBtn"
+          (click)="onSwitchAuth()"
+          [ngStyle]="{ cursor: 'pointer' }"
+        >
+          {{ isSignup ? "Switch to Login" : "Switch to Signup" }}
+        </button>
+      </div>
+      <app-spinner *ngIf="isLoading"></app-spinner>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      --> OU SEJA,
+
+
+      ESSE LOADING SPINNER É MOSTRADO _ NO LUGAR DOS BUTTONS, ESSENCIALMENTE (quando ele aparece, é claro)...
+
+
+
+
+
+
+
+
+
+      ----> o CÓDIGO TS FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+      export class AuthPageComponent implements OnInit {
+  isSignup: boolean = true;
+
+  isLoading: boolean = false;
+
+  constructor(private authService: AuthService, private router: Router) {}
+
+  ngOnInit(): void {}
+
+  onAuthFormSubmit(form: NgForm) {
+
+
+    if (!form.valid) {  ///extra validaton, bem básica (caso em que o user hackeia nossos form controls; nesse caso, mesmo assim teremos essa step extra de validation)...
+      return; 
+  }
+
+
+
+
+    this.isLoading = true;
+
+
+
+    const email = form.form.get('email')?.value;
+
+    const password = form.form.get('password')?.value;
+
+    const userData = {
+      email: email,
+      password: password,
+      returnSecureToken: true,
+    };
+
+    if (this.isSignup) {
+      this.authService.onCreateAccount(userData).subscribe(
+        (responseData) => {
+          this.isLoading = false;
+          // form.reset();
+          this.router.navigate(['/auth']);
+        },
+
+        (errorData) => {
+          this.isLoading = false;
+
+          if (errorData.error.error.message === 'EMAIL_EXISTS') {
+            confirm(
+              'Entered email already exists, please create an account with a different email.'
+            );
+          }
+          console.log(errorData);
+        }
+      );
+    } else {
+      this.authService.onLogin(userData).subscribe(
+        (responseData) => {
+          console.log(responseData);
+          const expirationDate = new Date(
+            new Date().getTime() + +responseData.expiresIn * 1000
+          ); ////lembre-se de adicionar '* 1000', pois o JAVASCRIPT SEMPRE CONSIDERA 'TEMPO' EM MILISSEGUNDOS, E NÃO EM SEGUNDOS.... (só o 'expiresIn' que é mostrado em segundos....)
+          localStorage.setItem('token', responseData.idToken);
+          localStorage.setItem('expirationDate', expirationDate.toString());
+          localStorage.setItem('userId', responseData.localId);
+          localStorage.setItem('email', responseData.email);
+
+          this.isLoading = false;
+
+          this.router.navigate(['/recipe-book']);
+        },
+
+        (error) => {
+          console.log(error);
+
+          this.isLoading = false;
+        }
+      );
+    }
+
+
+    form.reset();
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+loadingSpinner.io ----. site da internet ------> BASTA CRIAR UM NOVO ARQUIVO CSS,
+
+
+
+
+COPIAR
+
+
+
+TODOS ESSES STYLES CSS,
+
+
+
+
+E AÍ 
+
+
+
+
+criar um NOVO ARQUIVO COMPONENT QUE SERÁ UMA <div>
+
+
+COM A CLASS 
+
+DESSE 
+
+
+SPINNER AÍ.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--->ok, isso é bem simples...
+
+
+
+
+
+
+
+
+o component fica bem simples, fica assim:
+
+
+
+
+
+
+
+
+
+
+<div class="spinnerClass"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok... 
+
+
+
+
+
+
+
+
+aí usamos esse loadingSpinner
+
+
+
+
+LÁ, DENTRO DE NOSSO COMPONENT 'auth.component.ts'..
+
+
+
+
+
+
+
+--> O PROFESSOR DECIDIU ESCONDER A FORM INTEIRA SE ESTIVERMOS 'LOADING' 
+
+
+
+
+(
+
+    mas eu decidi fazer isso apenas com os buttons...
+
+
+
+
+
+)
+
+
+
+
+
+-> O LOADING É DEFINIDO COMO 'TRUE'
+
+QUANDO COMEÇAMOS A CARREGAR,
+
+E 
+
+
+É DEFINIDO COMO 'FALSE' QUANDO TERMINARMOS DE CARREGAR (TANTO NO SUCCESS COMO FAIL CASE)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> CERTO, ESSE ERA O LOADING SPINNER... .-> MAS QUEREMOS TAMBÉM HANDLAR 
+
+
+ERRORS,
+
+
+
+
+OU SEJA,
+
+
+
+
+
+OS CASES EM QUE 
+FICAMOS COM ALGUM 'ERROR'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO, O PROFESSOR ADICIONA UM NOVO STATE AO 'auth.component.ts',
+
+QUE SERÁ CHAMDO DE 'error',
+
+E QUE SERÁ INICIALMENTE 'null'..
+
+
+
+
+
+
+--> VAMOS DEFINIR ESSE 'error'
+
+
+como MENSAGENS DE ERRO, SE ACONTECER ALGUM ERRO....
+
+
+
+
+
+Ex:
+
+
+
+
+
+
+
+
+
+error: string = null;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+->>>>>>>> ESSA ERROR MESSAGE PODE FICAR
+ 
+
+
+
+
+ O QUÃO SOFISTICADA QUANTO VOCÊ QUISER.....
+
+
+
+
+
+
+
+
+
+
+
+ -> MAS NA NOSSA UI,
+
+
+
+ SÓ NOS IMPORTAMOS COM A 'MESSAGE'...
+
+
+
+
+
+
+
+
+
+ --> E OU __ TEMOS UMA MESSAGE,
+
+
+
+ OU NÃO TEMOS UMA MESSAGE...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> NO METHOD DE 'onSubmit',
+
+
+ NO ERROR 
+
+ CASE,
+
+
+ EM VEZ DE 
+
+ FAZERMOS 
+
+
+
+
+LOG DO ERROR CASE,
+
+
+
+VAMOS 
+
+
+
+
+
+COLOCAR UMA MENSAGEM GENÉRICA DE 'An error occurred!',
+
+
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+
+error => {
+
+    this.error = 'An error occurred!';
+    this.isLoading = false;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA FAZER DISPLAY DE UMA MENSAGEM DE ERROR
+
+
+
+
+NO NOSSO DOM,
+
+
+
+
+
+
+
+O PROFESSOR 
+
+
+ESCREVE ESTE CÓDIGO HTML:
+
+
+
+
+
+
+
+
+
+<div class="alert alert-danger" *ngIf="error">
+    <p>{{error}}</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+  onAuthFormSubmit(form: NgForm) {
+
+
+    if (!form.valid) {  ///extra validaton, bem básica (caso em que o user hackeia nossos form controls; nesse caso, mesmo assim teremos essa step extra de validation)...
+      return; 
+  }
+
+
+
+
+    this.isLoading = true;
+
+
+
+    const email = form.form.get('email')?.value;
+
+    const password = form.form.get('password')?.value;
+
+    const userData = {
+      email: email,
+      password: password,
+      returnSecureToken: true,
+    };
+
+    if (this.isSignup) {
+      this.authService.onCreateAccount(userData).subscribe(
+        (responseData) => {
+          this.isLoading = false;
+          // form.reset();
+          this.router.navigate(['/auth']);
+        },
+
+        (errorData) => {
+          this.isLoading = false;
+
+          if (errorData.error.error.message === 'EMAIL_EXISTS') {
+            // confirm(
+            //   'Entered email already exists, please create an account with a different email.'
+            // );
+
+            this.error = 'Entered email already exists, please create an account with a different email.'
+          } else {
+
+            this.error = errorData.error.error.message
+          }
+          // console.log(errorData);
+        }
+      );
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ------------------
+
+
+
+
+
+
+
+
+
+AGORA QUANDO TENTARMOS 
+
+
+
+
+
+
+FAZER LOGIN E UM USER JÁ EXISTIR PARA ESSE EMAIL,
+
+RECEBEREMOS UM ERROR... 
+
+
+
+(
+
+
+    mas até agora eu não consigo dizer ao user 'QUAL 
+    ERROR ACONTECEU' (
+
+
+        no caso,
+
+        eu até consigo,
+
+        mas teria que codar cada 1 dos cases individualmente, como visto com 'EMAIL_EXISTS'...
+    )
+)
+
+
+
+
+
+
+-> mas o estilo do meu aviso está ferrado, por alguma razão..
+
+
+
+
+
+
+
+
+
+
+
+
+CONSERTEI O CÓDIGO, FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div
+    class="col-xs-12 col-md-6 col-md-offset-3"
+    [ngStyle]="{ display: 'flex', 'justify-content': 'center' }"
+  >
+
+    <form
+      (ngSubmit)="onAuthFormSubmit(localFormReference)"
+      #localFormReference="ngForm"
+    >
+    <div class="alert alert-danger" *ngIf="error">
+      <p>{{ error }}</p>
+    </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          required
+          email
+          name="email"
+          ngModel
+          placeholder="email@example.com"
+          #emailReference="ngModel"
+        />
+        <span *ngIf="!emailReference.value && emailReference.touched"
+          >Email is required</span
+        >
+        <span
+          *ngIf="
+            !emailReference.valid &&
+            emailReference.value &&
+            emailReference.touched
+          "
+          >Invalid email entered</span
+        >
+      </div>
+
+      <div class="form-group" [ngStyle]="{ 'margin-top': '12px' }">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          class="form-control"
+          id="password"
+          required
+          name="password"
+          ngModel
+          minlength="6"
+          placeholder="Your Password"
+          #passwordReference="ngModel"
+        />
+        <span *ngIf="!passwordReference.value && passwordReference.touched"
+          >Password is required</span
+        >
+        <span
+          *ngIf="
+            !passwordReference.valid &&
+            passwordReference.value &&
+            passwordReference.touched
+          "
+          >Password must have at least 6 characters</span
+        >
+      </div>
+
+      <div
+        [ngStyle]="{ display: 'flex', 'justify-content': 'center' }"
+        *ngIf="!isLoading"
+      >
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="!localFormReference.valid"
+        >
+          {{ isSignup ? "SIGN UP" : "LOGIN" }}
+        </button>
+        <button
+          class="textBtn"
+          (click)="onSwitchAuth()"
+          [ngStyle]="{ cursor: 'pointer' }"
+        >
+          {{ isSignup ? "Switch to Login" : "Switch to Signup" }}
+        </button>
+      </div>
+      <app-spinner *ngIf="isLoading"></app-spinner>
+    </form>
+  </div>
+</div>

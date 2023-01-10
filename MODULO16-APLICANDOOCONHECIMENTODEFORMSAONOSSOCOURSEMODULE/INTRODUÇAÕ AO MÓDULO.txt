@@ -1,0 +1,213 @@
+
+
+
+
+
+
+
+
+
+
+
+
+VOLTAMOS AO COURSE APP DE 'RECIPEBOOK'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> JÁ ADICIONAMOS UM MONTE DE FEATURES A ELE,
+
+
+MAS AGORA QUEREMOS ADICIONAR __ FORMS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NÓS TEMOS 2 LUGARES EM QUE 
+
+
+
+COLOCAREMOS FORMS...
+
+
+
+
+
+
+
+
+
+
+---> 'CREATE A NEW RECIPE/ADD A NEW RECIPE'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> TAMBÉM NO SHOPLIST,
+
+
+em que JÁ PODEMSO ADICIONAR 
+
+
+
+
+
+NOVOS 
+
+
+ELEMENTS 
+
+
+
+AO SHOPPING LIST,
+
+
+MAS É CLARO QUE 
+
+PODEMOS HANDLAR 
+
+
+
+
+
+
+ISSO DE UMA FORMA SUPERIOR,
+
+
+COM A AJUDA DE UMA FORM ... (também queremos  FAZER OS OUTROS BUTTONS FUNCIONAREM...)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> a form para a recipe: 
+
+
+
+
+
+
+
+
+
+ASSIM QUE 
+
+
+CONSEGUIRMSO FAZER O 'ADD' DE UM NOVO RECIPE FUNCIONAR,
+
+
+
+
+
+o professor 
+
+VAI QUERER 
+
+TAMBÉM FAZER O BUTTON DE 'delete' 
+
+
+FICAR FUNCIONAL....
+
+
+
+
+
+
+
+
+
+
+
+--> VAMOS COMEÇAR COM A FORM DE 'shoplist'
+
+
+
+
+
+
+NA PRÓXIMA AULA...
+
+
+
+
+
+
+
+
+
+
+-> NA FORM DE 'shoplist',
+
+o professor vai querer USAR O TEMPLATE DRIVEN APPROACH..
+
+
+
+
+
+
+
+
+ 
+ --> PODEMOS TENTAR IMPLEMENTAR ISSO POR CONTA PRÓPRIA,
+
+
+
+ MAS É CLARO QUE EXISTEM DIFERENTES MANEIRAS DE IMPLEMENTAR ISSO AI´,
+
+ POR ISSO 
+
+
+ PROVAVELMENTE NÃO TEREMOS A MESMA SOLUÇÃO DO PROFESSOR...
+
+
+
+
+
+
+
+
+
+ -> NA PRÓXIMA LECTURE O PROFESSOR VAI MOSTRAR O APPROACH DELE...
+
+
+
+
+

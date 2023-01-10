@@ -1,0 +1,2418 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK,
+
+
+
+
+AGORA DEVEMOS REFORMULAR NOSSO CÓDIGO...
+
+
+
+
+
+
+
+
+
+
+
+--> COMEÇAMOS PELO 'COMMENT-OUT' 
+
+
+do código de 'app-alert' 
+
+ANTIGO que tínhamos lá no 'auth.component.html':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div
+    class="col-xs-12 col-md-6 col-md-offset-3"
+    [ngStyle]="{ display: 'flex', 'justify-content': 'center' }"
+  >
+  <!-- <app-alert [message]="error" *ngIf="error" (closeModal)="onModalClose($event)"></app-alert>  VERSÃO 'NGIF' da nossa alert box, sem a criação PROGRAMÁTICA DE NOSSO COMPONENT (não é um component dinâmico, em outras palavras)-->
+    <form
+      (ngSubmit)="onAuthFormSubmit(localFormReference)"
+      #localFormReference="ngForm"
+    >
+    <!-- <div class="alert alert-danger" *ngIf="error" (click)="error = null"> --><!-- o 'click' com esse código faz o rápído DISMISS da message de erro quando a clicamos...-->
+      <!-- <p>{{ error }}</p>  ,,,,, SUBSTITUÍDO pelo nosso 'DYNAMIC ERROR COMPONENT' --> 
+    <!-- </div> -->
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          required
+          email
+          name="email"
+          ngModel
+          placeholder="email@example.com"
+          #emailReference="ngModel"
+        />
+        <span *ngIf="!emailReference.value && emailReference.touched"
+          >Email is required</span
+        >
+        <span
+          *ngIf="
+            !emailReference.valid &&
+            emailReference.value &&
+            emailReference.touched
+          "
+          >Invalid email entered</span
+        >
+      </div>
+
+      <div class="form-group" [ngStyle]="{ 'margin-top': '12px' }">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          class="form-control"
+          id="password"
+          required
+          name="password"
+          ngModel
+          minlength="6"
+          placeholder="Your Password"
+          #passwordReference="ngModel"
+        />
+        <span *ngIf="!passwordReference.value && passwordReference.touched"
+          >Password is required</span
+        >
+        <span
+          *ngIf="
+            !passwordReference.valid &&
+            passwordReference.value &&
+            passwordReference.touched
+          "
+          >Password must have at least 6 characters</span
+        >
+      </div>
+
+      <div
+        [ngStyle]="{ display: 'flex', 'justify-content': 'center' }"
+        *ngIf="!isLoading"
+      >
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="!localFormReference.valid"
+        >
+          {{ isSignup ? "SIGN UP" : "LOGIN" }}
+        </button>
+        <button
+          class="textBtn"
+          (click)="onSwitchAuth()"
+          [ngStyle]="{ cursor: 'pointer' }"
+          type="button"
+        >
+          {{ isSignup ? "Switch to Login" : "Switch to Signup" }}
+        </button>
+      </div>
+      <app-spinner *ngIf="isLoading"></app-spinner>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+----------------------------------
+
+
+
+
+
+
+
+
+OK.... 
+
+
+
+
+
+
+
+
+ISSO FEITO,
+
+
+
+POR ENQUANTO NAÕ ADICIONAREMOS NADA AO DOM, NESSE ARQUIVO 
+
+
+
+
+
+de 'authPage.component.html'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA NOSSO OBJETIVO, EM VEZ DISSO,
+
+
+
+É __ CRIAR __ ESSE 
+
+
+
+COMPONENT __ DE 
+
+
+'AlertDynamicComponent'
+
+
+_DINAMICAMENTE,
+
+
+E
+ AÍ MOSTRÁ-LO DINAMICAMETNE (
+
+
+
+     por 'dinamicamente',
+
+     O PROFESSOR QUER __ DIZER PROGRAMATICAMENTE,
+
+
+
+     OU SEJA,
+
+     _ DE DENTRO __ DE NOSSO CÓDIGO....
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+
+
+PRECISAMOS, PRIMEIRAMENTE,
+
+DE UM NOVO METHOD,
+
+
+
+PQ 
+
+
+
+
+
+VAMOS PRECISAR 
+
+
+
+DE UM NOVO CÓDIGO _ PARA _ FAZER _'SHOW' DO MESSAGE ALERT...
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+O PROFESSOR CRIA UM NOVO METHOD LÁ NO 'auth.component.ts',
+
+
+QUE CHAMA DE 
+
+
+
+'private showErrorAlert()'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------> tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { AuthResponseData, AuthService } from '../auth.service';
+
+@Component({
+  selector: 'app-auth-page',
+  templateUrl: './auth-page.component.html',
+  styleUrls: ['./auth-page.component.css'],
+})
+export class AuthPageComponent implements OnInit {
+  isSignup: boolean = true;
+
+  isLoading: boolean = false;
+
+  error: string | null = null; ////vai segurar nossas mensagens de error...
+
+  constructor(private authService: AuthService, private router: Router) {}
+
+  ngOnInit(): void {}
+
+
+
+
+    private showErrorAlert() {  ////approach PROGRAMÁTICO DE 'CREATE A COMPONENT' por meio de código TS, e não HTML...
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------
+
+
+
+
+
+
+
+
+
+CERTO.. ADICIONAMOS ISSO AO 'AuthPageComponent'...
+
+
+
+
+
+
+
+
+
+E AÍ, 
+
+
+
+O ERROR ALERT
+
+
+
+VAI TER DE SER CHAMADO _ SEMPRE QUE _ TIVERMOS ALGUM ERROR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE VAMOS _ CHAMAR 'this.showErrorAlert()'
+
+
+
+SEMPRE QUE TIVERMOS ALGUM ERROR, NOS LOCAIS QEU TEMOS O RETURN DE ERRORS, NO NOSSO CÓDIGO DE AUTH, COMO POR EXEMPLO:
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    authObs.subscribe(
+      (responseData) => {
+
+        this.isLoading = false;
+        this.router.navigate(['/recipe-book']);
+      },
+
+      (errorMessage) => {
+        console.log(errorMessage);
+        this.isLoading = false;
+        this.error = errorMessage;
+        this.showErrorAlert(); /////////EIS O CÓDIGO EM QUESTÃO.
+      }
+    );
+
+
+
+
+
+
+
+
+
+
+
+------> E AGORA, É CLARO, PODERÍAMOS MUDAR O FLOW INTEIRO DO INSERT DA MENSAGEM DE ERRO DENTRO 
+
+
+
+DO COMPONENT de show de error,
+
+
+
+
+
+
+PQ AGORA TECNICAMENTE NÃO SERÁ MAIS PRECISO ARMAZENAR O VALUE DA 'errorMessage'
+
+
+
+
+
+em uma PROPRIEDADE GLOBAL DE 'error',
+
+
+
+
+
+
+
+O que quer dizer que podemos SIMPLESMENTE FAZER 'PASS' do value de 'errorMessage'
+
+
+
+
+PARA _ DENTRO __ DESSE METHOD DE 'showErrorAlert',
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    authObs.subscribe(
+      (responseData) => {
+
+        this.isLoading = false;
+        this.router.navigate(['/recipe-book']);
+      },
+
+      (errorMessage) => {
+        console.log(errorMessage);
+        this.isLoading = false;
+        this.error = errorMessage;
+        this.showErrorAlert(errorMessage); /////////EIS O CÓDIGO EM QUESTÃO.
+      }
+    );
+
+
+
+
+
+
+
+
+
+
+
+
+    OK, NAÕ TEMOS MAIS UTILIDADE PARA A PROPRIEDADE DE 'error',
+
+
+
+
+    o que quer dizer qe nosso código fica assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { AuthResponseData, AuthService } from '../auth.service';
+
+@Component({
+  selector: 'app-auth-page',
+  templateUrl: './auth-page.component.html',
+  styleUrls: ['./auth-page.component.css'],
+})
+export class AuthPageComponent implements OnInit {
+  isSignup: boolean = true;
+
+  isLoading: boolean = false;
+
+  constructor(private authService: AuthService, private router: Router) {}
+
+  ngOnInit(): void {}
+
+  private showErrorAlert(errorMessage: string) {}
+
+  onAuthFormSubmit(form: NgForm) {
+    if (!form.valid) {
+      return;
+    }
+
+    const email = form.form.get('email')?.value;
+    const password = form.form.get('password')?.value;
+
+    const userData = {
+      email: email,
+      password: password,
+      returnSecureToken: true,
+    };
+
+    let authObs: Observable<AuthResponseData>;
+
+    this.isLoading = true;
+
+    if (!this.isSignup) {
+      authObs = this.authService.onLogin(userData);
+    } else {
+      authObs = this.authService.onCreateAccount(userData);
+    }
+
+    authObs.subscribe(
+      (responseData) => {
+        this.isLoading = false;
+        this.router.navigate(['/recipe-book']);
+      },
+
+      (errorMessage) => {
+        console.log(errorMessage);
+        this.isLoading = false;
+
+        this.showErrorAlert(errorMessage);
+      }
+    );
+
+    form.reset();
+  }
+
+  onSwitchAuth() {
+    console.log('test');
+    this.isSignup = !this.isSignup;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------> COMO NÃO ESTAMOS MAIS USANDO ESSA PROPRIEDADE NO TEMPLATE,
+
+podemos a remover por inteiro...
+
+
+
+
+
+
+
+
+
+
+
+
+-------> ok...
+
+
+
+
+
+
+
+
+ESSE SHOW ERROR ALERT VAI RECEBER O ARGUMENTO DE 'errorMessage'...
+
+
+
+
+
+
+
+
+
+
+
+
+------> agora, nosso OBJETIVO em 'showErrorAlert'
+
+
+
+SERÁ __ CRIAR__ DINAMICAMENTE NOSSO COMPONENT DE 'alert box'...
+
+
+
+
+
+
+
+
+
+----> PARA ISSO, PARA CRIAR MANUALMENTE UM COMPONENT NO ANGULAR,
+
+
+VOCÊ PRECISA 
+
+
+ 
+
+ O INSTANCIAR MANUALMENTE...
+
+
+
+
+
+
+
+
+
+
+
+
+ -----> UM APPROACH SIMPLES PARA FAZER ISSO É 
+
+
+
+ SIMPLESMENTE:
+
+
+
+
+
+ 1) IMPORTAR O COMPONENT QUE VOCÊ QUER CRIAR DINAMICAMENTE/PROGRAMATICAMENTE/DENTRO DO CÓDIGO TS...
+
+
+
+
+
+ --> no caso,
+
+
+ queremos importar o 'AlertDynamicComponent'...
+
+
+
+
+
+
+
+
+
+
+
+ --------> OK... COM ACESSO A ESSE COMPONENT,
+
+
+
+
+
+
+
+
+ VOCÊ PODERIA PENSAR QUE 
+
+
+
+ poderíamos 
+
+
+
+
+ rodar um código como 
+
+
+
+ ''''''''' const alertComponent = new AlertDynamicComponent();     '''''''
+
+
+
+
+
+
+
+
+
+
+
+ EX:
+
+
+
+
+
+
+
+
+
+
+     private showErrorAlert(errorMessage: string) {  ////approach PROGRAMÁTICO DE 'CREATE A COMPONENT' por meio de código TS, e não HTML...
+
+      // const alertComponent = new AlertDynamicComponent();   ////////ISSO OBVIAMENTE NÃO FUNCIONARÁ, NÃO É ASSIM QUE VOCÊ CRIA/INSTANCIA COMPONENTS ANGULAR DENTRO DO CÓDIGO TS....
+
+      
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CLARO, ISSO NÃO FUNCIONARÁ PQ 
+
+
+
+''''ISSO É CÓDIGO TYPESCRIPT VÁLIDO,
+
+
+MAS __ NÃO É CÓDIGO __ ANGULAR__ VÁLIDO'''...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO NÃO VAI TE DAR UM ERRO, CLARO,
+
+
+MAS TAMBÉM NÃO FUNCIONARÁ DE JEITO ALGUM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> VOCê NÃO VAI CONSEGUIR 
+TRABALHAR 
+
+
+COM ESSE COMPONENT DE 'alert'
+
+
+DO MODO 
+
+
+
+QUE O ANGULAR QUER/PRECISA TRABALHAR.. ---------> ISSO PQ 
+
+
+
+_ O ANGULAR__ FAZ __ MT MAIS _ DO QUE 
+
+
+
+
+
+'CREATE AN OBJECT'
+
+
+
+QUANDO __ ELE FAZ INSTANTIATE DE UM DETERMINADO COMPONENT...
+
+
+
+
+
+
+
+
+
+
+-> ISSO SIGNIFICA QUE 
+
+O ANGULAR PRECISA FAZER COISAS COMO:
+
+
+
+
+1) WIRE THE COMPONENT UP,
+
+
+WIRE IT UP PARA _ TROCAR/MUDAR A 'DETECTION' dentro do dom...
+
+
+
+
+
+
+
+
+
+--> isso quer dizer que 
+
+
+'const alertCmp = new AlertDynamicComponent()'
+
+
+
+
+
+
+É UM CÓDIGO PARA CRIAR UM OBJECT JAVASCRIPT ORDINÁRIO, E ISSO NÃO FUNCIONARÁ COM COMPONENTS, ANGULAR 
+
+NÃO PERMITE..
+
+
+
+
+
+
+
+
+
+
+-----> ISSO SIMPLESMENTE NÃO VAI CRIAR SEU COMPONENT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA QUE O CREATE DE UM COMPONENT ACONTEÇA DE FORMA PROGRAMÁTICA NO SEU APP,
+
+
+
+
+
+VOCê 
+PRECISA 
+
+'DEIXAR O ANGULAR CRIAR ESSE COMPONENT'...
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+O ANGULAR TE DÁ UMA FERRAMENTA PODEROSA,
+
+
+
+
+
+
+
+
+
+A 'COMPONENT FACTORY',
+
+
+FÁBRICA DE COMPONENTS...
+
+
+
+
+
+
+
+
+
+
+
+
+-----> PARA ACESSAR A 'COMPONENT FACTORY',
+
+
+
+
+
+
+
+
+
+VOCÊ _ PRECISA _ INJETAR_ UMA COISINHA DENTRO DA SUA 'auth.component.ts'...
+
+
+
+
+
+
+
+
+
+
+----------> E,, NESSE ARQUIVO, NÃO PLANEJAMOS FAZER INJECT 
+
+
+DA 'COMPONENT FACTORY EM SI', 
+
+
+
+
+
+E SIM _ planejamos 
+
+
+
+
+
+
+
+__ 
+FAZER O INJECT DO SERVICE 
+
+
+'componentFactoryResolver'..
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+  constructor(private authService: AuthService, private router: Router, private ComponentFactoryResolver) {////componentFactoy É USADO COM A CRIAÇÃO de clones...  
+
+  }
+
+
+
+
+
+
+
+
+  O QUE REALMENTE IMPORTA, COM ESSE SERVICE,
+
+
+  é 
+
+
+  o 
+  NOME DO 'TYPE',
+
+
+
+  QUE  DEVE REALMENTE SER 'componentFactoryResolver'..
+
+
+
+
+
+
+
+
+
+
+
+  ex:
+
+
+
+
+
+
+
+
+
+
+    constructor(private authService: AuthService, private router: Router, private ComponentFactoryResolver: ComponentFactoryResolver) {////componentFactoy É USADO COM A CRIAÇÃO de clones...  
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> E ISSO É MT IMPORTANTE, PQ 
+
+
+
+O 'resolver' É QUE SERÁ INSERIDO,
+
+
+
+E NÃO 
+
+
+
+
+A 'COMPONENT FACTORY' em si..    
+
+
+
+
+
+
+
+--> IMPORTE A PACKAGE ADEQUADA LÁ DO ANGULAR, 
+
+esse 
+
+type de 'ComponentFactoryResolver'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM ESSE COMPONENT FACTORY RESOLVER INJETADO,
+
+
+
+
+
+vocÊ 
+
+
+
+
+PODE, EM 
+
+
+'showErrorAlert,'
+
+
+
+
+usar esse _ 'RESOLVER'
+
+
+
+PARA ENTÃO GANHAR ACESSO À 
+
+
+
+'COMPONENT FACTORY EM SI' (um bocado desse código foi deprecado, mas ainda deve funcionar)...
+
+
+
+
+
+
+TIpo assim:
+
+
+
+
+
+
+    private showErrorAlert(errorMessage: string) {  
+
+
+
+        this.componentFactoryResolver.xxxx
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PODE PARECER ESTRANHO, MAS É ASSIM QUE 'O FLOW FUNCIONA'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> AÍ VOCÊ VAI USAR ESSE RESOLVER,
+
+
+E AÍ USAR O METHOD DE 
+
+
+
+
+'resolveComponentFactory()',
+
+
+
+
+
+
+
+
+
+QUE VAI REALMENTE TE DAR ACESSO A UMA 'COMPONENT FACTORY',
+
+
+TOTALMENTE PROVIDENCIADA PELO ANGULAR...
+
+
+
+
+EX:
+
+
+
+
+
+
+    private showErrorAlert(errorMessage: string) {  
+
+
+
+        this.componentFactoryResolver.resolveComponentFactory();
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM.... A ESSA FACTORY 
+
+
+
+vocÊ deve passar 
+
+o 
+
+
+______tYPE__ DO SEU COMPONENT,
+
+QUE NO NOSSO CASO 
+
+
+
+SERIA 
+
+
+
+
+O COMPONENT DE 
+
+
+'AlertDynamicComponent'...
+
+
+
+
+
+
+
+
+eX:
+
+
+
+
+
+    private showErrorAlert(errorMessage: string) {  
+
+
+
+        this.componentFactoryResolver.resolveComponentFactory(AlertDynamicComponent);
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+    private showErrorAlert(errorMessage: string,) {  ////approach PROGRAMÁTICO DE 'CREATE A COMPONENT' por meio de código TS, e não HTML...
+
+      // const alertComponent = new AlertDynamicComponent();   ////////ISSO OBVIAMENTE NÃO FUNCIONARÁ, NÃO É ASSIM QUE VOCÊ CRIA/INSTANCIA COMPONENTS ANGULAR DENTRO DO CÓDIGO TS....
+
+
+          ///a esse method você deve passar: 1) O _ TYPE__ DO SEU COMPONENT, DO COMPONENT QUE VOCê QUER CRIAR.... 2) 
+      this.componentFactoryResolver.resolveComponentFactory(AlertDynamicComponent);  /////usamos isso para CRIAR NOSSO COMPONENT DINAMICAMENTE/PROGRAMATICAMENTE, DENTRO DO CÓDIGO 'ts'...
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ------> BEM,
+
+
+
+
+    E NESSE CALL DESSE METHOD VOCÊ NAÕ VAI CHAMAR 'new' ou qualquer coisa do gênero,
+
+    e sim apenas o TYPE...
+
+
+
+
+
+
+
+
+
+
+    --> vocÊ faz isso 
+
+
+
+
+    PARA QUE O ANGULAR 'SAIBA EM QUE LUGAR PROCURAR POR ESSE COMPONENT, QUE DEVERÁ ENTÃO CRIAR PARA VOCê'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO.... --> E ESSE METHOD AÍ VAI _ NOS RETORNAR UMA 'COMPONENT FACTORy',
+
+
+
+MAIS PROPRIAMENTE UMA 'ALERT COMPONENT FACTORY'...
+
+
+
+
+
+
+
+
+EX:
+
+
+
+    private showErrorAlert(errorMessage: string,) {  ////approach PROGRAMÁTICO DE 'CREATE A COMPONENT' por meio de código TS, e não HTML...
+
+      // const alertComponent = new AlertDynamicComponent();   ////////ISSO OBVIAMENTE NÃO FUNCIONARÁ, NÃO É ASSIM QUE VOCÊ CRIA/INSTANCIA COMPONENTS ANGULAR DENTRO DO CÓDIGO TS....
+
+
+          ///a esse method você deve passar: 1) O _ TYPE__ DO SEU COMPONENT, DO COMPONENT QUE VOCê QUER CRIAR.... 2) 
+    const alertComponentFactory =  this.componentFactoryResolver.resolveComponentFactory(AlertDynamicComponent);  /////usamos isso para CRIAR NOSSO COMPONENT DINAMICAMENTE/PROGRAMATICAMENTE, DENTRO DO CÓDIGO 'ts'...
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+    private showErrorAlert(errorMessage: string,) {  ////approach PROGRAMÁTICO DE 'CREATE A COMPONENT' por meio de código TS, e não HTML...
+
+      // const alertComponent = new AlertDynamicComponent();   ////////ISSO OBVIAMENTE NÃO FUNCIONARÁ, NÃO É ASSIM QUE VOCÊ CRIA/INSTANCIA COMPONENTS ANGULAR DENTRO DO CÓDIGO TS....
+
+
+          ///a esse method 'resolveComponentFactory' você deve passar: 1) O _ TYPE__ DO SEU COMPONENT, DO COMPONENT QUE VOCê QUER CRIAR.... 2) 
+   
+   
+          const alertComponentFactory = this.componentFactoryResolver.resolveComponentFactory(AlertDynamicComponent);  /////usamos isso para CRIAR NOSSO COMPONENT DINAMICAMENTE/PROGRAMATICAMENTE, DENTRO DO CÓDIGO 'ts'...
+
+
+
+          ////com esse method de 'resolveComponentFactory' armazenado em uma CONST, FICAMOS COM UMA VERDADEIRA FACTORY DESSE COMPONENT ESPECÍFICO (AlertDynamicComponent, no nosso caso).
+
+
+          
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    -----------------------------------
+
+
+
+
+
+
+COM ISSO,
+
+
+
+
+FICAMOS COM UM OBJECT QUE _ SABE COMO CRIAR ALERT COMPONENTS,
+
+
+O QUE É UM BOM PRIMEIRO PASSO...
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, COM ESSA FACTORY,
+
+
+PODEMOS A UTILIZAR PARA CRIAR 
+
+
+1 
+
+
+'CONCRETE COMPONENT'...
+
+
+
+
+
+
+
+
+
+
+--> MAS É CLARO QUE, PARA FAZER ISSO,
+
+
+PRIMEIRAMENTE PRECISAMOS DE ALGUM LUGAR 
+
+EM NOSSO DOM 
+
+PARA FAZER 'ATTACH'
+
+
+
+DESSE COMPONENT...
+
+
+
+
+
+
+
+
+
+--> E AINDA NÃO TEMOS ESSE LUGAR.. --> 
+
+
+
+PRECISAMOS DIZER AO ANGULAR 
+
+
+
+
+'É NESSE LUGAR QUE NOSSO COMPONENT DEVE SER ADICIONADO'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> e você poderia pensar 'ah, basta usar um selector lá no TEMPLATE'... --> 
+
+
+
+
+MAS ISSO _ ESTÁ ERRADO,
+
+NÃO É ASSIM QUE FAZEMOS...
+
+
+
+
+
+
+
+
+
+
+
+não é assim:   <div #addHere></div>           (COM '@ViewChild()' poderíamos ganhar acesso a esse element, sim, MAS NÃO É ASSIM QUE FAZEMOS, NÃO)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS NÃO É ASSIM QUE FAZEMOS... ----------> 
+
+
+
+
+
+
+
+
+
+
+
+
+O APPROACH QUE USAMOS 
+
+
+
+É 
+O USO 
+
+
+
+
+
+
+DE UM 'VIEW CONTAINER REF'...
+
+
+
+
+
+
+
+
+
+
+
+--> um 'VIEW CONTAINER REF' (vimos isso lá no DEEP DIVE DAS 'DIRECTIVES' ) 
+
+
+
+
+
+
+
+
+
+
+
+
+--> UMA 'view container ref'
+
+
+
+
+É ESSENCIALMENTE UM OBJECT 
+
+
+___MANAGEADO__ INTERNAMENTE _ PELO 
+
+
+
+ANGULAR,
+
+
+E QUE 
+
+
+
+__ 
+
+ENTREGA AO ANGULAR UMA _ REFERENCE,
+
+
+
+
+UM__ 'POINTER',
+
+A UM 
+
+
+
+__ LOCAL __ NO DOM, VOCÊ PODERIA DIZER,
+
+
+
+
+COM _ QUE _ O ANGULAR PODERÁ INTERAGIR... ------> E ESSE OBJECT DE 'view container ref' 
+
+
+
+
+TEM MAIS DO QUE 
+
+
+
+
+AS 'COORDINATES' em que 
+
+
+
+ela reside,
+
+
+
+
+
+
+
+
+PQ _ ELA _ TAMBÉM __ CONTÉM METHODS COMO 
+
+
+
+
+'HEY, POR FAVOR CRIE UM COMPONENT AQUI',
+
+
+
+
+
+
+
+E _ É EXATAMENTE 
+
+DISSO 
+
+
+QUE PRECISAMOS,
+
+
+AGORA... ------------------> E PARA GANHAR ACESSO 
+
+
+
+A 
+
+
+UM DESSES 'VIEW CONTAINER REFERENCES',
+
+
+
+
+
+
+
+existe um 
+
+
+
+NICE TRICK,
+
+
+
+
+
+
+
+QUE É O APPROACH OFICIAL,
+
+
+
+QUE É 
+ 
+
+
+
+
+A __ CRIAÇAÕ _ DE UMA 'HELPER DIRECTIVE'... ------> 
+
+
+
+
+
+
+
+
+
+
+PARA ISSO,
+
+
+
+
+VOCê PODE CRIAR UMA DIRECTIVE DE NOME QUALQUER..
+
+
+
+
+
+
+--> criamos com ng g d
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR CHAMA ESSA DIRECTIVE DE 'placeholder'...
+
+
+
+
+
+
+
+
+
+
+
+-------> DENTRO DESSA DIRECTIVE,
+
+EXPORTAMOS UMA CLASS 
+
+
+
+
+de PlaceholderDirective
+
+
+
+
+
+
+
+
+
+
+
+
+--> EM UMA DIRECTIVE, NO DECORATOR DA DIRECTIVE,
+
+
+
+PRECISAMOS SEMPRE DE 1 PEQUENA COISA,
+
+
+QUE É 
+
+
+
+o 'selector' dessa directive...
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+import { Directive } from '@angular/core';
+
+@Directive({
+  selector: '[appPlaceholder]'
+})
+export class PlaceholderDirective {
+
+  constructor() { }
+
+}
+
+
+
+
+
+
+
+
+--------------------
+
+
+
+
+
+
+
+
+
+
+O PROFESSOR COLOCA UM ATTRIBUTE SELECTOR,
+
+
+
+PQ QUER QUE 
+
+ESSA DIRECTIVE SEJA 
+
+ADICIONADA 
+
+
+COMO UM 
+
+
+
+
+ATTRIBUTE A QUALQUER ELEMENT..
+
+
+
+
+
+
+--> ELE USA O CAMEL CASE NOTATION PARA NOMEAR ESSA DIRECTIVE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, AGORA TEMOS ESSA DIRECTIVE, E AGORA 
+
+
+ELA __ PRECISA_ FAZER EXATAMENTE 
+
+
+1 ÚNICA COISA, COISA IMPORTANTE:
+
+
+
+
+
+
+
+
+PRECISA__ 'INJECT' 
+
+
+
+O 
+
+
+'VIEW CONTAINER REF'
+
+
+
+em alguma coisa, essencialmente...
+
+
+
+
+
+
+
+--> E APRENDEMOS SOBRE ESSE 'INJECT'
+
+
+
+LÁ 
+
+
+
+NA SECTION DE 'DIRECTIVE DEEP DIVE'..
+
+
+
+
+
+
+
+
+
+
+
+o professor provavelmente está falando DESTE CÓDIGO AQUI:
+
+
+
+
+  constructor(private elementRef: ElementRef, private renderer: Renderer2) {} /// o parâmetro que representa esse 'element' em que a directive foi posicionada é 'elementRef', que possui esse type de 'ElementRef'......
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> talvez ele esteja falando desse 'elementRef' aí... ou entaõ do 'renderer', que também tem um monte de methods úteis (
+
+
+    embora talvez o renderer seja usado para 
+
+    RENDERIZAR NOSSO COMPONENT, AGORA QUE PENSEI MELHOR...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+OU ENTÃO TALVEZ ELE ESTEJA FALANDO DESTE CÓDIGO AQUI:
+
+
+
+
+
+
+
+
+
+
+import { Directive } from '@angular/core';
+
+import { Input } from '@angular/core';
+
+import { TemplateRef } from '@angular/core';
+
+import { ViewContainerRef } from '@angular/core';
+
+@Directive({
+  selector: '[appUnless]',
+})
+export class UnlessDirective {
+  @Input() set unless(condition: boolean) {    ///o nome de sua 'propriedade/setter' DEVE TER O MESMO NOME DE SEU SELECTOR, SENÃO O NEGÓCIO (structural directive) NÃO FUNCIONA...
+    if (!condition) {
+      this.viewContainerReference.createEmbeddedView(this.templateRef);
+    } else {
+      this.viewContainerReference.clear()
+    }
+  }
+
+  constructor(
+    private templateRef: TemplateRef<any>,
+    private viewContainerReference: ViewContainerRef
+  ) {}
+}
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------------------
+
+
+
+
+
+
+
+
+
+
+ok... mas aqui o professor NÃO VAI FAZER O INJECT DE um  'ElementRef',
+
+
+
+
+
+E SIM 
+
+
+
+FARÁ DE UM 
+
+
+
+'viewContainerRef'...
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+import { Directive, ViewContainerRef } from '@angular/core';
+
+@Directive({
+  selector: '[appPlaceholder]'
+})
+export class PlaceholderDirective {
+
+  constructor(viewContainerRef: ViewContainerRef )  ////ESSE TYPE _ JÁ NOS _ DÁ, AUTOMATICAMENTE, UMA 'REFERENCE'/pointer AO __ LOCAL DE NOSSO DOM _ EM QUE _ ESSA DIRECTIVE DE 'placeholder' for usada..
+  { }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE TYPE JA´NOS DÁ UMA REFERENCE/POINTER AO LOCAL DE NOSSO CÓDIGO EM QUE ESSA REFERENCE FOI/SERÁ 
+
+COLOCADA...
+
+
+
+
+
+
+
+
+
+
+--> ISSO SIGNIFICA QUE 
+
+
+ESSE TYPE VAI TE DEIXAR 
+
+'GET INFORMATIOn' sobre o local em que você usou essa directive...
+
+
+
+
+
+
+
+
+
+
+
+
+
+E, COMO O PROFESSOR MENCIONOU,
+
+
+ESSE 
+
+
+
+'viewContainerRef'
+
+
+tem mais do que coordenadas,
+
+
+
+COMO 
+
+TAMBÉM 
+
+
+
+TEM 
+
+
+
+METHODS ÚTEIS,
+
+
+
+METHODS COMO O QUE FAZ 'CREATE DE UM COMPONENT' 
+
+
+
+NO LOCAL 
+
+
+
+EM QUE 
+
+NOSSA DIRECTIVE FOR POSICIONADA...
+
+
+
+
+
+
+
+
+
+
+ISSO QUER DIZER QUE 
+
+GANHAMOS ACESSO AO 'LOCAL EM QUE
+
+A DIRECTIVE É/FOI ADICIONADA',
+
+
+
+
+E TAMBÉM
+GANHA 
+
+
+
+METHODS PARA DIZER 'PLEASE ADD SOMETHING THERE'..
+
+
+
+
+
+
+
+
+
+
+--------> BEM, MAS AQUI TEMOS ALGO INCOMUM.... --> TEMOS QUE DEIXAR ESSA PROPRIEDADE 
+
+
+
+de 
+
+
+'viewContainerRef'
+
+
+
+COMO _ PUBLIC,
+
+
+
+
+
+
+PQ _ QUEREMOS QUE ELA SEJA PUBLICAMENTE ACESSÍVEL,
+
+
+PARA QUE 
+
+ESSE 
+'
+viewContainerRef'
+
+
+
+CONSIGA SER ACESSADO DO LADO __ DE FORA,
+
+
+
+
+
+_ __ CONSIGA_ SER ACESSADA __ LÁÁÁÁ daquele method de 'showErrorAlert',
+
+
+
+no nosso component 'AuthPageComponent'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO _ PQ _ AGORA __ VAMOS:
+
+
+
+
+1) ADICIONAR ESSA DIRECTIVE EM ALGUM LUGAR DE NOSSO DOM,
+
+
+DENTRO DE NOSSOS TEMPLATES...
+
+
+
+
+
+2) aí __ VAMOS __ CONSEGUIR __ GANHAR _ ACESSO _ 
+
+
+
+A ESSA DIRECTIVE,
+
+POR MEIO DE 
+
+
+'@ViewChild()',
+
+
+
+
+
+E AÍ,
+
+
+FINALMENTE:
+
+
+
+3) VAMOS CONSEGUIR 'GET ACCESS' 
+
+àQUELE 'viewContainerRef'
+ 
+
+ PÚBLICO,
+
+
+
+ PARA AÍ _ CONSEGUIRMOS _ TRABALHAR COM O VIEWCONTAINER REF DESSA DIRECTIVE...
+
+
+
+
+
+
+
+
+
+
+
+
+ -_> VAMOS VER COMO IMPLEMENTAR ISSO, ETAPA POR ETAPA...

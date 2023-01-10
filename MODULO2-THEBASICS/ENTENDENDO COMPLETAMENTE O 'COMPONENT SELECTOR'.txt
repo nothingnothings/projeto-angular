@@ -1,0 +1,1181 @@
+
+
+
+
+
+
+
+--> VOCê JÁ É UM EXPERT EM COMPONENTS?
+
+
+
+
+
+--> JÁ APRENDEMOS MT SOBRE COMPONENTS...
+
+
+
+
+
+
+APRENDEMOS SOBRE:
+
+
+
+1) TEMPLATES 
+
+
+2) OPTIONS DOS TEMPLATES 
+
+
+
+3) STYLES DOS TEMPLATES...
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA O PROFESSOR QUER FOCAR 
+
+
+__ NA ÚLTIMA PROPRIEDADE 
+
+QUE 
+
+ENCONTRAMOS 
+
+
+
+
+EM CADA DECORATOR DE 'Component({
+})
+',
+
+
+
+
+
+
+
+
+
+
+
+NO CASO, ELE ESTÁ FALANDO DA KEY DE 
+
+'selectors',
+
+como visto em:
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'projetobasico';
+}
+
+
+
+
+
+
+
+
+
+
+
+-------> O PROFESSOR JÁ HAVIA MENCIONADO QUE 
+
+
+
+
+
+
+O SELECTOR SEMPRE PRECISA SER UM 'UNIQUE SELECTOR',
+
+
+
+
+TUDO 
+para que 
+
+
+
+VOCê NÃO ACABE OVERWRITTANDO ACIDENTALMENTE UM 
+
+
+
+ELEMENT JÁ EXISTENTE NO DOM (é por isso que você não vai chamar um selector de 'h3' ou algo estúpido do gênero....
+
+
+
+
+
+
+
+
+----> TAMBÉM CUIDAR PARA 
+NÃO OVERWRITTAR 
+
+
+O NOME DE OUTRO COMPONENT ANGULAR QUE VOCê IMPORTOU (de um TPP) 
+
+e quer usar 
+
+
+
+no seu projeto...
+
+
+
+
+
+
+
+
+--> MAS HÁ OUTRO PEDAÇO DE INFORMAÇÃO SOBRE ESSE TIPO DE SELECTOR...
+
+
+
+
+
+
+
+
+
+
+
+--> A INFORMAÇAÕ É QUE __ '''VOCÊ NÃO PRECISA USAR ESSE TIPO DE SELECTOR''' (
+
+    tipo 
+
+
+    'selector: app-root' e aí 
+
+
+    <app-root>
+
+    lá no 'app.component.html'...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+----> ATÉ AGORA,
+
+
+NOSSO SELECTOR 
+
+
+
+
+funciona DA MESMA FORMA QUE CSS SELECTORS,
+
+
+ESSENCIALMENTE...
+
+
+
+
+
+
+
+
+
+
+
+--> PQ OBSERVE:
+
+
+
+
+você escreve 
+
+
+
+'app-servers' 
+
+lá 
+
+no seu COMPONENT em 'servers.component.ts',
+
+
+
+e aí 
+
+
+
+
+FAZ COM QUE ESSE COMPONENT SEJA RENDERIZADO NO LUGAR DE 
+
+
+'<app-servers>',
+
+
+
+lá no 'app.component.html'...
+
+
+
+
+
+
+
+
+
+
+
+---> OK... ISSO SIGNIFICA QUE 
+
+
+
+
+ESSE COMANDO FOI RECONHECIDO PELO ANGULAR  --> ISSO 
+
+
+
+
+É BASICAMENTE A MESMA FORMA 
+
+DE SELECIONAR 
+
+
+
+
+
+O ELEMENTO NO CSS...
+
+
+
+
+
+
+
+
+
+
+
+---> OK... ISSO SIGNIFICA QUE 
+
+
+
+
+A KEY 'selector'
+
+
+FUNCIONA ___ COMO UM CSS SELECTOR.....--------> E ISSO, EM OUTRAS PALAVRAS,
+
+QUER DIZER QUE 
+
+VOCÊ 
+
+NÃO ESTÁ LIMITADO AO 
+
+
+
+
+
+'SELECT BY ELEMENT'... -----> você 
+
+
+
+
+
+
+
+pode fazer 'SELECT' 
+
+
+
+'BY' outras coisas...
+
+
+
+
+
+
+
+
+
+
+
+->  COMO EXEMPLO DISSO,
+
+VOCÊ PODE ENVOLVER A STRING 
+
+
+
+
+
+em 'selector'
+
+
+em SQUARE BRACKETS,
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+selector: '[app-servers]'
+
+
+
+
+
+
+
+
+
+
+
+-->  SE VOCÊ FIZER ISSO,
+
+VOCÊ 
+
+
+ESTARÁ 
+
+FAZENDO 
+
+'''SELECT DE UM ELEMENTO 
+
+
+POR _ ATTRIBUTE, E NAÕ POR CLASS'''' --> isso TAMBÉM EXISTE NO 
+
+
+CSS,
+
+MAS EU NUNCA USEI...
+
+
+
+
+
+----> no css,
+
+VOCÊ PODE SELECIONAR 
+
+ELEMENTOS POR ATTRIBUTE 
+
+
+
+por meio do ENCLOSE do attribute em '[]'... 
+
+(
+
+    vou testar agora...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+NOSSA, ISSO REALMENTE FUNCIONA...
+
+
+
+
+
+EX:
+
+
+
+
+
+[
+   disabled ] {
+       color: black;
+   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ---> com isso, estamos dizendo que CADA ELEMENTO AFETADO POR ESSE ATTRIBUTE DE 'disabled'
+
+   DEVERÁ TER UMA COR DE 'black'...
+
+
+
+
+
+
+
+
+   --> ex:
+
+
+
+
+
+
+
+
+
+   @Component({
+  // selector: 'app-servers', /// QUANDO VOCÊ ESCREVE ASSIM, ESTÁ SELECIONANDO O ELEMENTO NO 'servers.component.html' A PARTIR DA SUA TAG/ELEMENT...
+  selector: '[app-servers]',  ////o selector do angular TEM COMPORTAMENTO SIMILAR A SELECTORS CSS... -> e nos selectors css, se você escreve '[attributeName] {}', você ACABA EDITANDO TODOS OS ELEMENTOS QUE POSSUEM ESSE ATTRIBUTE ATIVADO/ESCRITo...
+  templateUrl: './servers.component.html',
+  styleUrls: ['./servers.component.css']
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------> no caso do angular,
+
+envelopamos
+
+
+
+esse 'app-servers' em '[]' 
+
+
+
+
+
+
+
+
+
+-> MAS SE SALVARMOS ISSO E RECARREGARMOS,
+
+VEREMOS QUE NOSSO 
+
+APP FICARÁ 'BROKEN',
+
+
+
+PQ 
+
+
+
+
+
+
+
+
+SE DERMOS UMA OLHADA 
+
+
+
+
+NA MENSAGEM DE ERRO DO CONSOLE,
+
+
+
+VEREMOS QUe estará escrito 
+
+
+
+
+
+'app-servers is not a known element'...
+
+
+
+
+
+
+
+
+----> ISSO ACONTECEU JUSTAMENTE PQ 
+
+
+
+AINDA TEMOS AQUELE CÓDIGO RESIDUAL DE 
+
+
+'<app-servers>'
+
+
+
+em 'app.component.html':
+
+
+
+
+<div class="container">
+  <h3>I'm in the AppComponent!</h3>
+  <hr />
+  <!-- <app-server></app-server> -->
+  <div class="row">
+    <div class="col-xs-12">
+      <app-servers></app-servers>
+    </div>
+  </div>
+  <exemplo></exemplo>
+  <app-exemplo-component-com-inline-template></app-exemplo-component-com-inline-template>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E COMO 
+
+
+
+NÓS TROCAMOS 
+
+
+'selector: 'app-servers' ' 
+
+
+para 
+
+
+
+'selector: '[app-servers]' '
+
+
+
+,
+
+
+
+
+
+
+
+
+ESSA TAG DE '<app-servers>'
+
+não é MAIS UTILIZADA PELO ANGULAR (nada é inserido no seu lugar....)
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+src/app/app.component.html:7:7 - error NG8001: 'app-servers' is not a known element:
+1. If 'app-servers' is an Angular component, then verify that it is part of this module.
+2. If 'app-servers' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ISSO ACONTECEU PQ TROCAMOS O 'SELECTOR',
+
+fizemos com que ele se tornasse um ATTRIBUTE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> PARA FAZER ISSO 
+
+
+FUNCIONAR MAIS UMA VEZ,
+
+
+TERÍAMOS DE REMOVER ESSE 
+
+'<app-servers></app-servers>'
+
+
+
+
+E ENTAÕ 
+
+
+
+
+
+COLOCAR ALGO COMO 
+
+<div app-servers />
+
+
+
+
+
+
+
+
+
+
+
+
+--> SE ESSA DIV TIVER ESSE ATTRIBUTE (boolean attribute),
+
+
+
+JÁ SERÁ O SUFICIENTE,
+
+E ESSA 
+
+DIV SERÁ USADA 
+
+
+COMO 
+
+'LOCAL' PARA O INSERT DE NOSSO COMPONENT,
+
+QUE 
+
+
+
+FICOU COM ESTE CÓDIGO DE SELECTOR:
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  // selector: 'app-servers', /// QUANDO VOCÊ ESCREVE ASSIM, ESTÁ SELECIONANDO O ELEMENTO NO 'servers.component.html' A PARTIR DA SUA TAG/ELEMENT...
+  selector: '[app-servers]',  ////o selector do angular TEM COMPORTAMENTO SIMILAR A SELECTORS CSS... -> e nos selectors css, se você escreve '[attributeName] {}', você ACABA EDITANDO TODOS OS ELEMENTOS QUE POSSUEM ESSE ATTRIBUTE ATIVADO/ESCRITo...
+  templateUrl: './servers.component.html',
+  styleUrls: ['./servers.component.css']
+})
+export class ServersComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+<div class="container">
+  <h3>I'm in the AppComponent!</h3>
+  <hr />
+  <!-- <app-server></app-server> -->
+  <div class="row">
+    <div class="col-xs-12">
+      <!-- <app-servers></app-servers> -->
+      <div app-servers></div>
+    </div>
+  </div>
+  <exemplo></exemplo>
+  <app-exemplo-component-com-inline-template></app-exemplo-component-com-inline-template>
+</div>
+
+
+
+
+
+
+-----------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK... COM ESSE CUSTOM ATTRIBUTE DE '<app-servers>'
+
+
+adicionado,
+
+
+
+
+
+O NOSSO APP FUNCIONA MAIS UMA VEZ... --> PQ AGORA O ANGULAR 
+
+
+SELECIONA O ELEMENT POR ATTRIBUTE,
+
+
+E NÃO 
+
+PELO 
+
+'ELEMENNT EM SI',
+
+
+
+
+tudo pq 
+
+MUDAMOS 
+
+O 
+
+SELECTOR 
+
+em 
+
+
+'servers.component.ts'....
+
+
+
+
+
+
+
+
+
+
+
+-> OUTRA ALTERNATIVA 
+
+É 
+
+
+
+
+FAZER O __ SELECT__ 
+
+
+
+POR MEIO __ DE 
+
+
+
+
+
+'CLASS'.... --> 
+
+
+
+
+
+
+
+SE VOCÊ QUISER SELECIONAR POR CLASS,
+
+BASTA ESCREVER ASSIM:
+
+
+
+
+
+
+
+
+selector: '.app-servers' 
+
+
+
+
+
+
+
+
+
+
+---> É UMA ESCRITA MT PARECIDA COM A DO CSS...
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  // selector: 'app-servers', /// QUANDO VOCÊ ESCREVE ASSIM, ESTÁ SELECIONANDO O ELEMENTO NO 'servers.component.html' A PARTIR DA SUA TAG/ELEMENT...
+  selector: '[app-servers]',  ////o selector do angular TEM COMPORTAMENTO SIMILAR A SELECTORS CSS... -> e nos selectors css, se você escreve '[attributeName] {}', você ACABA EDITANDO TODOS OS ELEMENTOS QUE POSSUEM ESSE ATTRIBUTE ATIVADO/ESCRITo...
+  
+  // selector: '.app-servers' ////use essa sintaxe se vocÊ quer SELECIONAR UM ELEMENTO NO seu 'servers.component.html' POR MEIO DE _ CLASSES__... 
+
+
+  ///ou seja, 3 approaches para SELECIONAR ELEMENTOS NO NOSSO CÓDIGO HTML ANGULAR, com o 'selector':
+
+  //  1) por ELEMENTo... -> selector: 'app-servers'
+  //  2) por ATTRIBUTE.... -> selector: '[app-servers]'
+  //  3) por CLASS --> selector: '.app-servers' 
+  
+  templateUrl: './servers.component.html',
+  styleUrls: ['./servers.component.css']
+})
+export class ServersComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+-------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+-----> EX:
+
+
+
+
+
+
+
+
+<div class="container">
+  <h3>I'm in the AppComponent!</h3>
+  <hr />
+  <!-- <app-server></app-server> -->
+  <div class="row">
+    <div class="col-xs-12">
+      <!-- <app-servers></app-servers> SELECT POR ELEMENT, ESSE É O EXEMPLO -->
+      <div app-servers></div> <!-- SELECT POR ATTRIBUTE, ESSE É O EXEMPLO, de app-servers...-->
+      <!-- <div class="app-servers"></div>    SELECT POR _CLASS_, ESSE É O EXEMPLO, DE app-servers -->
+    </div>
+  </div>
+  <exemplo></exemplo>
+  <app-exemplo-component-com-inline-template></app-exemplo-component-com-inline-template>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK... ENTÃO TEMOS ESSAS 3 OPÇÕES DE 'ELEMENT SELECTING'..
+
+
+
+
+
+
+
+
+
+
+-----> OK... -> ESSAS SÃO TODAS OPTIONS QUE TEMOS...
+
+
+
+
+
+
+
+
+--> SIDENOTE --> O 'SELECT BY ID' 
+
+
+
+
+NÃO FUNCIONA COM O ANGULAR.... --> MAS TODAS AS OUTRAS FORMAS FUNCIONAM....
+
+
+
+
+
+
+
+
+
+
+-----> E TODOS AQUELES 'PSEUDOSELECTORS' (como hover e active ) 
+
+
+
+
+_ NÃO FUNCIONAM....
+
+
+
+
+
+
+-----> E ESSE 
+
+
+
+
+
+ESTILO 
+
+
+<app-servers></app-servers>
+
+
+
+É __ TIPICAMENTE _ USADO 
+__ 
+
+
+
+
+PARA COMPONENTS,
+
+TRADICIONALMENTE,
+
+
+
+
+APESAR DE QUE 
+
+VAMOS APRENDER SOBRE 
+
+
+ 
+
+
+
+
+
+ __ 'DIRECTIVES',
+
+ que é OUTRA FEATURE,
+
+
+ EM QUE 
+
+
+
+
+
+ O SELECT É TIPICAMENTE FEITO DE FORMA DISTINTA....
+
+
+
+
+
+
+
+
+
+
+------> MAS PARA OS COMPONENTS,
+
+
+
+
+VOCÊ TIPICAMENTE 'CRIA SEUS PRÓPRIOS ELEMENTS',
+
+
+
+POR ISSO 
+
+
+VOCÊ 
+
+
+
+GERALMENTE 
+
+NUNCA USA 
+
+
+
+a sintaxe de 
+
+
+
+
+
+selector: '.app-servers' 
+
+
+e 
+
+
+selector: '[app-servers]' 
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK... 
+
+
+
+
+
+MAS É IMPORTANTE ENTENDER QUE 
+
+VOCê NÃO ESTÁ LIMITADO  A ESSE SELECTOR ÚNICO AÍ,
+
+e que 
+
+HÁ CASES EM QUE 
+
+VOCê 
+
+
+TALVEZ QUEIRA USAR UM SELECTOR _ DIFERENTE (como o de ATTRIBUTE ou CLASS)....

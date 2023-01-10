@@ -1,0 +1,536 @@
+
+
+
+
+
+
+
+
+
+
+-------> na última liçõa, aprendemos algo CRUCIAL..
+
+
+
+
+APRNEDEMOS A BINDAR A NOSSAS PRÓPRIAS PROPRIEDADES,
+
+
+
+
+
+
+PROPRIEDAEDS CUSTOM COMO 'element',
+
+
+
+
+COMO VISTO NESSE CÓDIGO AQUI:
+
+
+
+
+
+
+import { Component, Input, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-server-item',
+  templateUrl: './server-item.component.html',
+  styleUrls: ['./server-item.component.css'],
+})
+export class ServerItemComponent implements OnInit {
+  @Input() element: {
+    ///por meio de '@Input' fazemos o _ 'EXPOSE' de sua given property '''' AO MUNDO''' (o que quer dizer que podemos PASSAR DATA A ESSA PROPRIEDADE de 'eleemnt' _ DO LADO_ DE FORA de seu element, tipo um react-props, pq VAMOS PODER PASSAR DATA LÁ DE UM 'PARENT COMPONENT' para esse nosso component de 'app-server-item', basta usar aquele PROPERTY BINDING de '[element]="yourValue/object"' ao COMPONENT DE 'app-server-item'....)
+    name: string;
+    type: string;
+    content: string;
+  } = {
+    name: '',
+    type: '',
+    content: '',
+  };
+
+  constructor() {}
+
+  ngOnInit(): void {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+E AÍ A PROPRIEDADE É VISTA/REFERENCIADA/USADA NO BINDING __ AQUI_:
+
+
+
+
+
+
+
+
+  <div class="row">
+    <div class="col-xs-12">
+      <app-server-item 
+      *ngFor="let serverElement of serverElements"
+      [element]="serverElement"  
+      ></app-server-item>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ----> OK... MAS 
+
+
+  APARENTEMENTE É POSSÍVEL __ CONFIGURAR ESSE 'DATA BINDING'
+
+
+
+  mais _ ainda_.... 
+
+
+
+
+
+
+
+
+
+
+  --> Às vezes VOCê __ NÃO VAI QUERER USAR 'THE SAME PROPERTY'
+
+
+  que você usa NO _ LADO _ DE DENTRO DO COMPONENT (como 'element")
+
+
+
+  DO LADO DE FORA DO COMPONENT...
+
+
+
+
+
+
+
+
+
+
+
+  ---> isso quer dizer que você pode DEIXAR O NOME COMO 
+
+
+  'element' NO LADO _ DE DENTRO __ DO 
+
+
+  SEU COMPONENT,
+
+  tipo assim:
+
+
+
+
+
+
+
+  import { Component, Input, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-server-item',
+  templateUrl: './server-item.component.html',
+  styleUrls: ['./server-item.component.css'],
+})
+export class ServerItemComponent implements OnInit {
+  @Input() element: {
+    ///por meio de '@Input' fazemos o _ 'EXPOSE' de sua given property '''' AO MUNDO''' (o que quer dizer que podemos PASSAR DATA A ESSA PROPRIEDADE de 'eleemnt' _ DO LADO_ DE FORA de seu element, tipo um react-props, pq VAMOS PODER PASSAR DATA LÁ DE UM 'PARENT COMPONENT' para esse nosso component de 'app-server-item', basta usar aquele PROPERTY BINDING de '[element]="yourValue/object"' ao COMPONENT DE 'app-server-item'....)
+    name: string;
+    type: string;
+    content: string;
+  } = {
+    name: '',
+    type: '',
+    content: '',
+  };
+
+  constructor() {}
+
+  ngOnInit(): void {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ENTRETANTO,
+
+
+
+SE VOCÊ QUISER,
+
+
+
+AO SER USADO/REFERENCIADO/BINDADA ESSA 'PROPERTY' de 'element' 
+
+no lado de fora,
+
+
+
+
+
+
+ 
+VOCê TEM A OPÇÃO _ DE _ NÃO QUERER usar o nome de 'element' para se referir a ele.... -> você pode 
+
+
+SE REFERIR A OUTRAS COISAS,
+
+
+como 
+
+'srvElement' ( 
+
+
+PARA DEIXAR BEM CLARO QUE SE 
+
+TRATA DE UM SERVER...
+
+
+
+
+)
+
+
+
+
+
+
+
+--> se você fizesse essa alteração, seu código ficaria assim, e deixaria de funcionar (pq você estaria tentando BINDAR DATA __ A UMA PROPRIEDADE QUE O ANGULAR NÃO CONHECE/NÃO CONHECE ANIDA POR SER UMA __ CUSTOM _ PROPERTY...):
+
+
+
+
+
+  <div class="row">
+    <div class="col-xs-12">
+      <app-server-item 
+      *ngFor="let serverElement of serverElements"
+      [srvElement]="serverElement"  
+      ></app-server-item>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+-----------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK... O ANGULAR NÃO SABE QUE 
+A PROPRIEDADE DE 
+
+'srvElement' será 'BINDABLE', em outras palavras....(
+
+
+
+    PQ NÃO EXISTIRA/EXISTIRÁ 
+
+    NENHUMA PROPRIEDADE 
+
+
+    em 'server-item-component' 
+
+
+
+    com 
+
+    o nome de 
+
+
+    'srvElement',
+
+    E SIM 
+
+    APENAS 
+
+
+    'element'...
+)
+
+
+
+
+
+
+
+
+-> PARA SOLUCIONAR ESSES CASES,
+
+VOCê PODE _ ASSIGNAR_ UM 'ALIAS'.... ----> PARA ADICIONAR UM 'ALIAS' AO SEU CÓDIGO/RELAÇAÕ 
+
+
+
+ENTRE UMA PROPERTY NO ARQUIVO 'ts' e no arquivo 'html',
+
+
+VOCê PODE 
+
+_ PASSAR_ 1 ARGUMENTO _ 
+
+
+A "@Input'..
+
+
+
+
+
+
+
+
+ex
+
+
+
+
+
+
+
+  // @Input() element: { /////USO DE '@Input' SEM O USO _ DE 'alias' para sua property name.... (element aqui será exatamente '[element]' no seu elemento html de 'app-server-item'...)
+  //   ///por meio de '@Input' fazemos o _ 'EXPOSE' de sua given property '''' AO MUNDO''' (o que quer dizer que podemos PASSAR DATA A ESSA PROPRIEDADE de 'eleemnt' _ DO LADO_ DE FORA de seu element, tipo um react-props, pq VAMOS PODER PASSAR DATA LÁ DE UM 'PARENT COMPONENT' para esse nosso component de 'app-server-item', basta usar aquele PROPERTY BINDING de '[element]="yourValue/object"' ao COMPONENT DE 'app-server-item'....)
+  //   name: string;
+  //   type: string;
+  //   content: string;
+  // } = {
+  //   name: '',
+  //   type: '',
+  //   content: '',
+  // };
+
+
+
+
+
+  @Input() element: { /////USO DE '@Input' COM O USO _ DE 'alias' para sua property name.... (element, essa propriedade, aqui terá nome de 'element', mas no HTML terá um NOME DISTINTO, como esse exemplo 'srvElement'...) --> isso ocorre por meio do PASS DO PARÂMETRO A 'input'..
+    ///por meio de '@Input' fazemos o _ 'EXPOSE' de sua given property '''' AO MUNDO''' (o que quer dizer que podemos PASSAR DATA A ESSA PROPRIEDADE de 'eleemnt' _ DO LADO_ DE FORA de seu element, tipo um react-props, pq VAMOS PODER PASSAR DATA LÁ DE UM 'PARENT COMPONENT' para esse nosso component de 'app-server-item', basta usar aquele PROPERTY BINDING de '[element]="yourValue/object"' ao COMPONENT DE 'app-server-item'....)
+    name: string;
+    type: string;
+    content: string;
+  } = {
+    name: '',
+    type: '',
+    content: '',
+  };
+
+
+
+
+
+
+
+------------------------
+
+
+
+
+
+
+
+
+--> VOCê DIGITA A STRING QUE _ REPRESENTARÁ _ O NOME DESSA PROPRIEDADE,
+
+no lado 'DE FORA' desse component 'app-server-item' (
+
+    ou seja,
+
+
+    lá 
+
+    no 
+
+
+
+
+
+    app.component.html,
+
+    em que 
+
+    o 
+
+
+    'app-server-item' é chamado,
+
+    tipo assim>:
+
+
+
+
+
+
+  <div class="row">
+    <div class="col-xs-12">
+      <app-server-item 
+      *ngFor="let serverElement of serverElements"
+      [srvElement]="serverElement"  
+      ></app-server-item>
+    </div>
+  </div>
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+-----> 
+
+
+EX:
+
+
+
+
+
+
+
+  // @Input() element: { /////USO DE '@Input' SEM O USO _ DE 'alias' para sua property name.... (element aqui será exatamente '[element]' no seu elemento html de 'app-server-item'...)
+  //   ///por meio de '@Input' fazemos o _ 'EXPOSE' de sua given property '''' AO MUNDO''' (o que quer dizer que podemos PASSAR DATA A ESSA PROPRIEDADE de 'eleemnt' _ DO LADO_ DE FORA de seu element, tipo um react-props, pq VAMOS PODER PASSAR DATA LÁ DE UM 'PARENT COMPONENT' para esse nosso component de 'app-server-item', basta usar aquele PROPERTY BINDING de '[element]="yourValue/object"' ao COMPONENT DE 'app-server-item'....)
+  //   name: string;
+  //   type: string;
+  //   content: string;
+  // } = {
+  //   name: '',
+  //   type: '',
+  //   content: '',
+  // };
+
+
+
+
+
+  @Input('srvElement') element: { /////USO DE '@Input' COM O USO _ DE 'alias' para sua property name.... (element, essa propriedade, aqui terá nome de 'element', mas no HTML terá um NOME DISTINTO, como esse exemplo 'srvElement'...) --> isso ocorre por meio do PASS DO PARÂMETRO A 'input'..
+    ///por meio de '@Input' fazemos o _ 'EXPOSE' de sua given property '''' AO MUNDO''' (o que quer dizer que podemos PASSAR DATA A ESSA PROPRIEDADE de 'eleemnt' _ DO LADO_ DE FORA de seu element, tipo um react-props, pq VAMOS PODER PASSAR DATA LÁ DE UM 'PARENT COMPONENT' para esse nosso component de 'app-server-item', basta usar aquele PROPERTY BINDING de '[element]="yourValue/object"' ao COMPONENT DE 'app-server-item'....)
+    name: string;
+    type: string;
+    content: string;
+  } = {
+    name: '',
+    type: '',
+    content: '',
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+LÁ NO TEMPLATE, EM OUTRAS PALAVRAS,
+
+FICOU ASSIM:
+
+
+
+
+
+
+
+
+  <div class="row">
+    <div class="col-xs-12">
+      <app-server-item 
+      *ngFor="let serverElement of serverElements"
+      [srvElement]="serverElement"   ###EIS O CÓDIGO EM QUESTAÕ.
+      ></app-server-item>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+-------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ESSE É UM PEQUENO BONUS,
+
+UMA ALTERNATIVA USADA QUANDO VOCÊ QUER 'BIND A UM OUTRO PROPERTY NAME DO LADO DE FORA DO COMPONENT';
+
+
+é assim que você assigna um 'ALIAS'...

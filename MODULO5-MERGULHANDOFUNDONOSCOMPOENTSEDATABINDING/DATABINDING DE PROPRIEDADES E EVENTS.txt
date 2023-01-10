@@ -1,0 +1,228 @@
+
+
+
+
+
+
+
+
+
+NA ÚLTIMA AULA,
+
+SPLITTAMOS NOSSO APP EM MÚLTIPLOS COMPONENTS...
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO É ÓTIMO, E É UMA DAS RAZÕES PARA USAR COMPONENTS...
+
+
+
+
+
+
+
+--> MAS ISSO INTRODUZIU O PROBLEMA DO 'PASS DE DATA ENTRE COMPONENTS'...
+
+
+
+
+
+
+
+
+
+
+
+
+-> NA SECTION DOS 'BASICS',
+ 
+
+
+ APRENDEMOS SOBRE PROPERTY E EVENT BINDING...
+
+
+
+
+
+
+ --> AÍ USAMOS ISSO PARA BINDAR COISAS COMO A PROPRIEDADE 'DISABLED'
+
+
+ de 1 
+
+ elemento...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> ATRAVÉS DO DATABINDING, NÓS 'KIND OF' passamos data PARA DENTRO DESSES ELEMENTS..
+
+
+
+
+
+
+
+
+
+ -> nós 'PASSAMOS A INFO DE QUE ELE DEVE SER _ DISABLED_, 
+
+
+ settar isso como true,
+
+ a ESSE ELEMENTO HTML.'.. ---->  o mesmo ocorre com 'event binding' --> 
+
+
+ QUANDO CLICAMOS 
+
+
+ EM UM BUTTON,
+
+ ALGO ACONTECE.. --> ESSE BUTTON EMITIU UM _ _EVENT_, 
+
+
+
+
+ UM EVENT A QUE PUDEMOS FAZER 'LISTEN TO'... -> MESMA COISA COM O INPUT  ELEMENT ,
+
+
+ EM QUE 
+ ATÉ 
+
+
+ USAMOS ESSA DATA, POR MEIO de ($event),
+
+
+
+
+
+
+
+--> e esse é o exato comportamento DE QUE PRECISAMOS __ AGORA, MAS __ COM 
+
+
+NOSSOS PRÓPRIOS COMPONENNTS... . -------> PRECISAMOS __ SER CAPAZES DE 
+
+
+'SEND DATA INTO A COMPONENT'
+ 
+
+
+
+ OU 
+
+
+ ENTÃO 
+
+ 'RECEIVE DATA',
+
+ como 
+
+ 'RECEIVE AN EVENT'....  ---------> É CLARO QUE O ANGULAR NOS DÁ EXCELENTES 
+
+
+
+ FERRAMENTAS
+  
+
+
+  PARA IMPLEMENTAR ISSO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> ISSO QUER DIZER QUE:
+
+
+
+
+
+
+
+  1) PODEMOS FAZER __ DATABINDING (property e event binding) NÃO SÓ EM ELEMENTOS HTML E SEUS 'NATIVE PROPERTIES AND EVENTS',
+
+
+  que usamos até agora...
+
+
+
+
+
+
+  2) PODEMOS FAZER ESSE DATABINDING __ EM DIRECTIVES__...----> e já fizemos isso, com 
+
+  'ngStyle' e 
+
+  'ngClass' (usamos property binding) ...
+
+
+(
+
+    directives and 
+
+    CUSTOM PROPERTIES aND EVENTS...
+)
+
+
+
+
+
+
+  3) MAS ALÉM DE PODER FAZER ISSO,
+
+
+
+  __ PODEMOS__ TAMBÉM __ UTILIZAR 
+
+  ESSE DATABINDING NOS __ NOSSOS PRÓPRIOS COMPONENTS E 
+
+  'CUSTOM EVENTS' (
+
+
+      podemos emitir NOSSOS PRÓPRIOS EVENTS...
+  )
+
+
+
+
+
+  --> E É ISSO QUE VEREMOS NA PRÓXIMA AULA, COM 
+
+  'CUSTOM PROPERTY BINDING'...
+
+
+
+
+
+
+
+
+
+
+  

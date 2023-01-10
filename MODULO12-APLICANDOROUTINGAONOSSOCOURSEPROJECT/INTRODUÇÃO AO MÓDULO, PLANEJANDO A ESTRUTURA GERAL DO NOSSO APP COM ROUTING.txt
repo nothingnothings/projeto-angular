@@ -1,0 +1,2428 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ADICIONANDO ROUTING AO NOSSO APP..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+nosso app tem os SEGUINTES COMPONENTS:
+
+
+
+
+
+
+
+
+
+                ROOT 
+
+
+
+
+                HEADER 
+
+
+SHOPPING LIST           recipe BOOK 
+
+Shopping LIST             RECIPE LIST 
+
+SHOPPING LIST ITEM            RECIPE ITEM 
+                                
+                                RECIPE DETAIL 
+
+
+
+
+
+
+INGREDIENT RECIPE 
+
+
+
+
+-------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... PROVAVELMENTE VAMOS QUERER TER 2 'CHIEF ROUTES',
+
+
+
+
+
+
+2 routes 
+
+
+
+
+QUE SERÃO 
+
+
+'shop-list' 
+
+
+
+e 
+
+'recipe-book',
+
+
+ou algo assim...
+
+
+
+
+
+
+
+
+
+
+ELAS FICARÃO ASSIM:
+
+
+
+
+
+
+
+localhost:4200/shop-list 
+
+
+
+
+localhost:4200/recipe-book...
+
+
+
+
+
+
+
+
+
+--> DENTRO DE 'shop-list',
+
+
+
+
+TEREMOS  
+
+
+
+A CHILD ROUTE DE 
+
+
+'shop-list-item',
+
+QUE VAI CARREGAR ESSE COMPONENT AÍ,
+
+PARA 
+
+CADA 
+
+
+'SHOPLIST ITEM' component individual...
+
+
+
+
+
+
+
+
+
+
+--> PROVAVELMENTE EM 'recipe book'
+
+
+
+
+
+TEREMOS 
+
+O 
+
+PASS DE QUERY PARAMS/PARAMS,
+
+
+
+
+que entaõ serão parseados 
+
+PARA ACTUALLY CONSEGUIRMOS CARREGAR 
+
+'recipe-detail'
+
+
+
+
+COM A DATA DE NOSSOS 'RECIPE-ITEM'...
+
+
+
+
+
+
+
+
+--> certo... não teremos home page,
+
+mas teremos 
+
+
+
+AQUELA PAGE DE 'ERRO GENÉRICO',
+
+que 
+
+vai 
+
+
+carregar um ERRO 404,
+
+
+quando for constatado que NÃO EXISTE NENHUMA ROUTE QUE ENCAIXE NA ROUTE QUE O USER INPUTTOU...
+
+
+
+
+
+
+
+
+
+
+--> ok, começamos 
+
+o implement disso por meio da adiçaõ de um arquivo 'app-routing.module.ts',
+
+
+
+EM QUE 
+
+ESCREVEREMOS O CÓDIGO DE NOSSAS ROUTES...
+
+
+
+
+-> colocamos esse arquivo no ROOT DE NOSSO PROJECT, em 'app'...
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+import { NgModule } from "@angular/core";
+import { RouterModule } from "@angular/router";
+
+
+
+
+
+
+
+const appRoutes = [
+
+    {
+
+    },
+    {
+
+    },
+    {
+
+    },
+    {
+
+    },
+
+
+
+]
+
+
+@NgModule(
+    {
+       imports: [RouterModule.forRoot(appRoutes) ]
+    }
+)
+
+
+
+export class AppRoutingModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, AGORA TEMOS QUE COMEÇAR A ESCREVER NOSSAS ROUTES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+começo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { GenericErrorPageComponent } from "./generic-error-page/generic-error-page.component";
+
+
+
+
+
+
+
+const appRoutes: Routes = [
+
+    {
+
+    },
+    {
+
+    },
+    {
+        path: '/not-found',
+        component: GenericErrorPageComponent
+        
+    },
+    {
+        path: '**',
+        redirectTo: '/not-found'
+    },
+
+
+
+]
+
+
+@NgModule(
+    {
+       imports: [RouterModule.forRoot(appRoutes) ]
+    }
+)
+
+
+
+export class AppRoutingModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo...
+
+
+
+
+preciso de uma HOME PAGE....
+
+
+
+
+
+
+
+
+
+
+-> ESCREVO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O CÓDIGO  BÁSICO DE ROUTING FICA ASSIM:
+
+
+
+
+
+
+
+
+
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { GenericErrorPageComponent } from "./generic-error-page/generic-error-page.component";
+import { RecipeBookComponent } from "./recipeBook/recipe-book.component";
+import { ShoppingListComponent } from "./ShoppingList/shoppingList.component";
+
+
+
+
+
+
+
+const appRoutes: Routes = [
+
+    {
+        path: '',
+        component: ShoppingListComponent
+
+    },
+    {
+        path: 'recipe-book',
+        component: RecipeBookComponent
+    },
+    {
+        path: 'not-found',
+        component: GenericErrorPageComponent
+        
+    },
+    {
+        path: '**',
+        redirectTo: '/not-found'
+    },
+
+
+
+]
+
+
+@NgModule(
+    {
+       imports: [RouterModule.forRoot(appRoutes) ],
+
+       exports: [RouterModule]
+    },
+
+    
+)
+
+
+
+export class AppRoutingModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E 
+
+
+
+O 'header', com links de routing, com 'RouterLink',
+
+FICARAM ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <nav class="navbar navbar-default"> <!-- COM O USO DE ROUTING -->
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" (click)="collapsed = !collapsed">
+            <span class="icon-bar" *ngFor="let iconBar of [1, 2, 3]"></span>
+          </button>
+          <a routerLink="/" class="navbar-brand">Recipe Book</a>
+      </div>
+        <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true">
+        <ul class="nav navbar-nav">
+          <li><a [routerLink]="['/recipe-book']">Recipes</a></li>
+          <li><a routerLink="''">Shopping List</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown" appDropdown #dropdown>
+                <a href="#" class="dropdown-toggle" role="button">Manage<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Save Data</a></li>
+                    <li><a href="#">Fetch Data</a></li>
+                </ul>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+
+
+
+
+
+
+
+
+          <li><a [routerLink]="['/recipe-book']">Recipes</a></li>
+          <li><a [routerLink]="['/']">Shopping List</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO, MAS POR ALGUMA RAZÃO ISSO NÃO ESTÁ CARREGANDO NOSSOS COMPONENTS 
+
+
+(A url muda, mas nossos components não são carregados)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { GenericErrorPageComponent } from "./generic-error-page/generic-error-page.component";
+import { RecipeBookComponent } from "./recipeBook/recipe-book.component";
+import { ShoppingListComponent } from "./ShoppingList/shoppingList.component";
+
+
+
+
+
+
+
+const appRoutes: Routes = [
+
+    {
+        path: '',
+        component: ShoppingListComponent
+
+    },
+    {
+        path: 'recipe-book',
+        component: RecipeBookComponent
+    },
+    {
+        path: 'not-found',
+        component: GenericErrorPageComponent,
+        data: {
+            message: 'The requested page could not be found.'
+        }
+        
+    },
+    {
+        path: '**',
+        redirectTo: '/not-found'
+    },
+
+
+
+]
+
+
+@NgModule(
+    {
+       imports: [RouterModule.forRoot(appRoutes) ],
+
+       exports: [RouterModule]
+    },
+
+    
+)
+
+
+
+export class AppRoutingModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> tenho que implementar essa page de erro,
+
+
+de alguma forma....
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> acho que me lembrei a razão de 
+
+
+nossas routes não 
+estarem sendo carregadas...
+
+
+
+
+
+
+
+--> É PQ AINDA NÃO ADICIONEI 
+
+'<router-outlet>'
+
+
+
+NO LOCAL DE MEU CÓDIGO QUE VOU QUERER 'CICLAR' entre as pages...
+
+
+
+
+
+
+
+
+-> tenho que ir até 
+
+'app.component.html'
+
+e então inserir essa tag/elemento em algum lugar...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+o código antigo estava assim:
+
+
+
+
+
+
+
+
+
+  <app-header-component> <!-- SEM O USO DE ROUTING (menos o 'app-header', que ficou com sua funcionalidade, agora) -->
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <app-recipe-book
+        *ngIf="selectedPage === 'recipeBook' "
+        ></app-recipe-book>
+        <app-shopping-list
+        *ngIf="selectedPage === 'shopList' "
+        ></app-shopping-list>
+      </div>
+    </div></div>
+
+
+
+
+
+
+
+
+
+E AGORA VAI FICAR ASSIM:
+
+
+
+
+
+
+
+
+  <app-header-component> <!-- COM O USO DE ROUTING-->
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <router-outlet></router-outlet>
+      </div>
+    </div></div>
+
+
+
+
+
+
+
+
+
+
+CERTo... 
+
+AGORA TESTO MEU CÓDIGO...
+
+
+
+
+
+
+
+
+
+-> AINDA não funcionou....
+
+
+
+
+
+
+
+
+
+
+
+
+--> mas outro problema é o style dos 'navlinks',
+
+
+que 
+
+ainda 
+
+
+
+NÃO FICAM 'ACTIVE' quando permaneço em 1 route.. --> tenho que consertar esse comportamento....
+
+
+
+
+
+
+
+
+
+
+
+--> para consertar tudo isso,
+
+
+
+talvez seja necessário adicionar uma HOME PAGE....
+
+
+
+
+
+--> um HOMEPAGE COMPONENT..
+
+
+
+
+
+
+
+
+
+
+
+-> certo, consertei o 'RouterLinkActive',
+
+
+
+
+QUE FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <nav class="navbar navbar-default"> <!-- COM O USO DE ROUTING -->
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" (click)="collapsed = !collapsed">
+            <span class="icon-bar" *ngFor="let iconBar of [1, 2, 3]"></span>
+          </button>
+          <a routerLink="/" class="navbar-brand">Recipe Book</a>
+      </div>
+      <!-- <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true"> -->
+        <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true">
+        <ul class="nav navbar-nav">
+          <!-- <li (click)="onRecipeBook()"><a href="#">Recipes</a></li>
+          <li (click)="onShopList()"><a href="#">Shopping List</a></li> -->
+          <li routerLinkActive="active"><a [routerLink]="['/recipe-book']">Recipes</a></li>
+          <li routerLinkActive="active"><a [routerLink]="['/shop-list']" >Shopping List</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown" appDropdown #dropdown>
+                <a href="#" class="dropdown-toggle" role="button">Manage<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Save Data</a></li>
+                    <li><a href="#">Fetch Data</a></li>
+                </ul>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> AGORA SÓ FALTA EU CONSERTAR O DISPLAY DE MEU CONTEÚDO NA PÁGINA (
+
+
+      as pages não estão sendo renderizadas em 
+
+      'router-outlet'...
+  )
+
+
+
+
+
+
+
+
+
+
+
+-> isso tudo aconteceu pq eu não fechei 
+
+um 
+
+'</app-header-component>'...
+
+
+
+
+
+
+--> OK, CONSEGUI IMPLEMENTAR UM ROUTING BÁSICO...
+
+
+
+
+
+
+
+
+
+
+
+
+-------> AGORA FALTA IMPLEMENTAR AS CHILD ROUTES 
+
+
+DESSAS ROUTES....
+
+
+
+
+
+(
+
+    coisas como 'recipe item',
+
+    etc etc...
+)
+
+
+
+
+
+--> ISSO PQ _ QUANDO EU AGORA CLICO EM UM 'INGREDIENT',
+
+
+
+
+SOU IMEDIATAMENTE JOGADO DE VOLTA à 'localhost:4200'...
+
+
+
+
+
+
+
+
+-> adiciono minha route tipo assim:
+
+
+
+
+
+
+
+  {
+    path: 'recipe-book',
+    component: RecipeBookComponent,
+    children: [
+        {
+            path: ':id',
+            component: RecipeItemComponent
+        }
+    ]
+  },
+
+
+
+
+
+
+
+--> certo...
+
+
+
+
+
+
+
+agora preciso EDITAR O CÓDIGO DE 'recipe-list',
+para 
+QUE 
+
+CADA 
+
+'recipe-item'
+
+
+CARREGUE CONSIGO um 'id', que será 
+
+
+tirado 
+
+de dentro de seu component, provavelmente...
+
+
+
+
+
+
+
+
+
+
+FICA TIPO ALGO ASSIM:
+
+
+
+
+
+
+
+    <app-recipe-item *ngFor="let recipe of recipes; let index=index"  
+    [routerLink]="['/recipe-book', index]"
+    [name]="recipe.name"
+    [description]="recipe.description"
+    [imagePath]="recipe.imagePath"></app-recipe-item>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+-> esse código de 'recipe-item'
+
+nos levará 
+
+
+A UMA URL DE 
+
+
+'localhost:4200/recipe-book/:index',
+
+
+
+
+
+
+que no caso será algo como 
+
+
+
+
+'localhost:4200/recipe-book/1',
+
+
+
+etc etc...
+
+
+
+
+
+
+
+
+
+--> e nossa route está assim:
+
+
+
+
+
+
+
+  {
+    path: 'recipe-book',
+    component: RecipeBookComponent,
+    children: [
+        {
+            path: ':id',
+            component: RecipeItemComponent
+        }
+    ]
+  },
+
+
+
+
+
+
+
+
+
+
+----> MAS ISSO AINDA NÃO ESTÁ FUNCIONANDO, PQ AINDA ESTAMOS SENDO REDIRECIONADOS 
+
+
+PARA A PAGE DE '/' 
+
+sempre que clicamos em um 
+
+
+dos 
+
+
+LI de 'recipe items.'... ---. e isso é REALMENTE UM RELOAD DE PÁGINA, pq perdemos o state e tudo...
+
+
+
+
+
+--> ok, vou tentar mais uma vez...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-. consegui tirar o comportamento de redirect ao home,
+
+era pq 
+
+estava 
+
+faltando um 
+
+'href="*"'
+
+
+
+
+nos nossos anchor tags em cada server item...
+
+
+
+
+
+
+
+
+
+--> BEM, O QUE QUEREMOS FAZER AGORA É _ CARREGAR_ 
+
+'recipe-detail'
+
+
+
+
+com 
+
+
+
+o uso 
+
+
+
+da data que vamos retrievar 
+
+do 
+
+
+
+'server' service...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O COMPONENT DE 'RECIPE-DETAIL' 
+
+
+
+ATUALMENTE ESTÁ ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit, Input } from '@angular/core';
+import { RecipeBookService } from 'src/app/recipeBook.service';
+
+import { Recipe } from '../recipe.model';
+
+import { Ingredient } from 'src/app/shared/ingredient.model';
+
+@Component({
+  selector: 'app-recipe-detail',
+  templateUrl: './recipe-detail.component.html',
+  styleUrls: ['./recipe-detail.component.css']
+})
+export class RecipeDetailComponent implements OnInit {
+
+
+  loadedRecipe: Recipe;
+
+
+
+  constructor(private recipeBookService: RecipeBookService) { 
+
+    // this.recipeBookService.recipeItemClickedEmitter.subscribe(
+    //   (data: Recipe) => {
+    //       console.log(data);
+    //   }
+    // )
+
+    // this.recipeBookService.recipeItemClickedEmitter.subscribe( ////SEM O USO DE ROUTING....
+    //   (data) => {
+    //       this.loadedRecipe = data;
+
+    //   }
+    // )
+
+
+
+    
+
+
+
+  }
+
+
+
+  ngOnInit(): void {
+
+  }
+
+
+  sendToShoppingList() {
+    console.log('CLICKED');
+    this.recipeBookService.sendToShopList(this.loadedRecipe.ingredients);
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> precisamos de acesso ao 'this.route' 
+
+
+PARA _ CONSEGUIR 
+
+OS 
+
+DETAILS 
+
+
+
+DO NOSSO PATH (o 'params',
+
+essencialmente)....
+
+
+
+
+
+
+
+
+
+
+
+--> aquilo estava funcionando,
+sim,
+
+
+eu só 
+
+havia me esquecido 
+
+da tag 
+
+
+'<router-outlet>'
+
+
+para 
+
+ACTUALLY 
+
+
+
+fazer 
+
+load 
+do meu component 
+
+
+
+
+'recipe-detail'...
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+    <div class="col-md-5">
+        <app-recipe-list>
+
+        </app-recipe-list>
+    </div>
+    <div class="col-md-7">
+        <!-- <app-recipe-detail></app-recipe-detail> -->
+        <router-outlet></router-outlet>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE É O CÓDIGO DE 'recipeBook', btw...
+
+
+
+
+
+
+
+
+
+
+
+
+--> aí naquele 'router-outlet'
+
+É OUTPUTTADO
+ 
+
+
+ nosso component 'recipe-detail',
+
+
+
+
+ QUE FICOU COM ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ import { Component, OnInit, Input } from '@angular/core';
+import { RecipeBookService } from 'src/app/recipeBook.service';
+
+import { Recipe } from '../recipe.model';
+
+import { ActivatedRoute, Params } from '@angular/router';
+
+@Component({
+  selector: 'app-recipe-detail',
+  templateUrl: './recipe-detail.component.html',
+  styleUrls: ['./recipe-detail.component.css']
+})
+export class RecipeDetailComponent implements OnInit {
+
+
+  loadedRecipes: Recipe[] = this.recipeBookService.getRecipes();
+
+
+
+  loadedRecipe: Recipe;
+
+  constructor(private recipeBookService: RecipeBookService, private route: ActivatedRoute) { 
+
+
+  }
+
+
+
+  ngOnInit(): void {
+
+
+
+        const recipeId = this.route.snapshot.params['id'];
+        console.log(recipeId);
+
+    this.loadedRecipe = this.loadedRecipes[recipeId];
+
+
+    this.route.params.subscribe(
+      (params: Params) => {
+        console.log('TEST');
+        this.loadedRecipe = this.loadedRecipes[+params['id']];
+      }
+    )
+
+
+
+  }
+
+
+  sendToShoppingList() {
+    console.log('CLICKED');
+    this.recipeBookService.sendToShopList(this.loadedRecipe.ingredients);
+  }
+
+
+}
+
+
+
+----------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O QUE INTERESSA SÃO ESSES CÓDIGOS:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  constructor(private recipeBookService: RecipeBookService, private route: ActivatedRoute) { 
+
+
+  }
+
+
+
+  ngOnInit(): void {
+
+
+
+        const recipeId = this.route.snapshot.params['id'];
+        console.log(recipeId);
+
+    this.loadedRecipe = this.loadedRecipes[recipeId];
+
+
+    this.route.params.subscribe(
+      (params: Params) => {
+        console.log('TEST');
+        this.loadedRecipe = this.loadedRecipes[+params['id']];
+      }
+    )
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ngOnInit(): void {
+
+
+
+    //     const recipeId = this.route.snapshot.params['id'];
+    //     console.log(recipeId);
+
+    // this.loadedRecipe = this.loadedRecipes[recipeId];
+
+
+    this.route.params.subscribe(
+      (params: Params) => {
+        console.log('TEST');
+        // this.loadedRecipe = this.loadedRecipes[+params['id']];
+
+        this.loadedRecipe = this.recipeBookService.getRecipes()[+params['id']]
+      }
+    )
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> certo...
+
+
+
+
+
+
+
+  essa parte está boa....
+
+
+
+
+
+
+  mas ainda faltam bastantes routes...
+
+
+
+
+
+
+
+
+
+  --> a route de 'New Recipe',
+
+  por exemplo,
+
+
+
+AINDA NÃO ADICIONAMOS..
+
+
+
+
+
+
+
+
+--> MAS EU AINDA NÃO TENHO ESSA FEATURE....
+
+
+
+
+
+
+
+
+
+
+
+-> uma feature boa de ser implementada, que NÃO SEI COMO IMPLEMENTAR,
+
+
+é fazer com que 
+
+o 
+
+'dropdownDirective'
+
+
+
+de nosso 
+
+
+app 
+
+CONSIGA _ FECHAR_ APÓS _ CLICARMOS 
+
+
+EM ALGUM DOS 'NAVLINKS.'..
+
+
+
+
+
+
+
+
+
+
+
+
+->_ para isso,
+
+
+
+tenho que examinar o código dessa directive...
+
+
+
+
+
+
+
+
+eX:
+
+
+
+
+
+
+
+
+
+import {
+  Directive,
+  ElementRef,
+  HostListener,
+  Input,
+  OnInit,
+  Renderer2,
+  ViewChild,
+} from '@angular/core';
+
+@Directive({
+  selector: '[appDropdown]',
+})
+export class DropdownDirective implements OnInit {
+  
+  isCollapsed: string = 'closed';
+
+
+  constructor(private elementRef: ElementRef, private renderer: Renderer2) {}
+
+  ngOnInit(): void {
+    
+  }
+
+  @HostListener('click') mouseClick(eventData: Event) {
+
+    if (this.isCollapsed === 'closed') {
+      console.log(this.renderer);
+      this.renderer.addClass(this.elementRef.nativeElement, 'open');
+      this.isCollapsed = 'open';
+
+    } else {
+      this.renderer.removeClass(this.elementRef.nativeElement, 'open');
+      this.isCollapsed = 'closed';
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> mas não sei se é isso aí de que precisamos....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok, consertei um pouco dos meus styles,
+
+ficou assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <nav class="navbar navbar-default"> <!-- COM O USO DE ROUTING -->
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" (click)="collapsed = !collapsed">
+            <span class="icon-bar" *ngFor="let iconBar of [1, 2, 3]"></span>
+          </button>
+          <a routerLink="/" class="navbar-brand">Recipe Book</a>
+      </div>
+      <!-- <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true"> -->
+        <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true">
+        <ul class="nav navbar-nav">
+          <!-- <li (click)="onRecipeBook()"><a href="#">Recipes</a></li>
+          <li (click)="onShopList()"><a href="#">Shopping List</a></li> -->
+          <li routerLinkActive="active"><a [routerLink]="['/recipe-book']" (click)="collapsed = !collapsed">Recipes</a></li>
+          <li routerLinkActive="active"><a [routerLink]="['/shop-list']"(click)="collapsed = !collapsed" >Shopping List</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown" appDropdown #dropdown>
+                <a class="dropdown-toggle" role="button">Manage<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Save Data</a></li>
+                    <li><a href="#">Fetch Data</a></li>
+                </ul>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ----> e isso realmente funciona, vai fechar o dropdown quando clicarmos em algum dos links (change de style, para 'collapse', a partir do STATE de 'header'...
+
+
+
+
+
+  O CÓDIGO DO HEADER É ESTE:
+
+
+
+
+
+
+
+  import { Component, Output } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+@Component({
+  templateUrl: './headerComponent.app.html',
+  styleUrls: ['./headerComponent.app.css'],
+  selector: 'app-header-component',
+})
+export class HeaderComponent {
+  collapsed = true;
+
+  // @Output() selectedPage = new EventEmitter<string>();
+
+  constructor() {}
+
+  // onShopList() {
+  //   this.selectedPage.emit('shopList');
+  // }
+
+  // onRecipeBook() {
+  //   this.selectedPage.emit('recipeBook');
+  // }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo.... até aí, tudo bem....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> as coisas estão bem melhores...
+
+
+
+
+
+
+
+
+
+ok... agora o styling está bem melhor.
+
+
+
+
+
+
+
+
+
+
+
+--> OK, AGORA É HORA DE VER O VÍDEO DO PROFESSOR...
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR QUER 
+
+APLICAR O ROUTING AO NOSSO APP...
+
+
+
+
+
+
+
+
+
+--> ANTES DE APLICAR O ROUTING NO NOSSO APP,
+
+
+DEPENDÍAMOS DE 'ngIf'
+
+
+PARA __ SIMULAR _UM ROUTING (mas é claro que não é a mesma coisa)....
+
+
+
+
+
+
+
+
+--> ESSA NÃO É A MELHOR MANEIRA DE 'NAVIGATE AROUND'...
+
+
+
+
+
+
+
+
+
+
+
+
+-> EM VEZ DISSO,
+
+O PROFESSOR QUER USAR O ANGULAR ROUTER PARA 
+
+CARREGAR 
+PAGES 
+
+E PARA TROCAR ENTRE PAGES...
+
+
+
+
+
+
+
+
+
+--> BEM, MAS NESSA SECTION VAMOS FAZER MAIS DO QUE APENAS 
+
+ADICIONAR 
+
+
+ROUTING,
+
+
+pq 
+
+VAMOS TAMBÉM 
+
+ADICIONAR UM NOVO COMPONENT, 
+
+
+'recipe-edit'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PQ AGORA QUE 
+
+SOMOS CAPAZES DE 'LOAD DIFFERENT PAGES',
+
+
+PODEMOS TAMBÉM ADICIONAR ISSO...
+
+
+
+
+
+
+
+
+
+--> VAMOS 
+
+EDITAR ESSE COMPONENT,
+
+
+
+
+
+DEPOIS DA PARTE DE 'FORMS' 
+DESSE CURSO,
+
+
+
+
+
+__ 
+
+E QUE 
+VAI ENTÃO 
+
+NOS PERMITIR 
+
+ ___ ADICIONAR__ NOVAS 'RECIPES' 
+
+ ao nosso app...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> É POR ISSO QUE QUEREMOS DEFINIR 'ROUTING'
+
+ NESSA SECTION..
+
+
+
+
+
+
+
+ --> E __ DEFINITIVAMENTE__ PRECISAMSO DE 
+
+
+
+
+ ROUTES 
+
+
+ PARA _ CARREGAr_ OU 
+
+ A 
+
+ 'SHOPPING LIST'
+
+
+
+ ou 
+
+
+ o 
+
+ 'RECIPE BOOK'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> MAS DENTRO DA PARTE 
+
+ 'RECIPE BOOK'
+
+
+ do app,
+
+
+ O PROFESSOR QUER TER 
+
+
+
+ ALGUMAS _ CHILD ROUTES_ _ TARGETTANDO
+  
+
+
+
+
+
+
+  __ O 'RECIPE DETAIL' 
+
+
+
+
+  E O 
+
+
+  'RECIPE-EDIT' components...
+
+
+
+
+
+
+
+
+  (
+    ok, foi isso que eu fiz, essencialmente...
+  )
+
+
+
+
+
+
+
+
+
+  O LAYOUT DO MEU APP,
+
+  NO CASO,
+
+  FICOU ASSIM:
+
+
+
+
+
+
+  
+  
+const appRoutes: Routes = [
+  {
+    path: '',
+    component: HomePageComponent,
+  },
+  {
+    path: 'recipe-book',
+    component: RecipeBookComponent,
+    children: [
+      {
+        path: ':id',
+        component: RecipeDetailComponent,
+      },
+
+      // {
+      //     path: 'new-recipe',
+      // }
+    ],
+  },
+
+  {
+    path: 'shop-list',
+    component: ShoppingListComponent,
+  },
+
+  {
+    path: 'not-found',
+    component: GenericErrorPageComponent,
+    data: {
+      message: 'The requested page could not be found.',
+    },
+  },
+  {
+    path: '**',
+    redirectTo: '/not-found',
+  },
+];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-_> ESSES COMPONENTS,
+
+
+OS QUAIS 
+
+
+SEMPRE SERÃO 
+
+
+CARREGADOS 
+
+
+
+
+NO LADO _ DIREITO __ DE NOSSA LIST OF RECIPEWS,
+
+
+
+
+DEVERÃO 
+
+ SER CARREGADOS __ DINAMICAMENTE,
+
+
+
+
+
+
+DE MODO QUE __ APENAS 1 DELES DEVE SER 'SHOWN'
+
+
+
+
+em 1 given moment... -------> E É EXATAMENTE POR ISSO QUE 
+
+UTILIZAREMOS 
+
+CHILD ROUTING...
+
+
+
+
+
+
+
+
+
+
+
+---> OK, ESSA É A ESTRUTURA GERAL,
+
+DEVEMOS COLOCAR ISSO 
+
+EM PRÁTICA...

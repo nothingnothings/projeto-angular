@@ -1,0 +1,1200 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NO NOSSO SERVICE DE 'SHOPPINGLIST',
+
+
+TÍNHAMOS VÁRIOS METHODS,
+
+ALÉM DE 'add a single ingredient'
+
+
+e 
+
+'add multiple ingredients'...
+
+
+
+
+
+
+
+
+--> ISSO PQ TBM TÍNHAMOS UM METHOD PARA 'editIngredient',
+
+
+
+e outro para 'deleteIngredient'...
+
+
+
+
+
+
+
+--> esses 2 últimos precisavam do 'index' 
+
+
+do ingredient,
+
+para o deletar..
+
+
+
+
+
+
+-> AGORA VAMOS IMPLEMENTAR ESSAS 2 ACTIONS, COM A AJUDA DO NGRX...
+
+
+
+
+
+
+--> para isso,
+
+voltamos AO ARQUIVO DE 'ShoppingListActions'
+
+
+
+E ESCREVEMOS ISTO:
+
+
+
+
+export type ShoppingListActionTypes = AddIngredient | AddIngredients | EditIngredient | RemoveIngredient
+
+
+
+
+
+
+
+
+
+certo..
+
+
+
+
+
+
+
+
+
+
+
+--> aGORA QUEREMOS ADICIONAR ESSAS ACTIONS AÍ...
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+export const EDIT_INGREDIENT = 'INGREDIENT_EDIT';
+
+export const DELETE_INGREDIENT = 'INGREDIENT_DELETE';
+
+
+
+
+
+
+export class RemoveIngredient implements Action {
+
+    readonly type: string = DELETE_INGREDIENT;
+
+
+
+    constructor(public payload: number) {}
+}
+
+
+
+export class EditIngredient implements Action {
+
+  readonly type: string = EDIT_INGREDIENT;
+
+
+
+  constructor(public payload: {ingredient: Ingredient, index: number}) {}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO... ACHO QUE 
+
+
+
+FICARÃO ASSIM, + OU -...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O PROFESSOR TAMBÉM DEIXA O PAYLOAD COMO UM 'OBJECT',
+
+que terá 
+
+
+O INGREDIENT E SEU INDEX...
+
+
+
+
+
+
+
+
+
+-> FAZEMOS A MESMA COISA COM O DELETE DO INGREDIENT...
+
+
+
+
+ELE FEZ EXATAMENTE A MESMA COISA QUE EU...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AÍ 
+
+
+USAMOS 
+
+
+
+ESSE TYPE 
+
+LÁ 
+
+
+NO 
+
+
+'reducer',
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+export function shoppingListReducer(state: ShoppingListState = initialState, 
+  // action: ShoppingListActions.AddIngredient  //maneira errada (vai pegar o type de SÓ UMA DAS ACTIONS)
+  action: ShoppingListActions.ShoppingListActionTypes
+  
+  ): ShoppingListState {
+  switch(action.type){
+    case ShoppingListActions.ADD_INGREDIENT:
+      // return addIngredient(state, action);
+      // return state;
+
+      // return {
+      //   ...state,
+      //   ingredients: [
+      //     ...state.ingredients,
+      //     action.payload
+      //   ]
+      // }
+      return addIngredient(state, action);
+    break;
+    case ShoppingListActions.ADD_INGREDIENTS:
+      return addIngredients(state, action);
+    case ShoppingListActions.DELETE_INGREDIENT:
+      return state;
+      break;
+    case ShoppingListActions.EDIT_INGREDIENT:
+      return state;
+        break;
+      default: ////é o case do INITIALIZE DE NOSSO STATE (pq no início de nosso app, será definido/passado o 'initialState', sem o pass de nenhuma actionType...) --> e é aí que entra em jogo esse return de 'state' como o DEFAULT, pq isso significa que nosso state NÃO TERÁ SIDO ALTERADO POR ACTION NENHUMA, MAS QUE AINDA SERÁ 'returned', pq isso será necessário...
+        return state;  
+  }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> É CLARO QUE PODEMOS DEIXAR NOSSO UNION TYPE UM POUCO MAIS BONITO:
+
+
+
+  export type ShoppingListActionTypes = AddIngredient | 
+                                     AddIngredients | 
+                                     EditIngredient | 
+                                     RemoveIngredient
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS PRECISAMOS TRABALHAR NO REDUCER...
+
+
+
+
+
+
+
+
+--> PRECISAMOS ADICIONAR LÓGICA LÁ PARA 'UPDATE' E 'DELETE' UM INGREDIENT..
+
+
+
+
+
+
+
+
+
+--> VAMOS ESCREVER ASSIM: (com errors):
+
+
+
+
+
+
+
+
+
+
+
+
+export function shoppingListReducer(state: ShoppingListState = initialState, 
+  // action: ShoppingListActions.AddIngredient  //maneira errada (vai pegar o type de SÓ UMA DAS ACTIONS)
+  action: ShoppingListActions.ShoppingListActionTypes
+  
+  ): ShoppingListState {
+  switch(action.type){
+    case ShoppingListActions.ADD_INGREDIENT:
+      // return addIngredient(state, action);
+      // return state;
+
+      // return {
+      //   ...state,
+      //   ingredients: [
+      //     ...state.ingredients,
+      //     action.payload
+      //   ]
+      // }
+      return addIngredient(state, action);
+    break;
+    case ShoppingListActions.ADD_INGREDIENTS:
+      return addIngredients(state, action);
+    case ShoppingListActions.DELETE_INGREDIENT:
+      return state;
+      break;
+    case ShoppingListActions.EDIT_INGREDIENT:
+      return state;
+        break;
+      default: ////é o case do INITIALIZE DE NOSSO STATE (pq no início de nosso app, será definido/passado o 'initialState', sem o pass de nenhuma actionType...) --> e é aí que entra em jogo esse return de 'state' como o DEFAULT, pq isso significa que nosso state NÃO TERÁ SIDO ALTERADO POR ACTION NENHUMA, MAS QUE AINDA SERÁ 'returned', pq isso será necessário...
+        return state;  
+  }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+e assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  const addIngredient = (state: ShoppingListState, 
+    // action: ShoppingListActions.AddIngredient
+    // action: ShoppingListActions.AddIngredient
+    action: ShoppingListActions.ShoppingListActionTypes
+    ): ShoppingListState => {
+
+  const updatedIngredients = [
+      ...state.ingredients
+  ]
+
+
+  // updatedIngredients.push(action.payload);
+
+
+  if (action.type === ShoppingListActions.ADD_INGREDIENT) {
+    
+    updatedIngredients.push(action.payload);
+  }
+  
+  
+
+  // return {
+  //   ...state,
+  //   ingredients: updatedIngredients
+  // }
+
+
+
+  return updateObject(state, {ingredients: updatedIngredients})
+
+}
+
+
+
+
+
+const addIngredients = (state: ShoppingListState, action: ShoppingListActions.ShoppingListActionTypes): ShoppingListState => {
+
+
+  const updatedIngredients = [
+    ...state.ingredients
+  ]
+
+
+
+  if (action.payload instanceof Array) {
+    
+    updatedIngredients.push(...action.payload);
+  }
+
+
+
+
+
+
+  return updateObject(state, {ingredients: updatedIngredients});
+
+}
+
+
+
+
+
+
+
+
+
+
+
+const removeIngredient = (state: ShoppingListState, action: ShoppingListActions.ShoppingListActionTypes): ShoppingListState => {
+
+  const updatedIngredients = [
+    ...state.ingredients
+  ]
+
+
+
+   if (typeof action.payload === 'number') {
+    updatedIngredients.splice(action.payload);
+   }
+ 
+
+  return updateObject(state, { ingredients: updatedIngredients})
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const removeIngredient = (state: ShoppingListState, action: ShoppingListActions.ShoppingListActionTypes): ShoppingListState => {
+
+  const updatedIngredients = [
+    ...state.ingredients
+  ]
+
+
+
+   if (typeof action.payload === 'number') {
+    
+    updatedIngredients.filter(
+      (ingredient, ingredientIndex) => {
+        return action.payload !== ingredientIndex;
+      }
+    )
+   }
+ 
+
+  return updateObject(state, { ingredients: updatedIngredients})
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+->OK, MAS AINDA ESTOU COM UUM PROBLEMA DE TYPESCRIPT, NESSE TRECHO AQUI:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  const addIngredient = (state: ShoppingListState, 
+    // action: ShoppingListActions.AddIngredient
+    // action: ShoppingListActions.AddIngredient
+    action: ShoppingListActions.ShoppingListActionTypes
+    ): ShoppingListState => {
+
+  const updatedIngredients = [
+      ...state.ingredients
+  ]
+
+
+  // updatedIngredients.push(action.payload);
+
+
+  if (action.type === ShoppingListActions.ADD_INGREDIENT) {
+    
+    updatedIngredients.push(action.payload);
+  }
+  
+  
+
+  // return {
+  //   ...state,
+  //   ingredients: updatedIngredients
+  // }
+
+
+
+  return updateObject(state, {ingredients: updatedIngredients})
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O ERROR É DE 
+
+
+
+
+'''
+
+
+
+Argument of type 'number | Ingredient | Ingredient[] | { ingredient: Ingredient; index: number; }' is not assignable to parameter of type 'Ingredient'.
+  Type 'number' is not assignable to type 'Ingredient'.ts(23
+
+
+
+
+  '''
+
+
+
+
+
+
+  como consertar isso?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  BEM, EU CONSEGUI CONSERTAR...
+
+
+
+
+
+
+
+
+
+
+  MEU CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export function shoppingListReducer(state: ShoppingListState = initialState, 
+  // action: ShoppingListActions.AddIngredient  //maneira errada (vai pegar o type de SÓ UMA DAS ACTIONS)
+  action: ShoppingListActions.ShoppingListActionTypes
+  
+  ): ShoppingListState {
+  switch(action.type){
+    case ShoppingListActions.ADD_INGREDIENT:
+      // return addIngredient(state, action);
+      // return state;
+
+      // return {
+      //   ...state,
+      //   ingredients: [
+      //     ...state.ingredients,
+      //     action.payload
+      //   ]
+      // }
+      return addIngredient(state, action as ShoppingListActions.AddIngredient);
+      break;
+    case ShoppingListActions.ADD_INGREDIENTS:
+      return addIngredients(state, action as ShoppingListActions.AddIngredients);
+      break;
+    case ShoppingListActions.DELETE_INGREDIENT:
+      return removeIngredient(state, action as ShoppingListActions.RemoveIngredient);
+      break;
+    case ShoppingListActions.EDIT_INGREDIENT:
+      return editIngredient(state, action as ShoppingListActions.EditIngredient);
+        break;
+    default: ////é o case do INITIALIZE DE NOSSO STATE (pq no início de nosso app, será definido/passado o 'initialState', sem o pass de nenhuma actionType...) --> e é aí que entra em jogo esse return de 'state' como o DEFAULT, pq isso significa que nosso state NÃO TERÁ SIDO ALTERADO POR ACTION NENHUMA, MAS QUE AINDA SERÁ 'returned', pq isso será necessário...
+      return state;  
+  }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  E 
+
+
+  OS HELPER METHODS 
+
+
+
+  DE EDIT/DELETE/ADD MULTIPLE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  const addIngredient = (state: ShoppingListState, 
+    // action: ShoppingListActions.AddIngredient
+    // action: ShoppingListActions.AddIngredient
+    action: ShoppingListActions.AddIngredient
+    ): ShoppingListState => {
+
+  const updatedIngredients = [
+      ...state.ingredients
+  ]
+
+
+  // updatedIngredients.push(action.payload);
+
+
+
+    updatedIngredients.push(action.payload);
+  
+  
+
+  // return {
+  //   ...state,
+  //   ingredients: updatedIngredients
+  // }
+
+
+
+  return updateObject(state, {ingredients: updatedIngredients})
+
+}
+
+
+
+
+
+const addIngredients = (state: ShoppingListState, action: ShoppingListActions.AddIngredients): ShoppingListState => {
+
+
+  const updatedIngredients = [
+    ...state.ingredients
+  ]
+
+
+    
+    updatedIngredients.push(...action.payload);
+
+
+
+
+
+
+
+  return updateObject(state, {ingredients: updatedIngredients});
+
+}
+
+
+
+
+
+
+
+
+
+
+
+const removeIngredient = (state: ShoppingListState, action: ShoppingListActions.RemoveIngredient): ShoppingListState => {
+
+  const updatedIngredients = [
+    ...state.ingredients
+  ]
+
+
+
+
+    
+    updatedIngredients.filter(
+      (ingredient, ingredientIndex) => {
+        return action.payload !== ingredientIndex;
+      }
+    )
+
+ 
+
+  return updateObject(state, { ingredients: updatedIngredients})
+
+
+}
+
+
+
+
+
+const editIngredient = (state: ShoppingListState, action: ShoppingListActions.EditIngredient): ShoppingListState => {
+
+
+  const updatedIngredients = [
+    ...state.ingredients
+  ]
+
+
+
+
+ const ingredientIndex = updatedIngredients.findIndex(
+    (ingredient) => {
+        return ingredient.recipeIndex === action.payload.index
+    }
+  );
+
+
+  updatedIngredients[ingredientIndex] = action.payload.ingredient;
+
+
+
+  return updateObject(state, {ingredients: updatedIngredients});
+
+
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK..
+
+
+
+
+
+AGORA O CÓDIGO ESTÁ FUNCIONANDO, DE ALGUMA FORMA...
+
+
+
+
+
+
+
+
+-> BASTA APENAS FAZER O DISPATCH DESSAS ACTIONS, DOS LUGARES APROPRIADOS 
+
+
+DO NOSSO APP..
+
+
+(
+    melhor fazer lá do service de 'shoppingListService',
+
+
+
+    e chamar esse service dos nossos components,
+
+
+    onde queremos o utilizar...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok, eu começo com um código assim (ShoppingListService):
+
+
+
+
+
+
+
+
+
+import { Injectable, Output } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Subject } from 'rxjs';
+import { Ingredient } from './shared/ingredient.model';
+
+
+import * as ShoppingListActions from '../app/ShoppingList/store/shoppingListActions';
+
+@Injectable()
+export class ShoppingListService {
+  ingredientsChanged = new Subject<Ingredient[]>();
+
+  ingredientSelected = new Subject<number>();
+
+  private ingredients: Ingredient[] = [];
+
+
+
+
+
+  constructor(private store: Store<{shoppingList: {ingredients: Ingredient[]}}>) {
+
+  }
+
+  getIngredients() {
+    return [...this.ingredients];
+  }
+
+  onIngredientAdd(ingredient: Ingredient) { ///passamos para o REDUCER
+    console.log('RECEIVED');
+    this.ingredients.push(ingredient);
+
+    this.ingredientsChanged.next([...this.ingredients]);
+  }
+
+  loadShopListItem(index: number) {
+    this.ingredientSelected.next(index);
+  }
+
+  getIngredient(index: number) {
+    return this.ingredients[index];
+  }
+
+  editIngredient(index: number, ingredient: Ingredient) {
+    // this.ingredients[index] = ingredient; ///código que NAÕ USAVA O 'NGRX'...
+
+    // this.ingredientsChanged.next([...this.ingredients]);
+    this.store.dispatch(new ShoppingListActions.EditIngredient({index: index, ingredient: ingredient}))
+  }
+
+  deleteIngredient(index: number) {
+    // this.ingredients.splice(index, 1);  ///código que NAÕ USAVA O 'NGRX'...
+
+    // this.ingredientsChanged.next([...this.ingredients]);
+
+
+      this.store.dispatch(new ShoppingListActions.RemoveIngredient(index));
+
+  }
+
+  cleanupDeleteIngredients(recipeId: number) {
+    this.ingredients = this.ingredients.filter((ingredient) => {
+      console.log(recipeId);
+      console.log(ingredient.recipeIndex);
+      return ingredient.recipeIndex !== recipeId;
+    });
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> CERTO... mas tenho que 
+
+
+
+vincular o 'STATE' desse meu service
+
+COM 
+
+O 
+
+
+'STATE' do meu global store,
+
+
+provavelmente com um call de 
+
+
+this.store.select('shoppingList')
+
+
+
+LÁ 
+
+
+
+NO 'ngOnInit()' de meu service, ou algo assim... --> na verdade, devo escrever 'SOLTO NO SERVICE' mesmo...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> não, mas isso não vai funcionar... não vai funcionar pq meu 'source of truth' 
+
+
+é 
+
+
+O PRÓPRIO STORE, O QUE QUER DIZER QUE 
+
+
+MEU 
+
+
+
+
+
+SERVICE NÃO VAI MAIS SER USADO PARA 'DISPLAYAR' meus 
+
+
+
+
+ingredients da shoppingList... 
+
+
+
+
+
+
+--> podemos tirar o 'Ingredients: Ingredient[] = []' 
+
+
+
+
+
+por inteiro,
+
+
+pq 
+
+
+agora 
+
+o que 
+
+
+contará
+ 
+
+ SERÁ 
+
+
+
+ ESSE 'this.store.select('shoppingList)',
+
+ nos components que 
+
+ 
+
+ se interessam por essa data...
+
+
+
+
+
+
+
+
+
+
+
+
+ -> voltando À aula do professor...

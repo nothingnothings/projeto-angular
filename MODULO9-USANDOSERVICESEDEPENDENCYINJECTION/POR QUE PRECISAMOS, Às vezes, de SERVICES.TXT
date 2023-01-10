@@ -1,0 +1,660 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AQUI HÁ UM EXAMPLE APP QUE PODEMOS ENCONTRAR,
+
+
+ANEXADO 
+
+
+
+
+A ESSA LECTURE..
+
+
+
+
+
+--> NELE, PODEMOS CRIAR ALGUMAS 'ACCOUNTS',
+
+
+
+E JÁ COMEÇAMOS COM 3 ACCOUNTS, ALI EMBAIXo...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------> EM CADA ACCOUNT, PODEMOS SWITCHAR O STATUS,
+
+
+
+
+E 
+
+
+
+
+
+AÍ CONSTATAMOS QUE SEMPRE QUE CLICAMOS EM UM DOS BUTTONS,
+
+
+
+ALGO É LOGADO NO CONSOLE...
+
+
+
+
+
+
+
+
+-_> TAMBÉM É LOGADO ALGO QUANDO CRIAMOS UMA NOVA ACCOUNT,
+
+
+E __ OVERALL,
+
+O QUE TEMOS 
+
+AQUI É :
+
+
+
+
+
+1) LOGGING (console.log)
+
+
+
+
+2) DATA STORAGE...
+
+
+
+
+
+
+
+
+
+
+
+--> ESSES SÃO 2 TIPOS DE TAREFAS QUE 'PODEM SER CENTRALIZADAS'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NÓS __ TAMBÉM __ FAZEMOS 'COMMUNICATE' 
+
+
+
+entre esses components... -----------> ESSA É  __OUTRA__ ÁREA EM QUE _ SERVICES __ PODEM SER MT ÚTEIS,
+
+
+
+
+PQ __ 
+
+
+
+
+BASTA EXAMINAR O CÓDIGO DESSE PROJETO:
+
+
+
+
+
+
+
+TEMOS 3 COMPONENTS,
+
+
+
+O 
+
+
+APP COMPONENT,
+
+
+
+
+
+ACCOUNT COMPONENT 
+
+
+
+
+
+
+NEW ACCOUNT COMPONENT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O APP COMPONENT É O LOCAL EM QUE TUDO' ENDS UP TOGETHER'....
+
+
+
+
+
+
+
+
+
+
+--> NO TEMPLATE, O PROFESSOR EMBEDDOU O 'NEW ACCOUNT' 
+
+
+
+E
+ O 
+
+
+
+ 'ACCOUNT'....
+
+
+
+
+
+
+
+
+
+ --. AÍ ELE USOU PROPERTY E EVENT BINDING PARA FAZER O 'PASS' DA DATA POR AÍ....
+
+
+
+
+
+
+
+
+
+
+ --> vou codar o projeto, agora...
+
+
+
+
+
+
+
+
+
+
+
+ O CÓDIGO DE 'APP' É TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+ <div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-md-8 col-md-offset-2">
+      <app-new-account (accountAdded)="onAccountAdded($event)"></app-new-account>
+      <hr>
+      <app-account
+      *ngFor="let acc of accounts; let i=index"
+      [account]="acc"
+      [id]="i"
+      (statusChanged)="onStatusChanged($event)"
+      ></app-account>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> no component de 'app',,
+
+
+temos este código/lógica:
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  accounts = [
+    {
+      name: 'Master Account',
+      status: 'active',
+    },
+
+    {
+      name: 'Test Account',
+      status: 'inactive',
+    },
+
+    {
+      name: 'Hidden Account',
+      status: 'unknown',
+    },
+  ];
+
+  onAccountAdded(newAccount: { name: string; status: string }) {
+    this.accounts.push(newAccount);
+  }
+
+  onStatusChanged(updateInfo: { id: number; newStatus: string }) {
+    this.accounts[updateInfo.id].status = updateInfo.newStatus;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------> certo... agora faltou o código de 'account' e 'new-account'..
+
+
+
+
+
+
+
+
+
+
+
+
+-> O COMPONENT DE 'APP-ACCOUNT' é assim:
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12 col-md-8 col-md-offset-2">
+    <h5>{{ account.name }}</h5>
+    <hr />
+    <p>This account is {{ account.status }}</p>
+    <button class="btn btn-default" (click)="onSetTo('active')">
+      Set to 'active'
+    </button>
+    <button class="btn btn-default" (click)="onSetTo('inactive')">
+      Set to 'inactive'
+    </button>
+    <button class="btn btn-default" (click)="onSetTo('active')">
+      Set to 'unknown'
+    </button>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> A LÓGICA DO COMPONENT É ASSIM:
+
+
+
+
+
+
+
+
+
+import { Component, Input, OnInit, Output } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+@Component({
+  selector: 'app-account',
+  templateUrl: './account.component.html',
+  styleUrls: ['./account.component.css'],
+})
+export class AccountComponent implements OnInit {
+  @Input() account: { name: string; status: string };
+
+  @Input() id: number;
+
+  @Output() statusChanged = new EventEmitter<{
+    id: number;
+    newStatus: string;
+  }>();
+
+  constructor() {}
+
+  ngOnInit(): void {}
+
+  onSetTo(status: string) {
+    this.statusChanged.emit({ id: this.id, newStatus: status });
+    console.log('A server status changed, new status: ' + status);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo... OK, É UM CÓDIGO BEM SIMPLES, ESSE DE 'account-component'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> FALTOU O COMPONENT DE 'NEW-ACCOUNT'..
+
+
+
+
+
+
+
+
+
+
+o código é assim:
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit, Output } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+@Component({
+  selector: 'app-new-account',
+  templateUrl: './new-account.component.html',
+  styleUrls: ['./new-account.component.css']
+})
+export class NewAccountComponent implements OnInit {
+
+  @Output() accountAdded = new EventEmitter<{name: string, status: string}>();
+
+  onCreateAccount(accountName: string, accountStatus: string) {
+    this.accountAdded.emit(
+      {
+        name: accountName,
+        status: accountStatus
+      }
+    );
+    console.log('A server status changed, new status: ' + accountStatus)
+  }
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+E O HTML:
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12 col-md-8 col-md-offset-2">
+    <div class="form-group">
+      <label>Account Name</label>
+      <input type="text" class="form-control" #accountName />
+    </div>
+    <div class="form-group">
+      <select class="form-control" #status>
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+        <option value="hidden">Hidden/option></option>
+      </select>
+    </div>
+    <button
+      class="btn btn-primary"
+      (click)="onCreateAccount(accountName.value, status.value)">
+      Add Account
+    </button>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OU SEJA, QUANDO É CRIADA UMA NOVA ACCOUNT, FAZEMOS 'LISTEN TO' A ESSE CLICk,
+
+
+
+por meio desse '(click)=onCreateAccount()'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> AÍ, A PARTIR DESSE CLICK, NÓS FAZEMOS EMIT DE UMA DATA _ AO __ COMPONENT DE 'APP'...
+
+
+
+
+
+
+
+
+
+
+--> e tudo isso é fine, sim, mas AQUI JÁ TEMOS UM 
+
+
+
+SETUP BEM COMPLEXOZINHO SÓ PARA PASSAR UM POUCO DE DATA POR AÍ...
+
+
+
+
+
+
+
+
+
+---> E ISSO FICOU TRI COMPLICADO, 
+
+MESMO O APP SENDO SUPER FÁCIL.. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> NESSA LIÇÃO,
+
+VEREMOS COMO 'SERVICES' PODEM NOS AJUDAR COM A __ SIMPLIFICAÇÃO DO CÓDIGO DE NOSSOS PROEJTOS,
+
+
+
+CENTRALIZAR LÓGICA PARA QUE ELA NÃO PRECISE SER TÃO REPETITIVA/MAÇANTE..
+
+
+
+
+
+
+
+
+
+
+-> DEVEMOS VER O QUE TEMOS QUE 'CUIDAR' EM RLAÇÃO A SERVICES..
+
+
+
+
+
+
+
+
+-> VAMOS CONSTRUIR NOSSO PRIMEIRO SERVICE NA PRÓXIMA AULA...

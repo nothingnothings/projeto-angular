@@ -1,0 +1,1918 @@
+
+
+
+
+
+
+
+
+
+
+
+NAVEGANDO COM 'ROUTER LINKS'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> NA ÚLTIMA LIÇÃO,
+
+
+
+FIZEMOS O ROUTING FUNCIONAR..
+
+
+
+
+
+-> NÓS ADICIONAMOS ROUTES,
+
+
+
+POR MEIO DESTES CÓDIGOS AQUI:
+
+
+
+
+
+
+
+
+
+
+
+app.module.ts:
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule, Routes  } from '@angular/router'; //USADO PARA DEFINIR ROUTES/ROUTING NO NOSSO APP...
+
+import { AppComponent } from './app.component';
+import { ServersComponent } from './servers/servers.component';
+import { UsersComponent } from './users/users.component';
+import { ServerComponent } from './servers/server/server.component';
+import { EditServerComponent } from './servers/edit-server/edit-server.component';
+import { HomeComponent } from './home/home.component';
+import { UserComponent } from './users/user/user.component';
+import { FormsModule } from '@angular/forms';
+import { ServersService } from './servers/servers.service';
+
+
+const appRoutes: Routes = [
+
+  {
+    path: '', ////localhost:4200/   (É O _ DEFAULT, A HOME PAGE, PQ É o domain.com SEM O PATH depois)...
+    component: HomeComponent
+
+  },
+
+  {  /////é a nossa primeira route... cada object nesse array é uma ROUTE, que é governada por um 'PAGE-COMPONENT' (o page-component é a ROUTE/page, no caso)...
+    path: 'users', ///   localhost:4200/users
+    component: UsersComponent  ///users.component.html
+  },
+
+  {  
+    path: 'servers',  //localhost:4200/servers
+    component: ServersComponent //servers.component.html
+  }
+]
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    ServersComponent,
+    UsersComponent,
+    ServerComponent,
+    EditServerComponent,
+    UserComponent,
+  ],
+  imports: [BrowserModule, FormsModule, 
+    
+    
+    RouterModule.forRoot(appRoutes)], ///vocÊ deve ESCREVER o 'RouterModule', declará-lo aqui, para o TER COMO __ FUNCIONALIDADE DE SEU APP (routing).. --> E PRECISAMOS DO METHOD DE '.forRoot(contComSuasRoutes)' PARA ACTUALLY REGISTRAR NOSSAS ROUTES NO NOSSO APp...
+                                        //// e aí você deve usar 'router-outlet' lá no seu 'app.component.html' para CARREGAR SUAS ROUTES a partir da url...
+  providers: [ServersService],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OU SEJA,
+
+
+
+
+
+CONSEGUIMOS ADICIONAR ESSA FUNCIONALIDADE DE 'routing' por meio 
+
+
+
+DO CÓDIGO DE 
+
+
+''
+
+ imports: [BrowserModule, FormsModule, 
+    
+    
+    RouterModule.forRoot(appRoutes)], ///vocÊ deve ESCREVER o 'RouterModule', declará-lo aqui, para o TER COMO __ FUNCIONALIDADE DE SEU APP (routing).. --> E PRECISAMOS DO METHOD DE '.forRoot(contComSuasRoutes)' PARA ACTUALLY REGISTRAR NOSSAS ROUTES NO NOSSO APp...
+                                        //// e aí você deve usar 'router-outlet' lá no seu 'app.component.html' para CARREGAR SUAS ROUTES a partir da url...
+
+
+
+
+
+'''
+
+
+
+
+
+
+
+E TAMBÉM PELO CÓDIGO DE 
+
+
+
+
+'router-outlet',
+
+
+
+lá 
+
+
+
+EM 'app.component.html',
+
+
+
+
+
+COMO VISTO AQUI:
+
+
+
+
+
+
+
+
+
+<div class="container"> <!-- COM ROUTING-->
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="#">Home</a></li>
+        <li role="presentation" class="active"><a href="#">Servers</a></li>
+        <li role="presentation" class="active"><a href="#">Users</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <!-- <app-home></app-home> --> 
+      <router-outlet></router-outlet><!-- É NESSE SLOT DE 'router-outlet' em que SERÃO OUTPUTTADOS/RENDERIZADOS os page-components de nossas ROUTES, a partir do path/route digitado na URL... -->
+    </div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> E, SIM, 
+
+
+
+
+OS 'PAGE-COMPONENTS' SÃO RENDERIZADOS NAQUELE SLOT DE 
+
+
+'router-outlet'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA PRECISAMOS FAZER OUTRA COISA, QUE É 
+
+
+
+''''TROCAR A PÁGINA DE NOSSO APP,
+
+mas sem perder o ''STATE''' ''''
+
+
+
+
+
+
+
+
+
+--> para isso, provavelmente usaremos esses tais de 'router links'...
+
+
+
+
+
+
+
+
+
+
+
+---> O 'router-outlet'
+
+
+É USADO 
+PARA 
+
+
+
+QUE O 
+
+ANGULAR 
+
+CONSIGA 
+
+
+
+
+
+TER UM LUGAR PARA 
+
+
+''LOAD OUR CURRENTLY ACTIVE COMPONENT''.'.. (localhost:4200/users, /servers, etc)...
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS POR ENQUANTO SÓ SOMOS CAPAZES DE ACESSAR URLS 
+por meio do 
+
+type 
+
+
+
+na url bar... -> E ISSO  _ NÃO É SUPER CONVENIENTE_....
+
+
+
+
+
+
+
+
+
+
+-> É IMPORTANTE SER CAPAZ DE 'LOAD A ROUTE DIRECTLY'
+
+
+
+da address bar,
+
+
+
+
+MAS __ 
+
+
+
+TAMBÉM SERIA NICE TER ALGUNS LINKS FUNCIONANDO NA NOSSA NAVIGATION,
+
+
+PARA QUE 
+
+ESSAS __ TABS__ FUNCIONEM..
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO, TEMOS QUE ADICIONAR ALGUNS __ LINKS _ AO NOSSO APP....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> LÁ NO COMPONENT DE 'app.component.html',
+
+TEMOS ESTE FLOW DE NAVIGATION:
+
+
+
+
+
+
+
+
+
+
+
+<div class="container"> <!-- COM ROUTING-->
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="#">Home</a></li>
+        <li role="presentation" class="active"><a href="#">Servers</a></li>
+        <li role="presentation" class="active"><a href="#">Users</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <!-- <app-home></app-home> --> 
+      <router-outlet></router-outlet><!-- É NESSE SLOT DE 'router-outlet' em que SERÃO OUTPUTTADOS/RENDERIZADOS os page-components de nossas ROUTES, a partir do path/route digitado na URL... -->
+    </div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> A PRIMEIRA COISA QUE 
+
+
+PODEMOS PENSAR É 
+
+
+'hey, 
+
+poderíamos usar esse attribute de 'ref' ''''...
+
+
+
+
+
+
+
+
+
+-> MAS ISSO __ NÃO VAI FUNCIONAR..
+
+
+
+
+
+
+
+
+---> o ref 
+
+
+
+
+
+PODERIA 
+
+SER ESCRITO TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+href="/" 
+
+
+
+
+
+
+
+href="/servers'...
+
+
+
+
+
+
+
+
+
+href="/users'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> E ISSO VAI _ _APARENTAR QUE _ FUNCIONA....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> _ SÓ _ APARENTA__ QUE FUNCIONA.. -> 
+
+
+
+
+PQ 
+O 
+
+APP VAI ESTAR 'RELOADING'
+
+toda 
+
+vez que 
+
+
+um link for clicado.. 
+
+
+
+
+
+
+
+
+
+
+
+--> basta ver o ícone de reload, que sempre refresha... -> O 
+
+
+
+
+
+APP É REFRESHADO COM CADA LINK QUE CLICAMOS (anchor tags)... -> ESSE É  
+
+O COMPORTAMENTO 
+
+PADRÃO DE NOSSA PAGE,
+
+
+
+CADA 
+
+V
+EZ QUE 
+
+
+UM LINK É CLICADO,
+
+UM NOVO REQUEST HTTP É ENVIADO 
+
+AO 
+
+SERVER,
+
+E AÍ 
+
+UMA 
+
+NOVA 
+PAGE 
+
+
+É 
+
+RETORNADA... ----->  
+MAS 
+
+
+
+
+ESSE _ NÃO É O MELHOR BEHAVIOR,
+
+PQ ISSO SIGNIFICA QUE 
+
+__ NOSSO __ APP É REINICIADO _ A PARTIR __ 
+
+DE 
+
+TODO 
+
+
+
+
+E QUALQUER 
+
+
+
+
+CLICK EM NOSSA NAVIGATION...
+
+
+
+
+
+
+
+
+
+
+--> nosso STATE DO APP VAI SEMPRE SER PERDIDO... -> E NÃO QUEREMOS OFERECER 
+
+ESSA 
+
+USER EXPERIENCE AO USER..
+
+
+
+
+
+
+
+
+
+
+
+-. MAS COMO DEVEMOS IMPLEMENTAR 
+
+
+
+NAVIGATION,
+
+
+ENTÃO?
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+
+HÁ UMA __ DIRECTIVE__ ESPECIAL _ QUE 
+
+O 
+
+ANGULAR 
+
+NOS DÁ´,
+
+PARA CONFIGURAR ESSES LINKS 'SEM PERDA DE STATE'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA ISSO,
+
+
+
+
+
+
+COMENTAMOS PARA FORA AQUELES LINKS:
+
+
+
+
+
+
+
+
+
+
+<div class="container"> <!-- COM ROUTING-->
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="nav nav-tabs">
+        <!-- <li role="presentation" class="active"><a href="#">Home</a></li>  ///LINKS _ COM PERDA _ DE STATE, pq um NOVO HTML É ENVIADO QUANDO É EXECUTADA ESSA ANCHOR TAG...
+        <li role="presentation" class="active"><a href="#">Servers</a></li>
+        <li role="presentation" class="active"><a href="#">Users</a></li> -->
+        <li role="presentation" class="active"><a href="#">Home</a></li>
+        <li role="presentation" class="active"><a href="#">Servers</a></li>
+        <li role="presentation" class="active"><a href="#">Users</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <!-- <app-home></app-home> --> 
+      <router-outlet></router-outlet><!-- É NESSE SLOT DE 'router-outlet' em que SERÃO OUTPUTTADOS/RENDERIZADOS os page-components de nossas ROUTES, a partir do path/route digitado na URL... -->
+    </div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PROFESSOR EXPLICA QUE 
+
+
+
+
+
+NÃO É POR MEIO DE 'href'
+
+QUE VAMOS 'NAVIGATE AROUND'...
+
+
+
+
+
+
+
+
+
+
+--> PARA CONSEGUIR __ 'NAVIGATE AROUND' EM UM APP 
+
+
+
+ANGULAR,
+
+
+
+
+A COISA DE QUE VOCê PRECISA 
+
+
+
+
+É _ UMA _ DIRECTIVE ESPECIAL,
+
+ 
+
+ CHAMADA DE 
+
+ 'routerLink'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ tipo assim:
+
+
+
+
+
+
+<a routerLink="" >Home</a>
+
+
+
+
+
+
+
+
+
+
+-> O 'routerLink'
+
+
+
+É SIMPLESMENTE_ 
+
+
+CAPAZ_ DE PARSEAR UMA 
+
+
+STRING..
+
+
+
+
+
+
+
+
+-> nesse exemplo de 'Home',
+
+O PROFESSOR COLOCA UM SIMPLES '/' (slash)...
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+        <li role="presentation" class="active"><a routerLink="/">Home</a></li>
+        <li role="presentation" class="active"><a href="#">Servers</a></li>
+        <li role="presentation" class="active"><a href="#">Users</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container"> <!-- COM ROUTING-->
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a routerLink="/">Home</a></li>
+        <li role="presentation" class="active"><a routerLink="/servers">Servers</a></li>
+        <li role="presentation" class="active"><a routerLink="/users">Users</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <!-- <app-home></app-home> --> 
+      <router-outlet></router-outlet><!-- É NESSE SLOT DE 'router-outlet' em que SERÃO OUTPUTTADOS/RENDERIZADOS os page-components de nossas ROUTES, a partir do path/route digitado na URL... -->
+    </div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> OK....  
+
+
+
+
+
+
+
+
+
+
+QUANDO VOCÊ ESCREVE 
+
+
+
+<nomeDeElemento routerLink="/xxxx">,
+
+
+
+
+
+VOCÊ 
+
+
+__ESTARÁ _ DIZENDO AO ANGULAR_ QUE 
+
+
+
+__ ESSE _ ELEMENT AÍ,
+
+EM QUE 
+
+
+
+ESSE 'routerLink'
+
+
+
+ATTRIBUTE ESTÁ POSICIONADO,
+
+
+
+
+
+ESSE ELEMENT AÍ ,
+
+
+
+
+
+QUANDO FOR __ CLICADO_,
+
+
+
+
+
+
+DEVERÁ _ SER __ ALTERADA A URL 
+
+
+de seu browser, o value da string na sua urlbar...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ESSE 'routerLink'
+
+
+
+VAI _ SERVIR COMO UM LINK,
+
+NO FINAL DAS CONTAS,
+
+
+
+
+
+
+
+mas o que interessa é que 
+
+SEU COMPORTAMENTO É BEM DIFERENTE DE 'href'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK... --> O PROFESSOR ADICIONOU ISSO A TODOS OS LINKS...
+
+
+
+
+
+
+--> COLOCOU UM PARA '/servers' 
+
+
+e outro 
+para 
+
+
+'/users'..
+
+
+
+
+
+
+
+
+
+
+------> O PROFESSOR EXPLICA QUE _ NA PRÓXIMA AULA _ 
+
+
+
+ELE 
+VAI 
+
+
+
+
+NOS ENSINAR ALGUMAS FORMAS DIFERENTES DE DEFINIR O 'path' 
+
+
+
+
+DENTRO DESSE 'routerLink' attribute....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> OK... ---> UMA OUTRA _ MANEIRA__ DE USAR O 'routerLink'
+
+
+
+
+
+
+__ É COM _ O USO DE 'PROPERTY BINDING'..
+
+
+
+
+(
+    para sermos mais precisos: 
+
+    PROPERTY BINDING ERA USADO ANTERIORMENTE COM 'routerlink',
+
+
+
+    mas _ agora __ nós __ FAZEMOS BIND _ A ALGUMA 'non-string data'...
+)
+
+
+
+
+
+
+-> ISSO SIGNIFICA QUE 
+
+
+VOCê 
+PODE FAZER ALGO 
+
+
+como 
+
+
+
+
+
+
+<a [routerLink]="">Users</a>
+
+
+
+
+
+
+
+
+
+
+
+-----> NESSE NEGÓCIO AÍ,
+
+
+
+nesse 'property binding'
+
+
+de 
+
+
+'routerLink' ,
+
+
+É _ CLARO QUE 
+
+
+
+_-VOCÊ _ NÃO PODE SIMPLESMENTE 
+
+
+ESCREVER 
+
+
+
+'/users'
+
+
+DENTRO DESSE PROPERTY BINDING,
+
+PQ 
+ISSO 
+
+
+
+
+OBVIAMENTE 
+
+
+
+
+
+ISSO PROCURARIA POR UMa propriedade 
+
+
+
+
+COM ESSE NOME DE 
+
+
+'routerLink',
+
+
+
+
+
+O QUE 
+
+ACABARIA SENDO UM _ NOME_ _ INVÁLIDO em javascript...
+
+
+
+
+
+
+
+
+
+
+
+----> É EXATAMENET POR ISSO QUE 
+
+VOCÊ 
+
+PRECISARIA/PRECISA 
+
+
+
+
+
+
+escrever 
+
+
+um ARRAY 
+
+nesse lugar aí (poderia ser uma STRING, mas ninguém faz isso),
+
+
+
+
+
+
+_ pq _ esse array vai te dar 'fine-grained control'
+
+SOBRE O 'routerLink',....... -----> mais tarde  o professor vai nos contar sobre isso...
+
+
+
+
+
+
+VAI NOS CONTAR SOBRE ISSO QUANDO ESSE RECURSO FOR _ ÚTIL..
+
+
+
+
+
+
+
+
+
+
+
+---> CERTO... O CÓDIGO VAI FICANDO ASSIM:
+
+
+
+
+
+
+<div class="container"> <!-- COM ROUTING-->
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="nav nav-tabs">
+        <!-- <li role="presentation" class="active"><a href="#">Home</a></li>  ///LINKS _ COM PERDA _ DE STATE, pq um NOVO HTML É ENVIADO QUANDO É EXECUTADA ESSA ANCHOR TAG..., OU SEJA, SEM O USO DO ATTRIBUTE DE 'routerLink'....
+
+        <li role="presentation" class="active"><a href="#">Servers</a></li>
+        <li role="presentation" class="active"><a href="#">Users</a></li> -->
+        <li role="presentation" class="active"><a routerLink="/">Home</a></li> <!-- USAMOS 'routerLink' para conseguir DEFINIR LINKS NO NOSSO APP__ QUE NÃO VÃO FAZER O USER PERDER O STATE....-->
+        <li role="presentation" class="active"><a routerLink="/servers">Servers</a></li>
+        <li role="presentation" class="active"><a routerLink="/users">Users</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <!-- <app-home></app-home> --> 
+      <router-outlet></router-outlet><!-- É NESSE SLOT DE 'router-outlet' em que SERÃO OUTPUTTADOS/RENDERIZADOS os page-components de nossas ROUTES, a partir do path/route digitado na URL... -->
+    </div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+--------
+
+
+
+
+
+
+
+
+
+
+-->  [routerLink]="" 
+
+
+
+
+
+
+
+
+
+-> NÃO PODEMOS PASSAR ALGO COMO 'users'
+
+
+dentro 
+
+
+desse PROPERTY BINDING,
+PQ 
+
+ISSO 
+
+FARIA COM 
+
+QUE FOSSE PROCURADO 
+
+ESSE 
+
+
+
+'property name' 
+
+
+dentro do component 'a' (e ele não existe/existirá, no caso)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> É POR ISSO QUE É MELHOR 
+
+ESCREVERMOS 
+
+
+
+
+
+
+[routerLink]="[]",
+
+
+
+PQ __ ISSO 
+
+
+
+TE DARÁ 
+
+
+
+
+
+
+
+
+UM CONTROLE MAIOR SOBRE ESSE 
+
+
+'routerLink'....
+
+
+
+
+
+
+
+E O PROFESSOR VOLTARÁ A ISSO MAIS TARDE,
+
+QUANDO 
+
+ ESSA 
+
+ FEATURE FOR MAIS ÚTIL...
+
+
+
+
+
+
+--> DENTRO DESSE ARRAY de 
+
+'routerLink',
+
+opcional,
+
+
+VOCê 
+
+
+
+_ENTÃO ESPECIFICA__ TODOS OS SEGMENTS 
+
+
+
+
+
+_____ DE SEU PATH 
+
+
+
+
+
+COMO _ ELEMENTS..
+
+
+
+
+
+
+
+
+-> ou seja,
+
+
+
+você 
+
+
+
+
+escreveria/escreve tipo assim:
+
+
+
+
+
+
+
+
+[routerLink]=" 
+
+[
+'/users', 'user', 'name', 
+]
+"
+
+
+
+
+
+
+
+
+-> o que quer dizer que seu link ficaria tipo 
+
+
+
+
+localhost:4200/users/user/name....
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK... 
+
+
+
+
+
+
+
+
+
+
+FICARIA TIPO ASSIM:
+
+
+
+
+
+<li role="presentation" class="active"><a [routerLink]=['/users', 'user', 'name']>Servers</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK....  O PROFESSOR DIZ QUE 
+
+
+
+ESSE 
+
+'/',
+
+O 
+
+
+'leading slash'
+
+SÓ  _ É NECESSÁRIO PARA TRANSFORMAR ISSO EM UM 'ABSOLUTE PATH',
+
+
+
+e ele nos explicará o QUE ISSO SIGNIFICA __ NA PRÓXIMA AULA...
+
+
+
+
+
+
+
+
+
+
+
+----> POR ENQUANTO,
+ 
+
+
+
+ O PROFESSOR REMOVE TUDO ISSO..
+
+
+
+
+
+
+
+ -> por enquanto,
+ essa 
+
+
+
+ notation de ARRAY 
+
+
+ aí 
+
+
+ _ NÃO É SUPER CONVENIENTE,
+
+
+ MAS LOGO __ 
+
+
+
+ VEREMOS 
+
+
+
+
+ _ QUE 
+
+ ELA 
+
+ É 
+
+ BEM MELHOR, PQ NOS DEIXA CONSTRUIR 
+
+
+ PATHS COMPLEXOS _ COM _ __ 
+ MT MAIS 
+ FACILIDADE...
+
+
+
+
+
+
+
+
+
+
+ -> PROFESSOR DIZ, EM OUTRAS PALAVRAS,
+
+ QUE 
+
+
+
+ DEVEMOS 
+
+ PREFERIR 
+
+ A ESCRITA DE 
+
+
+
+
+ ''<li role="presentation" class="active"><a [routerLink]=['/users']>Servers</a></li>
+'''
+
+
+
+
+EM 
+
+
+vez da escrita de 
+
+
+
+<li role="presentation" class="active"><a routerLink="/users" >Servers</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container"> <!-- COM ROUTING-->
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="nav nav-tabs">
+        <!-- <li role="presentation" class="active"><a href="#">Home</a></li>  ///LINKS _ COM PERDA _ DE STATE, pq um NOVO HTML É ENVIADO QUANDO É EXECUTADA ESSA ANCHOR TAG..., OU SEJA, SEM O USO DO ATTRIBUTE DE 'routerLink'....
+
+        <li role="presentation" class="active"><a href="#">Servers</a></li>
+        <li role="presentation" class="active"><a href="#">Users</a></li> -->
+        <!-- <li role="presentation" class="active"><a routerLink="/">Home</a></li> USAMOS 'routerLink' para conseguir DEFINIR LINKS NO NOSSO APP__ QUE NÃO VÃO FAZER O USER PERDER O STATE.... -->
+        <li role="presentation" class="active"><a routerLink="/">Home</a></li> 
+        <!-- <li role="presentation" class="active"><a routerLink="/servers">Servers</a></li>  versão SIMPLIFICADA DO WRITE DE 'routerLink'.... é MELHOR USAR ESSA VERSÃO VISTA LOGO ABAIXO, com essa sintaxe de 'property binding', pq ela te deixa EDITAR COM _ MAIOR CONTROLE__ TODOS _OS SEGMENTS DE SEU PATH/url/route... -->
+        <li role="presentation" class="active"><a [routerLink]="['/servers']">Servers</a></li>
+        <li role="presentation" class="active"><a [routerLink]="['/users']">Users</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <!-- <app-home></app-home> --> 
+      <router-outlet></router-outlet><!-- É NESSE SLOT DE 'router-outlet' em que SERÃO OUTPUTTADOS/RENDERIZADOS os page-components de nossas ROUTES, a partir do path/route digitado na URL... -->
+    </div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok,
+
+
+AGORA NOSSO APP 
+
+
+
+
+
+_ NOS DÁ _ OS COMPONENTS COMO ANTES,
+
+RENDERIZA 
+
+
+DIFERENTES 
+
+
+PAGES,
+
+
+ 
+
+ mas 
+
+
+ A DIFERENÇA
+  
+
+  É QUE 
+
+
+
+  AGORA A PAGE NÃO É RECARREGADA,
+
+  NAÕ É 
+
+
+   
+   PERDIDO O STATE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   -> ISSO PQ:
+
+
+
+
+
+
+1) ROUTERLINK -->
+
+
+
+
+
+
+2) CATCHEIA O CLICK NO ELEMENT EM QUE ELE FOI POSICIONADO...
+
+
+
+
+
+
+3) PREVINE __o  DEFAULT do app, QUE É 
+
+'ENVIAR UM REQUEST AO SER CLICADO O ANCHOR TAG',
+
+
+
+
+
+
+4)  AÍ _ ELE _ ANALISA_O  QUE 
+
+HAVÍAMOS PASSADO 
+
+à DIRECTIVE DE 
+
+
+'[routerLink]',
+
+
+
+
+
+ELE LÊ QUE TEMOS ESSE ARRAY DE 'path-segments' (como '/users')
+
+
+
+
+
+5) POR FIM,
+ 
+
+
+  _ ELE_ _ PARSEIA_ 
+
+
+  ESSE 'PATH',
+
+
+
+  coloca-o na url bar ,
+
+  tipo 
+
+
+
+  localhost:4200/users 
+
+
+
+
+  6) AÍ ,
+
+  ELE _ CHECA _ SE _ __
+  EXISTE 
+  UMA 
+
+  'FITTING ROUTE'
+
+  para 
+
+  esse domain + path segment(s) 
+
+
+
+
+
+  NA NOSSA CONFIGURATION em 
+
+
+  'app.module.ts',
+
+
+  lá 
+
+
+  em 
+
+
+
+  RouterModule.forRoot(appRoutes)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> SE ELE PERCEBE QUE DEFINIMOS OS PATHS TUDO CERTINHO LÁ NO 'app.module.ts',
+
+
+
+  ELE 
+
+  FAZ O NAVIGATE AROUND..
+
+
+
+
+
+
+
+
+  -> É __ ASSIM _ QUE PODEMOS 'NAVGATE AROUND' 
+
+  com o 
+
+  'routerLink',
+
+
+  E É ASSIM QUE DEVEMOS FAZER,
+
+
+
+
+  PQ NOS DÁ A USER EXPERIENCE MELHOR,
+
+
+
+  NÃO RECARREGA NOSSO APP,
+
+
+
+
+  __ MANTÉM O APP STATE,
+
+
+  E É MT MAIS RÁPIDO DO QUE RECARREGAR A PAGE O TEMPO INTEIRO...
+
+
+
+
+
+
+  -> 
+
+
+  USAR O ROUTERLINK DENTRO DO APP É MT MELHOR...

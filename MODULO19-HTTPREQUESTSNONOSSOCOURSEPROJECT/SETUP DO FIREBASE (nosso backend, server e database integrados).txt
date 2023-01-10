@@ -1,0 +1,1234 @@
+
+DEVO CRIAR UM NOVO PROJETO NO FIREBASE...
+
+
+
+
+
+
+conta:
+
+
+nothingnothings2022@gmail.com 
+
+
+
+K4tshir00ht0m0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok... criei um novo project...
+
+
+
+
+
+
+
+--> para conseguir 
+
+
+
+USAR HTTP REQUESTS 
+
+
+
+NO NOSSO APP ANGULAR,
+
+
+DEVEMOS 
+
+
+usar 
+
+
+o module de
+
+
+'HttpClientModule' 
+
+
+
+lá no angular.module.ts,
+
+
+
+
+E AÍ 
+
+o 
+
+
+'HttpClient' 
+
+
+
+EM _ UM _ SERVICE__ DE NOSSAS RECIPES,
+
+
+
+DENTRO DE NOSSO APP, no service de 
+
+'recipeBook', provavelmente....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM (app.module.ts):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http'
+
+import { AppComponent } from './app.component';
+
+import { HeaderComponent } from './headerComponent/headerComponent.app';
+
+import { RecipeBookComponent } from './recipeBook/recipe-book.component';
+import { RecipeItemComponent } from './recipeBook/recipe-list/recipe-item/recipe-item.component';
+import { RecipeListComponent } from './recipeBook/recipe-list/recipe-list.component';
+import { RecipeDetailComponent } from './recipeBook/recipe-detail/recipe-detail.component';
+import { ShoppingListComponent } from './ShoppingList/shoppingList.component';
+import { ShopListEditComponent } from './ShoppingList/shop-list-edit/shop-list-edit.component';
+import { ShoppingListItemComponent } from './ShoppingList/shopping-list-item/shopping-list-item.component';
+
+import { DropdownDirective } from './dropdownDirective/dropdown.directive';
+import { RecipeBookService } from './recipeBook.service';
+import { ShoppingListService } from './shoppingList.service';
+import { GenericErrorPageComponent } from './generic-error-page/generic-error-page.component';
+import { AppRoutingModule } from './app-routing.module';
+import { HomePageComponent } from './home-page/home-page.component';
+import { SelectARecipeComponent } from './recipeBook/select-a-recipe/select-a-recipe.component';
+import { RecipeEditComponent } from './recipeBook/recipe-edit/recipe-edit.component';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+    RecipeBookComponent,
+    RecipeItemComponent,
+    RecipeListComponent,
+    RecipeDetailComponent,
+    ShoppingListComponent,
+    ShopListEditComponent,
+    ShoppingListItemComponent,
+    DropdownDirective,
+    GenericErrorPageComponent,
+    HomePageComponent,
+    SelectARecipeComponent,
+    RecipeEditComponent,
+  ],
+  imports: [
+    BrowserModule,
+    ReactiveFormsModule,
+    FormsModule, //lembre-se de adicionar isso se for usar 'ngModel()'..
+    AppRoutingModule,  //módulo de routing, customizado por nós...
+    HttpClientModule
+  ],
+  providers: [RecipeBookService, ShoppingListService],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM (recipeBook.service.ts):
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { HttpClient } from '@angular/common/http';
+
+
+  constructor(private shoppingListService: ShoppingListService, http: HttpClient) {
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> CERTO.... AGORA PRECISO 
+
+
+
+
+
+CODAR 2 METHODS DIFERENTES, NESSE SERVICE..
+
+
+
+
+
+
+
+
+
+
+
+
+
+1) METHOD DE 'GET RECIPES' 
+
+
+
+
+2) METHOD DE 'SAVE RECIPES'...
+
+
+
+
+
+
+
+
+
+
+
+https://recipebookdummyproject-default-rtdb.firebaseio.com/
+
+
+
+
+
+
+
+
+
+
+-> ESSA É NOSSA API ROUTE....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> temos que codar alguns requests a essa url...
+
+
+
+
+
+
+
+
+
+
+
+--> escrevo assim:
+
+
+
+
+
+
+  loadRecipes() {
+
+  return this.http.get(
+      'https://recipebookdummyproject-default-rtdb.firebaseio.com/'
+    ).pipe(
+      map(() => {
+
+      })
+    )
+  }
+
+
+
+
+
+  saveRecipes() {
+    return this.http.post('https://recipebookdummyproject-default-rtdb.firebaseio.com/',
+    this.recipes
+    );
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> certo... agora preciso vincular os buttons de 'save posts' e 'fetch/load posts'
+
+
+  a ESSES METHODS....
+
+
+
+
+
+
+
+  --> e esses buttons residem lá em 
+
+
+
+
+
+
+
+
+  'HeaderComponent'..
+
+
+
+
+
+
+
+
+  --> o CÓDIGO HTML DELE É ESTE:
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <nav class="navbar navbar-default"> <!-- COM O USO DE ROUTING -->
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" (click)="collapsed = !collapsed">
+            <span class="icon-bar" *ngFor="let iconBar of [1, 2, 3]"></span>
+          </button>
+          <a routerLink="/" class="navbar-brand">Recipe Book</a>
+      </div>
+      <!-- <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true"> -->
+        <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true">
+        <ul class="nav navbar-nav">
+          <!-- <li (click)="onRecipeBook()"><a href="#">Recipes</a></li>
+          <li (click)="onShopList()"><a href="#">Shopping List</a></li> -->
+          <li routerLinkActive="active"><a [routerLink]="['/recipe-book']" (click)="collapsed = !collapsed">Recipes</a></li>
+          <li routerLinkActive="active"><a [routerLink]="['/shop-list']"(click)="collapsed = !collapsed" >Shopping List</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown" appDropdown #dropdown>
+                <a class="dropdown-toggle" role="button">Manage<span class="caret"></span></a>
+                <ul class="dropdown-menu" style="cursor: pointer;">
+                    <!-- <li><a href="#">Save Data</a></li>
+                    <li><a href="#">Fetch Data</a></li> -->
+                    <li><a>Save Data</a></li>
+                    <li><a>Fetch Data</a></li>
+                </ul>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> esses buttons interessam:
+
+
+
+
+
+
+
+
+
+
+
+                      <li><a>Save Data</a></li>
+                    <li><a>Fetch Data</a></li>
+
+
+
+
+
+        --> colocamos um '(click)'
+
+
+        em cada um deles,
+
+        para disparar methods que contatarão os methods nos nossos services...
+
+
+
+
+
+
+
+
+
+
+
+
+        GANHEI ESTE ERROR:
+
+
+        Access to XMLHttpRequest at 'https://recipebookdummyproject-default-rtdb.firebaseio.com/' from origin 'http://localhost:4200' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: It does not have HTTP ok status.
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> pq isso aconteceu?
+
+
+
+
+
+
+
+--> é pq 
+
+__ NÃO CONFIGUREI MEU 
+
+HTTP REQUEST 
+
+DE TIPO 'post'
+
+CORRETAMENTE...
+
+
+
+
+
+
+
+
+
+--> PRECISO COLOCAR AQUELE HEADER DE 
+
+
+
+
+
+
+
+'Access-Control-Allow-Origin': 
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> tenho que ver minhas anotações do project NODE,
+
+pq lá eu tinha o mesmo problema...
+
+
+
+
+
+
+
+
+
+--> ah, me lembrei... o firebase EXIGE que coloquemos '.json' ao FINAL DA URL DE NOSSA API,
+
+
+TIPO ASSIm:
+
+
+
+
+
+
+
+
+  loadRecipes() {
+
+  return this.http.get(
+      'https://recipebookdummyproject-default-rtdb.firebaseio.com/recipes.json'
+    ).pipe(
+      map(() => {
+
+      })
+    )
+  }
+
+
+
+
+
+  saveRecipes() {
+
+    console.log('SAVED');
+    return this.http.post('https://recipebookdummyproject-default-rtdb.firebaseio.com/recipes.json',
+    this.recipes
+    );
+
+  
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> certo... agora devo ver se o problema do CORS some...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> sumiu... era esse o problema,
+
+  com o 
+
+
+
+
+  FIREBASE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> ELE SALVA NOSSAS RECIPES SOB 
+
+
+
+  A KEY 'recipes',
+
+
+  E 
+
+  aí 
+
+
+
+  cada '''USER'''
+
+
+
+
+
+  QUE SALVA ALGUMA COISA NO NOSSO SERVER 
+
+
+
+  FICA COM UM 
+
+
+
+  OBJECT PRÓPRIO EM QUE 
+
+
+
+  TEMOS OS INGREDIENTS.... 
+
+
+  (
+
+      ou seja,
+
+
+
+      não 
+
+
+      estamos 
+
+
+      com '''1 único server, com todos os users conectados a uma mesma database''',
+
+
+      e sim 
+
+      estamos com 
+
+
+      ''' 1 único server, com cada user separado por sua própria conta, mas sem acesso 
+
+      a essa conta'''....
+  )
+
+
+
+
+
+
+
+
+
+
+  PARA CONSEGUIR 
+
+
+
+  __ ACABAR_ COM ESSA DIVISÃO ENTRE OS USERS,
+
+
+
+  TENHO QUE 
+
+  MODIFICAR UM POUCO MEU CÓDIGO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> agora entendi a razão do meu código estar dando errado... --> o professor usou o method de 
+
+  '.put'
+
+
+  com o FIREBASE,
+
+
+  enquanto que eu estava usando 
+
+
+
+
+  'POST'...
+
+
+
+
+
+
+
+
+
+
+
+  --> E PARECE QUE O PROFESSOR REALMENTE VAI QUERER 'OVERWRITE' quaisquer 
+
+
+  recipes que estavam armazenadas anteriormente..
+
+
+
+
+
+
+  --> é por isso que ele vai  disparar um request de 'PUT',
+
+  e não 
+  de 
+
+  'post'...
+
+
+
+
+
+
+
+
+  -> isso funcionou, requests de 'put' 
+
+
+  FAZEM COM QUE AS RECIPES SEJAM DEPOSITADAS DIRETAMENTE NO 'ROOT' 
+
+
+
+
+  da 'recipes' key, lá no firebase...
+
+
+
+
+
+
+
+
+  FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+    saveRecipes() {
+
+    console.log('SAVED');
+    return this.http.put('https://recipebookdummyproject-default-rtdb.firebaseio.com/recipes.json',  ////será um request de PUT, e não de 'POST'... --> ISSO PQ QUEREMOS SEMPRE OVERWRITTAR O VALUE ANTIGO DE 'recipes' com o nosso NOVO value...
+  
+    this.recipes
+    );
+
+  
+  }
+
+
+
+
+
+
+
+
+
+--> mas estou com um '''bug''':
+
+
+quando meu app inicia,
+
+
+
+
+as recipes antigas NÃO SÃO AUTOMATICAMENTE CARREGADAS..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> CONSEGUI CONSERTAR...
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO QUE CONSERTOU FOI ESTE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  loadRecipes() {
+
+  return this.http.get<{ [name: string]: Recipe}>(
+      'https://recipebookdummyproject-default-rtdb.firebaseio.com/recipes.json'
+    ).pipe(
+      map((data) => {
+
+        const transformedRecipesArray: Recipe[] = [];
+
+
+        console.log(data);
+
+        for (const key in data) {
+
+          if (data.hasOwnProperty(key)) {
+
+            transformedRecipesArray.push({...data[key]})
+          }
+        }
+
+
+
+
+        return transformedRecipesArray;
+      })
+    )
+    .subscribe(
+      (recipes) => {
+
+
+        console.log(recipes);
+
+        this.recipes = recipes;
+
+        console.log(this.recipes);
+
+
+        this.recipeItemsChanged.next([...recipes]);
+
+      }
+    )
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O QUE REALMENTE SALVOU MEU CÓDIGO FOI AQUELE CALL DE 
+
+
+'this.recipeItemsChanged',
+
+
+
+
+
+
+em que chamamos '.next()' em cima do NOSSO SUBJECT de 'recipeItemsChanged'.....
+
+
+
+
+
+
+
+
+
+--> isso pq esse 'subject' ainda vai conseguir tomar 'subscribe' nos components que precisam 
+
+
+dele (
+
+
+    ou seja, o component de 'recipeList'...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS O QUE MAIS PRECISAMOS FAZER?
+
+
+
+
+
+
+
+
+
+--> devo ver as aulas do professor, é claro...
+
+
+
+
+
+
+
+
+como ficou o código de 'store' do professor?
+
+
+
+
+
+--> FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  onSaveData() {
+
+    this.recipeService.saveRecipes()
+    .subscribe(
+      (data) => {
+        console.log('Saved Recipes', data);
+      } 
+    )
+  }
+
+
+
+
+
+
+  E ASSIM:
+
+
+
+
+
+
+
+  saveRecipes() {
+
+    console.log('SAVED');
+    return this.http.put('https://recipebookdummyproject-default-rtdb.firebaseio.com/recipes.json',  ////será um request de PUT, e não de 'POST'... --> ISSO PQ QUEREMOS SEMPRE OVERWRITTAR O VALUE ANTIGO DE 'recipes' com o nosso NOVO value...
+  
+    this.recipes
+    );
+
+  
+  }
+
+
+
+
+
+
+
+
+
+
+
+--> mas esse é o meu código;
+
+
+o do professor fez a mesma coisa, mas executou o 'subscribe' no próprio service, para evitar o 
+
+
+'subscribe'
+
+
+lá no nosso component de 'HeaderComponent'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> TAMBÉM CABE RESSALTAR QUE O PROFESSOR HAVIA CRIADO 1 SERVICE PRÓPRIO PARA O 'SAVE' E 'LOAD' DE DATA,
+
+CHAMADO DE 
+
+'dataStorage.service.ts'..
+
+
+
+
+
+
+
+-> mas isso não é necessário, podemos 
+
+colocar isso 
+
+
+em nossos services comuns, também...
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK, MAS AQUI O PROFESSOR EXPLICA ALGO IMPORTANTE:
+
+
+
+
+
+
+
+
+
+
+** QUANDO VOCê USA O FIREBASE, SE VOCê FAZ __ POST_ DE DATA,
+
+
+
+ELE SEMPRE VAI __ CRIAR_ _NOVAS 'keys' com ids estranhos para 
+
+cada entry/post 
+
+na databsae/api do 
+
+firebase...
+
+
+
+
+
+
+** JÁ QUANDO VOCÊ USA 'PUT',
+
+
+ELE ASSUME QUE VOCÊ '''SABE''' O QUE VOCê ESTÁ COLOCANDO LÁ DENTRO,
+
+
+
+E QUE SE VOCÊ QUERIA IDs 
+
+para essas recipes, usando PUT,
+
+você teria de as colocar por conta própria...
+
+
+
+
+
+
+
+-> MAS AQUI ESTAMOS 'FINE' COM NORMAL ARRAY INDEXES,
+
+
+por isso usamos put e não definimos mais nada...
+
+
+
+
+
+
+
+
+
+
+
+--. AS COISAS ESTÃO FICANDO BOAS....
+
+
+
+--> JÁ CONSEGUIMOS FAZER 'STORE' DE DATA,
+
+
+
+
+agora o próximo passo (Que já fiz) É 
+
+
+
+CONSEGUIR FAZER __ O FETCH _ DE DATA.
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR ADMITE QUE USAR O SERVICE DE 'recipeBook' seria/é bom...
+
+
+
+
+
+---> mas ELE 
+
+QUER 
+
+COLOCAR EM UM SERVICE SEPARADO PARA QUE 
+
+
+
+CONSIGAMOS 
+
+
+ENCONTRAR 
+
+BEM FACILMENTE 
+
+
+ESSE ARQUIVO AÍ..
+
+
+

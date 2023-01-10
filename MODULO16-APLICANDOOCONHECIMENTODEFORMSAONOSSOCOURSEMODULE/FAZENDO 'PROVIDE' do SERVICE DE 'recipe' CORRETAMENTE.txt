@@ -1,0 +1,187 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O BUG QUE RECONHECEMOS NA 
+
+
+
+ÚLTIMA AULA´E UM BEM TRISTE...
+
+
+
+
+
+
+
+
+
+
+
+--> SE ADICIONAMOS UMA RECIPE,
+
+E AÍ 
+VAMOS ATÉ 
+
+'shop-list'
+
+
+E VOLTAMOS,
+
+
+
+
+
+
+
+PERDEMOS NOSSO ITEM.... ----> MAS O QUE ACONTECEU?
+
+
+
+
+
+
+
+
+
+
+--> A ISSUE, AQUI, É QUE 
+
+
+NÓS FIZEMOS 
+
+'provide'
+
+
+
+
+
+do SERVICE DE 'recipes'
+
+
+LÁ NO COMPONENT DE 'recipes',
+
+
+
+
+
+
+
+E ISSO QUER DIZER QUE 
+
+
+
+''TODOS OS COMPONENTS NESSA ÁREA COMPARTILHAM A MESMA INSTANCE'',
+
+
+
+
+
+
+
+MAS __ O PROBLEMA É QUE SE NÓS FAZEMOS 'NAVIGATE AWAY'
+
+para a area de 'shopping-list',
+
+
+
+O COMPONENT DE 'RECIPES '
+é destruído,
+
+
+
+
+E JUNTO COM ELE NOSSA INSTANCE 
+
+
+
+
+
+
+de 'recipe service'...
+
+
+
+
+
+
+
+--> PARA CONSERTAR ISSO, FAZEMOS O DE SEMPRE,
+
+ADICIONAMOS NOSSO SERVICE DE 'recipes'
+
+
+
+
+ao 'app.module.ts',
+
+
+
+PARA QUE SEJA APLICADO AO APP INTEIRO..
+
+
+
+
+
+
+
+
+--> POR MEIO DISSO,
+
+ASSEGURAMOS QUE 
+
+TEREMOS SÓ 1 INSTANCE DO SERVER DISPONÍVEL ,
+
+AO LONGO DO RUNTIME DO APp...
+
+
+
+
+
+
+
+
+--> agora se voltarmos ao nosso app,
+
+
+VEREMOS QUE O NEGÓCIO AINDA ESTARÁ VÁLIDO...
+
+
+
+
+
+
+
+
+--> agora tudo está funcionando ok....
+
+
+
+
+
+
+
+
+
+
+
+-> MAS AGORA AINDA TEMOS UM BUG,
+
+QUANDO CLICAMOS O BUTTON DE 'X',
+
+
+
+
+NÃO CONSEGUIMOS DELETAR O INGREDIENT (mas eu consigo, acho)...

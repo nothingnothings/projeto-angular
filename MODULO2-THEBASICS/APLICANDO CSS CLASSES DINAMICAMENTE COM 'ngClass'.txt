@@ -1,0 +1,648 @@
+
+
+
+
+
+
+
+
+
+
+--> OK... JÁ VIMOS EXEMPLOS PARA 'ngStyle'
+
+
+
+E 
+
+'ngIf'..
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA DEVEMOS VER ALGO RELACIONADO AO 'ngStyle',
+
+QUE É 
+
+o 
+
+
+'ngClass'...
+
+
+
+
+
+
+
+
+-> APRENDEMOS QUE O 
+
+'ngStyle' NOS DEIXA ASSIGNAR STYLES DINAMICAMENTE A ELEMENTOS,
+
+TIPO ASSIM:
+
+
+
+
+<p
+
+[ngStyle]="{
+    
+    backgroundColor: getColor()
+}"
+
+
+>The Server Component with id {{serverId}} is {{serverStatus}}
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> certo...
+
+
+
+
+
+
+
+MAS AGORA O PROFESSOR TAMBÉM VAI ADICIONAR 'ngClass',
+
+
+
+
+
+QUE E´DIFERENTE DE 'ngStyle'...
+
+
+
+
+
+
+
+
+
+
+
+
+'ngStyle' NOS PERMITIA __ MUDAR O _ CSS STYLE EM SI..
+
+
+
+
+
+
+
+
+
+-> JÁ O 'ngClass' 
+
+
+
+NOS PERMITE DINAMICAMENTE 
+
+ADICIONAR OU REMOVER CLASSES CSS..
+
+
+
+
+
+
+
+
+
+
+-> PRECISAMOS  CRIAR UMA DESSAS CLASSES....
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+O PROFESSOR COMEÇA ADICIONANDO O ARQUIVO DE 'server.component.css'
+
+
+
+LÁ NA KEY de 
+
+'styles'
+
+
+
+NO NOSSO COMPONENT de 'server.component.ts':
+
+
+
+
+
+
+
+
+@Component(
+  //uma das partes MAIS IMPORTANTES DO ANGULAR...
+  {
+    selector: 'app-server',
+    templateUrl: './server.component.html',
+    styleUrls: ['./server.component.css']
+  }
+)
+
+
+
+
+
+
+
+
+
+
+
+OK.... 
+
+
+
+
+
+
+
+
+
+MAS O PROFESSOR 
+
+
+
+
+
+QUER USAR _ SÓ STYLES/CLASSES,
+
+SEM UTILIZAR 
+
+
+__ARQUIVOS CSS...
+
+
+
+
+--> É POR ISSO QUE ELE VAI USAR A KEY DE 
+
+'styles',
+
+e não 'stylesUrls.'..
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+@Component(
+  //uma das partes MAIS IMPORTANTES DO ANGULAR...
+  {
+    selector: 'app-server',
+    templateUrl: './server.component.html',
+    // styleUrls: []
+    styles: [
+      
+    ]
+
+  }
+)
+
+
+
+
+
+----> OK... 
+
+AÍ O PROFESSOR ADICIONA UM 
+
+
+STYLE DE 
+
+'.online',
+
+
+
+QUE VAI QUERER COLOCAR UMA PROPRIEDAED 
+
+
+de 
+
+'color:white'....
+
+
+
+
+
+E
+X:
+
+
+
+
+
+
+
+
+@Component(
+  //uma das partes MAIS IMPORTANTES DO ANGULAR...
+  {
+    selector: 'app-server',
+    templateUrl: './server.component.html',
+    // styleUrls: []
+    styles: [ `
+      .online {
+          color: white;
+      }
+    `
+    ]
+
+  }
+)
+
+
+
+
+
+
+
+
+
+
+
+
+----> de volta ao 
+
+
+'server.component.html',
+
+
+
+
+estamos com o código assim:
+
+
+
+<p
+
+[ngStyle]="{
+    
+    backgroundColor: getColor()
+}"
+
+
+>The Server Component with id {{serverId}} is {{serverStatus}}
+</p>
+
+
+
+
+
+
+
+
+
+--> o professor diz que devemos adicionar 
+
+
+
+
+'ngClass',
+
+
+
+
+
+
+mas que o 'ngClass'
+
+TAMBÉM EXIGE A 
+
+
+ESCRITA 
+
+
+DE 
+
+'property binding',
+
+por isso escrevemos assim:
+
+
+
+
+
+<p
+
+[ngStyle]="{
+    
+    backgroundColor: getColor()
+}"
+
+
+[ngClass]=
+
+>The Server Component with id {{serverId}} is {{serverStatus}}
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PRECISAMOS TAMBÉM PASSAR UM _ VALOR__ AO 
+
+
+'ngClass'... -> o valor será 
+
+um JAVASCRIPT OBJECT...
+
+
+
+
+
+
+
+--> (
+
+    É CLARO QUE 
+
+
+    ESSE VALOR 'JAVASCRIPT' OBJECT' 
+
+
+
+    É USADO 
+
+
+
+
+    TANTO EM 
+
+    'ngStyle' 
+
+    e 'ngClass',
+
+
+    mas existem 
+
+
+    OUTRAS DIRECTIVES __ QUE _ EXIGEM 
+
+
+
+    VALORES DIFERENTES DE '{}' com keys no interior....
+)
+
+
+
+
+
+
+
+
+----> OK.. É UM JAVASCRIPT OBJECT QUE É PASSADO..
+
+
+
+
+
+
+
+
+
+e, para ngClass,
+
+
+
+A ESTRUTURA TAMBÉM É DE KEY-VALUE PAIRS,
+
+
+
+
+MAS 
+
+
+
+AS KEYS SÃO 
+
+
+
+OS CLASS NAMES DAS CLASSES CSS... ---> E OS VALUES SÁO 
+
+
+
+_ AS CONDITIONS_ QUE DETERMINAM _ SE UMA GIVEN CLASS 
+
+DEVE 
+
+SER 
+
+ANEXADA OU NÁO...
+
+
+
+
+
+
+ex?
+
+
+
+
+
+
+<p
+
+[ngStyle]="{
+    
+    backgroundColor: getColor()
+}"
+
+
+[ngClass]={
+    online: serverStatus === 'online'
+}
+
+>The Server Component with id {{serverId}} is {{serverStatus}}
+</p>
+
+
+
+
+
+
+
+
+
+
+OK, AGORA ESSA 
+
+CLASS DE '.online'
+
+SÓ SERÁ ANEXADA 
+
+
+SE 
+
+
+
+A PROPRIEDADE 
+
+
+'serverStatus'
+
+
+ESTIVER DEFINIDA COMO 'online'...
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+<p
+
+[ngStyle]="{
+    
+    backgroundColor: getColor()
+}"
+
+
+[ngClass]="
+{
+    online: serverStatus === 'online'
+}
+"
+>The Server Component with id {{serverId}} is {{serverStatus}}
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK, DEU CERTo....
+
+
+
+
+
+
+
+
+
+
+
+
+--> a class de 'online' foi adicionada 
+
+
+aos elementos 
+
+
+que ficaram 'online',
+
+
+GRAÇAS AO COMPORTAMNETO 
+
+
+
+
+
+
+
+DE 'ngClass' (
+
+    ele só ADICIONA UMA CSS CLASS SE ALGUMA 
+
+
+    CONDITION ESTIVER COMO TRUE...
+)
+
+
+
+
+
+
+
+
+
+
+OK... ESSE É UM EXEMPLO 
+
+PARA OUTRA BUILT-IN ATTRIBUTE 
+
+
+DIRECTIVE,
+
+
+
+a 'ngClass'...

@@ -1,0 +1,1294 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -----> JÁ APRENDEMOS BASTANTE SOBRE ROUTING..
+
+
+
+
+
+
+
+
+ -> ESTAMOS PRÓXIMOS DO FIM...
+
+
+
+
+
+
+
+ --> MAS VOCÊ 
+
+
+
+ JÁ VIU O QUE ACONTECE SE VOCê 
+
+ 
+ ESCREVE GARBAGE NA URLBAR?
+
+
+
+
+
+
+
+
+
+
+
+ -> O QUE ACONTECE É QUE __ NADA É CARREGADO... --> E GANHAMOS UM __ ERROR...
+
+
+
+
+
+
+
+
+ -> O ERROR SERÁ DE 
+
+ 'Cannot match any routes. URL segment: 'something ' ' 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -----> ISSO É ALGO QUE PROVAVELMENTE QUEREMOS MELHORAR,
+
+
+ QUEREMOS 
+
+ TER UM 
+
+ TIPO DE ERROR HANDLING 
+
+
+ '404'..
+
+
+
+
+
+ --> QUEREMOS _ 
+
+ REDIRECIONAR O USER A ALGUMA PAGE 
+
+
+ ESPECÍFICA 
+
+
+
+ SEMPRE QUE ELE TENTAR VISITAR UMA PAGE 
+
+
+ QUE 
+
+
+ NÓS NÃO TEMOS...
+
+
+
+
+
+
+
+
+ -->  ESSES SÃO OS TÓPICOS QUE O PROFESSOR ABORDARÁ AGORA:
+
+
+
+
+
+ 1) SETTAR UMA ROUTE QUE 
+
+
+ HANDLA TODAS AS ROUTES 
+
+
+ QUE __ NÃO TEMOS SETTADAS...
+ (wildcard)
+
+
+
+
+
+
+
+
+ 2)  __ E TAMBÉM VEREMOS O 'REDIRECT DE REQUESTS'...
+
+
+
+
+
+
+
+
+
+
+
+ ESSES SÃO 2 TÓPICOS MEIO CORRELATOS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> VAMOS COMEÇAR COM O SEGUNDO TÓPICO,
+
+
+ REDIRECTING...
+
+
+
+
+
+
+
+
+
+ -> PARA REDIRECIONAR NO ANGULAR (perder state),
+
+
+
+
+ TEMOS QUE SEGUIR UM APPROACH DIFERENTE...
+
+
+
+
+
+
+
+
+
+
+ --> PARA DEMONSTRAR ISSO,
+
+
+
+ O PROFESSOR ADICIONA UM NOVO 
+
+ COMPONENT AO NOSSO APP,
+
+
+
+
+ com 
+
+
+
+ ng g c 
+
+
+
+
+
+
+
+ -> ELE CHAMA O COMPONENT DE 'PAGE NOT FOUND'...
+
+
+
+
+
+
+
+
+
+
+--> será adicionado no root de nosso 
+
+
+projeto....
+
+
+
+
+
+
+
+
+
+
+--> será uma page dizendo 'this page was not found'...
+
+
+
+
+
+-> O PROFESSOR QUER RENDERIZAR ESSSA PAGE 
+
+
+
+
+
+
+
+NOS CASES EM QUE 
+
+
+
+VISITAMOS 
+
+UM PATH DEFINIDO (por enquanto),
+
+
+
+
+o path de 
+
+
+'something'...
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+{
+    path: 'something',
+    component: PageNotFoundComponent
+}
+
+
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule, Routes } from '@angular/router'; //USADO PARA DEFINIR ROUTES/ROUTING NO NOSSO APP...
+
+import { AppComponent } from './app.component';
+import { ServersComponent } from './servers/servers.component';
+import { UsersComponent } from './users/users.component';
+import { ServerComponent } from './servers/server/server.component';
+import { EditServerComponent } from './servers/edit-server/edit-server.component';
+import { HomeComponent } from './home/home.component';
+import { UserComponent } from './users/user/user.component';
+import { FormsModule } from '@angular/forms';
+import { ServersService } from './servers/servers.service';
+import { UsersService } from './users/users.service';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+
+const appRoutes: Routes = [
+  {
+    path: '', ////localhost:4200/   (É O _ DEFAULT, A HOME PAGE, PQ É o domain.com SEM O PATH depois)...
+    component: HomeComponent,
+  },
+
+  // {
+  //   /////é a nossa primeira route... cada object nesse array é uma ROUTE, que é governada por um 'PAGE-COMPONENT' (o page-component é a ROUTE/page, no caso)...
+  //   path: 'users', ///   localhost:4200/users
+  //   component: UsersComponent, ///users.component.html
+  // },
+  // {
+  //   path: 'users/:userId', ////exemplo de DYNAMIC SEGMENTS (carregar user específico, dentro de list de users.... mesma coisa vista no NODEJS)...
+  //   component: UserComponent,
+  // },
+
+
+
+  {
+    /////é a nossa primeira route... cada object nesse array é uma ROUTE, que é governada por um 'PAGE-COMPONENT' (o page-component é a ROUTE/page, no caso)...
+    path: 'users', ///   localhost:4200/users
+    component: UsersComponent, ///users.component.html
+    children: [
+      {
+        path: ':userId',    //localhost:4200/users/:userId
+        component: UserComponent,
+      },
+    ]
+  },
+
+
+
+
+  // {
+  //   path: 'users/:userId/:name',   ////PODEMOS TER MÚLTIPLOS SEGMENTOS DINÂMICOS NAS NOSSAS URLS...
+  //   component: UserComponent
+  // },
+
+  // { /////SEM _ NESTED_ ROUTES_....
+  //   path: 'servers', //localhost:4200/servers
+  //   component: ServersComponent, //servers.component.html
+  // },
+
+
+
+  { ///COM NESTED ROUTES...
+    path: 'servers', //localhost:4200/servers
+    component: ServersComponent, //servers.component.html
+    children: [ ///child routes...
+      {
+        path: ':id',
+        component: ServerComponent,
+      },
+    
+      {
+        path: ':id/edit',
+        component: EditServerComponent,
+      },
+
+
+
+   
+
+    ]
+  },
+
+
+
+
+  {
+    path: 'something',
+    component: PageNotFoundComponent
+}
+
+
+
+  // {
+  //   path: 'servers/:id',
+  //   component: ServerComponent,
+  // },
+
+  // {
+  //   path: 'servers/:id/edit',
+  //   component: EditServerComponent,
+  // },
+];
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    ServersComponent,
+    UsersComponent,
+    ServerComponent,
+    EditServerComponent,
+    UserComponent,
+    PageNotFoundComponent,
+  ],
+  imports: [BrowserModule, FormsModule, RouterModule.forRoot(appRoutes)], ///vocÊ deve ESCREVER o 'RouterModule', declará-lo aqui, para o TER COMO __ FUNCIONALIDADE DE SEU APP (routing).. --> E PRECISAMOS DO METHOD DE '.forRoot(contComSuasRoutes)' PARA ACTUALLY REGISTRAR NOSSAS ROUTES NO NOSSO APp...
+  //// e aí você deve usar 'router-outlet' lá no seu 'app.component.html' para CARREGAR SUAS ROUTES a partir da url...
+  providers: [ServersService, UsersService],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COM ISSO,
+
+
+SE SALVARMOS 
+
+
+ESSE SETUP E ENTÃO 
+
+
+
+seguirmos até esse path,
+
+tipo 
+
+
+
+
+localhost:4200/something,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+FICAREMOS COM UMA PAGE/COMPONENT BEM FEIO DE 
+
+'page not found'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> MAS VAMOS MUDAR 
+
+O 
+
+'something',
+
+
+
+
+colocar o path de 
+
+'not-found',
+
+e 
+
+
+também
+
+
+
+'something'...
+
+
+
+
+
+
+
+
+INICIALMENTE, FICA ASSIM:
+
+
+
+
+
+
+  {
+    path: 'something',
+    component: PageNotFoundComponent
+},
+
+  {
+    path: 'not-found',
+    component: PageNotFoundComponent
+}
+
+
+
+
+
+
+
+
+
+-------> ok.... --> mas 
+
+
+AGORA VAMOS FAZER UMA GAMBIARRA... -> EM VEZ 
+DE 
+
+ESCREVERMOS 
+
+'component'
+
+aqui mais uma vez,
+
+
+e nos repetirmos,
+
+
+
+O PROFESSOR DIZ QUE 
+
+
+
+
+__ PODEMOS USAR UMA PROPRIEDADE __ ESPECIAL,
+
+
+QUE PODEMOS 
+
+
+ADICIONAR A __ QUALQUER _ UMA 
+
+
+
+
+DE NOSSAS 'ROUTES' (objects ROUTE nesse 'app.module.ts')...
+
+
+
+
+
+-> QUE PROPRIEDADE É ESSA?
+
+
+
+
+
+
+
+
+
+
+--> 
+
+
+
+É UMA PROPRIEDADE QUE VOCÊ UTILIZA QUANDO VOCê 
+
+
+
+__ NÃO QUER ESPECIFICAR ALGUM 'COMPONENT TO LOAD',
+
+
+
+e sim 
+
+
+
+quer apenas dizer 
+
+
+
+
+'redirectTo:'
+
+
+
+
+
+
+
+
+
+
+--> O 'redirectTo:'
+
+
+É __ SIMPLESMENTE __ UMA 
+
+
+ALTERNATIVA 
+
+
+
+AO 
+
+'component'...
+
+
+
+
+
+
+
+
+
+
+-> VOCÊ O ESCREVE ASSIM:
+
+
+
+      {
+    path: 'not-found',
+    component: PageNotFoundComponent
+},
+
+
+  {
+    path: 'something',
+    redirectTo: 'not-found'
+},
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, AÍ EM 'redirectTo'
+
+
+
+PODEMOS ESPECIFICAR _ QUALQUER PATH 
+
+
+
+PARA REDIRECIONAR 
+
+
+
+
+nosso user... -----> 
+
+
+
+
+
+
+
+E 
+
+ESSE PATH, AQUI,
+
+
+COLOCAREMOS COMO 
+
+'not-found',
+
+
+
+PARA 
+
+
+
+
+ _ QUE _ O USER _ SIGA _ 
+
+ ATÉ 
+
+ ESSA ROUTE DE 
+
+ 'not-found',
+
+ que carrega o component de 'page-not-found'...
+
+
+
+
+
+
+
+ ex:
+
+
+
+
+
+
+
+
+      {
+    path: 'not-found',
+    component: PageNotFoundComponent
+},
+
+
+  {
+    path: 'something',
+    redirectTo: 'not-found'
+},
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO, E ISSO REALMENTE FUNCIONOU:
+
+
+
+
+
+
+
+
+
+  {
+    path: 'something',
+    redirectTo: 'not-found'  ///USADO _ PARA _ REDIRECIONAR nosso user quando ele digita paths que não existem na url bar... --> vamos redirecionar à page de 'PageNotFoundComponent', que é nossa page de 'erro 404, not found'...
+},
+
+{
+  path: 'not-found',
+  component: PageNotFoundComponent
+}
+
+
+
+
+
+
+
+
+
+
+
+-------> AGORA VEREMOS QUE SOMOS AUTOMATICAMENTE REDIRECIONADOS QUANDO ESCREVEMOS 
+
+
+
+'/something' na nossa url...
+
+
+
+
+
+
+
+
+
+
+
+--> É ASSIM QUE PODEMOS USAR O 'REDIRECTION' no nosso app...
+
+
+
+
+
+
+--> É CLARO QUE NÃO É CONVENIENTE DEFINIR '/something' como o alvo de nosso redirect aqui,
+
+
+
+PQ 
+
+
+
+VOCÊ 
+
+
+
+
+NÃO É CAPAZ DE DEFINIR TODAS AS URLS ERRADAS QUE O USER PODE ESCREVER...
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA CONSEGUIR FAZER 'CATCH' DE __ TODAS AS ROUTES_ QUE 
+
+O 
+
+USER PODE ESCREVER DE FORMA ERRADA,
+
+TODOS OS PATHS,
+
+
+o que 
+
+vocÊê 
+
+
+
+faz é usar 
+
+
+A MARCAÇAÕ 
+
+DE 
+
+'double asterisk' (**),
+
+
+
+
+
+
+
+
+QUE É 
+
+
+A 'WILDCARD ROUTE',
+
+
+QUE 
+
+VAI 
+
+
+'CATCH ALL ROUTES THAT YOU DONT KNOW'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const appRoutes: Routes = [
+  {
+    path: '', ////localhost:4200/   (É O _ DEFAULT, A HOME PAGE, PQ É o domain.com SEM O PATH depois)...
+    component: HomeComponent,
+  },
+
+
+
+  {
+    /////é a nossa primeira route... cada object nesse array é uma ROUTE, que é governada por um 'PAGE-COMPONENT' (o page-component é a ROUTE/page, no caso)...
+    path: 'users', ///   localhost:4200/users
+    component: UsersComponent, ///users.component.html
+    children: [
+      {
+        path: ':userId',    //localhost:4200/users/:userId
+        component: UserComponent,
+      },
+    ]
+  },
+
+
+
+  { ///COM NESTED ROUTES...
+    path: 'servers', //localhost:4200/servers
+    component: ServersComponent, //servers.component.html
+    children: [ ///child routes...
+      {
+        path: ':id',
+        component: ServerComponent,
+      },
+    
+      {
+        path: ':id/edit',
+        component: EditServerComponent,
+      },
+
+
+
+   
+
+    ]
+  },
+
+
+
+
+  {
+    // path: 'something',
+    path: '**',   ///o double asterisk significa 'CATCH ALL THE ROUTES THAT ARE NOT DEFINED ABOVE' (ou seja, é usado com pages de erro 404)...
+    redirectTo: 'not-found'  ///USADO _ PARA _ REDIRECIONAR nosso user quando ele digita paths que não existem na url bar... --> vamos redirecionar à page de 'PageNotFoundComponent', que é nossa page de 'erro 404, not found'...
+},
+
+{
+  path: 'not-found',
+  component: PageNotFoundComponent
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-_> É CLARO QUE, ASSIM COMO O REACT-ROUTER,
+
+
+
+ _ A ORDEM_ 
+
+
+ DE ESCRITA 
+
+ DE SUAS 
+
+ ROUTES É _SUPER IMPORTANTE...
+
+
+
+
+
+
+
+
+ --> 
+
+
+
+ ESSA ROUTE 
+ DE 
+
+
+ '**',
+
+
+
+ que deve CATCHEAR TODAS AS ROUTES NÃO DEFINIDAS ANTERIROMENTE,
+
+
+
+
+ deve ficar LÁ PELO FINAL...
+
+
+
+
+
+
+
+
+ ----> ELA DEVE _SER LITERALMENTE _ 
+
+ A ÚLTIMA ROUTE NO SEU ARRAY DE ROUTES...
+
+
+
+
+
+
+
+
+
+
+
+
+ FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ const appRoutes: Routes = [
+  {
+    path: '', ////localhost:4200/   (É O _ DEFAULT, A HOME PAGE, PQ É o domain.com SEM O PATH depois)...
+    component: HomeComponent,
+  },
+
+  // {
+  //   /////é a nossa primeira route... cada object nesse array é uma ROUTE, que é governada por um 'PAGE-COMPONENT' (o page-component é a ROUTE/page, no caso)...
+  //   path: 'users', ///   localhost:4200/users
+  //   component: UsersComponent, ///users.component.html
+  // },
+  // {
+  //   path: 'users/:userId', ////exemplo de DYNAMIC SEGMENTS (carregar user específico, dentro de list de users.... mesma coisa vista no NODEJS)...
+  //   component: UserComponent,
+  // },
+
+
+
+  {
+    /////é a nossa primeira route... cada object nesse array é uma ROUTE, que é governada por um 'PAGE-COMPONENT' (o page-component é a ROUTE/page, no caso)...
+    path: 'users', ///   localhost:4200/users
+    component: UsersComponent, ///users.component.html
+    children: [
+      {
+        path: ':userId',    //localhost:4200/users/:userId
+        component: UserComponent,
+      },
+    ]
+  },
+
+
+
+
+  // {
+  //   path: 'users/:userId/:name',   ////PODEMOS TER MÚLTIPLOS SEGMENTOS DINÂMICOS NAS NOSSAS URLS...
+  //   component: UserComponent
+  // },
+
+  // { /////SEM _ NESTED_ ROUTES_....
+  //   path: 'servers', //localhost:4200/servers
+  //   component: ServersComponent, //servers.component.html
+  // },
+
+
+
+  { ///COM NESTED ROUTES...
+    path: 'servers', //localhost:4200/servers
+    component: ServersComponent, //servers.component.html
+    children: [ ///child routes...
+      {
+        path: ':id',
+        component: ServerComponent,
+      },
+    
+      {
+        path: ':id/edit',
+        component: EditServerComponent,
+      },
+
+
+
+   
+
+    ]
+  },
+
+
+
+
+
+
+{
+  path: 'not-found',
+  component: PageNotFoundComponent
+},
+
+
+{////////////ESSA ROUTE DEVE SER SEMPRE ___ ABSOLUTAMENTE A ÚLTIMA ROUTE DE NOSSO ARRAY DE ROUTES, para ser 'catch-all' de todas as routes que não encaixarem naquelas definidas logo acima....
+  path: '**',   ///o double asterisk significa 'CATCH ALL THE ROUTES THAT ARE NOT DEFINED ABOVE' (ou seja, é usado com pages de erro 404)...
+  redirectTo: 'not-found'  ///USADO _ PARA _ REDIRECIONAR nosso user quando ele digita paths que não existem na url bar... --> vamos redirecionar à page de 'PageNotFoundComponent', que é nossa page de 'erro 404, not found'...
+},
+
+
+
+
+
+  // {
+  //   path: 'servers/:id',
+  //   component: ServerComponent,
+  // },
+
+  // {
+  //   path: 'servers/:id/edit',
+  //   component: EditServerComponent,
+  // },
+];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> se você não fizer isso,
+
+
+
+você será redirecionado de forma errada...
+
+
+
+
+
+
+--> ok,
+
+
+agora 
+
+t
+odas as routes 
+
+funcionam,
+
+
+
+
+
+E AGORA 
+
+QUANDO VOCÊ DIGITAR BOBAGEM,
+
+
+SERÁ REDIRECIONADO PARA ESSA 
+
+PAGE DE ERRO 404,
+
+
+TUDO GRAÇAS A ESSE 
+
+
+WILDCARD ROUTE...
+
+
+
+
+
+
+
+
+
+
+--> essa wildcard route redireciona para a route de 'page not found',
+
+que é a que queremos displayar, nesses casos..
+
+
+
+
+
+
+
+
+
+
+
+
+----> É ASSIM QUE VOCÊ PODE 'REDIRECT'
+
+e então cobrir routes que você não 
+
+
+
+
+definiu
+
+no seu código...

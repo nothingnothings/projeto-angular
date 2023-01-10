@@ -1,0 +1,755 @@
+
+
+
+
+
+
+
+
+
+
+
+_> NESSE ASSIGNMENT,
+
+DEVEMOS:
+
+
+
+
+
+
+
+1) ADICIONAR UM INPUT FIELD QUE __ UPDATA_  UMA PROPERTY ('username') 
+
+
+DE 
+
+NOSSO 
+
+
+COMPONENT,
+
+TUDO VIA 
+
+
+
+
+'TWO-WAY-BINDING'...
+
+
+
+
+
+
+
+
+
+2) OUTPUTTAR ESSA PROPRIEDADE 'USERNAME' 
+
+
+apropriadamente, por meio de STRING INTERPOLATION (
+
+    em um <p> 
+
+    LOGO ABAIXO 
+
+    DO INPUT...
+)
+
+
+
+
+
+3) ADICIONAR UM BUTTON _ QUE __ SÓ PODE SER CLICADO_ 
+
+SE 
+
+O 
+
+USERNAME _ NÃO _ FOR UMA EMPTY STRING....
+
+
+
+
+
+
+4) AO SER CLICADO ESSE BUTTON,
+
+
+O 
+
+
+
+'USERNAME' (a property) DEVERÁ SER RESETTADA,
+
+
+
+colocado seu valor como uma EMPTY STRING....
+
+
+
+
+
+
+
+
+
+
+
+
+--> vou colocar esse component no 'novoprojeto2'...
+
+
+
+
+
+ng g c assignment2component
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO FOI FICANDO ASSIM:
+
+
+
+
+
+
+
+
+
+
+<hr />
+
+<input 
+placeholder="Insert Username" 
+type="text"
+class="form-control"
+[(ngModel)]="userName"
+/>
+<p>{{ userName }}</p>
+<button
+[disabled]="!userName"
+(click)="onButtonClick"
+>
+Click me
+</button>
+
+
+
+
+
+
+
+
+
+
+----> e assim:
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-assignment2component',
+  templateUrl: './assignment2component.component.html',
+  styleUrls: ['./assignment2component.component.css']
+})
+export class Assignment2componentComponent implements OnInit {
+
+
+  username = '';
+
+
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+
+
+  onInputValueChange(event: Event) {
+
+  }
+
+
+
+  onButtonClick() {
+    this.username = '';
+  }
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+OK, O CÓDIGO REALMENTE FICOU ASSIM:
+
+
+
+
+
+
+
+
+<hr />
+
+<input 
+placeholder="Insert Username" 
+type="text"
+class="form-control"
+[(ngModel)]="username"
+/>
+<p>{{ username }}</p>
+<button
+[disabled]="!username"
+(click)="onButtonClick()"
+>
+Click me
+</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS COMO O PROFESSOR ESCREVEU?
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> ele escreveu assim:
+
+
+
+
+
+
+
+
+ <label>Username</label>
+
+
+ <input 
+ type="text"
+ class="form-control"
+
+ >
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ----> OK.... AGORA O PROFESSOR QUER BINDAR ESSE USER à propriedade 
+
+ 'username' 
+
+
+
+ no nosso component..
+.
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export class Assignment2componentComponent implements OnInit {
+
+
+  username = '';
+
+
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+  // onInputValueChange(event: Event) {
+
+  // }
+
+
+
+  onButtonClick() {
+    this.username = '';
+  }
+
+
+}
+
+
+
+ <label>Username</label>
+
+
+ <input 
+ type="text"
+ class="form-control"
+
+ >
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> AÍ O PROFESSOR HAVIA NOS ENSINADO QUE _ PODEMOS_ ADICIONAR UM 
+
+
+
+
+TWO-WAY BINDING EM UM DETERMINADO COMPONENT ATRAVÉS DA ESCRITA DE 
+
+'[()]' 
+
+
+
+
+
+
+
+
+----> ESSA É A SINTAXE 
+
+
+
+
+TWO-WAY BINDING...
+
+
+
+
+
+
+
+-> DENTRO DE [()],
+
+COLOCAMOS 
+
+'ngModel' (
+
+    que deve ser importado no seu projeto...
+)
+
+
+
+
+
+
+
+
+-> POR FIM, ATRIBUÍMOS/VINCULAMOS/COMUNICAMOS 
+
+QUE 
+
+
+DEVERÁ SER A PROPRIEDADE DE 
+
+
+'username'
+
+QUE DEVERÁ 
+SER AFETADA POR ESSE TWO-WAY BINDING (
+
+    e que 
+    ela também causará 
+
+
+
+
+    A AFETAÇÃO de todos os components que dependem dela,
+
+    por isso a two-way binding...
+)
+
+
+
+
+
+
+
+
+
+-> por isso que escrevemos 
+
+
+[(ngModel)]="username"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... ISSO FARÁ COM QUE O USERNAME SEJA _ UPDATADO_ A PARTIR DE CADA 
+
+
+KEYSTROKE DO USER...
+
+
+
+
+
+
+
+-> MAS PARA SERMOS CAPAZES DE VER ISSO,
+
+PROFESSOR ESCREVE UM 
+
+<p>{{username}}</p>
+
+
+
+
+LOGO ABAIXO DESSA TAG...
+
+
+
+
+
+PROFESSOR RECARREGA O SERVERR...
+
+
+
+
+
+
+
+
+
+-> SE DIGITAMOS ALGUMA COISA ALI,
+
+VEMOS 
+
+
+
+
+O VALUE __ LOGO ABAIXO,
+NAQUELE p...
+
+
+
+
+
+
+
+
+
+-> JÁ O BUTTON É CODADO ASSIM:
+
+
+<hr />
+
+<input 
+placeholder="Insert Username" 
+type="text"
+class="form-control"
+[(ngModel)]="username"
+/>
+<p>{{ username }}</p>
+<button
+[disabled]="!username"
+(click)="onButtonClick()"
+>
+Reset User
+</button>
+
+
+
+
+
+
+
+
+
+---------> posso colocar umas classes,
+
+como 'btn btn-primary'..
+
+
+
+
+
+
+
+
+-> PROFESSOR QUER/QUERIA DESABILITAR NOSSOS BUTTONS NO CASO 
+
+
+
+DA PROPRIEDAE 
+
+'username'
+
+
+ESTAR VAZIA.... -> 
+
+
+
+
+
+
+
+
+para isso,
+
+APRENDEMOS PROPERTY BINDING,
+
+NO CASO
+A 
+
+PROPRIEDADE 
+DE 
+
+'disabled'..... -----> APESAR DE 
+
+
+
+
+
+JÁ TERMOS UTILIZADO ESSA PROPRIEDADE 
+
+
+
+_ UM MONTE DE  VEZES,
+
+
+
+
+É DELA QUE PRECISAREMOS, AQUI..
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+-> 'disabled' -->  VOCÊ PODERIA SETTAR ESSE 'disabled' 
+
+
+
+COMO ALGUMA PROPERTY QUE É TRUE OU FALSE,
+
+
+OU ENTÃO SETTAR O VALUE DIRETAMENTE COMO 'true' ou false.
+
+
+
+
+
+
+
+
+
+
+-> VOC~E PODE ESCREVER UMA EXPRESSION ... ->  E É ISSO QUE EU FIZ,
+
+rodei 
+
+
+
+'[disabled]="!username"' 
+
+
+
+(
+    pq o username INICIAL É UMA EMPTY STRING....
+) 
+
+
+
+
+
+OK, EM OUTRAS PALAVRAS, É ASSIM QUE PODEMOS USAR 'PROPER  _KEYBINDING',
+
+
+COM QUALQUER 
+
+
+
+EXPRESSION ,
+
+
+EXPRESSION QUE NOS RETORNE O 'VALUE' QUE 
+
+
+A PROPERTY QUE 
+
+
+ESTAMOS 'binding to' ESPERA...
+
+
+
+(
+
+    no caso de 
+    'disabled',
+
+    isso é TRUE OU FALSE.. 
+)
+
+
+
+
+
+
+-> PROFESSOR COLOCA ENTÃO UM
+
+
+
+
+um `click listener` NESSE BUTTON,
+
+
+
+PARA QUE TAMBÉM SEJA POSSÍVEL RESETTAR 
+
+O USERNAME QUANDO ELE FOR CLICADO..
+
+
+
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+(click)="onReset()" 
+
+
+
+
+
+
+
+
+-> AÍ CODAMOS UM NEGÓCIO Lá 
+
+ 
+
+eM 'xxx.component.ts'
+
+PARA 
+
+
+ASSEGURAR ESSE 'RESET'....
+
+
+
+
+
+
+
+
+
+OK, COM TUDO ISSO NO LUGAR,
+
+
+NOSSO CÓDIGO ESTÁ FUNCIONANDO DO JEITO QUE DESEJAMOS...

@@ -1,0 +1,940 @@
+
+
+
+
+
+
+
+
+
+
+--> NA ÚLTIMA AULA,
+
+VIMOS NGIF,
+ 
+
+ que é 
+
+
+ UMA DIRECTIVE SUPER IMPORTANTE..
+
+
+
+
+
+
+
+ -> E 'NgIf'
+
+
+
+
+era aquilo que chamamos de 
+
+
+'
+STRUCTURAL DIRECTIVE',
+
+
+
+UMA DIRECTIVE QUE ALTERA O DOM EM SI (adiciona/remove um elemento)...
+
+
+
+
+
+
+
+
+
+
+
+
+O OUTRO TYPE DE DIRECTIVE 
+
+
+É CHAMADO DE 
+
+
+
+'ATTRIBUTE DIRECTIVES',
+
+
+
+
+
+QUE SÃO CHAMADS 
+
+
+
+
+ASSIM PQ __ 
+
+
+ELAS __REALMENTE 
+
+
+
+SE PARECEM 
+
+
+__EXATAMENTE _ COMO 
+
+
+'NORMAL HTML ATTRIBUTES' 
+
+
+
+(
+
+
+    CONTRARIAMENTE A STRUCTURAL DIRECTIVES,
+
+
+    ATTRIBUTE DIRECTIVES __ NÃO ADICIONAM OU REMOVEM ELEMENTOS;
+
+    ELES APENAS__ ALTERAM O ELEMENTO EM QUE FORAM POSICIONADAS...
+)
+
+
+
+
+
+
+
+
+
+--> TODAS AS 'ATTRIBUTE DIRECTIVES'
+
+
+
+
+NÃO PRECISAM DE '*' na sua escrita para funcionarem (ao contrário de STRUCTURAL DIRECTIVES)...
+
+
+
+
+
+
+
+
+
+
+
+
+--> VAMOS ADICIONAR UMA 
+
+
+
+ATTRIBUTE DIRECTIVE..
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+
+VAMOS ATÉ O COMPONENT DE 'server'
+
+
+
+
+E _ __ 
+
+AÍ _ 
+VEMOS 
+
+
+o código:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///este component (E TODOS OS OUTROS) podem ser gerados por meio da CLI, por meio do comando 'ng generate component COMPONENTNAME'....
+//O SHORTCUT PARA O GENERATE DOS COMPONENTS NO CLI é 'ng g c' (ng generate components), e aí o COMPONENT NAME QUE VOCÊ QUER...
+
+
+import { Component } from '@angular/core'; ////ISTO É NECESSÁRIO, PQ COMUNICA AO TYPESCRIPT QUE vamos querer definir um component/usar aqule decorator de COMPONENT..
+////angular é subdividido em diversas PACKAGES, uma delas é o 'core', que é SUPER IMPORTANTE...
+
+@Component(
+  //uma das partes MAIS IMPORTANTES DO ANGULAR...
+  {
+    selector: 'app-server',
+    templateUrl: './server.component.html'
+  }
+)
+export class ServerComponent {
+  serverId: number = 10;
+  serverStatus: string = 'offline';
+
+
+
+  getServerStatus() {
+    return this.serverStatus;
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> POR ENQUANTO,
+
+
+
+
+
+O CÓDIGO DE 'serverStatus'
+
+
+
+sempre está como OFFLINE...
+
+
+
+
+
+
+
+
+
+
+
+--> MAS VAMOS ALTERAR ISSO.... --> DIGAMOS QUE QUEREMOS ALTERAR ISSO 
+
+
+
+DINAMICMANETE....
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR USA UM CONSTRUCTOR,
+
+E 
+
+AÍ 
+
+
+O 
+PROFESSOR 
+DEFINE 
+
+O 
+
+
+
+'serverStatus'
+
+
+COMO 
+
+
+UM __ VALOR_ ALEATÓRIO,
+
+
+
+por meio de 'Math.random()'... --> SE O VALOR ACABAR COMO MAIOR DO QUE '0.5',
+
+
+vamos querer 
+QUE O STATUS SEJA DEIXADO COMO ONLINE,
+
+CASO CONTRÁRIO VAMOS QUWERER 'offline'...
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+@Component(
+
+  {
+    selector: 'app-server',
+    templateUrl: './server.component.html'
+  }
+)
+export class ServerComponent {
+  serverId: number = 10;
+  serverStatus: string = 'offline';
+
+
+
+    constructor() {
+        this.serverStatus = Math.random() > 0.5 ? 'online' : 'offline'
+    }
+
+  getServerStatus() {
+    return this.serverStatus;
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO,
+
+DEIXAREMOS DE RECEBER O MESMO 'STATUS' O TEMPO INTEIRO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, FICAMOS COM UM NEGÓCIO ASSIM::
+
+
+
+
+
+
+<p>The Server Component with id {{serverId}} is {{serverStatus}}
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+OUTPUT FICA ASSIM:
+
+
+The Server Component with id 10 is offline
+
+The Server Component with id 10 is offline
+
+The Server Component with id 10 is online
+
+
+
+
+
+
+
+
+
+----------------------
+
+
+
+
+
+
+
+
+temos 2 diferentes STATUS Aí... --> AGORA DIGAMOS QUE QUEREMOS __ ALTERAR_ A COLOR,
+
+
+
+
+A 
+
+
+'BACKGROUND COLOR'
+
+desse component,
+
+
+A DEPENDER DO SERVER STATUS..
+
+
+
+
+
+
+
+
+
+
+-> PARA ISSO,
+
+
+PODEMOS/DEVEMOS USAR OUTRA DIRECTIVE,
+
+'ngStyle',
+
+
+
+
+
+QUE DEVEMOS POSICIONAR DENTRO DO ELEMENTO HTML QUE QUEREMOS QUE RECEBA UM STYLING ESPECIAL..
+
+
+
+
+
+EX:
+
+
+
+
+
+<p
+
+[ngStyle]=""
+
+
+>The Server Component with id {{serverId}} is {{serverStatus}}
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> NESSE 'ngStyle',
+
+
+
+
+
+VAMOS COLOCAR SQUARE BRACKETS PQ ISSO É 
+
+
+
+'PROPERTY BINDING'...
+
+
+
+
+
+ 
+---> A DIRECTIVE NAME É 'ngStyle',
+
+
+E AS []
+
+
+SÓ EXISTEM PQ QUEREMOS __ INDICAR__ QUE 
+
+QUEREMOS __ BINDAR__ ALGUMA PROPERTY A 
+
+
+ESSA DIRECTIVE.... --> e essa 'property name' 
+
+
+
+
+É 'ngStyle'....   -----> VEREMOS ISSO EM PRÁTICA COM NOSSAS PRÓPRIAS DIRECTIVES,
+
+
+MAIS TARDE..
+
+
+
+
+
+
+
+
+
+
+
+
+MAS JÁ É BOM ENTENDER QUE 
+
+
+
+
+''''UMA DIRECTIVE _ É ALGO TOTALMENTE __ DIFERENTE DE UMA PROPERTY BINDING'''.... 
+
+
+
+
+
+
+
+----> E, AQUI, ESTAMOS 'BINDING TO A PROPERTY OF THE DIRECTIVE'....
+
+
+
+
+
+
+
+
+
+
+
+
+-> ESSA PROPRIEDADE 
+
+
+'ngStyle'
+
+
+
+EXPECTS RECEBER UM __ OBJECT _ JAVASCRIPT...
+
+
+
+
+
+
+
+
+POR ISSO ESCREVEMOS ASSIM:
+
+
+
+
+
+
+
+
+
+<p
+
+[ngStyle]="{} "
+
+
+>The Server Component with id {{serverId}} is {{serverStatus}}
+</p>
+
+
+
+--------------------------------------
+
+
+
+
+
+
+
+
+
+AÍ DENTRO DESSE OBJECT,
+
+
+
+
+DEFINIMOS 
+
+
+
+
+
+_ KEY_VALUE PAIRS DO 
+
+
+
+'style name' (key)
+
+
+
+E O __ VALUE _ DO STYLE (como o value)...
+
+
+
+
+
+
+
+
+
+
+
+
+--> isso quer dizer que vocÊ pode escrever algo como:
+
+
+
+
+
+
+
+<p
+
+[ngStyle]="{
+
+    backgroundColor: 'red'
+} "
+
+
+>The Server Component with id {{serverId}} is {{serverStatus}}
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+PODERÍAMOS DEIXAR COMO 'red',
+SIM,
+
+
+MAS VAMOS QUERER 
+
+DEIXAR COMO ALGO 'DEPENDENDO DO SERVER STATUS' (condicional),
+
+
+POR ISSO O PROFESSOR ESCREVE UMA TERNARY EXPRESSIOPN...
+
+
+
+
+
+
+
+
+--> NA VERDADE, ELE NÃO VAI QUERER UMA TERNARY EXPRESSION, E SIM 
+
+UM _ METHOD_,
+
+
+METHOD DE 'getColor'...
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+
+<p
+
+[ngStyle]="{
+    
+    backgroundColor: getColor()
+}"
+
+
+>The Server Component with id {{serverId}} is {{serverStatus}}
+</p>
+
+
+
+
+
+
+
+
+
+
+----> OK.... ---> ISSO QUER DIZER QUE ENTRE OS "" NÓS ESTAMOS EXECUTANDO CÓDIGO TYPESCRIPT, e é por isso que 
+
+conseugimos chamar esse method...
+
+
+
+
+
+
+
+
+
+
+
+-> OK, AÍ TEMOS 'getColor()'
+
+...
+
+
+
+
+
+
+
+
+--> O getColor
+
+deverá 
+
+RETORNAR VERDE SE O STATUS DO COMPONENT ESTIVER COMO ONLINE,
+
+
+E VERMELHO CASO CONTRÁRIO....
+
+
+
+
+
+
+
+
+
+EX :
+
+
+
+
+
+
+
+
+
+@Component(
+  //uma das partes MAIS IMPORTANTES DO ANGULAR...
+  {
+    selector: 'app-server',
+    templateUrl: './server.component.html'
+  }
+)
+export class ServerComponent {
+  serverId: number = 10;
+  serverStatus: string = 'offline';
+
+  
+  constructor() {
+    this.serverStatus = Math.random() > 0.5 ? 'online' : 'offline'
+}
+
+
+  getServerStatus() {
+    return this.serverStatus;
+  }
+
+
+
+  getColor() {
+    if (this.serverStatus === 'online') {
+      return 'green'
+    }
+
+    return 'red'
+  }
+
+}
+
+
+
+
+-----------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok....
+
+
+deu certo....
+
+
+
+
+
+
+
+
+LEMBRANDO, O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+<p
+
+[ngStyle]="{
+    
+    backgroundColor: getColor()
+}"
+
+
+>The Server Component with id {{serverId}} is {{serverStatus}}
+</p>
+
+
+
+
+
+
+
+
+
+
+NOSSO BACKGROUND COLOR REALMENTE FOI AFETADO 
+
+
+
+POR ESSE CÓDIGO..
+
+
+
+
+
+
+
+
+--> ou seja,
+
+'ngStyle'
+
+
+
+NOS PERMITE _ UPDATAR__ O STYLE DE NOSSOS ELEMENTOS DE FORMA _ DINÂMICA...
+
+
+
+
+
+
+
+
+
+
+NGSTYLE --> TE DEIXA DINAMICAMENTE UPDATAR STYLES....
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE SE O SERVERSTATUS UPDATAR AO LONGO DO TEMPO,
+
+ESSE STYLE TAMBÉM 
+
+SERÁ ALTERADO (
+    o binding continua funcionando/ativo...
+)
+
+
+
+
+
+
+
+
+
+
+
+OK, ESSE É O NGSTYLE,
+
+
+UM ATTRIBUTE DIRECTIVE ADICIONADO COMO UM ATTRIBUTE (em cada elemento),
+
+
+
+
+E QUE 
+tAMBÉM 
+
+USA 'property binding' para ser configurado.. (pq é escrito assim: ''' [ngStyle] '')

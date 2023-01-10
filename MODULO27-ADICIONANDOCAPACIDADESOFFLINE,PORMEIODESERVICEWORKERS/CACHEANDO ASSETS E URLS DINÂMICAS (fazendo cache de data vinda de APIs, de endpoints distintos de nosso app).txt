@@ -1,0 +1,1730 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> A RESPEITO DAS 'APIs',
+
+
+
+E DA DATA RETRIEVADA DELAS,
+
+ 
+
+ TAMBÉM PODEMOS PRETCHEAR SUA DATA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> PARA CONSEGUIR FAZER O CACHE DE DATA EXTRAÍDA DE APIs,
+
+
+
+
+
+
+ devemos ir até o arquivo 'ngsw-config.json',
+
+
+
+
+
+ QUE 
+
+ ATUALMENTE TEM ESTE CÓDIGO:
+
+
+
+
+
+
+
+ {
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ],
+        "urls": ["https://fonts.googleapis.com/css?family=Oswald:300,700"]
+      }
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/**",
+          "/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
+        ]
+      }
+    }
+  ]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DEVEMOS ADICIONAR MAIS UMA KEY no level de 'assetGroups',
+
+
+QUE SERÁ 
+
+'dataGroups'...
+
+
+
+
+
+
+
+
+
+
+
+
+------>  AGORA O PROFESSOR NOS EXPLICA:
+
+
+
+
+
+
+
+1)   'assetGroups' É USADO PARA O __ CACHE_ DE ESSENCIALMENTE_ OS 'STATIC ASSETS', coisas que nunca mudam quando fetcheamos nosso app (a build, por exemplo, só vai mudar se fizermos uma nova, mas não vai mudar se não o fizermos)..
+
+
+
+
+
+
+
+2) 'dataGruops'  É USADO __ PARA O CACHE DE DATA EXTRAÍDA DE APIs EXTERNAS AO NOSSO APP, ONDE A DATA É ESSENCIALMENTE DINÂMICA (muda com frequência)
+ 
+
+
+
+
+
+ TIPICAMENTE DATA QUE VOCÊ PEDE LÁ DE APIs... --> data que MUDA COM FREQUÊNCIA, NESSAS APIs/endpoints...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ MAS COMO CONFIGURAMOS UM 'DATAGROUP' nesse array de 'dataGroups'?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> BEM, COMEÇAMOS ASSIM:
+
+
+
+
+
+
+
+
+
+  {
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ],
+        "urls": ["https://fonts.googleapis.com/css?family=Oswald:300,700"]
+      }
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/**",
+          "/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
+        ]
+      }
+    }
+  ],
+
+  "dataGroups": [ ////////////// COMEÇAMOS COM ESSE ARRAY DE 'data groups',
+
+  ]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E AÍ _, DENTRO 
+
+
+
+
+DESSE ARRAY, DEFINIMOS UM OBJECT QUE VAI _ REPRESENTAR NOSSO DATAGROUp...
+
+
+
+
+
+
+
+
+
+
+--> colocamos um name...
+
+
+
+
+
+
+
+
+
+
+--> professor coloca 'posts', mas pode ser qualquer coisa...
+
+
+
+
+
+
+
+ex:
+
+
+
+
+  {
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ],
+        "urls": ["https://fonts.googleapis.com/css?family=Oswald:300,700"]
+      }
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/**",
+          "/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
+        ]
+      }
+    }
+  ],
+
+  "dataGroups": [ ////////////// COMEÇAMOS COM ESSE ARRAY DE 'data groups',
+    {
+
+        "name": "posts",
+    }
+  ]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO FEITO,
+
+VOCê ADICIONA A KEY de 'urls',
+
+
+E NELA VOCÊ VAI ESPECIFICAR 'AS URLS QUE VOCÊ VAI QUERER HANDLAR COM ESSE GROUP ESPECÍFICO'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NO CASO,
+
+
+
+
+VAMOS QUERER COLOCAR A URL QUE 
+
+temos lá 
+
+
+
+no component de 'app.component.ts',
+
+
+
+
+
+
+NAQUELE 
+
+
+
+
+LOCAL EM QUE TEMOS O HTTP REQUEST:
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+import { HttpClient } from '@angular/common/http';
+
+import { Post } from './post.model';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  posts: Post[] = [];
+
+  constructor(private http: HttpClient) {}
+
+  ngOnInit() {
+    this.http
+      .get<Post[]>('https://jsonplaceholder.typicode.com/posts')
+      .subscribe((fetchedPosts) => {
+        this.posts = fetchedPosts;
+      });
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VAMOS PEGAR ESSA URL AÍ...
+
+
+
+
+
+
+
+
+
+
+--> COLOCAMOS ASSIM:
+
+
+
+
+
+
+
+  {
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ],
+        "urls": ["https://fonts.googleapis.com/css?family=Oswald:300,700"]
+      }
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/**",
+          "/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
+        ]
+      }
+    }
+  ],
+
+  "dataGroups": [ ////////////// COMEÇAMOS COM ESSE ARRAY DE 'data groups',
+    {
+
+        "name": "posts",
+        "urls": [
+            'https://jsonplaceholder.typicode.com/posts'
+        ]
+    }
+  ]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... 
+
+
+
+
+
+
+
+
+
+
+--> ALÉM DISSO,
+
+VOCÊ PODERIA ADICIONAR  UMA KEY DE 'version',
+
+
+SE VOCê TIVER UMA API 'QUE POSSUI DIFERENTES VERSÕES' --> aí, se a VERSÃO MUDA AO LONGO DO TEMPO,
+
+
+VOCê 
+
+
+PODE DEFINIR UMA DIFERENTE VERSÃO AQUI PARA 
+
+
+''''cache different data pieces side by side'',
+
+
+
+
+
+PARA DIFERENTES API VERSIONS.. (parece bem opcional)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS OUTRA OPÇÃO INTERESSANTE AQUI É A KEY DE 
+
+
+
+'cacheConfig'
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+  {
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ],
+        "urls": ["https://fonts.googleapis.com/css?family=Oswald:300,700"]
+      }
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/**",
+          "/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
+        ]
+      }
+    }
+  ],
+
+  "dataGroups": [ ////////////// COMEÇAMOS COM ESSE ARRAY DE 'data groups',
+    {
+
+        "name": "posts",
+        "urls": [
+            'https://jsonplaceholder.typicode.com/posts'
+        ],
+
+        "cacheConfig": {
+
+        }
+    }
+  ]
+}
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE É OUTRO OBJECT,
+
+
+UM OBJECT EM QUE 
+
+
+
+VOCÊ 
+
+
+
+'''PODE CONFIGURAR COMO ESSA DATA DEVERÁ SER CACHEADA''...
+
+
+
+
+
+
+
+
+
+
+-> PARA ISSO,
+
+VOCÊ PODE DEFINIR,
+POR EXEMPLO,
+
+
+
+um 
+
+'maxSize' ...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO TE DEIXA DEFINIR 'QUANTAS ENTRIES VOCê VAI QUERER CACHEAR''... -> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+IMPORTANTE!!!!! -----------> ESSE 'maxSize' NÃO SE REFERE AO 'NÚMERO DE POSTS FETCHEADOS' a serem cacheados,
+
+
+
+
+
+E SIM __ __
+
+
+
+O NÚMERO__ __ DE __ RESPONSES, É O NÚMERO DE RESPONSES QUE É CONSIDERADO NESSA KEY...
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+  {
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ],
+        "urls": ["https://fonts.googleapis.com/css?family=Oswald:300,700"]
+      }
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/**",
+          "/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
+        ]
+      }
+    }
+  ],
+
+  "dataGroups": [ ////////////// COMEÇAMOS COM ESSE ARRAY DE 'data groups',
+    {
+
+        "name": "posts",
+        "urls": [
+            'https://jsonplaceholder.typicode.com/posts'
+        ],
+
+        "cacheConfig": {
+            "maxSize": 
+        }
+    }
+  ]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> BEM, PARA ESSA URL ÚNICA AQUI, de 'posts',
+
+É CLARO QUE VAMOS CACHEAR__ '''APENAS 1 ÚNICA RESPONSE POR VEZ''',
+
+
+
+
+
+
+
+
+
+MAS SE VOCÊ TIVESSE UMA URL MAIS GENÉRICA,
+
+UMA 
+
+URL QUE TIVESSE UMA '*' (para MÚLTIPLOS ENDPOINTS NESSE DOMÍNIO),
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+  'https://jsonplaceholder.typicode.com/*',
+
+
+
+
+
+
+
+
+  SE VOCÊ 
+
+
+TIVER/TIVESSE UMA 
+
+
+
+
+URL GENÉRICA ASSIM,
+
+
+
+
+
+
+
+SERIA MELHOR DEFINIR UM NÚMERO COMO '10',
+
+
+
+
+
+
+
+
+
+10 OUTGOING REQUESTS 
+
+
+
+
+,
+
+
+
+
+
+
+'''APENAS PARA 10 OUTGOING REQUESTS AS RESPONSES FORAM CACHEADAS'''.. ->   VOCÊ FARIA 
+
+
+ISSO 
+
+
+PARA __ NÃO 'POLUIR' O SEU CACHE,
+
+PARA EVITAR DE O CRESCER INFINITAMENTE ,
+
+
+
+
+
+
+
+ISSO PQ 
+
+O ESPAÇO 
+
+
+
+DESTINADO AO SEU APP É _ ACTUALLY LIMITADO, E 
+
+MANAGEADO PELO BROWSER... 
+
+
+
+
+(
+
+    você não vai querer CACHEAR TUDO...
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+O PROFESSOR COLOCA UM size de '5',
+
+
+APESAR DE ISSO NÃO IMPORTAR PARA O NOSSO APP...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+  {
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ],
+        "urls": ["https://fonts.googleapis.com/css?family=Oswald:300,700"]
+      }
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/**",
+          "/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
+        ]
+      }
+    }
+  ],
+
+  "dataGroups": [ ////////////// COMEÇAMOS COM ESSE ARRAY DE 'data groups',
+    {
+
+        "name": "posts",
+        "urls": [
+            'https://jsonplaceholder.typicode.com/posts'
+        ],
+
+        "cacheConfig": {
+            "maxSize": 8,
+
+        }
+    }
+  ]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+--------> DEPOIS DISSO,
+
+
+O PROFESSOR 
+
+COLOCA UMA KEY DE 
+
+'maxAge',
+
+
+
+
+
+
+QUE DITA 
+
+
+
+''' O QUÃO VELHA NOSSA DATA FETCHEADA TEM QUE SER,
+
+PARA QUE 
+
+SEJA DECIDIDO QUE NOVA DATA DEVE SER FETCHEADA E CACHEADA'''' -> 
+
+
+
+
+
+
+
+
+
+isso é usado em cases em que VOCÊ QUER QUE A 'FETCHED DATA' fique viva no browser por mais algum tempo...
+
+
+
+
+
+
+
+
+
+
+
+E O FORMATO DESSA KEY É TIPO 
+
+
+1d  5m    1h   
+
+
+
+
+
+1 dia, 5 minutos, 1 hour 
+
+
+
+
+
+
+
+
+
+
+d	Days
+h	Hours
+m	Minutes
+s	Seconds
+u	Milliseconds
+
+
+
+
+
+
+
+
+
+------------------
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+  {
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ],
+        "urls": ["https://fonts.googleapis.com/css?family=Oswald:300,700"]
+      }
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/**",
+          "/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
+        ]
+      }
+    }
+  ],
+
+  "dataGroups": [ ////////////// COMEÇAMOS COM ESSE ARRAY DE 'data groups',
+    {
+
+        "name": "posts",
+        "urls": [
+            'https://jsonplaceholder.typicode.com/posts'
+        ],
+
+        "cacheConfig": {
+            "maxSize": 8,
+            "maxAge": "6h"
+
+        }
+    }
+  ]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO... POR FIM, VOCê PODE ADICIONAR UM 'TIMEOUT', a key de 'timeout'...
+
+
+
+
+
+
+
+
+
+
+
+
+---> O TIMEOUT É DEFINIDO DA MESMA FORMA QUE O 'maxAge'... 
+
+
+
+
+
+
+
+
+
+---> O TIMEOUT ESSENCIALMENTE FAZ 
+
+
+
+
+'
+'''''DEPOIS DE X segundos, se minha response ainda NÃO TIVER CHEGADO,
+
+
+AÍ VOU QUERER __ FALLBACK __ TO THE CACHE, E DEIXAR DE ESPERAR MAIS TEMPO AINDA'''..
+
+
+
+
+
+
+
+(é basicamente o tempo mínimo de RECEBIMENTO DA RESPONSE, antes de ela ser ignorada e ser utilizado a cached data)...
+
+
+
+
+
+
+
+
+
+
+--> PROFESSOR COLOCA UM VALUE DE '10s'...
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+  {
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ],
+        "urls": ["https://fonts.googleapis.com/css?family=Oswald:300,700"]
+      }
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/**",
+          "/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
+        ]
+      }
+    }
+  ],
+
+  "dataGroups": [ ////////////// COMEÇAMOS COM ESSE ARRAY DE 'data groups',
+    {
+
+        "name": "posts",
+        "urls": [
+            'https://jsonplaceholder.typicode.com/posts'
+        ],
+
+        "cacheConfig": {
+            "maxSize": 8,
+            "maxAge": "6h",
+            "timeout": "10s"
+
+        }
+    }
+  ]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> POR FIM,
+
+
+
+TEMOS UMA PROPRIEDADE BEM IMPORTANTE,
+
+
+QUE FUNCIONA CONJUNTAMENTE COM AS KEYS E VALUES ANTERIORES...
+
+
+
+
+ 
+
+
+
+
+
+
+
+ --> É O KEY DE 'strategy'... --> 
+
+
+
+
+
+
+
+
+
+
+ VOCÊ TEM 2 POSSÍVEIS VALUES PARA 'STRATEGY':
+
+
+
+
+
+
+
+
+ 1) 'freshness' --> SEMPRE TENTE FAZER 'REACH' ao 'BACKEND' primeiro, e SÓ USE O CACHE SE VOCÊ ESTIVER OFFLINE....
+
+
+
+
+
+
+
+
+ 2) 'performance' --> PERFORMANCE TENTA 'GET SOMETHING TO THE SCREEN O MAIS RÁPIDO POSSÍVEL',  e 
+
+                    LEVA EM CONSIDERAÇÃO A PROPRIEDADE DE 'maxAge' PARA DETERMINAR 
+
+
+                    SE __ DEVE ABSOLUTAMENTE FAZER REACH OUT AO BACKEND OU SE 
+
+                    DEVE SÓ USAR O CACHED VALUE... (se a age estiver EXPIRADA, ele faz reach out ao backend)..
+
+
+
+
+
+                    JÁ O 'freshness'
+
+                    VAI LEVAR EM CONSIDERAÇÃO o 'timeout',
+
+
+                    SE OCORRER O 'TIMEOUT' do request, a versão cacheada será utilizada...
+
+
+
+
+
+
+
+
+
+
+
+
+                    A RELAÇAÕ ENTRE AS PROPRIEDADES É ESTA:
+
+
+
+
+
+
+
+
+                    
+  {
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ],
+        "urls": ["https://fonts.googleapis.com/css?family=Oswald:300,700"]
+      }
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/**",
+          "/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
+        ]
+      }
+    }
+  ],
+
+  "dataGroups": [ ////////////// COMEÇAMOS COM ESSE ARRAY DE 'data groups',
+    {
+
+        "name": "posts",
+        "urls": [
+            'https://jsonplaceholder.typicode.com/posts'
+        ],
+
+        "cacheConfig": {
+            "maxSize": 8,
+            "maxAge": "6h",  //////////2
+            "timeout": "10s", ////////////1
+            "strategy": "freshness" ///////////1
+
+            "strategy": "performance" /////////2
+
+        }
+    }
+  ]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...AGORA SALVAMOS  E RODAMOS 'ng prod'...
+
+
+
+
+
+
+
+
+
+
+
+E SE AGORA SALVARMOS TODO NOSSO APP 
+
+
+
+
+
+
+e entaõ ENTRARMOS NA PAGE COM ELA 'ONLINE',
+
+
+E DEPOIS 
+
+DESCONECTARMOS,
+
+VEREMOS QUE ELA AINDA FUNCIOANRÁ, MESMO COM NÓS ESTANDO 'OFFLINE'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.. ESTÁ FUNCIONANDO...
+
+
+
+
+
+
+ 
+ -> FECHE UMA ABA E ABRA UMA NOVA.. -> PARA 
+
+ QUE UM 
+
+
+ NOVO 
+
+
+
+SERVICE WORKER 
+
+
+
+FUNCIONE, VOCÊ PRECISA 
+
+
+
+RECARREGAR A PAGE...
+
+
+
+
+
+
+
+
+
+
+ASSIM QUE FICARMOS OFFLINE, AINDA VEREMOS 
+
+
+
+
+
+OS POSTS.... 
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS AS FONTS, VEREMOS UM ERRO NO CONSOLE.LOG --> ISSO ACONTECEU 
+
+
+
+PQ O APPROACH USADO PELO GOOGLE FONTS PARA TE PROVIDENCIAR FONTS É UM POUCO BIZARRO.... 
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA CONSEGUIR 
+
+
+OBTER QUALQUER FONT DO GOOGLE DE FORMA 'CACHED',
+
+
+
+vocÊ deve adicionar 
+
+
+
+
+
+
+
+
+ISSO AQUI ÀS SUAS URLS, lá em 'ngsw-config.json':
+
+
+
+
+
+
+
+
+
+"https://fonts.gstatic.com/**"
+
+
+
+ 
+
+
+
+ EX:
+
+
+
+
+
+
+ {
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ],
+        "urls": [
+          "https://fonts.googleapis.com/css?family=Oswald:300,700",
+
+          "https://fonts.gstatic.com/**"
+        ]
+      }
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/**",
+          "/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
+        ]
+      }
+    }
+  ],
+
+  "dataGroups": [
+    {
+      "name": "posts",
+      "urls": ["https://jsonplaceholder.typicode.com/posts"],
+
+      "cacheConfig": {
+        "maxSize": 8,
+        "maxAge": "6h",
+        "timeout": "10s",
+        "strategy": "freshness"
+      }
+    }
+  ]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... AGORA ESTÁ FUNCIONANDO... A ÚNICA COISA QUE NÃO É FETCHEADA, QUANDO RECARREGAMOS A PAGE, É 
+
+'posts',
+
+
+
+MAS COMO ELES ESTÃO SENDO FETCHEADOS DO 'CACHE',
+
+
+não há problema nisso,...
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK...
+
+
+
+
+
+
+
+
+É ASSIM QUE PODEMOS ADICIONAR SERVICE WORKERS NO NOSSO PROJETO.. 
+
+
+
+
+
+
+
+
+É UMA ARTE QUE VOCê DEVE APRENDER, MAS QUE TE PERMITE DEIXAR SEUS APPS 'OFFLINE-AVAILABLE'..

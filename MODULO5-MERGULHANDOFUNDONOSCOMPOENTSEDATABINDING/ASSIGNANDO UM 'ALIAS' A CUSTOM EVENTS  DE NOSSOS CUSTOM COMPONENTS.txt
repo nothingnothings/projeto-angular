@@ -1,0 +1,410 @@
+
+
+
+
+
+
+
+
+
+
+
+-> NA ÚLTIMA AULA, APRENDEMOS A USAR '@Output'
+
+
+PARA __ ENABLAR__ O 
+
+
+
+
+
+USO DE 'event emitters',
+
+
+que passam a EMITIR 'CUSTOM EVENTS', events definidos por nós, que não 
+
+existem normalmente 
+
+
+no html/javascript....
+
+
+
+
+
+
+
+
+
+-> A PARTIR DO USO DE '@Output',
+
+
+vocÊ 
+
+PODE FAZER 
+
+OUTROS COMPONENTS  FAZEREM 'LISTEN TO' 
+
+
+a seus 
+
+PRÓPRIOS' CUSTOM EVENTS',
+
+
+
+
+custom events que CRIAMOS COM O USO DE 'EventEmitter()',
+
+
+como observado por este código de 
+
+
+
+'Cockpit':
+
+
+import { Component, OnInit } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+import { Output } from '@angular/core';
+
+@Component({
+  selector: 'app-server-cockpit',
+  templateUrl: './server-cockpit.component.html',
+  styleUrls: ['./server-cockpit.component.css'],
+})
+export class ServerCockpitComponent implements OnInit {
+  newServerContent: string = '';
+  newServerName: string = '';
+
+  @Output() serverCreated = new EventEmitter<{
+    serverName: string;
+    serverContent: string;
+  }>(); ///é o completo inverso de '@Input', pq é usado para TRANSMITIR NOSSA DATA obtida em 1 CHILD COMPONENT ("cockpit") PARA__ OS NOSSOS PARENT COMPONENTS (o component 'app', nesse caso, que precisa da DATA obtida nos inputs de 'cockpit' para CONSEGUIR ADICIONAR UM NOVO SERVER no array de 'servers' que possui)....
+
+  @Output() blueprintCreated = new EventEmitter<{
+    blueprintName: string;
+    blueprintContent: string;
+  }>(); ///DENTRO DOS '<>' (PQ EVENTEMITTER É UM GENERIC TYPE) você simplesmente define o TIPO DE DATA QUE VOCÊ VAI EMTITR POR MEIO DESSA PROPRIEDADE...
+  ///vamos querer emitir o event type CUSTOM de {}, um objeto contendo a DATA QUE DESEJAMOS USAR lá em 'onServerAdded()'...
+  ////vocÊ deve acrescentar '()' ao final, para _ CHAMAR O CONSTRUCTOR DE 'EventEmitter', que agora ficará armazenado nessa property...
+
+  ///o '@Output()' também é necessário, pois é ele que vai nos deixar 'EMIT' esses events (emittados por meio desses eventEmitters) para FORA_ DE NOSSO COMPONENT 'server-cockpit'...
+
+  constructor() {}
+
+  ngOnInit(): void {}
+
+  onAddServer() {
+    // this.serverElements.push({ ///este código não funcionará, pois esse array ficou lá em 'app.element.ts'...
+    //   type: 'server',
+    //   name: this.newServerName,
+    //   content: this.newServerContent,
+    // });
+
+    this.serverCreated.emit(
+      ///usamos esse method que existe DENTRO DE CADA 'eventEmitter'.. --> esse method faz o 'emit' de um NOVO EVENT do type que vocÊ definiu em '<>'....
+
+      {
+        serverName: this.newServerName,
+        serverContent: this.newServerContent,
+      }
+    );
+  }
+
+  onAddBlueprint() {
+    // this.serverElements.push({
+    //   type: 'blueprint',
+    //   name: this.newServerName,
+    //   content: this.newServerContent,
+    // });
+
+    this.blueprintCreated.emit({
+      blueprintName: this.newServerName,
+      blueprintContent: this.newServerContent,
+    });
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> AGORA, EXATAMENTE COMO  em '@Input',
+
+
+
+
+VOCÊ PODE ASSIGNAR UM 'ALIAS'
+
+
+
+
+
+
+com/em output, também...
+
+
+
+
+
+
+---> isso quer dizer que VOCê PODE USAR O PARÂMETRO 
+
+de 
+
+'Output()'
+
+PARA 
+
+ESCREVER __ O  NOME _ QUE 
+
+
+ESSE 
+
+'event' 
+
+
+
+
+QUE VOCê CRIA EM 
+
+
+
+
+'export class CockpitComponent implements OnInit() {}'
+
+
+
+
+
+
+
+
+
+_ DEVERÁ TER LÁ NO SEU 'TEMPLATE',
+
+
+LÁ NO 
+
+
+
+
+_ HTML_ desse seu component....
+
+
+
+
+
+
+
+
+-> ISSO PQ __ POR ENQUANTO,
+
+lá em 
+
+
+
+'app.container.html',
+
+
+
+O 
+
+
+NOME DE NOSSO ALIAS ESTÁ COMO 
+
+''
+
+
+
+
+
+
+
+<div class="container">
+  <app-server-cockpit (serverCreated)="onServerAdded($event)"
+  (blueprintCreated)="onBlueprintAdded($event)"
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> está como 'serverCreated' 
+
+
+e 
+
+como 
+
+'blueprintCreated'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE _ PODEMOS _ ALTERAR_ ISSO 
+
+AÍ,
+
+
+
+colocar um alias de 
+
+
+
+''serverCreated2''' 
+
+
+e 
+
+
+''blueprintCreated2'',
+
+tipo assim:
+
+
+
+
+
+  @Output('serverCreated2') serverCreated = new EventEmitter<{
+    serverName: string;
+    serverContent: string;
+  }>(); 
+
+  @Output('serverCreated2') blueprintCreated = new EventEmitter<{
+    blueprintName: string;
+    blueprintContent: string;
+  }>();
+
+
+
+
+
+
+
+
+
+
+  OK, AGORA TERÍAMOS DE ESCREVER ASSIM LÁ NO NOSSO COMPONENT DE 'app.component.html':
+
+
+
+  
+
+<div class="container">
+  <app-server-cockpit (serverCreated2)="onServerAdded($event)"
+  (blueprintCreated2)="onBlueprintAdded($event)"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo... COM ISSO, 
+
+
+
+'serverCREATED2'
+
+E 
+
+
+
+
+'BLUEPRINTCREATED2'
+
+
+se tornarão os events a que poderemos 'listen to' do lado de FORA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO.... fiz essas alterações, e agora tudo funciona como antes,
+
+mas 
+
+a
+ogra 
+
+com 
+
+
+esse ALIAS..
+
+
+
+
+
+
+
+os nomes 'serverCreated' e 'blueprintCreated',
+
+originais,
+
+
+NÃO FICAM 'EXPOSED TO THE OUTSIDE', e sim 
+
+
+apenas aqueles alias/apelidos ficam...

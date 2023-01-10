@@ -1,0 +1,1018 @@
+
+
+
+
+
+
+
+
+O PROFESSOR ANEXOU UM PROJECT 
+
+
+NESSA LIÇÃO AQUI... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É UM PROJETO SIMPLES,
+
+QUE NOS DEIXA 
+
+
+
+DEFINIR UM 'SERVER NAME'
+
+e aí um conteúdo para esse server...
+
+
+
+
+
+
+
+
+
+
+-_> E AÍ PODEMOS OU:
+
+
+
+1) ADICIONAR 1 SERVER 
+
+
+
+
+2) ADIICONAR 1 BLUEPRINT...
+
+
+
+
+
+
+
+
+
+
+
+--> AMBOS PARECEM QUASE IGUAIS,
+
+MAS 
+
+
+O SERVER É VERMELHO,
+
+
+O 
+
+
+
+
+BLUEPRINT É AZUL...
+
+
+
+
+
+
+
+
+--> E ESSE APP TODO ESTÁ RODANDO EM 1 SÓ COMPONENT, POR ENQUANTO...
+
+
+
+
+
+
+
+
+-> tenho que CRIAR ESSE PROJETO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PROFESSOR DIZ QUE NO MOMENTO ESTAMOS COM UM MONTE DE CÓDIGO 
+
+
+
+
+
+__AGRUPADO_ TUDO EM 1 SÓ COMPONENT,
+
+
+E QUE 
+
+
+
+__ PODEMOS__ FAZER AS COISAS DE FORMA MELHOR,
+
+SPLITTAR 
+
+
+
+
+
+ESSE CÓDIGO TODO EM MÚLTIPLOS COMPONENTS... (não é ideal ter tudo em 1 mesmo lugfar)....
+
+
+
+
+
+
+
+
+
+
+
+OK...
+
+
+
+
+
+
+
+
+COMO PODEMOS SPLITTAR TUDO ISSO?
+
+
+
+
+tentar fazer isso sozinho..
+
+
+
+
+
+
+
+
+--> professor diz que PODERÍAMOS CRIAR UM 
+
+COMPONENT INTEIRO NOVO PARA ESSE 'cockpit',
+
+LOCAL EM QUE INPUTTAMOS UM NAME, UM CONTENT E CLICKABLE BUTTONS...
+
+
+
+
+
+
+
+
+
+
+
+-> vou examinar esse modelo que ele escreveu..
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <p>Add new Servers or Blueprints!</p>
+      <label>Server Name</label>
+      <input type="text" class="form-control" [(ngModel)]="newServerName"/>
+      <label>Server Content</label>
+      <input type="text" class="form-control" [(ngModel)]="newServerContent"/>
+      <br />
+      <button class="btn btn-primary" (click)="onAddServer()">
+        Add Server
+      </button>
+      <button class="btn btn-primary" (click)="onAddBlueprint()">
+        Add Server Blueprint
+      </button>
+    </div>
+  </div>
+  <hr>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="panel panel-default" *ngFor="let element of serverElements">
+        <div class="panel-heading">{{ element.name }}</div>
+        <div class="panel-body">
+          <p>
+            <strong *ngIf="element.type === 'server'" style="color: red">{{
+              element.content
+            }}</strong>
+            <em *ngIf="element.type === 'blueprint'">{{ element.content }}</em>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> ok, consertei o problema...
+
+
+
+
+
+
+
+
+
+
+
+
+-> esse app está rodando tudo em 1 só component....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ok...... DEIXAREMOS O COMPONENT MAIS 'BASE'
+
+
+desse negócio 
+
+
+como sendo aquele 'container > row '...
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+  <app-server-adder>
+  </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> PODEMOS CRIAR 1 COMPONENT PARA ESSE 'COCKPIT' inteiro, em que 
+
+
+
+  inputtamos o nome do server e etc ,
+
+
+  e aí 
+  um component 
+  para 
+  o 
+
+  'individual server'
+
+
+  que será outputtado como uma list...
+
+
+
+
+
+
+
+
+
+
+
+
+  --> ok... fazer esses 2 components...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ----> cockpit ---> criei esse elemento..
+
+
+
+
+
+
+
+  --> server-item --> criei esse elemento...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> preciso mover os methods 
+
+
+  apropriados ao 'cockpit', 
+
+
+tirá-los lá de 'app.component.html'...
+
+
+
+
+
+
+
+
+
+
+FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-server-cockpit',
+  templateUrl: './server-cockpit.component.html',
+  styleUrls: ['./server-cockpit.component.css'],
+})
+export class ServerCockpitComponent implements OnInit {
+  serverElements: any[] = [];
+
+  newServerName: string = '';
+
+  newServerContent: string = '';
+
+  constructor() {}
+
+  ngOnInit(): void {}
+
+  onAddServer() {
+    this.serverElements.push({
+      type: 'server',
+      name: this.newServerName,
+      content: this.newServerContent,
+    });
+  }
+
+  onAddBlueprint() {
+    this.serverElements.push({
+      type: 'blueprint',
+      name: this.newServerName,
+      content: this.newServerContent,
+    });
+  }
+}
+
+
+
+
+
+-----------------
+
+
+
+
+
+
+
+
+o problema agora é o component de 
+
+
+'serverElements'...
+
+
+
+
+
+
+
+----> precisa ser referenciado 
+
+
+
+no component de 
+
+'server-item'...
+
+
+
+
+EX:
+
+
+
+https://medium.com/@benhickson/how-to-pass-down-props-in-angular-9-and-10-546879e68ae1#:~:text=Note%20that%20when%20using%20the,been%20passing%20a%20class%20name.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO ESTÁ UMA BAGUNÇA... tenho que aprimorá-lo, mais tarde...
+
+
+
+
+
+
+
+
+
+
+
+
+
+o professor colocou os methods de ADD 
+
+lá no cockpit...
+
+
+
+
+
+
+
+
+
+
+
+
+-> o professor também menciona 'ngOnInit',
+
+
+
+que será 
+
+usado 
+
+para 
+
+
+alguma coisa, no futuro..
+
+
+
+
+
+
+
+
+
+
+---> o problema do professor, aqui,
+
+
+É QUE 
+
+ESTAMOS TENTANDO FAZER PUSH, em 
+
+'onAddBlueprint',
+
+
+
+
+
+A UM __ ARRAY_ QUE NÃO EXISTE.... (
+
+
+  pq o array de 'serverElements'
+
+
+
+  ainda está existindo lá no 
+
+
+  component de 'app'...
+
+)
+
+
+
+
+
+
+
+
+---> PROFESSOR DIZ QUE PODERÍAMOS MUDAR ESSE 
+
+array de 'serverElements'
+
+
+para dentro 
+
+
+de 
+
+'cockpit',
+
+
+
+
+
+
+MAS AÍ DEIXAREMOS DE 
+
+TER 
+
+
+
+ISSO NO COMPONENT DE 'app',
+
+O QUE NÃO É BOM/VAI QUEBRAR NOSSO CÓDIGO,
+
+
+
+
+
+pq 
+
+
+
+AÍ _O COMPONENT DE 'server-item',
+que precisa 
+
+
+da info acerca do array,
+
+
+vai deixar de tê-lo à disposição...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------> é por isso que deixamos só os 2 methosd,
+
+mas não movemos o array...
+
+
+
+
+
+
+
+
+
+
+----> veremos como fazer isso, no futuro....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> POR ENQUANTO, VOLTAMOS AO 'app.component.html'
+
+
+
+E AÍ 
+
+
+PEGAMOS 
+
+
+
+
+1 único 'server-item'...
+
+
+
+
+
+
+
+
+
+
+É ESTA DIV AQUI;
+
+
+
+
+
+
+
+
+    <div class="panel panel-default" *ngFor="let element of serverElements" >
+      <div class="panel-heading">{{ server.name }}</div>
+      <div class="panel-body">
+        <p>
+          <strong *ngIf="element.type === 'server'" style="color: red">{{
+            server.content
+          }}</strong>
+          <em *ngIf="element.type === 'blueprint'">{{ server.content }}</em>
+        </p>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -=> É CLARO QUE AQUI TEMOS ESSE 
+
+
+
+    LOOP
+     
+
+     de 
+
+
+     ''*ngFor="let element of serverElements"'''
+
+
+
+
+
+
+
+
+
+
+
+     ----------> MAS O PROFESSOR DIZ QUE 
+
+
+     NÃO VAMOS QUERER TER ISSO AQUI,
+
+
+
+     PQ 
+
+
+
+     AINDA VAMOS QUERER MANAGEAR  o
+
+
+     ARRAY DE 'SERVERELEMENTS'
+
+
+
+     lá NO COMPONENT DE 'app',
+
+     que será o 
+     nosso 
+
+
+
+     'stateful component', de certa forma...
+
+
+
+
+
+
+
+
+
+
+
+
+     --> MAS APARENTEMETNE ENTENDI ERRADO:
+
+
+
+     nosso objetivo é:
+
+
+
+
+
+
+
+
+     1) MANAGEAR O ARRAY DE 'serverElements' 
+
+
+     lá em 
+
+
+
+     'server-cockpit' 
+
+
+
+
+
+     2) REPLICAR ESSE ARRAY LÁ EM 'app.component.html'...
+
+
+
+
+
+
+     3) CRIAR MULTIPLAS INSTANCIAS DE 'server-item' a partir desse 'ServerElements' no Cockpit....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> é claro que você poderia settar isso de forma diferente, 
+
+
+
+mas 
+
+isso 
+
+NÃO VAI FUNCIONAR AGORA...
+
+
+
+
+
+
+
+
+
+
+
+----> NÓS TAMBÉM TENTAMOS ACESSAR PROPRIEDADES 
+
+
+
+'element.xxxx',
+
+
+
+lá em 'server-element.component.html',
+
+
+
+mas 
+
+
+
+
+
+
+nós TAMBÉM NÃO TEMOS ESSE ELEMENTO PARA REFERENCIAR...
+
+
+
+
+
+
+
+
+
+
+
+
+--> TEMOS QUE CONSERTAR ALGUMAS COISAS..
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR DIZ QUE GOSTA DA MANEIRA PELA QUAL 
+
+
+NÓS SPLITTAMOS NOSSO APP ----> 
+
+
+
+
+
+
+
+O LAYOUT DO APP FICOU ASSIM:
+
+
+
+
+
+
+
+<div class="container">
+  <app-server-cockpit></app-server-cockpit>
+  <hr />
+  <div class="row">
+    <div class="col-xs-12">
+      <app-server-item *ngFor="let element of serverElements"></app-server-item>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------
+
+
+
+
+
+
+
+
+
+--->---> 
+
+
+
+
+professor também deixa 
+
+
+
+um código de replicação do 'app-server-element'...
+
+
+
+
+
+
+
+
+
+
+-----> PERCISAMOS INFORMAR 
+
+
+
+O 'APP COMPONENT' DE QUE 
+
+
+UM DE NOSSOS CHILD COMPONENTS,
+
+O COMPONENT 
+
+
+
+'COCKPIT',
+
+
+
+foi alterado... (e a isso devemos reagir)...
+
+
+
+
+
+
+
+-> TAMBÉM PRECISAMOS PEGAR A DATA 
+
+
+QUE 
+
+
+
+
+TEMOS NO COCKPIT 
+
+
+e passar 
+para 
+
+cada elemento 
+
+
+'app-server-item'...
+
+
+
+
+
+
+
+--> precisamos passar data através de components, e isso, é claro, é uma tarefa super importante...
+
+
+
+
+
+
+
+

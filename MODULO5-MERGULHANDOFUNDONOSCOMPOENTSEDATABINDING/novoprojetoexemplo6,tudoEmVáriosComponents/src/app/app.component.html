@@ -1,0 +1,70 @@
+<div class="container">
+  <!-- <div class="row">
+    <div class="col-xs-12">
+      <p>Add new Servers or Blueprints!</p>
+      <label>Server Name</label>
+      <input type="text" class="form-control" [(ngModel)]="newServerName"/>
+      <label>Server Content</label>
+      <input type="text" class="form-control" [(ngModel)]="newServerContent"/>
+      <br />
+      <button class="btn btn-primary" (click)="onAddServer()">
+        Add Server
+      </button>
+      <button class="btn btn-primary" (click)="onAddBlueprint()">
+        Add Server Blueprint
+      </button>
+    </div>
+  </div> -->
+  <app-server-cockpit (serverCreated2)="onServerAdded($event)"
+  (blueprintCreated2)="onBlueprintAdded($event)"
+  
+  
+  ></app-server-cockpit>
+  <hr />
+  <!-- <div class="row">
+    <div class="col-xs-12">
+      <div class="panel panel-default" *ngFor="let element of serverElements">
+        <div class="panel-heading">{{ element.name }}</div>
+        <div class="panel-body">
+          <p>
+            <strong *ngIf="element.type === 'server'" style="color: red">{{
+              element.content
+            }}</strong>
+            <em *ngIf="element.type === 'blueprint'">{{ element.content }}</em>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div> -->
+  <!-- custom property binding, mas SEM O USO DE UM ALIAS PARA O CUSTOM PROPERTY BINDING... -->
+  <!-- <div class="row">
+    <div class="col-xs-12">
+      <app-server-item 
+      *ngFor="let serverElement of serverElements"
+      [element]="serverElement"  
+      ></app-server-item>
+    </div>
+  </div> -->
+    <!-- custom property binding, mas COM O USO DE UM ALIAS PARA O CUSTOM PROPERTY BINDING... (propriedade 'srvElement', que representa a propriedade 'element' lá no 'app-server-item' component) -->
+  <div class="row">
+    <div class="col-xs-12">
+      <button class="btn btn-primary" (click)="onChangeFirst()">Change First Element</button>
+      <app-server-item 
+      (click)="onServerRemoved(indexOfServer)"
+      *ngFor="let serverElement of serverElements; let indexOfServer=index"
+
+      [srvElement]="serverElement" 
+      [name]="serverElement.name"
+      >
+        <!-- ESTES 2 '<p>' FORAM INSERIDOS ENTRE A OPENING E ECLOSING TAGS DE 'app-server-item', e só conseguiram ser inseridos PQ ESCREVEMOS '<ng-content>' lá no CÓDIGO DE 'app-server-item', NO LOCAL EM QUE AUTORIZAMOS O 'INSERT' dessas 2 linhas '<p>'....'-->
+      <p #contentParagraphExample>
+        <strong *ngIf="serverElement.type === 'server'" style="color: red">{{   
+          serverElement.content
+        }}</strong>
+        <em *ngIf="serverElement.type === 'blueprint'">{{ serverElement.content }}</em>
+      </p>
+  
+    </app-server-item>
+    </div>
+  </div>
+</div>

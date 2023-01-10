@@ -1,0 +1,1354 @@
+
+
+
+
+
+
+
+
+
+TENTAR FAZER ISSO POR CONTA PRÓPRIA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> temos nossa route 
+
+
+
+
+de 'edit recipe'...
+
+
+
+
+
+
+
+
+
+
+
+--> ela tem esta configuração:
+
+
+
+
+
+     {
+        path: ':id/edit',
+        component: RecipeEditComponent,
+      },
+
+
+
+
+
+
+
+
+
+
+
+-> queremos PASSAR O ID de nosso 'recipe-item'
+
+
+
+a esse 
+
+
+'id' 
+
+aí...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok,
+
+
+
+coloquei um 'RouterLink'
+
+
+
+
+
+
+
+no meu 'recipe-detail',
+
+que 
+
+vai conduzir a essa nossa route:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div *ngIf="loadedRecipe; else noRecipeLoaded">
+<div class="row">
+  <div class="col-xs-12">
+    <img src="{{loadedRecipe.imagePath}}" alt="" class="img-responsive" style="max-height: 300px; max-width: 400px;" />
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <h1>{{ loadedRecipe.name }}</h1>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+      <h2>{{loadedRecipe.description}}</h2>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <div class="btn-group" appDropdown>
+      <button type="button" class="btn btn-primary dropdown-toggle">
+        Manage Recipe <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" style="cursor: pointer;">
+          <li (click)="sendToShoppingList()"><a>Add to Shopping List</a></li>
+          <!-- <li><a href="#">Edit Recipe</a></li>
+          <li><a href="#">Delete Recipe</a></li>  -->
+          <li><a [routerLink]="['/recipe-book', id, 'edit']">Edit Recipe</a></li>
+          <li><a>Delete Recipe</a></li> 
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <ul class="list-group">
+          <li class="list-group-item" *ngFor="let ingredient of loadedRecipe.ingredients" [ngStyle]="
+          {
+          'margin-top': '12px',
+        'user-select': 'none'
+        }"
+          >{{ingredient.name}} - {{ingredient.amount}}</li>
+        </ul>
+    </div>
+</div>
+
+</div>
+<ng-template #noRecipeLoaded>
+<p>Please select a Recipe!</p>
+</ng-template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+OK... MAS A QUESTÃO É QUE AQUI _ AINDA VAMOS PRECISAR COLOCAR UM 'queryParam'
+
+
+nesse 'routerLink'..
+
+
+
+
+
+
+
+
+
+
+--> para isso,
+
+existe a 
+
+DIRECTIVE de 
+
+'[queryParams]',
+
+
+
+
+
+
+
+
+QUE É USADA 
+
+PARA FAZER JUSTAMENTE ISSO,
+
+DEFINIR VÁRIOS QUERY PARAMS 
+
+
+
+NA NOSSA 
+
+URL/ROUTE que 
+
+
+será inputtada na urlbar;
+
+
+
+
+
+
+
+
+ESSES QUERYPARams 
+
+serão 
+
+então PARSEADOS POR NOSSO OUTRO COMPONENT,
+
+o component de 
+
+'recipe-edit',
+que vai 
+
+
+receber o user que saiu dessa nossa route de 'recipe-detail'... ('recipe-book/edit')....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MEU CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <div class="btn-group" appDropdown>
+      <button type="button" class="btn btn-primary dropdown-toggle">
+        Manage Recipe <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" style="cursor: pointer;">
+          <li (click)="sendToShoppingList()"><a>Add to Shopping List</a></li>
+          <!-- <li><a href="#">Edit Recipe</a></li>
+          <li><a href="#">Delete Recipe</a></li>  -->
+          <li><a [routerLink]="['/recipe-book', id, 'edit']"
+            [queryParams]="{allowEdit: 1}"
+             
+            
+            >Edit Recipe</a></li>
+          <li><a>Delete Recipe</a></li> 
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> a parte importante:
+
+
+
+
+
+      [queryParams]="{allowEdit: 1}"
+
+
+
+
+
+
+
+
+
+
+
+
+      --> 
+
+      O RESULTADO, NA MINHA ROUTE,
+
+      FICOU ASSIM:
+
+
+
+
+
+
+http://localhost:4200/recipe-book/1/edit?allowEdit=1
+
+
+
+
+ou assim:
+
+
+
+
+
+
+http://localhost:4200/recipe-book/2/edit?allowEdit=1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo...
+
+
+
+
+
+
+
+
+
+
+agora basta EXTRAIR ESSE NEGÓCIO LÁ 
+
+
+em 
+
+
+
+'recipe-edit',
+
+
+
+para aí checar se 
+
+o user 
+tem permissão para editar essa 'recipe'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+CONSEGUI EXTRAIR DESSA FORMA (COMPONENT DE 'recipe-edit'):
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { RecipeBookService } from 'src/app/recipeBook.service';
+import { Recipe } from '../recipe.model';
+
+@Component({
+  selector: 'app-recipe-edit',
+  templateUrl: './recipe-edit.component.html',
+  styleUrls: ['./recipe-edit.component.css'],
+})
+export class RecipeEditComponent implements OnInit {
+  editableRecipe: Recipe;
+  recipeId: number;
+  allowEdit: boolean = false;
+
+  constructor(
+    private recipeBookService: RecipeBookService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.route.queryParams.subscribe((queryParams: Params) => {
+      if (queryParams['allowEdit'] === '1') {
+        const id = this.route.snapshot.params['id'];
+        this.editableRecipe = this.recipeBookService.getRecipe(id);
+        this.recipeId = id;
+      } else {
+        alert(
+          'Failed to edit recipe. Please ensure your authentication status.'
+        );
+        this.router.navigate(['/']);
+      }
+    });
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------->  ou seja,
+
+
+
+
+
+
+
+
+
+o que interessa é este código:
+
+
+
+
+
+ ngOnInit(): void {
+    this.route.queryParams.subscribe((queryParams: Params) => {
+      if (queryParams['allowEdit'] === '1') {
+        const id = this.route.snapshot.params['id'];
+        this.editableRecipe = this.recipeBookService.getRecipe(id);
+        this.recipeId = id;
+      } else {
+        alert(
+          'Failed to edit recipe. Please ensure your authentication status.'
+        );
+        this.router.navigate(['/']);
+      }
+    });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  --> nós checamos os nossos 'queryParams',
+
+  se 
+
+
+
+  eles retornam '1' para o 'allowEdit' (?allowEdit=1),
+
+
+
+  VAMOS QUERER 
+
+
+
+  DEFINIR o 'editableRecipe' property desse component como sendo 
+
+  aquela propriedade de 'getRecipe'.... (
+
+
+      representação da data dessa recipe 
+
+
+      nesse nosso component/página...
+  )
+
+
+
+
+
+
+
+
+  --> caso contrário, vamos alertar e redirecionar o user para a home page, em que serão mostradas 
+
+
+  as recipes + uma vez...
+
+
+
+
+
+
+
+
+
+
+
+  --> HORA DE VER A AULA DO PROFESSOR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> no recipe-edit,
+
+
+
+
+  ele injeta o 
+
+  'ActivatedRoute',
+
+  tipo assim:
+
+
+
+
+
+
+
+
+
+
+  constructor(private route: ActivatedRoute) {
+
+  }
+
+
+
+
+  ngOnInit() {
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  --> MAIS UMA VEZ,
+
+  VAMOS QUERER RETRIEVAR O 'ID'
+
+
+
+  da nossa recipe,
+
+  extraída da url..
+
+
+
+
+
+
+
+
+
+
+
+  --> PROFESSOR VAI FAZER ISSO POR MEIO DO 
+
+
+  'this.route.params.subscribe()',
+
+
+
+
+  PARA 
+
+
+
+
+  QUE __ 
+
+
+
+ISSO SEJA FEITO DE FORMA DINÂMICA...
+
+
+
+
+
+
+
+
+
+id: number;
+
+constructor (private route: ActivatedRoute) {}
+
+
+
+
+ngOnInit() {
+    this.route.params.subscribe(
+        (params: Params) => {
+                
+                this.id = +params['id'];
+        }
+    )
+}
+
+
+
+
+
+
+
+----> certo.... 
+
+
+
+
+
+
+
+
+OK, MAS E QUANTO AO 'allow-edit'?
+
+
+
+
+
+
+
+
+
+
+-----> 
+
+QUANTO AO ALLOW-EDIT,
+
+
+o professor 
+
+
+cria uma nova propriedade,
+
+'allowEdit',
+
+ 
+
+ QUE SERÁ 
+
+ DEFINIDA 
+
+
+
+
+
+
+
+ COMO 
+
+
+ 'false' inicialmente.. --> 
+
+
+
+
+
+
+
+
+
+
+
+
+ SE ELA ESTIVER 
+
+
+ COMO 'false',
+
+ ASSUMIMOS QUE 'O USER VAI QUERER CRIAR UMA NOVA RECIPE', 
+
+
+ e não 
+
+
+
+
+
+ __EDITAR UMA RECIPE _ JÁ EXISTENTE...  (melhor colocar o nome de 'editMode')..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> CERTO...
+
+
+
+
+
+
+
+
+ o código vai ficando assim:
+
+
+
+
+
+
+ 
+id: number;
+editMode = false;
+
+constructor (private route: ActivatedRoute) {}
+
+
+
+
+ngOnInit() {
+    this.route.params.subscribe(
+        (params: Params) => {
+                
+                this.id = +params['id'];
+        }
+    )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> SE OS PARAMS FOREM ALTERADOS,
+
+
+esse 'subscribe'
+
+
+vai pegar essa change,
+
+
+e aí 
+
+
+
+
+__ VAI QUERER__ DEFINIR 
+
+
+
+'this.editMode'
+
+
+
+
+COMO SENDO EQUIVALENTE 
+
+AO CHECK DE 
+
+
+
+'''
+
+
+
+params['id'] -------> OU SEJA,
+
+
+
+
+
+__ SE TIVERMOS _ ESSE PARAMS AÍ,
+
+
+
+SE _ ELE __ EXISTIR_ 
+
+
+
+
+NA URL,
+
+
+
+
+O NEGÓCIO VAI 
+
+
+
+SER 'TRUTHY'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> é por isso que o professor escreve este check:
+
+
+
+
+this.editMode = params['id'] != null;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> SE UM __ ID _ESTIVER PRESENTE, EM OUTRAS PALAVRAS,
+
+
+
+_ESTAREMOS _NO 'EDIT MODE'....
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+    this.route.params.subscribe(
+      (params: Params) => {
+        this.recipeId = +params['id'];
+        this.editMode = params['id'] != null; /////OU SEJA, SE TIVERMOS UM 'ID' NA NOSSA URL, o 'editMode' ESTARÁ PRESENTE (pq aí vamos querer EDITAR AQUELA RECIPE, DAQUELE ID específico).... --> caso contrário, estaremos no modo de 'add a new recipe'....
+      }
+    )
+
+
+
+
+
+
+
+
+
+
+    -----------------------------
+
+
+
+
+
+
+
+
+
+    OK... ASSIM ACABAMOS 'DIVIDINDO'
+     
+     o 
+
+
+     
+
+     component de 'recipe-edit'
+
+     EM 2: 
+
+
+     1) primeira parte destinado ao EDIT DE RECIPES ANTIGAS...
+
+
+
+
+
+     2) SEGUNDA PARTE DESTINADA AO ADD DE NOVAS RECIPES...
+
+
+
+
+
+
+
+
+     --> E TUDO DEPENDE DO CHECK DESSES NOSSOS 'params' 
+
+     NA URL...
+
+
+
+
+
+
+
+
+     ---->   para ver se essa config de routes funciona,
+
+     o professor 
+
+     digita  um 'console.log(this.editMode)'
+      nesse subscribe...
+
+
+
+
+
+      depois ele inputta 
+
+
+
+
+
+     'localhost:4200/recipes/new' (RETORNA FALSE) 
+
+
+
+
+
+     e depois 
+
+
+
+     digita 
+     'localhost:4200/recipes/new' (retorna TRUE)....
+
+
+
+
+
+
+
+
+
+
+     -> ESSA É UMA BOA MANEIRA DE 'CHECK' EM QUE MODE ESTAMOS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     -> AGORA TEMOS QUE 
+
+
+
+
+
+     CODAR AS ROUTES QUE DEVEM TRAZER OS COMPONENTS DE 'edit-recipe'
+
+
+
+
+
+
+     e 
+
+     'new-recipe'....
+
+
+
+
+
+
+
+     ---> PRECISAMOS DE NOVAS PAGES PARA ISSO..
+
+
+
+
+
+
+
+
+
+
+
+     -> é um desafio, tentar codar essas pages....
+
+
+
+
+
+
+
+
+
+     -> na verdade, essas pages existirão/serão criadas através do component de 'recipe-edit'....
+
+
+     (que é a mesma route atingida pelos 2 negócios, como visto em):
+
+
+
+
+
+
+
+           {
+        path: 'new',
+        component: RecipeEditComponent,
+      },
+      {
+        path: ':id',
+        component: RecipeDetailComponent,
+      },
+
+      {
+        path: ':id/edit',
+        component: RecipeEditComponent,
+      },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo....
+
+
+
+
+
+
+
+
+
+-> para isso, precisamos de CONTEÚDO HTML 
+
+
+no template desse 
+
+
+
+
+component,
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <form>
+      <div class="row">
+        <div class="col-sm-5 form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" class="form-control" [(ngModel)]="editableRecipe.name" name="name"/>
+        </div>
+        <div class="col-sm-5 form-group">
+          <label for="description">Description</label>
+          <input type="text" id="description" class="form-control" [(ngModel)]="editableRecipe.description" name="description"/>
+        </div>
+        <div class="col-sm-2 form-group">
+            <label for="imagePath">Image</label>
+            <input type="text" id="imagePath" class="form-control"  [(ngModel)]="editableRecipe.imagePath" name="imagePath"/>
+          </div>
+          <div class="col-sm-2 form-group">
+            <label for="imagePath">Ingredients</label>
+            <input type="text" id="imagePath" class="form-control" [(ngModel)]="editableRecipe.ingredients" name="ingredients"/>
+          </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <button class="btn btn-success">Add</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> eu fiz assim,
+
+
+
+
+
+
+
+e usei aquele 'ngModel' 
+
+para 
+
+
+fazer um vínculo ao state de 'editableRecipe',
+
+
+
+
+
+que eu 
+
+
+editei lá no meu component assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+editableRecipe: Recipe;
+
+
+
+
+
+
+
+  ngOnInit(): void {
+
+
+
+    this.route.params.subscribe(
+      (params: Params) => {
+        this.recipeId = +params['id'];
+        //este é o código que CHECA SE ESTAMOS EM EDIT MODE OU NÃO (checa a url)...
+        this.editMode = params['id'] != null; /////OU SEJA, SE TIVERMOS UM 'ID' NA NOSSA URL, o 'editMode' ESTARÁ PRESENTE (pq aí vamos querer EDITAR AQUELA RECIPE, DAQUELE ID específico).... --> caso contrário, estaremos no modo de 'add a new recipe'....
+      }
+    )
+
+
+    
+
+      this.editableRecipe = this.recipeBookService.getRecipe(this.recipeId); ///EIS O CÓDIGO EM QUESTÃO.
+
+
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -----------------
+
+
+
+
+
+
+
+
+
+
+  -> APARENTEMENTE O PROFESSOR VAI QUERER NAVEGAR ATÉ 'EDIT' E 'NEW' 
+
+
+
+
+
+  de maneira PROGRAMÁTICA,
+
+  e não por meio de '[routerLink]' 

@@ -1,0 +1,102 @@
+
+
+
+
+
+
+
+PROFESSOR EXPLICA QUE PODEMOS NOS LIVRAR POR INTEIRO DO 
+
+
+
+SERVICE DE 'RECIPEBOOK SERVICE'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NÃO PRECISAMOS MAIS DESSE SERVICE EM 'app.module.ts.'.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> EU ADICIONEI UMA ACTION PARA 'ADD TO SHOPPING LIST'...
+
+
+
+
+
+
+
+
+-> É TIPO
+
+
+
+
+
+
+
+
+
+  sendToShoppingList() {
+    console.log('CLICKED');
+    // this.recipeBookService.sendToShopList(this.loadedRecipe.ingredients);
+
+
+      ///vou fazer dispatch, sim, mas DENTRO DO METHOD DE 'sendToShopList', lá no nosso 'recipeBookService' (mais conveniente fazer dispatches de dentro de services...)...
+    // this.store.dispatch(new ShoppingListActions.AddIngredients(this.loadedRecipe.ingredients))
+
+
+
+    // this.recipeBookService.sendToShopList(this.loadedRecipe.ingredients);  ///dispatch de uma ACTION de DENTRO DO METHOD DE UM SERVICE...  ///SUBSTITUÍMOS COMPLETAMENTE PELO NGRX...
+
+
+
+
+    this.store.dispatch(new fromRecipeBook.SendIngredientsToShopList(this.loadedRecipe.ingredients));
+
+
+
+    this.router.navigate(['/shop-list'])
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo... agora estamos totalmente no mundo do ngrx...

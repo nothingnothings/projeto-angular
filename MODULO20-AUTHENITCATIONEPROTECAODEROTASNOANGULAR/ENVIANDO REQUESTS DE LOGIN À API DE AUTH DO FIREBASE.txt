@@ -1,0 +1,969 @@
+
+
+
+
+
+
+
+
+
+
+----> GASTAMOS BASTANTEW TEMPO NO SIGNUP PROCCESS,
+
+
+MAS 
+AGORA 
+
+JÁ 
+
+TEMSO 
+
+UMA 
+
+BOA LÓGICA DE ERROR HANDLING...
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS É CLARO QUE NOSSA UI AINDA NÃO MUDA PARA REFLETIR QUE O USER ESTÁ 'LOGGED IN' --> precisamos 
+
+
+
+alterar isso, colocar alguma lógica..
+
+
+
+
+
+
+
+
+
+
+-->BEM, MEU METHOD DE 'LOGIN' FICOU ASSIM, por enquanto:
+
+
+
+
+
+
+
+  onLogin(authData: {
+    email: string;
+    password: string;
+    returnSecureToken: boolean;
+  }) {
+    const requestHeaders = new HttpHeaders();
+
+    requestHeaders.append('Content-Type', 'application/json');
+
+    return this.http
+      .post<AuthResponseData>(
+        // <{expiresIn: number, idToken: string, expirationDate: string, localId: string, email: string}>
+
+        // 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg', //VERSÃO DUMMY (sem authentication rules no firebase)
+        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBK3AXsu9Gn0fqLmA0zOdUAknDM48Nwk_o', ////VERSÃO COM AUTHENTICATE, DEPLOY
+        authData,
+
+        {
+          headers: requestHeaders,
+        }
+      )
+      .pipe(
+        catchError((error) => {
+          return throwError(() => error);
+        })
+      );
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ---> certo...
+
+
+
+
+
+
+
+
+
+  --> O PROFESSOR APONTA QUE RECEBEMOS, NESSE REQUEST DE 'LOGIN',
+
+  QUASE 
+
+
+
+
+  O MESMO PAYLOAD/BODY 
+
+
+
+  DA RESPONSE DE SIGNUP,
+
+
+
+  SENDO A ÚNICA KEY ADICIONAL
+
+
+  
+
+RETORNADA A 
+
+de 
+
+'registered'...
+
+
+
+
+
+--> ESSE FIELD SERÁ UM BOOLEAN,
+
+
+POR ISSO,
+
+PARA QUE CONSIGAMOS USAR AQUELE MESMO MODEEL DE 'AuthResponseData'
+
+
+
+NESSE LUGAR AQUI,
+
+DEVEMOS ADICIONAR UM 
+OUTRO FIELD NELE,
+
+FIELD DE 
+
+
+
+
+registered?: string;
+
+
+
+
+
+
+
+
+
+----> ISSO FARÁ COM QUE ESSE FIELD FIQEU COMO 'OPCIONAL'...
+
+
+
+EX:
+
+
+
+
+
+interface AuthResponseData {
+  kind: string;
+  email: string;
+  refreshToken: string;
+  idToken: string;
+  localId: string;
+  expiresIn: string;
+  registered?: boolean;  ///será um field opcional... existirá na response de 'SIGNUP', mas não existirá na response de 'LOGIN'...
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK, ISSO SERÁ OPCIONAL,
+
+REALMENTE...
+
+
+
+
+
+
+
+
+-> OK... 
+
+
+
+AÍ EM LOGIN,
+
+COLOCAMOS <AuthResponseData>, 
+
+para 
+
+
+informar que 
+
+essa data será de tipo 'AuthResponseData',
+
+
+
+
+com todas aquelas prorpeidades...
+
+
+
+
+
+
+
+
+
+> o professor faz return desse http method, 
+
+para que 
+
+aí 
+
+seja possível fazer 'subscribe'
+
+
+lá no component de 
+'auth.component.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> A MESSAGE DE ERROR HANDLING SERÁ QUASE A MESMA,
+
+TIPO ASSIm:
+
+
+
+
+
+
+
+
+
+    } else {
+      this.authService.onLogin(userData).subscribe(
+        (responseData) => {
+          console.log(responseData);
+          const expirationDate = new Date(
+            new Date().getTime() + +responseData.expiresIn * 1000
+          ); ////lembre-se de adicionar '* 1000', pois o JAVASCRIPT SEMPRE CONSIDERA 'TEMPO' EM MILISSEGUNDOS, E NÃO EM SEGUNDOS.... (só o 'expiresIn' que é mostrado em segundos....)
+          localStorage.setItem('token', responseData.idToken);
+          localStorage.setItem('expirationDate', expirationDate.toString());
+          localStorage.setItem('userId', responseData.localId);
+          localStorage.setItem('email', responseData.email);
+
+          this.isLoading = false;
+
+          this.router.navigate(['/recipe-book']);
+        },
+
+        (errorMessage) => { 
+          this.isLoading = false;
+          this.error = errorMessage;  
+        }
+      );
+    }
+
+
+    form.reset();
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OK.... AGORA BASTA 
+
+
+  ESCREVER ESSE CALL DE 'catchError'
+
+
+
+
+  lá no case de LOGIN,
+
+
+  para que 
+
+  esse subscribe funcione adequadamente (registre nossa actual mensagem de erro  retrievada da api)...
+
+
+
+
+
+
+
+
+
+
+  eu escrevo assim, para começar:
+
+
+
+
+
+
+
+
+    onLogin(authData: {
+    email: string;
+    password: string;
+    returnSecureToken: boolean;
+  }) {
+    const requestHeaders = new HttpHeaders();
+
+    requestHeaders.append('Content-Type', 'application/json');
+
+    return this.http
+      .post<AuthResponseData>(
+        // <{expiresIn: number, idToken: string, expirationDate: string, localId: string, email: string}>
+
+        // 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg', //VERSÃO DUMMY (sem authentication rules no firebase)
+        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBK3AXsu9Gn0fqLmA0zOdUAknDM48Nwk_o', ////VERSÃO COM AUTHENTICATE, DEPLOY
+        authData,
+
+        {
+          headers: requestHeaders,
+        }
+      )
+      .pipe(
+
+
+
+
+        catchError((errorRes) => {
+
+          let errorMessage = 'An unknown error has occured.';
+
+
+
+
+          return throwError(() => errorMessage);
+        })
+      );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ----> MAS O PROFESSOR NOS EXPLCIA QUE ELE VAI QUERER FAZER O HANDLING DE MODO UM POUCO DIFERENTE AQUI,
+
+
+
+      para mudar um pouco as coisas...
+
+
+
+
+
+
+
+
+
+      POR ISSO ELE VAI ATÉ 'auth.component.ts'
+
+
+
+
+      E ADICIONA UMA 
+
+
+
+      NOVA VARIÁVEL
+
+
+      em 'onSubmit(){}',
+
+
+
+
+      que 
+
+
+      será de type 'Observable.'..
+
+
+
+
+
+
+      ex:
+
+
+
+
+
+
+
+
+      let authObs: Observable;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      - COMO OBSERVABLES SÃO GENERIC TYPES,
+
+
+      SOMOS 
+
+      OBRIGADOS 
+
+
+
+
+      A definir o return type/o tipo de data que ele vai render... -> 
+
+
+
+
+
+
+      ESSA DATA, NO CASO, 
+
+
+      SERÁ A 'AuthResponseData',
+
+
+
+
+
+
+
+      POR ISSO ESCREVEMOS ASSIM:
+
+
+
+
+
+
+
+
+
+
+          let authObs: Observable<AuthResponseData>;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          ------> A IDEIA, AQUI,
+
+
+          É QUE 
+
+          VAMOS _ APENAS '''ALTERAR A DATA QUE 
+
+          ESSE OBSERVABLE VAI RETORNAR''', a depender 
+
+
+
+
+          se entramos em 'if (this.isSignup)'
+
+
+
+          OU NÃO...
+
+
+
+
+
+
+
+
+      --> MAS O QUE INTERESSA, NO CASO, É QUE DENTRO DE 
+
+      'authObs'
+
+      TEREMOS OBRIGATORIAMENTE UM 
+
+      OBSERVABLE ARMAZEANDO... ------> 
+
+
+
+
+
+
+
+
+
+      aí, dependendo de QUAL BLOCK ENTRAMOS,
+
+
+      nós 
+
+
+      'ENCAIXAMOS/DEFINIMOS'
+
+      UM 
+
+      observable diferente dentro dessa variable... --> 
+
+
+
+
+
+      E AÍ, AO FINAL,
+
+      SIMPLESMENTE CHAMAMOS AQUELE MESMO CÓDIGO DE ERROR HANDLING (que é idêntico nos 2 cases, nos 2 cases é um subscribe em que definimos: 1)A ERROR MESSAGE COMO 'error' de nosso state e 2) DEFINIMOS IS LOADING COMO FALSE)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      --> o código completo, no caso,
+
+      fica assim:
+
+
+
+
+
+
+
+
+      let authObs: Observable<AuthResponseData>;
+
+      this.isLoading = true;
+
+      if (!this.isSignup) {
+
+          authObs = this.authService.login(email, password);
+
+      } else {
+
+          authObs = this.authService.signup(email, password);
+      }
+
+
+
+      authObs.subscribe(
+          (responseData) => {
+
+              console.log(responseData);
+              this.isLoading = false;
+          },
+
+          (errorMessage) => {
+
+              console.log(errorMessage);
+              this.error = errorMessage;
+              this.isLoading = false;
+          }
+      )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      O CÓDIGO, TODO UNIFICADO, FICOU ASSIM>:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { AuthResponseData, AuthService } from '../auth.service';
+
+@Component({
+  selector: 'app-auth-page',
+  templateUrl: './auth-page.component.html',
+  styleUrls: ['./auth-page.component.css'],
+})
+export class AuthPageComponent implements OnInit {
+  isSignup: boolean = true;
+
+  isLoading: boolean = false;
+
+  error: string | null = null;
+
+  constructor(private authService: AuthService, private router: Router) {}
+
+  ngOnInit(): void {}
+
+  onAuthFormSubmit(form: NgForm) {
+    if (!form.valid) {
+      return;
+    }
+
+    const email = form.form.get('email')?.value;
+    const password = form.form.get('password')?.value;
+
+    const userData = {
+      email: email,
+      password: password,
+      returnSecureToken: true,
+    };
+
+    let authObs: Observable<AuthResponseData>;
+
+    this.isLoading = true;
+
+    if (!this.isSignup) {
+      authObs = this.authService.onCreateAccount(userData);
+    } else {
+      authObs = this.authService.onLogin(userData);
+    }
+
+    authObs.subscribe(
+      (responseData) => {
+        const expirationDate = new Date(
+          new Date().getTime() + +responseData.expiresIn * 1000
+        );
+        localStorage.setItem('token', responseData.idToken);
+        localStorage.setItem('expirationDate', expirationDate.toString());
+        localStorage.setItem('userId', responseData.localId);
+        localStorage.setItem('email', responseData.email);
+
+        this.router.navigate(['/recipe-book']);
+      },
+
+      (errorMessage) => {
+        this.isLoading = false;
+        this.error = errorMessage;
+      }
+    );
+
+    form.reset();
+  }
+
+  onSwitchAuth() {
+    this.isSignup = !this.isSignup;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> com isso,
+
+
+
+nossas 2 http requests de 'create an account' e 'login to an account'
+
+
+FICAM COM QUASE A MESMA ESTRUTURA, MAS FAZEM COISAS DIFERENTES:
+
+
+
+
+1) O SIGNUP --> VAI CRIAR O USER, COLOCAR A TOKEN NECESSÁRIA LA´NO LOCAL STORAGE DELE, E AÍ vai redirecionar À route de 'recipe-book'..
+
+
+
+
+2) O LOGIN --> VAI VERIFICAR SE ESSE USER EXISTE NO BACKEND/DATABASE, E AÍ VAI __ DEPOSITAR UM TOKEN NO LOCAL STORAGE DO USER, e depois vai redirecionar à route de 'recipe-book'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> só o redirect à route de 'recipe-book' ainda não está funcionando, justamente pq 
+
+meu 
+
+
+firebase API DE DATABASE 
+
+DEFINIU O 'READ E WRITE'
+
+
+
+
+como 'false'...
+
+
+
+
+
+
+
+
+
+
+
+------------------------
+
+
+
+
+
+
+
+
+OK...
+
+
+
+
+
+
+MAS O RESTO ESTÁ FUNCIONANDO...
+
+
+
+
+
+
+
+
+
+
+
+-_> O PROFESSOR DIZ QUE QUER MELHORAR O ERROR HANDLING DO LOGIN, MAS EU JÁ CONSEGUI FAZER ISSO:
+
+
+
+
+
+  onLogin(authData: {
+    email: string;
+    password: string;
+    returnSecureToken: boolean;
+  }) {
+    const requestHeaders = new HttpHeaders();
+
+    requestHeaders.append('Content-Type', 'application/json');
+
+    return this.http
+      .post<AuthResponseData>(
+        // <{expiresIn: number, idToken: string, expirationDate: string, localId: string, email: string}>
+
+        // 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg', //VERSÃO DUMMY (sem authentication rules no firebase)
+        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBK3AXsu9Gn0fqLmA0zOdUAknDM48Nwk_o', ////VERSÃO COM AUTHENTICATE, DEPLOY
+        authData,
+
+        {
+          headers: requestHeaders,
+        }
+      )
+      .pipe(
+        catchError((errorRes) => {
+          console.log(errorRes);
+
+          let errorMessage = 'An unknown error has occured.';
+
+          switch (errorRes.error.error.message) {
+            case 'EMAIL_NOT_FOUND':
+              errorMessage = 'No user found for the entered email!';
+              break;
+            case 'INVALID_PASSWORD':
+              errorMessage = 'Invalid password, please try again.';
+          }
+
+          return throwError(() => errorMessage);
+        })
+      );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      --> agora temos esses cases de 'EMAIL_NOT_FOUND'
+
+
+
+      e 
+
+
+      'INVALID_PASSWORD'...
+
+
+
+
+
+
+
+
+
+
+      certo...

@@ -1,0 +1,705 @@
+
+
+
+
+
+
+
+
+
+
+------> NA ÚLTIMA LIÇÃO, APRENDEMOS SOBRE PROPERTY BINDING, ATRAVÉS DESTE TEMPLATE:
+
+
+
+
+<button class="btn btn-primary" [disabled]="!allowNewServer">Add Server</button>
+<app-server></app-server>
+<app-server></app-server>
+<app-server></app-server>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> AGORA, SE TIVERMOS O USE-CASE 
+
+
+DE 
+
+
+''QUEREMOS OUTPUTTAR O CURRENT VALUE DE 
+
+
+allowNewServer''',
+
+
+
+
+
+
+PODERÍAMOS SIMPLESMENTE ESCREVER ASSIM:
+
+
+<button class="btn btn-primary" [disabled]="!allowNewServer">Add Server</button>
+<p>User can edit: {{allowNewServer ? 'Yes' : 'No'}}</p>
+<app-server></app-server>
+<app-server></app-server>
+<app-server></app-server>
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+<button class="btn btn-primary" [disabled]="!allowNewServer">Add Server</button>
+<p>User can edit: {{ allowNewServer ? "Yes" : "No" }}</p>
+<app-server></app-server>
+<app-server></app-server>
+<app-server></app-server>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E ISSO REALMENTE FUNCIONOU, ESSA TERNARY EXPRESSION REALMENTE ESTÁ ACESSANDO O VALUE 
+
+CONTIDO LÁ NA PROPRIEDADE DE 'allowNewServer'
+
+
+no nosso arquivo '.ts':
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  // selector: 'app-servers', /// QUANDO VOCÊ ESCREVE ASSIM, ESTÁ SELECIONANDO O ELEMENTO NO 'servers.component.html' A PARTIR DA SUA TAG/ELEMENT...
+  selector: '[app-servers]', ////o selector do angular TEM COMPORTAMENTO SIMILAR A SELECTORS CSS... -> e nos selectors css, se você escreve '[attributeName] {}', você ACABA EDITANDO TODOS OS ELEMENTOS QUE POSSUEM ESSE ATTRIBUTE ATIVADO/ESCRITo...
+
+  // selector: '.app-servers' ////use essa sintaxe se vocÊ quer SELECIONAR UM ELEMENTO NO seu 'servers.component.html' POR MEIO DE _ CLASSES__...
+
+  ///ou seja, 3 approaches para SELECIONAR ELEMENTOS NO NOSSO CÓDIGO HTML ANGULAR, com o 'selector':
+
+  //  1) por ELEMENTo... -> selector: 'app-servers'
+  //  2) por ATTRIBUTE.... -> selector: '[app-servers]'
+  //  3) por CLASS --> selector: '.app-servers'
+
+  templateUrl: './servers.component.html',
+  styleUrls: ['./servers.component.css'],
+})
+export class ServersComponent implements OnInit {
+  allowNewServer = false;
+
+  constructor() {
+    setTimeout(
+      () => {
+        this.allowNewServer = true;
+      },
+
+      2000
+    );
+  }
+
+  ngOnInit(): void {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK...
+
+
+
+
+
+
+
+
+MAS AGORA O PROFESSOR PROVAVELMENTE DIRÁ QUE OS DOIS SÃO INTERCAMBIÁVEIS.... DEVEMOS TESTAR...
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+<button class="btn btn-primary" disabled='{{!allowNewServer}}'>Add Server</button>
+<p>User can edit: {{ allowNewServer ? "Yes" : "No" }}</p>
+<app-server></app-server>
+<app-server></app-server>
+<app-server></app-server>
+
+
+
+
+
+
+
+
+
+
+
+MAS ISSO __ NÃO FUNCIONOU:
+
+
+
+
+
+
+
+
+<button class="btn btn-primary" [disabled]="!allowNewServer">Add Server</button>
+<button class="btn btn-primary" disabled={{!allowNewServer}}>Add Server</button>
+<p>User can edit: {{ allowNewServer ? "Yes" : "No" }}</p>
+<app-server></app-server>
+<app-server></app-server>
+<app-server></app-server>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK... MAS EM VEZ DE OUTPUTTARMOS ALGO COM 
+
+'allowNewServer'
+
+
+
+ de forma SOLTA, TIPO ASSIM, DENTRO DESSE P,
+
+
+
+ O
+  
+
+
+  PROFESSOR DIZ QUE 
+
+
+
+  PODEMOS FACILMENTE SUBSTITUIR ESSE CÓDIGO POR UMA VERSAÕ QUE USA PROPERTY BINDING EM VEZ DESSA 
+
+
+  STRING INTERPOLATION....
+
+
+
+
+
+
+
+
+
+
+
+  -> basta 
+
+
+
+
+  escrever 
+
+
+
+
+  <p [innerText]="allowNewServer"></p>
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OU SEJA,
+
+
+  BASTA ACESSAR A PROPRIEDADE 
+
+  'innerText'
+
+
+  
+
+
+  DESSE NOSSO PARAGRAPH E AÍ _ 
+
+
+
+
+
+  DIZER QUE O VALUE DESSE TEXT DEVERÁ SER O BOOLEAN DE 'allowNewServer'...
+
+
+
+
+
+
+
+
+
+  --> A TAG PODE PARECER EMPTY,
+
+  MAS 
+
+  O CONTEÚDO ESTÁ SENDO DEFINIDO POR AQUELA PROPRIEDADE,
+
+
+
+  PORTANTO RECEBEMOS O MESMO COMPORTAMENTO DE ANTES...
+
+
+
+  (
+
+
+    PQ A PROPRIEDADE 
+
+
+    INNERTEXT 
+
+    DE 
+
+    UM ELEMENTO É 
+
+
+
+    O QUE EXISTE NO MEIO DE '><'  , as opening e closing tags...
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> É POR ISSO QUE PODEMOS FACILMENTE __SUBSTITUIR__ STRING INTERPOLATION POR 
+
+
+
+  PROPERTY BINDING,
+
+  
+
+  SE EMPREGARMOS ESSA PROPRIEDADE DINÂMICA DE 
+
+  '[innerText]'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  =--> OK, MAS EM QUE CASOS DEVEMOS USAR 
+
+
+
+  
+
+  CADA 1 DELES?
+
+
+
+
+
+
+
+
+
+  ** SE VOCÊ DESEJA __ OUTPUTTAR ALGO NO SEU TEMPLATE,
+
+  É MELHOR USAR STRING INTERPOLATION, PQ É MAIS BONITO...
+
+
+
+
+  ***** JÁ SE VOCÊ DESEJA __ ALTERAR ALGUMA PROPERTY,
+
+  SEJA ELA 
+
+  DE UM 
+
+
+
+  ELEMENTO HTML,
+
+
+  DIRECTIVE 
+
+  OU 
+
+
+  DE UM DE SEUS COMPONENTS,
+
+
+
+  TIPICAMENTE UTILIZE 
+
+  UM 
+
+  'PROPERTY BINDING'... 
+
+
+
+
+
+
+
+
+
+
+
+
+  --. É ASSIM QUE VOCÊ PODE DIFERENCIAR ENTRE ESSAS 2 OPERAÇÕES,
+
+  ALGO  QUE VOCÊ APRENDERÁ AO LONGO DO CURSO...
+
+
+
+
+
+
+
+
+
+
+  ----> ok.... ---->  MAS 1 NOTA IMPORTANTE QUE O PROFESSOR NOS FALA:
+
+
+
+
+
+
+
+
+  __ NÃO MISTURE__ 
+
+
+  PROPERTY BINDING E 
+
+
+  STRING INTERPOLATION... 
+
+
+
+
+
+
+
+
+  ----> VOCê PODE PERCEBER QUE 
+
+
+
+  AQUI O FORMATO É 
+
+
+
+  [disabled]="!allowNewServer" 
+
+  
+
+
+
+
+  OU SEJA,
+
+  É 
+
+  O PROPERTY NAME 
+
+  do elemento html que queremos que seja dinâmico,
+
+  e aí 
+
+  o VALOR É O NOME DA PROPRIEDADE TYPESCRIPT...   
+  
+
+  (
+
+    NENHUM CURLY BRACES 
+
+    ENTRE ESSES "",
+
+
+    e nunca deve existir, nesse caso aí... --> ISSO VAI QUEBRAR O APP...
+  )
+
+
+
+
+
+
+
+  -> ENTRE __ 
+
+  OS QUOTATION MARKS 
+
+
+  de 
+
+
+  PROPERTY BINDING VOCÊ DEVE 
+
+  __ESCREVER 'TYPESCRIPT CODE',
+
+
+
+
+
+  UMA TYPESCRIPT EXPRESSION QUE VAI RETORNAR O VALUE QUE 
+
+
+  ESSA PROPERTY ESPERA (
+
+
+    para disabled, esses valores são 'true' ou 'false',
+
+    MAS OUTRAS 
+
+
+
+
+    PROPRIEDADES EXIGEM VALUES DIFERENTES,
+
+
+    TAL COMO 
+
+
+    'display: none/block/inline-block/inline',
+
+    etc etc...
+  )
+
+
+
+
+
+
+
+
+
+
+
+  --> APESAR _ DE ISSO __ APARENTAR _ 
+
+
+
+  SER _ 
+
+
+  UM USO DE 
+
+
+
+  um ATRIBUTO HTML,
+
+
+  essa escrita de 
+
+
+
+  '[disabled]',
+
+
+
+
+
+
+
+
+
+
+  ISSO __ NÃO É _ UM ATTRIBUTE HTML CLÁSSICO, DE JEITO NENHUM... -->  ESSA SINTAXE 
+
+
+  INTEIRA,
+
+
+  SINTAXE 
+
+
+
+
+  [disabled]="!allowNewServer"
+
+
+
+
+
+
+  É UMA SINTAXE_ RECONHECIDA __ PELO ANGULAR.... ------> É POR ISSO QUE 
+
+
+  ENTRE OS QUOTATION MARKS 
+
+
+
+
+  DEVEMOS QUE ESCREVER CÓDIGO TYPESCRIPT,
+
+
+  JUSTAMENTE 
+  PQ 
+
+  ESSA 
+
+  EXPRESSION INTEIRA SERÁ 
+
+
+  EVALUATED PELO ANGULAR... ---> 
+
+
+
+  É POR ISSO QUE 
+
+  MISTURAR STRING INTERPOLATION, UM CONCEITO SEPARADO,
+
+  COM 
+
+
+  A PROPERTY BINDING LEVA A DESASTRES,
+
+
+
+
+
+
+  _-FAZ_ COM QUE O APP SEJA QUEBRADO.... ------> STRING INTERPOLATION _ SÓ FUNCIONA EM UM 
+
+
+  TEMPLATE 
+
+
+  ''NORMAL'',
+
+
+  E NÃO FUNCIONA 
+
+
+
+
+
+
+
+  '''DE DENTRO ''' 
+
+  DE OUTRA EXPRESSÃO NESSE TEMPLATE (como uma property binding, ou coisa do gênero)...
+
+
+
+
+
+
+
+
+
+
+  --> OK, AGORA CHEGA DE PROPERTY BINDING E DO 
+
+
+
+  ESTUDO DE 'COMO OUTPUTTAR COISAS NO TEMPLATE'...
+
+
+
+
+
+
+
+
+
+  --> A PRÓXIMA ETAPA É VER 'COMO PODEMOS REAGIR A EVENTS NO REACT'...

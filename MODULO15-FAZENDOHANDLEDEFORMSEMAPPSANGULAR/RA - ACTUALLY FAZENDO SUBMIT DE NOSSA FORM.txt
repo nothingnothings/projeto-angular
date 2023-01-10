@@ -1,0 +1,1316 @@
+
+
+
+
+
+
+
+
+
+
+
+----> NA ÚLTIMA AULA,
+
+
+
+SINCRONIZAMOS COM SUCESSO NOSSO ARQUIVO HTML 
+
+
+
+
+COM A NOSSA FORM TYPESCRIPT:
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form [formGroup]="signupForm">
+        <!-- É ASSIM QUE VINCULAMOS NOSSA FORM CRIADA LÁ EM UM ARQUIVO TS, nesse arquivo html, nessa form do arquivo html... através de property binding com '[formGroup]'-->
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            class="form-control"
+            formControlName="username"
+          />
+          <!-- AQUI, O QUE INTERESSA É 'formControlName', pq O VALUE PASSADO A ESSA DIRECTIVE SERÁ BUSCADO LÁ NO SEU CÓDIGO TYPESCRIPT, na form TS a que foi vinculada essa form do HTML...  (o angular vai buscar pelos KEY NAMES da sua form, lá no código typescript)-->
+        </div>
+
+        <button class="btn btn-default" type="button">
+          Suggest an Username
+        </button>
+        <div class="form-group">
+          <label for="email">Mail</label>
+          <input
+            type="email"
+            id="email"
+            class="form-control"
+            formControlName="email"
+          />
+          <!-- DE NOVO, O QUE INTERESSA É 'formControlName'-->
+        </div>
+
+        <div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input type="radio" [value]="gender" />
+            {{ gender }}
+          </label>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+e isto:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { FormControl, FormGroup } from '@angular/forms'; /// NO REACTIVE APPROACH, usamos UM MONTE DAS CLASSES OFERECIDAS POR ESSA PACKAGE...
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent implements OnInit {
+    genders = ['Male', 'Female'];
+
+    signupForm: FormGroup;  //nossa 'overall form' sempre será isso, um 'FORM GROUP', um grande COMPILADO DE TODOS OS input fields, selects, textareas, radio buttons, etc
+
+
+
+    ngOnInit(): void {   ////é bem melhor inicializar iniicalmente nossa form AQUI, em 'ngOnInit()'....
+
+
+      this.signupForm = new FormGroup({  /////ISSO VAI __ CRIAR UMA _ NOVA FORM _ QUASe__ VÁLIDA...
+
+        ////sempre wrappe o nome de seus input fields em _ STRINGS_...
+        'username': new FormControl(  ////é usado para CRIAR A REPRESENTAÇÃO DESSE INPUT FIELD em si... e ele tem VÁRIOS ARGUMENTOS QUE DEVEM SER PASSADOS..
+
+        null, //// 1/////// O PRIMEIRO PARÂMETRO É o 'INITIAL VALUE' de seu input field... colocamos 'null' pq queremos que fique EM BRANCO...
+
+
+        ),
+
+        'email': new FormControl( ///user input de 'email'
+          
+          null,
+
+        ),
+
+        'gender': new FormControl(this.genders[0] //queremos definir o 'initial value', value default, como sendo 'male' no início...
+          
+          )
+
+      }
+      
+      
+      
+      );
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> IMPORTANTES PARA ISSO FORAM:
+
+
+
+
+
+
+
+1) NO TEMPLATE HTML: as directives de '[formGroup]' e 'formControlName'...
+
+
+
+
+
+
+
+
+
+2) NO CÓDIGO TYPESCRIPT: as constructor functions/objects de   'new FormGroup()' e 'new FormControl()' 
+
+
+(também o type de 'FormGroup')...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> AGORA DEVEMOS DAR UMA OLHADA _ EM COMO _ PODEMOS FAZER 'SUBMIT'
+
+
+
+DE NOSSA 
+
+
+
+FORM...
+
+
+
+
+
+
+
+---> NO TEMPLATE-DRIVEN APPROACH,
+
+
+nós usamos 
+
+
+<form
+'(ngSubmit)=seuMethodNoArquivoTypescript(referenciaASuaForm)
+
+#referenciaASuaForm
+>
+
+<input>
+....
+....
+
+</form>
+
+
+
+
+
+
+
+
+--> TAMBÉM USAMOS, NAQUELA PARTE,
+
+O APPROACH DE '@ViewChild',
+
+
+
+que funcionava _ SEM O PASS_ de nossa form como parâmetro  de 'seuMethodNoArquivoTypescript'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO SIGNIFICA, EM OUTRAS PALAVRAS, QUE NO TEMPLATE-DRIVEN APPROACH 
+
+
+
+
+
+
+
+
+NÓS USÁVAMOS A DIRECTIVE/EVENT 
+
+
+
+de 
+
+
+'(ngSubmit)'
+
+
+
+NO NOSSO FORM ELEMENT DESEJADO...
+
+
+
+
+
+
+
+
+
+
+
+-------> BEM,
+
+
+
+
+MAS AQUI,
+
+
+NO REACTIVE
+
+APPROACH,
+
+
+NÓS KINDOF 
+
+
+AINDA FAZEMOS A MESMA COISA,
+
+
+
+
+PQ  _ NÓS AINDA _ VAMOS QUERER 
+
+
+
+
+REAGIR A 
+
+ESSE 
+
+'DEFAULT SUBMIT EVENT'
+
+que é 
+DISPARADO PELO HTML, PELO JAVASCRIPT...
+
+
+
+
+
+
+
+
+
+
+
+
+------> é por isso que _ AINDA VAMOS USAR '(ngSubmit)'
+
+
+
+
+
+
+
+NO REACTIVE APPROACH...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR VAI ESCREVER ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+<form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+
+
+
+
+
+
+
+
+
+
+-----------------------------------------
+
+
+
+
+
+
+
+O CÓDIGO COMPLETO FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmitForm()"> <!--AQUI AINDA VAMOS USAR ESSA DIRECTIVE/EVENT de 'ngSubmit', pq vamos querer USAR O COMPORTAMENTO DE 'submit' do HTML/JS comum _ PARA _ EXECUTAR NOSSOS PRÓPRIOS METHODS no arquivo .ts....-->
+        <!-- É ASSIM QUE VINCULAMOS NOSSA FORM CRIADA LÁ EM UM ARQUIVO TS, nesse arquivo html, nessa form do arquivo html... através de property binding com '[formGroup]'-->
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            class="form-control"
+            formControlName="username"
+          />
+          <!-- AQUI, O QUE INTERESSA É 'formControlName', pq O VALUE PASSADO A ESSA DIRECTIVE SERÁ BUSCADO LÁ NO SEU CÓDIGO TYPESCRIPT, na form TS a que foi vinculada essa form do HTML...  (o angular vai buscar pelos KEY NAMES da sua form, lá no código typescript)-->
+        </div>
+
+        <button class="btn btn-default" type="button">
+          Suggest an Username
+        </button>
+        <div class="form-group">
+          <label for="email">Mail</label>
+          <input
+            type="email"
+            id="email"
+            class="form-control"
+            formControlName="email"
+          />
+          <!-- DE NOVO, O QUE INTERESSA É 'formControlName'-->
+        </div>
+
+        <div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input type="radio" [value]="gender" />
+            {{ gender }}
+          </label>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { FormControl, FormGroup } from '@angular/forms'; /// NO REACTIVE APPROACH, usamos UM MONTE DAS CLASSES OFERECIDAS POR ESSA PACKAGE...
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent implements OnInit {
+    genders = ['Male', 'Female'];
+
+    signupForm: FormGroup;  //nossa 'overall form' sempre será isso, um 'FORM GROUP', um grande COMPILADO DE TODOS OS input fields, selects, textareas, radio buttons, etc
+
+
+
+    ngOnInit(): void {   ////é bem melhor inicializar iniicalmente nossa form AQUI, em 'ngOnInit()'....
+
+
+      this.signupForm = new FormGroup({  /////ISSO VAI __ CRIAR UMA _ NOVA FORM _ QUASe__ VÁLIDA...
+
+        ////sempre wrappe o nome de seus input fields em _ STRINGS_...
+        'username': new FormControl(  ////é usado para CRIAR A REPRESENTAÇÃO DESSE INPUT FIELD em si... e ele tem VÁRIOS ARGUMENTOS QUE DEVEM SER PASSADOS..
+
+        null, //// 1/////// O PRIMEIRO PARÂMETRO É o 'INITIAL VALUE' de seu input field... colocamos 'null' pq queremos que fique EM BRANCO...
+
+
+        ),
+
+        'email': new FormControl( ///user input de 'email'
+          
+          null,
+
+        ),
+
+        'gender': new FormControl(this.genders[0] //queremos definir o 'initial value', value default, como sendo 'male' no início...
+          
+          )
+
+      }
+      
+      
+      
+      );
+    }
+
+
+
+
+
+    onSubmitForm() { //checar arquivo html, no '(ngSubmit)="onSubmitForm()"'
+
+    }
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK... A DIFERENÇA
+ 
+
+
+
+
+
+ DO REACTIVE APPROACH EM RELAÇAÕ AO TEMPLATE-DRIVEN APPROACH  
+
+
+
+
+
+
+
+
+
+ É QUE 
+
+ 
+
+
+
+
+
+
+ __ NÃO É MAIS NECESSÁRIO FAZER 'GET' 
+
+ DE NOSSA 
+
+
+ FORM HTML 
+
+ por meio daquela local reference (coisas como '#nossaLocalForm', repassadas a methods em '(ngSubmit)=seuMethod(nossaLocalForm)' )
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ------> NA VERDADE, SE VOCê TENTAR PASSAR UMA REFERÊNCIA DE 'SUA FORM'
+
+
+
+ A UM METHOD DISPARADO POR 'ngSubmit',
+
+
+ ISSO NÃO FUNCIONARÁ,
+
+
+
+ PQ NÃO ESTAMOS MAIS USANDO 
+
+ O 
+
+
+
+
+
+ MECANISMO DE 'AUTO-CREATION' de forms do ANGULAR (isso só é usado no TEMPLATE-DRIVEN APPROACH)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> MAS _ AÍ ESTÁ A SACADA:
+
+
+
+
+
+
+
+ NÓS _ _NÃO PRECISAMOS__ FAZER 'GET' DESSA REFERENCE,
+
+ ISSO 
+
+
+ PQ _ NÓS __ JÁ 
+
+ CRIAMOS 
+
+
+
+ ESSA FORM,
+
+ POR CONTA PRÓPRIA,
+
+
+ LÁ NO ARQUIVO 
+
+
+ '.ts',
+
+
+
+ com aquele código:
+
+
+
+
+
+
+
+
+
+
+ 
+    signupForm: FormGroup;  //nossa 'overall form' sempre será isso, um 'FORM GROUP', um grande COMPILADO DE TODOS OS input fields, selects, textareas, radio buttons, etc
+
+
+
+    ngOnInit(): void {   ////é bem melhor inicializar iniicalmente nossa form AQUI, em 'ngOnInit()'....
+
+
+      this.signupForm = new FormGroup({  /////ISSO VAI __ CRIAR UMA _ NOVA FORM _ QUASe__ VÁLIDA...
+
+        ////sempre wrappe o nome de seus input fields em _ STRINGS_...
+        'username': new FormControl(  ////é usado para CRIAR A REPRESENTAÇÃO DESSE INPUT FIELD em si... e ele tem VÁRIOS ARGUMENTOS QUE DEVEM SER PASSADOS..
+
+        null, //// 1/////// O PRIMEIRO PARÂMETRO É o 'INITIAL VALUE' de seu input field... colocamos 'null' pq queremos que fique EM BRANCO...
+
+
+        ),
+
+        'email': new FormControl( ///user input de 'email'
+          
+          null,
+
+        ),
+
+        'gender': new FormControl(this.genders[0] //queremos definir o 'initial value', value default, como sendo 'male' no início...
+          
+          )
+
+      }
+      
+      
+      
+      );
+    }
+
+
+
+
+
+
+
+
+
+    --------------------------
+
+
+
+
+
+
+
+
+    --> ISSO SIGNIFICA QUE JÁ TEMOS __ ACESSO__ A 
+
+
+    ESSA FORM,
+    DIRETAMENTE NO NOSSO CÓDIGO TYPESCRIPT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------> NA VERDADE,
+
+JÁ TEMOS ACESSO 
+
+
+A ESSA 
+
+FORM __ EM TODOS OS METHODS 
+
+
+DE NOSSO CÓDIGO TYPESCRIPT...
+
+
+
+
+
+
+
+
+
+
+
+--> é por isso que podemos simplesmente 
+
+
+escrever isto lá no method:
+
+
+
+
+
+
+
+onSubmit() {
+    console.log(this.signupForm);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+e pronto, agora quando 
+
+
+APERTARMOS NO BUTTON DE 'submit',
+
+VEREMOS ESSE CONSOLE.LOG....
+
+
+
+
+
+
+
+
+
+
+
+-> OK, ISSO DEU CERTO:
+
+
+
+
+    onSubmitForm() { //checar arquivo html, no '(ngSubmit)="onSubmitForm()"'
+
+
+
+      console.log(this.signupForm.value);  ///com isso, COM a form ARMAZENADA NESSA PRORPIEDAED no arquivo typescript, podemos a referenciar a qualquer hora no código typescript...
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    RESULTOU NISSO, NO CONSOLE:
+
+
+
+    {username: null, email: null, gender: 'Male'}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> certo,
+
+
+
+
+
+
+
+
+    mas aqui estou com um problema.... --> 
+
+
+    o 
+
+
+
+    'gender' está aparecendo automaticamente como 'Male',
+
+    mas o 
+
+    ELEMENTO 
+
+
+    HTML NÃO ESTÁ SENDO MARCADO 
+
+
+
+    no início da page (está vazio)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -> é, os RADIO BUTTONS ESTÃO _ BEM QUEBRADOS_...
+
+
+
+
+
+
+
+
+
+
+
+    PELO VISTO, É PQ EU ESQUECI DE ESCREVER 
+
+
+
+    'FormControlName="gender"....
+
+
+
+
+
+
+    ex:
+
+
+
+
+
+
+
+    
+        <div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input type="radio" [value]="gender" formControlName="gender"/>
+            {{ gender }}
+          </label>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É, ERA ISSO MESMO...
+
+
+
+
+
+
+
+
+
+
+-----------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> PROFESSOR MENCIONA QUE AGORA PODEMOS ACESSAR 'signupForm'
+
+
+
+em qualquer lugar de nosso 
+
+
+
+
+component...
+
+
+
+
+
+
+
+
+---> SE CONSOLE.LOGGAMOS 
+
+
+''this.signupForm',
+
+receberemos
+ 
+
+
+
+ ACESSO 
+
+ A NOSSA FORM,
+
+
+
+
+
+ QUE TERÁ AQUELAS MESMAS PROPRIEDAEDS, 
+
+
+
+
+ PROPRIEDADES QUE JÁ CONHECEMOS,
+
+
+
+
+
+ DENTRE ELAS O 
+ 'value',
+
+
+ QUE 
+
+
+
+
+ CORRETAMENTE REPRESENTARÁ O 
+
+
+
+ OBJECT QUE 
+
+
+ PASSAMOS 
+
+
+ lá 
+
+
+
+
+ NO 
+
+
+ 
+
+
+ CÓDIGO DE 
+
+
+
+
+ this.signupForm = new FormGroup(
+     {
+         'username': new FormControl(null),
+         'email': new FormControl(null),
+         'gender': new FormControl(genders[0])
+     }
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ----> ESSES KEY-VALUES SERÃO RETRATADOS LA´EM 
+
+
+
+ 'this.signupForm.values'..
+
+
+
+
+
+
+
+
+
+
+ --> E ESSA É A COISA 'COOL'
+
+
+ DO REACTIVE APPROACH:
+
+
+
+ TUDO _ QUE VOCÊ SETTAR 
+
+
+
+
+
+
+
+LÁ 
+
+
+
+EM 'new FormGroup()'
+
+
+
+COMO UM __ ARGUMENT,
+
+
+
+TUDO QUE 
+
+
+VOCÊ SETTAR AQUI COMO UM 'OBJECT'
+
+
+
+a 
+SER PASSADO 
+
+
+
+A 
+
+ESSE 
+
+'new FormGroup()'
+
+
+
+
+QUE FORMA 
+
+ __ SUA __ FORm,
+
+
+
+
+
+
+
+
+
+ __ É ISSO __ QUE 
+
+ VOCÊ 
+
+
+ VAI 
+
+ 'GET OUT'
+
+
+
+ como VALUE DE SUA FORM...
+
+
+
+
+
+
+
+
+
+
+
+ --> ISSO QUER DIZER QUE 
+
+
+ VOCÊ PODE __ FACILMENTE__ BINDAR _ 
+
+
+
+ O 'FormGroup'
+
+
+
+
+
+ AO __ MODEL __ DE SEU 
+
+
+ APP,
+
+
+
+
+ E AÍ __ 
+
+
+
+
+
+
+ FACILMENTE ASSEGURAR QUE 
+
+
+ A FORM 
+
+ STRUCTURE 
+
+ VAI 
+
+
+
+ SE EQUIPARAR à STRUCTURE 
+
+ DO SEU MODEL...
+
+
+
+
+
+
+
+
+
+ --> OK, É ASSIM QUE PODEMOS SUBMITTAR SUA FORM,
+
+
+ É ASSIM QUE PODEMOS AINDA ACESSAR OS VALUES COMO FAZÍAMOS ANTES,
+
+
+
+ mas agora
+
+
+
+ USANDO 
+
+ A
+  FORM QUE NÓS CRIAMOS COM NOSSAS PRÓPRIAS MÃOS,
+
+
+  LÁ NO CÓDIGO TYPESCRIPT...

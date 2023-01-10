@@ -1,0 +1,1375 @@
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+DE VOLTA AO COURSE PROJECT,
+
+
+
+
+
+
+A PARTE QUE QUEREMOS HANDLAR É O 'LOGIN',
+
+
+
+
+ONDE COLOCAMOS NOSSAS CREDENTIALS,
+
+
+
+
+
+
+
+em que temos aquele <span> DE ERROR..
+
+
+
+
+
+
+--> AQUELA ERROR MESSAGE,
+
+QUEREMOS A HANDLAR DE FORMA SUPERIRO..
+
+
+
+
+
+
+
+
+
+
+-> PARA DEMONSTRAR COMO PODEMOS RENDERIZAR UM COMPONENT DINAMICANETE,
+
+
+
+
+O PROFESSOR VAI 
+
+DEIXAR ESSA BOX DE LADO,
+
+
+PQ AGORA VAMOS CONSTRUIR UMA 
+
+'ALERT BOX',
+
+
+
+QUE SERÁ 
+
+
+PRESENTADA COMO UM _ OVERLAy__ NA TELA,
+
+
+COM UM 
+
+
+
+BACKDROP BEM NICE,
+
+QUE ESCONDERÁ O BACKGROUND....
+
+
+
+
+
+
+
+
+
+--> NESSA ALERTBOX, PODEREMOS CLICAR EM UM 'OK' PARA FECHÁ-LA,
+
+para ter outra chance...
+
+
+
+
+
+
+
+
+
+
+
+-> ESSA É A IDEIA...
+
+
+
+
+
+
+
+
+
+
+
+--> DE VOLTA AO CÓDIGO,
+
+
+
+
+
+
+o objetivo é CRIAR UM ALERT DESSES...
+
+
+
+
+
+
+
+
+
+--> NO FOLDER DE 'shared',
+
+CRIAMOS UM NOVO 'alert',
+
+
+
+
+
+
+E SERÁ UM TÍPICO 
+
+
+
+COMPONENT de 
+
+
+
+alert.component.ts...
+
+
+
+
+
+
+
+
+
+--> 
+
+
+
+
+
+
+
+OK, QUEREMOS CONSTRUIR ESSE ALERT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COMEÇO ASSIM:
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+Component({
+  selector: 'app-alert',
+  templateUrl: './alert.component.html',
+  styleUrls: ['./alert.component.css'],
+});
+
+export class AlertDynamicComponent {
+  constructor() {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-->  ESSE COMPONENT SERÁ RENDERIZADO COMO UMA SIMPLES BOX,
+
+
+QUE 
+
+SERÁ 
+
+RENDERIZADA COMO UM 
+
+OVERLAY SOBRE 
+
+TODA NOSSA  TELA...
+
+
+
+
+
+
+
+
+
+
+
+
+--> colocamos um selector de 'app-alert',
+
+
+
+e aí 
+
+
+
+NO TEMPLATE 
+
+
+colocamos 'alert.component.html',
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE VAMOS COLOCAR UM POUCO DE CÓDIGO HTML,
+
+
+
+
+em que colocaremos 
+
+
+o 
+
+
+BACKDROP e o component 'modal',
+
+TUDO JUNTO... ( poderíamos separar os 2, mas aqui não há necessidade)...
+
+
+
+
+
+
+
+
+
+
+
+--> o professor escreve assim:
+
+
+
+
+
+
+
+<div class="backdrop"></div> 
+
+
+
+
+
+
+
+
+
+
+(
+
+
+    ESSE BACKDROP É UMA CLASS BOOTSTRAP...
+)
+
+
+
+
+
+
+
+
+--> aí colocaremos nosso 'alert-box'...
+
+
+
+
+
+
+tipo assim:
+
+
+
+<div class="backdrop"></div> 
+<div class="alert-box">
+    <p>{{ message }} </p>
+</div>
+
+
+
+
+
+
+
+
+-> VAMOS OUTPUTTAR NOSSA MESSAGE DE ERROR DENTRO DO STRING INTERPOLATION, E TAMBÉM VAMOS QUERER 
+
+TER UM BUTTON PARA 'CLOSE' ESSE ALERT..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> TIPO ASSIM:
+
+
+
+<div class="backdrop"></div> 
+<div class="alert-box">
+    <p>{{ message }} </p>
+    <div class="alert-box-actions">
+        <button class="btn btn-primary"></button>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+CERTO..
+
+
+
+
+
+
+-> NO BUTTON DIREMOS 'close'...
+
+
+
+
+
+
+
+
+
+
+
+
+UM POUCO DE STYLING ESTÁ FALTANDO,
+
+
+
+
+
+MAS 
+
+
+PARA ISSO BASTA DEIXARMOS UM NOVO FILE DE 'alert.component.css'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... TEMOS ESSA PROPRIEDADE DE 'message',
+
+
+
+
+
+
+e essa STRING DEVERÁ SER CAPAZ DE SER 'SET FROM OUTSIDE',
+
+
+
+
+POR ISSO VAMOS COLOCAR AQUELE 
+
+
+
+
+DECORATOR DE 
+
+'@Input()',
+
+
+PARA QUE 
+
+
+SEJA POSSÍVEL 
+
+
+
+
+DEFINIR SEU VALUE LÁ DO LADO DE FORA DESSE COMPONENT...
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, Input } from '@angular/core';
+
+Component({
+  selector: 'app-alert',
+  templateUrl: './alert.component.html',
+  styleUrls: ['./alert.component.css'],
+});
+
+export class AlertDynamicComponent {
+
+
+
+
+   @Input() message: string;  ////Colocamos 'Input()' PQ QUEREMOS QUE ESSA MESSAGE DESSA BOX CONSIGA SER SETTADA DO LADO DE FORA....
+
+
+
+
+
+  constructor() {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COM ISSO, O COMPONENT DE 'ALERT' ESTÁ QUASE ACABADO,
+
+
+
+
+
+
+
+
+basta O ADICIONARMOS AO NOSSO APP,
+
+
+nas declarations do app.module.ts....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... E AGORA VAMOS QUERER ADICIONAR ESSE COMPONENT LÁ em 
+
+
+'auth.component.html',
+
+
+
+QUE ESTÁ COM ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div
+    class="col-xs-12 col-md-6 col-md-offset-3"
+    [ngStyle]="{ display: 'flex', 'justify-content': 'center' }"
+  >
+
+    <form
+      (ngSubmit)="onAuthFormSubmit(localFormReference)"
+      #localFormReference="ngForm"
+    >
+    <div class="alert alert-danger" *ngIf="error" (click)="error = null"> <!-- o 'click' com esse código faz o rápído DISMISS da message de erro quando a clicamos...-->
+      <p>{{ error }}</p>
+    </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          required
+          email
+          name="email"
+          ngModel
+          placeholder="email@example.com"
+          #emailReference="ngModel"
+        />
+        <span *ngIf="!emailReference.value && emailReference.touched"
+          >Email is required</span
+        >
+        <span
+          *ngIf="
+            !emailReference.valid &&
+            emailReference.value &&
+            emailReference.touched
+          "
+          >Invalid email entered</span
+        >
+      </div>
+
+      <div class="form-group" [ngStyle]="{ 'margin-top': '12px' }">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          class="form-control"
+          id="password"
+          required
+          name="password"
+          ngModel
+          minlength="6"
+          placeholder="Your Password"
+          #passwordReference="ngModel"
+        />
+        <span *ngIf="!passwordReference.value && passwordReference.touched"
+          >Password is required</span
+        >
+        <span
+          *ngIf="
+            !passwordReference.valid &&
+            passwordReference.value &&
+            passwordReference.touched
+          "
+          >Password must have at least 6 characters</span
+        >
+      </div>
+
+      <div
+        [ngStyle]="{ display: 'flex', 'justify-content': 'center' }"
+        *ngIf="!isLoading"
+      >
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="!localFormReference.valid"
+        >
+          {{ isSignup ? "SIGN UP" : "LOGIN" }}
+        </button>
+        <button
+          class="textBtn"
+          (click)="onSwitchAuth()"
+          [ngStyle]="{ cursor: 'pointer' }"
+          type="button"
+        >
+          {{ isSignup ? "Switch to Login" : "Switch to Signup" }}
+        </button>
+      </div>
+      <app-spinner *ngIf="isLoading"></app-spinner>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VAMOS COMENTAR PARA FORA A NOSSA BOX DE MESSAGES DE ERROR, aquela 'div', em outras palavras...
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div
+    class="col-xs-12 col-md-6 col-md-offset-3"
+    [ngStyle]="{ display: 'flex', 'justify-content': 'center' }"
+  >
+
+    <form
+      (ngSubmit)="onAuthFormSubmit(localFormReference)"
+      #localFormReference="ngForm"
+    >
+    <!-- <div class="alert alert-danger" *ngIf="error" (click)="error = null"> --><!-- o 'click' com esse código faz o rápído DISMISS da message de erro quando a clicamos...-->
+      <!-- <p>{{ error }}</p>  ,,,,, SUBSTITUÍDO pelo nosso 'DYNAMIC ERROR COMPONENT' --> 
+    <!-- </div> -->
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          required
+          email
+          name="email"
+          ngModel
+          placeholder="email@example.com"
+          #emailReference="ngModel"
+        />
+        <span *ngIf="!emailReference.value && emailReference.touched"
+          >Email is required</span
+        >
+        <span
+          *ngIf="
+            !emailReference.valid &&
+            emailReference.value &&
+            emailReference.touched
+          "
+          >Invalid email entered</span
+        >
+      </div>
+
+      <div class="form-group" [ngStyle]="{ 'margin-top': '12px' }">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          class="form-control"
+          id="password"
+          required
+          name="password"
+          ngModel
+          minlength="6"
+          placeholder="Your Password"
+          #passwordReference="ngModel"
+        />
+        <span *ngIf="!passwordReference.value && passwordReference.touched"
+          >Password is required</span
+        >
+        <span
+          *ngIf="
+            !passwordReference.valid &&
+            passwordReference.value &&
+            passwordReference.touched
+          "
+          >Password must have at least 6 characters</span
+        >
+      </div>
+
+      <div
+        [ngStyle]="{ display: 'flex', 'justify-content': 'center' }"
+        *ngIf="!isLoading"
+      >
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="!localFormReference.valid"
+        >
+          {{ isSignup ? "SIGN UP" : "LOGIN" }}
+        </button>
+        <button
+          class="textBtn"
+          (click)="onSwitchAuth()"
+          [ngStyle]="{ cursor: 'pointer' }"
+          type="button"
+        >
+          {{ isSignup ? "Switch to Login" : "Switch to Signup" }}
+        </button>
+      </div>
+      <app-spinner *ngIf="isLoading"></app-spinner>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COMENTAMOS ISSO PARA FORA,
+
+PARA O SUBSTITUIR POR 
+
+'app-alert'...
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+<app-alert></app-alert>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... AÍ VAMOS USAR 
+
+
+PROPERTY BINDING PARA BINDAR A PROPRIEDAED DE 
+
+
+
+'message'
+
+
+COMO SENDO EQUIVALENTE AO VALUE DE 'error' QUE TEMOS NESSE COMPONENT PAGE DE 'authPage'...
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+<app-alert [message]="error"></app-alert>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO FEITO,
+
+O PROFESSOR COLOCA UM 'ngIf',
+
+
+PARA QUE 
+
+
+
+ESSE 
+
+COMPONENT SÓ SEJA RENDERIZADO  
+
+
+QUANDO 
+
+
+TIVERMOS 
+
+ALGUM 
+
+
+ERROR NA NOSSA PAGE,
+
+TIPO ASSIm:
+
+
+
+
+
+
+
+<app-alert [message]="error" *ngIf="error"></app-alert>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... AGORA ESSE ALERTA SÓ SERÁ MOSTRADO SE TIVERMOS UM ERROR, COMO 
+
+aquela nossa 'div' anterior... (ok, mas até agora, isso é TOTALMENTE IGUAL AO ANTIGO ELEMENTO 'DIV' QUE TÍNHJAMOS AQUI....)
+
+
+
+
+
+
+
+
+
+
+
+
+--> NADA DE MAIS, ATÉ AGORA...
+
+
+
+
+
+
+
+
+
+
+--> MAS VAMOS COLOCAR UM POUCO DE STYLING NESSE COMPONENT,
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 50;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+DEPOIS O ALERT-BOX:
+
+
+
+
+
+
+
+
+
+
+
+
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 50;
+}
+
+
+
+
+
+
+.alert-box {
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--. VAI GANHAR UMA POSITION DE 'fixed' 
+
+também,
+
+
+
+aí vai ter um top de '30vh',
+
+
+
+
+left de '20vw',
+
+
+
+
+
+
+
+
+
+a width terá 
+
+
+
+de 60vw...
+
+
+
+ PQ IMAGINE ASSIM:
+
+
+
+
+
+
+
+    LEFT                     RIGHT
+      20      I    60    I    20 
+
+
+
+
+
+
+
+
+      ESSA SERÁ A TELA DO USER, ESSENCIALMENTE..
+
+
+
+
+
+
+
+
+
+
+--> O PADDING SERÁ DE 16px...
+
+
+
+
+
+z-index de 100, para ficar acima do 
+
+backdrop,
+
+
+
+e box-shadow de 
+
+0 2px 8px rgba (0, 0, 0, 0.26);
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 50;
+}
+
+
+
+
+
+
+.alert-box {
+    position: fixed;
+    top: 30vh;
+    left: 20vw;
+    width: 60vw;
+    padding: 16px;
+    z-index: 100;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 50;
+}
+
+
+
+
+
+
+.alert-box {
+    position: fixed;
+    top: 30vh;
+    left: 20vw;
+    width: 60vw;
+    padding: 16px;
+    z-index: 100;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+}
+
+
+
+
+.alert-box-actions {
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AÍ 
+
+
+EM 'alert-box-actions'
+
+
+QUEREMOS 
+
+deixar 'text-align: right',
+
+
+PARA ALINHAR TUDO à DIREITA...
+
+
+
+
+
+
+--> SALVAMOS TUDO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ESPERAMOS O RELOAD...
+
+
+
+
+
+
+
+
+ 
+ TEREMOS UMA ALERT BOX BEM PADRÃO, NADA DE MAIS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> É UM MODAL BEM SIMPLES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> O PROFESSOR DIZ QUE PODERÍAMOS TER SIDO BEM MAIS FANCY,
+
+
+
+ PODERÍAMSO TER USADO 'ng-content' PARA INSERIR 
+
+ CONTEÚDO HTML DINÂMICO DENTRO 
+
+
+
+ DO MODAL,
+
+
+
+ mas 
+
+
+ que isso aqui está fine, por enquanto...
+
+
+
+
+
+
+
+
+
+
+ -> MAS AINDA NÃO PODEMOS FECHAR ESSE MODAL...
+
+
+
+
+
+
+
+
+
+ -> mas já temos a primeira etapa...
+
+
+
+
+
+ --> MAS COMO PODEMOS ABRIR ESSE 
+
+
+
+ MODAL DINAMICAMENTE,
+ E COMO PODEMOS O FECHAR?
+
+
+
+
+
+ VEREMOS ISSO NA PRÓXIMA AULA....

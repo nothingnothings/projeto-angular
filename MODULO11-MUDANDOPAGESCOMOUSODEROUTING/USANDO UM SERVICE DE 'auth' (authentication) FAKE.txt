@@ -1,0 +1,499 @@
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK... -> VAMOS   
+
+
+ACABAR COM ESSE COMPORTAMENTO DE 
+
+
+
+
+'canActivate'
+
+
+
+COM A ADIÇÃO DE UMA FEATURE QUE DEIXARÁ O USER FAZER 
+
+'LOGIN'...
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+
+
+O PROFESSOR VAI ATÉ O COMPONENT DE 'home.component.html'
+
+e aí 
+
+ADICIONA 
+
+2
+ BUTTONS, 
+
+
+
+
+ LOGIN E LOGOUT...
+
+
+
+
+
+
+
+
+
+
+
+ --> <button></button>
+
+
+
+
+
+
+
+
+
+
+
+
+ -> OK, 
+
+
+ A PERGUNTA É SE 
+
+ VAMOS 
+
+
+
+ COLOCAR 
+
+
+ NAVIGATION PROGRAMÁTICA OU ATRAVÉS DE 
+
+
+
+ 'routerLink'...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> acho que será 'routerLink'...
+
+
+
+
+
+
+
+
+
+ ---> MENTIRA,
+
+ ELE VAI QUERER FAZER DE FORMA PROGRAMÁTICA...
+
+
+
+
+
+
+
+ O CÓDIGO FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+ <h4>Welcome to Server Manager 4.0</h4>
+<p>Manage your Servers and Users.</p>
+<button class="btn btn-primary" (click)="onLoadServers()">Load Servers - Programmatic navigation</button>
+<button class="btn btn-primary" (click)="onLoadServer(1)">Load Server 1 - Programmatic navigation WITH THE PASS OF QUERY PARAMS</button>
+<button class="btn btn-default" (click)="onLogin()">Login</button>
+<button class="btn btn-default" (click)="onLogout()">Logout</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { Router } from '@angular/router';   //quando usamos nosso router dentro de component.ts, vamos fazer o NAVIGATE PROGRAMÁTICO DO USUÁRIO, através de METHODS... (E não através de links e 'routerLink', como é o comum)...
+
+
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent implements OnInit {
+
+  constructor(private router: Router) { }
+
+  ngOnInit(): void {
+  }
+
+  onLoadServers() {
+    this.router.navigate(['/servers']); /////É ASSIM QUE FAZEMOS 'NAVIGATE' programaticamente.... --> o argumento é o 'absolute path' (ou relative, se não tiver '/') a que VAMOS QUERER NAVIGATE O USER....
+  }
+
+
+  onLoadServer(id: number) {
+    this.router.navigate(
+      ['/servers', id, 'edit'],    ////localhost:4200/servers/4/edit      --> depois colocaremos os query params, tipo ?exemplo=true, e depois o FRAGMENT, que fica tipo    ?exemplo=true#diabrete....  ( nno caso, será '?allowEdit=1#loading')..
+
+      {
+        queryParams: {
+            allowEdit: 1
+        },
+        fragment: 'loading'
+      }
+    )
+  }
+
+
+  onLogin() {
+
+  }
+
+  onLogout() {
+    
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> OK... AÍ VAMOS QUERER 
+
+
+
+EXECUTAR NOSSOS METHODS 
+
+LÁ 
+
+
+de 
+
+
+'AuthService',
+
+
+provavelmente...
+
+
+
+
+
+
+
+
+
+
+
+-> NÃO TEREMOS REFLEXOS DISSO NA NOSSA UI,
+
+pq 
+
+
+essa parte do curso não é sobre UI...
+
+
+
+
+
+
+
+
+
+---> 
+
+
+onLogin 
+
+
+TERÁ ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+onLogin() {
+
+    this.authService.login();
+
+}
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { Router } from '@angular/router';   //quando usamos nosso router dentro de component.ts, vamos fazer o NAVIGATE PROGRAMÁTICO DO USUÁRIO, através de METHODS... (E não através de links e 'routerLink', como é o comum)...
+import { AuthService } from '../auth.service';
+
+
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent implements OnInit {
+
+  constructor(private router: Router, private authService: AuthService) { }
+
+  ngOnInit(): void {
+  }
+
+  onLoadServers() {
+    this.router.navigate(['/servers']); /////É ASSIM QUE FAZEMOS 'NAVIGATE' programaticamente.... --> o argumento é o 'absolute path' (ou relative, se não tiver '/') a que VAMOS QUERER NAVIGATE O USER....
+  }
+
+
+  onLoadServer(id: number) {
+    this.router.navigate(
+      ['/servers', id, 'edit'],    ////localhost:4200/servers/4/edit      --> depois colocaremos os query params, tipo ?exemplo=true, e depois o FRAGMENT, que fica tipo    ?exemplo=true#diabrete....  ( nno caso, será '?allowEdit=1#loading')..
+
+      {
+        queryParams: {
+            allowEdit: 1
+        },
+        fragment: 'loading'
+      }
+    )
+  }
+
+
+  onLogin() {
+    this.authService.login();
+  } 
+
+  onLogout() {
+    this.authService.logout();
+  }
+}
+
+
+
+
+
+---------------------------------
+
+
+
+
+
+
+
+
+ok, agora  nossos 2 buttons vão fazer 
+
+
+essa pequena coisa,
+
+
+vão trocar aquele state de 
+
+'isLoggedIn'
+
+
+lá 
+
+
+em 
+
+
+
+'authService.ts'...
+
+
+
+
+
+
+
+
+
+
+-> COM ISSO,
+NÃO 
+
+VEMOS NENHUM 
+REFLEXO 
+
+NA PAGE INICIAL/UI,
+
+
+
+
+
+MAS 
+
+
+SE 
+
+
+
+SEGUIRMOS ATÉ A PAGE DE 
+
+'servers',
+
+
+VEREMOS QUE 
+
+SE ESTIVERMOS 'logged in' (clicamos no button de 'login'),
+
+SERÁ 
+
+
+
+POSSÍVEL 
+
+
+
+
+CLICAR 
+
+
+
+NOS SERVER ITEMS... (route que tem PROTECTION, que checa se 'isLoggedIn' está COMO TRUE OU  NÃO)...
+
+
+
+
+
+
+
+
+
+
+
+ 
+oK, ESTÁ FUNCIONANDO... (Está funcionando após '800ms', pq é o setTimeout que definimos anteriormente )
+
+
+
+
+
+
+
+
+
+
+
+
+-> CERTO, AGORA PODEMOS CONTROLAR ISSO.... -> 
+
+
+
+terminamos esse 
+
+'FAKE AUTH SERVICE',
+
+
+e agora 
+
+
+
+esses hooks de 
+
+'canActivate'
+
+
+e 
+
+'canActivateChild'
+ 
+
+ 
+
+funcionam com ele... (de forma dummy)...

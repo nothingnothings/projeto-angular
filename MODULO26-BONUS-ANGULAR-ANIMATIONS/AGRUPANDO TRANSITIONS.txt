@@ -1,0 +1,1046 @@
+
+
+
+
+
+
+
+
+
+
+CERTO.... O TÓPICO AGORA É O 'GROUP' DE TRANSITIONS...
+
+
+
+
+
+
+
+
+--> ANTERIORMENTE,
+
+
+
+CONSEGUIMOS FAZER O ANIMATE DO 'ADD' DE UM 
+
+
+
+LIST ITEM A NOSSA LIST,
+
+
+
+
+TANTO DE FORMA 'SIMPLES' (com transitions 'simples')
+
+
+
+
+como 'COMPLEXA' (com keyframes)...
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO HAVIA FICADO ASSIm:
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+import { keyframes, style, trigger } from '@angular/animations';
+
+import { state } from '@angular/animations';
+
+import { transition } from '@angular/animations';
+
+import { animate } from '@angular/animations';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  animations: [
+    trigger('divStateExample', [
+      state(
+        'normal',
+        style({
+          'background-color': 'red',
+          transform: 'translateX(0px) ',
+        })
+      ),
+      state(
+        'highlighted',
+        style({
+          'background-color': 'blue',
+          transform: 'translateX(200px)',
+        })
+      ),
+
+      transition(
+        'normal => highlighted',
+
+        animate(300)
+      ),
+
+      transition('highlighted => normal', animate(100)),
+    ]),
+
+    trigger(
+      'wildStateExample',
+
+      [
+        state(
+          'normal',
+          style({
+            'background-color': 'green',
+            transform: 'translateX(0) scale(1)',
+          })
+        ),
+        state(
+          'highlighted',
+          style({
+            'background-color': 'blue',
+            transform: 'translateX(100px) scale(1)',
+          })
+        ),
+
+        state(
+          'shrunken',
+          style({
+            'background-color': 'red',
+
+            transform: 'translateX(0) scale(0.5)',
+          })
+        ),
+
+        transition('normal <=> highlighted', animate(300)),
+
+        transition(
+          'shrunken <=> *',
+
+          [
+            style({ 'background-color': 'purple' }),
+
+            animate(
+              1000,
+              style({ 'background-color': 'orange', 'border-radius': '15px' })
+            ),
+
+            animate(
+              5000,
+              style({ 'background-color': 'orange', 'border-radius': '50px' })
+            ),
+
+            animate(10000),
+          ]
+        ),
+      ]
+    ),
+
+    trigger(
+      'list1',
+
+      [
+        state('in', style({ opacity: '1', transform: 'translateX(0)' })),
+
+        transition(
+          'void => *',
+
+          [
+            style({
+              opacity: '0',
+              transform: 'translateX(-20px)',
+            }),
+
+            animate(300),
+          ]
+        ),
+
+        transition('* => void', [
+          animate(
+            300,
+            style({
+              opacity: '0',
+              transform: 'translateX(50px)',
+            })
+          ),
+        ]),
+      ]
+    ),
+
+    trigger(
+      'list2',
+
+      [
+        state(
+          'inExemplo2',
+          style({
+            opacity: '1',
+            transformation: 'translateX(0)',
+          })
+        ),
+
+        transition(
+          'void => *',
+
+          [
+            animate(
+              1000,
+              keyframes([
+                style({
+                  transform: 'translateX(-100px)',
+                  opacity: '0',
+
+                  offset: '0.00',
+                }),
+                style({
+                  transform: 'translateX(-80px)',
+                  opacity: '0.20',
+
+                  offset: '0.200',
+                }),
+                style({
+                  transform: 'translateX(-60px)',
+                  opacity: '0.40',
+
+                  offset: '0.400',
+                }),
+                style({
+                  transform: 'translateX(-40px)',
+                  opacity: '0.60',
+
+                  offset: '0.600',
+                }),
+
+                style({
+                  transform: 'translateX(-20px)',
+                  opacity: '0.80',
+
+                  offset: '0.800',
+                }),
+
+                style({
+                  transform: 'translateX(0px)',
+                  opacity: '1',
+
+                  offset: '1',
+                }),
+              ])
+            ),
+          ]
+        ),
+      ]
+    ),
+  ],
+})
+export class AppComponent {
+  animationState = 'normal';
+
+  wildAnimationState = 'normal';
+
+  items: string[] = ['Milk', 'Sugar', 'Bread'];
+
+  constructor() {}
+
+  onDeleteItem(index: number) {
+    this.items.splice(index, 1);
+  }
+
+  onAddItem(item: string) {
+    if (!item) {
+      return;
+    }
+    this.items.push(item);
+  }
+
+  animateBox() {
+    switch (this.animationState) {
+      case 'normal':
+        this.animationState = 'highlighted';
+        break;
+      case 'highlighted':
+        this.animationState = 'normal';
+        break;
+    }
+
+    switch (this.wildAnimationState) {
+      case 'normal':
+        this.wildAnimationState = 'highlighted';
+        break;
+      case 'highlighted':
+        this.wildAnimationState = 'normal';
+        break;
+      case 'shrunken':
+        this.wildAnimationState = 'normal';
+    }
+  }
+
+  onShrink() {
+    this.wildAnimationState !== 'shrunken'
+      ? (this.wildAnimationState = 'shrunken')
+      : (this.wildAnimationState = 'normal');
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TAMBÉM CONSEGUIMOS, ANTERIORMENTE, ANIMAR O 'REMOVE' DOS LIST ITEMS DE NOSSA PAGE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS AGORA DIGAMOS QUE 
+
+QUEREMOS 
+
+
+
+
+
+
+
+
+
+__, NOVAMENTE, ANIMAR A __SAÍDA__ DE UM LIST ITEM 
+
+
+
+DE NOSSA PAGE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, DIGAMOS QUE 
+
+
+QUEREMOS _ 
+
+
+
+
+
+
+TER 2 DIFERENTES ANIMATIONS,
+
+QUE 
+
+
+
+TOMARÃO DIFERENTES QUANTIDADES DE TEMPO...
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OU SEJA, 2 DIFERENTES ANIMATIONS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> quanto ao animate para 'REMOVER,' estamos atualmente COM ESTE CÓDIGO 'SIMPLES':
+
+
+
+
+
+    trigger(
+      'list1',
+  
+      [
+        state(
+        'in',
+        style({ 'opacity': '1',
+                    'transform': 'translateX(0)'})),
+    
+        transition('void => *',  //// ou seja, não interessa se o value é 'in' ou 'out' ou 'whatever', o que interessa é que essa transition APENAS SERÁ TRIGGADA quando 'o elemento estiver em um ESTADO DE VOID (não existir no dom), para então PASSAR A EXISTIR (ter um 'value' de seu state, pode ser 'in', no caso)....
+        
+        [
+
+      style({ ///esse style também é necessário, queremos que nosso elemento fique INSTANTANEAMENTE com esse style, por 1 fração de segundo, quando a animation começar/começa... (e depois transicionamos para o end state, através daquele 'animate(300)', que vai fazer o 'FADE-IN')..
+
+            'opacity': '0',
+            'transform': 'translateX(-20px)'
+      }),
+
+        animate(300)]),
+
+
+        transition(
+          '* => void',
+        [
+
+        animate(
+          300, style(
+            {
+              'opacity': '0',
+              'transform': 'translateX(50px)'
+            }
+          )
+        )
+        ]
+
+        )
+
+
+
+
+
+
+
+
+
+      ,
+
+      ]
+    ),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ----->  COMO VOCê PODE VER, TEMOS ESSE STYLE desse 'animate' SENDO SETTADO DURANTE A 
+
+    FUNCTION DE 'ANIMATE'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ---> CERTO...
+
+
+
+
+
+
+
+
+    E SE AGORA QUEREMOS _ TER _ UM SEGUNDO _ ESTILO 
+
+
+
+    SENDO APLICADO DURANTE ESSA ANIMATION,
+
+
+
+    O PROFESSOR NOS EXPLICA QUE PODEMOS 
+
+    TER UMA SEGUNDA FUNCTION DE ANIMATE,
+
+
+
+
+
+    tipo assim:
+
+
+
+
+
+
+
+
+    
+    trigger(
+      'list1',
+  
+      [
+        state(
+        'in',
+        style({ 'opacity': '1',
+                    'transform': 'translateX(0)'})),
+    
+        transition('void => *',  //// ou seja, não interessa se o value é 'in' ou 'out' ou 'whatever', o que interessa é que essa transition APENAS SERÁ TRIGGADA quando 'o elemento estiver em um ESTADO DE VOID (não existir no dom), para então PASSAR A EXISTIR (ter um 'value' de seu state, pode ser 'in', no caso)....
+        
+        [
+
+      style({ ///esse style também é necessário, queremos que nosso elemento fique INSTANTANEAMENTE com esse style, por 1 fração de segundo, quando a animation começar/começa... (e depois transicionamos para o end state, através daquele 'animate(300)', que vai fazer o 'FADE-IN')..
+
+            'opacity': '0',
+            'transform': 'translateX(-20px)'
+      }),
+
+        animate(300)]),
+
+
+        transition(
+          '* => void',
+        [
+
+        animate(
+          300, style(
+            {
+              'opacity': '0',
+              'transform': 'translateX(50px)'
+            }
+          )
+        ),
+
+
+        animate(
+            300, style(
+                {
+                    'color': 'red'
+                }
+            )
+        )
+        ]
+
+        )
+
+
+
+
+
+
+
+
+
+      ,
+
+      ]
+    ),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NESSA SEGUNDA FUNCTION DE 'animate()',
+
+
+O PROFESSOR COLOCOU UM STYLE DE 'red'...
+
+
+
+
+
+
+
+
+
+
+
+--> SALVAMOS TUDO ISSO E VEMOS O QUE ACONTECE QUANDO TENTAMOS 
+
+
+
+
+
+REMOVER O NOSSO ITEM ENQUANTO TEMOS ESSAS 2 ANIMATIONS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> bem, o que vai acontecer será 
+
+
+
+
+
+
+''BASICAMENTE, O COMPONENT JÁ TERÁ SAÍDO DA _ TELA__ ANTES__ DE EU 
+
+ENXERGAR A TRANSFORMAÇÃO DA COLOR EM red''''...
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> E ISSO NÃO É NADA OPTIMAL... ---> 
+
+
+
+
+
+
+POR ISSO O PROFESSOR TROCA A ORDEM,
+
+
+
+COLOCA O 'red'
+
+
+ANTES 
+
+
+
+
+
+DO MOVIMENTO DO ELEMENTO NA TELA, 
+
+TIPO ASSIm:
+
+
+
+
+
+
+
+
+
+    
+    trigger(
+      'list1',
+  
+      [
+        state(
+        'in',
+        style({ 'opacity': '1',
+                    'transform': 'translateX(0)'})),
+    
+        transition('void => *',  //// ou seja, não interessa se o value é 'in' ou 'out' ou 'whatever', o que interessa é que essa transition APENAS SERÁ TRIGGADA quando 'o elemento estiver em um ESTADO DE VOID (não existir no dom), para então PASSAR A EXISTIR (ter um 'value' de seu state, pode ser 'in', no caso)....
+        
+        [
+
+      style({ ///esse style também é necessário, queremos que nosso elemento fique INSTANTANEAMENTE com esse style, por 1 fração de segundo, quando a animation começar/começa... (e depois transicionamos para o end state, através daquele 'animate(300)', que vai fazer o 'FADE-IN')..
+
+            'opacity': '0',
+            'transform': 'translateX(-20px)'
+      }),
+
+        animate(300)]),
+
+
+        transition(
+          '* => void',
+        [
+
+
+
+                    animate(
+            300, style(
+                {
+                    'color': 'red'
+                }
+            )
+        ),
+
+
+        animate(
+          300, style(
+            {
+              'opacity': '0',
+              'transform': 'translateX(50px)'
+            }
+          )
+        ),
+
+
+
+        ]
+
+        )
+
+
+
+
+
+
+
+
+
+      ,
+
+      ]
+    ),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK... 
+
+
+
+MAS DIGAMOS QUE __ QUEREMOS 
+
+
+QUE 
+
+
+'AS 2 ANIMATIONS TOQUEM AO MESMO TEMPO, MAS COM DIFERENTES TIMINGS',
+
+
+
+
+
+
+
+
+
+tudo para que 
+
+
+EU NÃO TENHA QUE '''''ESPERAR PELO END DE UMA ANIMATION ANTES DE FAZER O START DA OUTRA''',
+
+
+
+
+
+ou seja,
+
+
+
+
+para que evitemos esse DEFAULT BEHAVIOR Aí..
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OO PROFESSOR DIZ QUE PODEMOS FAZER ISSO POR MEIO DO 
+
+
+
+
+
+
+METHOD DE 'group()',
+
+
+
+
+
+
+
+que 
+
+É __ OUTRO _ METHOD  
+
+
+
+
+
+___ QUE _ DEVE SER IMPORTADO __ de 'angular/animations'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NESSE METHOD DE 'group()',
+
+
+
+
+NÓS DEVEMOS PASSAR UM ''''ARRAYDE TODAS AS ANIMATIONS QUE VAMOS QUERER EXECUTAR_ SiNCRONAMENTE,
+
+UMA 
+
+
+
+AO LADO DA OUTRA'''...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- PARA DEMONSTRAR O FUNCIONAMENTO DE 'group',
+
+
+vou criar um NOVO TRIGGER, COM UMA NOVA LIST...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  trigger(
+      ///exemplo com o method de 'group', que nos permite EXECUTAR 2 'animates' AO MESMO TEMPO (execução síncrona de animates, animar 2 coisas em 1 elemento AO MESMO TEMPO)...
+      'list3',
+
+      [
+        state(
+          'inExemplo3',
+          style({
+            opacity: '1',
+            transform: 'translateX(0)',
+          })
+        ),
+
+        transition('* => void', [
+          group(
+            ///esse é o method de 'group()', que nos deixa EXECUTAR 2 OU MAIS ANIMATES EM GRUPO....( sincronamente, 1 ao lado da outra)..
+            [
+              animate(
+                300,
+                style({
+                  transform: 'translateX(100px)',
+                  opacity: '0',
+                })
+              ),
+
+              animate(
+                300,
+                style({
+                  color: 'red',
+                })
+              ),
+            ]
+          ),
+        ]),
+      ]
+    ),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -----> ok...
+
+
+
+
+
+    O PROFESSOR TAMBÉM DEIXA A MESMA DURAÇÃO PARA AMBOS OS 'animates',
+
+    para observarmos que OS DOIS OCORREM AO MESMO TEMPO...
+
+
+
+
+
+
+
+
+    --> QUANDO CLICAMOS NO ITEM,
+
+    PERCEBEMOS QUE 
+
+
+
+
+    ''ELE FICA VERMELHO AO MESMO TEMPO EM QUE ESTÁ SE MOVIMENTANDO PARA A DIREITA'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> E É CLARO QUE PODEMOS DEIXAR O 'turn red' mais lento, ou o 
+
+
+    'move' mais lento,
+
+
+
+    poedmos ajustar como quisermos...
+
+
+
+
+
+
+
+
+
+
+
+    --> COM ISSO, PODEMOS ANIMAR ASPECTOS DIFERENTES, AO LONGO DE DIFERENTES DURAÇÕES,
+
+    em 
+
+
+    1 mesmo elemento...

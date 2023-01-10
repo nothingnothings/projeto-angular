@@ -1,0 +1,464 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO...
+
+
+
+
+
+
+
+
+
+--> AO LONGO DESSA SECTION,
+
+APRENDEMOS UM MONTE SOBRE ROUTNIG:
+
+
+
+
+
+
+
+aprendemos:
+
+
+
+1) A SETTAR ROUTES...  (em 'app.module.ts' e nos nossos COMPONENTS, por meio de 'router-outlet')....
+
+
+
+
+
+
+
+
+
+2) COMO CARREGAR ROUTES, TANTO 
+
+
+
+a) por 'RouterLink'  
+
+
+
+
+b) programaticamente , por meio de 'this.route.navigate()', dentro dos arquivos '.ts' e em methods....
+
+
+
+
+
+
+
+3) COMO __ PASSAR PARAMS,
+
+COMO PASSAR QUERY PARAMS... 
+
+
+
+
+4) COMO USAR A DATA DOS QUERY PARAMS (retrieve POR MEIO DE SNAPSHOTS E POR MEIO DE SUBSCRIBE)...
+
+
+
+
+
+
+
+5) COMO __ CARREGAR_ DIFERENTES COMPONENTS A PARTIR 
+
+
+DO ROUTING, PARAMS E QUERY PARAMS...
+
+
+
+
+
+
+
+
+
+------------->
+
+
+
+
+
+MAS 1 FEATURE IMPORTANTE ESTÁ FALTANDO, 
+
+
+
+NESSE MÓDULO MESMO...
+
+
+
+
+
+
+
+
+
+---> É UMA FEATURE QUE O PROFESSOR QUER 
+
+
+
+QUE COMPREENDAMOS...
+
+
+
+
+
+
+
+
+
+SÃO 
+
+
+6) ROUTE GUARDS...
+
+
+
+
+
+
+
+
+
+-----> É BASICAMENTE FUNCIONALIDADE,
+
+
+
+LÓGICA,
+
+
+
+CODE,
+
+
+
+
+QUE É 
+
+EXECUTADO __ ANTES_ DE UMA ROUTE SER CARREGADA (
+
+
+    ou então quando você quer 'LEAVE' uma route....
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR QUER COMEÇAR COM UM USE-CASE SIMPLES...
+
+
+
+
+
+
+
+
+
+
+
+
+--> DIGAMOS QUE __ SÓ QUEREMOS 
+
+DAR 'access' 
+
+
+ao 
+
+
+seu 
+
+
+'SINGLE SERVER COMPONENT',
+
+
+
+
+
+
+
+
+
+ou então o 
+
+
+component de 'edit-server',
+
+
+
+
+__ SE O USER _ ESTIVER 'logged in'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR DIZ QUE AINDA NÃO VAMOS ADICIONAR UMA FUNCTIONALITY INTEIRA DE LOGIN,
+
+
+
+PQ __ ISSO_ 
+
+
+SERÁ VISTO NA SECTION DE 'authentication' do curso...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AINDA ASSIM,
+
+O PROFESSOR QUER 
+
+FAZER 'CHECK' 
+
+
+
+DESSE 'AUTHSTATUS'
+
+
+
+ANTES __ DE QUALQUER UMA DE NOSSAS ROUTES/SUBROUTES 
+
+SER CARREGADA....
+
+
+
+
+
+
+
+
+-> AS ROUTES DE 
+
+
+'localhost:4200/servers/1',
+
+
+
+
+'..../2',
+
+
+
+
+'.../3'
+
+
+
+
+e 
+
+
+
+
+AS ROUTES _ DE EDIT,
+
+
+
+
+
+ELAS DEVERÃO SER BLOQUEADAS.. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> CERTO... O PROFESSOR COMENTA QUE O 
+
+
+'CHECK MANUAL'
+
+
+desse auth status
+
+
+
+
+
+
+
+
+__DIRETAMENTE _ 
+
+
+
+NO HOOK DE 'ngOnInit()' 
+
+
+
+
+DE 'server'
+
+e 
+
+de 
+
+'edit-server'
+
+
+
+
+___sERIA __ MT CUMBERSOME... ------> ISSO PQ VOCê 
+
+
+
+TERIA DE ADICIONAR ESSA LÓGICA EM 
+
+
+
+
+
+
+
+
+
+_______aMBOS COMPONENTS...--------> E SE VOCÊ 
+
+
+
+
+
+
+
+
+
+ADICIONAR AINDA MAIS 
+
+COMPONENTS 
+
+PERTENCENTES à feature de 'server' ( ou a de user),
+
+
+
+VOCÊ 
+
+
+_ SERIA OBRIGADO A ADICIONAR 
+
+
+
+
+
+ESSE CÓDIGO DE 'CHECK'
+
+
+
+
+no 'ngOnInit'
+
+
+DE CADA subcomponent,
+
+
+
+
+DE NOVO E DE NOVO E DE NOVO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> É POR ISSO QUE 
+
+
+
+QUEREMOS USAR _ UMA FEATURE ESPECIAL , 
+
+
+BUILT-IN NO ANGULAR ROUTER,
+
+
+
+
+QUE __ RODA_ UM CÓDIGO__ ANTES_   
+
+
+
+__ DO COMPONENT SER CARREGADO...
+
+
+
+
+
+
+
+
+
+
+
+
+-----> A FEATURE UTILIZADA SERÁ O 
+
+'canActivateGuard',
+
+
+
+
+e vamos a utilizar NA PRÓXIMA LIÇÃO...

@@ -1,0 +1,1171 @@
+
+
+
+
+
+
+
+
+
+--> NA ÚLTIMA LIÇÃO,
+
+codamos 
+UMA GUARD,
+
+
+por meio 
+
+
+
+do 'hook'
+
+de 
+
+
+'canActivate',
+
+
+
+que foi codado desta forma:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+////esse nosso service de 'route guard' é usado CONJUNTAMENTE com o service __ FAKE__ ed 'auth.service.ts', para exemplificar o funcionamento de 'canActivate' (que pode ser executado/executa código tanto de forma SYNC como ASYNC)....
+
+///OBS:::: ESSA NOSSA 'route guard' É ADICIONADA LÁ NO ARQUIVO DE 'app-routing.module.ts', nas ROUTES QUE DESEJAMOS IMPLEMENTAR UMA 'GUARD'... 
+
+import { Injectable } from '@angular/core';
+import {
+  ActivatedRouteSnapshot,
+  CanActivate,
+  Router,
+  RouterStateSnapshot,
+} from '@angular/router'; //precisamos de 'CanActivate' PARA __ DEFINIR ROUTE GUARDS NO NOSSO PROJECT...
+
+import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
+
+
+
+
+@Injectable()
+export class AuthGuard implements CanActivate {
+
+
+
+    constructor(private authService: AuthService, private router: Router) {
+
+    }
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {   ////esse method vai RETORNAR UMA OBSERVABLE (ASYNC CODE).... OU UMA PROMISE (ASYNC CODE), OU UM BOOLEAN SIMPLES (código SYNC)
+
+
+    return this.authService.isAuthenticated()   ////com isso simulamos o 'authentication proccess' de nosso user (processo assíncrono)...
+    .then(
+        (authenticated: boolean | unknown) => {  //vamos receber de volta um BOOLEAN, que pode ser ou TRUE OU FALSE...
+            if (authenticated) {
+                return true;   ///nesse case, o authenticate do user foi constatado (está authenticated), razão pela qual vamos querer garantir acesso a ele, a essa route, seja qual for....
+            } else { ///case em que o AUTHENTICATE _ FALHOU__...
+                this.router.navigate(['/']);
+                return false; //só para calar a boca do typescript.
+            }
+        }
+    )
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> ok... e para usar 
+
+
+essa guard,
+
+
+
+tivemos de a utilizar 
+lá 
+
+
+
+no arquivo 
+outsourceado 
+
+'app-routing.module.ts':
+
+
+
+
+
+
+
+
+
+
+  {
+    ///COM NESTED ROUTES...
+    path: 'servers', //localhost:4200/servers
+    component: ServersComponent, //servers.component.html
+    canActivate: [AuthGuard], ////PROPRIEDADE_ USADA _ PARA DEFINIR 'GUARD' ( ou guards) PARA ESSA SUA ROUTE específica... --> e essas guards serão aplicadas a TODAS AS CHILD ROUTES DESSA ROUTE, também....
+    children: [
+      ///child routes...
+      {
+        path: ':id',
+        component: ServerComponent,
+      },
+
+      {
+        path: ':id/edit',
+        component: EditServerComponent,
+      },
+    ],
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+  -----> COMO VOCÊ PODE VER,
+
+
+
+  esse 
+
+  'canActivate'
+
+
+
+
+  __ é _ POSICIONADO _ NA PRÓPRIA ROUTE QUE VOCÊ QUER 
+
+  'PROTEGER'...
+
+
+
+
+
+
+--> e esse arquivo de 'app-routing.module.ts'
+
+é eventualmente IMPORTADO NO ARQUIVO DE 'app.module.ts',
+
+como um 
+
+dos 
+
+'imports'...:
+
+
+
+
+
+
+
+
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    ServersComponent,
+    UsersComponent,
+    ServerComponent,
+    EditServerComponent,
+    UserComponent,
+    PageNotFoundComponent,
+  ],
+  imports: [BrowserModule, FormsModule, 
+    AppRoutingModule //checar arquivo de 'app-routing.module.ts', em que OUTSOURCEAMOS O MANAGE DE NOSSAS ROUTES E AS ROUTES EM SI...
+    // RouterModule.forRoot(AppRoutes)
+
+ 
+  ], 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> até aí, tudo bem, sim...
+
+
+
+
+--> ESSA GUARD É ATIVADA/APLICADA 
+
+
+
+
+tanto 
+
+
+à route 'inicial/pai' 
+
+
+como TODAS AS FILHAS DESSA ROUTE (é a lista de 'children', dentro de cada object 'ROUTE')....
+
+
+
+
+
+
+
+
+
+
+MAS A PERGUNTA AGORA É:
+
+
+
+
+
+
+
+
+
+E SE QUISERMOS __ 
+
+
+IMPLEMENTAR UMA 'GUARD' __ APENAS_ 
+
+
+
+
+NAS _ CHILD ROUTES DE UMA ROUTE,
+
+E NÃO 
+
+à ROUTE INICIAL? 
+
+
+
+
+
+
+
+
+
+
+
+----> para isso,
+
+somos obrigados a usar a opção de 
+
+
+
+'canActivateChild',
+
+
+que o 
+
+PROFESSOR NOS ENSINARÁ AGORA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a sintaxe 
+
+'NORMAL'/burra 
+
+
+é 
+
+
+
+escrever 
+
+
+esse 'canActivate'
+
+
+EM _CADA UMA DAS CHILD ROUTES... ---> isso protegeria 
+
+
+SÓ 
+
+
+
+NOSSAS CHILD ROUTES,
+
+
+DEIXANDO 
+
+
+
+A ROUTE 'PAI'
+
+
+livre 
+
+
+do
+
+
+controle dessa guard..
+
+
+
+
+
+
+
+
+
+--> MAS O PROFESSOR RESSALTA QUE _ ESSA NÃO É A MANEIRA MAIS FÁCIL,
+
+
+
+PQ SE ADICIONARMOS MAIS CHILD ITEMS,
+
+
+SEREMOS OBRIGADOS A ESCREVER 
+
+'canActivate'
+
+EM CADA UMA DELAS,
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+ {
+    ///COM NESTED ROUTES...
+    path: 'servers', //localhost:4200/servers
+    component: ServersComponent, //servers.component.html,
+    children: [
+      ///child routes...
+      {
+        path: ':id',
+        component: ServerComponent,
+        canActivate: [AuthGuard] ///eis o código em questão...
+      },
+
+      {
+        path: ':id/edit',
+        component: EditServerComponent,
+          canActivate: [AuthGuard]
+      },
+    ],
+  },
+
+
+
+
+
+
+
+
+-------------------------------
+
+
+
+
+
+
+
+
+-------> EM VEZ DISSO,
+
+
+HÁ OUTRA OPTION/GUARD QUE PODEMOS USAR...
+
+
+
+
+
+
+
+
+--> É UMA GUARD
+
+BEM SIMILAR 
+
+
+
+à 
+
+
+'canActivate',
+
+
+
+mas é 
+
+
+
+
+CHAMADA 
+
+
+de 
+
+
+
+'canActivateChild'...
+
+
+
+
+
+
+
+
+
+---> essa interface tem que ser ESCRITA lá no 'appRoutes' 
+
+
+de
+
+
+'app-routing.module.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  {
+    ///COM NESTED ROUTES...
+    path: 'servers', //localhost:4200/servers
+    component: ServersComponent, //servers.component.html
+    // canActivate: [AuthGuard], ////PROPRIEDADE_ USADA _ PARA DEFINIR 'GUARD' ( ou guards) PARA ESSA SUA ROUTE específica... --> e essas guards serão aplicadas a TODAS AS CHILD ROUTES DESSA ROUTE, também....
+    canActivateChild: [],
+    
+    children: [
+      ///child routes...
+      {
+        path: ':id',
+        component: ServerComponent,
+      },
+
+      {
+        path: ':id/edit',
+        component: EditServerComponent,
+      },
+    ],
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ok...
+
+
+
+
+
+MAS NÃO BASTA FAZER SÓ ISSO... --> 
+
+
+
+
+você também tem que adicionar o 'HOOK'/interface de 
+
+
+
+'CanActivateChild' 
+
+
+
+LÁ 
+
+
+
+
+NO SERVICE DE 'auth-guard.service.ts'....
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+@Injectable()
+// export class AuthGuard implements CanActivate { ///usamos isso quando queremos que A PARENT ROUTE E TODAS AS CHILDS DELA SEJAM PROTEGIDAS...
+  export class AuthGuard implements CanActivate, CanActivateChild {  //já 'CanActivateChild' é usado quando queremos que SÓ AS CHILD ROUTES FIQUEM PROTEGIDAS POR NOSSO GUARD, sem proteger a 'parent route'....
+
+
+
+    constructor(private authService: AuthService, private router: Router) {
+
+    }
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {   ////esse method vai RETORNAR UMA OBSERVABLE (ASYNC CODE).... OU UMA PROMISE (ASYNC CODE), OU UM BOOLEAN SIMPLES (código SYNC)
+
+
+    return this.authService.isAuthenticated()   ////com isso simulamos o 'authentication proccess' de nosso user (processo assíncrono)...
+    .then(
+        (authenticated: boolean | unknown) => {  //vamos receber de volta um BOOLEAN, que pode ser ou TRUE OU FALSE...
+            if (authenticated) {
+                return true;   ///nesse case, o authenticate do user foi constatado (está authenticated), razão pela qual vamos querer garantir acesso a ele, a essa route, seja qual for....
+            } else { ///case em que o AUTHENTICATE _ FALHOU__...
+                this.router.navigate(['/']);
+                return false; //só para calar a boca do typescript.
+            }
+        }
+    )
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> certo...
+
+
+
+
+E ESSA INTERFACE___ REQUER_ QUE 
+
+VOCê 
+PROVIDENCIE 
+
+
+ 
+ UM METHOD de 
+
+ 'canActivateChild()'
+
+
+
+ NESSA CLASS...
+
+
+
+
+  
+
+
+
+
+  ---> E ESSE METHOD DE 'childs'
+  TERÁ 
+
+
+
+  __O  MESMO FORMATO DO METHOD DE 'canActivate',
+
+  essencialmente:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+@Injectable()
+// export class AuthGuard implements CanActivate { ///usamos isso quando queremos que A PARENT ROUTE E TODAS AS CHILDS DELA SEJAM PROTEGIDAS...
+  export class AuthGuard implements CanActivate, CanActivateChild {  //já 'CanActivateChild' é usado quando queremos que SÓ AS CHILD ROUTES FIQUEM PROTEGIDAS POR NOSSO GUARD, sem proteger a 'parent route'....
+
+
+
+    constructor(private authService: AuthService, private router: Router) {
+
+    }
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {   ////esse method vai RETORNAR UMA OBSERVABLE (ASYNC CODE).... OU UMA PROMISE (ASYNC CODE), OU UM BOOLEAN SIMPLES (código SYNC)
+
+
+    return this.authService.isAuthenticated()   ////com isso simulamos o 'authentication proccess' de nosso user (processo assíncrono)...
+    .then(
+        (authenticated: boolean | unknown) => {  //vamos receber de volta um BOOLEAN, que pode ser ou TRUE OU FALSE...
+            if (authenticated) {
+                return true;   ///nesse case, o authenticate do user foi constatado (está authenticated), razão pela qual vamos querer garantir acesso a ele, a essa route, seja qual for....
+            } else { ///case em que o AUTHENTICATE _ FALHOU__...
+                this.router.navigate(['/']);
+                return false; //só para calar a boca do typescript.
+            }
+        }
+    )
+  }
+
+
+  canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean  {
+    
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> CERTO....  
+
+
+
+
+ISSO SIGNIFICA QUE 
+
+ELE VAI TER 
+
+'route' 
+
+e 
+
+'state',
+
+
+
+E QUE 
+
+TAMBÉM 
+
+VAI RETORNAR OU UM
+
+
+OBSERVABLE,
+
+OU UMA PROMISE,
+OU UM BOOLEAN...
+
+
+
+
+
+
+
+
+
+
+
+---> BEM,
+ 
+
+
+ COMO ESSE METHOD TEM O MESMO FORMATO,
+
+
+ PODEMOS 
+
+
+
+
+ RODAR EXATAMENTE A MESMA LÓGICA  
+
+
+ de 
+
+ 'canActivate',
+
+
+ por isso escrevemos assim:
+
+
+
+
+
+
+   canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean  {
+       
+       return this.canActivate();
+  }
+
+
+
+
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+
+
+    canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean  {
+    
+
+    return this.canActivate(route, state); ////queremos rodar a mesma lógica de 'canActivate()', por isso rodamos ela aqui..
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> ok..
+
+
+
+
+
+
+->
+
+MAS QUAL É A VANTAGEM DE ADICIONAR ESSE 
+
+'canActivateChild'?
+
+
+
+
+
+
+
+
+---> bem, como NÓS ADICIONAMOS ESSA INTERFACE DE 'canActivateChild',
+
+
+
+
+
+NÓS PODEMOS 
+
+
+USAR UM DIFERENTE 
+
+
+
+'''HOOK'''
+
+
+lá 
+
+nas nossas routes,
+
+lá em 
+
+'app-routing.module.ts',
+
+
+
+
+
+no 
+
+
+
+'const appRoutes: Routes = [
+
+
+]
+'
+
+
+
+
+
+
+
+
+
+
+----> EM VEZ DE USARMOS 
+
+'canActivate',
+
+VAMOS USAR 
+
+
+
+
+
+'canActivateChild = []'
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+  {
+    ///COM NESTED ROUTES...
+    path: 'servers', //localhost:4200/servers
+    component: ServersComponent, //servers.component.html
+    // canActivate: [AuthGuard], ////PROPRIEDADE_ USADA _ PARA DEFINIR 'GUARD' ( ou guards) PARA ESSA SUA ROUTE específica... --> e essas guards serão aplicadas a TODAS AS CHILD ROUTES DESSA ROUTE, também....
+    canActivateChild: [AuthGuard], ///propriedade usada para DEFINIR 'guard' EM TODAS AS CHILD ROUTES, MAS NÃO NA ROUTE inicial/parent... (deixa essa route 'desprotegida' em relaçaõ ao acesso do user)... 
+    
+    children: [
+      ///child routes...
+      {
+        path: ':id',
+        component: ServerComponent,
+      },
+
+      {
+        path: ':id/edit',
+        component: EditServerComponent,
+      },
+    ],
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> e essa propriedade 
+  'canActivateChild'
+
+
+
+
+
+  também 
+
+exige um array de SERVICES,
+
+
+SERVICES 
+
+
+QUE 
+
+DEVEM FUNCIONAR COMO 'GUARDS',
+
+
+
+
+e aí 
+
+DENTRO 
+
+
+DESSE 
+
+'canActivateChild'
+
+
+
+AINDA __ PODEMOS _ COLOCAR  
+
+
+esse 
+
+'AuthGuard'... ->  pq 
+
+
+esse 
+
+
+'authGuard'
+
+
+
+agora será capaz de 
+
+FAZER AMBAS AS COISAS:
+
+
+
+
+
+
+
+1) PROTEGER UMA 'SINGLE ROUTE' (
+
+    pq temos 
+
+    '
+    CanActivate' implementado,
+
+
+
+    como um method próprio
+)
+
+
+
+
+
+
+
+
+2) OU ENTÃO PROTEGER 
+
+
+TODAS AS 'CHILD ROUTES',
+
+
+
+
+
+
+tudo pq 
+
+
+
+temos aquele 
+
+'canActivateChild' 
+
+
+
+IMPLEMENTADO 
+dentro 
+
+desse 'AuthGuard'
+service também...
+
+
+
+
+
+
+
+
+
+
+
+
+---> COM ISSO NO LUGAR,
+
+
+
+AGORA SEREMOS CAPAZES DE ACESSAR O LINK DE 'servers',
+
+
+mas 
+
+o 
+
+
+
+acesso a server-items individuais (child routes de 'servers')
+
+
+
+vai NOS REDIRECIONAR AUTOMATICAMENTE A 'localhost:4200/'...
+
+
+
+
+
+
+---------------------------------
+
+
+
+
+
+
+
+
+OK, FUNCIONOU... 
+
+
+
+
+
+
+
+AGORA SOMOS REDIRECIONADOS,
+
+PQ 
+
+
+
+SÓ 
+
+AS 'CHILD ROUTES'
+ 
+
+ ESTÃO PROTEGIDAS,
+
+
+
+ E NÃO A 'ROUTE PRINCIPAL' de servers... -----> 
+
+
+
+
+
+
+ ESSE, NO FINAL DAS CONTAS,
+
+
+
+ É 
+ O 
+ 'FINEGRAINED CCONTROL' 
+
+ QUE VOCê PODE IMPLEMENTAR NO SEU PROJECT,
+
+
+ PARA ENTÃO PROTEGER 
+
+
+ 1 ROUTE INTEIRA E TODAS SUAS CHILD ROUTES,
+
+ OU ENTÃO 
+ 
+
+ '''SÓ AS CHILD ROUTES''',
+
+ a depender do comportamento que vocÊ deseja no seu app....

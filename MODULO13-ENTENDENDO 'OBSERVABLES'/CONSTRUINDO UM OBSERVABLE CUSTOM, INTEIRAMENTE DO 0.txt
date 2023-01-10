@@ -1,0 +1,1615 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-_> O PROFESSOR PROMETEU QUE 
+
+
+
+
+_CONSTRUIRÍAMOS UM CUSTOM OBSERVABLE...
+
+
+
+
+
+
+
+
+
+
+--> ATÉ AGORAW,
+
+A ÚNICA COISA QUE ELE NOS MOSTROU FOI 
+
+'interval',
+
+QUE É 
+
+
+
+
+
+
+UM 
+
+
+OBSERVABLE _ BUILT-IN de 'rxjs',
+
+
+
+PROVIDENCIADO 
+
+POR ESSA PACKAGE DE 'rxjs'..
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE 'rxjs'
+
+É ALGO MAIS PRÓXIMO DE UM OBSERVABLE DO QUE UM SIMPLES 'this.route.params.subscribe()',
+
+
+PQ 
+
+ISSO AÍ NÃO VEM DE UMA 'ANGULAR FEATURE' (o 'interval' não é uma feature do angular, em outras palavras)...
+
+
+
+
+
+
+
+
+
+--> mas ainda assim,
+
+
+a questão é que 
+
+
+'
+interval'
+
+AINDA É 'KINDOF'
+
+UMA UTILITY FUNCITON,
+
+
+
+
+UMA UTILITY FUNCTION 
+QUE 
+
+
+
+
+VAI __ 
+
+'GIVES US A PREDEFINED OBSERVABLE',
+
+
+
+
+
+
+que 
+
+
+
+DISPARA 1 NUMBER A CADA SEGUNDO (parâmetro de 'count')...
+
+
+
+
+
+
+
+
+
+isso é visto neste código aqui:
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnDestroy, OnInit } from '@angular/core';
+
+import { interval, Subscription } from 'rxjs'; ///maneira mais fácil de criar um observable...
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css'],
+})
+export class HomeComponent implements OnInit, OnDestroy {
+  intervalSubscription: Subscription;
+
+  constructor() {}
+
+  ngOnInit(): void {
+    this.intervalSubscription = interval(1000).subscribe((count) => {
+      ///o primeiro argumento de 'subscribe' é sempre uma FUNCTION/ANON FUNCTION...
+
+      console.log(count);
+    });
+  }
+
+  ngOnDestroy(): void {    /////SE VAMOS CRIAR UM 'OBSERVABLE', temos que saber COMO _ CANCELAR UMA DE NOSSAS 'SUBSCRIPTIONS' a nosso observable custom.... ---> é assim que podemos fazer; armazenamos essa subscription em uma propriedade, aí mais tarde, nesse hook de 'NgOnDestroy()', FAZEMOS UNSUBSCRIBE nessa subscription específica (pq o 'ngOnDestroy' é executado quando TROCAMOS DE PAGE, QUANDO NOSSO PAGE-COMPONENT É DESTRUÍDO, ESSENCIALMENTE)...
+    
+    this.intervalSubscription.unsubscribe();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> certo...
+
+
+
+
+
+
+
+
+
+MAS ACTUALLY PODEMOS RECONSTRUIR ESSA FUNCTION DE ''interval'',
+
+
+
+
+mas inteiramente por nosso código,
+
+
+
+
+
+por nossas próprias mãos...
+
+
+
+
+
+
+
+
+
+
+-----> PARA ISSO, O PROFESSOR COMENTA O C´DOIGO DE 'this.firstObsSubscription' PARA FORA DO CÓDIGO..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+para isso, começamos com um código assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnDestroy, OnInit } from '@angular/core';
+
+import 
+{ 
+    // interval,  vamos REPLICAR O CONTEÚDO DESSE 'observable' built-in... mas com nossas PRÓPRIAS MÃOS..
+
+    Subscription } from 'rxjs'; ///maneira mais fácil de criar um observable...
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css'],
+})
+export class HomeComponent implements OnInit, OnDestroy {
+  customObservable: Subscription;
+
+  constructor() {}
+
+  ngOnInit(): void {
+
+    
+  }
+
+  ngOnDestroy(): void {    /////SE VAMOS CRIAR UM 'OBSERVABLE', temos que saber COMO _ CANCELAR UMA DE NOSSAS 'SUBSCRIPTIONS' a nosso observable custom.... ---> é assim que podemos fazer; armazenamos essa subscription em uma propriedade, aí mais tarde, nesse hook de 'NgOnDestroy()', FAZEMOS UNSUBSCRIBE nessa subscription específica (pq o 'ngOnDestroy' é executado quando TROCAMOS DE PAGE, QUANDO NOSSO PAGE-COMPONENT É DESTRUÍDO, ESSENCIALMENTE)...
+    
+    this.customObservable.unsubscribe();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+----> O PROFESSOR 
+
+
+
+VAI QUERER __ ARMAZENAR NOSSO OBSERVABLE EM UMA NOVA CONSTANT,
+
+
+
+
+'customInterval'.....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+customIntervalObservable...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA CRIAR UM NOVO OBSERVABLE,
+
+
+
+DEVEMOS __ IMPORTAR O __ TYPE DE 'Observable'
+
+
+EM SI, 
+
+LÁ DE 
+
+
+'rxjs'....
+
+
+
+
+
+
+
+
+
+
+
+
+--> TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+import { Observable } from 'rxjs';
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnDestroy, OnInit } from '@angular/core';
+
+import 
+{ 
+    // interval,  vamos REPLICAR O CONTEÚDO DESSE 'observable' built-in... mas com nossas PRÓPRIAS MÃOS..
+
+    Observable,   ////isto é usado PARA CRIAR CUSTOM OBSERVABLES, para que nós consigamos criar nossos próprios observables...
+    Subscription } from 'rxjs';
+
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css'],
+})
+export class HomeComponent implements OnInit, OnDestroy {
+  customObservable: Subscription;
+
+  constructor() {}
+
+  ngOnInit(): void {
+
+    const customIntervalObservable = //será nosso CUSTOM OBSERVABLE, que criamos por conta própria, e que replica o comportamento do built-in observable/function de 'interval()'..
+    
+  }
+
+  ngOnDestroy(): void {    /////SE VAMOS CRIAR UM 'OBSERVABLE', temos que saber COMO _ CANCELAR UMA DE NOSSAS 'SUBSCRIPTIONS' a nosso observable custom.... ---> é assim que podemos fazer; armazenamos essa subscription em uma propriedade, aí mais tarde, nesse hook de 'NgOnDestroy()', FAZEMOS UNSUBSCRIBE nessa subscription específica (pq o 'ngOnDestroy' é executado quando TROCAMOS DE PAGE, QUANDO NOSSO PAGE-COMPONENT É DESTRUÍDO, ESSENCIALMENTE)...
+    
+    this.customObservable.unsubscribe();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> certo, importado esse 'observable',
+
+
+
+
+
+PODEMOS USÁ-LO E ENTÃO 
+
+
+
+
+
+
+
+
+
+
+
+CHAMAR O method de '.create()'
+
+
+NELE...
+
+
+
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+const customIntervalObservable = Observable.create()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO.... MAS CREATE ACTUALLY _ ACEITA/EXIGE UMA FUNCTION,
+
+
+
+FREQUENTEMENTE UMA ANON FUNCTION,
+
+
+
+QUE 
+
+VAI RECEBER UM ARGUMENT AUTOMATICAMENTE...
+
+
+
+
+
+
+
+
+-> TIPO ASSIM:
+
+
+
+
+
+
+const customIntervalObservable = Observable.create(
+    () => {
+
+    }
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ESSE ARGUMENT,
+
+
+
+
+O ARGUMENT __ PASSADO A NÓS 
+
+
+PELO 'rxjs',
+
+
+É 
+
+
+
+
+
+CHAMADO DE 'observer'...
+
+
+
+
+
+
+
+
+
+
+
+--> MAS APARENTEMENTE 'Observable.create()'
+
+
+ESTÁ DEPRECADO,
+
+DEVEMOS USAR 
+
+'new Observable()'..
+
+
+
+
+
+
+
+--> fica tipo assim:
+
+
+
+
+
+    const customIntervalObservable = new Observable();  
+
+
+
+
+
+
+
+
+
+
+
+
+    -> a nova sintaxe é assim, sim,
+
+
+    mas não sei COMO ESCREVER ISSO AÍ...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a sintaxe velha é 
+
+
+
+Observable.create(
+    (observer) => {
+
+    }
+)
+
+
+
+
+
+
+
+
+
+
+SINTAXE VELHA:
+
+
+
+
+
+this.data$ = Observable.create(t => {
+    t.next(this.model);
+    t.complete();
+});
+
+
+
+
+-> A SINTAXE NOVA É ASSIM, APARENTEMENTE:
+
+
+
+
+
+
+
+
+
+
+this.data$ = new Observable((observer: Observer) => {
+  observer.next();
+  observer.complete();
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ASSIM, APARENTEMENTE:
+
+
+
+
+
+
+    const customIntervalObservable = new Observable(
+        (observer) => {
+            observer.next();
+            observer.error();
+            observer.complete();
+
+            
+        }
+    );    
+
+
+
+
+
+
+
+
+
+
+    ----> OK... ESSE ARGUMENTO DE 'observer' SERÁ PASSADO PELO 'rxjs'...
+
+
+
+
+
+
+
+
+
+
+
+    -> OUVIMOS FALAR DO 'observer'
+
+
+    NA PRIMEIRA PARTE DESSE MÓDULO --> É A PARTE DA RELAÇÃO 'observable-observer'
+
+    QUE TEM 
+
+
+    INTERESSE NA INFORMAÇÃO ACERCA DE:
+
+
+    1) NEW DATA 
+
+
+    2) ERRORS 
+
+
+
+    3) ABOUT THE OBSERVABLE BEING COMPLETED...
+
+
+
+
+
+
+
+
+
+
+
+    -> nosso objetivo,
+
+
+    AQUI,
+
+
+    É _ 
+
+
+
+    DIZER AO OBSERVER SOBRE:
+
+    1) OU NEW DATA 
+
+
+
+
+    2) OU AN ERROR
+     
+
+
+     3) OU ABOUT THE OBSERVABLE BEING COMPLETED...
+
+
+
+
+
+
+
+
+
+
+
+---> AQUI,
+
+
+
+NÃO 
+
+
+TEMOS DE NOS PREOCUPAR COM O 'LISTEN'/listening,
+
+
+PQ _ o
+ 
+ OBSERVER EM SI É UM 'LISTENER'.. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> ISSO SIGNIFICA QUE NÓS JÁ VAMOS 'GET'
+
+
+ ESSA PARTE DE 'LISTENING' (a parte que '''escuta'''')
+
+
+
+
+
+
+
+ NESSE 'new Object' AÍ,
+
+
+
+
+ COMO __ UM ARGUMENTO,
+
+
+ E
+  AÍ 
+
+
+  __ PRECISAMOS _ DIZER A ESSE 
+
+
+
+  'LISTENER' AÍ 
+
+
+
+
+  _________ QUANDO AS COISAS 
+
+
+
+
+
+
+
+  ACONTECEM (comunicar  'when we are done', 'when there is new data', e assim por diante)...
+
+
+
+
+
+
+
+
+
+
+
+  ------> BEM,
+
+
+  NESSA ANON FUNCTION/object,
+
+   
+
+   O PROFESSOR DIZ QUE 
+
+
+   PODEMOS 
+
+   DEFINIR UMA FUNCTION DE 'setInterval',
+
+
+
+
+
+   UM INTERVALO DE EXATAMENTE '1000' ms,
+
+
+   COMO FIZEMOS ANTES..
+
+
+
+
+
+
+
+
+
+   --> ISSO FEITO,
+
+
+
+
+   O PROFESSOR 
+
+
+   diz que 
+
+   'setInterval'
+
+
+
+   EXIGE UMA FUNÇÃO
+   ,
+   coisa normal, 
+
+   função interna..
+
+
+
+
+
+
+
+
+   fica tipo assim:
+
+
+
+
+
+
+
+
+   
+
+
+
+    const customIntervalObservable = new Observable(
+        (observer) => {
+
+
+            setInterval(() => {
+
+            })
+
+            
+        }
+    );    
+
+
+
+
+
+
+
+
+
+
+--> BEM, AÍ,
+
+
+__DENTRO _DE 'setInterval',
+
+
+
+OU DE QUALQUER OUTRA LÓGICA QUE 
+
+
+RODE 
+
+
+
+
+DENTRO 
+
+DE UM CALL DE 
+
+
+'Observable.create' 
+
+ou 
+
+'new Observable()' 
+
+
+
+
+
+,
+
+
+
+
+__ 
+
+
+
+FICAMOS COM METHODS COMO 
+
+
+'observer.next()'...
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+    const customIntervalObservable = new Observable(
+        (observer) => {
+
+
+            setInterval(() => {
+                    observer.next()
+            }, 1000)
+
+            
+        }
+    );    
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> E AI,
+
+DENTRO DESSE 'observer',
+
+PODEMOS CHAMAR METHODS COMO '.next()"...
+
+
+
+
+
+
+
+
+
+
+
+-> O QUE O 'NEXT' VAI FAZER É 'EMIT A NEW VALUE'..
+
+
+
+
+
+
+
+
+
+
+----> E ISSO É IMPORTANTE ----> O OBSERVER TEM UM PUNHADO DE MÉTODOS IMPORTANTEs...
+
+
+
+
+
+
+
+
+
+
+--> 'next' É UM DOS METHODS IMPORTANTES DOS OBSERVERs...
+
+
+
+
+
+
+
+
+
+--> 'ERROR' É OUTRO METHOD IMPORTANET..
+
+
+
+
+
+
+
+
+--> ERROR É O METHOD _ UTILIZADO _ QUANDO VOCÊ QUER DAR O THROW DE UM ERROR 
+
+
+A partir 
+
+
+DE ALGUM ERRO QUE TENHA ACONTECIDO/TENHA SIDO EMITIDO 
+
+por 
+
+esse 
+
+
+
+
+
+SEU OBSERVABLE, SEJA ELE QUAL FOR..
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+    const customIntervalObservable = new Observable(
+        (observer) => {
+
+
+            setInterval(() => {
+                    observer.next();
+
+
+                    ///observer.error();
+            }, 1000)
+
+            
+        }
+    );    
+
+
+
+
+
+
+
+
+
+
+    ---> POR FIM,
+
+    'complete'
+
+    É O 
+
+
+
+
+    METHOD DE 'observer'
+
+    USADO 
+
+
+
+    PARA __ 'DEIXAR SABER QUE VOCÊ ESTÁ __DONE__''....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AQUI, NO ENTANTO,
+
+
+VAMOS USAR 
+
+'observer.next()',
+
+
+pq queremos que 
+
+
+
+SEMPRE UMA NOVA __ 
+
+
+'data' SEJA EMITIDA.... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO COMPLETO  FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ngOnInit(): void {
+
+
+    const customIntervalObservable = new Observable(
+        (observer) => {
+            let count = 0;  
+            setInterval(
+                () => {
+                    observer.next(count);
+                },
+                1000 
+            )
+
+            count++;
+        },
+    );    
+    
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> LEMBRE-SE:
+
+
+
+
+  ESSE CÓDIGO INTEIRO,
+
+
+
+
+TODAS ESSAS LINHAS AÍ,
+
+
+
+
+ELAS SERVIRÃO APENAS PARA 'DEFINE' o nosso OBSERVABLE...
+
+
+
+
+
+
+
+-> para fazer ACTUAL SUBSCRIBE ao nosso observable,
+
+
+
+
+
+
+
+devemos escrever assim:
+
+
+
+
+
+
+
+
+customIntervalObservable.subscribe(
+    (count: number) => {
+
+                console.log(count);
+    }
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ESCREVEMOS SIMPLESMENTE ASSIM:
+
+
+
+
+
+
+
+
+
+    customIntervalObservable.subscribe(
+        (count) => {
+
+            console.log(count);
+        }
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -> BEM, AGORA SALVAMOS TUDO E ENTÃO ESPERAMOS PELO RELOAD DA PAGE...
+
+
+
+
+
+
+
+
+
+
+
+
+    -> OK, RECEBEMOS O MESMO COMPORTAMENTO DE ANTES,
+
+    COM 
+
+
+
+    'interval()',
+
+
+
+    MAS 
+    AGORA 
+
+
+
+
+    NÓS CONSTRUÍMOS NOSSA PRÓPRIA 
+
+    'INTERVAL OBSERVABLE',
+
+
+
+
+
+
+
+
+
+
+
+    E ESSA LÓGICA É ESSENCIALMENTE 'O QUE ESTÁ ACONTECENDO POR TRÁS DAS CENAS'
+
+
+
+
+    com a built-in package de 
+
+    'interval()'
+
+    do rxjs....
+
+
+
+
+
+
+
+
+
+
+
+
+    -> ISSO QUER DIZER QUE 
+
+    O 
+
+    rxjs 
+    ESTÁ 
+
+    NOS DANDO UM OBSERVABLE,
+
+    OBSERVABLE QUE 
+
+
+
+
+
+    DISPARA _ 1 VEZ PARA CADA '1000ms' --> 
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    OK, ISSO ESTÁ FUNCIONAOD,
+
+    E ESSE 
+
+
+    É 
+
+
+    UM CUSTOM OBSERVABLE DE VERDADE...
+
+
+
+
+
+
+
+
+
+    -> isso nos mostra 'COMO PODEMOS EMITIR DATA'..
+
+
+
+
+
+
+
+
+
+
+    -> ok mas E QUANTO AOS ERRORS E O 'COMPLETE'  ('completion', complete do observable)...
+
+    
+
+
+
+    do observable? 
+
+
+
+
+
+
+
+--> para fazer subscribe,
+
+vocÊ precisa passar uma function como parâmetro, uma function que faça 'alguma coisa' 
+
+com 
+
+
+a data que é emitida pelo '
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> o observer é o argumento 'observer'
+
+
+usado com 
+'observer.next()',
+
+
+'observer.error()',
+
+'observer.complete()'..
+
+
+
+
+
+
+
+
+
+
+COMO VISTO EM:
+
+
+
+
+
+
+
+
+
+  ngOnInit(): void {
+
+
+    const customIntervalObservable = new Observable(
+        (observer) => {
+            let count = 0;  
+            setInterval(
+                () => {
+                    observer.next(count);
+                },
+                1000 
+            )
+
+            count++;
+        },
+    );    
+    
+
+  }
+
+
+
+
+
+
+
+    customIntervalObservable.subscribe(
+        (count) => {
+
+            console.log(count);
+        }
+    )
+
+
+
+
+
+
+
+
+
+ok... devemos ver a próxima aula...

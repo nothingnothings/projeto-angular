@@ -1,0 +1,461 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COMO VOCê CONECTA  O ANGULAR A UM BACKEND, BACKEND CONECTADO A UMA DATABASE?
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+ --> BEM, ESSE É UM USE-CASE BEM COMUM..
+
+
+
+
+
+
+
+
+
+
+ --> NO ANGULAR VOCê CRIA COISAS,
+
+ COMO RECIPES,
+
+
+
+ POSTS,
+
+ ETC...
+
+
+
+
+
+
+
+
+
+ -----> AÍ VOCÊ VAI QUERER 
+
+
+ ARMAZENAR  TUDO ISSO EM UMA DATABASE,
+ E AÍ 
+
+
+ FETCEHAR 
+
+
+
+
+ TUDO ISSO DE LÁ QUANDO 
+
+ SEU APP 
+
+ FOR RESETTADO,
+
+ QUANDO 
+
+ UM USER 
+
+
+ VISITAR SUA PAGE, 
+
+ ETC....
+
+
+
+
+
+
+
+
+
+
+
+
+ -> DATABASES PODEM SER SQL OU NOSQL...
+
+
+
+
+
+
+
+
+
+ --> MAS A QUESTÃO É QUE VOCÊ NUNCA VAI FAZER CONNECT A UMA DATABASE DIRETAMENTE...
+
+
+
+
+
+
+
+
+
+
+
+ -----> ISSO QUER DIZER QUE 
+
+
+ SUAS DATABASE CREDENTIALS NÃO SÃO 
+
+ COLOCADAS DIRETAMENTE NO SEU ANGULAR APP,
+
+
+
+
+ PQ QUALQUER UM PODE 
+ INSPECIONAR SEU CÓDIGO FRONTEND...
+
+
+
+
+
+
+
+
+
+
+
+
+ -----> VEREMOS COMO PODEMOS AINDA 'AUTHENTICATE' USERS 
+
+
+ LÁ NA SECTION DE 'AUTHENTICATIOPN'...
+
+
+
+
+
+
+
+
+
+
+
+ --> MAS NUNCA ARMAZENE DATABASE CREDENTIALS 
+
+
+
+ NO SEU CÓDIGO FRONTEND...
+
+
+
+
+
+
+
+
+
+
+ --> O PROFESSOR COLOCOU INFO SOBRE 'QUÃO SEGURO NOSSO CÓDIGO JAVASCRIPT É',
+
+
+
+
+ um artigo...
+
+
+
+
+
+
+
+
+ --> CERTO... --> 
+
+
+ MAS SE NÃO NOS CONECTAMOS DIRETAMENTE A UMA DATABASE, 
+
+ O QUE FAZEMOS?
+
+
+
+
+ --> BEM, NOS CONECTAMOS 
+
+
+
+ A UM SERVER,
+
+
+ POR MEIO 
+
+
+
+ DE HTTP REQUESTS E RESPONSES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> UM SERVER SERÁ DEFINIDO COMO UMA 'API', aqui...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> API.... --> ISSO SIGNIFICA QUE 
+
+
+
+ ELE É UM 
+ REST API,
+
+
+
+ OU UMA 'GRAPHQL API'
+
+
+ com a que 
+ vocÊ 
+ está se comunicando...
+
+
+
+
+
+
+
+
+
+
+ --> VAMOS USAR UMA REST APÍ,
+
+
+  
+  QUE É A MANEIRA MAIS FÁCIL DE CRIAR UM SERVE.R.
+
+
+
+
+
+
+
+
+
+
+
+
+  --> UM API --> É QUASE COMO UM WEBSITE,
+
+
+  MAS QUANDO  VOCê O VISITA,
+
+  VOCÊ 
+
+  NÃO 
+
+
+
+
+  GANHA DE VOLTA 'HTML',
+
+  e sim 
+
+
+
+  GANHA DE VOLTA 
+
+
+
+  __DATA,
+
+
+
+
+  MOSTLY __ 
+
+
+  EM UM FORMATO JSON...
+
+
+
+
+
+
+
+
+
+  --> SE VOCÊ QUER APRENDER MAIS SOBRE REST API 
+
+
+,
+
+HÁ UNS LINKS SOBRE ISSO 
+
+
+
+
+NESSE VÍDEO..
+
+
+
+
+
+
+
+
+
+-----> TEMOS UM COURSE SOBRE NODEJS 
+
+que te 
+
+
+
+mostra a criaçaõ dessas APIs...
+
+
+
+
+
+
+--> VOCÊ USA SERVERSIDE LANGUAGES COMO PHP E NODEEXPRESS,
+
+
+
+
+
+MAS VOCê PODE SE COMUNICAR COM ESSAS APIs,
+
+
+POR MEIO DO ANGULAR..
+
+
+
+
+
+
+
+
+
+---> E AÍ,
+ 
+ DENTRO DESSES SERVERS,
+
+ VOCÊ 
+
+ TEM CÓDIGO QUE 
+
+ EFETIVAMENTE 
+
+ SE COMUNICA ÀS DATABSES..
+
+
+
+
+
+
+
+
+ --> MAS É CLARO QUE EXISTEM MAIS RAZÕES PARA SE COMUNICAR COM UM SERVER DO QUE 
+
+ 'STORE E FETCH DATA' ------> MAIS RAZÕES DO QUE O SIMPLES 'DATABASE ACCESS'...
+
+
+
+
+
+
+
+
+
+ --> ISSO PQ VOCÊ PODERIA 
+
+
+
+ ESTAR 'UPLOADING FILES',
+
+
+
+ OU ENTÃO ENVIANDO 
+
+
+
+ ANALYTICS A UM BACKEND (analytics registrados em LOGS),
+
+
+
+ OU QUALQUER OUTRA COISA ....
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> NESSE MÓDULO,
+
+ NÃO VAMOS ESCREVER UMA REST API 
+
+ 'from scratch',
+
+
+
+
+
+ PQ ISSO VAI ALÉM DESSE CURSO...
+
+
+
+
+
+
+
+
+
+
+ --> CERTO... MAS O PROFESSOR VAI NOS 
+
+ MOSTRAR COMO USAR UM 'DUMMY BACKEND',
+
+ PARA 
+
+
+
+ FAZER SEND DE REQUESTS,
+
+ PARA USAR RESPONSES,
+
+ etc...

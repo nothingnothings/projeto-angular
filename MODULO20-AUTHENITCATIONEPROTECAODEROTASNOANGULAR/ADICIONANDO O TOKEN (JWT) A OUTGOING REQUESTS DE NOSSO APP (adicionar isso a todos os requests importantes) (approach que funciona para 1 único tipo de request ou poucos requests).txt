@@ -1,0 +1,3506 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PQ  NOSSO 'AUTHSTATUS',
+
+
+
+
+
+
+
+
+OBTIDO/REPRESENTADO NAQUELE OBJECT DE 'User'
+
+
+
+
+CRIADO LÁ PELO SERVICE DE 
+
+'auth.service.ts',
+
+
+
+
+
+
+
+
+
+
+_ É COMPLETAMENTE IGNORADO QUANDO TENTAMOS FAZER 'FETCH' DE DATA? ( ou qualquer outra ação que envolve http requests)..
+
+
+
+
+
+
+
+
+
+
+
+-------> BEM,
+
+ISSO ACONTECE  
+
+
+PQ 
+
+
+
+
+'''SÓ PQ __ NÓS, PROGRAMADORES,
+
+SABEMOS QUE ESTAMOS __ AUTHENTICATED,
+
+
+ E QUE TEMOS ESSA TOKEN ARMAZENADA EM ALGUMA LUGAR DE NOSSO USER OBJECT''',
+
+
+
+
+ ISSO __ NÃO QUER _ DIZER QUE 
+
+
+ O 
+
+ firebase 
+
+
+
+
+
+ VAI TER CONHECIMENTO DISSO,
+
+
+
+
+ JUSTAMENTE __ PQ __ NÃO ESTAMOS 
+
+ ATTACHANDO 
+
+ ESSA TOKEN A REQUEST ALGUM 
+
+
+
+
+FEITO POR NOSSO FRONTEND.... ---> 
+
+
+
+
+
+
+
+
+
+COMO NÃO ESTAMOS ANEXANDO ESSE OBJECT AOS NOSSOS 'OUTGOING REQUESTS',
+
+
+
+
+
+
+
+
+O FIREBASE__ NÃO TEM CHANCE ALGUMA __ DE CONSEGUIR 'ENTENDER QUE POSSUIMOS UM VALID TOKEN'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> precisamos SER CAPAZES DE ADICIONAR ESSA TOKEN AO 'OUTGOING REQUEST',
+
+
+
+
+TUDO PARA QUE CONSIGAMOS 
+
+
+
+'''FAZER O FIREBASE SABER QUE ESTAMOS AUTHENTICATED'''.
+
+
+
+
+
+
+
+
+
+
+------> PARA ISSO, EXPLICA O PROFESSOR,
+
+ 
+
+ VAMOS PRECISAR  ________MANIPULAr__ 
+
+
+
+
+
+
+
+
+ NOSSOS 'OUTGOING HTTP REQUESTS'
+
+
+
+
+
+,
+
+
+
+
+OS HTTP REQUESTS 
+
+RELATIVOS 
+
+
+
+AO 
+
+
+'DATA STORE'
+
+
+E 
+
+
+'DATA FETCH'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PRIMEIRO PASSO É IR ATÉ O ARQUIVO de 'recipeBook',
+
+
+em que temos o method de 
+
+
+
+
+'LOAD RECIPES'
+
+E 
+
+
+'SAVE RECIPES':
+
+
+
+
+
+
+
+
+
+
+  loadRecipes() {
+    return this.http
+      .get<{ [name: string]: Recipe }>(
+        // 'https://recipebookdummyproject-default-rtdb.firebaseio.com/recipes.json' ///VERSÃO DUMMY, SEM AUTHENTICATE RULES NO FIREBASE API
+        'https://recipebookdeployproject-default-rtdb.firebaseio.com/recipes.json', //VERSÃO DEPLOY, com o uso de AUTHENTICATE RULES no firebase api (restrição de acesso a contas com email)...
+      )
+      .pipe(
+        map((data) => {
+          const transformedRecipesArray: Recipe[] = [];
+
+          console.log(data);
+
+          for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+              transformedRecipesArray.push({ ...data[key] });
+            }
+          }
+
+          transformedRecipesArray.map((recipe) => {  
+            return {
+              ...recipe,
+              ingredients: recipe.ingredients ? recipe.ingredients : [],   ////////SE NOSSA PROPRIEDADE 'ingredients' dessa recipe específica NÃO EXISTIR (um bug possível), VAMOS QUERER QUE OS INGREDIENTS SEJAM SETTADOS COMO UM EMPTY ARRAY....
+            };
+          });
+
+          return transformedRecipesArray;
+        })
+
+        ,tap(
+          (recipes) => {
+            console.log('TEST')
+            this.recipes = recipes;
+            this.recipeItemsChanged.next([...recipes]);
+          }
+        )
+      )
+      // .subscribe((recipes) => { ///movido lá para 'header.component.ts'...
+      //   this.recipes = recipes;
+      //   this.recipes = recipes;
+
+      //   this.recipeItemsChanged.next([...recipes]);
+      // });
+  }
+
+  saveRecipes() {
+    console.log('SAVED');
+    return this.http
+      .put( //////a url de cima é a versão DE DUMMY DO NOSSO PROJETO, SEM AUTHENTICATION RULES NO FIREBASE API..
+        // 'https://recipebookdummyproject-default-rtdb.firebaseio.com/recipes.json', ////será um request de PUT, e não de 'POST'... --> ISSO PQ QUEREMOS SEMPRE OVERWRITTAR O VALUE ANTIGO DE 'recipes' com o nosso NOVO value...
+        'https://recipebookdeployproject-default-rtdb.firebaseio.com/recipes.json', //VERSÃO DEPLOY, com o uso de AUTHENTICATE RULES no firebase api (restrição de acesso a contas com email)...
+        this.recipes
+      )
+      .subscribe((response) => {
+        console.log(response);
+      });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------> ESSES 2 REQUESTS AÍ,
+
+
+
+
+NESSES 2 METHODS,
+
+
+
+
+_ AMBOS _ PREICSAM _ SER EDITADOS DE MODO QUE 
+
+
+
+
+SEJA POSSÍVEL 
+
+ANEXAR A NOSSA 'TOKEN' a eles....
+
+
+
+
+
+
+
+
+
+
+
+
+------> E ESSA TOKEN É _ ARMNAZENADA 
+
+
+
+
+
+LÁ 
+
+
+NO OBJECT DE 'User',
+
+ 
+
+
+
+
+ NA VERDADE,
+
+
+ ESSA TOKEN FICARÁ ARMAZENADA DENTRO DE UMA PROPRIEDADE 
+
+
+
+ 'token: string = null';
+
+
+
+
+
+
+
+
+
+ EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ export class AuthService {
+  user = new Subject(); ////vamos usar esse subject PARA _ ARMAZENAR NOSSA 'USER DATA' obtida lá das routes de login/signup DENTRO DO BROWSER DO USER, PARA QUE POSSA SER USADA EM TODOS OS REQUESTS, PARA FINS DE AUTHENTICATION E ACESSO A PROTECTED ROUTES...
+
+  token: string | null = null;
+
+  
+
+
+
+
+
+
+
+
+-------------------------------
+
+
+
+
+
+
+
+
+
+
+OK... 
+
+
+
+
+NOSSA TOKEN PRECISA SER ARMAZENADA NAQUELAS URLS..
+
+
+
+
+
+
+
+--> PARA CONSEGUR FAZER ISSO,
+
+
+
+O PROFESSOR INJETA O SERVICE DE 'HttpClient'...
+
+
+
+
+
+
+
+
+-> PARA ANEXAR ESSA TOKEn,
+
+
+
+precisaríamos colocar aquele SEGUNDO ARGUMENTO EM 'this.http.xxxx()',
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> É CLARO QUE VAMOS QUERER ARMAZENAR O 'token' do user
+
+DENTRO 
+
+DO SERVICE DE 'auth.service.ts',
+
+COMO PROPRIEDADE 
+
+
+'token'...
+
+
+
+
+ export class AuthService {
+  user = new Subject(); ////vamos usar esse subject PARA _ ARMAZENAR NOSSA 'USER DATA' obtida lá das routes de login/signup DENTRO DO BROWSER DO USER, PARA QUE POSSA SER USADA EM TODOS OS REQUESTS, PARA FINS DE AUTHENTICATION E ACESSO A PROTECTED ROUTES...
+
+  token: string | null = null;
+
+  
+
+
+
+
+
+
+
+
+
+
+
+-> PARA ANEXAR ESSA TOKEn,
+
+
+
+precisaríamos colocar aquele SEGUNDO ARGUMENTO EM 'this.http.xxxx()',
+
+
+
+
+
+
+
+PROVAVELMENTE TIPO ASSIM:
+
+
+
+
+
+
+
+  loadRecipes() {
+
+
+    const requestHeaders = new HttpHeaders();
+
+
+
+
+
+    requestHeaders.append('Content-Type', 'application/json');
+    requestHeaders.append('Authorization', xxx);
+  
+
+
+
+    return this.http
+      .get<{ [name: string]: Recipe }>(
+        // 'https://recipebookdummyproject-default-rtdb.firebaseio.com/recipes.json' ///VERSÃO DUMMY, SEM AUTHENTICATE RULES NO FIREBASE API
+        'https://recipebookdeployproject-default-rtdb.firebaseio.com/recipes.json', //VERSÃO DEPLOY, com o uso de AUTHENTICATE RULES no firebase api (restrição de acesso a contas com email)...
+      
+      
+      
+        {
+          headers: requestHeaders
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        --> ok... QUEREMOS ACESSAR A 'TOKEN/USER'
+
+
+        lá 
+
+
+        no nosso 'auth.service.ts'
+
+
+        DE MODO QUE SEJA POSSÍVEL 
+        ACESSAR 
+
+        ESSA PROPRIEDADE 
+
+
+
+
+        'POR DIFERENTES MEIOS' (
+
+            e não através de um subject
+        )
+
+
+
+
+
+
+
+
+
+
+
+
+        QUANDO DIZEMOS 'por diferentes meios',
+
+
+        É CLARO QUE 
+
+        O PROFESSRO
+         
+         ESTÁ FALANDO DAS 'STORAGES',
+
+
+
+         PROVAVELMENTE DA STORAGE DE 'LOCAL STORAGE'..
+
+
+
+
+
+
+
+
+         -------> OU SEJA, 
+
+         NÃO VAMOS USAR UM 'SUBJECT' PARA 
+
+         conseguir essa authData,
+
+
+         PQ 
+
+         A MORAL DO SUBJECT É QUE ELE É USADO PARA 'REACTIVELY UPDATING THE USER INTERFACE''..
+
+
+
+
+
+
+
+         --> mas agora, no caso,
+
+         VAMOS QUERER UMA _ MANEIRA SÓLIDA DE 'ON-DEMAND FETCH' DA USER 
+
+         DATA VÁLIDA DO USER....
+
+
+
+
+
+
+
+
+
+
+
+         -----> no approach inicial, o professor diz que PODERÍAMOS ADICIONAR UMA PROPRIEDADE DE 
+
+
+
+
+         'token: string = null;',
+
+
+
+
+         E AÍ 
+
+         DEFINIR ISSO COMO NOSSA VALID TOKEN,
+
+         SEMPRE QUE O USER FICASSE 'LOGGED IN' 
+
+
+
+
+
+
+
+
+E ESSE APPROACH SERIA POSSÍVEL
+,
+
+
+
+E
+ NAÕ SERIA ESTRITAMENTE __ ERRADO_..
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -----> ISSO NÃO SERIA ESTRITAMENTE ERRADO,
+
+
+
+ MAS PODEMOS ACTUALLY _ USAR UM 
+
+
+ 'TIPO DIFERENTE DE SUBJECT',
+
+
+
+  
+
+
+
+
+
+
+um tipo diferente de 
+
+
+'''''
+
+
+user = new Subject<User>();
+
+
+
+
+
+
+
+
+
+
+''
+
+
+
+
+
+
+---> PQ ESSE SUBJECT AÍ É UM SUBJECT A QUE FAZEMOS 'SUBSCRIBE'
+
+E QUE 
+
+ENTÃO 
+
+NÓS FAZEMOS 'GET DE INFORMATIOn' 
+
+
+
+SEMPRE QUE 
+
+
+
+NOVA DATA, USER DATA,
+
+É EMITADA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> SIM, ESSE SUBJECT É ÚTIL,
+MAS NÃO É O QUE DESEJAMOS...
+
+
+
+
+
+
+
+
+
+--> ISSO PQ 
+
+
+
+O RXJS _ NOS OFERECE UM DIFERENTE TIPO DE 'SUBJECT',
+
+
+QUE É CHAMADO DE 
+
+
+'BEHAVIOR SUBJECT.'...
+
+
+
+
+
+
+
+
+
+
+
+----> --> PARA CRIAR UM BEHAVIOR SUBJECT,
+
+
+
+VOCÊ DEVE ESCREVER ASSIM:
+
+
+
+
+
+
+
+
+
+
+user = new BehaviorSubject<User>();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> nunca havia visto isso antes...  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE SUBJECT SE COMPORTA _ QUASE _ 
+
+
+
+EXATAMENTE 
+
+
+
+DA MESMA FORMA QUE O 'SUBJECT COMUM' ( o que quer dizer que podemos/devemos chamar '.next()' em cima deles, para emitar um VALUE, e que então fazemso SUBSCRIBE, nos components interessados, para sermos 'INFORMED' sobre esses novos values...)
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS A DIFERENÇA É QUE 
+
+ 
+
+ OS 'BehaviorSubject'
+
+
+
+
+
+
+
+ _ENTREGAM ACESSO, AOS SUBSCRIBERS, 
+
+
+
+
+ AOS 
+
+ 'PREVIOUSLY EMITTED VALUES',
+
+
+ 
+
+
+ AINDA QUE ELES NÁO ESTIVESSEM 'SUBSCRIBED' A ESSES SUBJECTS/SUBJECT 
+
+
+
+ NO MOMENTO EM QUE 
+ ESSE VALUE FOI EMITIDO... --------> ISSO QUER DIZER QUE 
+
+
+
+
+
+ NÓS PODEMOS __ GANHAR_ _ACESSO AO 'CURRENTLY ACTIVE USER' MESMO  
+
+
+
+
+
+
+ SE NÓS APENAS FIZERMOS SUBSCRIBE ______DEPOIS____  DO USER TER SIDO EMITIDO (por um outro subject)....
+
+
+
+
+
+
+
+
+
+ -----> ISSO SIGNIFICA QUE QUANDO NÓS FAZEMOS FETCH DE DATA E __PRECISAMOS _ 
+
+
+
+ DA TOKEN 
+
+
+ NESSE PONTO NO TEMPO,
+
+
+
+
+
+
+ MESMO __ SE _ O USER__ TIVER_ FEITO 'LOGIN' _ ANTES _ DESSE PONTO NO TEMPO,
+
+
+ ELE AINDA VAI 'GET ACCESS' AO LATEST USER,
+
+
+
+ AO USER MAIS RECENTE...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> quanto a essa propriedade que vai segurar esse 'BehaviorSubject',
+
+
+
+ ela fica assim:
+
+
+
+
+
+
+
+
+ user = new BehaviorSubject();
+
+
+
+
+
+
+
+
+ -----> É CLARO QUE ESSE 'BEHAVIOR SUBJECT'
+
+ vai precisar de um STARTING VALUE,
+
+
+
+ por isso definimos o value de 'null', dentro de '()'...
+
+
+
+
+
+
+
+
+ Ex:
+
+
+
+
+export class AuthService {
+
+  user = new BehaviorSubject<User>();
+
+
+}
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+  user = new BehaviorSubject<User>(null);  ////vamos usar esse  __TIPO ESPECIAL _  DE SUBJECT PARA _ ARMAZENAR NOSSA 'USER DATA' obtida lá das routes de login/signup DENTRO DO BROWSER DO USER, PARA QUE POSSA SER USADA EM TODOS OS REQUESTS, PARA FINS DE AUTHENTICATION E ACESSO A PROTECTED ROUTES...
+///behaviorSubject's são parecidos com Subjects comuns, mas a diferença é que ele vai 'catch' as datas emitidas nos seus 'subscribe' ATÉ MESMO _ DEPOIS_ DA DATA PERTINENTE TER SIDO EMITIDA (quer dizer que seu efeito é '''atrasado''', em outras palavras, pq ele vai catch a data imediatamente, até mesmo DEPOIS DE ELA TER SIDO EMITIDA, pega o RESÍDUO do emit, basicamente)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> ISSO QUER DIZER QUE QUANDO O USER REALIZAR UMA OPERAÇÃO DE 'FETCH',
+
+
+
+E PRECISAR DA TOKEN NESSE MOMENTO PRECISO,
+
+
+ESSE BEHAVIOR SUBJECT vai atuar e então 'apanhar' o user que havia sido EMITIDO HÁ 
+
+UM TEMPO ATRÁS, 
+
+
+vai pegar a data que já havia sido emitida com 'this.user.next(user)'....
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS COMEÇAR COM O VALUE DE 'null' PQ NULL É UM SUBSTITUTO VÁLIDO PARA UM OBJECT 'User'..
+
+
+
+
+
+
+
+
+
+
+-> CERTO, MAS ISSO ME DEU UM ERRO, NO MEU IDE:
+
+
+
+
+
+
+Argument of type 'null' is not assignable to parameter of type 'User'.ts(2345)
+
+
+
+
+
+
+
+
+
+
+
+
+----> BASTOU ESCREVER ASSIM:
+
+
+
+
+
+
+  user = new BehaviorSubject<User | null>(null); 
+
+
+
+
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+  export class AuthService {
+  // user = new Subject(); ////vamos usar esse subject PARA _ ARMAZENAR NOSSA 'USER DATA' obtida lá das routes de login/signup DENTRO DO BROWSER DO USER, PARA QUE POSSA SER USADA EM TODOS OS REQUESTS, PARA FINS DE AUTHENTICATION E ACESSO A PROTECTED ROUTES...
+
+  // token: string | null = null;   //não usamos esse approach, e sim o BEHAVIORSUBJECT...
+
+  user = new BehaviorSubject<User | null>(null);  ////vamos usar esse  __TIPO ESPECIAL _  DE SUBJECT PARA _ ARMAZENAR NOSSA 'USER DATA' obtida lá das routes de login/signup DENTRO DO BROWSER DO USER, PARA QUE POSSA SER USADA EM TODOS OS REQUESTS, PARA FINS DE AUTHENTICATION E ACESSO A PROTECTED ROUTES...
+///behaviorSubject's são parecidos com Subjects comuns, mas a diferença é que ele vai 'catch' as datas emitidas nos seus 'subscribe' ATÉ MESMO _ DEPOIS_ DA DATA PERTINENTE TER SIDO EMITIDA (quer dizer que seu efeito é '''atrasado''', em outras palavras, pq ele vai catch a data imediatamente, até mesmo DEPOIS DE ELA TER SIDO EMITIDA, pega o RESÍDUO do emit, basicamente)...
+///e vamos usar o value inicial de 'null', para essa data retornada por esse subject...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------
+
+
+
+
+
+
+
+
+
+
+
+ALÉM DESSA MUDANÇA, NÃO PRECISAMOS FAZER MAIS NADA NO SERVICE DE 'auth.service.ts',
+
+
+
+PQ AINDA VAMOS FAZER EMIT DO USER COMO ANTES,
+NAQUELE CÓDIGO DE 
+
+'''
+
+
+
+  private emitUser(responseData: AuthResponseData) {
+    const { email, localId, expiresIn, idToken } = responseData;
+
+          const expirationDate = new Date( /// vai nos dar um object 'Date'...
+            new Date().getTime() + +expiresIn * 1000
+          );
+
+          const newUser = new User(email, localId, idToken, expirationDate);
+
+          this.user.next(newUser); 
+  }
+
+
+
+''''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O MESMO NÃO PODE SER DITO DO SERVICE DE 'recipeBook.service.ts',
+
+
+
+EM QUE 
+
+
+
+PODEMOS 
+
+
+FAZER 'REACH OUT' 
+
+
+
+
+AO 'auth.service.ts'
+
+
+
+
+PARA __ 
+
+
+
+CONSEGUIR O 
+
+'CURRENTLY ACTIVE USER',
+
+
+  
+
+  e então o utilizar 
+
+
+
+
+  NA AUTHENTICATION DE MINHAS ROUTES DE 'SAVE RECIPES' E 'LOAD RECIPES' (
+
+
+
+    o utilizar nos http requests....
+
+
+
+  )
+
+
+
+
+
+
+
+
+
+
+  -> OK, MAS O CÓDIGO DE 'recipe-book.service.ts'
+
+  ATUALMENTE ESTÁ ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  import {
+  EventEmitter, ///TROCAMOS POR 'SUBJECT', que é simplesmente MELHOR como CROSS-COMPONENT COMMUNICATION TOOL....
+  Injectable,
+  Output,
+} from '@angular/core';
+
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { map, Subject, tap } from 'rxjs';
+import { Recipe } from './recipeBook/recipe.model';
+import { Ingredient } from './shared/ingredient.model';
+import { ShoppingListService } from './shoppingList.service';
+import { AuthService } from './auth.service';
+
+@Injectable()
+export class RecipeBookService {
+  private recipes: Recipe[] = [
+  ];
+
+  constructor(
+    private shoppingListService: ShoppingListService,
+    private http: HttpClient,
+    private authService: AuthService
+
+  ) {}
+
+  getRecipes() {
+    return [...this.recipes];
+  }
+
+  loadRecipes() {
+
+
+    const requestHeaders = new HttpHeaders();
+
+
+
+
+
+    requestHeaders.append('Content-Type', 'application/json');
+    requestHeaders.append('Authorization', xxx);
+  
+
+
+
+    return this.http
+      .get<{ [name: string]: Recipe }>(
+        // 'https://recipebookdummyproject-default-rtdb.firebaseio.com/recipes.json' ///VERSÃO DUMMY, SEM AUTHENTICATE RULES NO FIREBASE API
+        'https://recipebookdeployproject-default-rtdb.firebaseio.com/recipes.json', //VERSÃO DEPLOY, com o uso de AUTHENTICATE RULES no firebase api (restrição de acesso a contas com email)...
+      
+      
+      
+        {
+          headers: requestHeaders
+        }
+      
+      
+        )
+      .pipe(
+        map((data) => {
+          const transformedRecipesArray: Recipe[] = [];
+
+          console.log(data);
+
+          for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+              transformedRecipesArray.push({ ...data[key] });
+            }
+          }
+
+          transformedRecipesArray.map((recipe) => {  
+            return {
+              ...recipe,
+              ingredients: recipe.ingredients ? recipe.ingredients : [],   ////////SE NOSSA PROPRIEDADE 'ingredients' dessa recipe específica NÃO EXISTIR (um bug possível), VAMOS QUERER QUE OS INGREDIENTS SEJAM SETTADOS COMO UM EMPTY ARRAY....
+            };
+          });
+
+          return transformedRecipesArray;
+        })
+
+        ,tap(
+          (recipes) => {
+            console.log('TEST')
+            this.recipes = recipes;
+            this.recipeItemsChanged.next([...recipes]);
+          }
+        )
+      )
+
+  }
+
+  saveRecipes() {
+    console.log('SAVED');
+    return this.http
+      .put( //////a url de cima é a versão DE DUMMY DO NOSSO PROJETO, SEM AUTHENTICATION RULES NO FIREBASE API..
+        // 'https://recipebookdummyproject-default-rtdb.firebaseio.com/recipes.json', ////será um request de PUT, e não de 'POST'... --> ISSO PQ QUEREMOS SEMPRE OVERWRITTAR O VALUE ANTIGO DE 'recipes' com o nosso NOVO value...
+        'https://recipebookdeployproject-default-rtdb.firebaseio.com/recipes.json', //VERSÃO DEPLOY, com o uso de AUTHENTICATE RULES no firebase api (restrição de acesso a contas com email)...
+        this.recipes
+      )
+      .subscribe((response) => {
+        console.log(response);
+      });
+  }
+
+  // recipeItemClickedEmitter = new EventEmitter<Recipe>();
+
+  recipeItemClickedEmitter = new Subject<Recipe>();
+
+  recipeItemsChanged = new Subject<Recipe[]>();
+
+
+  sendToShopList(ingredients: Ingredient[]) {
+    for (let ingredient of ingredients) {
+      ////minha versão do código --> downside: mtos events disparados, mas não há problema..
+      this.shoppingListService.onIngredientAdd(ingredient);
+      console.log('SENT');
+    }
+
+    ////after that, sends the user to the 'shoppingList' page...
+  }
+
+  getRecipe(id: number): Recipe {
+    // return this.recipes[id];
+
+    const selectedRecipe = this.recipes.find((recipe) => {
+      return recipe.id === id;
+    })!;
+    return selectedRecipe;
+  }
+
+  editRecipe(id: number, recipe: Recipe) {
+    this.recipes[id] = recipe;
+  }
+
+  onRecipeEdited(editedRecipe: Recipe, index: number) {
+    // this.recipes[index] = editedRecipe;
+
+   const recipeIndex =  this.recipes.findIndex(
+      (recipe) => {
+        return recipe.id === index;
+      }
+    )
+
+    this.recipes[recipeIndex] = editedRecipe;
+
+
+    console.log(this.recipes);
+
+    this.recipeItemsChanged.next([...this.recipes]);
+  }
+
+  onRecipeAdded(newRecipe: Recipe) {
+    this.recipes.push(newRecipe);
+
+    this.recipeItemsChanged.next([...this.recipes]);
+  }
+
+  onRecipeDeleted(index: number) {
+    this.recipes.splice(index, 1);
+    this.recipeItemsChanged.next([...this.recipes]);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COMO PODEMOS USAR ISSO NOS NOSSOS REQUESTS,
+
+COMO PODEMOS USAR 
+
+
+ESSE 'User',
+
+
+COM SEU 'idToken',
+
+NOS NOSSOS REQUESTS?
+
+
+
+
+
+
+
+
+--> para isso,
+
+
+PROVAVELMENTE PRECISAREMOS FAZER UM _ SUBSCRIBE_ 
+
+
+
+
+ao behavior subject 
+
+
+
+
+
+de 'user',
+
+lá em 'auth.service.ts'....
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR EXEMPLIFICA COM O METHOD DE 'loadRecipes':
+
+
+
+
+
+
+
+
+
+
+  loadRecipes() {
+
+
+    const requestHeaders = new HttpHeaders();
+
+
+
+...
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK, MAS AQUI TEMOS UM PROBLEMA:
+
+
+
+
+
+
+
+
+
+1) NÃO QUEREMOS SETTAR UMA 'ONGOING SUBSCRIPTION',
+
+
+
+mas ao mesmo tempo 
+
+
+2) QUEREMOS FAZER 'SUBSCRIBE' PARA PEGAR ESSE USER E SUA IDTOKEN..
+
+
+
+
+
+
+
+
+
+
+
+
+3) ISSO QUER DIZER QUE SÓ QUEREMOS 
+
+
+'GET THE USER ONCE',
+
+
+
+e aí 
+
+'be done with it'...
+
+
+
+
+
+
+
+
+-> AQUI TEMOS ALGUMAS ALTERNATIVAS... --> a primeira delas é chamar '.subscribe()' e aí IMEDIATAMENTE '.unsubscribe()' logo ddepois,
+
+
+tipo assim:
+
+
+
+
+
+
+this.authService.user.subscribe().unsubscribe();
+
+
+
+
+
+
+
+
+
+
+
+
+A SEGUNDA ALTERNATIVA:
+
+
+
+
+
+
+
+USAR UM OPERATOR ESPECIAL FORNECIDO PELO RXJS,
+
+
+
+que é 
+
+
+
+
+'take()',
+
+
+que você vai colocar dentro de '.pipe()'..
+
+
+
+
+
+
+
+
+
+
+--> TAKE TAMBÉM É IMPORTADO LÁ DE rxjs,
+
+
+
+E É USADO __ COMO UMA FUNCTION...
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+this.authService.user.pipe(take()).subscribe()
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS O QUE DEVEMOS PASSAR A 'TAKE'?
+
+
+
+
+
+
+
+--> DEVEMOS PASSAR, COMO VALUE,
+
+
+UM _ NUMBER_- ------->  O PROFESSOR, NO CASO,
+
+PASSA 
+
+APENAS 
+
+'1',
+
+
+
+QUE SIGNIFICA 
+
+
+
+
+''VOU QUERER PEGAR APENAS 1 VALUE DAQUELE OBSERVABLE, E AÍ 
+
+IMEDIATAMENTE VOU QUERER FAZER UNSUBSCRIBE'....
+
+
+
+
+
+EX:
+
+
+
+
+this.authService.user.pipe(take(1)).subscribe()
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK, ISSO SIGNIFICA QUE ISSO 
+
+VAI 
+
+
+
+'MANAGE THE SUBSCRIPTION'
+
+
+
+PARA NÓS,
+
+
+
+
+
+AÍ VAI 
+
+
+'GIVES US THE LATEST 
+
+USER',
+
+
+
+e aí 
+
+
+IMEDIATAMENTE FAZER 'UNSUBSCRIBE' 
+
+logo depois disso... 
+
+
+
+
+
+
+
+
+
+
+--------> NESSE CASO, O PROFESSOR NUNCA VAI ACABAR 'GETTING FUTURE USERS',
+
+PQ 
+
+
+
+SÓ SERÁ CAPTURADO 1 ÚNICO USER,
+
+'ON DEMAND',
+
+
+QUANDO ESSE 'loadRecipes'
+
+
+
+FOR CHAMADO... 
+
+(
+
+  pq não vamos querer receber 'Users' como data, 
+
+  em um ponto no tempo em que 
+
+  ELES NÃO SERÃO MAIS NECESSÁRIOS..
+) 
+
+
+
+
+
+
+
+
+
+-----> OK.. 
+
+
+
+
+
+---> O CÓDIGO CONTINUA ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+    this.authService.user.pipe((
+      take(1)  ////'''VOU QUERER PEGAR APENAS 1 VALUE DESSE OBSERVABLE AÍ, E AÍ VOU QUERER FAZER UNSUBSCRIBE IMEDIATAMENTE DEPOIS''''
+      
+      
+      )).subscribe(
+        (userOnDemand) => {
+
+        }
+
+      )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+
+AÍ, DENTRO DESSE CÓDIGO DE 'subscribe()',
+
+
+VAMOS __ PODER__ 
+
+
+
+
+
+
+
+
+RETORNAR AQUELE HTTP REQUEST OBSERVABLE, TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+    this.authService.user.pipe((
+      take(1)  ////'''VOU QUERER PEGAR APENAS 1 VALUE DESSE OBSERVABLE AÍ, E AÍ VOU QUERER FAZER UNSUBSCRIBE IMEDIATAMENTE DEPOIS''''
+      
+      
+      )).subscribe(
+        (userOnDemand) => {
+
+
+          return this.http
+          .get<{ [name: string]: Recipe }>(
+            // 'https://recipebookdummyproject-default-rtdb.firebaseio.com/recipes.json' ///VERSÃO DUMMY, SEM AUTHENTICATE RULES NO FIREBASE API
+            'https://recipebookdeployproject-default-rtdb.firebaseio.com/recipes.json', //VERSÃO DEPLOY, com o uso de AUTHENTICATE RULES no firebase api (restrição de acesso a contas com email)...
+          
+            {
+              headers: requestHeaders
+            }
+          
+            )
+          .pipe(
+            map((data) => {
+              const transformedRecipesArray: Recipe[] = [];
+    
+              console.log(data);
+    
+              for (const key in data) {
+                if (data.hasOwnProperty(key)) {
+                  transformedRecipesArray.push({ ...data[key] });
+                }
+              }
+    
+              transformedRecipesArray.map((recipe) => {  
+                return {
+                  ...recipe,
+                  ingredients: recipe.ingredients ? recipe.ingredients : [],   ////////SE NOSSA PROPRIEDADE 'ingredients' dessa recipe específica NÃO EXISTIR (um bug possível), VAMOS QUERER QUE OS INGREDIENTS SEJAM SETTADOS COMO UM EMPTY ARRAY....
+                };
+              });
+    
+              return transformedRecipesArray;
+            })
+    
+            ,tap(
+              (recipes) => {
+                console.log('TEST')
+                this.recipes = recipes;
+                this.recipeItemsChanged.next([...recipes]);
+              }
+            )
+          )
+
+
+
+          
+        }
+
+      )
+
+
+
+
+
+
+
+
+------------------------------------
+
+
+
+
+
+
+
+ 
+
+
+
+AÍ, DENTRO DESSE 'return this.http.get()',
+
+
+
+
+
+
+
+
+PODEMOS _ FINALMENTE_ 
+
+
+
+
+COLOCAR, NO REQUEST,
+
+
+
+O TOKEN _ QUE EXTRAÍMOS DO OBJECT 'user',
+
+
+
+que agora já terá sido extraído e colocado em 
+
+'userOnDemand'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> MAS AQUI NOS DEPARAMOOS COM __ UM PROBLEMA:
+
+
+
+
+
+
+O RETURN _DE OBSERVABLES _ DENTRO DE OBSERVABLES___________NÃO FUNCIONA________....
+
+
+
+
+
+
+
+
+
+ISSO SIGNIFICA QUE ESTE CÓDIGO AQUI 
+
+ESTÁ SUPER ERRADO:
+
+
+
+
+
+
+
+
+
+
+
+
+    this.authService.user.pipe((
+      take(1)  ////'''VOU QUERER PEGAR APENAS 1 VALUE DESSE OBSERVABLE AÍ, E AÍ VOU QUERER FAZER UNSUBSCRIBE IMEDIATAMENTE DEPOIS''''
+      
+      
+      )).subscribe(
+        (userOnDemand) => {
+
+
+          return this.http
+          .get<{ [name: string]: Recipe }>(
+            // 'https://recipebookdummyproject-default-rtdb.firebaseio.com/recipes.json' ///VERSÃO DUMMY, SEM AUTHENTICATE RULES NO FIREBASE API
+            'https://recipebookdeployproject-default-rtdb.firebaseio.com/recipes.json', //VERSÃO DEPLOY, com o uso de AUTHENTICATE RULES no firebase api (restrição de acesso a contas com email)...
+          
+            {
+              headers: requestHeaders
+            }
+          
+            )
+          .pipe(
+            map((data) => {
+              const transformedRecipesArray: Recipe[] = [];
+    
+              console.log(data);
+    
+              for (const key in data) {
+                if (data.hasOwnProperty(key)) {
+                  transformedRecipesArray.push({ ...data[key] });
+                }
+              }
+    
+              transformedRecipesArray.map((recipe) => {  
+                return {
+                  ...recipe,
+                  ingredients: recipe.ingredients ? recipe.ingredients : [],   ////////SE NOSSA PROPRIEDADE 'ingredients' dessa recipe específica NÃO EXISTIR (um bug possível), VAMOS QUERER QUE OS INGREDIENTS SEJAM SETTADOS COMO UM EMPTY ARRAY....
+                };
+              });
+    
+              return transformedRecipesArray;
+            })
+    
+            ,tap(
+              (recipes) => {
+                console.log('TEST')
+                this.recipes = recipes;
+                this.recipeItemsChanged.next([...recipes]);
+              }
+            )
+          )
+
+
+
+          
+        }
+
+      )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OS 2 OBSERVABLES DEVEM EXISTIR NO 'TOPMOST LEVEL' dessa function, e a existência de 1 dentro do outro é IMPOSSÍEVL...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS COMO RESOLVEMOS ESSE PROBLEMA?
+
+
+
+
+
+
+
+
+
+
+
+-> A SOLUÇÃO, POR INCRÍVEL QUE PAREÇA,
+
+
+
+
+
+
+É FAZER O 'pipe'
+
+DESSAS 2 OBSERVABLES 
+
+
+
+
+
+_ EM 1 
+
+
+OBSERVABLE__ BEM GRANDE..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> E ISSO ACABA FICANDO UM POUCO MAIS AVANÇADO, MAIS RELACIONADO AO RXJS,
+
+
+
+
+MAS AINDA FÁCIL..
+
+
+
+
+
+
+
+
+
+----> VOCê SIMPLESMENTE DEVE ADICIONAR __ OUTRO _ OPERATOR 
+
+
+
+
+AO 
+
+'pipe()'
+
+
+
+
+
+
+
+
+do observable de 'this.authService.user.pipe()',
+
+
+
+
+
+
+
+
+
+
+
+DENTRO DISSO,
+
+O OPERATOR QUE UTILIZAREMOS SERÁ 
+
+'exhaustMap()
+'
+
+
+
+
+
+
+
+--> 
+ESSE OPERATOR TAMBÉM É IMPORTADO LÁ DO RXJS,
+
+
+
+
+
+
+
+
+
+
+E EMBORA SEU NOME SEJA _ BEM ESTRANHO,
+
+
+
+
+
+ELE FAZ ALGO BEM SIMPLES...
+
+
+
+
+
+
+
+
+
+--> ELE FAZ:
+
+
+
+PEGAR APENAS 1 VALUE DESSE OBSERVABLE AÍ, E AÍ VOU QUERER FAZER UNSUBSCRIBE IMEDIATAMENTE DEPOIS''''
+
+
+
+
+
+
+
+
+
+
+
+--> OU SEJA,
+
+o operator de '.take()'
+
+
+
+vai pegar o número de 'data packages' (no caso, 'User')
+
+
+
+QUE VOCÊ PASSOU COMO ARGUMENTO,
+
+
+e aí NÃO VAI PEGAR MAIS NENHUMA DATA  PACKAGE DEPOIS DISSO,
+
+
+e aí imediatamente vai chamar 'unsubscribe()'...
+
+
+
+
+
+
+
+
+
+-> no caso, o que ele fará, aqui,
+
+é pegar o 'LATEST USER' do nosso app,
+
+emitido por nosso app,
+
+
+
+
+ e aí USAR NO NOSSO REQUEST DE TIPO 'GET' que temos logo embaixo,
+
+ tipo assim:
+
+
+
+
+
+
+
+
+
+
+   loadRecipes() {
+
+
+    const requestHeaders = new HttpHeaders();
+
+
+
+
+    this.authService.user.pipe((
+      take(1) 
+      
+      )).subscribe(
+        (userOnDemand) => {
+
+
+
+
+      return this.http   
+      .get<{ [name: string]: Recipe }>(
+        'https://recipebookdeployproject-default-rtdb.firebaseio.com/recipes.json', //VERSÃO DEPLOY, com o uso de AUTHENTICATE RULES no firebase api (restrição de acesso a contas com email)...
+      
+        {
+          headers: requestHeaders
+        }
+      
+        )
+      .pipe(
+        map((data) => {
+          const transformedRecipesArray: Recipe[] = [];
+
+          console.log(data);
+
+          for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+              transformedRecipesArray.push({ ...data[key] });
+            }
+          }
+
+          transformedRecipesArray.map((recipe) => {  
+            return {
+              ...recipe,
+              ingredients: recipe.ingredients ? recipe.ingredients : [],   ////////SE NOSSA PROPRIEDADE 'ingredients' dessa recipe específica NÃO EXISTIR (um bug possível), VAMOS QUERER QUE OS INGREDIENTS SEJAM SETTADOS COMO UM EMPTY ARRAY....
+            };
+          });
+
+          return transformedRecipesArray;
+        })
+
+        ,tap(
+          (recipes) => {
+            console.log('TEST')
+            this.recipes = recipes;
+            this.recipeItemsChanged.next([...recipes]);
+          }
+        )
+      )
+
+
+
+
+
+        }
+
+      )
+
+
+
+
+
+
+
+
+
+
+--------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> ok... MAS AQUI TEREMOS OUTRO PROBLEMA... -->
+
+
+
+
+
+
+
+
+ISSO PQ ESSE '.subscribe()'
+
+ali é 
+
+
+o SUBSCRIBE DE UM OBSERVABLE,
+
+E AGORA ESTAMOS, COM ISSO,
+
+'COM UM SUBSCRIBE DENTRO DE UM SUBSCRIBE'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA CONSERTAR ISSO,
+
+
+PARA CONSEGUIR FAZER UM 'GRANDE OBSERVABLE',
+
+
+
+
+combinando esses 2 observables,
+
+
+
+
+
+
+
+
+somos obrigados a usar 'exhaustMap()'...
+
+
+
+
+
+
+
+
+exhaustMap tem um nome bem estranho,
+
+
+MAS FAZ ALGO BEM SIMPLES:
+
+
+
+ELE 'WAITS'
+
+
+PELO 'COMPLETE' DO PRIMEIRO OBSERVABLE (de 'user')...
+
+
+
+
+
+
+
+
+APÓS ESSE 'COMPLETE',
+
+ele vai 
+
+fazer 'GET'/receber esse user,
+
+
+
+
+
+COMO PARÂMETRO... -> É POR ISSO QUE PASSAMOS UMA ANON FUNCTION, EM QUE RECEBEMOS A DATA 
+
+
+
+DO 
+
+
+OBSERVABLE (user) anterior.. 
+
+
+
+
+
+
+-> POR FIM, NO FUNCTION BODY DESSA FUNCTION FAZEMOS _  O RETURN_ 
+
+
+
+DO OBSERVABLE QUE VAI 'REPLACE'
+
+
+O OBSERVABLE ANTIGO, 
+
+
+NESSA NOSSA 
+OBSERVABLE CHAIN INTEIRA...
+
+
+
+
+
+
+
+
+
+-> fica tipo assim:
+
+
+
+
+
+
+this.authService.user.pipe(take(1), exhaustMap(
+
+  (user) => {
+    return this.http.get<Recipe[]>(url)
+  }
+))
+.pipe(
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO, MAS E QUANTO AO 'map()" e o 'tap()"
+
+
+QUE USAMOS 
+
+ANTERIORMENTE?
+
+
+
+
+
+
+
+
+
+
+bem, esses operators,
+
+
+ccomo agora 
+
+
+JÁ ESTAMOS EM UMA CALL DO METHOD DE 'pipe()',
+
+
+
+PODEMOS SIMPLESMENTE OS COLOCAR NA 'FILA',
+
+para serem executados logo após 
+
+
+'exhaustMap'...
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----. O PIPELINE INTEIRO FICA MAIS OU MENOS ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  loadRecipes() {
+
+
+    const requestHeaders = new HttpHeaders();
+
+
+
+
+   return this.authService.user.pipe(  ///pipeline --> 1) take  2) exhaustMap  3) map 4) tap
+      ///vamos pegar só 1 único user, 'on demand', e não vamos ficar pegando users constantemente...
+      take(1)  ////'''VOU QUERER PEGAR APENAS 1 VALUE DESSE OBSERVABLE AÍ, E AÍ VOU QUERER FAZER UNSUBSCRIBE IMEDIATAMENTE DEPOIS''''
+      ,
+      exhaustMap( ///o 'exhaustMap' vai nos deixar 'SUBSTITUIR ESSE OBSERVABLE DE "user"' por esse observable que fazemos return dentro de 'exhaustMap()'..
+        (userOnDemand) => {///vamos usar a data do primeiro observable nesse segundo observable...
+          return this.http.get<Recipe[]>(
+            'https://recipebookdeployproject-default-rtdb.firebaseio.com/recipes.json'
+          )
+        }
+
+
+      ),
+
+      map(
+        (data) => {
+          const transformedRecipesArray: Recipe[] = [];
+
+
+          for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+              transformedRecipesArray.push({ ...data[key] });
+            }
+          }
+
+          transformedRecipesArray.map((recipe) => {  
+            return {
+              ...recipe,
+              ingredients: recipe.ingredients ? recipe.ingredients : [],   ////////SE NOSSA PROPRIEDADE 'ingredients' dessa recipe específica NÃO EXISTIR (um bug possível), VAMOS QUERER QUE OS INGREDIENTS SEJAM SETTADOS COMO UM EMPTY ARRAY....
+            };
+          });
+          return transformedRecipesArray;
+        }
+      )
+      ,
+      tap(
+        (recipes) => {
+          this.recipes = recipes;
+          this.recipeItemsChanged.next([...recipes]);
+        }
+      )
+   )
+
+
+
+
+
+
+
+
+
+
+   ------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+   ou seja,
+
+
+   executamos 
+
+
+   o pipe de 'user', 
+
+
+  
+  com 
+
+
+  aquele 
+
+  1) TAKE (para pegar apenas 1 único user, e logo depois fazer UNSUBSCRIBE a esse observable inicial, de 'user'....)
+
+
+
+
+
+  2) EXHAUSTMAP (para podermos SUBSTITUIR O NEGÓCIO 'OBSERVABLE'/observed por ESSE NOSSO OBSERVABLE DE 'HTTP REQUEST')...
+
+
+
+
+
+  3) MAP  (para CONVERTERMOS A DATA DE RECIPES, OBTIDA DO BACKEND/DATABASE, EM UM FORMATO ACEITÁVEL) 
+
+
+
+
+
+
+  4) TAP (para conseguirmos DEFINIR O STATE DE recipes como possuindo essas recipes obtidas do server, e também para fazermos 
+  
+  'EMIT' DESSA MUDANÇA, NO ARRAY DE RECIPES, A DIVERSOS COMPONENTS DE NOSSO APP (como 'recipe-list', que precisa saber sobre esse update)...  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ----> POR FIM, NÓS FAZEMOS 'RETURN' DO _ '''OVERALL OBSERVABLE'''
+  ,
+
+
+
+  com essa sintaxe:
+
+
+
+
+
+     return this.authService.user.pipe(...)
+
+
+
+
+
+
+
+
+
+
+
+
+     ---> ISSO SIGNIFICA QUE  
+
+
+
+
+
+
+     NÓS AINDA _ PODEMOS _ FAZER SUBSCRIBE A ESSE OBSERVABLE AÍ,
+
+     RETORNADO PELO METHOD DE 'loadRecipes'
+
+
+     lá no service de 'recipeBook',
+
+
+
+
+
+
+     E QUE ESSE NEGÓCIO _ AINDA _ VAI NOS RETORNAR 'VALID RECIPES',
+
+
+
+
+
+
+     EXTRAÍDAS DO BACKEND,
+
+
+     MAS AGORA 
+
+
+
+     COM A __ POSSÍVEL_ (na verdade, será obrigatória, nesse nosso exemplo)
+
+
+
+     ADIÇÃO DE NOSSO TOKEN COMO 'HEADER' OU 'QUERY PARAM'
+
+
+     de nossa url....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     -> BEM NO FINAL DAS CONTAS,
+
+     ISSO SERÁ UM 'HTTP OBSERVABLE',
+
+     TUDo pq 
+
+     realizamos aquela troca com 'exhaustMap'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     --> É CLARO QUE AINDA NÃO ACABAMOS,
+
+     PQ AINDA É NECESSÁRIO ANEXAR 
+     O 
+
+
+
+     USER TOKEN AO NOSSO HTTP 
+
+     REQUEST...
+
+
+
+
+
+
+
+
+     ----> ok, e como adicionamos essa token ao http request?
+
+
+
+
+
+
+
+
+
+
+     --> bem, para o FIREBASE E SUA REALTIME DATABASE API,
+
+
+     SOMOS OBRIGADOS A ADICIONAR A 
+
+
+     __ 
+
+     USER TOKEN 
+
+
+
+     COMO UM 'QUERY PARAM'
+
+     na nossa url...
+
+
+
+
+
+     --> NO CÓDIGO REACT, ISSO ERA FEITO POR MEIO DESTAS LINHAS:
+
+
+
+
+
+
+
+     
+ export const asyncFetchOrdersStart = (token, userId) => {
+        return dispatch => {
+                dispatch(fetchOrdersStart());
+        const queryParams = '?auth=' + token + '&orderBy="userId"&equalTo="' + userId + '"';  ///obs:: sempre coloque as propriedades/objetos à direita das keys (keys como 'orderBy') WRAPPADAS POR  '  ""  ' (double quotation marks), como visto naquele "userId"....
+        axiosOrder.get('/orders.json' + queryParams ) 
+
+
+
+
+
+
+
+
+
+
+
+--> isso quer dizer que VAMOS PRECISAR ESCREVER ALGO COMO 
+
+
+
+
+   return this.authService.user.pipe( 
+      take(1)  
+      ,
+      exhaustMap( 
+        (userOnDemand) => {
+
+
+
+
+          
+      const authRequestParams = new HttpParams(); //////////////eis o código em questão..
+      authRequestParams.append('auth', userOnDemand?.token!);
+      authRequestParams.append('recipeBy', userOnDemand?.id!);
+
+
+
+          return this.http.get<Recipe[]>(
+            'https://recipebookdeployproject-default-rtdb.firebaseio.com/recipes.json',
+            {
+              params: authRequestParams ////EIS O CÓDIGO EM QUESTÃO.
+            }
+          )
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> PARA OUTRAS APIs,
+
+É POSSÍVEL TAMBÉM ADICIONAR ESSA 'AUTH'/TOKEN COMO 
+
+HEADER NO  REQUEST,
+
+
+
+
+
+
+
+
+MAS PARA A FIREBASE REALTIME DATABASE API,
+
+
+
+
+VOCê 
+
+
+
+
+ADICIONA ESSA TOKEN COMO UM 'QUERY PARAM'...
+
+
+
+
+
+
+
+--> é assim que as coisas são, basicamente... (mais informações nos official firebase docs)..
+
+
+
+
+
+
+
+
+
+
+-------> PARA ADICIONAR QUERY PARAMS,
+TEMOS 2 OPÇÕES:
+
+
+
+
+
+
+1) ADICIONAR MANUALMENTE, QUE NEM OGROS:        const queryParams = '?auth=' + token + '&orderBy="userId"&equalTo="' + userId + '"';
+ 
+
+
+
+
+
+
+2) ADICIONAR POR MEIO DO CÓDIGO 
+
+
+
+''
+
+
+          
+      const authRequestParams = new HttpParams(); //////////////eis o código em questão..
+      authRequestParams.append('auth', userOnDemand?.token!);
+      authRequestParams.append('recipeBy', userOnDemand?.id!);
+
+
+
+            {
+              params: authRequestParams ////EIS O CÓDIGO EM QUESTÃO.
+            }
+
+
+
+
+'''
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> é claro que o parameter name precisa ser 'auth',
+
+
+
+
+ e é bom ter aquele 
+
+
+ 'recipeBy'...
+
+
+
+
+
+
+
+
+ -> MAS AQUI EU FIZ UM ERRO... 
+
+
+
+
+
+
+ --> eu usei 
+
+
+
+ 'authRequestParams.append(
+
+ )
+ '
+
+ PARA 
+
+
+
+ ANEXAR PARâMETROS,
+
+
+
+
+ mas o professor diz que devemos usar 
+
+
+
+
+
+
+
+ new HttpParams().set('auth', user.token)
+
+
+
+
+
+
+
+
+ coisas assim...
+
+
+
+
+(e ele está certo, pq a outra sintaxe NÃO FUNCIONA)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+  OK, O CÓDIGO CORRETO FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   return this.authService.user.pipe(  
+      take(1)  
+      ,
+      exhaustMap( 
+        (userOnDemand) => {
+
+          const authRequestParams = new HttpParams().set('auth', userOnDemand?.token!); ///////EIS O CÓDIGO EM QUESTÃO.
+          console.log(authRequestParams);
+
+
+          return this.http.get<Recipe[]>(
+            'https://recipebookdeployproject-default-rtdb.firebaseio.com/recipes.json',
+            {
+              params: authRequestParams
+            }
+          )
+
+        }
+
+
+      ),
+
+
+
+
+
+
+
+
+
+
+      ------------
+
+
+
+
+
+
+
+
+      certo... MAS POSSO SETTAR O SEGUNDO ARGUMENTO, NESSE NEGÓCIO? 
+
+
+
+      (
+        acho que sim....
+
+      )
+
+
+      basta escrever assim:
+
+
+
+
+
+
+
+
+
+          
+          const authRequestParams = new HttpParams().
+          set('auth', userOnDemand?.token!).
+          set('recipeBy', userOnDemand?.id!);
+          console.log(authRequestParams);
+
+
+
+
+
+
+
+
+
+
+
+-----> OK, MAS E SE ESSA TOKEN ESTIVESSE COMO 'UNDEFINED'?
+
+
+
+
+bem, aí não teríamos um problema mt grave,
+
+
+
+
+
+
+
+
+
+
+PQ NOSSO REQUEST SÓ FARIA 'FAIL',
+
+
+PQ 
+
+
+UM TOKEN INVÁLIDO TERIA SIDO ENVIADO AO BACKEND..
+
+
+
+
+
+
+
+
+-----> MAS MAIS TARDE 
+
+
+
+
+VAMOS ADICIONAR CÓDIGO PARA AUTOMATICAMENTE 
+
+
+'LOG THE USER OUT'
+
+
+EM CASOS 
+
+
+DE 
+TOKEN EXPIRADO,
+
+TOKEN INVÁLIDO,
+
+
+ETC.... (aí evitamos essa situaçaõ por inteiro)..
+
+
+
+
+
+ 
+
+
+SALVAMOS TUDO ISSO...
+
+
+
+
+
+
+
+
+
+-> AGORA TENTAMOS FAZER LOGIN,
+
+
+
+
+
+PARA ENTAÕ FAZER FETCH DE NOSSAS RECIPES...
+
+
+
+
+
+
+
+
+
+--> consegui fazer login,
+
+
+e 
+
+
+os errors de request sumiram,
+
+
+mas ainda não vi nenhuma recipe... ( acho que é pq eu ainda não criei nenhuma recipe)....
+
+
+
+
+
+
+
+
+--> agora estou conseguindo fazer fetch de minhas recipes...
+
+
+
+
+
+
+
+
+
+
+
+--> mas não tenho nenhuma recipe na minha database, ainda...
+
+
+
+
+
+
+
+
+
+-> tenho que colocar essa token no method de 'add recipe' 
+
+
+
+,
+
+
+para que seja possível reestabelecer essa database...
+
+
+
+
+
+
+--> mas eu já adicionei algumas reciepes,
+
+
+
+
+por meio da função 'import json' lá no firebase....
+
+
+
+
+
+(
+
+  isso nos deixa importar 
+
+
+  objects json de um arquivo json, e os 
+
+  transplantar para nossa database firebase, automaticamente..
+)
+
+
+
+
+
+
+
+
+
+
+
+--> ok..
+
+
+
+
+
+
+
+PRECISAMOS FAZER A MESMA COISA COM O 'SAVE RECIPES', provavelmente....
+
+
+
+
+
+
+
+
+
+
+----> mas agora ficamos com um PROBLEMA....
+
+
+
+
+
+
+
+
+
+-> TANTO 'save recipes' quanto 'load recipes' VÃO DEPENDER DESSE 'BEHAVIOR subject' 
+
+
+
+
+de 
+
+'User'... 
+
+
+
+
+
+
+
+
+
+
+--> isso significa que eles vão CONFLITAR, se tentarmos fazer com que os 2 façam subscribe a esse subject/observable...
+
+
+
+
+
+
+
+
+--> a solução para isso, no caso, é:
+
+
+
+
+
+
+
+1) OU COLOCAR UM IF STATEMENT QUE SEPARE O FIRE DO HTTP request dos 2 methods (o que é ruim)
+
+
+
+
+
+
+
+
+ou 
+
+
+2) USAR _ UM INTERCEPTOR,
+
+PARA QUE __SEMPRE__ SEJA_ CHECADO 
+
+
+O 'AUTHORIZATION' (presença do user object/data no app )
+
+
+
+DOS USERS 
+
+EM CERTAS ROUTES DE NOSSO APP (em que tenhamos colocado esse 'interceptor' aí)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> isso provavelmente será mostrado na PRÓXIMA AULA...
+
+
+
+

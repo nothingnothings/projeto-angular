@@ -1,0 +1,27 @@
+<label>Server Name 2 </label>
+<!-- SEM TWO WAY DATABINDING-->
+<input   
+type="text" 
+class="form-control"
+placeholder="Input your server name"
+(input)="onUpdateServerName($event)" 
+> <!--  É OBRIGATÓRIO ADICIONAR aquele '$event' como parâmetro quando você QUER PASSAR O VALOR/SEU EVENT __ A ALGUM METHOD EM SEU ARQUIVO '.ts'...-->
+<button class="btn btn-primary" [disabled]="!allowNewServer" 
+(click)="toggleServer()"
+>Add Server</button>
+<p>{{ serverName }}
+
+
+    <!-- COM TWO WAY DATABINDING-->
+<input 
+type="text" 
+class="form-control"
+placeholder="Input your server name"
+[(ngModel)]="serverName"
+> <!--  É OBRIGATÓRIO ADICIONAR aquele '$event' como parâmetro quando você QUER PASSAR O VALOR/SEU EVENT __ A ALGUM METHOD EM SEU ARQUIVO '.ts'...-->
+
+<p>{{serverName}}</p>
+
+<button class="btn btn-primary" [disabled]="!allowNewServer" 
+(click)="restoreServerName()"
+>Restore Server Name</button>

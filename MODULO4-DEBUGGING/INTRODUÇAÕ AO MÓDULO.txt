@@ -1,0 +1,392 @@
+
+JÁ VIMOS O BÁSICO DO ANGULAR...
+
+
+
+
+
+
+
+
+
+
+
+-> VIMOS O QUE COMPÕE UM APP ANGULAR...
+
+
+
+
+
+
+
+
+
+-_> NÓS JÁ ENCONTRAMOS VÁRIOS ERRORS 
+
+NO ANGULAR...
+
+
+
+
+
+
+
+
+--> O FIX DE ERRORS ANGULAR É SEMPRE IMPORTANTE,
+
+
+E NEM SEMPRE TÃO FÁCIL...
+
+
+
+DEVEMOS VER AS FERRAMENTAS QUE TEMOS A NOSSA DISPOSIÇÃO,
+
+
+PARA CONSERTAR ERRORS...
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR COLOCA UM EXAMPLE APPP
+
+
+
+
+NESSE MÓDULO, QUE TEM BOA APARÊNCIA,
+
+MAS QUE 
+
+
+NÃO FUNCIONA DIREITO...
+
+
+
+
+
+
+--> QUANDO CLICAMOS EM 'ADD SERVER',
+
+RECEBEMOS UM ERROR...
+
+
+
+
+
+
+
+--> VOCê PODE RECEBER MTOS DESSES ERRORS...
+
+
+
+
+
+
+
+
+
+
+-> TENHA O DEV CONSOLE SEMPER ABERTO...
+
+
+
+
+
+
+
+
+
+
+-_> SE UMA COISA NÃO FUNCIONA COMO VOCê QUER,
+
+
+
+
+ABRIR O JAVASCRIPT CONSOLE 
+
+
+
+NAS DEVTOOLS 
+
+
+
+é 
+
+uma ótima ideia.... --> 
+
+as mensagens de error 
+
+do 
+
+angular 
+
+
+TÊM FICADO MELHORES...
+
+
+
+
+
+
+
+
+--> QUANTO AO ERRO QUE TEMOS AGORA,
+
+
+
+
+
+
+ELE É:
+
+
+
+''Error in AppComponent class
+
+AppComponent - inline template:4:6 caused by: 'Cannot read property 'push' of undefined'....
+
+
+
+
+
+
+
+
+
+---> OK... A PRIMEIRA INFO IMPORTANTE 
+
+
+É 'AppComponent'...
+
+
+
+
+
+4:6 
+
+
+é o LINE NUMBER E A COLUMN
+
+
+
+
+
+
+
+
+
+
+---------> O ERRO FOI CAUSADO PQ _''NÃO CONSEGUIMOS LER A PROPRIEDADE 'push', que estava como UNDEFINED''...
+
+
+
+
+
+
+
+
+
+
+
+
+--> TEMOS UM BOCADO DE INFORMAÇÕES ÚTEIS, AQUI...
+
+
+
+
+
+
+
+
+
+--.NO APP COMPONENT, TEMOS ESTE CÓDIGO:
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  servers;
+
+  onAddServer() {
+    this.servers.push('Another Server');
+  }
+
+  onRemoveServer(id: number) {
+    const position = id + 1;
+    this.servers.splice(position, 1);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> O ARGUMENTO DA LINHA 4  é 'kind of helpful',
+
+
+
+
+PQ ELE NAÕ FALA DE UM ERRO 
+
+
+
+
+QUE ACONTECEU NO NOSSO ARQUIVO 'ts' 
+
+nem no arquivo html (template)...
+
+
+
+
+
+
+
+
+
+----> ELE DIZ 'line 4' 
+
+PQ  
+
+TUDO NO FINAL DAS CONTAS ACABA 'MERGED TOGETHER',
+
+
+
+
+
+que é a razão provável de isso ter acabado na line '4'...
+
+
+
+
+
+
+
+
+
+
+
+--> MAS ESSA PROPRIEDAED 'push' de defined aconteceu 
+
+PQ TENTAMOS CHAMAR 'push' em algo que NÃO ESTAVA 'defined'
+
+NO MOMENTO EM QUE O CHAMAMOS..
+
+
+
+
+
+
+
+
+
+--> SÓ HÁ UM LOCAL EM QUE CHAMAMOS PUSH, QUE É NO ARRAY DE 'servers',
+
+
+
+QUE ESTA´COMO UNDEFINEDW (
+
+
+
+    está como 
+
+    'servers',
+
+    quando deveria estar 
+
+    'servers = []'
+)
+
+
+
+
+
+
+
+
+
+
+--> CERTO, CORRIGIMOS ASSIM:
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  servers = [];  /////ASSIM....
+
+  onAddServer() {
+    this.servers.push('Another Server');
+  }
+
+  onRemoveServer(id: number) {
+    const position = id + 1;
+    this.servers.splice(position, 1);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+-> ok, isso consertou nosso error.r..
+
+
+
+
+
+
+
+
+
+
+--> É ASSIM QUE ENTENDEMOS ERROR MESSAGES DO ANGULAR...
+
+
+
+
+
+-> HÁ MTAS ERROR MESSAGES DIFERENTES...
+
+
+
+
+
+
+--> MAS É SEMPRE IMPORTANTE NÃO ENTRAR EM PÂNICO E LER BEM CADA MESSAGE...

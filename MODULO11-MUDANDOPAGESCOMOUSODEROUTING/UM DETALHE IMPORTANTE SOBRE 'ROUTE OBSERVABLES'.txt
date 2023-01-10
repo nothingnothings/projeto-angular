@@ -1,0 +1,932 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-->  NA ÚLTIMA LIÇÃO,
+
+
+
+
+ESCREVEMOS ESTE CÓDIGO DE 'observables' 
+
+de 
+'this.route.params',
+
+
+
+
+
+
+
+COMO VISTO AQUI:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { UsersService } from '../users.service';
+
+import { Params } from '@angular/router';
+
+@Component({
+  selector: 'app-user',
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.css'],
+})
+export class UserComponent implements OnInit {
+  user: { id: number; name: string };
+
+  constructor(
+    private route: ActivatedRoute, /////esse type é essencial para nós, pq é A PARTIR DELE QUE PODEMOS PEGAR OS VALUES DOS 'DYNAMIC SEGMENTS' de nossas urls dinÂmicas... (como 'localhost:4200/users/:id')...
+    private usersService: UsersService
+  ) {}
+
+  ngOnInit(): void {
+    const selectedUserId: string = this.route.snapshot.params['userId']; ///é com isso que conseguimos o SEGMENTO DINÂMICO NA NOSSA URL (com o userId, o value do userId)...
+    // const selectedUserName: string = this.route.snapshot.params['name'];
+    console.log(selectedUserId);
+
+    const selectedUser = this.usersService.users.find((user) => {
+      return user.id.toString() === selectedUserId;
+    });
+
+    this.user = selectedUser!;
+
+
+    this.route.params  /////esse é um OBSERVABLE.... ---> funciona com/para ASYNC TASKS, como o CHANGE DA URL/ROUTE no seu browser AO LONGO DO TEMPO, EM 1 MESMO COMPONENT (como o que acontece quando o button de 'Load Anna' é clicado, e nossa url muda para '/users/10/Anna')
+     .subscribe( ///ele OBSERVA e então EXECUTA CÓDIGO, se a coisa que está observando acontecer.... mas não vai travar a execução de seu código, por isso funciona de forma async... ele faz tipo um SUBSCRIBE, e aí fica esperando....
+
+
+     (newParams: Params) => {  //1o parâmetro de 'subscribe()'..
+      console.log(newParams);
+        this.user.id = newParams['userId'];
+
+     }
+
+     )     
+     //E O METHOD DE 'subscribe', em nossos observables, sempre exige TRÊS PARÂMETROS, QUE SERÃO 3 FUNCTIONS...
+
+     ////1o parâmetro --> É O CÓDIGO/FUNCTION QUE DEVE SER DISPARADA __ ASSIM _ QUE 'NOVA DATA' for funnelada através desse observable (no caso de 'this.route.params', essa nova data SERÁ NOVOS PARAMS, NOVOS PARAMS NA NOSSA URL, que terá sido alterada durante a existência desse nosso component...)
+  
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> APRENDEMOS SOBRE COMO PODEMOS 
+
+
+'SUBSCRIBE' 
+
+
+
+
+aos nossos params,
+
+PARA 
+
+ATUALIZAR O CONTEÚDO DE NOSSA PAGE 
+
+
+A 
+
+PARTIR 
+
+
+DE QUAISQUER 
+
+MUDANÇAS 
+
+NOS NOSSOS PARAMS/NOSSA ROUTE... (sem trocar o component, ficando no mesmo component, nesse use-case)...
+
+
+
+
+
+
+
+
+
+
+
+-> E NÓS SETTAMOS AQUELA 'SUBSCRIPTION',
+
+
+
+TUDO
+
+
+USANDO OBSERVABLES,
+
+e o código ficou fine,
+ 
+ não precisamos alterar mais nada nesse local...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O PROFESSOR QUER 
+
+RESSALTAR UM DETALHE....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> o detalhe é:
+
+
+
+
+
+
+_O FATO _ DE QUE 
+
+NÃO PRECISAMOS ADICIONAR __ MAIS 
+
+
+NADA 
+
+A 
+
+ESSE 
+
+
+
+COMPONENT DE 
+
+'user.component.ts'
+
+
+
+
+
+ADVÉM
+
+ DO FATO DE QUE 
+
+
+ O 
+
+
+ _ANGULAR__ 
+
+
+ SIMPLEMENTE 
+
+ 'FAZ ALGO PARA NÓS, NO BACKGROUND',
+
+
+
+
+
+
+ __ QUE É _ SUPER IMPORTANTE_.... -->  A COISA QUE 
+
+
+
+
+ ELE 
+
+
+ FAZ É :
+
+
+
+
+
+
+
+
+ 1) LIMPAR A SUBSCRIPTION QUE VOCê DEFINE EM 'this.route.params.subscribe(()=> {})
+
+
+
+ _________ SEMPRE__ QUE 
+
+
+
+ ESSE COMPONENT DE 'user.component.ts/html'
+
+
+
+ FOR __ DESTRUÍDO_....
+
+
+
+
+
+
+
+2) ISSO PQ _ SE O 
+
+
+ANGULAR NÃO FIZESSE ISSO,
+
+LIMPAR ESSA SUBSCRIPTION,
+
+
+
+essa subscription a 'PARAMETER CHANGES' (be on wait for parameter changes),
+
+
+
+
+
+
+se você fizesse isso e então 
+
+
+
+
+
+3) DEIXASSE ESSE COMPONENT (destroy do COMPONENT ANTIGO),
+
+QUANDO 
+
+VOCÊ 
+
+
+VOLTASSE A ESSE COMPONENT (o que faz um NOVO COMPONENT SER CRIADO),
+
+
+
+_TODAS AS SUBSCRIPTIONS ANTIGAS __ CONTINUARIAM EXISTINDO...
+
+
+
+
+
+--> a subscription antiga __ CONTINUARIA 'EXISTINDO NA MEMÓRIA DO SEU APP'...
+
+
+
+
+
+
+
+isso acontece/aconteceria PQ _ SUBSCRIPTIONS,
+
+
+NO ANGULAR,
+
+NÃO SÃO 
+
+'CLOSELY TIED' 
+
+aos nossos components,
+
+
+
+
+
+E _ SIM _ SÃO TIED TO OUR APP...
+
+
+
+
+
+
+
+
+
+
+4) NORMALMENTE,
+
+
+NOSSOS _ COMPONENTS __ SÃO DESTRUÍDOS,
+
+MAS AS SUBSCRIPTIONS PERSISTEM...
+
+
+
+
+
+
+-----> BEM,
+
+
+
+
+ISSO, O 'PERSIST' DA SUBSCRIPTION,
+
+
+
+NÃO _ VAI ACONTECER AQUI, NESSE CASE,
+
+
+PQ _ o 
+
+
+
+
+ANGULAR __ 'HANDLA' 
+
+
+ESSE DESTROY DA SUBSCRIPTION DE 'param changes' 
+
+PARA NÓS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AINDA ASSIM,
+
+
+
+
+MESMO COM ESSE 'HANDLE AUTOMÁTICO' por parte do angular,
+
+
+
+
+
+__ 
+
+TEORICAMENTE É 
+
+MELHOR 
+
+
+
+
+IMPLEMENTAR 
+
+
+
+
+aquele 
+
+
+hook de 
+'OnDestroy',
+
+
+
+
+
+
+o lifecycle hook de 'OnDestroy',
+
+
+
+
+
+PARA 
+
+
+
+AÍ 
+
+
+
+
+DESTRUIR 
+
+_ ESSA SUBSCRIPTION...
+
+
+
+
+
+
+------> COMO FARÍAMOS ISSO? 
+
+
+
+
+
+
+
+
+
+
+-> BEM, TERÍAMOS _ _DE:
+
+
+
+
+
+
+1) ARMAZENAR ESSA SUBSCRIPTION EM UMA PROPRIEDADE DO COMPONENT 'user'...
+
+
+
+
+
+
+FARÍAMOS ISSO ASSIM:
+
+
+
+
+
+import { Subscription } from 'rxjs/Subscription';
+
+
+
+
+
+@Component({})
+
+
+export class UserComponent implements OnInit, OnDestroy {
+
+    user: {id: number, name: string};
+
+    paramsSubscription: Subscription
+
+
+
+
+
+    ngOnInit() {
+
+    }
+
+
+
+ngOnDestroy() {
+
+}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------
+
+
+
+
+
+
+
+
+TALVEZ O CÓDIGO FIQUE ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { UsersService } from '../users.service';
+
+import { Params } from '@angular/router';
+
+import { Subscription } from 'rxjs'; // é usado para ARMAZENARMOS NOSSA SUBSCRIPTION, PARA POSTERIORMENTE NÓS A REMOVERMOS COM 'ngOnDestroy()'...
+///isso pq NOSSOS COMPONENTS SÃO DESTRUÍDOS QUANDO TROCAMOS DE '''PAGE'''', MAS AS 'SUBSCRIPTIONS' não....
+@Component({
+  selector: 'app-user',
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.css'],
+})
+export class UserComponent2 implements OnInit, OnDestroy {
+  user: { id: number; name: string };
+
+    paramsSubscription: Subscription;
+
+  constructor(
+    private route: ActivatedRoute,
+    private usersService: UsersService
+  ) {}
+
+  ngOnInit(): void {
+    const selectedUserId: string = this.route.snapshot.params['userId'];
+
+    console.log(selectedUserId);
+
+    const selectedUser = this.usersService.users.find((user) => {
+      return user.id.toString() === selectedUserId;
+    });
+
+    this.user = selectedUser!;
+
+    this.route.params.subscribe((newParams: Params) => {
+      console.log(newParams);
+      this.user.id = newParams['userId'];
+    });
+  }
+
+
+
+  ngOnDestroy(): void {  ///é aqui que vamos querer DESTRUIR NOSSA SUBSCRIPTION...
+
+    this.paramsSubscription.unsubscribe();
+  }
+
+}
+
+
+
+
+
+
+
+
+---------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... MAS COMO REMOVEMOS ESSA SUBSCRIPTION? 
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> bem,
+
+
+a questão é 
+
+que 
+essa propriedade 
+
+de 
+
+
+
+'paramsSubscription' 
+
+
+
+
+SERÁ __ DEFINIDA,
+
+LÁ 
+
+
+EM 
+
+'ngOnInit',
+
+
+
+
+COMO SENDO IGUAL à 
+
+
+
+'this.route.params.subscribe()'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> POR FIM,
+
+QUANDO 
+O 
+
+
+COMPONENT ACABA DESTRUÍDO,
+
+
+
+
+PODEMOS 
+
+
+SÓ ACESSAR ESSA SUBSCRIPTION E DAR _ UNSUBSCRIBE,
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+  ngOnDestroy(): void {  ///é aqui que vamos querer DESTRUIR NOSSA SUBSCRIPTION...
+
+    this.paramsSubscription.unsubscribe();
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  CÓDIGO COMPLETO:
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { UsersService } from '../users.service';
+
+import { Params } from '@angular/router';
+
+import { Subscription } from 'rxjs'; // é usado para ARMAZENARMOS NOSSA SUBSCRIPTION, PARA POSTERIORMENTE NÓS A REMOVERMOS COM 'ngOnDestroy()'...
+///isso pq NOSSOS COMPONENTS SÃO DESTRUÍDOS QUANDO TROCAMOS DE '''PAGE'''', MAS AS 'SUBSCRIPTIONS' não....
+@Component({
+  selector: 'app-user',
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.css'],
+})
+export class UserComponent2 implements OnInit, OnDestroy {
+  user: { id: number; name: string };
+
+    paramsSubscription: Subscription;
+
+  constructor(
+    private route: ActivatedRoute,
+    private usersService: UsersService
+  ) {}
+
+  ngOnInit(): void {
+    const selectedUserId: string = this.route.snapshot.params['userId'];
+
+    console.log(selectedUserId);
+
+    const selectedUser = this.usersService.users.find((user) => {
+      return user.id.toString() === selectedUserId;
+    });
+
+    this.user = selectedUser!;
+
+   this.paramsSubscription = this.route.params.subscribe((newParams: Params) => {
+      console.log(newParams);
+      this.user.id = newParams['userId'];
+    });
+  }
+
+
+
+  ngOnDestroy(): void {  ///é aqui que vamos querer DESTRUIR NOSSA SUBSCRIPTION...
+
+    this.paramsSubscription.unsubscribe();
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+
+
+E, NOVAMENTE, 
+
+PQ ISSO É IMPORTANTE:
+
+
+
+
+
+
+
+
+
+
+_ -VOCÊ NÃO É OBRIGADO A FAZER ISSO,
+
+
+
+
+PODE DEIXAR COMO ESTAVA ANTES,
+
+
+PQ 
+
+
+
+_ O ANGULAR FAZ 
+
+
+ 
+ ISSO PARA VOCÊ ,
+
+ QUANDO O ASSUNTO É 
+
+
+
+ 'ROUTER OBSERVABLES'....
+
+
+
+
+
+
+
+
+
+
+ --> MAS QUANDO VOCÊ CRIAR _ SEUS PRÓPRIOS OBSERVABLES,
+
+ COMO VEREMOS NO PRÓXIMO MÓDULO,
+
+
+   
+
+
+
+
+
+VOCÊ __ PRECISA__ FAZER ISSO,
+
+
+
+
+VOCÊ _ PRECISA FAZER 'UNSUBSCRIBE'
+
+
+POR CONTA PRÓPRIA...
+
+
+
+
+
+
+
+
+
+
+
+--. PROFESSOR SÓ QUERIA NOS MOSTRAR ISSO PQ 
+
+
+ELE QUERIA 
+
+
+
+
+NOS MOSTRAR O QUE ACONTECE POR TRÁS DAS CENAS...
+
+
+
+
+
+
+
+
+
+
+
+-> É BOM SABER FAZER ISSO, 
+
+NO CASO...

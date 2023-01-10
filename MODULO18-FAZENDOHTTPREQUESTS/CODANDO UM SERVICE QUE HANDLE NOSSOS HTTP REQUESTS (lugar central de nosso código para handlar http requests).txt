@@ -1,0 +1,1013 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O CÓDIGO QUE TEMOS ATÉ AGORA NÃO É RUIM,
+
+E ELE CERTAMENTE FAZ SEU TRABALHO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> o código até agora foi todo posicionado dentro do component 'app.component.ts',
+
+
+DENTRO 
+
+
+DOS METHODS:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, ComponentFactoryResolver } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+import { HttpClient } from '@angular/common/http'; ///DEVE SER UTILIZADO, JUNTO DE 'HttpClientModule', lá em 'angular.module.ts', PARA CONSEGUIRMOS FAZER SEND DE HTTP REQUESTS...
+
+
+
+
+import { map } from 'rxjs';  ////UM DE NOSSOS OPERATORS, a ser usado em nossos OBSERVABLES (no caso, será usado NO OBSERVABLE DE 'http'...)...
+
+
+
+import { Post } from './post.model';   ///modelo de post, CRIADO POR NÓS,  a ser usado PARA ESPECIFICAR COMO É A DATA QUE SERÁ RETORNADA DE NOSSO HTTP REQUEST...
+
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  loadedPosts: Post[];
+
+  isLoading: boolean = false;
+
+  // loadedPosts: any[] = [];
+
+  // constructor(private http: HttpClient) {
+  constructor(private http: HttpClient) {}
+
+  ngOnInit() {
+
+
+
+    this.fetchPosts();
+
+
+    console.log(this.loadedPosts);
+  }
+
+
+
+
+  /////////////ISTO NÃO FUNCIONARÁ, POIS NÃO ESTAMOS USANDO OBSERVABLES COM ESSE HTTP REQUEST...
+  // onCreatePost(formReference: NgForm) {
+  //   //send HTTP POST request
+
+  //   console.log(formReference.value);
+
+  //   const postData = formReference.value;
+
+  //   this.http.post('https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json',    //// '/posts.json' --> é uma IDIOSSINCRASIA DO 'FIREBASE', e não do angular --> precisamos definir um 'NOVO PATH' para armazenar nossos posts diretamente, e aí, AO FINAL DESSA ROUTE, SOMOS OBRIGADOS A ESCREVER '.json' (coisa do FIREBASE , que é MALUCO)...
+    
+  //   postData ///NOSSO OBJECT JAVASCRIPT SERÁ CONVERTIDO EM JSON DATA AUTOMATICAMENTE...
+    
+    
+    
+  //   );
+
+  //   formReference.reset(); //resetta os values de todos os fields a partir de um submit bem sucedido...
+  // }
+
+
+
+  onCreatePost(formReference: NgForm) { ///VAI FUNCIONAR, PQ USAMOS _ OBSERVABLES COM ESSE HTTP REQUEST....
+    //send HTTP POST request
+
+
+    console.log(formReference.value);
+
+    const postData = formReference.value;
+
+
+      //você não precisa chamar 'ngOnDestroy()' para dar unsubscribe em subscriptions feitas em cima de 'this.http.post()'...
+    ///this.http.post VAI NOS RETORNAR UM __ OBSERVABLE, SEMPRE... E AÍ VAMOS TER DE FAZER __ SUBSCRIBE __ A ELE..
+    this.http.post<{name : string}>('https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json',    //// '/posts.json' --> é uma IDIOSSINCRASIA DO 'FIREBASE', e não do angular --> precisamos definir um 'NOVO PATH' para armazenar nossos posts diretamente, e aí, AO FINAL DESSA ROUTE, SOMOS OBRIGADOS A ESCREVER '.json' (coisa do FIREBASE , que é MALUCO)...
+    
+    postData ///NOSSO OBJECT JAVASCRIPT SERÁ CONVERTIDO EM JSON DATA AUTOMATICAMENTE...
+    
+    
+    
+    ).subscribe(
+      (responseData) => {  //// 'responseData' --> é o equivalente ao nosso 'BODY' da response... não vai reunir TUDO TUDO da response (coisas como headers e tal, essas coisas são acessadas por OUTROS METHODS DA RESPONSE, NO ANGULAR)...
+ 
+
+          console.log(responseData);
+
+      }
+    )
+
+    formReference.reset(); //resetta os values de todos os fields a partir de um submit bem sucedido...
+  }
+
+
+
+
+  onFetchPosts() {
+    //send HTTP GET request...
+
+    this.fetchPosts();
+  }
+
+  onClearPosts() {
+    //send HTTP request
+  }
+
+
+
+  // private fetchPosts() {
+  //   this.http.get('https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json')
+  //   .subscribe(
+  //     (responseData ) => {
+
+  //       console.log(responseData);
+  //       // this.loadedPosts = responseData;
+  //       // const newArrayDataOfObject = Object.values(responseData); ////maneira alternativa de CONVERTER NOSSO 'OBJECT COM OBJECTS' em um ARRAY de objects (sem o uso de OPERATORS DE OBSERVABLES...)
+  //     //   console.log(newArrayDataOfObject);
+  //     //  return this.loadedPosts = newArrayDataOfObject;
+  //       // this.loadedPosts = postsArray;
+
+
+       
+
+  //     }
+  //   )
+  // }
+
+
+  private fetchPosts() {
+
+
+    this.isLoading = true;
+
+
+    ///o value que você passa dentro desse '<>' É __ O VALUE _ QUE SERÁ ACTUALLY_ RETORNADO PELA RESPONSE, NO BODY DA RESPONSE... (o value será retornado NESSE FORMATO AÍ, essencialmente...)
+    this.http.get<{[key: string]: Post}>('https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json')
+    .pipe( /////é assim que usamos 'OPERATORS' nos nossos observables (no caso, o observable de 'http')...
+    map(
+      // (responseData: any) => {
+        (responseData) => {
+
+
+        const transformedPostsArray: Post[] = [];
+
+
+        for (const key in responseData) {
+
+          if (responseData.hasOwnProperty(key)) {  ///VAI CHECAR SE ISSO NÃO É UM 'PROTOTYPE' dentro da 'responseData'...
+            transformedPostsArray.push({...responseData[key], id: key});
+          }
+      
+        }
+
+
+        return transformedPostsArray;
+
+      }
+    )
+    ) 
+    
+    .subscribe(
+      // (responseData ) => {
+        (posts) => {
+
+        // console.log(responseData);
+        console.log(posts);
+        // this.loadedPosts = responseData;
+        // const newArrayDataOfObject = Object.values(responseData); ////maneira alternativa de CONVERTER NOSSO 'OBJECT COM OBJECTS' em um ARRAY de objects (sem o uso de OPERATORS DE OBSERVABLES...)
+      //   console.log(newArrayDataOfObject);
+      //  return this.loadedPosts = newArrayDataOfObject;
+        // this.loadedPosts = postsArray;
+
+
+       
+        this.loadedPosts = posts;
+        this.isLoading = false;
+
+      }
+    )
+  }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> mas é _ CLARO__ QUE SERIA MUITO MELHOR SE TIVÉSSEMOS UM 
+
+
+SERVICE QUE 
+
+HANDLASSE 
+
+TODOS 
+
+
+ESSES 
+
+HTTP  REQUESTS....
+
+
+
+
+
+
+
+
+----> EVITAR COMPONENTS GRANDES, COM UM MONTE DE CÓDIGOS QUE NÃO POSSUEM RELAÇÃO DIRETA 
+
+
+COM A INTERFACE DO USUÁRIO (como o código de 'transform' de data do usuário, colocado no PIPE)...
+
+
+
+
+
+
+
+
+
+
+--> ESSE CÓDIGO DEVE SER OUTSOURCEADO EM SERVICES,
+
+PQ 
+
+
+
+OS SERVICES DEVEM SER A PARTE DE SEU 
+
+APP 
+
+QUE FAZEM O 'HEAVY LIFTING',
+
+O DIRTY WORK...
+
+
+
+
+
+
+
+
+--> E OS COMPONENTS __ DEVEM __ SER RELATIVAMENTE 'LEAN',
+
+
+
+O MAIS LEAN POSSÍVEL,
+
+
+E DEVEM TER RELAÇÃO COM O 'TEMPLATE-RELATED WORK' (como a propriedade 'isLoading' )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE CRIAMOS UM NOVO SERVICE, O SERVICE DE 'postsHttp.service.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+-> CRIO ESSE ARQUIVO E ENTÃO FAÇO TODOS OS IMPORTS ADEQUADOS:
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { HttpClientModule } from '@angular/common/http';
+
+import { AppComponent } from './app.component';
+import { PostsHttpService } from './postsHttp.service';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    HttpClientModule
+  ],
+  providers: [
+    PostsHttpService
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+E:
+
+
+
+
+
+
+
+import { Injectable } from "@angular/core";
+
+
+
+
+
+
+@Injectable()
+export class PostsHttpService {
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> ok... agora basta 
+
+ESCREVERMOS O 'CÓDIGO DE COMUNICAÇÃO HTTP' dentro desse service aí,
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs';
+
+import { Post } from './post.model';
+
+@Injectable()
+export class PostsHttpService {
+  constructor(private http: HttpClient) {}
+
+  private fetchPosts() {
+    ///outsourcing.
+    return this.http
+      .get<{ [name: string]: Post }>(
+        'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json'
+      )
+      .pipe(
+        map((responseData) => {
+          const transformedPostsArray: Post[] = [];
+
+          for (const key in responseData) {
+            if (responseData.hasOwnProperty(key)) {
+              ///VAI CHECAR SE ISSO NÃO É UM 'PROTOTYPE' dentro da 'responseData'...
+              transformedPostsArray.push({ ...responseData[key], id: key });
+            }
+          }
+
+          return transformedPostsArray; ///return de 'observable' (Faça SUBSCRIPTION lá nos seus COMPONENTS, para pegar o resultado da subscription)...
+        })
+      );
+  }
+
+  onCreatePost() {
+    return this.http.get<{ name: string }>( ///return de 'observable' (Faça SUBSCRIPTION lá nos seus COMPONENTS, para pegar o resultado da subscription)...
+      'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json'
+    );
+  }
+
+  onDeletePost() {}
+
+  onFetchPosts() {
+    this.fetchPosts();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK.... AGORA SÓ NOS RESTA CHAMAR ESSES METHODS, desse service aí,
+
+
+
+
+lá 
+
+no nosso component 'app.component.ts'....
+
+
+
+
+
+
+
+
+
+-> PARA QUE FIQUE TIPO ASSIM:
+
+
+
+
+
+
+import { Component } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+
+
+
+
+import { Post } from './post.model'; ///modelo de post, CRIADO POR NÓS,  a ser usado PARA ESPECIFICAR COMO É A DATA QUE SERÁ RETORNADA DE NOSSO HTTP REQUEST...
+import { PostsHttpService } from './postsHttp.service';
+
+
+
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  loadedPosts: Post[];
+
+  isLoading: boolean = false;
+
+  // loadedPosts: any[] = [];
+
+  // constructor(private http: HttpClient) {
+  // constructor(private http: HttpClient) {}
+  constructor(private httpPosts: PostsHttpService) {}
+
+  ngOnInit() {
+    // this.fetchPosts();
+
+    this.fetchPosts();
+
+    console.log(this.loadedPosts);
+  }
+
+
+  onCreatePost(formReference: NgForm) {
+
+    console.log(formReference.value);
+
+    const postData = formReference.value;
+
+    this.httpPosts.onCreatePost(postData);
+
+    formReference.reset(); //resetta os values de todos os fields a partir de um submit bem sucedido...
+  }
+
+  onClearPosts() {
+    //send HTTP request
+  }
+
+  private fetchPosts() {
+    this.isLoading = true;
+
+    this.httpPosts.onFetchPosts().subscribe((postsData) => {
+      this.loadedPosts = postsData;
+      this.isLoading = false;
+    });
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... AGORA VOU TESTAR ESSE CÓDIGO...
+
+
+
+
+hmmm mas isso não está funcionando...
+
+
+
+
+
+
+
+
+-> por alguma razão, meu http request não está sendo enviado...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> é simples, é pq faltou o call de 'subscribe()' em cima do method do service,
+
+tipo assim:
+
+
+
+
+
+
+
+  onCreatePost(formReference: NgForm) {
+
+    console.log(formReference.value);
+
+    const postData = formReference.value;
+
+    this.httpPosts.onCreatePost(postData).subscribe(
+      (responseData) => {
+
+        console.log(responseData);
+        formReference.reset(); //resetta os values de todos os fields a partir de um submit bem sucedido...
+      }
+    )
+
+    
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OK, AGORA MEU CÓDIGO FUNCIONOU...
+
+
+
+
+
+
+
+
+
+
+
+
+  --> vou ver a aula do professor, para ver se ele fez alguma coisa diferente....
+
+
+
+
+
+
+
+
+
+
+  --> O PROFESSOR DIZ QUE PODEMOS USAR 2 APPROACHES:
+
+
+
+
+
+
+
+
+  1) escrever 
+
+  '@Injectable({providedIn: 'root'})' 
+
+
+  lá em 'postsHttpService.ts'...
+
+
+
+
+
+
+
+  (ESSE É O APPROACH MAIS MODERNO/RECOMENDADO)...
+
+
+
+
+
+
+  2)  ou o APPROACH TRADICIONAL, EM QUE ADICIONAMOS ESSE SERVICE LÁ NA LIST DE 'providers',
+
+
+  em 'app.module.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  QUAL É A IDEIA POR TRÁS DESSE SERVICE?
+
+
+
+
+  NELE VAMOS QUERER OS METHODS 
+
+
+
+
+
+
+  EM QUE NÓS 'FAZEMOS OS HTTP REQUESTS' -----> 
+
+
+
+
+
+
+
+  AÍ, LÁ NO FRONTEND, 
+
+  VAMOS QUERER __ aPENAS__  
+
+  AS RESPONSES,
+
+
+  AS MESSAGES DE 'ESTAMOS PRONTOS', ou 'DEU  ERRO'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> É POR ISSO QUE NESSE SERVICE O PROFESSOR 
+
+
+
+
+  CRIA UM NOVO METHOD, DE NOME 
+
+
+
+
+  'createAndStorePost'...
+
+
+
+
+
+
+
+
+
+
+  ----> 
+
+
+
+  será tipo 
+
+
+
+
+
+
+
+
+  createAndStorePost(title: string, content: string) {
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+  fetchPosts() {
+
+
+  }
+
+
+
+
+
+
+
+
+
+-----> MAS PARA QUE TUDO ISSO FUNCIONE, É CLARO QUE VAMOS PRECISAR DO CONSTRUCTOR 
+
+
+e do inject de 'HttpClient'...
+
+
+
+
+
+
+
+
+
+
+
+
+por isso o professor escreve 
+
+
+
+
+
+
+constructor(private http: HttpClient) {
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo... --> É CLARO QUE NÃO TEMOS PROPRIEDADE 
+
+
+
+
+de 'postData', o array de posts que é nosso 'STATE'....
+
+
+
+
+
+
+
+OK, MAS A DIFERENÇA DO CÓDIGO DO PROFESSOR EM RELAÇAÕ AO NOSSO É QUE 
+ELE 
+
+
+
+
+
+
+fez um pouco mais centrado no service do que no component....
+
+
+
+
+
+
+
+
+
+
+
+---> mas o código dele ficou QUASE IGUAL AO MEU...
+
+
+
+
+
+
+
+
+
+
+
+
+----> ISSO ESTÁ FUNCIONANDO COMO ANTES, MAS AGORA TEMOS A LÓGICA DE 
+
+
+HTTPs 
+
+
+
+
+lá no service....
+
+
+
+
+
+
+
+
+
+
+
+
+--> o professor então fala da 'PERDA DA CONEXÃO' entre o SERVICE E O TEMPLATE/COMPONENT (pq não chamamos 'subscribe()' lá no MEU COMPONENT)...
+
+
+
+(
+
+    o professor havia deixado o código de '.subscribe()'
+
+    LÁ NO NOSSO SERVICE, BASICAMENTE...
+)
+
+
+
+
+
+
+
+
+
+--> CONSERTAREMOS ISSO NA PRÓXIMA AULA...

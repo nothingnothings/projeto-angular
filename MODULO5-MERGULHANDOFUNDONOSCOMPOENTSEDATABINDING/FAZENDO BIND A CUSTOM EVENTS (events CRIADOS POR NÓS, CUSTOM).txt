@@ -1,0 +1,2236 @@
+
+
+
+nas últimas aulas, aprendemos algo crucial,
+
+que é o bind a 
+
+
+'CUSTOM PROPERTIES'... (através do decorator de '@Input()')...
+
+
+
+
+
+
+
+
+
+
+--> É ALGO QUE USAREMOS MT EM QUALQUER APP 
+
+
+
+ANGULAR....   --> é a arte de COMO PASSAR DATA DE UM COMPONENT 
+
+
+A _ _OUTRO COMPONENT_ QUE FOI IMPLEMENTADO NESSE PRIMEIRO COMPONENT...
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO FICOU ASSIM (código de 'app.element.html'):
+
+
+
+
+
+
+
+  <div class="row">
+    <div class="col-xs-12">
+      <app-server-item 
+      *ngFor="let serverElement of serverElements"
+      [srvElement]="serverElement"  
+      ></app-server-item>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+-> AGORA DEVEMOS VER _ O 'SENTIDO CONTRÁRIO'.. --> digamos que 
+
+temos o inverso;
+
+
+
+
+
+
+
+temos 
+
+
+um CHILD COMPONENT,
+
+E AÍ 
+
+ __ QUEREMOS __ INFORMAR_- O NOSSO 'PARENT COMPONENT' 
+
+ DESSE CHILD COMPONENT,
+
+
+
+
+ _ DE QUE 
+
+ ALGO FOI ALTERADO..
+
+
+
+
+
+
+
+ --> COMO EXEMPLO DISSO,
+
+ TEMOS 
+
+
+ O 
+
+
+ COMPONENT DE 
+
+
+
+ 'server-cockpit'... -------> ESSE 
+
+
+
+
+ COMPONENT É UM __ CHILD__ COMPONENT EM RELAÇAÕ AO 
+
+ 'app.element.html'..
+
+
+
+
+
+
+
+
+ -->O  COMPONENT 'COCKPIT' É O QUE CONTÉM 
+
+
+
+ OS METHODS NECESSÁRIOS PARA FAZER 'ADD' DE 
+
+
+ TANTO 'SERVERS' COMO BLUEPRINTS..
+
+
+
+
+
+
+
+
+
+ -> ENTRETANTO, O PROBLEMA QUE ENFRENTAMOS, AQUI,
+ É QUE 
+
+
+ __ O ARRAY DE 'SERVERS/BLUEPRINTS'
+
+
+ existe __ SÓ _ NO COMPONENT DE 
+
+ 'app.element.TS',
+
+
+
+
+
+ QUE É 
+
+
+
+ __ __ PARENT_ EM RELAÇÃO AO 'cockpit'...
+
+
+
+
+
+
+
+
+
+ ---> QUEREMOS __ INFORMAR NOSSO PARENT COMPONENT (app)
+
+
+ DE QUE 
+
+
+
+ _ UM NOVO SERVER/BLUEPRINT FOI CRIADO..
+
+
+
+
+
+
+
+
+
+ ---> O PROFESSOR DIZ QUE 
+
+ TALVEZ AINDA VAMOS QUERER 
+
+
+
+
+
+ IMPLEMENTAR ESSES 2 METHODS NÃO EM 'cockpit.component',
+
+ e
+  sim 
+
+
+
+
+  __ EM 
+
+
+
+  'app.component'...
+
+
+
+
+
+
+
+
+  TIPO ASSIM:
+
+
+  
+ export class AppComponent {
+  serverElements: any[] = [{type: 'server', name: 'TestServer', content: 'Just a test!'}, {type: 'blueprint', name: 'BlueprintServer', content: 'Just a test!'}]
+  newServerName = '';
+  newServerContent = '';
+
+  onAddServer() {
+    this.serverElements.push({
+      type: 'server',
+      name: this.newServerName,
+      content: this.newServerContent,
+    });
+  }
+
+  onAddBlueprint() {
+    // this.serverElements.push(
+    //   {
+    //     type: 'blueprint',
+    //     name: this.newServerName,
+    //     content: this.newServerContent
+    //   }
+    // )
+  }
+
+
+}
+
+
+
+
+
+
+
+
+-------> mas o professor vai fazer ALGUNS PEQUENOS AJUSTES... -> 
+
+
+
+ELE VAI ALTERAR OS NAMES DESSES METHODS:
+
+
+
+
+onAddServer --> vai virar 'onServerAdded' 
+
+
+
+onAddBlueprint --> VAI VIRAR 'onBlueprintAdded' 
+
+
+
+
+
+
+
+
+
+-> ELE COLOCA ASSIM PQ _ ESSES METHODS__ VÃO SER EXECUTADOS _ APENAS_ ___________aPÓS__________
+
+
+
+
+
+
+O BUTTON SER CLICADO, E NÃO EXATAMENTE 
+
+
+NO MOMENTO EM QUE É CLICADO...
+
+
+
+
+
+--> ISSO QUER DIZER QUE ESSES METHODS SÓ SERÃO EXECUTADOS 'ONCE WE ARE DONE CREATING THE SERVER',
+
+
+por assim dizer... 
+
+
+
+
+
+
+
+
+
+
+--> BEM... nesses methods, o que fazemos?
+
+
+
+
+
+
+
+
+
+----> PROFESSOR COLOCA A LÓGICA 
+
+
+
+
+
+
+DE VOLTA,
+
+
+MAS A LÓGICA NÃO VAI FUNCIONAR ( 
+
+
+    pq 
+
+
+
+    estamos referenciando 'newServerName'
+
+    e 
+
+    'newServerContent',
+
+
+    QUE NÃO FICAM DISPONÍVEIS/ESTÃO DISPONÍVEIS 
+
+    NESSE COMPONENT DE  
+
+    'AppComponent'...
+)
+
+
+
+
+
+
+
+
+
+
+->  QUEREMOS PEGAR ESSA INFO LÁ DO COMPONENT 'cockpit.component' (
+
+
+    bem parecido com react, isso...
+)
+
+
+
+
+
+
+
+---> OK, MAS COMO TRANSMITIMOS ESSA DATA?
+
+
+
+
+
+
+
+
+
+---> qeuremos fazer isso pq 
+
+'app.component.ts/html' 
+
+é o LOCAL CENTRAL DE NOSSO APP,
+ 
+ POR ENQUANTO,
+
+
+ QUE FAZ O MANAGE DESSE ARRAY DE SERVERs....
+
+
+
+
+
+
+
+
+ --> ok, mas como PODEMOS 'EMIT AN EVENT',
+
+
+
+
+
+ COMO PODEMOS __ INFORMAR__ 
+
+
+
+ O NOSSO 
+
+
+ APP COMPONENT DO 'INPUT' efetuado pelo user?
+
+
+
+
+
+
+
+
+
+
+
+ -> SERIA NICE, diz o professor,
+
+
+
+ SE 
+
+
+
+ O NEGÓCIO SE PARECESSE ASSIM:
+
+
+
+
+
+
+
+
+
+ se no cockpit,
+
+ lá em 
+
+ 'app.component.html',
+
+
+
+
+ EM QUE 
+
+
+ IMPLEMENTAMOS 
+
+ 'cockpit',
+
+
+
+
+
+
+ SERIA NICE SE PUDESEMOS FAZER ALGO ASSIM:
+
+
+
+
+
+
+
+
+ <app-cockpit (serverCreated)></app-cockpit>
+
+
+
+
+
+
+
+
+
+
+
+ TIPO ASSIM:
+
+
+
+
+
+
+
+ <div class="container">
+  <app-server-cockpit (serverCreated)=  ></app-server-cockpit>
+  <hr />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> PODEMOS QUALQUER NOME QUE DESEJAMOS NESSE 'CUSTOM EVENT,'
+
+
+
+  mas 
+
+
+
+
+
+  'serverCreated'
+
+  É UM __ EXCELENTE __ 
+
+  'EVENT'
+
+
+  pelo qual poderíamos fazer listen,
+
+  nesse caso....
+
+
+
+
+
+  --> É ÓBVIO QUE 
+
+  'serverCreated'
+
+
+
+  NÃO É UM 
+
+
+
+  _EVENT_ QUE EXISTE POR DEFAULT... -----> ASSIM COMO 
+
+
+  FAZEMOS 'LISTEN' 
+
+  a events como 
+
+
+  'click',
+
+  AQUI QUEREMOS FAZER 
+
+  'LISTEN TO '
+
+
+
+
+  A UM EVENT COMO ESSE ,
+
+    'serverCreated'... -----> 
+
+
+
+
+
+
+
+
+
+    E  __ QUANDO UM __ SERVER FOR REALMENTE CREATED,
+
+    VAMOS QUERER 
+
+
+
+
+
+
+    _ EXECUTAR ALGUM CÓDIGO, ALGUMA LÓGICA ESPECÍFICA...- --> QUE PROVAEVLMENTE 
+
+    SERÁ 
+
+
+
+
+    'onServerAdded'... 
+
+
+
+
+
+
+
+
+
+
+
+
+    -----> 'onServerAdded'
+
+
+
+    TERÁ SIDO CRIADO NO 'app.component.html',
+
+
+    É O METHOD QUE PREPARAMOS PARA ISSO...
+
+
+
+
+
+
+    --> e nesse call de 'onServerAdded()',
+
+
+    PODEMOS __ ATÉ MESMO 
+
+    'EXPECT' QUE VAMOS RECEBER ALGUMA DATA,
+
+
+
+    provavelmente _ 
+
+
+    O 
+
+
+    PRÓPRIO 'server' que deverá ser adicionado...
+
+
+
+
+
+
+--> MAS VOCÊ DEVE SEMPRE SE LEMBRAR QUE 
+
+NO 'EVENT BINDING'
+
+
+vocÊ nunca recebe coisas como 'A DATA DIRETA',
+
+
+
+
+e sim 
+
+SEMPRE RECEBE UM _ 'EVENT OBJECT',
+
+
+
+
+
+REPRESENTADO POR '$event',
+
+
+QUE 
+
+
+
+
+
+VAI CONTER 
+
+
+TODA A DATA QUE VOCÊ DESEJA (event.target.value)..
+
+
+
+
+
+
+
+------->ex:
+
+
+  <app-server-cockpit (serverCreated)="onServerAdded($event)"></app-server-cockpit>
+  <hr />
+
+
+
+
+
+
+
+
+
+--> ESSE EVENT VAI CONTER A INFO RELEVANTE AO CREATE DE SEU SERVER,
+
+COMO O 'name' e o 'content'....
+
+
+
+
+
+
+
+
+
+
+
+
+-_> AGORA BASTA EDITAR O 'onServerAdded',
+
+
+
+
+colocar esse 'event' object como _ 
+
+
+
+PARÂMETRO DO METHOD, TIPO ASSIM:
+
+
+
+
+
+
+  onAddServer(event: Event) {
+    this.serverElements.push({
+      type: 'server',
+      name: this.newServerName,
+      content: this.newServerContent,
+    });
+  }
+
+  onAddBlueprint(event: Event) {
+    // this.serverElements.push(
+    //   {
+    //     type: 'blueprint',
+    //     name: this.newServerName,
+    //     content: this.newServerContent
+    //   }
+    // )
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-_> EU COMEÇEI ESCREVENDO ASSIM,
+
+
+
+mas o professor 
+colocou um 
+
+
+
+
+slot de 
+
+
+'serverData: {
+    serverName: string;
+    serverContent: string;
+}' 
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS É CLARO QUE ISSO NÃO EXISTE DIRETAMENTE EM '$event'..
+
+
+
+
+
+
+
+
+
+
+
+
+MESMO ASSIM, O CÓDIGO FICA DESTA FORMA:
+
+
+
+  onAddServer(serverData: {serverName: string, serverContent: string}) {
+    this.serverElements.push({
+      type: 'server',
+      name: serverName
+      content: serverContent
+    });
+  }
+
+  onAddBlueprint(event: Event) {
+    // this.serverElements.push(
+    //   {
+    //     type: 'blueprint',
+    //     name: this.newServerName,
+    //     content: this.newServerContent
+    //   }
+    // )
+  }
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+    onAddServer(serverData: {serverName: string, serverContent: string}) {
+    this.serverElements.push({
+      type: 'server',
+      name: serverData.serverName,
+      content: serverData.serverContent
+    });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ------> ok... MAS COMO VAMOS PASSAR ISSO, 
+  SE O PARâMETRO É 
+
+  '$event'?
+
+
+
+
+
+
+
+
+
+
+
+
+
+  não faço ideia....
+
+
+
+
+
+
+
+
+  -> MAS O PROFESSOR DIZ QUE PODEMOS REPLICAR ESSE CÓDIGO DE 'CREATE A XX' 
+
+
+  COM O CREATE A BLUEPRINT, BASTA ESCREVER ASSIm:
+
+
+
+
+
+
+    <app-server-cockpit (serverCreated)="onServerAdded($event)"
+    (blueprintCreated)="onBlueprintAdded($event)"
+    ></app-server-cockpit>
+  <hr />
+
+
+
+
+
+
+
+
+
+
+
+  FICOU TIPO ASSIM, LÁ NO 'app.component.ts':
+
+
+
+
+
+
+
+
+
+
+
+  import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  serverElements: any[] = [{type: 'server', name: 'TestServer', content: 'Just a test!'}, {type: 'blueprint', name: 'BlueprintServer', content: 'Just a test!'}]
+  newServerName = '';
+  newServerContent = '';
+
+  // onAddServer(event: Event) {
+    onAddServer(serverData: {serverName: string, serverContent: string}) {
+    this.serverElements.push({
+      type: 'server',
+      name: serverData.serverName,
+      content: serverData.serverContent
+    });
+  }
+
+  onAddBlueprint(blueprintData: {blueprintName: string, blueprintContent: string}) {
+    this.serverElements.push(
+      {
+        type: 'blueprint',
+        name: blueprintData.blueprintName,
+        content: blueprintData.blueprintContent
+      }
+    )
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------> BEM.... MAS AGORA O PROFESSOR NOS EXPLICA QUE 
+
+'
+ACTUALLY PRECISAMOS __ EMITIR __ 
+
+NOSSO PRÓPRIO EVENT LÁ 
+
+
+DO 
+
+
+COMPONENT DE 'cockpit' ' ,
+
+
+PQ 
+
+É 
+ISSO QUE VAI TRIGGAR O 
+
+
+'onServerAdded'
+
+e 
+
+
+'onBlueprintAdded'
+
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE ESTAMOS ESPERANDO PELOS EVENTS DE 
+
+'serverCreated'
+
+e 
+
+'blueprintCreated'
+
+
+
+
+LÁ EM 
+
+
+'app.component.html',
+
+
+como visto aqui:
+
+
+
+
+
+
+
+
+<div class="container">
+  <app-server-cockpit (serverCreated)="onServerAdded($event)"
+  (blueprintCreated)="onBlueprintAdded($event)"
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  -------> É POR ISSO QUE NO COMPONENT DE 'COCKPIT'
+
+
+  O PROFESSOR VAI QUERER__ CRIAR_ 2 NOVAS PROPRIEDADES....
+
+
+
+
+
+
+
+
+
+
+
+  -_> 2 NOVAS PROPRIEDADES,
+
+
+
+  dentro de 'CockpitComponent',
+
+  QUE SERÃO 
+
+
+
+  'serverCreated;' 
+
+
+
+
+
+
+
+  e 
+
+
+
+
+  'blueprintCreated'....
+
+
+
+
+
+
+
+
+
+
+  --> O CÓDIGO FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+  export class CockpitComponent implements OnInit {
+
+
+      serverCreated;
+      blueprintCreated;
+      newServerName = '';
+      newServerContent = '';
+
+
+      constructor() {
+
+      }
+
+
+    onAddServer() {
+
+    }
+
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  --> BEM.... ANTERIORMENTE,
+
+  NÓS HAVÍAMOS 
+
+
+
+
+  colocado 
+  '@Input'
+
+
+  NA FRENTE 
+
+
+  DE NOSSAS PROPRIEDADES PARA 'MARCÁ-LAS' COMO 
+
+
+  PROPRIEDAEDS QUE PODIAM SER BINDADAS/SETTADAS (cujo valor podia ser settado) 
+
+
+  do lado de fora de 1 given component/element....
+
+
+
+
+
+
+
+
+
+
+
+
+  -----> MAS AQUI VAMOS FAZER O OPOSTO... ---> VAMOS FAZER EXATAMENTE O CONTRÁRIO DE 
+
+  '@Input'... --> QUEREMOS QUE __ as 
+
+
+
+  properties de 
+
+
+  'serverCreated' 
+
+
+  e 
+
+  'blueprintCreated'
+
+
+
+  _ KINDOF_ se tornem 
+
+__EVENTs__ QUE 
+
+
+
+PODEMOS/VAMOS EMITIR....
+
+
+
+
+
+
+
+
+----> PARA CONSEGUIRMOS TRANSFORMAR 
+AS PROPRIEDAEDS 
+
+
+
+
+
+
+'serverCreated'
+
+e 
+
+
+'blueprintCreated',
+
+
+
+
+
+PRECISAMSO _ IMPORTAR OUTRA COISA LÁ DE '@angular/core',
+
+
+que 
+
+
+
+
+É O OBJETO/CONSTRUCTOR DE 
+
+
+'EventEmitter'...
+
+
+
+
+
+
+
+
+
+
+
+--> VAMOS QUERER CRIAR 'EMITTERS DE EVENTS'
+
+
+e armazenar nessas 2 properties,
+tipo assim:
+
+
+
+
+
+import { EventEmitter } from '@angular/core';
+
+
+
+
+
+
+serverCreated = new EventEmitter();
+
+blueprintCreated = new EventEmitter();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { EventEmitter } from "@angular/core"
+
+@Component({
+  selector: 'app-server-cockpit',
+  templateUrl: './server-cockpit.component.html',
+  styleUrls: ['./server-cockpit.component.css'],
+})
+export class ServerCockpitComponent implements OnInit {
+
+
+  newServerContent: string = '';
+  newServerName: string = '';
+
+
+
+  serverCreated = new EventEmitter();    ///é o completo inverso de '@Input', pq é usado para TRANSMITIR NOSSA DATA obtida em 1 CHILD COMPONENT ("cockpit") PARA__ OS NOSSOS PARENT COMPONENTS (o component 'app', nesse caso, que precisa da DATA obtida nos inputs de 'cockpit' para CONSEGUIR ADICIONAR UM NOVO SERVER no array de 'servers' que possui)....
+
+  blueprintCreated = new EventEmitter();
+
+  constructor() {}
+
+  ngOnInit(): void {}
+
+  onAddServer() {
+    // this.serverElements.push({
+    //   type: 'server',
+    //   name: this.newServerName,
+    //   content: this.newServerContent,
+    // });
+  }
+
+  onAddBlueprint() {
+    // this.serverElements.push({
+    //   type: 'blueprint',
+    //   name: this.newServerName,
+    //   content: this.newServerContent,
+    // });
+  }
+}
+
+
+
+
+
+-----------------------------
+
+
+
+
+
+
+
+
+
+--> 'EventEmitter'
+
+É UM __ GENERIC TYPE no typescript,
+
+
+
+
+
+
+algo que é indicado no TS 
+
+
+com aquela escrita familiar 
+de 
+
+
+
+
+EventEmitter<>
+
+
+
+
+
+
+
+
+
+
+<> -----> DENTRO DESSE '<>" 
+,
+
+
+VOCê 
+SIMPLESMENTE 
+
+DEFINE 
+
+
+
+
+
+
+__ O TIPO __ DE EVENT DATA_  
+
+
+
+
+
+QUE VOCÊ VAI 'emit'..
+
+
+
+
+
+
+
+
+
+---> no caso, vamos querer 
+
+EMITIR 
+
+
+
+
+
+
+
+
+UMA DATA 
+
+
+QUE SERÁ UM _ OBJECT_ 
+
+
+com as propriedades 'serverName' e 'serverContent':
+
+
+
+
+
+
+
+
+
+
+  serverCreated = new EventEmitter<{serverName: string, serverContent: string}>();    ///é o completo inverso de '@Input', pq é usado para TRANSMITIR NOSSA DATA obtida em 1 CHILD COMPONENT ("cockpit") PARA__ OS NOSSOS PARENT COMPONENTS (o component 'app', nesse caso, que precisa da DATA obtida nos inputs de 'cockpit' para CONSEGUIR ADICIONAR UM NOVO SERVER no array de 'servers' que possui)....
+
+  blueprintCreated = new EventEmitter<{serverName: string, serverContent: string}>();   ///DENTRO DOS '<>' (PQ EVENTEMITTER É UM GENERIC TYPE) você simplesmente define o TIPO DE DATA QUE VOCÊ VAI EMTITR POR MEIO DESSA PROPRIEDADE...
+            ///vamos querer emitir o event type CUSTOM de {}, um objeto contendo a DATA QUE DESEJAMOS USAR lá em 'onServerAdded()'...
+              ////vocÊ deve acrescentar '()' ao final, para _ CHAMAR O CONSTRUCTOR DE 'EventEmitter', que agora ficará armazenado nessa property...
+
+
+
+
+
+
+
+-------------------------------
+
+
+
+
+
+
+
+
+
+
+
+-> a estrutura, portanto, é 
+
+
+
+
+new EventEmitter<>();
+
+
+
+
+
+
+
+
+
+
+
+OK, COM ISSO FICAMOS __ COM 2 'EVENT EMITTERS'...
+
+
+
+
+
+
+
+
+
+
+
+-> essa é a PRIMEIRA ETAPA...
+
+
+
+
+
+
+
+
+--> EVENTEMITTER É UM  __ OBJECT_ NO 
+
+FRAMEWORK 'ANGULAR'
+
+
+QEU _ TE DEIXA_ 'EMIT' SEUS PRÓPRIOS EVENTS....
+
+
+
+
+
+
+
+
+
+---> O QUE PODEMOS FAZER COM ISSO É , EM 
+
+
+
+
+'onAddServer()',
+
+
+chamar 
+
+
+
+
+
+
+
+
+
+this.serverCreated  (que contém nosso EVENTEMITTER)
+
+
+
+E AÍ __ CHAMAR 
+
+
+
+O METHOD 
+
+'.emit()'.. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+  onAddServer() {
+    // this.serverElements.push({ ///este código não funcionará, pois esse array ficou lá em 'app.element.ts'...
+    //   type: 'server',
+    //   name: this.newServerName,
+    //   content: this.newServerContent,
+    // });
+
+
+
+    this.serverCreated.emit();  ///usamos esse method que existe DENTRO DE CADA 'eventEmitter'.. --> esse method faz o 'emit' de um NOVO EVENT do type que vocÊ definiu em '<>'....
+
+
+
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ---------> TIPO ASSIM:
+
+
+
+
+
+
+  import { Component, OnInit } from '@angular/core';
+import { EventEmitter } from "@angular/core"
+
+@Component({
+  selector: 'app-server-cockpit',
+  templateUrl: './server-cockpit.component.html',
+  styleUrls: ['./server-cockpit.component.css'],
+})
+export class ServerCockpitComponent implements OnInit {
+
+
+  newServerContent: string = '';
+  newServerName: string = '';
+
+
+
+  serverCreated = new EventEmitter<{serverName: string, serverContent: string}>();    ///é o completo inverso de '@Input', pq é usado para TRANSMITIR NOSSA DATA obtida em 1 CHILD COMPONENT ("cockpit") PARA__ OS NOSSOS PARENT COMPONENTS (o component 'app', nesse caso, que precisa da DATA obtida nos inputs de 'cockpit' para CONSEGUIR ADICIONAR UM NOVO SERVER no array de 'servers' que possui)....
+
+  blueprintCreated = new EventEmitter<{serverName: string, serverContent: string}>();   ///DENTRO DOS '<>' (PQ EVENTEMITTER É UM GENERIC TYPE) você simplesmente define o TIPO DE DATA QUE VOCÊ VAI EMTITR POR MEIO DESSA PROPRIEDADE...
+            ///vamos querer emitir o event type CUSTOM de {}, um objeto contendo a DATA QUE DESEJAMOS USAR lá em 'onServerAdded()'...
+              ////vocÊ deve acrescentar '()' ao final, para _ CHAMAR O CONSTRUCTOR DE 'EventEmitter', que agora ficará armazenado nessa property...
+
+
+  constructor() {}
+
+  ngOnInit(): void {}
+
+  onAddServer() {
+    // this.serverElements.push({ ///este código não funcionará, pois esse array ficou lá em 'app.element.ts'...
+    //   type: 'server',
+    //   name: this.newServerName,
+    //   content: this.newServerContent,
+    // });
+
+
+
+    this.serverCreated.emit();  ///usamos esse method que existe DENTRO DE CADA 'eventEmitter'.. --> esse method faz o 'emit' de um NOVO EVENT do type que vocÊ definiu em '<>'....
+
+
+
+
+
+
+
+  }
+
+  onAddBlueprint() {
+    // this.serverElements.push({
+    //   type: 'blueprint',
+    //   name: this.newServerName,
+    //   content: this.newServerContent,
+    // });
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ISSO VAI EMITIR UM __ NOVO EVENT DESSE TYPE QUE VOCÊ DEFINIU EM '<>',
+
+
+
+
+
+ou seja,
+
+UM NOVO _ EVENT_ 
+
+
+
+
+
+do tipo 'serverCreated'....
+
+
+
+
+
+
+
+
+
+
+
+
+-> DENTRO DO PARÂMETRO DE '.emit()',
+
+
+
+NÓS SIMPLESMENTE QUEREMOS PASSAR O __ OBJECT_ 
+
+
+
+
+
+
+QUE QUEREMOS PASSAR.... 
+
+
+
+
+
+
+
+
+será um object com a estrutura óbvia de 
+
+
+{
+    serverName: this.newServerName,
+    serverContent: this.newServerContent
+}
+
+
+
+
+
+
+
+FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+  onAddServer() {
+
+
+
+    this.serverCreated.emit(
+        {
+            serverName: this.newServerName,
+            serverContent: this.newServerContent
+        }
+    ); 
+
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { EventEmitter } from "@angular/core"
+
+@Component({
+  selector: 'app-server-cockpit',
+  templateUrl: './server-cockpit.component.html',
+  styleUrls: ['./server-cockpit.component.css'],
+})
+export class ServerCockpitComponent implements OnInit {
+
+
+  newServerContent: string = '';
+  newServerName: string = '';
+
+
+
+  serverCreated = new EventEmitter<{serverName: string, serverContent: string}>();    ///é o completo inverso de '@Input', pq é usado para TRANSMITIR NOSSA DATA obtida em 1 CHILD COMPONENT ("cockpit") PARA__ OS NOSSOS PARENT COMPONENTS (o component 'app', nesse caso, que precisa da DATA obtida nos inputs de 'cockpit' para CONSEGUIR ADICIONAR UM NOVO SERVER no array de 'servers' que possui)....
+
+  blueprintCreated = new EventEmitter<{serverName: string, serverContent: string}>();   ///DENTRO DOS '<>' (PQ EVENTEMITTER É UM GENERIC TYPE) você simplesmente define o TIPO DE DATA QUE VOCÊ VAI EMTITR POR MEIO DESSA PROPRIEDADE...
+            ///vamos querer emitir o event type CUSTOM de {}, um objeto contendo a DATA QUE DESEJAMOS USAR lá em 'onServerAdded()'...
+              ////vocÊ deve acrescentar '()' ao final, para _ CHAMAR O CONSTRUCTOR DE 'EventEmitter', que agora ficará armazenado nessa property...
+
+
+  constructor() {}
+
+  ngOnInit(): void {}
+
+  onAddServer() {
+    // this.serverElements.push({ ///este código não funcionará, pois esse array ficou lá em 'app.element.ts'...
+    //   type: 'server',
+    //   name: this.newServerName,
+    //   content: this.newServerContent,
+    // });
+
+
+
+    this.serverCreated.emit( ///usamos esse method que existe DENTRO DE CADA 'eventEmitter'.. --> esse method faz o 'emit' de um NOVO EVENT do type que vocÊ definiu em '<>'....
+
+      {
+        serverName: this.newServerName,
+        serverContent: this.newServerContent
+      }
+    );  
+
+
+
+  }
+
+  onAddBlueprint() {
+    // this.serverElements.push({
+    //   type: 'blueprint',
+    //   name: this.newServerName,
+    //   content: this.newServerContent,
+    // });
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK...
+
+
+
+
+
+
+
+
+-> É ISSO QUE emitimos em 
+
+'onAddServer()'..
+
+
+
+
+
+
+
+
+-_> É CLARO QUE FAREMOS O MESMO EM 'onAddBlueprint'....
+
+
+
+
+
+
+
+---> MAS É CLARO QUE EM 'onAddBlueprint' vamos usar a propriedade/event emitter de 'blueprintCreated',
+
+para 
+
+ativar assim o method que CRIA BLUEPRINTS, E NÃO 'servers', lá em 'app.component.ts'...
+
+
+
+
+
+
+
+
+eX:
+
+
+
+
+
+
+
+
+  onAddBlueprint() {
+
+
+    this.blueprintCreated.emit(
+      {
+        serverName: this.newServerName,
+        serverContent: this.newServerContent
+      }
+    )
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OK... ESTAMOS PASSANDO A DATA... MAS HÁ UM PEDAÇO 
+
+
+
+
+
+
+  AQUI QUE ESTÁ _ FALTANDO....- > 
+
+
+  LEMBRE-SE:
+
+
+
+
+
+
+  NÓS ADICIONAMOS '@Input'
+
+  PARA __ FAZER COM QUE _ UMA __ PROPERTY _ FOSSE 'BINDABLE'
+
+
+  do lado de FORA DE 1 GIVEN ELEMENT/COMPONENT... -------> 
+
+
+
+
+
+
+
+  MAS AGORA PRECISAMOS __ ADICIONAR__ ALGO 
+
+
+
+
+
+  aos 'serverCreated' 
+
+
+
+  e 
+
+  'blueprintCreated'
+
+
+  PARA 
+
+
+
+
+  'KINDOF'
+
+  deixá-los 
+
+
+  'LISTENABLE' 
+
+
+
+
+
+DO LADO DE FORA DESSE COMPONENT... -----> ESSE ''ALGO'' 
+
+
+
+
+É __ OUTRO DECORATOR,
+
+E NÃO É '@INPUT'... (
+
+
+    pq não estamos fazendo get de algo passado para DENTRO DESSE COMPONENT, COMO EM INPUT
+),
+
+
+
+
+
+
+E SIM 
+
+
+
+'@Output()',
+
+
+
+PQ 
+
+AQUI 
+
+
+
+VAMOS __ PASSAR__ ALGO PARA __ '''''FORA'''' DO COMPONENT,
+
+
+
+PASSANDO  NOSSO PRÓPRIO EVENT PARA __ FORA__ DO COMPONENT...
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE O CÓDIGO FICARÁ  ASSIM:
+
+
+
+
+
+
+  @Output() serverCreated = new EventEmitter<{serverName: string, serverContent: string}>();   
+
+ @Output() blueprintCreated = new EventEmitter<{serverName: string, serverContent: string}>(); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+ EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+ import { Component, OnInit } from '@angular/core';
+import { EventEmitter } from "@angular/core"
+
+import { Output } from '@angular/core'
+
+@Component({
+  selector: 'app-server-cockpit',
+  templateUrl: './server-cockpit.component.html',
+  styleUrls: ['./server-cockpit.component.css'],
+})
+export class ServerCockpitComponent implements OnInit {
+
+
+  newServerContent: string = '';
+  newServerName: string = '';
+
+
+
+  
+  @Output() serverCreated = new EventEmitter<{serverName: string, serverContent: string}>();    ///é o completo inverso de '@Input', pq é usado para TRANSMITIR NOSSA DATA obtida em 1 CHILD COMPONENT ("cockpit") PARA__ OS NOSSOS PARENT COMPONENTS (o component 'app', nesse caso, que precisa da DATA obtida nos inputs de 'cockpit' para CONSEGUIR ADICIONAR UM NOVO SERVER no array de 'servers' que possui)....
+
+  @Output() blueprintCreated = new EventEmitter<{serverName: string, serverContent: string}>();   ///DENTRO DOS '<>' (PQ EVENTEMITTER É UM GENERIC TYPE) você simplesmente define o TIPO DE DATA QUE VOCÊ VAI EMTITR POR MEIO DESSA PROPRIEDADE...
+            ///vamos querer emitir o event type CUSTOM de {}, um objeto contendo a DATA QUE DESEJAMOS USAR lá em 'onServerAdded()'...
+              ////vocÊ deve acrescentar '()' ao final, para _ CHAMAR O CONSTRUCTOR DE 'EventEmitter', que agora ficará armazenado nessa property...
+
+
+              ///o '@Output()' também é necessário, pois é ele que vai nos deixar 'EMIT' esses events (emittados por meio desses eventEmitters) para FORA_ DE NOSSO COMPONENT 'server-cockpit'...
+
+  constructor() {}
+
+  ngOnInit(): void {}
+
+  onAddServer() {
+    // this.serverElements.push({ ///este código não funcionará, pois esse array ficou lá em 'app.element.ts'...
+    //   type: 'server',
+    //   name: this.newServerName,
+    //   content: this.newServerContent,
+    // });
+
+
+
+    this.serverCreated.emit( ///usamos esse method que existe DENTRO DE CADA 'eventEmitter'.. --> esse method faz o 'emit' de um NOVO EVENT do type que vocÊ definiu em '<>'....
+
+      {
+        serverName: this.newServerName,
+        serverContent: this.newServerContent
+      }
+    );  
+
+
+
+  }
+
+  onAddBlueprint() {
+    // this.serverElements.push({
+    //   type: 'blueprint',
+    //   name: this.newServerName,
+    //   content: this.newServerContent,
+    // });
+
+
+
+    this.blueprintCreated.emit(
+      {
+        serverName: this.newServerName,
+        serverContent: this.newServerContent
+      }
+    )
+
+
+  }
+}
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+ --> COM TUDO ISSO NO LUGAR,
+
+ DEVEMOS 
+
+ SALVAR TUDO E VER SE PODEMOS CRIAR 1 NOVO SERVER..
+
+
+
+
+
+ ---> O NOSSO EVENT TERÁ SIDO EMITTADO,
+
+
+ E ISSO VAI 
+
+ REAGIR 
+
+
+ E CRIAR ALGO NO NOSSO DOM....
+
+
+
+
+
+
+
+ --> nosso app agora está funcionando mais uma vez, mas agora com 
+
+
+
+ A DIVISÃO EM DIVERSOS COMPONENTS, COMPONENTS QUE __ CONSEUGEM_ COMUNICAR-SE ENTRE SI...
+
+ (
+
+
+     isso é essencial em angular apps,
+      
+      a comunicação entre components...
+ )

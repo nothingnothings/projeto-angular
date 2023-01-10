@@ -1,0 +1,1942 @@
+
+
+
+
+
+
+
+
+ESSA parte não é muito fácil...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> temos que criar um novo service, que será nossa authGuard, na verdaed....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COMEÇO COM O ARQUIVO DE 'authGuard',
+
+que fica com um código assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthGuardService implements CanActivate {
+
+  constructor(private authService: AuthService, private router: Router) { }
+
+
+
+
+
+
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
+    
+
+
+
+
+
+
+
+
+    return 
+
+
+
+
+
+  }
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> certo....
+
+
+
+
+
+
+agora tenho que 
+
+
+
+fazer a lógica de 'canActivate'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> para isso, vou usar um method que __ CHECA __ SE O USER ESTÁ AUTHENTICATED...
+
+
+
+
+
+
+
+---> mas que method é esse?
+
+
+
+
+
+
+
+
+
+--> é um method que terei de criar agora, lá em 'authService.ts'...
+
+
+
+
+
+
+
+
+
+
+
+---> ou não...
+
+
+
+
+
+meu código, até agora, que checa pela EXISTêNCIA DE QUERY PARAMS NA MINHA URL (nõa é um 
+
+authenticate perfeito),
+
+
+
+
+
+
+FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Inject, Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree} from '@angular/router';
+import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
+
+import { Router } from '@angular/router';
+import { User } from './auth-page/user.model';
+
+@Injectable({providedIn: 'root'})
+export class AuthGuardService implements CanActivate {
+
+  constructor(private authService: AuthService,  private router: Router) { }
+
+
+
+
+
+
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+    
+
+
+
+
+    if (!route.params) {
+      this.router.navigate(['/auth']);
+      return false;
+
+    } else {
+
+
+      return true;
+    }
+
+
+
+  }
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> se não temos esses 'params', imediatamente há o navigate programático do user até 
+
+o path de 'localhost:4200/auth',
+
+que é o que desejamos...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> ok, mas aqui temos um problema....
+
+
+
+
+
+o nosso guard está checando pelos 'params' e 'queryParams' na nossa url,
+
+
+
+MAS ELE NÃO ACABA ENCONTRANDO COISA ALGUMA...
+
+
+
+
+
+
+
+-> talvez a ORDER DE NOSSAS DECLARATIONS/IMPORTS, LÁ 
+
+
+NO 'app.module.ts',
+
+FAÇA A DIFERENÇA..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> NÃO, ISSO NÃO FEZ A MÍNIMA DIFERENÇA...
+
+
+
+
+
+
+
+
+
+--> TENHO QUE ASSISTIR A AULA DO PROFESSOR....
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> COMO PODEMOS PREVENIR ESSE ACESSO A '/recipes' em caso de 
+
+
+UNAUTHENCATION?
+
+
+
+
+
+
+
+
+
+
+
+-> PRECISAMOS DE UMA ROUTE GUARD -----> ELA NOS DEIXA 'RODAR LÓGICA' LOGO ANTES 
+
+
+DE UMA ROUTE SER CARREGADA,
+
+
+
+e aí denar acesso se alguma condição não for satisfeita...
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR VAI QUERER USAR A INTERFACE DE 'CanActivate'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... 
+
+
+
+
+
+
+
+
+
+ELE VAI ESCREVENDO COMO FIZEMOS...
+
+
+
+
+
+AUTH GUARDS SÃO TECNICAMENTE SERVICES, POR ISSO PRECISAMOS DE 'Injectable'...
+
+
+
+
+
+
+
+
+
+------> OK, O METHOD DE 'canActivate'..
+
+
+
+
+
+
+
+
+-----> ESSE METHOD TEM DE SER IMPLEMENTADO DE UMA CERTA FORKMA...
+
+
+
+
+
+
+
+
+
+
+--> vocÊ precisa 
+
+
+
+
+
+de 'route' e 'state' 
+
+
+
+(route snapshot e RouterStateSnapshot)...
+
+
+
+
+
+
+
+
+
+
+O 'canActivate'
+
+
+
+TEM QUE RETORNAR OU UM BOOLEAN,
+
+OU UKMA PROMISE QUE EVENTUALMENTE RETORNA UMA BOOLEAN,,
+
+
+
+OU UM OBSERVABLE QUE EVENTUALMENTE RETORNA UMA BOOLEAN..
+
+
+
+
+
+
+
+
+
+
+
+MAS O QUE PODEMOS RETORNAR, AQUI?
+
+
+
+
+
+
+
+
+-> PRECISAMOS 
+
+RETORNAR O STATUS CONFORME CONSEGUIMOS 
+
+O DERIVAR LÁ 
+
+DO 
+
+
+NOSSO STATE DE 'auth' (authService.ts)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> AÍ PRECSIAMOS CHECAR SE O 'USER FOI AUTENTICADO OU NÃO'
+
+
+
+
+
+
+
+
+
+
+POR MEIO DA INVESTIGAÇÃO/CHECK DAQUELE 
+
+
+
+
+
+
+
+SUBJECT IMPORTANTE DE 'user', lá em 'auth.service.ts'....
+
+
+
+
+
+
+
+(
+
+    ou seja,
+
+    meu código que 
+
+    checava por 'params' 
+
+    estava/está ERRADO, pq 
+
+
+    os params ainda NÃO TERÃO SIDO CARREGADOS...
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+-> PARA CONSEGUIR CHECAR __ SE _ UM USER ESTÁ PRESENTE/EMITIDO,
+
+
+
+precisamos 
+
+
+chamar 
+
+
+'return this.authService.user',
+
+
+
+
+MAS SEM _ EXECUTAr_ ESSE observable aí,
+
+
+
+
+PQ ISSO JÁ SERÁ UM OBSERVABLE.. (pq subjects são observables)
+
+
+
+
+
+
+
+
+
+
+
+
+-> O CÓDIGO VAI FICANDO ASSIM:
+
+
+
+
+
+
+
+
+canActivate(route: ActivatedRouteSnapshot, router: RouterStateSnapshot) {
+
+
+    return this.authService.user;
+}
+
+
+
+
+
+
+
+
+
+
+
+-----> CERTO, MAS UM PROBLEMA, AQUI, É QUE 
+ESSE 
+
+
+OBSERVABLE NÃO SERÁ UM OBS que 
+
+
+vai retornar um BOOLEAN, e sim VAI RETORNAR UM 'USER OBJECT',
+
+
+
+
+
+
+
+mas o professor nos diz que podemos resolver isso facilmente:
+
+
+
+
+
+SÓ TEMOS QUE usar '.pipe()'
+
+
+
+E ENTÃO O OPERATOR DE 'map()'
+
+
+
+PARA __ AÍ RETORNAR 
+
+'true'
+
+
+
+se O USER REALMENTE FOR EMITIDO,
+
+e FALSE SE NAÕ FOR...
+
+
+
+
+
+
+
+
+
+--> tipo assim:
+
+
+
+
+
+
+
+
+canActivate(route: ActivatedRouteSnapshot, router: RouterStateSnapshot) {
+
+
+    return this.authService.user.pipe(
+        map(
+            (user) => {
+
+                if (!user) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        )
+    )
+}
+
+
+
+
+
+
+o SHORTCUT seria escrever 'return !!user' 
+
+
+
+
+
+!!user -> pode virar FALSE OU TRUE..   
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+    return this.authService.user.pipe(
+      map(
+        (user) => {
+
+            ///shortcut para esse código é '''return !!user;'''
+          if (!user) {
+            return false;
+          } else {
+            return true;
+          }
+        }
+      )
+
+    )
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, COM ISSO FICAMOS COM UM OBSERVABLE QUE REALMENTE RETORNARÁ TRUE OU FALSE (pq é um BEHAVIOR SUBJECT)
+
+
+
+,
+
+
+
+
+E É SÓ ISSO QUE FAZ ESSE NEGÓCIO FUNCIONAR,
+
+É ISSO 
+
+QUE 
+
+
+FAZ 
+
+
+ESSA 
+
+AUTHGUARD FUNCIONAR,....
+
+
+
+
+
+
+
+
+
+
+-> VAMOS QEURER PROTEGER O PATH DE 'recipe-book',
+
+
+POR ISSO ESCREVEMOS ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  {////ordem das routes importa, exatamente como no REACT ROUTER
+    
+    path: '',
+    redirectTo: '/recipe-book',
+    pathMatch: 'full', /// (COMMON GOTCHA) evita o error de 'SEMPRE VAI REDIRECIONAR PARA ESSA ROUTE DE recipe-book' (pq o padrão é 'prefix' em vez de 'full'; ou seja, é o MESMO COMPORTAMENTO DEFAULT DO REACT ROUTER)...
+  },
+  {
+    path: 'recipe-book',
+    component: RecipeBookComponent,
+    canActivate: [AuthGuardService],
+    children: [
+      {
+        path: '',
+        resolve: [RecipesResolverService],
+        component: SelectARecipeComponent,
+      },
+      {
+        path: 'new',
+
+        component: RecipeEditComponent,
+      },
+      {
+        path: ':id',
+        resolve: [RecipesResolverService],
+        component: RecipeDetailComponent,
+      },
+
+      {
+        path: ':id/edit',
+        resolve: [RecipesResolverService],
+        component: RecipeEditComponent,
+      },
+
+      // {
+      //     path: 'new-recipe',
+      // }
+    ],
+  },
+
+  {
+    path: 'shop-list',
+    component: ShoppingListComponent,
+  },
+
+
+  {
+
+    path: 'auth',
+    component: AuthPageComponent
+  },
+
+  {
+    path: 'not-found',
+    component: GenericErrorPageComponent,
+    data: {
+      message: 'The requested page could not be found.',
+    },
+  },
+  {
+    path: '**',
+    redirectTo: '/not-found',
+  },
+];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+  {
+    path: 'recipe-book',
+    component: RecipeBookComponent,
+    canActivate: [AuthGuardService],
+    children: [
+
+
+
+
+
+
+
+
+
+
+
+---> É CLARO QUE ISSO VAI ATIVAR ESSA GUARD ESPECÍFICA NA ROUTE DE 'recipe-book'
+
+
+E EM TODOS SEUS CHILDREN ROUTES..
+
+
+
+
+
+
+
+--> E QUANDO ISSO ACONTECER,
+
+SEREMOS 
+
+REDIRECIONADOS PARA '/auth',
+
+
+se eu escrever esta lógica:
+
+
+
+
+
+
+
+
+        ///código que funciona
+    return this.authService.user.pipe( ///esse código só funciona pq 'user' é um BEHAVIOR SUBJECT....
+      map(
+        (user) => {
+
+            ///shortcut para esse código é '''return !!user;'''
+          if (!user) {
+
+            this.router.navigate(['/auth']);
+            return false;
+          } else {
+            return true;
+          }
+        }
+      )
+
+    )
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK....
+
+
+
+
+ESSE COMPORTAMENTO _ _ PARECE_ SER O CORRETO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> EU FIZ ESSE REDIRECT POR MEIO DE 'this.router.navigate()',
+
+
+MAS O PROFESSOR NOS EXPLICA QUE 
+
+
+PODEMOS USAR OUTROS RECURSOS DE 'canActivate',
+
+
+PQ O 
+
+CanActivate
+
+
+
+
+
+PODE RETORNAR MAIS DO QUE 'TRUE/FALSE'... ele pode retornar 
+
+
+
+
+
+'UrlTree',
+
+que é um TYPE ESPECIAL...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> A 'UrlTree'
+
+É UMA FEATURE _ RELATIVAMENTE RECENTE,
+
+
+E FOI ADICIONADA _ BASICAMENTE __ PARA ESSE EXATO USE-CASE 
+
+
+
+DE 'AUTHENTICATION'...
+
+
+(
+
+
+    BASICAMENTE ESSA FEATURE FOI ADICIONADA PARA QUE VOCÊ CONSIGA 'REDIRECT USERS'
+
+
+    SEMPRE QUE 
+
+    A URL QUE 
+
+
+    ELES ESTIVEREM TENTANDO ACESSAR ESTIVER 'BLOCKED'...
+
+)
+
+
+
+
+
+
+
+
+
+-------> E PARA 'CanActivate',
+
+
+QUE VOCê FREQUENTEMENTE USA 
+
+
+
+EM CONJUNTO COM AUTHENTICATION FEATUERS,
+
+
+
+VOCÊ 
+
+
+
+
+__ AGORA _ TEM UMA MANEIRA MAIS CONVENIENTE DE FAZER 'REDIRECT' DE USERS...
+
+
+
+
+
+
+
+
+
+
+------> NAS VERSÕES MAIS ANTIGAS DO ANGULAR,
+
+VOCÊ 
+ERA/É FORÇADO A __ REDIRECIONAR MANUALMENTE..
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER QUE 
+
+
+
+aqui, diz o professor,
+
+
+
+TERÍAMOS QUE 
+
+
+COLOCAR O OPERATOR DE 'tap()',
+
+
+
+para 
+
+
+
+aí CONSEGUIRMOS A 
+
+INFO DE 'isAuth'  (pq o map nos dá TRUE OU FALSE) 
+
+
+
+
+E ENTAÕ 
+
+
+
+
+VOCê 
+
+
+PODERIA RODAR  CHECKS,
+
+
+
+'''hey, se for não auth,
+vou querer redirecionar À page de /auth'',
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+        ///código que funciona
+    return this.authService.user.pipe( ///esse código só funciona pq 'user' é um BEHAVIOR SUBJECT....
+      map(
+        (user) => {
+
+            ///shortcut para esse código é '''return !!user;'''
+          if (!user) {
+
+            this.router.navigate(['/auth']);
+            return false;
+          } else {
+            return true;
+          }
+        }
+      ),
+
+      tap(
+          (isAuth) => {
+
+                if (!isAuth) {
+
+                    this.router.navigate(['/auth']);
+                }
+          }
+      )
+
+    )
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NÃO HÁ NADA  DE ERRADO COM ISSO,
+
+
+
+
+
+MAS O PROFESSOR DIZ QUE, EM ALGUNS EDGE CASES,
+
+
+ISSO PODE LEVAR A 'RACE CONDITIONS' COM MÚLTIPLOS REDIRECTS,
+
+QUE PODEM ACABAR INTERFERINDO UNS COM OS OUTROS...
+
+
+
+
+
+
+
+
+
+
+-----> SE VOCÊ QUER EVITAR ESSE PROBLEMA,
+
+
+
+VOCÊ 
+
+DEVE 
+
+
+RETORNAR 'true' ou 'UrlTree', 
+
+
+
+sendo que essa 'UrlTree'
+
+SERÁ USADA PARA _ REDIRECIONAR O USER...
+
+
+
+
+
+
+
+
+
+--------> 
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        ///código que funciona
+    return this.authService.user.pipe( ///esse código só funciona pq 'user' é um BEHAVIOR SUBJECT....
+      map(
+        (user) => {
+
+            ///shortcut para esse código é '''return !!user;'''
+          if (!user) {
+
+              return this.router.createUrlTree([])
+          } else {
+            return true;
+          }
+        }
+      )
+
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE OBJECT/TYPE  DE 'router',
+
+portanto,
+
+
+
+
+TEM ESSE METHOD DE 'createUrlTree',
+
+
+
+QUE PODE SER USADO PARA CRIAR UMA URL A PARTIR  DE VÁRIOS SEGMENTS 
+
+
+,
+
+
+em um array...
+
+
+
+
+
+
+TIPO ASSIm:
+
+
+
+
+
+
+
+        ///código que funciona
+    return this.authService.user.pipe( ///esse código só funciona pq 'user' é um BEHAVIOR SUBJECT....
+      map(
+        (user) => {
+
+            ///shortcut para esse código é '''return !!user;'''
+          if (!user) {
+
+              return this.router.createUrlTree(['/auth'])
+          } else {
+            return true;
+          }
+        }
+      )
+
+    )
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+    return this.authService.user.pipe( ///esse código só funciona pq 'user' é um BEHAVIOR SUBJECT....
+      map(
+        (user) => {
+
+            ///shortcut para esse código é '''return !!user;'''
+          if (!user) {
+
+            // this.router.navigate(['/auth']); ////NÃO FAÇA ASSIM....
+            // return false;
+            
+            return this.router.createUrlTree(['/auth']); ////FAÇA ASSIM... (crie uma url para direcionar/redirecionar o user em cases de 'unauth')
+          } else {
+            return true;
+          }
+        }
+      )
+
+    )
+
+
+
+
+
+
+
+--> CERTO...
+
+
+
+
+
+
+
+
+UrlTree ------> É UM NOVO TYPE..
+
+
+
+
+
+---> 
+
+
+
+basta retornar essa UrlTree,
+
+essencialmente...
+
+
+
+
+
+
+
+
+
+-> SE SALVARMOS TUDO ISSO,
+
+GANHAREMOS O MESMO BEHAVIOR DE ANTES,
+
+MAS AGORA COM ESSA URLTREE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, AGORA TEMOS ESSA GUARD QUE 
+
+NOS FORÇA A IR À ROUTE DE 'auth'..
+
+
+
+
+
+
+
+--> só podemos acessar a page de 
+
+
+'recipe-book'
+
+SE ESTAMOS LOGGED IN..
+
+
+
+
+
+
+
+--> COM ISSO, ESTAMOS QUASE ACABADOS COM A GUARD,
+
+
+MAS HÁ 
+
+UMA COISINHA 
+
+
+
+QUE O PROFESSOR AINDA QUER ALTERAR NESSA GUARD...
+
+
+
+
+
+
+
+
+
+
+--> ATÉ O MOMENTO,
+
+
+
+
+ESTAMOS 
+
+
+FAZENDO 'subscribe'
+
+
+AO 
+
+
+SERVICE DE 'user', sim,
+
+
+
+E AÍ 
+
+ESTAMOS MAPPEANDO O USER RETORNADO, por meio de 'map',
+
+
+
+
+
+
+
+COMO 'TRUE' OU 'URL TREE' se for false...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS UM PROBLEMA, AQUI, É __ QUE _ ACABAMOS, 
+
+
+COM ESSE USO de '.map()" e o 'pipe()',
+
+
+
+
+DEIXANDO UMA 'ONGOING SUBSCRIPTION'
+
+
+
+
+
+nesse authGuard -->  E É CLARO QUE ESSE 'this.authService.user',
+
+
+
+
+
+ESSE BEHAVIOR SUBJECT 'user'
+
+
+
+PODE ACABAR FAZENDO EMIT DE DATA __ MAIS DE UMA ÚNICA VEZ.. > 
+
+
+
+E É __ CLARO _ QUE NÃO VAMOS QUERER ISSO,
+
+
+
+
+PQ __ ISSO  PODE LEVAR A 'STRANGE SIDE EFFECTS'
+
+
+NO NOSSO APP,
+
+
+PQ NOSSO GUARD 
+
+
+
+VAI CONTINUAR 'LISTENING TO' A ESSE SUBJECT --------> É POR ISSO QUE 
+
+
+
+VAMOS, NOVAMENTE,
+
+USAR O OPERATOR DE 'take',
+
+para 
+
+
+PEGAR __ O USER _ VALUE APENAS 1 ÚNICA VEZ,
+
+
+E PARA QUE SEJA FEITO O UNSUBSCRIBE, AUTOMATICAMENTE, LOGO DEPOIS DISSO..
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+    return this.authService.user.pipe( ///esse código só funciona pq 'user' é um BEHAVIOR SUBJECT....
+      take(1),
+      
+      map(
+        (user) => {
+
+            ///shortcut para esse código é '''return !!user;'''
+          if (!user) {
+
+            // this.router.navigate(['/auth']); ////NÃO FAÇA ASSIM....
+            // return false;
+            
+            return this.router.createUrlTree(['/auth']); ////FAÇA ASSIM... (crie uma url para direcionar/redirecionar o user em cases de 'unauth')
+          } else {
+            return true;
+          }
+        }
+      )
+
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, VAMOS 'TAKE THE LATEST USER VALUE' e então 
+
+
+
+DAR UNSUBSCRIBE IMEDIATAMETNE...
+
+
+
+
+
+
+
+--> basta importar o operator de take e colocar na frente de 'map',
+
+PARA EVITARMOS TER UMA 'ONGOING USER SUBSCRIPTIOn'..
+
+
+
+
+
+
+
+
+-> certo....
+
+
+
+
+
+
+
+
+--> VOU QUERER ADICIONAR MAIS UMA GUARD,
+
+UMA GUARD 
+
+
+
+NA ROUTE DE 
+'/auth',
+
+QUANDO 
+
+EU _ JÁ _ ESTIVER 'AUTHENTICATED' (
+
+
+acho que é só codar a LÓGICA INVERSA DESSE METHOD DE 
+
+'CanActivate'...
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+--> criar uma NOVA AUTHGUARD, dessa vez para a route de 
+
+
+'auth'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+  {
+
+    path: 'auth',
+    canActivate: [AuthGuardService], ////VAI REDIRECIONAR à '/recipe-book', SE O USER JÁ ESTIVER AUTHENTICATED...
+    component: AuthPageComponent
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  E ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
+    
+
+
+    // console.log(route.queryParams); ////CÓDIGO QUE _ NÃO FUNCIONA_-
+    // console.log(route.params);
+    // console.log(route)
+
+
+    // console.log(state.url);
+
+    // if (!route.queryParams['auth']) {
+    //   this.router.navigate(['/auth']);
+    //   return false;
+
+    // } else {
+
+
+    //   return true;
+    // }
+
+    console.log(state.url);
+
+
+
+    let userObservable = this.authService.user;
+
+
+
+    if (state.url === '/auth') {
+      return userObservable.pipe(
+
+        take(1),
+
+        map(
+          (user) => {
+            if (!user) {
+              return true;
+            } else {
+              return this.router.createUrlTree(['/recipe-book']);
+            }
+          }
+        )
+      )
+
+    }
+
+
+
+
+
+
+    return userObservable.pipe( ///esse código só funciona pq 'user' é um BEHAVIOR SUBJECT....
+        take(1),  ////usado para EVITAR COMPORTAMENTOS ESTRANHOS NO NOSSO APP, PARA fazer com que APENAS 1 ÚNICO VALUE DE 'user' SEJA EMITADO por nosso behavior subject, por 'RUN' de nossa authguard (depois de ser obtido o value desse subject, nesse run específico, o 'take(1)' força o UNSUBSCRIBE a esse subject aí)
+
+        map(
+          (user) => {
+            if (!user) {
+
+              // this.router.navigate(['/auth']); ////NÃO FAÇA ASSIM....
+              // return false;
+  
+              return this.router.createUrlTree(['/auth']); ////FAÇA ASSIM... (crie e retorne uma url, com 'UrlTree', para direcionar/redirecionar o user em cases de 'unauth')
+            } else {
+              return true;
+            }
+          }
+        )
+
+
+
+    )
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+    TUDO NA MESMA 'authGuard',
+
+
+
+    SÓ QUE 
+
+
+    COM O USO DE 
+
+
+    'if state.url === '/auth' 
+
+    '
+
+
+
+    PARA 
+
+
+
+    MUDARMOS UM POUCO A LÓGICA 
+
+
+    de redirect (redirect para '/recipe-book' em CASO DE 'JÁ TENHO AUTH E ESTOU TENTANDO ACESSAR A PAGE DE AUTH'...)
+
+
+
+
+
+
+
+
+
+
+
+
+    OK, PARECE QUE ESTE MÓDULO __ ACABOU_....
+
+
+
+
+
+
+
+
+
+    HORA DO WRAPUP
+    

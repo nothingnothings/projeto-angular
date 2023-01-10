@@ -1,0 +1,1125 @@
+
+
+
+
+
+
+
+
+
+
+
+
+--> nosso código de 'submit form', atualmente, está assim:
+
+
+
+
+
+
+
+  onSubmitForm() {
+    console.log(this.recipeForm);
+    console.log(this.recipeForm.get('ingredients.0')?.value.ingredient);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> É CLARO QUE AQUI QUEREMOS COLOCAR 
+
+
+  A 
+
+  LÓGICA NECESSÁRIA PARA 
+
+
+
+
+
+  CRIAR 1 NOVO OBJECT 'Recipe' 
+
+  A PARTIR 
+
+
+  DESSA FORM,
+
+  PARA AÍ 
+
+
+
+
+
+  INSERÍ-LO NO CONTEXTO DO ARRAY DE RECIPES, lá em 'recipeBook.service.ts' ------>
+
+
+
+
+
+
+a partir desse 
+
+insert,
+
+vamos querer 
+
+
+
+USAR UM 'SUBJECT' no 
+
+
+service,
+
+
+para 
+
+aí 
+
+
+
+
+USAR UM OBSERVABLE 
+
+lá 
+
+
+no component de 'RecipeList',
+
+que vai SUBSCRIBAR 
+
+a quaisquer changes nesse array de 'recipes'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> e já temos isso no lugar, na verdade.. ( o subject de 'recipes'):
+
+
+
+
+
+
+
+
+
+  recipeItemClickedEmitter = new Subject<Recipe>()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -_> MAS ESSE É APENAS O DE 'NOSSO RECIPE ITEM FOI CLICADO'...
+
+
+
+
+
+
+
+
+
+
+
+
+  --> agora precisamos de um subject para 
+
+
+  'recipeItemsChanged',
+  ou algo do gênero...
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OK, FIZ UMA PARTE, AGORA FALTA O SUBSCRIBE ao 'this.service.recipeItemsChanged',,
+
+
+
+
+
+
+
+  lá NO 'RECIPE LIST'...
+
+
+
+
+
+
+
+
+
+
+
+
+  CONSEGUI FAZER ISSO FUNCIONAR...
+
+
+
+
+
+
+
+
+
+  FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    onSubmitForm() {
+    console.log(this.recipeForm);
+    console.log(this.recipeForm.get('ingredients.0')?.value.ingredient);
+
+
+    const recipe: Recipe = {
+      name: this.recipeForm.get('recipeName')?.value,
+      description: this.recipeForm.get('description')?.value,
+      imagePath: this.recipeForm.get('imagePath')?.value,
+      ingredients: this.recipeForm.get('ingredients')?.value
+    }
+
+
+    if (this.editMode) {
+
+      this.recipeBookService.onRecipeEdited(recipe, this.recipeId);
+    } else {
+
+
+      this.recipeBookService.onRecipeAdded(recipe)
+
+    }
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> ISSO ATIVA NOSSO SERVICE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  import {
+  
+  
+  EventEmitter, ///TROCAMOS POR 'SUBJECT', que é simplesmente MELHOR como CROSS-COMPONENT COMMUNICATION TOOL....
+  
+  
+  Injectable, Output } from '@angular/core';
+import { Subject } from 'rxjs';
+import { Recipe } from './recipeBook/recipe.model';
+import { Ingredient } from './shared/ingredient.model';
+import { ShoppingListService } from './shoppingList.service';
+
+
+@Injectable()
+export class RecipeBookService {
+  private recipes: Recipe[] = [
+    //professor colocou como PRIVATE....
+    new Recipe(
+      'Chicken Wings',
+      'Delicious chicken wings',
+      'https://www.farmfor.com.br/wp-content/uploads/2022/02/coxinha-da-asa-superbowl.jpg',
+      [
+        new Ingredient('Potato', 1),
+        new Ingredient('Tomato', 3),
+        new Ingredient('Banana', 5),
+      ]
+    ),
+    new Recipe(
+      'Pork Chops',
+      'Tasty pork chops, check them out',
+      'http://t2.gstatic.com/licensed-image?q=tbn:ANd9GcQsRbNYL4S-Noacb27Vi-sbWzURFRjW9YN8VOScbiJ0DxTAiGxTyqlNdG1TWHKN1xWqOV4UhHaFef-fBD8-PGo',
+      [
+        new Ingredient('Potato', 1),
+        new Ingredient('Tomato', 3),
+        new Ingredient('Banana', 5),
+      ]
+    ),
+    new Recipe(
+      'Caesar Salad',
+      'Fresh and healthy salad',
+      'https://www.confeiteiradesucesso.com/wp-content/uploads/2019/06/ceasarsalad-fb.jpg',
+      [
+        new Ingredient('Potato', 1),
+        new Ingredient('Tomato', 3),
+        new Ingredient('Banana', 5),
+      ]
+    ),
+  ];
+
+  getRecipes() {
+
+    return [...this.recipes];
+  }
+
+  // recipeItemClickedEmitter = new EventEmitter<Recipe>();
+
+
+  recipeItemClickedEmitter = new Subject<Recipe>()
+
+
+
+  recipeItemsChanged = new Subject<Recipe[]>()
+
+  // loadedRecipe: Recipe;
+
+
+
+
+  // recipeItemClicked(index: number) {
+
+  //   const recipe = this.recipes[index];
+  //   // this.recipeItemClickedEmitter.emit(recipe);
+
+  //   this.recipeItemClickedEmitter.next(recipe);
+  // }
+
+
+
+  constructor(private shoppingListService: ShoppingListService) {
+
+  }
+
+  sendToShopList(ingredients: Ingredient[]) {
+    for (let ingredient of ingredients) {   ////minha versão do código --> downside: mtos events disparados, mas não há problema..
+        this.shoppingListService.onIngredientAdd(ingredient);
+        console.log('SENT');
+        }
+
+
+    ////after that, sends the user to the 'shoppingList' page...
+
+
+  }
+
+
+
+
+  
+  getRecipe(id: number) {
+    return this.recipes[id];
+}
+
+
+  editRecipe(id: number, recipe: Recipe) {
+    this.recipes[id] = recipe;
+  }
+
+
+
+
+  onRecipeEdited(editedRecipe: Recipe, index: number) {
+    this.recipes[index] = editedRecipe;
+
+    this.recipeItemsChanged.next([...this.recipes])
+  }
+
+
+
+  onRecipeAdded(newRecipe: Recipe) {
+
+    this.recipes.push(newRecipe);
+
+
+
+    this.recipeItemsChanged.next([...this.recipes]);
+
+
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O CÓDIGO IMPORTANTE É ESTE:
+
+
+
+
+
+
+
+
+
+  onRecipeEdited(editedRecipe: Recipe, index: number) {
+    this.recipes[index] = editedRecipe;
+
+    this.recipeItemsChanged.next([...this.recipes])
+  }
+
+
+
+  onRecipeAdded(newRecipe: Recipe) {
+
+    this.recipes.push(newRecipe);
+
+
+
+    this.recipeItemsChanged.next([...this.recipes]);
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> aí isso é recebido lá em 'recipe-list':
+
+
+
+
+
+
+
+
+
+    ngOnInit(): void {
+    // this.recipes = this.recipeBookService.recipes;
+    this.recipes = this.recipeBookService.getRecipes();
+
+
+
+
+
+    this.recipeBookService.recipeItemsChanged.subscribe(
+      (recipes) => {
+          this.recipes = recipes;
+      }
+    )
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> certo...
+
+
+
+
+
+
+
+
+
+
+
+  -> mas isso está resultando em um problema.... ---> 
+
+
+
+
+
+
+  lá no component de 
+
+
+
+  'recipe-detail':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div *ngIf="loadedRecipe; else noRecipeLoaded">
+<div class="row">
+  <div class="col-xs-12">
+    <img src="{{loadedRecipe.imagePath}}" alt="" class="img-responsive" style="max-height: 300px; max-width: 400px;" />
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <h1>{{ loadedRecipe.name }}</h1>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+      <h2>{{loadedRecipe.description}}</h2>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <div class="btn-group" appDropdown>
+      <button type="button" class="btn btn-primary dropdown-toggle">
+        Manage Recipe <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" style="cursor: pointer;">
+          <li (click)="sendToShoppingList()"><a>Add to Shopping List</a></li>
+          <!-- <li><a href="#">Edit Recipe</a></li>
+          <li><a href="#">Delete Recipe</a></li>  -->
+          <!-- <li><a [routerLink]="['/recipe-book', id, 'edit']" ///VERSÃO COM ROUTER LINK EM VEZ DE PROGRAMMATIC NAVIGATIOn...
+            [queryParams]="{allowEdit: 1}"
+             
+            
+            >Edit Recipe</a></li> -->
+            <li><a 
+              (click)="onEditRecipe()"
+              
+              >Edit Recipe</a></li>
+          <li><a>Delete Recipe</a></li> 
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <ul class="list-group">
+          <li class="list-group-item" *ngFor="let ingredient of loadedRecipe.ingredients" [ngStyle]="
+          {
+          'margin-top': '12px',
+        'user-select': 'none'
+        }"
+          >{{ingredient.name}} - {{ingredient.amount}}</li>
+        </ul>
+    </div>
+</div>
+
+</div>
+<ng-template #noRecipeLoaded>
+<p>Please select a Recipe!</p>
+</ng-template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ele não está updatando o 'ingredient.name' 
+
+adequadamente...
+
+
+
+
+
+
+
+
+
+
+
+---> ok.... era um erro de naming... agora tudo está funcionando corretamente....
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR COMEÇA COM UM CÓDIGO DE 'onSubmitForm':
+
+
+
+
+
+   onSubmitForm() {
+    console.log(this.recipeForm);
+    console.log(this.recipeForm.get('ingredients.0')?.value.ingredient);
+
+
+    const recipe: Recipe = {
+      name: this.recipeForm.get('recipeName')?.value,
+      description: this.recipeForm.get('description')?.value,
+      imagePath: this.recipeForm.get('imagePath')?.value,
+      ingredients: this.recipeForm.get('ingredients')?.value
+    }
+
+    console.log(recipe);
+
+
+    if (this.editMode) {
+
+      this.recipeBookService.onRecipeEdited(recipe, this.recipeId);
+    } else {
+
+
+      this.recipeBookService.onRecipeAdded(recipe)
+
+    }
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------
+
+
+
+
+
+
+
+
+CERTO, AÍ EXECUTAMOS O METHOD ADEQUADO PARA CADA UM DESSES CASES:
+
+
+
+
+
+    if (this.editMode) {
+
+      this.recipeBookService.onRecipeEdited(recipe, this.recipeId);
+    } else {
+
+
+      this.recipeBookService.onRecipeAdded(recipe)
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    até agora, nada de novo..
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    ele cria uma recipe exatamente como fizemos:
+
+
+
+
+
+
+
+
+
+
+
+        const recipe: Recipe = {
+      name: this.recipeForm.get('recipeName')?.value,
+      description: this.recipeForm.get('description')?.value,
+      imagePath: this.recipeForm.get('imagePath')?.value,
+      ingredients: this.recipeForm.get('ingredients')?.value
+    }
+
+
+
+
+
+
+    --> MAS ELE USOU UMA SINTAXE UM POUCO DIFERENTE, TIPO ASSIM:
+
+
+
+
+
+
+
+    const recipe: Recipe = new Recipe(
+        this.recipeForm.value['name'],
+        this.recipeForm.value['description'],
+        this.recipeForm.value['imagePath'],
+        this.recipeForm.value['ingredients']
+    )
+
+
+
+
+
+
+    ---> com isso estamos salvando a data no nosso array de recipes, mas essas changes não estão sendo refletidas (é pq não colocamos um observable e um subscribe a partir disso)...
+
+
+
+
+
+
+    --> consertei por meio deste subject:
+
+
+
+
+
+
+
+      recipeItemsChanged = new Subject<Recipe[]>()
+
+
+
+
+
+
+
+
+
+
+
+
+
+      HMMM MAS ESQUECI UM NEGÓCIO:
+
+
+      ESQUECI DE COLOCAR O DESTROY DESSA SUBSCRIPTION, LÁ NO COMPONENT DE 'recipe-LIST',
+
+      que 
+
+      FOI O LOCAL EM QUE A ESCREVI...
+
+
+
+
+
+
+
+
+
+      FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { RecipeBookService } from 'src/app/recipeBook.service';
+
+import { Recipe } from '../recipe.model';
+
+@Component({
+  selector: 'app-recipe-list',
+  templateUrl: './recipe-list.component.html',
+  styleUrls: ['./recipe-list.component.css'],
+})
+export class RecipeListComponent implements OnInit, OnDestroy {
+
+
+  // @Output() listItemDetail = new EventEmitter<Recipe>();
+
+  // recipes: Recipe[] = [
+  //   new Recipe(
+  //     'Chicken Wings',
+  //     'Delicious chicken wings',
+  //     'https://www.farmfor.com.br/wp-content/uploads/2022/02/coxinha-da-asa-superbowl.jpg'
+  //   ),
+  //   new Recipe(
+  //     'Pork Chops',
+  //     'Tasty pork chops, check them out',
+  //     'http://t2.gstatic.com/licensed-image?q=tbn:ANd9GcQsRbNYL4S-Noacb27Vi-sbWzURFRjW9YN8VOScbiJ0DxTAiGxTyqlNdG1TWHKN1xWqOV4UhHaFef-fBD8-PGo'
+  //   ),
+  //   new Recipe(
+  //     'Caesar Salad',
+  //     'Fresh and healthy salad',
+  //     'https://www.confeiteiradesucesso.com/wp-content/uploads/2019/06/ceasarsalad-fb.jpg'
+  //   ),
+  // ];]
+
+  recipesChangedSubscription: Subscription;
+
+
+
+  recipes: Recipe[] = [];
+
+  constructor(private recipeBookService: RecipeBookService, private router: Router) {
+
+
+
+  }
+
+  ngOnInit(): void {
+    // this.recipes = this.recipeBookService.recipes;
+    this.recipes = this.recipeBookService.getRecipes();
+
+
+
+
+
+   this.recipesChangedSubscription = this.recipeBookService.recipeItemsChanged.subscribe(
+      (recipes) => {
+          this.recipes = recipes;
+      }
+    )
+  }
+
+  // onRecipeItemClick(index: number) {
+  //   console.log('TEST');
+  //   // console.log(index)
+
+
+  //   this.recipeBookService.recipeItemClicked(index);
+
+        
+  //   // this.listItemDetail.emit(selectedRecipe);
+  // }
+
+
+
+
+
+
+
+
+
+
+  onNewRecipe() {
+      this.router.navigate(['/recipe-book', 'new']);
+
+
+      ///sintaxe alternativa: this.router.navigate(['new'], {relativeTo: this.route})  ///usa um 'relative path' em vez de um absolute.... 
+  }
+
+
+  ngOnDestroy(): void {
+    
+
+    this.recipesChangedSubscription.unsubscribe();
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---->  ok, aí usamos aquele subject de 'recipesChanged' lá no 
+
+
+component de 'recipe-list'...  (pq é LÁ QUE FAZEMOS O 'GET' EFETIVO DE NOSSAS RECIPES)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> FICA TIPO ASSIM:
+
+
+
+
+
+
+
+  ngOnInit(): void {
+    // this.recipes = this.recipeBookService.recipes;
+    this.recipes = this.recipeBookService.getRecipes();
+
+
+
+
+
+   this.recipesChangedSubscription = this.recipeBookService.recipeItemsChanged.subscribe(
+      (recipes) => {
+          this.recipes = recipes;
+      }
+    )
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E SE CLICAMOS, EM 1 DE NOSSAS 'RECIPES',
+
+
+EM 'ADD TO SHOPPING LIST',
+
+
+
+
+veremos que os ingredients também aparecerão lá na 'shopping lst.'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK.... --> ISSO TUDO ESTÁ FUNCIONANDO,
+
+
+tudo bem...
+
+
+
+
+
+
+
+
+----> NOSSA RECIPE ESTÁ FUNCIONANDO, TANTO PARA O UPDATING QUANTO PARA O ADD DE NOVAS RECIPES...
+
+
+
+
+
+
+
+--> DEVEMOS VER SE TEMOS MAIS ALGUMA COISA FALTANDO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> eu dou uma ajeitada lá 
+
+
+
+
+no component de 'Shopping List',
+
+para que NÃO TENHAMOS NADA NA NOSSA LIST, AO START DE NOSSO APP.... (só vamos ter, então, quando colocarmos 'add to shoppingList')..
+
+
+
+
+
+
+
+
+
+
+
+OK... FUNCIONOU..

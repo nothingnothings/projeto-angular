@@ -1,0 +1,2648 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> NÓS JÁ CONSEGUIMOS O 'GENERAL AUTHENTICATION FLOW'
+
+
+
+
+
+no nosso app...
+
+
+
+
+
+
+
+--> MAS AINDA FALTAM 2 COISAS:
+
+
+
+
+
+
+
+
+
+
+1) O 'AUTO-LOGIN' ao recarregarmos o app/entrarmos de novo no browser (cortesia do 'localStorage', e das tokens/cookies no storage)...
+
+
+
+
+
+
+
+
+
+
+2) ainda naõ estamos 'PROTECTING' CONTRA O ACESSO NÃO AUTORIZADO àS ROUTES DE 'recipes' (quando estamos unauth) e À  ROUTE DE 'auth' (quando já estivermos 'auth')..
+
+
+
+
+
+--> LOGO FAREMOS ISSO...
+
+
+
+
+
+
+
+
+
+
+
+--> MAS ANTES DISSO,
+
+
+QUEREMOS 
+
+
+CONSERTAR O PONTO 1,
+
+
+
+
+
+O DO 'STATE IS LOST UPON APP RELOAD'---> queremos 
+
+
+
+
+MANTER A TOKEN 
+
+
+
+
+
+ATÉ MESMO QUANDO RECARREGAMOS A PAGE --------> O RELOAD DE NOSSO APP ANGULAR 
+
+
+
+NÃO DEVE EXCLUIR 
+
+NOSSA TOKEN...
+
+
+
+
+
+
+
+
+
+
+--> A TOKEN, ATÉ AGORA,
+
+ESTÁ SENDO USADA APENAS 
+
+
+DA MEMÓRIA DO APP JAVASCRIPT,
+
+
+
+
+
+
+
+
+A MEMORY ACABA LIMPA AUTOMATICAMENTE (
+
+
+    NÃO HÁ NENHUMA CONEXÃO 
+
+    ENTRE A ÚLTIMA VEZ QUE RODAMOS ESSE APP ANGULAR NO NOSSO BROWSER,
+
+    E A 
+
+    NOSSA PRESENT RUNTIME,..
+)
+
+
+
+
+
+
+
+
+
+
+-> PRECISAMOS ENFIAR ESSA TOKEN EM UMA 'PERSISTENT STORAGE',
+
+QUE SOBREVIVA A 
+
+
+PAGE RELOADS E BROWSER RESTARTS,
+
+
+
+A QUE 
+
+
+PODEREMOS FAZER 'WRITE TO' 
+
+
+
+
+
+
+
+E ENTÃO 'FETCH DATA FROM'...
+
+
+
+
+
+
+
+
+
+
+
+--> mas que storage seria essa?
+
+
+
+
+
+
+
+
+
+
+-_> EM UM BROWSER TEMOS VÁRIOS DATA STORAGES,
+
+
+
+
+
+
+
+
+
+COMO  
+
+
+
+'COOKIES'
+
+
+
+OU 
+
+'LOCAL STORAGE'...  ------> LOCAL STORAGE --> É UMA API EXPOSTA PELO BROWSER,
+
+
+QUE 
+
+TE 
+
+DEIXA 
+
+'STORE KEY-VALUE PAIRS'
+
+
+BASICAMENTE 
+
+
+NO FILE SYSTEM,
+
+
+MAS _ CONTROLADOS __ PELO BROWSER -------------> E VAMOS USAR LOCALSTORAGE AQUI 
+
+PARA ARMAZENAR NOSSA TOKEN...
+
+
+
+
+
+
+
+
+
+
+
+
+-------> PARA ISSO,
+
+
+EU ESCREVI ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  onLogin(authData: {
+    email: string;
+    password: string;
+    returnSecureToken: boolean;
+  }) {
+    const requestHeaders = new HttpHeaders();
+
+    requestHeaders.append('Content-Type', 'application/json');
+
+    return this.http
+      .post<AuthResponseData>(
+        // <{expiresIn: number, idToken: string, expirationDate: string, localId: string, email: string}>
+
+        // 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg', //VERSÃO DUMMY (sem authentication rules no firebase)
+        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBK3AXsu9Gn0fqLmA0zOdUAknDM48Nwk_o', ////VERSÃO COM AUTHENTICATE, DEPLOY
+        authData,
+
+        {
+          headers: requestHeaders,
+        }
+      )
+      .pipe(
+        catchError((errorRes) => {
+          console.log(errorRes);
+
+          let errorMessage = 'An unknown error has occured.';
+
+          switch (errorRes.error.error.message) {
+            case 'EMAIL_NOT_FOUND':
+              errorMessage = 'No user found for the entered email!';
+              break;
+            case 'INVALID_PASSWORD':
+              errorMessage = 'Invalid password, please try again.';
+          }
+
+          return throwError(() => errorMessage);
+        }),
+
+        tap(
+          (responseData) => {
+
+
+            console.log(responseData);
+            const expirationDate = new Date(new Date().getTime() + +responseData.expiresIn * 1000); ////lembre-se de adicionar '* 1000', pois o JAVASCRIPT SEMPRE CONSIDERA 'TEMPO' EM MILISSEGUNDOS, E NÃO EM SEGUNDOS.... (só o 'expiresIn' que é mostrado em segundos....)
+            localStorage.setItem('token', responseData.idToken);
+            localStorage.setItem('expirationDate', expirationDate.toString());
+            localStorage.setItem('userId', responseData.localId);
+            localStorage.setItem('email', responseData.email );
+
+            console.log(localStorage.getItem('token'), 'LINE');
+            this.emitUser(responseData);
+          }
+        )
+      );
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  onCreateAccount(authData: {
+    email: string;
+    password: string;
+    returnSecureToken: boolean;
+  }) {
+    const requestHeaders = new HttpHeaders();
+
+    requestHeaders.append('Content-Type', 'application/json');
+
+    return this.http
+      .post<AuthResponseData>(
+        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBK3AXsu9Gn0fqLmA0zOdUAknDM48Nwk_o', ////VERSÃO COM AUTHENTICATE, DEPLOY
+
+        authData,
+        {
+          headers: requestHeaders,
+        }
+      )
+      .pipe(
+        catchError(
+          //vamos usar esse operator para MANIPULAR NOSSAS 'ERROR RESPONSES', QUANDO OCORREREM..
+          (errorRes) => {
+            console.log(errorRes);
+            let errorMessage = 'An unknown error has occured.';
+
+            if (!errorRes.error || !errorRes.error.error) {
+              //conserta o choro do typescript..
+              return throwError(() => errorMessage); /////vai dar throw da message de 'An unknown error occurred!'
+            }
+
+            switch (errorRes.error.error.message) {
+              case 'EMAIL_EXISTS':
+                errorMessage = 'This email already exists.';
+            }
+
+            return throwError(() => errorMessage);
+          }
+        ),
+
+        tap(
+
+        
+        (responseData) => {
+
+          this.emitUser(responseData);
+        }
+        
+        )
+      );
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ------> É CLARO QUE ESSE 
+
+
+  METHOD DE 
+
+
+  'onCreateAccount'
+
+
+  está incorreto/incompleto, pq nele 
+
+
+  eu não 
+
+  escrevi ainda essa lógica de 
+
+
+  'store token on local storage'...
+
+
+
+
+
+
+
+
+
+
+
+  ok, vou dar uma editada,
+
+
+  fazer um outsource dessa lógica de 'store user token'
+
+
+
+  em um method a parte, private, e aí usá-lo nesses 2 methods...
+
+
+
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  private storeUserToken(responseData: AuthResponseData) {
+
+    const expirationDate = new Date(new Date().getTime() + +responseData.expiresIn * 1000); ////lembre-se de adicionar '* 1000', pois o JAVASCRIPT SEMPRE CONSIDERA 'TEMPO' EM MILISSEGUNDOS, E NÃO EM SEGUNDOS.... (só o 'expiresIn' que é mostrado em segundos....)
+    localStorage.setItem('token', responseData.idToken);
+    localStorage.setItem('expirationDate', expirationDate.toString());
+    localStorage.setItem('userId', responseData.localId);
+    localStorage.setItem('email', responseData.email );
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+E NO MEU SIGNUP:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  onCreateAccount(authData: {
+    email: string;
+    password: string;
+    returnSecureToken: boolean;
+  }) {
+    const requestHeaders = new HttpHeaders();
+
+    requestHeaders.append('Content-Type', 'application/json');
+
+    return this.http
+      .post<AuthResponseData>(
+        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBK3AXsu9Gn0fqLmA0zOdUAknDM48Nwk_o', ////VERSÃO COM AUTHENTICATE, DEPLOY
+
+        authData,
+        {
+          headers: requestHeaders,
+        }
+      )
+      .pipe(
+        catchError(
+          (errorRes) => {
+            console.log(errorRes);
+            let errorMessage = 'An unknown error has occured.';
+
+            if (!errorRes.error || !errorRes.error.error) {
+              //conserta o choro do typescript..
+              return throwError(() => errorMessage); /////vai dar throw da message de 'An unknown error occurred!'
+            }
+
+            switch (errorRes.error.error.message) {
+              case 'EMAIL_EXISTS':
+                errorMessage = 'This email already exists.';
+            }
+
+            return throwError(() => errorMessage);
+          }
+        ),
+
+        tap(
+          
+   
+        (responseData) => {
+          this.storeUserToken(responseData); ///EIS O CÓDIGO EM QUESTÃO.
+
+          this.emitUser(responseData);
+        }
+        
+        )
+      );
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+  ok.... agora esse user realmente é depositado lá no 'localStorage' do nosso app...
+
+
+
+
+
+
+
+
+
+
+
+
+  O PROFESSOR FALA DO STORE NA LOCAL STORAge...
+
+
+
+
+
+
+
+
+
+
+
+  --> ele fala do código de 
+
+
+
+
+
+
+
+
+  localStorage.setItem()
+
+
+
+
+
+
+
+
+
+
+  --> O PROFESSOR COLOCA UM NAME DE 'userData',
+
+
+
+
+
+  tipo assim:
+
+
+
+
+
+
+
+
+  localStorage.setItem('userData', ) 
+
+
+
+
+
+
+
+
+  --> A DATA DEVERÁ SER O USER OBJECT, DIZ O PROFESSOR....
+
+
+
+
+
+
+  --> ELE VAI ARMAZENAR TUDO EM UM BLOCÃO,
+
+  APARENTEMENTE..
+
+
+
+
+
+
+
+
+  -> MAS NAÕ VAMOS ARMAZENAR ELE COMO UM OBJECT,
+
+  PQ ISSO É IMPOSSÍVEL --> PRECISAMOS ARMAZENAR ESSE NOSSO USER COMO 
+
+
+  UM MONTE DE KEY-VALUE pairs,
+
+
+
+
+
+
+
+
+ESSE SERIA O IDEAL...
+
+
+
+
+
+
+
+
+
+
+
+--> MAS AGORA O PROFESSOR NOS MOSTRA UM APPROACH ALTERNATIVO,
+
+
+
+
+EM QUE 
+
+
+
+__ VAMOS __ CONVERTER _ NOSSO OBJECT INTEIRO 
+
+
+EM UM 
+
+
+
+__ JSON OBJECT (que é uma string, na verdade)
+
+
+
+
+
+
+,
+
+
+QUE SERÁ ARMAZENADO TIPO ASSIM:
+
+
+
+
+
+
+
+
+localStorage.setItem('userData', JSON.string(user))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO VAI 'SERIALIZE'/CONVERTER NOSSO JAVASCRIPT OBJECT EM UM 
+
+
+
+JSON OBJECT... (string)....
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+  private storeUserToken(responseData: AuthResponseData) {
+
+    const expirationDate = new Date(new Date().getTime() + +responseData.expiresIn * 1000); ////lembre-se de adicionar '* 1000', pois o JAVASCRIPT SEMPRE CONSIDERA 'TEMPO' EM MILISSEGUNDOS, E NÃO EM SEGUNDOS.... (só o 'expiresIn' que é mostrado em segundos....)
+
+    const userObject = {
+      token: responseData.idToken,
+      expirationDate: expirationDate.toString(),
+      userId: responseData.localId,
+      email: responseData.email
+      
+    }
+
+
+    localStorage.setItem('userData', JSON.stringify(userObject))
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ok....
+
+
+
+
+
+  VEREMOS COMO ISSO FUNCIOAN... SALVAMOS TUDO ISSO E RECARREGAMOS NOSSO APP, FAZEMOS LOGIN, E TESTAMOS...
+
+
+
+
+
+
+  OK, FUNCIONOU..
+
+
+
+
+
+
+
+  EX:
+
+
+
+email: "exemplo@exemplo.com"
+expirationDate: "Mon Jun 06 2022 15:49:06 GMT-0300 (Horário Padrão de Brasília)"
+token: "eyJhbGciOiJSUzI1NiIsImtpZCI6ImY0ZTc2NDk3ZGE3Y2ZhOWNjMDkwZDcwZTIyNDQ2YTc0YjVjNTBhYTkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcmVjaXBlYm9va2RlcGxveXByb2plY3QiLCJhdWQiOiJyZWNpcGVib29rZGVwbG95cHJvamVjdCIsImF1dGhfdGltZSI6MTY1NDUzNzc0NywidXNlcl9pZCI6IjZTbzZGUmpXR0ZSR3poSXdic0tiZDd5V05VTDIiLCJzdWIiOiI2U282RlJqV0dGUkd6aEl3YnNLYmQ3eVdOVUwyIiwiaWF0IjoxNjU0NTM3NzQ3LCJleHAiOjE2NTQ1NDEzNDcsImVtYWlsIjoiZXhlbXBsb0BleGVtcGxvLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJleGVtcGxvQGV4ZW1wbG8uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.HFCNXznHsUDi28Zm5LruXeqlMtYGG8qJ5QfOuvDc0RiVUaR1llYcmom-9tMaBG2TGFFKxxOvIg-tnsCXwv3UtFg3foyo2uBnzThJlJ_jxEhHS9g9pm-3l5QzBUsUwVM1_D3NRAwoIv_0_zQuFEWYx9oC7yKKwPdzbMOkKkNdS1k_f0rZWRevucXlj1jPdizcf_Z1-qSvH1GYB7v9vL8T1QPJFx2hhMOcQiqoqB8_QrvTkRN8ksV4lFgJ3_IsdVpDC-rreQiYN8edQYKeKBSF-dPm6joAZW-B5F4AH0fDZwDZLNf5NFomaGDfJ2T1E0jA0HXsqPU2Cd5_NpxrSk4RoA"
+userId: "6So6FRjWGFRGzhIwbsKbd7yWNUL2"
+
+
+
+
+
+
+
+
+-------------------
+
+
+
+
+
+
+
+
+
+
+
+ISSO FICARÁ ARMAZENADO NO 'LOCAL STORAGE'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--. OK, COM ISSO ARMAZENADO NO LOCAL STORGE,
+
+É CLARO QUE 
+
+
+PODEMOS FAZER 'FETCH'
+ 
+
+ DESSA DATA __ SEMPRE _ QUE NOSSO APP _ FOR RESETTADO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> PARA ISSO,
+
+
+ O PROFESSOR ADICIONA UM __ NOVO METHOD_ LÁ EM 
+
+ 'authService.service.ts',
+
+
+
+
+
+ QUE CHAMA DE 
+
+
+
+
+
+ 'autoLogin',
+
+
+
+
+PQ 
+
+É BASICAMENTE UM METHOD QUE 
+
+VAI 
+
+TENTAR FAZER 'AUTO-LOGIN'
+
+
+do user quando o app começa..
+
+
+
+
+
+
+
+
+--> O CÓDIGO QUE EU HAVIA USADO, LÁ NO MEU INTERCEPTOR,
+ FOI ESTE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import {
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpParams,
+  HttpRequest,
+} from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { exhaustMap, map, Observable, take, tap } from 'rxjs';
+import { AuthService } from 'src/app/auth.service';
+import { User } from './auth-page/user.model';
+
+@Injectable({ providedIn: 'root' })
+export class HttpInterceptorService implements HttpInterceptor {
+  constructor(private authService: AuthService) {}
+
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+    ///method bem complicado, mas útil, pq pode fazer coisas como 'add o user token aos QUERYPARAMS  DE todos OS requests que saem de seu app'...
+
+    return this.authService.user.pipe(
+      take(1),
+
+      map((userOnDemand) => {
+        let user = userOnDemand;
+
+        console.log(userOnDemand);
+        if (userOnDemand === null) { // se nosso user não tiver sido 'EMITIDO' pelo subject em 'authService' (subject de 'user'), vamos querer PEGAR ESSA INFO LÁ DE NOSOS 'LOCAL STORAGE'....
+          user = new User(
+            localStorage.getItem('email')!,
+            localStorage.getItem('userId')!,
+            localStorage.getItem('token')!,
+            new Date(localStorage.getItem('expirationDate')!)
+          );
+
+          console.log('ENTERED', user);
+        }
+          console.log(user);
+        return user;
+
+      }),
+
+      exhaustMap((userOnDemand) => {
+        console.log(userOnDemand);
+        const queryParams = new HttpParams()
+          .set('auth', userOnDemand?.token!)
+          .set('recipeBy', userOnDemand?.id!);
+
+        const requestClone = req.clone({
+          params: queryParams,
+        });
+
+        console.log(requestClone);
+
+        return next.handle(requestClone);
+      })
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAIS PRECISAMENTE ISTO:
+
+
+
+
+       if (userOnDemand === null) { // se nosso user não tiver sido 'EMITIDO' pelo subject em 'authService' (subject de 'user'), vamos querer PEGAR ESSA INFO LÁ DE NOSOS 'LOCAL STORAGE'....
+          user = new User(
+            localStorage.getItem('email')!,
+            localStorage.getItem('userId')!,
+            localStorage.getItem('token')!,
+            new Date(localStorage.getItem('expirationDate')!)
+          );
+
+
+
+
+
+
+
+
+
+
+
+
+    --> MAS ISSO NÃO FUNCIONARÁ MAIS, É CLARO. 
+
+
+
+
+
+
+
+
+
+
+
+    --> não funcionará pq agora temos esse OBJECT JSON/STRING no nosso storage, e não mais 
+
+    esse conjunto de key-value pairs...
+
+
+
+
+
+
+
+
+
+
+    --> continuando o vídeo do professor....
+
+
+
+
+
+
+
+
+
+    ---> o method de 'autoLogin':
+
+
+
+
+
+
+
+
+
+
+
+    autoLogin() {
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+    --->
+     será um method dentro do service de 'auth'...
+
+
+
+
+
+
+
+
+
+     --> tentará 
+
+     DEFINIR O USER COMO 'LOGGED IN'
+
+     automaticamente,
+
+
+
+     ao início do nosso app..
+
+
+
+
+
+
+
+     -> FAZEMOS O RUN DE 
+
+
+     '
+     localStorage.getItem('userData')
+
+
+
+
+
+
+
+
+
+
+
+     --> o get de items de nossa storage é feito de forma SÍNCRONA..
+
+
+
+
+
+
+
+     E O CÓDIGO FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+     
+    autoLogin() {
+
+
+      const userData = localStorage.getItem('userData');
+
+
+    }
+
+
+
+
+
+
+
+
+------> A PRIMEIRA COISA QUE QUEREMOS FAZER, NESSA FUNCTION,
+
+É 
+
+'CHECK IF THAT USER DATA EXISTS'...
+
+
+
+
+
+
+
+
+--> tipo assim:
+
+
+
+
+
+
+    autoLogin() {
+
+
+      const userData = localStorage.getItem('userData');
+
+
+      if (!userData) {
+
+
+      }
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+-> SE NÃO TIVERMOS USER DATA,
+
+VAMOS PODER 
+
+'return',
+
+
+
+
+
+
+
+RETURN SEM NENHUM VALUE,
+
+
+PQ ISSO VAI SIGNIFICAR QUE O USER DEFINITIVAMENTE NÃO ESTÁ 'LOGGED IN',
+
+
+
+e que ele precisa fazer 'sign in' por conta própria...
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+    autoLogin() {
+
+
+      const userData = localStorage.getItem('userData');
+
+
+      if (!userData) {
+
+
+        return; 
+      }
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+-> caso ULTRAPASSEMOS ESSE NEGÓCIO,
+
+
+SIGNIFICARÁ 
+
+
+QUE 
+
+
+A USER DATA FOI SETTADA,
+
+
+e que 
+
+EXISTIRÁ ALGUM 'SNAPSHOT' 
+
+que 
+
+conseguiremos 
+
+
+
+RETRIEVAR DO LOCAL STORAGE...
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, E É CLARO QUE ESSE NEGÓCIO QUE VAMOS RETRIEVAR LÁ DE 'localStorage',
+
+
+
+com 'localStorage.getItem()'
+
+
+
+SERÁ UMA _ STRING,
+
+
+E AÍ _ CERTAMENTE 
+
+
+TEREMOS DE USAR 
+
+
+
+UM METHOD 
+
+
+
+
+PARA CONVERTER ESSA STRING _ EM UM _ OBJECT _ JAVASCRIPT..
+
+
+
+
+
+
+
+
+-> PARA ISSO,
+
+podemos usar 
+
+
+o 
+
+method de 
+
+
+'JSON.parse()'...
+
+
+
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+    autoLogin() {
+
+
+      const userData = JSON.parse(localStorage.getItem('userData'));
+
+
+      if (!userData) {
+
+
+        return; 
+      }
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    EX:
+
+
+
+
+
+
+
+
+
+
+
+
+        
+  autoLogin() {
+
+
+    const userData = JSON.parse(localStorage.getItem('userData')!); ///O VALUE QUE VAMOS RETRIEVAR LÁ DO LOCAL STORAGE DEFINITIVAMENTE SERÁ UMA STRING, por isso usamos 'JSON.parse()' para converter essa string (json data) em um OBJECT JAVASCRIPT 
+
+
+    if (!userData) {
+
+
+      return; 
+    }
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OK... MAS É CLARO QUE ESSE METHOD AÍ 
+
+
+
+
+
+  ainda não acabou, pq 
+
+  PRECISAMOS FAZER O __ RE-EMIT_ 
+
+
+
+  DE 
+
+
+  'user'
+
+
+  COM 
+
+
+  ESSE 
+
+  'userData',
+
+
+  E TAMBÉM, DE ALGUMA FORMA,
+
+
+  _ READICIONAR  
+
+
+  ESSE 'userData'
+
+
+  DE VOLTA AOS NOSSOS REQUESTS DO APP (tipo por meio do interceptor, mas não sei como)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -_> OK.. DENTRO de 'autoLogin',
+
+
+
+  PODEMOS 
+
+
+
+
+  __CRIAR _ UM NOVO 'loadedUser',
+
+
+
+
+
+  POR MEIO DA ESCRITA DE 
+
+
+
+
+  const loadedUser = new User(userData.email, xxx, yyy, zzz, www)
+
+
+
+  ,
+
+
+
+  E
+   AÍ 
+
+
+
+
+   __ OBVIAMENTE _ 
+
+
+
+
+
+
+
+
+   USAR 
+
+
+
+   AQUELE 
+
+   SUBJECT DE 
+
+   'user'
+
+
+   PARA ESCREVER/FORWARDAR ESSE OBJECT DE 'USER' retrievado,
+
+
+
+   tipo assim:
+
+
+
+
+
+
+
+
+
+   
+
+        
+  autoLogin() {
+
+
+    const userData = JSON.parse(localStorage.getItem('userData')!); ///O VALUE QUE VAMOS RETRIEVAR LÁ DO LOCAL STORAGE DEFINITIVAMENTE SERÁ UMA STRING, por isso usamos 'JSON.parse()' para converter essa string (json data) em um OBJECT JAVASCRIPT 
+
+
+    if (!userData) {
+
+
+      return; 
+    }
+
+
+
+const loadedUser = new User(userData.email, userData.token, userData.expirationDate, etc);
+
+
+
+
+this.user.next(loadedUser);
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+-> tipo algo assim...
+
+
+
+
+
+
+
+
+
+
+
+-> mas é claro que precisamos construir um NOVO OBJECT DE 'DATE',
+
+
+que é o que fazemos com um novo 'new Date(userData.expirationDate)'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO VAI FICANDO ASSIM:
+
+
+
+
+
+
+
+
+
+
+    
+  autoLogin() {
+
+
+    const userData = JSON.parse(localStorage.getItem('userData')!); ///O VALUE QUE VAMOS RETRIEVAR LÁ DO LOCAL STORAGE DEFINITIVAMENTE SERÁ UMA STRING, por isso usamos 'JSON.parse()' para converter essa string (json data) em um OBJECT JAVASCRIPT 
+
+
+    if (!userData) {
+
+
+      return; 
+    }
+
+
+
+    const loadedUser = new User(userData.email, userData.userId, userData.token, new Date(userData.expirationDate));
+
+
+
+    this.user.next(loadedUser);  ////vai reatualizar a UI DE NOSSO APP com esse user que vai ser fetcheado da data inserida no local storage(é o 'auto-login', presente quando sempre recarregamos nossa page..)
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS É CLARO QUE AQUI ESQUECEMOS DE UM DETALHE, UMA ETAPA IMPORTANTE,
+
+QUE É 
+
+
+'CHECK IF THIS USER HAS A VALID TOKEn' -----> PARA ISSO,
+
+
+BASTA CHECARMOS 
+
+
+'if (loadedUser.token)',
+
+
+
+
+se isso AÍ 
+
+
+
+
+
+FOR REALMENTE 'TRUEISH',
+
+
+é true... ------> ISSO PQ NOSSA 'token',
+
+
+LÁ NO MODEL 
+
+
+
+
+
+DE 
+
+
+'user.model.ts',
+
+
+FOI DEFINIDO 
+
+
+COMO UM _ GETTER_,
+
+
+COM ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+  get token() {
+    //aqui definimos um GETTER_... getters são acessados como PROPRIEDADES (sem o uso de '()' para os chamar), E SÃO USADOS PARA RETRIEVAREM DATA DE NOSSAS PROPREIDADES, MAS COM LÓGICA RODADA EM CIMA DESSE 'GET'... --> no caso, vamos checar, por meio do getter, se A __ TOKEN_ DE NOSSO USER_ REALMENTE É VÁLIDA...
+
+    if (!this._tokenExpirationDate || new Date() >= this._tokenExpirationDate) {   ///// POR MEIO DE NOSSO GETTER, checamos SE __ A DATE ATUAL NÃO EXCEDE A DATE DEFINIDA POR 'tokenExpirationDate'...
+   
+   
+        return null; ///ou seja, até podemos TER UMA 'TOKEN', mas ela já estará INVÁLIDA (ou nunca foi válida, pq a propriedade de 'tokenExpirationDate' não existia no interior desse nosso object 'user')....
+   
+    }
+
+
+
+    return this._token; //retornamos a nossa token...
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> E COMO ISSO É UM GETTER,
+
+  EXECUTAMOS UMA 'CERTA LÓGICA DE VALIDATE',
+
+  
+
+  QUE É AQUELA LÓGICA QUE RETORNA 'null'
+
+
+  SE 
+
+
+  A TOKEN ESTIVER INVÁLIDA/expirada,
+
+
+
+
+  E 'this._token'( nossa actual token)
+
+
+
+
+SE NÃO FOR O CASO (token válida)...
+
+
+
+
+
+
+
+
+
+---> E É EXATAMENTE POR ISSO QUE PODEMOS 
+
+
+
+
+RODAR UM CHECK DE 'if (userData.token)' 
+
+
+
+
+LÁ 
+
+
+NAQUELE METHOD DE 'autoLogin'...
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+ if(loadedUser.token) { ////com isso, através do GETTER de 'loadedUser.token' (pq nosso model de 'User' tem esse getter), _ CHECAMOS _ SE EXISTE UM VALID TOKEN DENTRO DESSE NOSSO USER (caso não exista, o getter retornará 'null' --> isso pq NULL É UM FALSY VALUE, e tiramos vantagem disso nesse if block aqui...)...
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    EX:
+
+
+
+
+
+
+
+
+
+
+        
+  autoLogin() {
+
+
+    const userData = JSON.parse(localStorage.getItem('userData')!); ///O VALUE QUE VAMOS RETRIEVAR LÁ DO LOCAL STORAGE DEFINITIVAMENTE SERÁ UMA STRING, por isso usamos 'JSON.parse()' para converter essa string (json data) em um OBJECT JAVASCRIPT 
+
+
+    if (!userData) {
+
+
+      return; 
+    }
+
+
+
+    const loadedUser = new User(userData.email, userData.userId, userData.token, new Date(userData.expirationDate));
+
+
+
+    if(loadedUser.token) { ////com isso, através do GETTER de 'loadedUser.token' (pq nosso model de 'User' tem esse getter), _ CHECAMOS _ SE EXISTE UM VALID TOKEN DENTRO DESSE NOSSO USER (caso não exista, o getter retornará 'null' --> isso pq NULL É UM FALSY VALUE, e tiramos vantagem disso nesse if block aqui...)...
+
+    this.user.next(loadedUser);  ////vai reatualizar a UI DE NOSSO APP com esse user que vai ser fetcheado da data inserida no local storage(é o 'auto-login', presente quando sempre recarregamos nossa page..)
+
+    }
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  -> SE ENTRAMOS DENTRO DESSE IF BLOCK DE 'SUCCESS NO VALIDATE',
+
+
+  VAMOS QUERER _ FAZER EMIT DESSE 'CURRENT USER' como sendo 
+
+
+  nosso ACTIVE USER NO PRESENTE...
+
+
+
+
+
+
+
+
+
+
+  -> OK, MAS O QUE FAZEMOS NO ELSE CASE?
+
+
+
+
+
+
+
+  --> não fazemos nada, nenhum código será executado...
+
+
+
+
+
+
+
+
+
+
+
+
+  ---> OK... MAS É CLARO QUE ESSE 
+
+
+  METHOD de 'autoLogin' 
+
+
+
+  PRECISA SER EXECUTADO _ BEM CEDO _ NO LIFECYCLE DE NOSSA APPLICATION... -> 
+
+
+
+
+
+
+
+
+  __ EU __ ACHAVA__ QUE UM BOM LUGAR SERIA _ O 'interceptor'
+
+
+
+  de 'HttpInterceptor.service.ts',
+
+
+
+
+
+
+  MAS O PROFESSOR 
+
+
+  NOS DIZ QUE 
+
+
+  UM LUGAR PERFEITO PARA 
+
+
+  O 
+
+
+  CALL DESSE METHOD 
+
+
+
+
+  É LOGO 
+
+
+
+  NO RUN 
+
+
+  DO COMPONENT 'AppComponent',
+
+
+  QUE SEGURA TODOS OS OUTROS...
+
+
+
+
+(
+  e roda antes do que todos os outros...
+)
+
+
+
+  ---->
+
+
+
+
+
+
+
+
+
+  OK, TEMOS QUE IMPLEMENTAR  'ngOnInit()'
+
+
+
+
+  NO 'AppComponent',
+
+
+
+
+
+
+
+
+
+
+  PARA QUE _ 
+
+
+
+  ENTÃO _ SEJAM ADICIONADOS ESSES PARAMS de 'TOKEN' DO USER 
+
+
+
+
+  aos requests, logo no início de nosso app....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --. É CLARO QUE 'getItem()"
+
+
+  É INSTANTÂNEO/SYNC,
+
+
+
+
+  por isso 
+
+
+
+
+  NÃO PRECISAMOS CHAMAR .'subscribe()" ou qualuqer coisa do gênero,
+
+  sobre 
+
+
+
+
+  o call de this.authService.autoLogin....
+
+
+
+
+
+
+
+
+
+  CÓDIGO COMPLETO:
+
+
+
+
+
+
+
+
+
+
+  import { Component, OnInit } from '@angular/core';
+import { AuthService } from './auth.service';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent implements OnInit {
+  // selectedPage: string = 'recipeBook';  ////NAVIGATION _ SEM ROUTING_...
+
+
+
+  constructor(private authService: AuthService) {}
+
+  // pageSwitcher(page: string) {  ///navigation SEM ROUTING...
+  //   this.selectedPage = page;
+  // }
+
+
+
+  ngOnInit(): void {
+
+    this.authService.autoLogin(); ////vai tentar realizar o 'AUTO LOGIN' de nosso user (vai tentar FAZER O EMIT DO 'USER JÁ ARMAZENADO NO LOCAL STORAGE' a outros COMPONENTS DE NOSSO APP)...
+    
+
+
+
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+--> TESTAMOS TUDO ISSO,
+
+E AÍ 
+
+ __REMOVEMOS O CÓDIGO ANTIGO DE 
+
+
+
+
+
+
+ 'KEEP AUTH STATE' de noss código,
+
+
+
+
+
+
+
+O QUE DEIXA TUDO MAIS 'LEAN'....
+
+
+
+
+
+
+
+
+
+ISSO QUER DIZER, EM OUTRAS PAALVRAS, QUE NOSSO CÓDIGO DE 'interceptor' ESTÁ ERRADO, PQ LÁ NÓS JÁ 
+
+
+
+
+HAVÍAMOS COLOCADO A LÓGICA DE 'STORE AND CHECK LOCAL STORAGE FOR USER TOKEn',
+
+
+
+MAS APARENTEMENTE 
+
+
+
+
+
+A STORAGE__  E 'CHECK' dessas tokens, NO NOSSO LOCAL STORAGE,
+
+DEVE OCORRER LÁ NO SERVICE DE 'auth'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO ALTERADO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import {
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpParams,
+  HttpRequest,
+} from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { exhaustMap, map, Observable, take, tap } from 'rxjs';
+import { AuthService } from 'src/app/auth.service';
+
+@Injectable({ providedIn: 'root' })
+export class HttpInterceptorService implements HttpInterceptor {
+  constructor(private authService: AuthService) {}
+
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+    ///method bem complicado, mas útil, pq pode fazer coisas como 'add o user token aos QUERYPARAMS  DE todos OS requests que saem de seu app'...
+
+    return this.authService.user.pipe(
+      take(1),
+
+      // map((userOnDemand) => {  ////ESSE CÓDIGO DE 'MAP()' está errado, pq o ACTUAL SET DE NOSSO OBJECT USER NO 'LOCAL STORAGE' OCORRE LÁ NO SERVICE DE 'auth',  E NAÕ AQUi... ( e o check por essa token também acontece lá, em um method que é chamado lá no 'ngOnInit()' de nosso starter app component)...
+      //   let user = userOnDemand;
+
+      //   console.log(userOnDemand);
+      //   if (userOnDemand === null) { // se nosso user não tiver sido 'EMITIDO' pelo subject em 'authService' (subject de 'user'), vamos querer PEGAR ESSA INFO LÁ DE NOSOS 'LOCAL STORAGE'....
+      //     // user = new User(
+      //     //   localStorage.getItem('email')!,
+      //     //   localStorage.getItem('userId')!,
+      //     //   localStorage.getItem('token')!,
+      //     //   new Date(localStorage.getItem('expirationDate')!)
+      //     // );
+
+
+      //     const loadedUser = JSON.parse(localStorage.getItem('userData')!)
+
+
+
+
+      //     user = new User(
+      //       // localStorage.getItem('email')!,
+      //       // localStorage.getItem('userId')!,
+      //       // localStorage.getItem('token')!,
+
+      //       loadedUser!.email!,
+      //       loadedUser!.userId!,
+      //       loadedUser!.token!,
+      //       new Date(loadedUser.expirationDate!)
+      //     );
+
+
+
+      //     console.log('ENTERED', user);
+      //   }
+      //     console.log(user);
+      //   return user;
+
+      // }),
+
+      exhaustMap((userOnDemand) => {
+        console.log(userOnDemand);
+
+
+
+        if (!userOnDemand) {
+          return next.handle(req);
+        }
+        const queryParams = new HttpParams()
+          .set('auth', userOnDemand?.token!)
+          .set('recipeBy', userOnDemand?.id!);
+
+        const requestClone = req.clone({
+          params: queryParams,
+        });
+
+        console.log(requestClone);
+
+        return next.handle(requestClone);
+      })
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+COMO VOCê PODE VER,
+
+
+TIRAMOS ESSA 
+
+LÓGICA DE  'set localStorage'
+
+
+
+LÁ 
+
+
+
+DE NOSSO INTERCEPTOR, E A DEIXAMOS NO METHOD PRIVATE DE 
+
+
+
+
+''
+
+
+
+  private storeUserToken(responseData: AuthResponseData) {
+
+    const expirationDate = new Date(new Date().getTime() + +responseData.expiresIn * 1000); ////lembre-se de adicionar '* 1000', pois o JAVASCRIPT SEMPRE CONSIDERA 'TEMPO' EM MILISSEGUNDOS, E NÃO EM SEGUNDOS.... (só o 'expiresIn' que é mostrado em segundos....)
+
+      ///versão que uso no ANGULAR
+    const userObject = {
+      token: responseData.idToken,
+      expirationDate: expirationDate.toString(),
+      userId: responseData.localId,
+      email: responseData.email
+      
+    }
+
+
+    localStorage.setItem('userData', JSON.stringify(userObject))
+
+
+  }
+
+
+
+
+  '''
+
+
+
+
+
+
+
+
+
+
+
+
+  >_ ok... NO COMPONENT DE 'app.component.ts':
+
+
+
+
+
+
+
+
+
+
+  import { Component, OnInit } from '@angular/core';
+import { AuthService } from './auth.service';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent implements OnInit {
+
+  constructor(private authService: AuthService) {}
+
+
+
+
+  ngOnInit(): void {
+
+    this.authService.autoLogin(); ////vai tentar realizar o 'AUTO LOGIN' de nosso user (vai tentar FAZER O EMIT DO 'USER JÁ ARMAZENADO NO LOCAL STORAGE' a outros COMPONENTS DE NOSSO APP)...
+    
+
+
+
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> com isso, o código ficou bem melhor,
+
+PQ AGORA QUANDO REINICIAMOS NOSSA PAGE,
+
+CONTINUAMOS 'LOGGED IN',
+
+essencialmente...
+
+
+
+
+
+
+
+
+
+
+--> OK... ESSE É O 'AUTO LOGIN' do user, essencialmente....
+
+
+
+
+
+
+
+
+
+
+
+
+-> AS FEATURES RESTANTES, AGORA , SÃO:
+
+
+
+
+
+1) AUTO-LOGOUT (quando a TOKEN  EXPIRA/É INVÁLIDA)...
+
+
+
+
+2) AUTH GUARD 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> quando fiz um teste no meu app, percebi que o 
+
+código do 'app.component.ts/html'
+
+
+
+,
+
+AQUELE 'ngOnInit',
+
+
+
+
+
+é _ SEMPRE EXECUTADO _______ANTES__ do código do meu 'interceptor'... (
+
+  o interceptor vem depois,
+
+  e aquele 
+  trecho de 
+
+
+
+  ''
+
+
+    return this.authService.user.pipe(
+      take(1),
+      exhaustMap((userOnDemand) => {
+        console.log('INTERCEPTOR');
+        console.log(userOnDemand);
+
+
+
+        if (!userOnDemand) {
+          return next.handle(req);
+        }
+        const queryParams = new HttpParams()
+          .set('auth', userOnDemand?.token!)
+          .set('recipeBy', userOnDemand?.id!);
+
+        const requestClone = req.clone({
+          params: queryParams,
+        });
+
+        console.log(requestClone);
+
+        return next.handle(requestClone);
+      })
+
+
+  
+
+  '''',
+
+
+
+
+
+
+
+  QUE 
+
+
+  ADICIONA NOSSA TOKEN A TODOS OS REQUESTS,
+
+
+
+  _ TAMBÉM VEM DEPOIS...
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK, AGORA DEVEMOS ESTUDAR COMO É O 'AUTO-LOGOUT' nos apps angular...

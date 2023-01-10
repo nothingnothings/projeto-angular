@@ -1,0 +1,850 @@
+
+
+
+
+
+
+
+
+
+
+-> com a action adicionada,
+
+ ESCRITA LÁ NO ARQUIVO DE 'ACTIONS' E AÍ IMPORTADA LÁ NO REDUCER,
+
+ TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+ import { Action } from "@ngrx/store";  ///precisamos disso para DESCREVER NOSSAS ACTIONS...
+import { Ingredient } from "src/app/shared/ingredient.model";
+
+
+export const ADD_INGREDIENT = 'INGREDIENT_ADD'; ////identifiers de nossas actions
+
+export const EDIT_INGREDIENT = 'INGREDIENT_EDIT';
+
+export const DELETE_INGREDIENT = 'INGREDIENT_DELETE';
+ 
+
+
+
+
+
+
+
+
+export class addIngredient implements Action {
+
+
+
+
+   readonly type: string = ADD_INGREDIENT;   ///precisa ser adicionada a essa class typescript.. (feature própria do typescript)...
+
+
+   payload: Ingredient; ///é opcional, o payload é opcional...
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+import * as ActionIdentifiers from './shoppingListActions'; ////nossa collection de POSSÍVEIS ACTIONS/action identifiers...
+import { Ingredient } from '../../shared/ingredient.model';
+
+import { updateObject } from '../../utility/updateObject'
+
+
+
+let ingredients: Ingredient[] = [];
+
+const initialState = {
+  ////queremos ter esse 'INITIALSTATE' de nosso app, que antes existia lá no SERVICE DE 'shoppingList.service.ts', CONSIDERADO NESSE NOSSO REDUCER/SISTEMA DO CENTRAL STORE...
+
+  ingredients: ingredients,
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+////POR MEIO DA FEATURE typescript (next gen javascript) de 'state = initialState', DEFINIMOS O 'initial state' considerado no nosso reducer _cOMO _ SENDO O MESMO STATE QUE DEFINIMOS LOGO ACIMA, NAQUELA CONST...
+export function shoppingListReducer(state = initialState, action: any) {
+  ///////ESSES 2 ARGUMENTOS SÃO SEMPRE 'PASSED IN' pelo próprio angular 'NGRX', contanto que vocÊ defina esse reducer como REDUCER DE SEU APP
+
+  ///state --> é o APPLICATION-WIDE STATE DE SEU APP...
+
+  switch (action.type) {
+    // case 'INGREDIENT_ADD':
+    case ActionIdentifiers.ADD_INGREDIENT:
+      return addIngredient(state, action);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-. COM ESSE  CASE/ACTION DE 'INGREDIENT ADD',
+
+
+
+
+JÁ ESTAMOS HANDLANDO O 'CASE' DO ADD INGREDIENT... ----> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+o professor ENTÃO FALA DA CONVENÇÃO DE USAR UM 'OBJECT DE ACTIONS' para escrever os identifiers, exatamente como eu havia feito:
+
+
+
+
+
+
+
+
+
+import * as ActionIdentifiers from './shoppingListActions'; ////nossa collection de POSSÍVEIS ACTIONS/action identifiers...
+import { Ingredient } from '../../shared/ingredient.model';
+
+import { updateObject } from '../../utility/updateObject'
+
+
+
+let ingredients: Ingredient[] = [];
+
+const initialState = {
+  ////queremos ter esse 'INITIALSTATE' de nosso app, que antes existia lá no SERVICE DE 'shoppingList.service.ts', CONSIDERADO NESSE NOSSO REDUCER/SISTEMA DO CENTRAL STORE...
+
+  ingredients: ingredients,
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+////POR MEIO DA FEATURE typescript (next gen javascript) de 'state = initialState', DEFINIMOS O 'initial state' considerado no nosso reducer _cOMO _ SENDO O MESMO STATE QUE DEFINIMOS LOGO ACIMA, NAQUELA CONST...
+export function shoppingListReducer(state = initialState, action: any) {
+  ///////ESSES 2 ARGUMENTOS SÃO SEMPRE 'PASSED IN' pelo próprio angular 'NGRX', contanto que vocÊ defina esse reducer como REDUCER DE SEU APP
+
+  ///state --> é o APPLICATION-WIDE STATE DE SEU APP...
+
+  switch (action.type) {
+    // case 'INGREDIENT_ADD':
+    case ActionIdentifiers.ADD_INGREDIENT:
+      return addIngredient(state, action);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+ELE FALA DO USO 
+
+
+
+
+
+
+
+DO 'OBJECT COM VÁRIAS ACTIONS',
+
+
+bem clássico...
+
+
+
+
+import * as ActionIdentifiers from './shoppingListActions'; ////nossa collection de POSSÍVEIS ACTIONS/action identifiers...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo.... nosso 
+
+
+
+reducer vai ficando assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export function shoppingListReducer(state = initialState, action: any) {
+  ///////ESSES 2 ARGUMENTOS SÃO SEMPRE 'PASSED IN' pelo próprio angular 'NGRX', contanto que vocÊ defina esse reducer como REDUCER DE SEU APP
+
+  ///state --> é o APPLICATION-WIDE STATE DE SEU APP...
+
+  switch (action.type) {
+    // case 'INGREDIENT_ADD':
+    case ActionIdentifiers.ADD_INGREDIENT:
+      return {
+        ...state,
+        ingredients: [...state.ingredients, action.payload]
+      }
+    break;
+    case ActionIdentifiers.DELETE_INGREDIENT:
+      break;
+    case ActionIdentifiers.EDIT_INGREDIENT:
+      
+  
+  }
+}
+
+
+
+
+
+
+
+
+
+
+---------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK, AGORA PODEMOS ESCREVER O 'payload',
+
+
+
+
+
+
+QUE VAI SER ACEITO...
+
+
+
+
+
+
+-> PODEMOS ACESSAR O PAYLOAD ALI,
+
+SEM O 
+
+TYPESCRIPT GRITAR 
+
+
+NA NOSSA CARA...
+
+
+
+
+
+
+
+--> OK, COM TUDO ISSO SETTADO,
+
+
+
+ O QUE 
+
+DEVEMOS FAZER PARA 
+
+
+__FINALMENTE__ SETTAR AQUELE 'APPLICATION STORE',
+
+
+
+
+
+
+
+
+de que todo nosso app dependerá?
+
+
+
+
+
+
+
+
+
+
+----> COMO PODEMOS IMPLEMENTAR ESSE NOSSO REDUCER,
+
+PQ 
+
+ATÉ AGORA ELE NÃO ESTÁ SENDO UTILIZADO..
+
+
+
+
+
+
+
+
+
+
+--> BEM, DEVEMOS ADICIONAR UM 'APPLICATON STORE'
+
+
+ao nosso app..
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR ADICIONA ALGO NOVO LÁ NO 'app.module.ts',
+
+
+
+
+
+ELE ADICIONA 
+
+
+
+
+
+
+
+
+
+
+import { StoreModule } from '@ngrx/store';
+
+
+
+
+
+
+
+
+
+
+
+-> É ISSO QUE VAI NOS AJUDAR COM O SETUP DAQUELE APPLICATION-WIDE 
+
+
+
+STORE NGRX...
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE O 'STOREMODULE'
+
+
+É UM _ 
+
+ANGULAR MODULE,
+
+POR ISSO ELE DEVE SER COLOCADO DENTR ODO ARRAY DE 'IMPORTS'...
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+// import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
+
+import { AppComponent } from './app.component';
+
+import { HeaderComponent } from './headerComponent/headerComponent.app';
+
+import { RecipeBookService } from './recipeBook.service';
+import { ShoppingListService } from './shoppingList.service';
+import { GenericErrorPageComponent } from './generic-error-page/generic-error-page.component';
+import { AppRoutingModule } from './app-routing.module';
+import { HomePageComponent } from './home-page/home-page.component';
+
+
+import { HttpInterceptorService } from 'src/app/httpInterceptor.service';
+
+import { SharedModule } from './shared/shared.module';
+import { LoggingService } from './logging.service';
+import { StoreModule } from '@ngrx/store';
+// import { AuthModule } from './auth/auth.module';   ///LAZILY LOADED EM 'app.routing-module.ts'...
+// import { AlertDynamicComponent } from './shared/alertVersaoNgIf (bem mais pratica)/alert.component';
+
+
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+
+    GenericErrorPageComponent,
+    HomePageComponent,
+
+  ],
+  imports: [
+    // AuthModule, ///outsourcing em essa 'feature module'...  ////depois removemos esse import daqui, pq passamos a fazer LAZYLOADING desse module, com a ajuda de 'app-routing.module.ts'...
+    
+    
+    StoreModule, ////é o 'CENTRAL STORE' de nosso app, implementado com NGRX...
+
+    BrowserModule,
+ 
+    AppRoutingModule,  //módulo de routing, customizado por nós...
+    HttpClientModule,
+ 
+    SharedModule   ///outsourcing...
+
+  ],
+
+  providers: [RecipeBookService, ShoppingListService, LoggingService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpInterceptorService,
+      multi: true
+    }
+  
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> MAS É CLARO QUE O 'StoreModule'
+
+
+
+NÃO É ADICIONADO 'NO SECO',
+
+
+não é adicionado assim,
+
+PQ PRECISAMOS 
+
+
+
+DEFINIR 'QUAL É A STORE QUE DEVERÁ SER USADA COM ELE'...
+
+
+
+
+(
+
+
+
+    NA VERDADE, DEVEMOS DIZER 'QUAIS REDUCERS DEVEM FICAR ENVOLVIDOS/USADOS NA NOSSA STORE', quais 
+
+
+    reducers formarão a nossa store...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+SOMOS OBRIGADOS A CHAMAR 
+
+
+
+StoreModule.forRoot(),
+
+
+
+
+
+
+
+
+E _ __ AÍ,
+
+DENTRO 
+
+
+
+
+
+
+
+DO '.forRoot()',
+
+
+PASSAMOS 
+
+AQUILO QUE CHAMAMOS DE 
+
+
+
+'action reducer map'...
+
+
+
+
+
+
+
+--> O NOME É MAIS COMPLICADO DO QUE PARECE,
+
+
+PQ, NO FINAL DAS CONTAS,
+
+
+ISSO É UM OBJECT JAVASCRIPT EM QEU VOCÊ PODE DEFINIR 
+
+
+
+__ QUALQUER__ IDENTIFIER DE SUA ESCOLHA, e aí vincular esse identifier ao SEU REDUCER...
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+StoredModule.forRoot(
+    {
+        shoppingList: ShoppingListReducer
+    }
+)
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+  imports: [
+    // AuthModule, ///outsourcing em essa 'feature module'...  ////depois removemos esse import daqui, pq passamos a fazer LAZYLOADING desse module, com a ajuda de 'app-routing.module.ts'...
+    
+    
+    StoreModule.forRoot( ////é o 'CENTRAL STORE' de nosso app, implementado com NGRX...  //// aqui, precisamos dizer 'QUAIS REDUCERS VÃO SER USADOS NO NOSSO APP, QUE VÃO COMPOR NOSSA CENTRAL STORE, essencialmente'...
+      { ///1 identifier para cada 'PARTE/REDUCER' do seu app, cada parte do state do seu app....
+         shoppingList: shoppingListReducer         
+      }
+    ),
+
+    BrowserModule,
+ 
+    AppRoutingModule,  //módulo de routing, customizado por nós...
+    HttpClientModule,
+ 
+    SharedModule   ///outsourcing...
+
+  ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --------> OK...
+
+
+
+
+
+  ESSA FUNCTION AGORA SERÁ ASSIGNADA COMO 'VALUE' A ESSA KEY 
+
+
+
+
+  de 'shoppingList',
+
+
+  E ESSA KEY DEVE DESCREVER 'A QUE FEATURE DO APP ESSE REDUCER PERTENCE'.. (o nome deve ser pertinente)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+   ------> COM ISSO,
+
+
+
+   NÓS JÁ DIZEMOS AO NGRX EM QUE LUGAR ELE ENCONTRARÁ NOSSO REDUCER...
+
+
+
+
+
+
+
+   --> AGORA, QUANDO REINICIARMOS NOSSO APP,
+
+
+   O NGRX 
+
+
+
+   VAI _ LEVAR ESSE REDUCER EM CONSIDERAÇÃO,
+
+   E AÍ 
+
+   SETTAR UM APP STORE PARA NÓS,
+
+   EM QUE 
+
+
+
+   ESSE REDUCER 
+
+SERÁ REGISTRADO (
+
+
+
+    quaisquer actions que forem dispatcheadas vão ALCANÇAR ESSE REDUCER...
+
+)
+
+
+
+
+
+
+
+
+
+
+
+BEM, E PARA TESTARMOS SE ESSE APPLICATION STATE REALMENTE EXISTE,
+
+
+PODEMOS COMEÇAR PELO _ FETCH __ DE DATA__ DESSE STATE AÍ,
+
+EM ALGUM LUGAR DE NOSSO APP... (talvez por meio de 'subscribe', ou algo assim)..

@@ -1,0 +1,158 @@
+
+
+
+
+
+
+
+
+
+
+
+----->  OK.... NESSA SECTION VIMOS COMO LER ERROR MESSAGES E COMO USAR O DEBUGGER 
+
+
+DO DEVTOOLS 
+
+
+
+
+COM SOURCEMAPS...
+
+
+
+
+
+
+
+
+
+
+-> HÁ UMA TERCEIRA FERRAMENTA,
+O
+ 
+
+ 'augury'...
+
+
+
+
+
+
+
+
+
+ ----> INSTALE ESSA EXTENSION DO CHROME...
+
+
+
+
+
+
+
+
+
+ ----> quando você adicionar o augury, vocÊ ganha essa opção 
+
+
+ no DEVTOOLS... -> 
+
+ essa tool 
+
+
+ TE DEIXA EXAMINAR 
+
+
+ SEU 
+
+ APP 
+
+ ANGULAR --> TE DEIXA 
+ V
+ ER TOODS 
+
+ OS 
+
+
+
+
+ ANGULAR COMPONENTS,
+
+ VER AS PROPRIEDAEDS DE CADA COMPONENT,
+
+ ETC ETC... -> 
+
+
+
+
+
+
+
+
+
+ EM APPS MAIS COMPLEXOS TEMOS O 'INJECTION GRAPH' --> É UM GRÁFICO QUE TE DEIXA VER AS DEPENDENCIES ENTRE COMPONENTS 
+
+ E SERVICES DE SEU APP (veremos isso mais tarde)..
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+ ->EM 'router tree',
+
+
+
+
+PODEMOS VER NOSSO ROUTING...
+
+
+
+
+
+
+
+
+-> NGMODULES --> VEMOS O QUE É IMPORTADO, O QUE É DECLARADO, ETC..
+
+
+
+
+
+
+
+--> OK... --> ISSO NOS DEIXA ANALISAR NOSSAS DEPENDENCISE E TUDO MAIS...
+
+
+
+
+
+
+
+
+
+--> OU SEJA,
+
+É ÓTIMO USAR:
+
+
+
+
+
+1) DEV TOOLS CONSLLE 
+
+
+
+2) SOURCE MAPS DAS DEVTOOLS 
+
+
+
+
+3) USAR O AUGURY 

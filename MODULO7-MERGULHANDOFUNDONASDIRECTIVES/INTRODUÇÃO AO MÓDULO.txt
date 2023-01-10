@@ -1,0 +1,288 @@
+
+
+
+
+
+
+
+
+ENTENDENDO DIRECTIVES...
+
+
+
+
+
+
+
+
+
+
+
+
+--> DEVEMOS DAR UMA OUTRA OLHADA EM DIRECTIVES...
+
+
+
+
+
+
+
+
+
+
+
+-> VAMOS REPETIR O QUE VIMSO ATÉ AGORA,
+
+MAS TAMBÉM VEREMOS 
+
+
+'''COMO CONSTRUIR NOSSAS PRÓPRIAS DIRECTIVES'''....
+
+
+
+
+
+
+
+
+
+
+--> também vamos ver BEM
+
+
+
+QUAL É 
+
+A DIFERENÇA 
+
+ENTRE 
+
+''ATTRIBUTE''
+
+E 
+
+''STRUCTURAL DIRECTIVES''...
+
+
+
+
+
+
+
+
+
+
+----> STRUCTURAL DIRECTIVES --> VEREMOS  o que significa a 'estrela'
+
+
+
+nas STRUCTURAL DIRECTIVES....
+
+
+
+
+
+
+
+
+--> TEMOS ATTRIBUTE E STRUCTURAL DIRECTIVES...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ATTRIBUTE DIRECTIVES SÃO CHAMADAS DISSO
+ 
+
+
+ PQ __ ELAS __ 
+
+
+ 'SIT ON ELEMENTS',
+
+
+
+ ficam 
+
+
+
+ dentro de elementos/components EXATAMENTE COMO 'ATTRIBUTES'...
+
+
+
+
+
+
+
+
+
+
+ --> STRUCTURAL DIRECTIVES TAMBÉM 'FICAM DENTRO DOS ELEMENTS/COMPONENTS',
+
+
+ mas ELAS
+
+
+
+ tem o bonus 
+
+
+
+ de que 
+
+
+ ''ALTERAM A ESTRUTURA DO DOM AO REDOR DO ELEMENTO EM QUE FORAM POSICIONADAS''... 
+
+
+
+
+
+
+
+
+
+
+ ---> OU SEJA,
+
+ SE VOCÊ TEM '*ngIf' 
+
+
+ em um PARAGRAPHM,
+
+
+ se a condition for FALSE,
+
+
+O 
+
+PARAGRAPH É __ REMOVIDO __ DO DOM.... --> isso significa que 
+
+O 
+
+
+
+
+
+
+
+'OVERALL VIEW CONTAINER'
+
+é afetado.... ----->  já com o 'attribute directive',
+
+
+
+você 
+
+
+NUNCA ACABA DESTRUINDO UM ELEMENTO DO DOM...
+
+
+
+
+
+
+
+
+--> a única  coisa que você faz com 'attribute directives'
+
+
+É ALTERAR __ PROPRIEDADES_ DE CADA ELEMENT,
+
+
+como 
+
+por exemplo
+
+
+
+a 'backgroundColor'...
+
+
+
+
+
+
+
+
+
+------> É POR ISSO QUE TEMOS 'ATTRIBUTE DIRECTIVES' 
+
+
+afetando SÓ O ELEMENT EM QUE ESTÃO POSICIONADOS... 
+
+(
+
+
+    LOOKS LIKE A NORMAL HTML ATTRITE -----> normal, só a única coisa diferente é a marcação de 'databinding'/eventBinding...
+)
+
+
+
+
+
+
+
+
+
+
+
+--> STRUCTURAL DIRECTIVES --> AFETAM MAIS DO QUE APENAS O ELEMENT/COMPONENT EM QUE FORAM POSICIONADOS,
+
+PQ CONSEGUEM AFETAR 
+
+'A WHOLE AREA IN THE DOM' (área em redor daquele component/element)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------>  é essa a diferença entre os dois..
+
+
+
+
+
+
+
+
+--> DEVEMOS VER BREVEMENTE AS DIRECTIVES QUE JÁ CONHECEMOS,
+
+
+VER COMO AS UTILIZAMOS,
+
+
+para ENTÃO
+
+
+
+
+
+PASSARMOS AO BUILD DE NOSSAS PRÓPRIAS DIRECTIVES 
+
+
+e
+ entaõ 
+
+ para o learn 
+
+
+ sobre structural directives...

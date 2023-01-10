@@ -1,0 +1,13 @@
+MUST READ:
+
+In the next lecture, we'll create a new Angular project
+
+To ensure that this works, for the moment, make sure that you have the LTS version of NodeJS installed, NOT the latest version (from https://nodejs.org/en/).
+
+Especially double-check that you have npm version 6 installed - it's a tool that's installed together with NodeJS.
+
+We need that tool to install the Angular CLI and create new Angular projects with that CLI.
+
+Since npm v7 can cause issues, you should ensure that you use v6. Therefore, also run npm install -g npm@6 to ensure that you are using that version (on macOS, you might need to add sudo in front of that command).
+
+Thereafter, you can proceed to creating a new Angular project.

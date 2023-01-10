@@ -1,0 +1,2940 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR ESPERA QUE TENHA FICADO CLARA A RAZÃO 
+
+
+
+
+
+DE 
+
+
+
+''NÓS NUNCA DEVEMOS RETORNAR/FAZER O THROW DE UM ERROR 
+
+
+
+DENTRO DE UM OBSERVABLE STREam'....
+
+
+
+
+
+
+
+
+
+--> isso pq esse movimento vai 
+
+
+
+
+'MATAR A OBSERVABLE STREAM',
+
+o que é fatal para os SIDE EFFECTS DE NOSSO APP...
+
+
+
+
+
+
+
+
+
+
+-----> meu código, no momento, está assim:
+
+
+
+
+
+
+
+
+
+  authLogin$ = createEffect(() => {
+    return this.actions$.pipe( ///pipe call no nosso OUTER OBSERVABLE, que é this.actions$....
+      ofType(AuthActions.AUTH_START),
+      switchMap((authData: AuthActions.AuthStart) => {
+        const requestHeaders = new HttpHeaders();
+        requestHeaders.append('Content-Type', 'application/json');
+
+        const httpAuthData = {
+          email: authData.payload.email,
+          password: authData.payload.password,
+        };
+
+        return this.http.post<AuthResponseData>(  //aqui temos um pipe call NO NOSSO INNER OBSERVABLE, que é 'this.http.post()'...
+          `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`,
+          httpAuthData,
+
+          {
+            headers: requestHeaders,
+          }
+        ).pipe(  ///AQUI, ESTAMOS CHAMANDO '.pipe()' NO NOSSO INNER OBSERVABLE, em 'this.http.post()' (ao contrário do OUTER OBSERVABLE, que é 'this.actions$.post()' )...
+          catchError( ///executa código e faz dispatch de uma action de 'AUTH_FAIL' CASO OCORRA UM ERROR NO SEND DESSE HTTP REQUEST/RESPONSE recebida por ele..
+            (error) => {  
+                ////usamos o 'of()' para CRIAR UM NOVO OBSERVABLE, OBSERVABLE QUE NÃO SEJA DE 'ERROR', pq queremos MANTER A 'OBSERVABLE STREAM' de this.actions$.pipe()' SEMPRE VIVA...
+                
+                
+                of()
+            }
+          ),
+          map(  ////executa código e faz dispatch de uma cation de 'AUTH_SUCCESS' caso não ocorra nenhum error com esse http request observable...
+            (resData) => {
+
+            }
+          )
+        )
+      })
+    );
+  });
+
+
+
+
+
+
+
+
+
+
+  -----> OK... 
+
+
+
+
+
+
+
+
+
+  MAS A PERGUNTA, AQUI, É:
+
+
+
+
+
+
+
+
+
+
+
+  ''''NÓS ESTAMOS CRIANDO NOVOS OBSERVABLES 
+
+
+ em 'catchError()'
+
+ e 'map()',
+
+
+
+
+
+
+MAS AINDA NÃO SABMEOS O QUE COLOCAR _ _DENTRO_ DESSES OBSERVABLES...'''
+
+
+
+
+
+
+
+
+
+
+-> UM CONSENSO É 
+
+
+
+
+
+
+QUE 
+
+'VOCê TIPICAMENTE VAI QUERER DISPATCH UMA NOVA ACTION ASSIM QUE 
+
+
+VOCÊ TERMINAR COM TODO O CÓDIGO 
+
+
+QUE EXISTIA NO SEU 'EFFECT'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> O QUE DEVE SER FEITO,M AQUI ,
+
+
+
+
+
+
+
+É __ REFERENCIAR/CHAMAR 
+
+
+
+
+
+
+
+
+A SUA 
+
+'NOVA ACTION' (criada nesse proprio reducer)
+,
+
+
+
+
+dentro do  'catchError'..
+
+
+
+
+
+
+
+
+
+
+-----> QUANTO AO DISPATCH DE ACTIONS EM 'effects',
+
+
+VOCÊ 
+
+
+
+
+
+
+
+NUNCA PRECISA CHAMAr 'dispatch',
+
+
+
+
+
+
+
+
+
+
+
+
+PQ 
+
+
+
+
+ISSO _ TAMBÉM É FEITO  AUTOMATICAMENTE PELO NGRX....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ou seja,
+
+
+
+
+DENTRO DE 'of()'
+
+
+VOCÊ 
+
+DEVE _ TER SUA 'NEW ACTION',
+
+
+
+
+
+
+
+
+
+
+ a action que precisa ser dispatcheada... --> 
+
+
+
+
+
+
+
+
+
+ E O INTERESSANTE, AQUI, É QUE 
+
+ VOCÊ NEM MESMO PRECISARÁ CHAMAR 'dispatch',
+
+
+
+
+
+
+
+
+
+ PQ __ ISSO _ TAMBÉM É PARCIALMENTE FEITO PELO 'NGRX/effects'....
+
+
+
+
+
+
+
+
+
+
+
+
+ --> ISSO QUER DIZER QUE 
+
+
+ O _ 'RESULT' DE SUA CHAIN INTEIRA ALI,
+
+
+
+
+
+
+ VAI SER AUTOMATICAMENTE TRATADA COMO UMA __ '''ACTION__'''
+
+
+ PELO NGRX/EFFECTS,
+
+
+
+
+ O QUE FARÁ COM QUE 
+
+ ELA SEJA DISPATCHEADA IMEDIATAMENTE...
+
+
+
+
+
+
+
+
+
+
+ -> ISSO QUER DIZER QUE DENTRO DE 'of()'
+
+
+
+ SÓ PREICSAMOS FAZER 'RETURN/ADD'
+
+
+ DE UM __ ACTION OBJECT,
+
+ QUE 
+ O 
+
+
+
+ NGRX*/EFFECTS VAI 
+
+
+ AUTOMATICAMENTE DISPATCHEAR 
+
+
+ ESSA ACTION PARA VOCÊ...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> E ISSO SIGNIFICA QUE AQUI, É CLARO,
+
+ PODEMOS __ CRIAR UMA NOVA ACTION...
+
+
+
+
+
+
+
+ Ex:
+
+
+
+
+
+         ).pipe(  ///AQUI, ESTAMOS CHAMANDO '.pipe()' NO NOSSO INNER OBSERVABLE, em 'this.http.post()' (ao contrário do OUTER OBSERVABLE, que é 'this.actions$.post()' )...
+          catchError( ///executa código e faz dispatch de uma action de 'AUTH_FAIL' CASO OCORRA UM ERROR NO SEND DESSE HTTP REQUEST/RESPONSE recebida por ele..
+            (error) => {  
+                ////usamos o 'of()' para CRIAR UM NOVO OBSERVABLE, OBSERVABLE QUE NÃO SEJA DE 'ERROR', pq queremos MANTER A 'OBSERVABLE STREAM' de this.actions$.pipe()' SEMPRE VIVA...
+                
+                
+                of()
+            }
+          ),
+          map(  ////executa código e faz dispatch de uma cation de 'AUTH_SUCCESS' caso não ocorra nenhum error com esse http request observable...
+            (resData) => {
+                    of()
+            }
+          )
+        )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        -> MAS É CLARO QEU AINDA NÃO TEMOS NENHUMA ACTION PARA O 'ERROR CASE',
+
+
+
+
+
+
+        POR ISSO VAMOS SIMPLESMENTE EVITAR 
+
+        ESSE CÓDIGO AÍ,
+
+
+
+
+        e aí 
+
+        EVITAR O CREATE DE QUAISQUER CÓDIGOS NO NOSSO APP, PELO MENOS 
+
+
+
+
+
+        ATÉ 
+
+
+
+        NÓS APRENDERMOS SOBRE PROPER ERROR HANDLING...
+
+
+
+
+
+
+
+
+
+
+
+
+
+        --> É POR ISSO QUE O PROFESSOR, PROVISORIAMENMTE,
+
+
+
+        VAI FAZER O RETURN DE UM 'EMPTY OBSERVABLE',
+
+
+        por mei odo código 
+
+
+
+
+
+
+
+        de 
+
+
+
+        .pipe(
+            catchError(
+                (error) => {
+                    return of();
+                }
+            ),
+
+
+            map(
+                (resData) => {
+                    return of();
+                }
+            )
+        )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        ---------> MAS NO CASO DE 'map()',
+
+
+        DO SUCCESS CASE,
+
+        VAMOS QUERER RETORANR UM OBSERVABLE 
+
+
+
+MESMO,
+
+
+UM OBSERVABLE QUE VAI 'HOLD' A NOSSA ACTION DE 'LOGIN',
+
+
+
+
+
+
+A ACTION DE 'auth_SUCCESS',
+
+
+
+
+
+
+
+que não é a mesma de 'AUTH_START.'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+of()  --> NOSSA NOVA ACTION DEVE CONSTAR NO SEU INTERIOR....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS DENTRO DE 'of()"
+
+vamos APENAS COLOCAR NOSSA ACTION
+,
+
+
+
+sem chamar 'dispatch()',
+
+PQ 
+
+
+ESSE DISPATCH TAMBÉM SERÁ FEITO PELO 
+
+
+'@Effect' ----->  PQ TODO O RESULTADO DE SUA CHAIN,
+
+DO CÓDIGO INTEIRO DA CHAIN,
+
+
+
+
+
+SERÁ_ TRATADO 'COMO UMA ACTION' pelo ngrx...
+
+
+
+
+
+
+
+
+
+
+
+TUDO ISTO AQUI SERÁ TRATADO COMO UMA ÚNICA ACTION:
+
+
+
+
+  authLogin$ = createEffect(() => {
+    return this.actions$.pipe( ///pipe call no nosso OUTER OBSERVABLE, que é this.actions$....
+      ofType(AuthActions.AUTH_START),
+      switchMap((authData: AuthActions.AuthStart) => {
+        const requestHeaders = new HttpHeaders();
+        requestHeaders.append('Content-Type', 'application/json');
+
+        const httpAuthData = {
+          email: authData.payload.email,
+          password: authData.payload.password,
+        };
+
+        return this.http.post<AuthResponseData>(  //aqui temos um pipe call NO NOSSO INNER OBSERVABLE, que é 'this.http.post()'...
+          `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`,
+          httpAuthData,
+
+          {
+            headers: requestHeaders,
+          }
+        ).pipe(  ///AQUI, ESTAMOS CHAMANDO '.pipe()' NO NOSSO INNER OBSERVABLE, em 'this.http.post()' (ao contrário do OUTER OBSERVABLE, que é 'this.actions$.post()' )...
+          catchError( ///executa código e faz dispatch de uma action de 'AUTH_FAIL' CASO OCORRA UM ERROR NO SEND DESSE HTTP REQUEST/RESPONSE recebida por ele..
+            (error) => {  
+                ////usamos o 'of()' para CRIAR UM NOVO OBSERVABLE, OBSERVABLE QUE NÃO SEJA DE 'ERROR', pq queremos MANTER A 'OBSERVABLE STREAM' de this.actions$.pipe()' SEMPRE VIVA...
+                
+                
+                of()
+            }
+          ),
+          map(  ////executa código e faz dispatch de uma action de 'AUTH_SUCCESS' caso não ocorra nenhum error com esse http request observable...
+            (resData) => {
+
+            }
+          )
+        )
+      })
+    );
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> ISSO SERÁ TRATADO COMO UMA ACTION E ENTAÕ SERÁ DISPATCHEADo....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> OK.... ISSO SIGNIFICA QUE 
+
+
+  DENTRO DE 'of()"
+
+
+
+  VOCê SÓ PRECISA ESCREVER UM OBJECT DE 
+
+  ACTION,
+
+
+  QUE O NGRX/EFFECTS VAI AUTOMATICAMENTE DISPATCHEAR ISSO PARA NÓS..
+
+
+
+
+
+
+
+
+
+
+
+  --> ok...
+
+
+
+
+
+
+
+
+  o professor escreve assim:
+
+
+
+
+
+
+
+
+
+
+
+  catchError(
+    (error) => {
+
+
+
+            of()
+    }
+  )
+
+
+
+
+
+
+
+
+
+
+
+-----> MAS NÃO VAMOS CRIAR NENHUMA ACTION PARA O ERROR CASE, POR ENQUANTO, PQ AINDA NÃO TEMOS 
+
+PROPER ERROR HANDLING....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> MAS EM 'MAP',
+
+podemos 
+
+
+RETORNAR UM OBSERVABLE DE VERDADE...
+
+
+
+
+
+
+
+
+
+
+
+
+-> VAMOS QUERER __ RETORNAR _UM OBSERVABLE QUE VAI 'HOLD' 
+
+A 
+
+
+
+NOSSA 'LOGIN ACTION'  
+
+
+
+
+
+
+
+
+
+
+
+
+-> A ACTION DE LOGIN, NO MEU CASE,
+
+É 
+
+'AUTH_SUCCESS'..
+
+
+
+
+ 
+
+
+
+
+
+
+ --> ISSO PQ, NESSE MOMENTO NO TEMPO,
+  
+
+
+  TEMOS 1 'SUCCESSFULLY LOGGED-IN USER',
+
+
+
+
+
+  E AÍ QUEREMOS REFLETIR ISSO NO NOSSO APP STATE,
+
+
+
+
+
+  POR MEIO DO REACH OUT AO 
+
+  CÓDIGO DE 
+
+
+
+
+'LOGIN', LÓGICA DE LOGIN 
+
+
+
+QUE DEFINIMOS LÁ 
+
+
+NO NOSSO REDUCER,
+
+
+NESTE CASE AQUI:
+
+
+
+
+
+    case AuthActions.AUTH_SUCCESS:
+      return authSuccess(state, action as AuthActions.AuthSuccess);
+
+
+
+
+
+
+
+
+      const authSuccess = (
+  state: AuthState,
+  action: AuthActions.AuthSuccess
+): AuthState => {
+  const { token, email, id } = action.payload;
+
+  return updateObject(state, {
+    isLoading: false,
+    token: token,
+    email: email,
+    userId: id,
+  });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> PARA ISSO, PRECISAMOS DISPATCHEAR ESSA ACTION DE LOGIN..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> é por isso que em auth.effects.ts  
+
+
+
+O PROFESSRO ESCREVE ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+map(
+    (resData) => {
+
+
+        return of(new AuthActions.AuthSuccess())
+    }
+)
+
+
+
+
+
+
+
+
+
+
+--------> MAS É CLARO QUE DENTRO DESSE 'AuthSuccess()'
+
+
+
+SOMOS FORÇADOS_ A PASSAR OS PARÂMETROS RELATIVOS à 'userData',
+
+QUE SÃO 
+
+
+
+
+
+''email, token, userId,''',
+
+
+etc...
+
+
+
+
+
+
+
+
+
+
+
+EU ESCREVO ASSIm:
+
+
+
+
+
+
+
+.pipe(  
+          catchError( 
+            (error) => {  
+                
+                
+                of()
+            }
+          ),
+        map( 
+            (resData: AuthResponseData) => {
+
+                const expirationDate = new Date( 
+                new Date().getTime() + +resData.expiresIn * 1000
+              );
+
+                of(new AuthActions.AuthSuccess(new User(resData.email, resData.localId, resData.idToken, expirationDate)))
+            }
+          )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    OK... 
+
+
+
+
+
+
+
+
+
+
+
+
+    MAS O PROFESSOR DIZ QUE O TYPESCRIPT VAI CHORAMINGAR AQUI, VAI PEDIR QUE COLOQUEMOS 'map()"
+
+    ANTES DE 'catchError',
+
+
+
+
+
+    pq 
+
+    o 'map()'
+
+    SERÁ __ SKIPPADO EM CASOS DE ERROR....
+
+
+
+
+
+
+
+
+
+
+
+
+    EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      authLogin$ = createEffect(() => {
+    return this.actions$.pipe( ///pipe call no nosso OUTER OBSERVABLE, que é this.actions$....
+      ofType(AuthActions.AUTH_START),
+      switchMap((authData: AuthActions.AuthStart) => {
+        const requestHeaders = new HttpHeaders();
+        requestHeaders.append('Content-Type', 'application/json');
+
+        const httpAuthData = {
+          email: authData.payload.email,
+          password: authData.payload.password,
+        };
+
+        return this.http.post<AuthResponseData>(  //aqui temos um pipe call NO NOSSO INNER OBSERVABLE, que é 'this.http.post()'...
+          `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`,
+          httpAuthData,
+
+          {
+            headers: requestHeaders,
+          }
+        ).pipe(  ///AQUI, ESTAMOS CHAMANDO '.pipe()' NO NOSSO INNER OBSERVABLE, em 'this.http.post()' (ao contrário do OUTER OBSERVABLE, que é 'this.actions$.post()' )...
+        map(  // 1 ////  executa código e faz dispatch de uma action de 'AUTH_SUCCESS' caso não ocorra nenhum error com esse http request observable...
+        (resData: AuthResponseData) => {
+
+            const expirationDate = new Date( 
+            new Date().getTime() + +resData.expiresIn * 1000
+          );
+
+            of(new AuthActions.AuthSuccess(new User(resData.email, resData.localId, resData.idToken, expirationDate)))
+        }
+      ),
+        catchError( /// 2 //// executa código e faz dispatch de uma action de 'AUTH_FAIL' CASO OCORRA UM ERROR NO SEND DESSE HTTP REQUEST/RESPONSE recebida por ele..
+            (error) => {  
+                ////usamos o 'of()' para CRIAR UM NOVO OBSERVABLE, OBSERVABLE QUE NÃO SEJA DE 'ERROR', pq queremos MANTER A 'OBSERVABLE STREAM' de this.actions$.pipe()' SEMPRE VIVA...
+                
+                
+                of()
+            }
+          ),
+
+        )
+      })
+    );
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  CERTO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> já passamos os parameters ao call da action,
+
+
+  nada de mais...
+
+
+
+
+
+
+
+
+  -> todas essas infos são retiradas da 'AuthResponseData'...
+
+
+
+
+
+
+
+
+
+
+
+  --> E ESSA ACTION VAI SER AUTOMATICAMENTE DISPATCHEADA PELO NGRX/EFFECTS..
+
+
+
+
+
+
+
+
+
+
+  ---> O PROFESSOR FALOU MT...
+
+
+
+
+
+
+
+
+
+
+  --> O ERROR CASE É IGNORADO, TAMBÉM O SIGNUP, MAS APENAS POR ENQUANTO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> AGORA DEVEMOS NOS ASSEGURAR QUE CONSEGUIMOS 'TIRAR VANTAGEM' 
+
+
+  DE NOSSO EEFFECT AQUI, PARA REALIZAR O LOG
+  
+
+
+
+
+
+
+
+
+
+
+  --> E PARA _ _ CONSEGUIR TIRAR VANTAGEM DESSE 'EFFECT',
+
+  PRECISAMOS 'WIRE EVERYTHING UP'...
+
+
+
+
+
+
+
+
+
+
+
+  --> PARA _ CONECTAR __ NOSSOS EFFECTS AO NOSSO CÓDIGO,
+
+
+
+
+
+
+
+
+  PRIMEIRAMENTE DEVEMOS IR ATÉ 
+
+  'AuthEffects',
+
+
+  a nossa class,
+
+
+
+
+
+
+
+
+
+E __ ENTÃO ADICIONAR O CLÁSSICO 
+'@Injectable()'...
+
+
+
+
+
+
+
+
+
+
+
+-> O '@Injectable'
+
+
+decorator é essencial,
+
+
+é obrigatório,
+
+
+
+
+
+
+
+
+
+
+MAS _ VOCÊ _ NÃO DEVE __ FAZER INJECt_ DO 
+
+
+
+
+SEU 
+
+
+
+EFFECT/EFFECTS NA ROOT DE SEU APP..
+
+
+
+
+
+
+
+
+
+
+-> SEUS EFFECTS NÃO PRECISAM SER PROVIDENCIADOS/INJETADOS NO ROOT DO APP,
+
+
+
+
+
+
+
+
+
+
+MAS PRECISAM SER 'INJECTABLE'
+
+
+para que 
+
+
+
+
+
+_ COISAS _ 
+
+
+
+
+
+DIVERSAS __ POSSAM SER INJETADAS_ DENTRO DESSA CLASS (como o service de 'http', com o HttpClient, etc)...
+
+
+
+
+
+
+
+
+--> também pq fazemos INJECT DAS 'actions' nessa nossa class....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK... ADICIONAMOS ESSE INJECTABLE PARA QUE COISAS CONSIGAM SER INJECTED 
+
+
+NESSE 'effects'...
+
+
+
+
+
+
+
+
+
+
+-> MAS PARA _ REGISTRARMOS _ TODOS OS 'EFFECTS' E ESSA LÓGICA DE EFFECTS _ GLOBALMENTE,
+
+
+
+
+
+DEVEMOS OBRIGATORIAMENTE IR ATÉ O APP.MODULE.TS,
+
+
+
+
+
+
+
+
+EM QUE 
+
+
+NÓS TAMBÉM JÁ HAVÍAMOS REGISTRADO O  'StoreModule',
+
+DE ACORDO COM ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+
+    GenericErrorPageComponent,
+    HomePageComponent,
+
+  ],
+  imports: [
+    // AuthModule, ///outsourcing em essa 'feature module'...  ////depois removemos esse import daqui, pq passamos a fazer LAZYLOADING desse module, com a ajuda de 'app-routing.module.ts'...
+    
+    
+    // StoreModule.forRoot( ////é o 'CENTRAL STORE' de nosso app, implementado com NGRX...  //// aqui, precisamos dizer 'QUAIS REDUCERS VÃO SER USADOS NO NOSSO APP, QUE VÃO COMPOR NOSSA CENTRAL STORE, essencialmente'...
+    //   { ///1 identifier para cada 'PARTE/REDUCER' do seu app, cada parte do state do seu app....
+    //      shoppingList: shoppingListReducer       
+    //   }
+    // ),
+
+    StoreModule.forRoot(
+      reducers
+    ),
+
+    BrowserModule,
+ 
+    AppRoutingModule,  //módulo de routing, customizado por nós...
+    HttpClientModule,
+ 
+    SharedModule   ///outsourcing...
+
+  ],
+
+  providers: [RecipeBookService, ShoppingListService, LoggingService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpInterceptorService,
+      multi: true
+    }
+  
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK.... DEPOIS DO REGISTER DO 
+
+
+'STOREMODULE',
+
+
+
+
+
+
+
+NÓS _ VAMOS _QUERER _ REGISTRAR 
+
+
+
+
+
+
+
+
+UM _ NOVO MODULE,
+
+
+
+O MODULE DE 
+
+
+
+'EffectsModule',
+
+
+
+QUE SERÁ 
+
+
+IMPORTADO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+import { EffectsModule } from '@ngrx/effects';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CÓDIGO COMPLETO:
+
+
+
+
+
+
+
+
+
+
+
+  imports: [
+    // AuthModule, ///outsourcing em essa 'feature module'...  ////depois removemos esse import daqui, pq passamos a fazer LAZYLOADING desse module, com a ajuda de 'app-routing.module.ts'...
+    
+    
+    // StoreModule.forRoot( ////é o 'CENTRAL STORE' de nosso app, implementado com NGRX...  //// aqui, precisamos dizer 'QUAIS REDUCERS VÃO SER USADOS NO NOSSO APP, QUE VÃO COMPOR NOSSA CENTRAL STORE, essencialmente'...
+    //   { ///1 identifier para cada 'PARTE/REDUCER' do seu app, cada parte do state do seu app....
+    //      shoppingList: shoppingListReducer       
+    //   }
+    // ),
+
+    StoreModule.forRoot(
+      reducers
+    ),
+    EffectsModule, //essencial para o run de código async com nossos reducers (Suportando nossos reducers com código async)....
+
+    BrowserModule,
+ 
+    AppRoutingModule,  //módulo de routing, customizado por nós...
+    HttpClientModule,
+ 
+    SharedModule   ///outsourcing...
+
+  ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> OK...
+
+
+
+
+
+
+
+
+E ESSE MODULE DE 'EffectsModule'
+
+
+
+
+
+TAMBÉM _ TEM UM METHOD DE 
+
+
+'forRoot()',
+
+
+
+
+
+
+
+___ 
+
+
+
+
+
+
+E _ A ESSE METHOD VOCê _ TAMBÉM _ DEVE PASSAR _ UM __ ARRAY__ DE SEUS ROOT EFFECTS....
+
+
+
+
+
+
+
+por 'root effects',
+
+queremos dizer os 
+
+
+OS EFFECT CLASSES DE SEU APP, como esse próprio 'authEffects'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+  imports: [
+    // AuthModule, ///outsourcing em essa 'feature module'...  ////depois removemos esse import daqui, pq passamos a fazer LAZYLOADING desse module, com a ajuda de 'app-routing.module.ts'...
+    
+    
+    // StoreModule.forRoot( ////é o 'CENTRAL STORE' de nosso app, implementado com NGRX...  //// aqui, precisamos dizer 'QUAIS REDUCERS VÃO SER USADOS NO NOSSO APP, QUE VÃO COMPOR NOSSA CENTRAL STORE, essencialmente'...
+    //   { ///1 identifier para cada 'PARTE/REDUCER' do seu app, cada parte do state do seu app....
+    //      shoppingList: shoppingListReducer       
+    //   }
+    // ),
+
+    StoreModule.forRoot(
+      reducers
+    ),
+    EffectsModule.forRoot(), //essencial para o run de código async com nossos reducers (Suportando nossos reducers com código async)....
+                    ///nesse 'forRoot()" do EffectsModule vocÊ deve passar um ARRAY DE SEUS 'ROOT' EFFECTS /effect classes...
+    BrowserModule,
+ 
+    AppRoutingModule,  //módulo de routing, customizado por nós...
+    HttpClientModule,
+ 
+    SharedModule   ///outsourcing...
+
+  ],
+
+
+
+
+
+
+
+
+
+
+
+  ---------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+  OK..
+
+
+
+
+
+
+
+  BASTA IMPORTAR O 'AuthEffects'
+
+
+  E ENTÃO O REGISTRAR COMO 'UMA DAS CLASSES QUE SEGURAM EFFECTS',
+
+  de nosso código....
+
+
+
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    imports: [
+    // AuthModule, ///outsourcing em essa 'feature module'...  ////depois removemos esse import daqui, pq passamos a fazer LAZYLOADING desse module, com a ajuda de 'app-routing.module.ts'...
+    
+    
+    // StoreModule.forRoot( ////é o 'CENTRAL STORE' de nosso app, implementado com NGRX...  //// aqui, precisamos dizer 'QUAIS REDUCERS VÃO SER USADOS NO NOSSO APP, QUE VÃO COMPOR NOSSA CENTRAL STORE, essencialmente'...
+    //   { ///1 identifier para cada 'PARTE/REDUCER' do seu app, cada parte do state do seu app....
+    //      shoppingList: shoppingListReducer       
+    //   }
+    // ),
+
+    StoreModule.forRoot(
+      reducers
+    ),
+    EffectsModule.forRoot([AuthEffects]), //essencial para o run de código async com nossos reducers (Suportando nossos reducers com código async)....
+                    ///nesse 'forRoot()" do EffectsModule vocÊ deve passar um ARRAY DE SEUS 'ROOT' EFFECTS /effect classes...
+    BrowserModule,
+ 
+    AppRoutingModule,  //módulo de routing, customizado por nós...
+    HttpClientModule,
+ 
+    SharedModule   ///outsourcing...
+
+  ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK...
+
+
+
+
+
+
+
+
+
+ISSO QUER DIZER QUE AGORA ESTAMOS PASSANDO ESSE 'EFFECTS'
+
+A ESSE MODULE,
+
+E AGORA 
+
+
+
+
+
+O NGRX/EFFECTS FAZ O RESTO, VAI SETTAR TUDO ISSO PARA NÓS...
+
+
+
+
+
+
+
+
+--> OK... TUDO QUE RESTA A NÓS, AGORA,
+
+
+É ACTUALLY _ FAZER O DISPATCH DE UMA 'LOGIN ACTION'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA ISSO,
+
+JÁ TINHAMOS NOSSA ACTION DE 'AUTH_START',
+
+que é esta:
+
+
+
+
+export class AuthStart implements Action {
+  readonly type = AUTH_START;
+
+  constructor(public payload: {email: string, password: string}) {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo... 
+
+
+TUDO QUE 
+
+PRECISAMOS FAZER,
+AGORA,
+
+
+
+É IR 
+
+ATÉ O LUGAR EM QUE CHAMAMOS 
+
+
+'auth_start'
+
+
+
+LÁ 
+
+
+
+NO 
+
+
+
+
+
+service de 'auth.service.ts',
+
+ 
+
+
+
+
+
+ QUE É JUSTAMENTE LÁ NO COMPONENT DE 'authPage.component.ts',
+
+
+
+
+
+ COMO OBSERVADO POR ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ import {
+  Component,
+  ComponentFactoryResolver,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Observable, Subscription } from 'rxjs';
+import { AuthResponseData, AuthService } from './auth.service';
+import { PlaceholderDirective } from '../placeholderDirective/placeholder.directive';
+
+import { AlertDynamicComponent } from '../shared/alertVersaoImperativa/alert.component';
+
+@Component({
+  selector: 'app-auth-page',
+  templateUrl: './auth-page.component.html',
+  styleUrls: ['./auth-page.component.css'],
+})
+export class AuthPageComponent implements OnInit, OnDestroy {
+  isSignup: boolean = true;
+
+  isLoading: boolean = false;
+
+  closeAlertBoxSubscription: Subscription;
+
+  @ViewChild(PlaceholderDirective, { static: false })
+  dynamicAlertBoxHost: PlaceholderDirective;
+
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private componentFactoryResolver: ComponentFactoryResolver
+  ) {}
+
+  ngOnInit(): void {}
+
+  private showErrorAlert(errorMessage: string) {
+    const alertComponentFactory =
+      this.componentFactoryResolver.resolveComponentFactory(
+        AlertDynamicComponent
+      );
+
+    const hostViewContainerRef = this.dynamicAlertBoxHost.viewContainerRef;
+
+    hostViewContainerRef.clear();
+
+    const componentReference = hostViewContainerRef.createComponent(
+      alertComponentFactory
+    );
+
+    componentReference.instance.message = errorMessage;
+
+    this.closeAlertBoxSubscription =
+      componentReference.instance.close.subscribe(() => {
+        this.closeAlertBoxSubscription.unsubscribe();
+        hostViewContainerRef.clear();
+      });
+  }
+
+  onAuthFormSubmit(form: NgForm) {
+    if (!form.valid) {
+      return;
+    }
+
+    const email = form.form.get('email')?.value;
+    const password = form.form.get('password')?.value;
+
+    const userData = {
+      email: email,
+      password: password,
+      returnSecureToken: true,
+    };
+
+    let authObs: Observable<AuthResponseData>;
+
+    this.isLoading = true;
+
+    if (!this.isSignup) {
+      authObs = this.authService.onLogin(userData);
+    } else {
+      authObs = this.authService.onCreateAccount(userData);
+    }
+
+    authObs.subscribe(
+      (responseData) => {
+        this.isLoading = false;
+        this.router.navigate(['/recipe-book']);
+      },
+
+      (errorMessage) => {
+        console.log(errorMessage);
+        this.isLoading = false;
+
+        this.showErrorAlert(errorMessage);
+      }
+    );
+
+    form.reset();
+  }
+
+  onSwitchAuth() {
+    console.log('test');
+    this.isSignup = !this.isSignup;
+  }
+
+  ngOnDestroy(): void {
+    if (this.closeAlertBoxSubscription) {
+      this.closeAlertBoxSubscription.unsubscribe();
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> o código, portanto, fica em 
+
+
+
+
+
+''onSubmit'':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+onAuthFormSubmit(form: NgForm) {
+    if (!form.valid) {
+      return;
+    }
+
+    const email = form.form.get('email')?.value;
+    const password = form.form.get('password')?.value;
+
+    const userData = {
+      email: email,
+      password: password,
+      returnSecureToken: true,
+    };
+
+    let authObs: Observable<AuthResponseData>;
+
+    this.isLoading = true;
+
+    if (!this.isSignup) {
+      authObs = this.authService.onLogin(userData);
+    } else {
+      authObs = this.authService.onCreateAccount(userData);
+    }
+
+    authObs.subscribe(
+      (responseData) => {
+        this.isLoading = false;
+        this.router.navigate(['/recipe-book']);
+      },
+
+      (errorMessage) => {
+        console.log(errorMessage);
+        this.isLoading = false;
+
+        this.showErrorAlert(errorMessage);
+      }
+    );
+
+    form.reset();
+  }
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> AGORA SÓ TEMOS QUE FAZER O DISPATCH DE UMA 'ACTION DE LOGIN' 
+
+
+
+
+
+
+  no nosso código...
+
+
+
+
+
+
+
+
+
+  --> bem, lá em 'onSubmit'...
+
+
+
+
+
+
+
+
+
+
+  --> LÁ EM 'onAuthFormSubmit',
+
+
+
+
+
+TEMOS AQUELES OBSERVABLES 
+
+
+PARA 'LOGIN' E 'SIGNUP':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import {
+  Component,
+  ComponentFactoryResolver,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Observable, Subscription } from 'rxjs';
+import { AuthResponseData, AuthService } from './auth.service';
+import { PlaceholderDirective } from '../placeholderDirective/placeholder.directive';
+
+import { AlertDynamicComponent } from '../shared/alertVersaoImperativa/alert.component';
+
+@Component({
+  selector: 'app-auth-page',
+  templateUrl: './auth-page.component.html',
+  styleUrls: ['./auth-page.component.css'],
+})
+export class AuthPageComponent implements OnInit, OnDestroy {
+  isSignup: boolean = true;
+
+  isLoading: boolean = false;
+
+  closeAlertBoxSubscription: Subscription;
+
+  @ViewChild(PlaceholderDirective, { static: false })
+  dynamicAlertBoxHost: PlaceholderDirective;
+
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private componentFactoryResolver: ComponentFactoryResolver
+  ) {}
+
+  ngOnInit(): void {}
+
+  private showErrorAlert(errorMessage: string) {
+    const alertComponentFactory =
+      this.componentFactoryResolver.resolveComponentFactory(
+        AlertDynamicComponent
+      );
+
+    const hostViewContainerRef = this.dynamicAlertBoxHost.viewContainerRef;
+
+    hostViewContainerRef.clear();
+
+    const componentReference = hostViewContainerRef.createComponent(
+      alertComponentFactory
+    );
+
+    componentReference.instance.message = errorMessage;
+
+    this.closeAlertBoxSubscription =
+      componentReference.instance.close.subscribe(() => {
+        this.closeAlertBoxSubscription.unsubscribe();
+        hostViewContainerRef.clear();
+      });
+  }
+
+  onAuthFormSubmit(form: NgForm) {
+    if (!form.valid) {
+      return;
+    }
+
+    const email = form.form.get('email')?.value;
+    const password = form.form.get('password')?.value;
+
+    const userData = {
+      email: email,
+      password: password,
+      returnSecureToken: true,
+    };
+
+    let authObs: Observable<AuthResponseData>;
+
+    this.isLoading = true;
+
+    if (!this.isSignup) {
+      authObs = this.authService.onLogin(userData);
+    } else {
+      authObs = this.authService.onCreateAccount(userData);
+    }
+
+    authObs.subscribe(
+      (responseData) => {
+        this.isLoading = false;
+        this.router.navigate(['/recipe-book']);
+      },
+
+      (errorMessage) => {
+        console.log(errorMessage);
+        this.isLoading = false;
+
+        this.showErrorAlert(errorMessage);
+      }
+    );
+
+    form.reset();
+  }
+
+  onSwitchAuth() {
+    console.log('test');
+    this.isSignup = !this.isSignup;
+  }
+
+  ngOnDestroy(): void {
+    if (this.closeAlertBoxSubscription) {
+      this.closeAlertBoxSubscription.unsubscribe();
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> este código aqui:
+
+
+
+
+
+
+
+    let authObs: Observable<AuthResponseData>;
+
+    this.isLoading = true;
+
+    if (!this.isSignup) {
+      authObs = this.authService.onLogin(userData);
+    } else {
+      authObs = this.authService.onCreateAccount(userData);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> esses OBSERVABLES SÃO USADOS PARA LOGIN/SIGNUP..
+
+
+
+
+
+
+
+-_> MAS AQUI, QUANDO FAZEMOS LOGIN,
+
+
+
+NÃO VAMOS QUERER EXECUTAR AQUELA LÓGICA DO SUBSCRIBE QUE TEMOS LOGO EMBAIXO:
+
+
+
+
+
+
+    authObs.subscribe(
+      (responseData) => {
+        this.isLoading = false;
+        this.router.navigate(['/recipe-book']);
+      },
+
+      (errorMessage) => {
+        console.log(errorMessage);
+        this.isLoading = false;
+
+        this.showErrorAlert(errorMessage);
+      }
+    );
+
+    form.reset();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> EM VEZ DISSO,
+
+
+AGORA VAMOS QUERER _USAR, AQUI, A NOSSA STORE...
+
+
+
+
+
+
+
+
+
+
+
+-> PARA ISSO DEVEMOS __ INJETAR__ NOSSA STORE,
+
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private store: Store<AppState>
+  ) {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... TEMOS O CÓDIGO VELHO, QUE USA OBSERVABLES,
+
+
+e que 
+
+
+então 
+
+
+
+
+retorna nossa authData:
+
+
+
+    if (!this.isSignup) {
+      authObs = this.authService.onLogin(userData);
+    } else {
+      authObs = this.authService.onCreateAccount(userData);
+    }
+
+
+
+
+
+
+
+
+
+
+--> AGORA VAMOS SUBSTITUIR 
+
+
+
+ESSE CÓDIGO AÍ...
+
+
+
+
+
+
+--> VAMOS COMENTAR ESSES OBSERVABLES PARA FORA,
+
+
+para aí 
+usar 
+
+
+'this.store.dispatch()'..
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+if (this.isLoginMode) {
+
+
+  this.store.dispatch(AuthActions.AuthStart())
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> A ESSE 'AUTHSTART'
+
+vamos passar 2 pedaços de info, que serão:
+
+
+
+1) EMAIL 
+
+
+2) PASSWORD...
+
+
+
+
+
+
+
+
+--> ok, repassamos essa data, e o 
+
+
+
+call do dispatch fica assim:
+
+
+
+
+
+
+
+
+
+    if (!this.isSignup) {
+      this.store.dispatch(new AuthActions.AuthStart(email, password));
+      
+    } else {
+    }
+
+
+
+
+
+
+
+
+
+
+OK... ISSO SERÁ 'DISPATCHED', sim...
+
+
+
+
+
+
+
+
+
+
+
+
+-> mas o problema é que esse dispatch NÃO VAI ME RETORNAR OBSERVABLE ALGUM..
+
+
+
+
+
+
+
+
+
+----> É EXATAMENTE POR ISSO QUE NÃO PODEMOS ARMAZENAR ESSE OBSERVABLE NA PROPRIEDADE DE 
+
+'authObs'...
+
+
+
+
+
+
+
+
+
+--> COMO ISSO _ NÃO É UM _ OBSERVABLE,
+
+
+
+
+nós _ NÃO SEREMOS NOTIFICADOS ACERCA DE 
+
+
+
+'''O MOMENTO EM QUE ESSE LOGIN PROCESS ESTIVER ACABADO''...
+
+
+
+
+
+
+,
+
+
+
+
+
+
+E POR ISSO AQUELA LÓGICA TODA DE 
+
+
+'RESETTING, LOADING AND NAVIGATING AWAY'  
+
+disposta aqui:
+
+
+
+
+
+    authObs.subscribe( ////substituído pela lógica de 'EFFEC
+      (responseData) => {
+        this.isLoading = false;
+        this.router.navigate(['/recipe-book']);
+      },
+
+      (errorMessage) => {
+        console.log(errorMessage);
+        this.isLoading = false;
+
+        this.showErrorAlert(errorMessage);
+      }
+    );
+
+    form.reset();
+
+
+
+
+
+
+
+
+
+
+
+
+
+    NÃO VAI MAIS FUNCIONAR, por enquanto....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER QUE, POR ENQUANTO, TEREMOS DE CHECAR A ABA DE 'NETWORK'
+
+
+PARA CONSTATAR 
+
+SE 
+
+
+ESSE LOGIN PROCESS FUNCIONA, NA TEORIA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> e depois disso,
+
+TEREMOS QUE DESCOBRIR 
+
+
+
+
+1) COMO CONSEGUIMOS INFO ACERCA DE 'ARE WE STILL LOADING' a partir do 
+
+DISPATCH DESSA ACTION e de nossos effects/de nossa store...
+
+
+
+(
+
+  provavelmente é por meio de um state como 'isLoading' posicionado na nossa store..
+
+)
+
+
+
+
+
+
+
+
+
+
+
+-> OK, MAS SALVAMOS TUDO ISSO E TESTAMOS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... AGORA TENTAMOS FAZER LOGIN --> E ISSO SIMPLESMENTE __ FALHA_...
+
+
+
+
+
+
+
+-> FALHA PQ AINDA NÃO UPDATAMOS TODO NOSSO CÓDIGO...
+
+
+
+
+
+
+
+
+
+--> MAS SE CHECARMOS A NETWORK TAB,
+
+
+
+veremos 'verifyPassword',
+
+
+O QUE QUER DIZER QUE 
+
+NOSSA DATA REALMENTE FOI 
+
+ENVIADA A UMA API ROUTE....  ---> 
+
+
+
+
+
+
+E CONSEGUIMOS UMA RESPONSE DE '200', 'OK',
+
+DE VOLTA..
+
+
+
+
+
+
+
+--> ISSO QUER DIZER QUE 
+
+O LOGIN REQUEST FOI ENVIADO,
+E QUE 
+
+O 
+
+
+
+
+REQUEST FOI BEM-SUCEDIDO EM GERAL...
+
+
+
+
+
+
+
+
+
+
+
+-> MAS NOSSO APP ESTÁ ATUALMENTE QUEBRADO,
+
+
+
+QUEBRADO 
+
+PQ 
+
+
+NO NOSSO 
+
+
+
+COMPONENT DE 'AUTHPAGE'
+
+
+ainda 
+
+
+estamos 
+
+tentando 
+
+
+CHAMAR '.subscribe()'
+
+
+EM CIMA 
+
+de 
+
+
+'authObs',
+
+QUE NÃO É MAIS UTILIZADO (trocamos pela lógica do dispatch)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK... --> MAS TEMOS QUE MUDAR ISSO.. -> TEMOS QUE ENCONTRAR UMA SOLUÇÃO DIFERENTE 
+
+
+PARA 'SERMOS NOTIFICADOS SE ESTAMOS WAITING FOR A RESPONSE, SE FOMOS SUCCESSFUL, OU SE 
+
+TEMOS UM ERROR'...
+
+
+
+
+
+--> VEREMOS ISSO NA PRÓXIMA AULA...

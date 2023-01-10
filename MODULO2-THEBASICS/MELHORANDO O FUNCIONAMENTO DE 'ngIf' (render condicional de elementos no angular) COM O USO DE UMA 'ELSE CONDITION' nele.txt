@@ -1,0 +1,636 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----->  na última lição,
+
+demos uma olhada na 
+
+SINTAXE BÁSICA DO 
+
+
+'ngIf'...
+
+
+
+
+
+
+
+
+
+
+
+E ESSA É A SINTAXE QUE 
+
+
+
+VOCÊ UTILZARÁ NO ANGULAR A MAIOR PARTE DO TEMPO....
+
+
+
+
+
+
+
+
+
+
+
+-> MAS HÁ UMA ALTERNATIVA 
+
+
+
+
+
+
+A ESSE 'if' check aí...
+
+
+
+
+
+
+
+
+-> àS VEZES VOCê TERÁ MAIS DO QUE APENAS A 'IF CONDITION',
+
+
+
+MAS TAMBÉM UMA 'ELSE CONDITION'...
+
+
+
+
+
+
+
+---> COMO EXEMPLO DISSO,
+
+
+DIGAMOS QUE 
+
+QUEREMOS 
+
+
+TER 
+
+O 
+
+OUTPUT CONDICIONAL DE UMA 
+
+MENSAGEM DIZENDO 
+
+
+'server was created',
+
+sim,
+
+
+
+
+MAS 
+
+AO MESMO TEMPO VAMOS QUERER 
+
+
+TER UM ELSE BLOCK DIZENDO 'no server was created'...
+
+
+
+
+
+
+
+
+
+
+PARA ISSO,
+
+
+
+
+
+queremos 
+
+
+escrever assim:
+
+
+
+
+
+
+
+<p *ngIF="serverCreated">Server was created</p>
+<p>No server was created</p>
+
+
+
+
+
+
+
+
+
+
+-> VAMOS QUERER MOSTRAR 
+
+
+ESSE SEGUNDO '<p>'
+
+
+
+APENAS SE ESSA CONDITION 'serverCreated'
+
+
+
+
+NÃO FOR TRUE...
+
+
+
+
+
+
+
+
+
+
+-> PODEMOS CONSEGUIR FAZER ISSO _ POR _ MEIO do place de uma 
+
+'LOCAL REFERENCE'
+
+
+
+
+
+
+
+NO SEGUNDO PARAGRAPH....
+
+
+
+
+
+
+---> E UMA 'LOCAL REFERENCE'
+
+É ALGO QUE 
+O 
+PROFESSOR 
+
+
+NOS MOSTRARÁ DE FORMA MAIS APROFUNDADA 
+
+
+
+
+NA PARTE DE 
+
+'UNDERSTANDING COMPONENTS E DATABINDING'...
+
+
+
+
+
+
+
+
+
+
+
+-> MAS POR ENQUANTO PENSAMOS NESSA 'LOCAL REFERENCE'
+
+
+
+COMO UM __ _MARKER_....
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+<p *ngIF="serverCreated">Server was created</p>
+<p #noServer >No server was created</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PODEMOS COLOCAR __ QUALQUER_ NOME NESSA REFERÊNCIA AÍ... (aqui colocamos 'noServer', mas pode ser quaqluer coisa)...
+
+
+
+
+
+
+
+
+
+OK... --> AÍ VAMOS QUERER MUDAR O PARAGRAPH AQUI.... -----> VAMOS TROCAR O 
+
+
+ELEMENTO 
+
+'<p>'
+
+POR 
+
+UM 
+
+
+ELEMENTO 
+
+ 
+
+
+ '<ng-template #noServer >No server was created<ng-template>' ....
+
+
+
+
+
+
+
+
+
+
+ --> NG TEMPLATE É UM COMPONENT (uma directive, na verdade)
+
+
+
+
+ QUE _ SHIPPA_ COM O ANGULAR 
+
+
+
+
+ QUE _ VOCê USA _ PARA __ MARCAR LUGARES 
+
+
+
+ NO DOM...
+
+
+
+
+
+
+
+
+
+
+
+ ------>  DENTRO DO TEMPLATE,
+
+ ADICIONAMOS 
+
+ NOSSO '<p>'...
+
+
+
+
+
+
+ FICA TIPO ASSIM:
+
+
+
+ 
+<p *ngIF="serverCreated">Server was created</p>
+<ng-template #noServer>
+<p>No server was created</p>
+</ng-template>
+
+
+
+
+
+------------------------------
+
+
+
+
+
+
+
+-> OK... AGORA COM ESSE 'ng-template' 
+
+
+
+
+E 
+
+
+COM 
+
+
+
+ESSA LOCAL REFERENCE/marker 
+
+de 
+
+
+'noServer',
+
+
+
+
+
+MARCAMOS __ UM _ CERTO _ TRECHO _ NESSE 'TEMPLATE'
+
+
+QUE _ QUEREMOS __ 
+
+
+
+RENDERIZAR/MOSTRAR CONDICIONALMENTE....
+
+
+
+
+
+
+
+
+
+
+-> para MOSTRAR ESSE '<p>'
+
+
+
+
+AÍ CONDICIONALMENTE,
+
+DEVEMOS
+
+
+ALTERAR UM POUCO O 'VALUE'( a condição) 
+
+
+DE 
+
+
+'ngIf'...
+
+
+
+
+
+
+
+-> LÁ EM 'ngIf',
+
+
+
+NÓS FAZEMOS ENHANCE 
+
+
+
+
+
+DELE 
+
+
+
+POR MEIO 
+
+
+
+
+
+DA ESCRITA DE 
+
+
+'; else noServer'
+
+
+
+
+
+
+
+
+
+----> OU SEJA,
+
+
+
+
+SE 'serverCreated'
+
+
+NÃO ESTIVER COMO _ TRUE_,
+
+
+VAMOS QUERER QUE 
+
+
+
+O 
+
+ELEMENTO/TEMPLATE 
+
+
+COM MARKER 
+
+
+
+de 
+
+
+
+'#noServer'
+
+
+
+SEJA __ RENDERIZADO...
+
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+<hr>
+<label>NgIf directive</label>
+<input 
+type="text" 
+class="form-control"
+placeholder="Input your server name"
+
+>
+<button class="btn btn-primary" [disabled]="!allowNewServer" 
+(click)="onCreateServer()"
+>Add Server</button>
+<p *ngIf="serverCreated; else noServer" >Server was created!</p>
+<ng-template #noServer>
+    <p>
+        No server was created
+    </p>
+</ng-template>
+
+
+
+
+
+
+
+-------------
+
+
+
+
+OK... ISSO FUNCIONOU....
+
+O CÓDIGO COMEÇA COM 
+
+
+
+
+'no server was created'
+
+
+naquele elemento '<p>'..
+
+
+
+MAS AÍ QUANDO CLICAMOS NO BUTTON,
+
+
+o elemento <p>
+
+
+com 'server was created' O SUBSTITUI....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK....  ESSA É A SINTAXE DO 
+
+
+
+'ngIf' 
+
+
+e 
+
+'else'... 
+
+
+
+
+
+
+
+
+
+--> É UMA BOA ADIÇÃO 
+
+EM CASOS EM QUE VOCÊ 
+
+
+
+
+TEM UM 'ELSE CASE'..
+
+
+
+
+
+
+--> a alternativa é usar 
+
+
+
+'!serverCreated',
+
+
+
+
+
+
+usar o bang operator como maneira de fazer esse check...
+
+
+
+
+
+-------> VAMOS USAR ESSE CÓDIGO NO PROJETO QUE VAMOS CONSTRUIR...
+
+
+
+
+
+
+
+
+--> mas o uso do 'NgIf'
+
+
+SEM O else
+
+é 
+
+
+
+bem mais frequente..

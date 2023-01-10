@@ -1,0 +1,1768 @@
+ 
+
+
+
+
+ ATÉ AGORA,
+
+
+
+
+
+ DEMOS UMA OLHADA EM 2 ROUTE GUARDS 
+
+
+ DIFERENTES:
+
+
+
+
+
+
+ 1) 'canActivateGuard' (E 'canActivateChildGuard')... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 2) 'canDeactivateGuard' ....
+
+
+
+
+
+
+
+
+
+
+ -----> MAIS TARDE NESSE CURSO,
+
+
+ NA SECTION DE 'MODULES',
+
+
+ EM QUE 
+
+ APRENDEMOS SOBRE O 'ANGULAR MODULE',
+
+
+ 
+
+ VAMOS DAR UMA OLHADA EM OUTRAS 
+
+ QUESTIONS RELACIONADAS A ISSO...
+
+
+
+
+
+
+
+
+
+
+
+ --> MAS NESSE MODULE O PROFESSOR 
+
+
+
+ AINDA QUER 
+
+
+ MOSTRAR 
+
+ 2 
+ COISAS:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 1A COISA --> COMO PEGAR 'DATA',
+
+
+
+ OU _ STATIC,
+
+ OU 
+
+ DYNAMIC DATA,
+
+
+
+ ASSIM QUE UMA ROUTE É CARREGADA... 
+
+
+
+
+
+
+
+
+
+ (
+
+
+
+     'ué, mas 
+     NÓS JÁ NÃO APRENDEMOS ISSO? 
+
+
+     APRENDEMOS A PASSAR DATA POR MEIO DE UMA URL 
+
+
+     E ENTÃO USAR ESSA DATa'...
+
+
+      
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> mas _ NÃO É ISSO QUE O PROFESSOR QUER DIZER..
+
+
+
+
+
+
+
+
+ -> O QUE ELE QUER DIZER É QUE ALGUMAS DE NOSSAS ROUTES,
+ NESSE PROJECT,
+
+
+ __DEPENDEM__ 
+
+ DA DATA _ QUE ELAS RECEBEM... -----> data que recebem:
+
+
+
+
+
+
+
+ 1) TANTO __ ESTATICAMENTE,
+
+
+
+ COMO O QUE OCORRE 'CADA VEZ EM  QUE AS ROUTES SÃO CARREGADAS';
+
+
+
+
+
+
+
+
+ 2) COMO 'DINAMICAMENTE',
+
+
+
+ data que 
+
+ _RESOLVEM_ DE FORMA DINÂMICA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> O PROFESSOR QUER NOS MOSTRAR ALGUNS EXEMPLOS,
+
+ PARA DEIXAR ISSO MAIS CLARO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ---------> ELE DIZ QUE 
+
+ DEVEMOS COMEÇAR POR 
+
+ 'STATIC DATA'..
+
+
+
+
+
+
+
+
+
+
+
+
+ ---> NÓS JÁ TEMOS AQUELE COMPONENT DE 'page-not-found'...
+
+
+
+
+
+
+
+
+
+
+ -> MAS DIGAMOS QUE _ NÃO VAMOS QUERER _ USAR 
+
+ ESSE COMPONENT AÍ,
+
+
+
+
+ e sim 
+
+
+ VAMOS QUERER _ USAR _ UM NOVO COMPONENT,
+
+
+
+
+
+ O
+
+
+
+ COMPONENT 
+ de 
+
+
+
+
+ 'ERROR-PAGE' 
+
+
+
+
+
+
+
+
+
+
+
+
+ --> ESSE _ COMPONENT SERÁ UMA 'PÁGINA GENÉRICA DE ERRO'....
+
+
+
+
+
+
+
+
+
+
+ --> é diferente do component de 'page not found',
+
+
+ PQ 
+
+
+
+ ESSA PAGE ANTIGA 
+
+
+
+ ERA LIMITADA A 'ERROS 404' (not found),
+
+
+
+
+
+
+
+
+
+
+ E ESSA PÁGINA GENÉRICA DE ERRO 
+
+
+ SERÁ 
+
+ USADA 
+
+
+
+ PARA __ TODOS TIPOS DE _ ERRRORS...
+
+
+
+
+
+
+
+
+
+
+
+
+ ------> OK...
+
+
+
+ criamos um novo component com 
+
+
+
+
+ ng g c error-page
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> NO TEMPLATE HTML,
+
+
+
+
+
+
+
+
+ O PROFESSOR VAI QUERER OUTPUTTAR UMA '{{errorMessage}}',
+
+
+
+ OUTPUTTADA 
+
+ POR STRING INTERPOLATION..
+
+
+
+
+
+
+
+
+ ->_ DEVEMOS ADICIONAR ESSA PROPRIEDADE AO NOSSO COMPONENT.TS...
+
+
+
+
+
+
+ EX:
+
+
+
+
+
+
+
+
+
+
+
+ import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-generic-error-page',
+  templateUrl: './generic-error-page.component.html',
+  styleUrls: ['./generic-error-page.component.css']
+})
+export class GenericErrorPageComponent implements OnInit {
+
+
+
+
+  errorMessage: string;
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> SABEMOS QUE ESSA MESSAGE SERÁ UMA STRING...
+
+
+
+
+
+
+
+
+
+
+
+ainda assim,
+
+
+
+O QUE DEVE SER ESSA MESSAGE? 
+
+
+
+(
+
+    pq podemos 
+
+    ACABAR REUTILIZANDO 
+
+
+    ESSE COMPONENT, PARA DIFRENTES TIPOS DE ERRORS...
+)
+
+
+
+
+
+
+
+
+
+
+
+--> bem,
+
+MAS PARA O ROUTING,
+
+
+
+
+SÓ EXISTE 1 
+
+USE-CASE ADEQUADO 
+
+QUE VAMOS QUERER TARGETTAR NO MOMENTO,
+
+que é 
+
+justamente 
+
+
+'route not found'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok,
+
+VAMOS 
+
+ADICIONAR 
+
+
+
+
+
+ESSE COMPONENT COMO 
+
+
+nosso novo 'catch-all route' 
+
+
+lá 
+em 
+
+
+'app-routing.module.ts',
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+ {
+     path: 'not-found', 
+     component: GenericErrorPageComponent
+ }
+
+
+{
+    path: '**', redirectTo: '/not-found' 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------
+
+
+
+
+
+
+certo....
+
+
+
+
+
+
+
+
+
+
+
+A DIFERENÇA DE ESSE 
+
+'GenericErrorPageComponent'
+
+
+
+para 
+
+'PageNotFoundComponent'
+
+
+
+
+É QUE 
+
+
+'GenericErrorPageComponent'
+
+
+
+
+
+__ será um COMPONENT EM UMA _ ROUTE _ QUE 
+
+
+VAI 
+
+
+
+'ACEITAR'
+
+
+
+O PASS DE 'STATIC DATA' 
+
+
+A ELE.... (data 
+
+
+
+que será armazenada na propriedade de 'errorMessage')..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS COMO PODEMOS ACESSAR ESSA PROPRIEDADE E 
+
+
+ENFIAR DATA DENTRO DESSA ROUTE, QUANDO 
+
+OCORRER UM 
+
+
+
+ERRO DE 'ROUTE NOT FOUND',
+
+por exemplo? 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> 
+
+o problema é que estamos tentando fazer output de uma message de 'errorMessage'
+
+
+QUE AINDA 
+
+NÃO CONSEGUIMOS NESSE COMPONENT DE 
+
+
+'GenericErrorPageComponent'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> O PROFESSOR EXPLICA QUE É CLARO QUE PODERÍAMOS 
+
+'REACH THIS PAGE'
+
+
+
+por meio de DIFERENTES HOOKS,
+
+
+
+
+
+
+
+
+__ MAS O QUE INTERESSA É QUE 
+
+'PARA CADA TIPO DE ERROR,
+
+HÁ APENAS 1 ÚNICA MESSAGE'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> OK...
+
+
+
+
+
+
+
+
+-> ISSO QUER DIZER QUE LÁ NAQUELA ROUTE AUXILIAR, 'catch-all',
+
+
+de 
+
+
+
+
+
+{
+    path: '**', redirectTo: '/not-found'
+},
+
+
+
+
+
+SABEMOS QUE 
+
+SE TIVEMOS 'ROUTE NOT FOUND',
+
+
+
+E PORTANTO UM ERRO 404,
+
+ 
+ ERRO DE 
+
+
+
+
+ 'NOT FOUND',
+
+
+
+ SEMPRE VAMOS DISPLAYAR _a MESMA MENSAGEM DE ERROR....
+
+
+
+
+
+
+
+
+
+ (
+
+     por isso que é ESTÁTICA...
+ )
+
+
+
+
+
+
+
+
+ -> E PODEMOS __ PASSAR UMA 'STATIC DATA'
+
+
+ COMO ESSSA ATRAVÉS _ 
+
+
+ DE UMA PROPRIEDADE __ 
+
+
+
+ ESPECIAL DE 
+
+
+ CADA object 'route',
+
+    que 
+    é 
+
+
+    'DATA:'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+    'data: {}' 
+
+
+
+
+
+
+
+--> ESSA PROPRIEDADE __ NOS DEIXA _ PASSAR 
+
+
+
+
+UM __ OBJECT JAVASCRIPT,
+
+
+
+OBJECT EM QUE PODEMOS 
+
+DEFINIR 
+
+
+__QUAISQUER _ 'KEY-VALUE PAIRS'...
+
+,
+
+
+
+QUAISQUER PROPERTIES QUE DESEJARMOS,
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+---> 
+
+
+
+
+
+
+
+ {
+     path: 'not-found', 
+     component: GenericErrorPageComponent
+ }
+
+
+{
+    path: '**', redirectTo: '/not-found',
+
+    data: {
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR, NO CASO,
+
+ADICIONA UMA KEY DE 'message',
+
+ 
+
+ QUE 
+
+ SERÁ 
+
+ 'Page not found!' 
+
+
+
+
+
+
+
+
+
+
+
+ ---> OK...
+
+
+
+
+
+
+
+
+
+
+ A VANTAGEM, COM ISSO,
+
+ É QUE 
+
+ PODEMOS 
+
+
+
+ ___DEFINIR __ 'data' específica 
+
+ PARA _ _CADA 
+
+ UMA DE NOSSAS ROUTES,
+
+
+
+
+ O QUE QUER DIZER QUE PODEMOS, NESSE USE-CASE,
+
+
+
+
+ DEFINIR DIFERENTES 'MENSAGENS DE ERRO'
+
+ que usarão 
+
+
+ esse mesmo 'template/page component de erro'..
+
+
+
+
+
+
+
+
+
+
+
+
+ --> isso quer dizer que 
+
+ É PROVÁVEL QUE VAMOS REUTILIZAR ESSA ERROR PAGE MUITAS E MUITAS VEZEs,
+
+
+
+ e essa é a vantagem 
+
+ de 
+
+
+ ter 
+
+
+o pass de DATA ESTÁTICA, a uma route/component de uma route, 
+
+
+
+por meio 
+
+dessa propriedade 
+
+de 
+
+'data'...
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+  {
+    path: 'not-found', 
+    component: GenericErrorPageComponent //2.0   --> essa page será usada para TODO TIPO DE ERRORS POSSÍVEIS..
+},
+
+  {
+    ////////////ESSA ROUTE DEVE SER SEMPRE ___ ABSOLUTAMENTE A ÚLTIMA ROUTE DE NOSSO ARRAY DE ROUTES, para ser 'catch-all' de todas as routes que não encaixarem naquelas definidas logo acima....
+    path: '**', ///o double asterisk significa 'CATCH ALL THE ROUTES THAT ARE NOT DEFINED ABOVE' (ou seja, é usado com pages de erro 404)...
+    redirectTo: 'not-found', ///USADO _ PARA _ REDIRECIONAR nosso user quando ele digita paths que não existem na url bar... --> vamos redirecionar à page de 'PageNotFoundComponent', que é nossa page de 'erro 404, not found'...
+   
+   
+    data: { //pass de DATA ESTÁTICA a essa nossa route...  --> isso nos deixa usar aquele component de 'GenericErrorPageComponent' MUITAS E MUITAS VEZES, DE FORMA REUTILIZÁVEL...
+      message: 'Page not found!'
+    } 
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OK, MAS É CLARO QUE AGORA VAMOS QUERER DAR 'RETRIEVE'
+
+
+
+
+  dessa 'message' 
+
+  SEMPRE QUE __ CARREGARMOS _ NOSSO 
+
+  COMPONENT DE 
+
+
+
+
+  'GenericErrorPageComponent'...
+
+
+
+
+
+
+
+
+
+  --> PARA ISSO,
+
+
+  PARA USARMOS 
+
+  ESSA PROPRIEDADE 
+  de 
+
+  'message' 
+
+
+  colocada dentro de 'data',
+
+
+
+
+  PROVAVELMENTE 
+
+
+  USAREMOS 
+
+
+
+
+
+  _ OU O CONSTRUCTOR 
+
+
+
+
+  OU 
+
+
+
+  o 
+  'ngOnInit',
+
+
+  
+
+  PROVAVELMENTE 
+
+
+
+
+  COM 
+
+
+
+
+
+
+  O INJECT de uma propriedade 'route' ou 'router'... (private)...
+
+
+
+
+
+
+
+
+
+
+  ----->  PROFESSOR DIZ EXATAMENTE ISSO:
+
+
+
+
+
+
+
+
+  PARA _ QUE CONSIGAMOS ESSA DATA _ ESTÁTICA QUE FOI INJETADA NA NOSSA ROUTE,
+
+
+
+
+  PRECISAMOS 
+
+  IMPORTAR 
+
+
+
+
+
+
+  o object de 'ActivatedRoute' 
+
+
+
+
+
+
+  e a armazenar em um 'private route' 
+
+  no seu component,
+
+  no constructor,
+
+  TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+
+
+
+  import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
+@Component({
+  selector: 'app-generic-error-page',
+  templateUrl: './generic-error-page.component.html',
+  styleUrls: ['./generic-error-page.component.css']
+})
+export class GenericErrorPageComponent implements OnInit {
+
+
+
+
+  errorMessage: string;
+
+  constructor(private route: ActivatedRoute) { }
+
+  ngOnInit(): void {
+  }
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo....
+
+
+
+
+
+
+
+
+AGORA BASTA ACESSAR ALGUMA PROPRIEDADE ESPECIAL DENTRO DE 
+
+'this.route'
+
+
+PARA 
+
+_CONSEGUIR ESSA DATA QUE FOI PASSADA, E AÍ DEFINIR ESSA DATA COMO SENDO 
+
+O VALUE DE 
+'this.errorMessage'..
+
+
+
+
+
+
+
+
+
+
+
+
+MINHA IDEIA É:
+
+
+
+
+
+
+como essa data pode/PROVAVELMENTE SERÁ _ ASSÍNCRONA (
+
+    como o fetch de data de um server, em um app de verdade,
+
+
+    fetch de data de um server para aí OUTPUTTAR NA NOSSA ROUTE....
+),
+
+
+
+o código CORRETO PROVAVELMENTE É ESTE, QUE USA '.subscribe' 
+
+em 
+
+'this.route.data'...
+
+
+
+
+
+ex:
+
+
+
+
+
+
+  ngOnInit(): void {
+
+
+   this.route.data.subscribe(
+      (data) => {
+            this.errorMessage = data['message'];
+
+      }
+    )
+  }
+
+
+
+
+
+
+
+
+
+
+  isso _ TALVEZ FUNCIONARÁ...
+
+
+
+
+
+
+
+
+
+
+  -> mas acho que ainda assim NÃO FUNCIONOU....
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ----> O PROFESSOR NOS EXPLICA AQUILO QUE JÁ DISSE ANTERIORMENTE...
+
+
+
+
+
+
+
+  TEMOS 2 MANEIRAS DE SETTAR O VALUE DE 'this.errorMessage'
+
+  A PARTIR DA DATA PASSADA 
+
+
+  A NOSSA ROUTE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  1a MANEIRA --> 
+
+
+
+  USA 
+
+
+  'this.route.snapshot.data['message']',
+
+
+
+
+
+
+
+
+
+
+
+  PARA QUE FIQUE TIPO 
+
+
+
+
+  this.errorMessage = this.route.snapshot.data['message'];
+
+
+
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+
+
+  export class GenericErrorPageComponent implements OnInit {
+
+
+
+
+  errorMessage: string;
+
+  constructor(private route: ActivatedRoute) {
+
+
+   }
+
+  ngOnInit(): void {
+
+    this.errorMessage = this.route.snapshot.data['message']; //DEFINE _ INICIAL_ DE SUA DATA...
+
+
+   this.route.data.subscribe(
+      (data) => {
+            this.errorMessage = data['message'];
+
+      }
+    )
+  }
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO....
+
+
+
+
+
+
+
+
+
+o app-routing.module.ts 
+
+
+FICOU ASSIM:
+
+
+  
+
+
+
+
+
+
+  {
+    path: 'not-found', 
+    component: GenericErrorPageComponent, //2.0   --> essa page será usada para TODO TIPO DE ERRORS POSSÍVEIS..
+    data: { //pass de DATA ESTÁTICA a essa nossa route...  --> isso nos deixa usar aquele component de 'GenericErrorPageComponent' MUITAS E MUITAS VEZES, DE FORMA REUTILIZÁVEL...
+      message: 'Page not found!'
+    } 
+},
+
+
+
+  {
+    ////////////ESSA ROUTE DEVE SER SEMPRE ___ ABSOLUTAMENTE A ÚLTIMA ROUTE DE NOSSO ARRAY DE ROUTES, para ser 'catch-all' de todas as routes que não encaixarem naquelas definidas logo acima....
+    path: '**', ///o double asterisk significa 'CATCH ALL THE ROUTES THAT ARE NOT DEFINED ABOVE' (ou seja, é usado com pages de erro 404)...
+    redirectTo: 'not-found', ///USADO _ PARA _ REDIRECIONAR nosso user quando ele digita paths que não existem na url bar... --> vamos redirecionar à page de 'PageNotFoundComponent', que é nossa page de 'erro 404, not found'...
+   
+   
+
+  },
+
+
+
+
+
+
+
+
+
+  ----------------------
+
+
+
+
+
+
+
+
+
+
+
+  CERTO..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  MAS VOLTANDO AO NOSSO 
+
+  COMPONENT de 'GenericErrorPageComponent',
+
+
+
+
+
+  TEMOS ESTE OUTRO CÓDIGO:
+
+
+
+  
+   this.route.data.subscribe(
+      (data) => {
+            this.errorMessage = data['message'];
+
+      }
+    )
+
+
+
+
+
+
+
+
+
+
+    --> ESSE 'DEFINE'
+
+
+    SERÁ _ TRIGGADO
+
+
+
+
+    __ SE A DATA (data passada por 'data: {message: 'xxx' } ') DE SUA ROUTE __POSSIVELMENTE _ __
+
+
+    FOR ALTERADA _ENQUANTO__ VOCÊ ESTIVER DENTRO 
+
+    DESSA PAGE 
+
+    de 
+
+    'GenericErrorPageComponent'...
+
+
+
+
+
+
+
+
+
+    --> 
+
+
+
+    é por isso que escrevemos exatamente isso aqui:
+
+
+
+      
+   this.route.data.subscribe(
+      (data) => {
+            this.errorMessage = data['message'];
+
+      }
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+-> AMBOS OS APPROACHS FUNCIONARÃO, A DEPENDER SE 
+
+
+A 
+
+D
+ATA 
+
+DE 
+
+
+
+'this.route' (dessa route aí msm)...
+
+
+FOR ALTERADA OU NÃO 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> ok..
+
+
+
+
+
+
+-> AGORA SE DIGITARMOS 
+
+ALGUMA INVALID ROUTE NO NOSSO APP,
+
+
+
+
+corretamente obserfvamso 
+
+
+
+'Page not found',
+
+
+
+
+
+
+
+DATA 
+
+__ ESTÁTICA,
+
+ERROR MESSAGE ESTÁTICA QUE PASSAMOS ATRAVÉS 
+
+DA PROPRIEDADE DE 
+
+'data'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> E ESSE É UM TYPICAL USE-CASE 
+
+
+
+EMPREGADO _ QUANDO VOCÊ TEM UM 
+
+'STATIC DATA 
+QUE VOCÊ QUER PASSAR A ALGUMA ROUTE'...
+
+
+
+
+
+
+
+
+
+-> AGORA DEVEMOS VER COMO ISSO ACONTECE _ COM DYNAMIC DATA,
+
+na próxima aula (
+
+    talvez data que 
+
+    chega de um server, ou coisa do gênero...
+)

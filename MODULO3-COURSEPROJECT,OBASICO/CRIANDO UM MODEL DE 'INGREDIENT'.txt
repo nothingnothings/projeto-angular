@@ -1,0 +1,109 @@
+(acho que já fiz isso):
+
+
+
+
+
+
+
+
+
+FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+export class Ingredient {
+  constructor(public name: string, public quantity: number) {
+
+
+  }
+
+
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ARMAZENEI ISSO 
+LÁ NO FOLDER DE 
+
+
+'ShoppingList'...
+
+
+
+
+
+
+
+
+
+---> MAS O PROFESSOR É LOUCO, ACHA QUE É MELHOR COLOCARMOS EM UM 
+FOLDER DE NOME 
+
+'shared',
+
+PQ 
+
+
+
+
+ELE É COMPARTILHADO AO LONGO 
+
+
+DE 'SHOPLIST' E ' 
+
+
+'RECIPEBOOK'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... PROFESSOR USA O SHORTHAND QUE USAMOS, O SHORTHAND BEM CONVENIENTE...
+
+
+
+
+
+
+
+
+
+
+-> COM ISSO, JÁ DEFINIMOS COMO UM INGREDIENT DEVE SE PARECER,
+
+
+
+E ENTÃO DEVEMOS O UTILIZAR NO COMPONENT DE 'shoppingList',
+
+na próxima aula....

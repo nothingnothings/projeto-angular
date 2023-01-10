@@ -1,0 +1,967 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> AGORA, COM A DEFINIÇÃO DO ANGULAR E SUAS VERSÕES,
+
+
+
+DEVEMOS CRIAR NOSSO PRIMEIRO APP ANGUALR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+USAREMOS A COMMAND LINE INTERFACE (CLI) OFICIAL DO ANGULAR --> é a melhor maneira de criar 
+
+
+
+angular 
+
+projects...
+
+
+
+
+
+
+
+
+---> PROEJTOS ANGULAR SÃO, NA VERDADE,
+
+
+1 POUCO MAIS ELABORADOS A RESPEITO DO 'BUILD WORKFLOW' deles... -> HÁ UM PUNHADO DE 
+
+
+FILES DO 
+
+
+ANGULAR QUE PRECISAM SER CONVERTIDAS ANTES DE CONSEGUIREM RODAR NO BROWSER. .. -> E O CLI 
+
+
+FAZ ISSO,
+
+
+
+
+
+TAMBÉM OPTIMIZA PESADAMENTE NOSSO CÓDIGO PARA QUE SEJA OUTPUTTADA 
+
+UAM 
+
+VERSÃO 
+
+
+
+ALTAMENTE 
+
+
+
+
+OPTIMIZADA 
+
+DE NOSSO CÓDIGO 
+
+
+QUANDO 
+
+
+DEPLOYARMOS NOSSO APP....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK.... O ANGULAR CLI... --> E VOCê PODE VER TODAS AS ETAPAS QEU 
+
+VOCê 
+
+
+
+PRECISA RODAR PARA 
+
+
+
+INICIAR SEU BUILD WORKFLOW na tela de início...
+
+
+
+
+
+
+
+
+
+
+
+é 
+
+
+
+npm install -g @angular/cli 
+
+ng new my-dream-app 
+
+cd my-dream-app 
+
+ng serve 
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS VAMOS PRECISAR DE UMA FERRAMENTA ADICIONAL,
+
+O NODEJS..
+
+
+
+
+
+
+
+
+--> O NPM ....
+
+
+
+
+
+
+
+
+
+-> NODEJS VAI SER UTILIZADO BEHIND THE SCENES PARA OPTIMIZAR E BUNDLAR NOSSO PROJETO....
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK.. 
+
+BAIXAMOS ISSO AÍ, TUDO CERTO...
+
+
+
+
+
+
+
+
+
+
+-> RODAMOS OS COMANDOS 
+
+NO NOSSO TERMINAL...
+
+
+
+
+
+
+
+
+
+
+--> EU ACHAVA QUE 
+
+NÃO INSTALARÍAMOS 
+
+
+
+
+'-g',
+
+
+
+MAS 
+O 
+
+PROFESSOR DIZ QUE SIM...
+
+
+
+
+
+
+
+
+
+--> BEM, É A CLI DO ANGULAR,
+
+
+ENTÃO TALVEZ SEJA UM POUCO DIFERENTE O WORK COM ELA...
+
+
+
+
+
+
+
+
+
+--> ISSO FEITO,
+
+
+
+
+TERÁ SIDO BAIXADA E INSTALADA A NODE CLI..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> ok...
+
+
+
+
+
+
+qual o próximo passo?
+
+
+
+
+
+
+
+
+
+
+--------> PODEMOS CRIAR NOSSO PRIMEIRO PROJETO ANGULAR...
+
+
+
+
+
+
+
+
+--> NAVEGUE ATÉ O FOLDER NO SEU SISTEMA EM QUE VOCÊ VAI QUERER CRIAR ESSE PROJETO...
+
+
+
+
+
+
+
+
+
+
+
+
+cd --> vá navegando até o folder que vocÊ deseja...
+
+
+
+
+
+
+
+
+
+
+
+
+QUANDO VOCÊ ESTIVER NESSE FOLDER,
+
+
+vocÊ pode criar um 
+
+
+projeto angular 
+
+
+COM O COMANDO DE 'ng new + QUALQUER NOME DE SUA ESCOLHA'...
+
+
+
+
+
+
+
+
+
+
+
+
+tipo 
+
+
+
+ng new my-first-app
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+PS A:\projeto8-ANGULAR\novoprojeto1> ng new my-first-app
+
+
+
+
+
+
+
+
+
+
+
+
+--> quando você fizer isso,
+
+
+
+vocÊ entrará no 
+
+'ANGULAR PROJECT CREATION WIZARD'...
+
+
+
+
+
+
+
+
+
+--> A PRIMEIRA PERGUNTA AO PROFESSOR FOI DE 
+
+
+'Create a workspace with stricter type checking and more efficient production optmization?'
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS A MINHA PERGUNTA FOI 
+
+
+'Would you like to add Angular ROUTING?' 
+
+
+
+
+
+
+
+
+----> QUANTO À RESPOSTA DO PROFESSOR,
+
+ELE COLOCA 
+
+'NO' inicialmente,
+
+pq 
+
+
+para development essas melhorias de production não são necessárias...
+
+
+
+
+
+
+
+
+
+-> MAS MAIS TARDE OBVIAMENTE OPTIMIZAREMOS NOSSO APP (momento de production)...
+
+
+
+
+
+
+
+
+
+
+
+
+-> ANGULAR ROUTING --> ISSO É ALGO QUE TAMBÉM VEREMOS AO LONGO DO CURSO, 
+
+
+MAS QUE 
+
+AINDA NAÕ TEREMOS 'RIGHT FROM THE START', PQ QUEREMOS VER O BÁSICO....
+
+
+
+
+
+
+
+
+
+
+-> POR ISSO COLOQUEI NO:
+
+
+
+
+
+PS A:\projeto8-ANGULAR\novoprojeto1> ng new my-first-app
+? Would you like to add Angular routing? No
+? Which stylesheet format would you like to use? (Use arrow keys)
+> CSS 
+  SCSS   [ https://sass-lang.com/documentation/syntax#scss                ] 
+  Sass   [ https://sass-lang.com/documentation/syntax#the-indented-syntax ] 
+  Less   [ http://lesscss.org                                             ] 
+
+
+
+
+
+
+
+
+
+
+
+--------> 
+
+POR FIM,
+
+NOS PERGUNTAMOS 
+
+
+QUAL 'SYLESHEET FORMAt'
+
+queremos usar..
+
+
+
+
+
+
+
+--> esse nosso curso 
+
+
+é sobre angular, e não css,
+
+
+
+
+
+
+POR ISSO ESCOLHEMOS 
+
+'CSS'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> CERTO...
+
+
+
+
+
+
+
+-> COM ISSO,
+
+
+É CRIADO ESSE PROJETO NO FOLDER QUE ESCOLHEMOS...
+
+
+
+
+
+
+
+
+--> O PROFESSOR DIZ QUE PRECISAMOS DESSE 
+
+SETUP MAIS COMPLEXO __ PQ __ o 
+
+
+ANGULAR, POR EXEMPLO,
+
+USA 
+
+
+_TYPESCRIPT (super set de javascript) --> É UMA LANGUAGE QUE SE PARECE COM JAVASCRPIT,
+
+
+MAS UQE 
+
+
+
+NÃO É JAVASCRIPT,
+
+
+E QUE 
+
+ACABA SENDO COMPILADA EM JAVASCRIPT 
+
+
+POR MEIO DO WORKFLOW DO ANGULAR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O TYPESCRIPT TAMBÉM NOS OFERECE ALGUMAS EXTRA FEATURES...
+
+
+
+
+
+
+
+
+
+
+
+--> PRECISAMOS DESSE WORKFLOW MAIS COMPLEXO,
+
+COM TODAS ESSAS DEPENDENCIES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ASSIM QUE ISSO TERMINAR,.
+
+
+
+
+
+
+
+
+
+PODEREMOS NAVEGAR PARA DENTRO 
+
+
+DO FOLDER DESSE PROJETO E ENTÃO 
+
+
+
+
+RODAR 
+
+'ng serve'
+
+
+PARA 
+
+
+
+'BRING UP A DEV SERVER',
+
+que 
+
+
+VAI 
+
+RODAR 
+
+
+
+
+SEU APP ,
+
+
+
+
+
+
+DEVELOPMENT OPTIMIZED APP,
+
+
+
+no BROWSER... -------> 
+
+
+
+
+
+
+
+
+
+
+
+
+A PORTA EM QUE O APP VAI RODAR, POR DEFAULT,
+
+É 
+A 
+
+
+
+'4200'....
+
+
+
+
+
+
+
+-> entramos no FOLDER DE NOSSO PROJETO,
+
+de nome 
+
+'my-first-app'... --> e aí rodamos 'ng serve'...
+
+
+
+
+
+
+
+O RESULTADO FICA TIPO ASSIM:
+
+
+
+
+✔ Browser application bundle generation complete.
+
+Initial Chunk Files   | Names         |  Raw Size
+vendor.js             | vendor        |   1.70 MB | 
+polyfills.js          | polyfills     | 294.85 kB | 
+styles.css, styles.js | styles        | 173.23 kB | 
+main.js               | main          |  47.99 kB | 
+runtime.js            | runtime       |   6.52 kB | 
+
+                      | Initial Total |   2.21 MB
+
+Build at: 2022-04-25T05:04:59.136Z - Hash: 6962496438677cec - Time: 9352ms
+
+** Angular Live Development Server is listening on localhost:4200, open your browser on http://localhost:4200/ **
+
+
+√ Compiled successfully.
+
+
+
+
+
+
+
+---------------------------------------
+
+
+
+
+-----> PODEMOS IR ATÉ O BROWSER E PROCURAR 
+
+
+
+'localhost:4000'....
+
+
+
+
+
+
+--> certo... apareceu um site bem bonitinho, organizado....
+
+
+
+
+
+EX:
+
+
+
+
+
+
+https://angular.io/tutorial  (tour of heroes)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> TUDO QUE VOCÊ APRENDE NESSE CURSO 
+
+
+
+
+É UPDATADO 
+
+
+
+COM A VERSÃO MAIS RECENTE DO ANGULAR...
+
+
+
+
+
+
+
+
+
+----> TEMOS UM ARQUIVO HTML 
+
+
+que o professor nos deu.. - > podemos 
+
+pegar 
+
+esse 
+
+arquivo 
+
+
+
+para 
+
+aí 
+
+
+o implemntar 
+
+
+
+no nosso 
+
+projeto...
+
+
+
+
+
+
+
+
+
+
+--> é o arquivo 'app.component.html'...
+
+
+
+
+
+
+
+
+
+
+--------> CERTO.... VEREMOS COMO FUNCIONAM ESSES ARQUIVOS...
+
+
+
+
+
+
+
+--> O PROFESSOR QUER QUE COLOQUEMOS 
+
+
+
+ESSE HTML NO LUGAR DO DEFAULT (que era/é mais bonito)..
+
+
+
+
+
+
+
+
+
+
+-> VAMOS VER O QUE ESSE ARQUIVO 'app.component.html' 
+
+
+FAZ...
+
+
+
+
+
+
+
+
+
+
+
+---> ESSE SERÁ NOSSO PRIMEIRO APp,
+
+
+e ainda não fizemos quase nada...
+
+
+
+
+
+
+
+BEM, O CONTEÚDO DO ARQUIVO É SÓ ISTO:
+
+
+
+
+
+
+<input type="text" [(ngModel)]="name">
+<p>{{ name }}</p>
+
+
+
+
+
+
+
+
+
+
+
+
+O ERRO É NESTE ARQUIVO:
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'my-first-app';
+}
+
+
+
+
+
+
+
+
+
+
+
+VEREMOS O QUE FAZEM ESSES ARQUIVOS NA PRÓXIMA AULA....
+
+
+
+
+
+
+
+
+
+-> o código do professor está quase igual ao meu, mas o meu NÃO FUNCIONA direito...

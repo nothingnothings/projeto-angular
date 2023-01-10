@@ -1,0 +1,458 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> ok,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ o professor quer adicionar child routes..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> ELE ADICIONA O array de 'children' dentro do object route de 'recipe-book'..
+
+
+
+
+
+
+
+
+
+
+
+
+ --> ELE PRIMEIRO ADICIONA O 'DEFAULT CASE' de 'recipe-book',
+
+
+ QUE É 
+
+
+
+ SÓ AQUELE 
+
+ 'please select a recipe'....
+
+
+
+
+
+
+
+
+
+
+ --. tipo assim:
+
+
+
+
+
+
+
+
+
+   {
+    path: 'recipe-book',
+    component: RecipeBookComponent,
+    children: [
+      {
+        path: '',
+        component: SelectARecipeComponent
+      },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> 
+
+
+
+OK..
+
+
+
+
+ATÉ AÍ, TUDO BEM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O PROFESSOR FEZ EXATAMENTE ISSO....
+
+
+
+
+
+
+
+
+
+
+
+
+--> COMO REGISTRAMOS ESSAS 'CHILD ROUTES'
+
+
+
+no component de 'recipeBook',
+
+É 
+
+
+NO PRÓPRIO 'recipe-book'
+
+
+QUE PRECISAMOS 
+
+COLOCAR O 
+
+
+'router-outlet,'
+
+
+como
+observado neste código:
+
+
+
+
+
+
+
+<div class="row" >
+    <div class="col-md-5">
+        <app-recipe-list>
+
+        </app-recipe-list>
+    </div>
+    <div class="col-md-7" [ngStyle]="{'margin-top': '36px'}">
+        <router-outlet></router-outlet>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> QUANTO à ROUTE DE 'recipe-item',
+
+
+TAMBÉM JÁ A ADICIONEI...
+
+
+
+
+
+
+FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+  {
+    path: 'recipe-book',
+    component: RecipeBookComponent,
+    children: [
+      {
+        path: '',
+        component: SelectARecipeComponent
+      },
+      {
+        path: ':id',
+        component: RecipeDetailComponent,
+      },
+
+
+
+
+
+
+
+
+
+
+
+--> 
+
+
+
+É O NEGÓCIO QUE VAI USAR O 'DYNAMIC SEGMENT'...
+
+
+
+
+
+
+
+
+a route fica tipo 
+
+
+
+localhost:4200/recipe-book/:id 
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> O ':id'
+
+É UM DYNAMIC PARAMETER..
+
+
+
+
+
+---> VAMOS QUERER CARREGAR O 'recipe-detail' COMPONENT...
+
+
+
+
+
+
+
+
+
+--> fica tipo assim:
+
+
+
+
+
+
+  {
+    path: 'recipe-book',
+    component: RecipeBookComponent,
+    children: [
+      {
+        path: '',
+        component: SelectARecipeComponent
+      },
+      {
+        path: ':id',
+        component: RecipeDetailComponent,
+      },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+- AGORA SÓ TEMOS QUE CODAR 
+
+
+A LÓGICA DE 
+
+'recipe-detail',
+
+
+
+
+AQUELA LÓGICA DE 
+
+
+
+_ RETRIEVAR_ DATA 
+
+
+ATRAVÉS 
+
+
+
+
+DA DATA/INFO DO PARAM 
+
+passado na nossa url..
+
+
+
+
+
+
+
+
+
+-> TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit, Input } from '@angular/core';
+import { RecipeBookService } from 'src/app/recipeBook.service';
+
+import { Recipe } from '../recipe.model';
+
+import { ActivatedRoute, Params } from '@angular/router';
+
+@Component({
+  selector: 'app-recipe-detail',
+  templateUrl: './recipe-detail.component.html',
+  styleUrls: ['./recipe-detail.component.css']
+})
+export class RecipeDetailComponent implements OnInit {
+
+
+
+
+  loadedRecipe: Recipe;
+
+  constructor(private recipeBookService: RecipeBookService, private route: ActivatedRoute) { 
+
+
+
+    
+
+
+
+  }
+
+
+
+  ngOnInit(): void {
+
+
+
+    //     const recipeId = this.route.snapshot.params['id'];
+    //     console.log(recipeId);
+
+    // this.loadedRecipe = this.loadedRecipes[recipeId];
+
+
+    this.route.params.subscribe(
+      (params: Params) => {
+        console.log('TEST');
+        // this.loadedRecipe = this.loadedRecipes[+params['id']];
+
+        this.loadedRecipe = this.recipeBookService.getRecipes()[+params['id']]
+      }
+    )
+
+
+
+  }
+
+
+  sendToShoppingList() {
+    console.log('CLICKED');
+    this.recipeBookService.sendToShopList(this.loadedRecipe.ingredients);
+  }
+
+
+}

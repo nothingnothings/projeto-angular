@@ -1,0 +1,1226 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> AGORA VOLTAMOS AO PROJECT DE 'RECIPES'...
+
+
+
+
+
+
+
+
+
+
+-> NÓS JÁ ADICIONAMOS UM MONTE DE FEATURES A ELE...
+
+
+
+
+
+
+
+
+
+
+---> MAS AGORA É HORA DE ADICIONAR _ SERVICES_ A ELE...
+
+
+
+
+
+
+
+
+
+-->  O ADD DE 'services'
+
+
+
+
+__ VAI NOS 
+
+
+
+
+
+
+DAR A POSSIBILIDADE DE MELHORAR EM MT ESSE PROJECT..
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS __ QUAIS SERVICES__ PRECISAMOS,
+
+NO NOSSO CÓDIGO?
+
+
+
+
+
+
+
+
+
+-> precisamos de alguns services que FACILITEM O 'PASS' de data 
+
+
+
+de 1 component para outro....
+
+
+
+
+(
+
+    pq essa é uma das vantagens dos services...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> NOSSO APP É COMPLEXOZINHO....
+
+
+
+
+
+
+
+NOSSO APP SE PARECE ASSIM, ATÉ AGORA:
+
+
+
+
+
+
+
+
+
+
+
+
+
+ROOT 
+
+
+
+HEADER 
+
+
+
+SHOPLIST    RECIPEBOOK 
+
+
+
+SHOPLIST            RECIPE LIST 
+ 
+
+SHOPLISTITEM        RECIPE ITEM 
+
+INGREDIENT             RECIPE DETAIL  
+
+                        RECIPE..
+
+
+
+
+
+
+
+
+
+
+--> OS SERVICES NOS DEIXAM 'CENTRALIZE TASKS'
+
+e managear data em 1 lugar só...
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE PROVAVELMENTE PRECISAREMOS DE 1 SERVICE 
+
+_ PARA_ _AMBAS__ 
+
+'feature areas',
+
+
+
+
+
+
+
+
+
+
+PRECISAREMOS DE 
+
+
+
+
+_1 SERVICE_ PARA 
+
+O 'shoplist',
+
+
+E OUTRO 
+
+
+PARA 
+
+
+O 
+
+'RECIPE BOOK.'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O SHOPLIST SERVICE VAI MANAGEAR NOSSA SHOPPING LIST,
+
+
+
+
+
+E O RECIPEBOOK service vai managear 
+
+
+nossa recipe list.... -----> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> VAMOS QUERER TAMBÉM SER CAPAZES DE INTERAGIR 
+
+
+
+
+
+
+COM a 'shoplist' usando o 'recipe book' (
+
+    pq 
+
+    vamos querer adicionar ITEMS À 'SHOPLIST'
+
+
+    por meio de nossas recipes,
+
+
+    as recipes vão conter ingredients,
+
+    que serão 
+
+    passados a shopping list, etc etc....
+)
+
+
+
+
+
+
+
+
+
+
+
+------> OK, USAREMOS AMBOS OS SERVICES....
+
+
+
+
+
+
+
+
+
+
+---> O PROFESSOR DIZ QUE NOSSA TAREFA, POR ENQUANTO,
+
+
+SERÁ APENAS 'CREATE BOTH SERVICES'...
+
+
+
+
+
+
+
+
+-> TENTE CRIAR AS FILES E TENTE 
+
+
+
+ENCONTRAR LUGARES NA ESTRUTURA DE NOSSO APP EM QUE 
+
+eles simplesmente 'fit in',..
+
+
+
+
+
+
+
+
+
+-> MAIS TARDE 
+
+complementaremos isso...
+
+
+
+
+
+
+
+
+
+--> vou tentar criar esses arquivos por conta própria..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MEU CÓDIGO COMEÇA ASSIM:
+
+
+
+
+
+
+
+
+
+
+'recipeBook.service.ts':
+
+
+
+
+import { Recipe } from './recipeBook/recipe.model';
+
+export class RecipeBookService {
+  recipes: Recipe[] = [
+    new Recipe(
+      'Chicken Wings',
+      'Delicious chicken wings',
+      'https://www.farmfor.com.br/wp-content/uploads/2022/02/coxinha-da-asa-superbowl.jpg'
+    ),
+    new Recipe(
+      'Pork Chops',
+      'Tasty pork chops, check them out',
+      'http://t2.gstatic.com/licensed-image?q=tbn:ANd9GcQsRbNYL4S-Noacb27Vi-sbWzURFRjW9YN8VOScbiJ0DxTAiGxTyqlNdG1TWHKN1xWqOV4UhHaFef-fBD8-PGo'
+    ),
+    new Recipe(
+      'Caesar Salad',
+      'Fresh and healthy salad',
+      'https://www.confeiteiradesucesso.com/wp-content/uploads/2019/06/ceasarsalad-fb.jpg'
+    ),
+  ];
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E ASSIM (lá em 'recipe-list-component.ts');
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, Input, OnInit, Output } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+import { RecipeBookService } from 'src/app/recipeBook.service';
+
+import { Recipe } from '../recipe.model';
+
+@Component({
+  selector: 'app-recipe-list',
+  templateUrl: './recipe-list.component.html',
+  styleUrls: ['./recipe-list.component.css'],
+})
+export class RecipeListComponent implements OnInit {
+  @Output() listItemDetail = new EventEmitter<Recipe>();
+
+  // recipes: Recipe[] = [
+  //   new Recipe(
+  //     'Chicken Wings',
+  //     'Delicious chicken wings',
+  //     'https://www.farmfor.com.br/wp-content/uploads/2022/02/coxinha-da-asa-superbowl.jpg'
+  //   ),
+  //   new Recipe(
+  //     'Pork Chops',
+  //     'Tasty pork chops, check them out',
+  //     'http://t2.gstatic.com/licensed-image?q=tbn:ANd9GcQsRbNYL4S-Noacb27Vi-sbWzURFRjW9YN8VOScbiJ0DxTAiGxTyqlNdG1TWHKN1xWqOV4UhHaFef-fBD8-PGo'
+  //   ),
+  //   new Recipe(
+  //     'Caesar Salad',
+  //     'Fresh and healthy salad',
+  //     'https://www.confeiteiradesucesso.com/wp-content/uploads/2019/06/ceasarsalad-fb.jpg'
+  //   ),
+  // ];]
+
+
+
+  recipes: Recipe[] = [];
+
+  constructor(private recipeBookService: RecipeBookService) {
+
+
+
+  }
+
+  ngOnInit(): void {
+    this.recipes = this.recipeBookService.recipes;
+
+
+  }
+
+  onRecipeItemClick(index: number) {
+    console.log('TEST');
+    // console.log(index)
+
+    const selectedRecipe: Recipe = this.recipes[index];
+
+    this.listItemDetail.emit(selectedRecipe);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> agora é só eu continuar com isso,
+
+
+
+
+colocar esses arrays iniciais 
+
+nos meus services...
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { Ingredient } from '../shared/ingredient.model';
+import { ShoppingListService } from '../shoppingList.service';
+
+@Component({
+  selector: 'app-shopping-list',
+  templateUrl: './shoppingList.component.html',
+  styleUrls: ['./shoppingList.component.css'],
+})
+export class ShoppingListComponent implements OnInit {
+  // ingredients: Ingredient[] = [
+  //   // new Ingredient('Potato', 1, 1651882246336.7927),
+  //   // new Ingredient('Tomato', 3, 1651882348842.3665),
+  //   // new Ingredient('Banana', 5, 1651882373138.5793)
+
+  //   new Ingredient('Potato', 1),
+  //   new Ingredient('Tomato', 3),
+  //   new Ingredient('Banana', 5),
+  // ];
+
+
+  ingredients: Ingredient[] = [];
+
+  selectedIngredient: Ingredient;
+
+  constructor(private shoppingListService: ShoppingListService) {}
+
+  ngOnInit(): void {
+    this.ingredients = this.shoppingListService.ingredients;
+
+
+  }
+
+  onIngredientAdded(ingredient: Ingredient) {
+    this.ingredients.push(ingredient);
+    console.log(this.ingredients);
+  }
+
+  // ingredientSelect(index: number) {
+  //   this.selectedIngredient = this.ingredients[index];
+  // }
+
+  // ingredientRemoved(ingredientIndex: any) {
+  //   this.ingredients.splice(ingredientIndex, 1);
+
+  //   console.log(this.ingredients);
+  // }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> certo...
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> o próximo passo é adicionar os METHODS a esses services aí... 
+
+
+
+
+(os methods como 'addRecipe', etc etc)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> certo, já consegui fazer o 'add ingredient' funcionar... (feature de 'shoppingList')...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ficou assim, lá em 'shop-list-edit:
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <form>
+      <div class="row">
+        <div class="col-sm-5 form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" class="form-control" 
+          
+          #nameInput
+            />
+        </div>
+        <div class="col-sm-2 form-group">
+          <label for="amount">Amount</label>
+          <input type="number" id="amount" class="form-control" #amountInput 
+          
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <button class="btn btn-success" (click)="onAddItem()">Add</button>
+          <button class="btn btn-danger">Delete</button>
+          <button class="btn btn-primary" type="button">Clear</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E NO 'shop-list-edit.component.ts':
+
+
+
+
+
+
+
+
+
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+import { Ingredient } from 'src/app/shared/ingredient.model';
+
+import { ShoppingListService } from 'src/app/shoppingList.service';
+
+@Component({
+  selector: 'app-shop-list-edit',
+  templateUrl: './shop-list-edit.component.html',
+  styleUrls: ['./shop-list-edit.component.css'],
+})
+export class ShopListEditComponent implements OnInit {
+  @ViewChild('nameInput', { static: false }) nameInputRef: ElementRef;
+  @ViewChild('amountInput', { static: false }) amountInputRef: ElementRef;
+
+  // @Output() ingredientAdded = new EventEmitter<{
+  //   name: string;
+  //   amount: number;
+  // }>();
+
+  // @Output() ingredientAdded = new EventEmitter<Ingredient>();
+
+  constructor(private shoppingListService: ShoppingListService) {}
+
+  ngOnInit(): void {
+
+  }
+
+  onAddItem() {
+    const newIngredient = new Ingredient(
+      this.nameInputRef.nativeElement.value,
+      this.amountInputRef.nativeElement.value
+    );
+
+      this.shoppingListService.onIngredientAdd(newIngredient);
+
+
+    // this.ingredientAdded.emit(newIngredient);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+------------------------------
+
+
+
+
+
+
+
+ou seja,
+
+agora estamos formulando o ingredient em 'onAddItem'
+
+E AÍ 
+
+estamos 
+
+
+O submittando ao nosso service, por meio do código de 
+
+
+'' this.shoppingListService.onIngredientAdd(newIngredient); '''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> podemos fazer a mesma coisa com 
+
+'shopping-list-item.component.ts',
+
+
+acho..
+
+
+
+
+
+
+
+
+
+--> nah, mas descubro que não há necessidade do uso/referência 
+
+
+
+
+ao 
+
+
+
+
+'shoppingListService'
+
+
+nesse compoent de 'list-item'... (desnecessário, o 'shoppingList.component.ts' já está vinculado, e usa o decorator '@Input' só para REPASSAR A DATA QUE JÁ tem, do array de 'ingredients', para esses elementos 'list-item'....)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok, agora falta 'consertar' o recipeBook...
+
+
+
+
+
+
+
+
+
+
+
+-> vou tentar fazer a mesma coisa....
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, CONSEGUI,
+
+
+
+FIZ O NEGÓCIO FUNCIONAR, SÓ O CÓDIGO FICOU UM POUCO DIFERENTE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> o código ficou com 
+
+
+
+
+o service central de 'recipeBook.service.ts'...
+
+
+
+
+
+
+
+--. para conseguir o CROSS-COMPONENT COMMUNICATION,
+
+
+
+
+escrevi assim:
+
+
+
+
+
+import { EventEmitter, Injectable, Output } from '@angular/core';
+import { Recipe } from './recipeBook/recipe.model';
+
+
+@Injectable()
+export class RecipeBookService {
+  recipes: Recipe[] = [
+    new Recipe(
+      'Chicken Wings',
+      'Delicious chicken wings',
+      'https://www.farmfor.com.br/wp-content/uploads/2022/02/coxinha-da-asa-superbowl.jpg'
+    ),
+    new Recipe(
+      'Pork Chops',
+      'Tasty pork chops, check them out',
+      'http://t2.gstatic.com/licensed-image?q=tbn:ANd9GcQsRbNYL4S-Noacb27Vi-sbWzURFRjW9YN8VOScbiJ0DxTAiGxTyqlNdG1TWHKN1xWqOV4UhHaFef-fBD8-PGo'
+    ),
+    new Recipe(
+      'Caesar Salad',
+      'Fresh and healthy salad',
+      'https://www.confeiteiradesucesso.com/wp-content/uploads/2019/06/ceasarsalad-fb.jpg'
+    ),
+  ];
+
+
+  @Output() recipeItemClickedEmitter = new EventEmitter<Recipe>()
+
+
+  recipeItemClicked(index: number) {
+    const recipe = this.recipes[index];
+    this.recipeItemClickedEmitter.emit(recipe)
+
+  } 
+
+}
+
+
+
+
+
+
+
+
+
+--------------------------------
+
+
+
+
+
+
+
+
+
+
+
+ou seja,
+
+usei 
+
+
+esse 'output'
+
+
+
+e um EventEmitter 
+
+
+
+
+nesse 
+
+SERVICE
+
+
+para conseguir então 
+
+CAPTAR ESSE EVENT 
+
+
+LÁ 
+em 
+
+''recipe-detail'',
+
+
+
+
+no constructor de 'recipe-detail',
+
+
+em que 
+
+
+
+ESCREVI ISTO AQUI:
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit, Input } from '@angular/core';
+import { RecipeBookService } from 'src/app/recipeBook.service';
+
+import { Recipe } from '../recipe.model';
+
+@Component({
+  selector: 'app-recipe-detail',
+  templateUrl: './recipe-detail.component.html',
+  styleUrls: ['./recipe-detail.component.css']
+})
+export class RecipeDetailComponent implements OnInit {
+
+
+  loadedRecipe: Recipe;
+
+
+
+  constructor(private recipeBookService: RecipeBookService) { 
+
+    // this.recipeBookService.recipeItemClickedEmitter.subscribe(
+    //   (data: Recipe) => {
+    //       console.log(data);
+    //   }
+    // )
+
+    this.recipeBookService.recipeItemClickedEmitter.subscribe(
+      (data) => {
+          console.log(data);
+          this.loadedRecipe = data;
+      }
+    )
+
+  }
+
+
+
+  ngOnInit(): void {
+
+  }
+
+
+
+}
+
+
+
+
+
+
+
+--> no component de 'recipe-detail',
+
+usei o method 'SUBSCRIBE'
+
+
+desse eventEmitter,
+
+para 
+
+
+aí 
+
+PEGAR A DATA QUE SUBMITTAMOS 
+
+ATRAVÉS DE 'emit' nesse mesmo eventEmitter...
+
+
+
+
+
+
+
+
+
+
+
+--> NO HTML DO RECIPE-DETAIL,
+
+
+
+
+
+FICOU ASSIM:
+
+
+
+
+
+
+
+<div *ngIf="loadedRecipe; else noRecipeLoaded">
+<div class="row">
+  <div class="col-xs-12">
+    <img src="{{loadedRecipe.imagePath}}" alt="" class="img-responsive" style="max-height: 300px; max-width: 400px;" />
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <h1>{{ loadedRecipe.name }}</h1>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+      <h2>{{loadedRecipe.description}}</h2>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <div class="btn-group" appDropdown>
+      <button type="button" class="btn btn-primary dropdown-toggle">
+        Manage Recipe <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu">
+          <li><a href="#">Add to Shopping List</a></li>
+          <li><a href="#">Edit Recipe</a></li>
+          <li><a href="#">Delete Recipe</a></li> 
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        Ingredients
+    </div>
+</div>
+
+</div>
+<ng-template #noRecipeLoaded>
+<p>Please select a Recipe!</p>
+</ng-template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> e isso realmente funcionou,
+
+
+nosso component 'recipe-detail'
+
+recebe a INFO DO 
+
+INGREDIENT DA LIST DE INGREDIENTS EM 'recipeBook',
+
+e aí 
+
+outputta 
+
+
+
+
+
+adequadamente...
+
+
+
+
+
+
+
+
+
+OK, AGORA É HORA DE VER A AULA DO PROFESSOR, EM 'SETTANDO OS SERVICES'....

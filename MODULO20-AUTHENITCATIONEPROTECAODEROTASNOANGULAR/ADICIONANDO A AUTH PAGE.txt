@@ -1,0 +1,3374 @@
+
+
+
+
+
+
+ME LEMBREI DE COMO FIZ O AUTHENTICATION LÁ 
+
+
+
+NO MEU APP NODEJS, 
+
+
+
+
+
+
+
+no curso de nodejs,
+
+
+
+a authentication DE 'SESSION-BASED' (apps html normais):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+exports.postLogin = (req, res, next) => {
+  const password = req.body.password;
+  const email = req.body.email.toLowerCase(); ///para evitar problemas com '.com' e '.COM' naquela function de '.findOne()'.... (isso pq EMAILS NÃO SÃO CASE-SENSITIVE, não se importam com isso..)
+
+  console.log(email);
+
+  User.findOne({ email: email }).then((user) => {
+    console.log(user, 'XX');
+    if (!user) {
+      req.flash('error', 'Invalid Email.'); ////ISSO FOI/É USADO LÁ NO CONTROLLER DE 'get' '/login', PQ __ É PARA LÁ QUE VAMOS REDIRECIONAR NOSSO USER, e é LÁ QUE VAMOS QUERER __ MOSTRAR__ NOSSA MENSAGEM DE ERRO DIZENDO QUE ELE ERROU O EMAIL/PASSWORD...
+      return res.redirect('/login');
+    } else {
+      // const passwordIsValid = bcrypt.compare(password, user.password)
+      bcrypt
+        .compare(password, user.password)
+        .then((result) => {
+          ///result será OU TRUE OU FALSE (pq esse será o RESULTADO de 'bcrypt.compare()', é isso que ele nos retorna...)
+
+          if (result) {
+            //JÁ SE __ OS PASSWORDS BATEREM, prosseguiremos com o processo de auth.... caso contrário, mostraremos um erro/aviso dizendo que os passwords estão incorretos...
+            
+            req.session.isLoggedIn = true;
+            req.session.user = user;
+           return req.session.save((err) => {
+              console.log(err);
+              // res.redirect('/');
+
+
+              return res.redirect('/');
+            });
+          }  else {
+          //esse case FORA DO 'if(result)' é o case em que OS PASSWORDS NÃO MATCHEIAM (user errou/não sabe o password....) ---> vamos querer MOSTRAR UMA MENSAGEM DE ERRO AO REDIRECIONAR, lá na page de 'login', a que redirecionaremos o user....
+          
+          req.flash('error', 'Invalid Password.');
+          res.redirect('/login');
+
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          res.redirect('/login');
+        });
+    }
+  });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> esse 
+
+
+'req.session' 
+
+
+AÍ __ FAZIA COM QUE 
+
+
+
+MINHA SESSION FICASSE ARMAZENADA TANTO NO SERVIDOR NODEJS,DENTRO DO OBJECT 'REQUEST' daquele user.... e também no app 
+
+do user, em um 
+
+
+cookie...
+
+
+
+
+
+
+
+-> você não quer armazenar todas suas sessions no seu próprio server... (no node, por exemplo) ---> em vez disso, você quer armazenar esse negócio EM UMA DATABASE... (como mongodb, etc)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> e a session data era armazenada no MONGODB, ATRAVÉS DESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const store = new MongoDBStore( ////usado junto de 'app.use(session())', lá embaixo. Os 2 são necessários...
+  {
+    ///objeto OPTIONS dessa instanciação desse 'mongo db store', que é usado para ARMAZENAR SUAS SESSIONS...
+
+    uri: MONGODB_URI, ///mesma connection string de nosso CONNECT GERAL AO NOSSO DATABASE... (usado lá em 'mongoose.connect()')...
+
+    collection: 'sessions', //aqui você define a COLLECTION em que você vai querer ARMAZENAR SUAS SESSIONS....
+    //expires// opcional.... ---> SE VOCÊ SETTAR ISSO, o mongodb VAI AUTOMATICAMENTE LIMPAR suas sessions ARMAZENADAS NESSA collection aí, quando o tempo delas expirar, tempo definido nessa key...
+  } //em 'uri' você deve colocar A __sTRING__ DA DATABASE EM QUE VOCê VAI QUERER ARMAZENAR (o seu store) SUAS SESSIONS...
+);
+
+
+
+
+
+app.use( /// (1/2) ///DEVE SER USADO COM O MIDDLEWARE DE BAIXO, que vai _RESOLVER__ O PROBLEMA DOS 'MONGOOSE METHODS', que são necessa´rios e NÃO SERÃO OBTIDOS _ QUANDO RETRIEVARMOS UMA SESSION DIRETAMENTE/conseguirmos dados nas sessions diretamente (pq os methods SÃO PERDIDOS na database....)
+  session(
+    ////USADO PARA DEFINIR/SETTAR NOSSA 'session' no nosso app, SESSION QUE SERÁ USADA/EMBUTIDA __ EM TODO E QUALQUER REQUEST que será enviado ao nosso server/app node... ----> É POR ISSO QUE VOCÊ SEMPRE DEVE ESCREVER ESSE CÓDIGO __ BEM NO INÍCIO DO RUNTIME/FLOW DE SEU APP, junto desses bodyParser e definidores de 'exceções public' ( middleware de 'express.static()' ....)
+    {
+      //é aqui que vamos  SETTAR__ NOSSO 'STORE', o 'STORE' que será usado para ARMAZENAR NOSSAS SESSIONS....
+
+      secret: 'asjosaoasjoasjoghihninknxcknklnknlk', ///segredo FRACO.... vocÊ DEVE _USAR __SECRETS _ FORTES (longas strings, o ideal são 'random sets of characters'... --> colocamos isso NA FASE DE PRODUCTION...) --> O 'secret' É USADO NO __ GENERATE__ Do 'id' QUE SERÁ armazenado no seu 'SESSION COOKIE', no browser do usuário... (ver aulas 'o que é uma session' e 'initializing the session middleware')  --> OBS: O ID __ da session ARMAZENADO NO SERVER/DATABASe é o id 'puro', ao passo que o ID __ armazenado no BROWSER em 1 cookie ( o SESSION COOKIE, cookie em que fica ARMAZENADA A SESSION, o COUNTERPART da session que será matcheado com ela) SERÁ 1 'HASHED ID', UM ID ___CODIFICADO, cujo algoritmo SÓ É ENTENDIDO PELO PRÓPRIO APP NODE QUE CRIOU/FORMATOU ESSE HASHED ID, E QUE __ DEPENDE DESSE VALOR AÍ, de 'secret' nesse define da sua session...
+      // secret: 'ASSAasj21jasjxzkvnklnbbnz,qn2oigndpoghojuhojá0wqj0dknbxklcknkmgnhoaso1mnkl2nlg' ////segredo já um pouquinho mais forte.
+
+      resave: false, //////SETTING DE PERFORMANCE... Forces the session to be saved back to the session store, even if the session was never modified during the request. -----> VOCê DEVE __GERALMENTE SETTAR COMO 'FALSE', pq você NÃO VAI QUERER que SUA 'SESSION' seja SALVA a partir de TODO E CADA REQUEST CYCLE (req-res, ciclo que termina com o SEND DE UMA RESPONSE, que mata o request), PQ _àS VEZES OS REQUESTS__ PODEM N TER ALTERADO COISA ALGUMA, hipóteses em que É INÚTIL SALVAR/re-salvar a session, pq nada nela terá mudado a partir daquele request inútil...
+      saveUninitialized: false, ////MESMA COISA QUE A SETTING DE CIMA, 1 setting de PERFORMANCE...  ------> VOCÊ __ DEVE  SETTAR __ COMO  'FALSE' PQ __ ISSO VAI __ BASICAMENTE ___ ___GARANTIR__, também,  QUE  NENHUMA  SESSION  ACABE  'saved for a request WHERE THAT SESSION DOESNT NEED/didnt need TO BE SAVED' ----> ISSO PQ  __-NADA FOI/TERÁ SIDO ALTERADO NA SESSION, por meio desse request, o  que afastaria a necessidade de 'save' dessa session para salvar as changes...
+      store: store, ///define o STORE que você vai querer usar.... (vamos passar nossa CONSTANTE de 'store' que definimos mais acima..., com o 'new MongoDBStore()'...)
+      // cookie: { ////KEY USADA PARA _ DEFINIR CONFIGS ESPECÍFICAS DE NOSSO 'SESSION COOKIE', dos session cookies armazenados no browser de nosso user... (pleonasmo... todos session cookies são armazenados NO BROWSER DO USER...)
+      //   maxAge: ...
+      // }
+    }
+  )
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+sim... aí o código de 
+
+
+'''           req.session.isLoggedIn = true;
+            req.session.user = user; '''
+
+
+
+
+
+            fazia 
+
+            com que 
+
+
+
+
+            essa session fosse 
+
+
+
+            ARMAZENADA TANTO NO MONGODB COMO 
+
+            TAMBÉM 
+
+
+
+            NO APP DO USER, em 'local storage'...
+
+
+
+
+
+
+
+
+
+
+
+
+            --> cada session tem este formato,
+
+
+            lá na database:
+
+
+
+
+
+
+
+
+            {
+
+                _id: 1asdjadksosjadojsdao,
+                session: {
+                               isLoggedIn: true,
+                               cookie: {
+                                   ...
+                               }
+                },
+     
+                expires: 2018-2-1 15:34:20
+            }
+
+
+
+
+
+
+
+
+
+            ------> temos info sobre o COOKIE A QUE PERTENCE/PERTENCERÁ A ESSA SESSION...
+
+
+
+
+
+---------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+quanto ao validate feito 
+
+
+
+
+
+
+no APP REACT,
+
+
+
+
+
+
+
+eu fiz algo assim:
+
+
+
+
+
+
+
+
+
+BACKEND:
+
+
+
+
+
+
+
+
+
+
+
+
+exports.login = (req, res, next) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  let loadedUser;
+
+  User.findOne({ email: email })
+    .then((user) => {
+      if (!user) {
+        const error = new Error(
+          'No user could be found for the entered email.'
+        );
+        error.statusCode = 404;
+        throw error;
+      }
+      loadedUser = user; ///aqui armazenamos a data de nosso user naquela variável inicial... vamos o utilizar mais para baixo, em execuções dentro dessa promise chain...
+      return compare(password, user.password);
+    })
+    .then((isEqual) => {
+      if (!isEqual) {
+        const error = new Error('Invalid Password. Please try again.');
+        error.statusCode = 401; //'unauthenticated'...
+        throw error;
+      } else {
+        const token = jwt.sign(
+         
+         
+          {
+              ///// PRIMEIRO ARGUMENTO = DATA QUE VOCê QUER QUE SEJA RETORNADA, NA SUA JSON WEB TOKEN, AO USER (nunca coloque o hashedPassword, essa é a única regra... common practice é retornar o email...) --> aqui retornamos o 'userId' pq vamos o utilizar em coisas como 'deletePost'...
+            email: loadedUser.email,
+            userId: loadedUser._id,
+          },  //////SEGUNDO ARGUMENTO = 'SECRET', OU A 'PRIVATE KEY' usada no GENERATE DA ASSINATURA (signature) dessa JSON WEB TOKEN --> É BOM USAR STRINGS ALEATÓRIAS E BEM LONGAS, para deixar seguro.... use o site mkjwk.org....
+          'zVzS42wNmzOOmlRgYCNWE1dxTH4n_sL6JuDnNj2srF2B7YxRsAgVmvqO8z14Wd3nzOqXzseBAjJ7PA5RSzjs0GsdrR5nxrVu8NPQJjooJLq2GqEl4h9JxwJ8zg5d_Fl2l3Q3n8yf13Gydum25V3mYRUy--L1EskSMs2PcEXLOJM', //private key/secret ---> SERÁ CONHECIDA APENAS PELO SERVER...
+          {
+            ////TERCEIRO ARGUMENTO, ARGUMENTO DE OPTIONS...
+            //////TERCEIRO ARGUMENTO = 'OBJETO CONFIG' --> você define CARACTERÍSTICAS DESSA WEBTOKEN: quando ela deve expirar,
+            expiresIn: '1h', ///JSON WEB TOKEN VAI EXPIRAR EM 1 HORA... (no browser do user...) --> boa medida de segurança, pq aí se o token do user, no browser do user, for roubado por um user malicioso, essa token logo expirará, em 1 hora....
+          }
+        );
+
+        res.status(200).json({
+          token: token, //vamos querer enviar isso ao nosso frontend, para que seja armazenada...
+          userId: loadedUser._id.toString(), ///também vamos querer enviar isso ao nosso frontend, para que seja armazenado.... (e então utilizado no frontend/app react)....
+        });
+      }
+    })
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+
+      next(err);
+    });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+FRONTEND:
+
+
+
+
+
+
+
+
+
+
+
+
+
+componentDidMount() {
+    const token = localStorage.getItem('token'); //vai fazer o get de nossa token ao ser montado nosso app ( app geral) 
+    const expiryDate = localStorage.getItem('expiryDate');
+
+    if (!token || !expiryDate) { ///if checks preventivos de login (se o user não tiver a token/token tiver expirado, não vamos renderizar o resto do nosso app)...
+      return;
+    }
+
+    if (new Date(expiryDate) <= new Date()) {
+      this.logoutHandler();
+      return;
+    }
+
+    const userId = localStorage.getItem('userId');
+    const remainingMilliseconds =
+      new Date(expiryDate).getTime() - new Date().getTime();
+    this.setState({ isAuth: true, 
+      token: token, ///vai fazer o set de nossa token no STATE de nosso frontend, se passarmos por aqueles if checks preventivos....
+      
+      
+      userId: userId }); 
+    this.setAutoLogout(remainingMilliseconds);
+  }
+
+
+
+
+
+
+  loginHandler = (event, authData) => {
+    event.preventDefault();
+    this.setState({ authLoading: true });
+    fetch(
+      'http://localhost:8080/auth/login',
+
+      {
+        body: JSON.stringify({
+          email: authData.email,
+          password: authData.password,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        ///EIS O CÓDIGO EM QUESTÃO.
+      }
+    )
+      .then((res) => {
+        if (res.status === 422) {
+          throw new Error('Validation failed.');
+        }
+
+        if (res.status !== 200 && res.status !== 201) {
+          throw new Error('Could not authenticate you!');
+        }
+
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+
+        this.setState({
+          isAuth: true,
+          token: data.token,
+          authLoading: false,
+          userId: data.userId,
+        });
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('userId', data.userId);
+        const remainingMilliseconds = 60 * 60 * 1000; ///3600 segundos, 1 hora.
+        const expiryDate = new Date(
+          new Date().getTime() + remainingMilliseconds
+        );
+        localStorage.setItem('expiryDate', expiryDate.toISOString());
+        this.setAutoLogout(remainingMilliseconds);
+      })
+      .catch((err) => {
+        console.log(err);
+        this.setState({
+          isAuth: false,
+          authLoading: false,
+          error: err,
+        });
+      });
+  };
+
+
+
+
+
+
+
+
+
+
+------------------------------
+
+
+
+
+
+
+
+ou seja, as infos de login são enviadas,
+
+aí ele checa na database do mongodb pela existência/validade 
+
+
+
+
+dessa info;
+
+
+
+finalmente, se essa info é válida,
+
+
+
+
+
+o backend RETORNA UMA JSON WEB TOKEN (tipo um cookie com uma session),
+
+que 
+
+
+é 
+
+então 
+
+
+
+ARMAZENADO 
+
+
+
+NO LOCALSTORAGE E NO STATE DO APP BROWSERSIDE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> essa cookie/session armazenada no STATE 
+
+
+
+do app browserside PROVAVELMENTE ERA COLOCADA 
+
+
+NOS HEADERS/QUERY PARAMS DE TODOS OS REQUESTS,
+
+
+
+
+e
+ então 
+
+
+
+ ERA CHECADA 
+
+
+ POR MEIO DO MIDDLEWARE HELPER DE 'is-auth.js':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ const jwt = require('jsonwebtoken');
+
+module.exports = (req, res, next) => {
+  ///POR MEIO DESTA SINTAXE, EXPORTAMOS APENAS 1 ÚNICA FUNÇÃO...
+
+  const header = req.get('Authorization'); ///ESSE MÉTODO '.get()' É UM MÉTODO __ QUE NOS PERMITE__ FAZER 'get' DO VALOR _de 1 DE NOSSOS HEADERS, DENTRO DO NOSSO REQUEST...
+  ///vamos querer fazer get DESSE HEADER DE 'Authorization', QUE É O LOCAL EM QUE EMBUTIMOS NOSSA TOKEN (JSON WEB TOKEN)...
+  ////O VALOR EXTRAÍDO DESSE HEADER SERÁ 'Bearer ashsiahasihasasi' (o gibberish é a __TOKEN EM SI___)...
+
+  if (!header) { ////cases em que NEM MESMO O HEADER FOI ANEXADO AO REQUEST...
+    const error = new Error('Not authenticated.');
+    error.statusCode = 401;
+    throw error;
+  }
+
+  const actualToken = header.split(' ')[1]; ////VAMOS QUERER __ SEPARAR A STRING DE 'bearer' da TOKEN EM SI, portanto usamos esse método split para pegar a token... é algo bem padrão, visto frequentemente...
+
+  let decodedToken;
+
+  try {
+    ///com essa sintaxe FAREMOS O 'DECODE/verify' (ou verificação, na verdade) DE NOSSA TOKEN, da token recebida no nosso backend...
+
+    decodedToken = jwt.verify(
+      actualToken, ///o método 'verify' de 'jsonwebtoken' vai TANTO DECODIFICAR (parsear, extrair valores) como __ VALIDAR/VERIFICAR SUA TOKEN (ver se não é inválida)...
+      /// outro método, mais situacional, é '.decode()', que apenas DECODIFICA A TOKEN, SEM SE IMPORTAR POR/CHECAR SUA VALIDADE...
+      'zVzS42wNmzOOmlRgYCNWE1dxTH4n_sL6JuDnNj2srF2B7YxRsAgVmvqO8z14Wd3nzOqXzseBAjJ7PA5RSzjs0GsdrR5nxrVu8NPQJjooJLq2GqEl4h9JxwJ8zg5d_Fl2l3Q3n8yf13Gydum25V3mYRUy--L1EskSMs2PcEXLOJM' /// ESSE É O SEGUNDO ARGUMENTO DESSE MÉTODO '.verify()', que __ TAMBÉM É OBRIGATÓRIO... --> NESSE ARGUMENTO, PASSAMOS __ O __ SECRET__ QUE VOCÊ USOU NA CRIAÇÃO DAS TOKENS, criação feita no seu próprio backend (no nosso caso, lá no controller de 'auth.js', no controller de 'exports.login'...)..
+    );
+  } catch (err) {
+    err.statusCode = 500;
+    throw err; ///vai fazer com que o SPECIAL EXPRESS ERROR HANDLER MIDDLEWARE assuma o comando...
+  }
+
+  if (!decodedToken) {
+    const error = new Error('Not authenticated');
+    error.statusCode = 401;
+    throw error; // de novo, para engatilhar aquele middleware de error handling geral....
+  }
+
+  req.userId = decodedToken.userId; ////////////VAMOS QUERER ARMAZENAR, NO OBJETO 'REQ' DO USER, VALORES QUE ESTAVAM CONTIDOS DENTRO DA TOKEN QUE RECEBEMOS NO BACKEND...
+
+  next(); ///após armazenar o userId no request, fazemos forward do request, para que continue com o flow do runtime, para que alcance os controllers como o de 'getPosts'...
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+ELE FOI ENTÃO POSICIONADO, COMO GUARD, EM TODAS NOSSAS ROUTES QUE NÃO SÃO DE 'LOGIN'/'SIGNUP':
+
+
+
+
+const isAuth = require('../middlewareHelpers/is-auth');
+
+
+router.get(
+  '/posts',
+
+  isAuth,  ////vamos usar isso para fazer   'GUARD' dessa route... --> user só poderá ver POSTS se estiver AUTHENTICATED ( ou seja, se estiver com uma TOKEN no seu browser...) ------> essa token é então verificada nesse middleware de 'isAuth', tudo coisa padrão...
+          ///esse middleware de 'isAuth' então faz o STORE do valor de 'userId' contido nessa token em uma PROPRIEDADE DE NOME 'userId' no request object do usuário... (se tudo der certo, validation for bem sucedida).... 
+  feedController.getPosts
+);
+
+//POST /feed/post
+router.post(
+  '/post',
+  isAuth, //route guard. Authentication/authorization
+  [
+    body('title')
+      .trim()
+      .isLength({ min: 6 })
+      .withMessage('Title should be more than 6 characters long.')
+      // .isString()
+      .isAlpha()
+      .withMessage('Post Titles must contain only letters.')
+
+      .custom((value, { req }) => {
+        ////EIS O CÓDIGO EM QUESTÃO. //////ESSE BLOCO '.custom()' É UM __ EXEMPLO DE ' ASYNC VALIDATION'.. --> para mais informações, VER AULA 291, adding async validation.... (é async validation pq NOSSO APP VAI QUERER CONTATAR A DATABASE PARA CHECAR SE O EMAIL INPUTTADO PELO USER JÁ NÃO EXISTE DENTRO DE 1 USER PRÉVIO, O QUE O TORNARIA INVÁLIDO/INUSÁVEL...)
+
+        console.log(value);
+        return Post.findOne({ title: value }).then((post) => {
+          console.log(post);
+          if (post) {
+            console.log(post, 'LINE');
+            return Promise.reject(
+              'A post with the chosen title already exists, please choose another one.'
+            );
+          } else {
+            return value;
+          }
+        });
+      }),
+    body('content')
+      .trim()
+      .isLength({ min: 6 })
+      .withMessage('Content should be more than 6 characters long.'),
+  ],
+
+
+
+  feedController.createPost
+);
+
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+router.get(
+  '/posts',
+
+  isAuth,  ////vamos usar isso para fazer   'GUARD' dessa route... --> user só poderá ver POSTS se estiver AUTHENTICATED ( ou seja, se estiver com uma TOKEN no seu browser...) ------> essa token é então verificada nesse middleware de 'isAuth', tudo coisa padrão...
+          ///esse middleware de 'isAuth' então faz o STORE do valor de 'userId' contido nessa token em uma PROPRIEDADE DE NOME 'userId' no request object do usuário... (se tudo der certo, validation for bem sucedida).... 
+  feedController.getPosts
+);
+
+
+
+
+
+
+
+
+
+----------------------------------
+
+
+
+
+
+user só poderia acessar essas routes se estivesse autenticado...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> e o 'isAuth'
+
+É QUE 
+
+
+POSICIONAVA 
+
+nosso 'userId' da token, dentro de nosso object 'request',
+
+lá do backend,
+
+
+toda vez que 
+
+entrávamos em alguma route:
+
+
+
+
+  if (!decodedToken) {
+    const error = new Error('Not authenticated');
+    error.statusCode = 401;
+    throw error; // de novo, para engatilhar aquele middleware de error handling geral....
+  }
+
+  req.userId = decodedToken.userId; ////////////VAMOS QUERER ARMAZENAR, NO OBJETO 'REQ' DO USER, VALORES QUE ESTAVAM CONTIDOS DENTRO DA TOKEN QUE RECEBEMOS NO BACKEND...
+
+  next(); ///após armazenar o userId no request, fazemos forward do request, para que continue com o flow do runtime, para que alcance os controllers como o de 'getPosts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -----------
+
+
+
+
+
+
+  ok, acho que estou entendendo....
+
+
+
+
+
+
+
+
+
+  --> AGORA TENHO QUE VER O QUE O PROFESSOR QUER FAZER COM ESSE APP 
+
+
+
+
+
+
+
+
+  DE 'Recipes'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> PRECISAMOS DE NOVOS COMPONENTS, NOVAS ROUTES...
+
+
+
+
+
+
+
+
+
+
+
+  --> ATÉ AGORA, TEMOS RECIPES 
+
+  E 
+
+  A
+   ÁREA 
+
+   DE 
+   'SHOPPING LIST',
+
+
+
+   MAS AGORA VAMOS PRECISAR DE UMA ÁREA DEDICADA AO 'LOGIN/SIGNUP'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ---> A IDEIA É QUE NO NOSSO APP 
+
+  TEREMOS 
+
+
+
+  UMA PAGE DE 'AUTHENTICATION',
+
+
+
+  EM QUE PODERÃO '
+
+  SIGNUP/LOGIN',
+
+
+
+
+
+  E QUE _ _ESSA PAGE__ FICARÁ DISPONÍVEL EM UM STATE 'UNAUTHORIZED' (página livre, sem GUARD)...
+
+
+
+
+
+
+
+
+
+--> CERTO.. MAS A PAGE DE 'RECIPES' DEVERA SER 'LOCKED DOWN',
+
+
+
+
+
+
+
+
+
+E __ SÓ  SERÁ DISPONIBILIZADA SE O USER ESTIVER 'LOGGED IN',
+
+
+
+
+MESMA COISA COM 
+
+
+ O BUTTON DE 'MANAGE' (save/fetch recipes)...
+
+
+
+
+
+
+
+
+
+
+
+ --> CERTO... --.
+
+
+
+
+
+
+ A SHOPPING LIST SEMPRE DEVERÁ SER ACESSÍVEL,
+
+
+
+ MAS O PROFESSOR 
+
+
+ DIZ QUE 
+
+ PODERÍAMOS ADICIONAR GUARD A ELA TAMBÉM,
+
+
+
+
+ SE QUISERMOS...
+
+
+
+
+
+
+
+
+
+
+
+ -----> PARA TERMOS ESSA PAGE DE 'authentication',
+
+ O PROFESSOR CRIA UM NOV OFOLDER,
+
+
+
+
+
+
+
+
+
+
+ 'authPage'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> CERTO...
+
+
+
+
+
+
+
+
+
+
+VAMOS CRIAR UM ARQUIVO 'auth.component.ts'
+
+
+e 
+
+'auth.component.html'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> aí vamos fazer toda aquele processo padrão, bem normal,
+
+
+de adicionar essa 
+
+
+
+
+page/component no ROOT DE NOSSO APP...
+
+
+
+
+
+
+
+
+
+
+
+--> essa page 
+
+
+provavelmente ficará no 'TOPMOST LEVEL',
+
+
+
+
+
+ao lado das areas de 'recipeBook' e 'ShoppingList'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo..
+
+
+
+
+
+
+--> PRECISAMOS ADICIONAR ESSE COMPONENT NO 'app.module.ts', também...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VAMOS CRIAR UM NOVO CÓDIGO HTML NO TEMPLATE,
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TEREMOS UMA FORM, FORM DE SIGNUP E LOGIN,
+
+
+
+
+
+
+
+E AÍ TEREMOS UM BUTTON QUE VAI TOGGLAR ENTRE OS 2 MODES... (vai alterar o state de isSignup: true/false lá no nosso component, o que vai triggar o NgIf desse template)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR TAMBÉM 
+
+
+
+
+
+
+
+
+TAMBÉM 
+
+
+COLOCA UM FORM-GROUP
+
+
+
+do bootstrap,
+
+para 'bundle' 
+
+
+
+uma LABEL E INPUT de 'email'... mesma coisa com 'password'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TIPO ALGO ASSIM:
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+    <div class="col-xs-12">
+        <form (ngSubmit)="ngForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input 
+                type="email" 
+                class="form-control"
+                required
+                email
+                >
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="text" 
+                class="form-control"
+                required
+                minlength="6"
+                >
+            </div>
+            <button class="btn btn-primary" type="submit">{{isSignup ? 'SIGN UP' : 'LOGIN'}}</button>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo...
+
+
+
+
+
+
+
+
+
+-> AGORA PRECISO DE UM STATE DE 'isSignup'
+
+
+LÁ 
+
+
+
+NO 'auth-page.component.ts'...
+
+
+
+
+
+--> FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-auth-page',
+  templateUrl: './auth-page.component.html',
+  styleUrls: ['./auth-page.component.css']
+})
+export class AuthPageComponent implements OnInit {
+
+
+  isSignup: boolean = true;
+
+
+  constructor() { }
+
+  ngOnInit(): void {
+
+
+    
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo... e então, o ideal seria colocar um 
+
+
+
+
+method de 'onFormSubmit()'
+
+na nossa form...
+
+
+
+talvez 
+
+
+'onAuthFormSubmit()'...
+
+
+
+
+
+
+
+
+
+
+
+--> ah, esqueci de adicionar a directive de 'ngModel'
+
+
+
+em meus 
+
+
+
+input fields ,
+
+e também 
+
+
+lá 
+
+na própria 'form'...
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+    <div class="col-xs-12">
+        <form (ngSubmit)="onAuthFormSubmit(localFormReference)" #localFormReference="ngForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input 
+                type="email" 
+                class="form-control"
+                required
+                email
+                ngModel
+                >
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="text" 
+                class="form-control"
+                required
+                ngModel
+                minlength="6"
+                >
+            </div>
+            <button class="btn btn-primary" 
+            type="submit"
+            >{{isSignup ? 'SIGN UP' : 'LOGIN'}}</button>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... AGORA FUNCIONARÁ....
+
+
+
+
+
+
+
+
+
+
+
+MAS PRECISO DEFINIR A ROUTE de 'auth' 
+
+no meu projeto, lá em 
+
+'app-routing.module.ts'...
+
+
+
+
+
+
+
+
+ok... mas FALTARAM OS 'name' 
+
+
+
+
+DOS INPUT FIELDS,
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+<div class="row">
+    <div class="col-xs-12">
+        <form (ngSubmit)="onAuthFormSubmit(localFormReference)" #localFormReference="ngForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input 
+                type="email" 
+                class="form-control"
+                required
+                email
+                name="email"
+                ngModel
+                >
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="text" 
+                class="form-control"
+                required
+                name="password"
+                ngModel
+                minlength="6"
+                >
+            </div>
+            <button class="btn btn-primary" 
+            type="submit"
+            >{{isSignup ? 'SIGN UP' : 'LOGIN'}}</button>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+
+
+
+
+
+-> eu também gostaria que o 
+
+
+meu button de 'SIGN UP' ficasse centralizado...
+
+
+
+
+
+
+
+
+
+
+e também que não fosse tão grande a extensão de meus input fields....
+
+
+
+
+
+
+
+
+
+
+ok, coloquei um pouco de styling...
+
+
+
+
+
+
+
+--> MAS PRECISO DE UM BUTTON/elemento '<p>'
+
+
+
+
+
+QUE TROQUE ENTRE SIGNUP E LOGIN....
+
+
+
+
+
+
+
+
+
+
+
+
+por isso adiciono um novo button...
+
+
+
+
+
+
+
+ok, consegui deixar o style não tão ruim....
+
+
+
+
+
+
+
+CERTO... O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+    <div class="col-xs-12">
+        <form (ngSubmit)="onAuthFormSubmit(localFormReference)" #localFormReference="ngForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input 
+                type="email" 
+                class="form-control"
+                id="email"
+                required
+                email
+                name="email"
+                ngModel
+                placeholder="email@example.com"
+                >
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="text" 
+                class="form-control"
+                id="password"
+                required
+                name="password"
+                ngModel
+                minlength="6"
+                placeholder="Your Password"
+                
+                >
+            </div>
+            <div>
+            <button class="btn btn-primary" 
+            type="submit"
+            >{{isSignup ? 'SIGN UP' : 'LOGIN'}}</button>
+            <button class="textBtn"
+            (click)="onSwitchAuth()"
+            [ngStyle]="{'cursor': 'pointer'}"
+            >{{isSignup ? 'Switch to Login' : 'Switch to Signup'}}</button>
+        </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O PRÓXIMO PASSO, AGORA,
+
+
+
+
+
+
+É 
+
+
+
+
+
+COLOCAR UM IF CHECK LÁ NO METHOD DE 
+
+
+
+'onAuthFormSubmit',
+
+
+PARA checar SE ESTAMOS NO 'isSignup'
+
+
+
+ou NÃO..
+
+
+
+
+
+
+
+-> a partir desse state, vamos acessar a route de 'signup' 
+
+
+ou de 'login'....
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+@Component({
+  selector: 'app-auth-page',
+  templateUrl: './auth-page.component.html',
+  styleUrls: ['./auth-page.component.css'],
+})
+export class AuthPageComponent implements OnInit {
+  isSignup: boolean = true;
+
+  constructor() {}
+
+  ngOnInit(): void {}
+
+  onAuthFormSubmit(form: NgForm) {
+    const userData = {
+      email: form.form.get('email'),
+      password: form.form.get('password'),
+    };
+
+    if (this.isSignup) {
+    } else {
+    }
+  }
+
+  onSwitchAuth() {
+    this.isSignup = !this.isSignup;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> bem, agora preciso 
+
+
+
+de 
+
+
+DUAS COISAS:
+
+
+
+
+
+
+
+
+
+1) RESTFUL API ROUTES, lá do firebase, para que seja possível fazer o AUTHENTICATE DE NOSSOS USERS...
+
+
+(
+  uma route para LOGIN, OUTRA PARA CREATE ACCOUNT...
+)
+
+
+
+
+2) REDIRECT DO USER E PROVAVELMENTE O DEPÓSITO DE UMA TOKEN (JWT, jsonwebtoken) dentro
+
+do local storage do browser do user....
+
+
+
+
+
+
+
+
+
+--> certo...
+
+
+
+
+
+
+
+--> ME LEMBREI DE ALGO  IMPORTANTE:
+
+
+
+AS URLS PARA 'LOGIN' E 'SIGNUP' DO GOOGLE FIREBASE SÃO BEM DIFERENTES, POSSUEM ESTE FORMATO:
+
+
+
+    };
+    let url =
+      'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCy31S56NPNXlXSSCTRdE5TccY_QYmtZe4'; /// url usada para SIGNUP/CADASTRO....
+    if (!isSignup) {
+      url =
+        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCy31S56NPNXlXSSCTRdE5TccY_QYmtZe4'; ///url/endpoint usado para ___SIGNIN/LOGIN...
+    }
+
+
+
+OS DETALHES FICAM AQUI:
+
+
+
+
+https://firebase.google.com/docs/reference/rest/auth
+
+
+
+
+
+
+
+
+
+
+--> PARA FAZER O DISPARO DOS METHODS AO FIREBASE,
+
+
+SERIA MELHOR TER UM SERVICE DEDICADO A ISSO, COMO 'auth.service.ts'..
+
+
+
+
+
+
+vou fazer provavelmente assim:
+
+
+
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthService {
+
+  constructor(private http: HttpClient) {
+
+ 
+}
+
+
+
+
+onLogin() {
+
+
+  this.http
+
+
+
+
+}
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> CERTO... E AMBAS API ROUTES PEDEM QUE 
+
+DISPAREMOS UM REQUEST DE TIPO 'POST', e não get...
+
+
+
+
+
+
+
+
+--> O CÓDIGO FOI FICANDO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { AuthService } from '../auth.service';
+
+@Component({
+  selector: 'app-auth-page',
+  templateUrl: './auth-page.component.html',
+  styleUrls: ['./auth-page.component.css'],
+})
+export class AuthPageComponent implements OnInit {
+  isSignup: boolean = true;
+
+  constructor(private authService: AuthService) {}
+
+  ngOnInit(): void {}
+
+  onAuthFormSubmit(form: NgForm) {
+    const userData = {
+      email: form.form.get('email'),
+      password: form.form.get('password'),
+    };
+
+    if (this.isSignup) {
+      this.authService.onCreateAccount();
+    } else {
+      this.authService.onLogin();
+    }
+  }
+
+  onSwitchAuth() {
+    this.isSignup = !this.isSignup;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E NO SERVICE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AuthService {
+  constructor(private http: HttpClient) {}
+
+  onCreateAccount(authData: { email: string; password: string }) {
+    this.http.post(
+      'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg',
+
+      authData,
+      {}
+    );
+  }
+
+  onLogin(authData: { email: string; password: string }) {
+    this.http.post(
+      'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg',
+      authData,
+
+      {}
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> é claro que AINDA FALTA BASTANTE COISA....
+
+
+
+
+
+
+
+
+--> um package que será absolutamente necessário será o 'jsonwebtoken',
+
+
+
+
+o 'JWT',
+
+pq 
+
+ele  que 
+
+vai nos deixar criar um desses 'jwt'...
+
+
+
+
+
+
+--> instalamos com 'npm install --save jsonwebtoken'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { AuthService } from '../auth.service';
+
+@Component({
+  selector: 'app-auth-page',
+  templateUrl: './auth-page.component.html',
+  styleUrls: ['./auth-page.component.css'],
+})
+export class AuthPageComponent implements OnInit {
+  isSignup: boolean = true;
+
+  constructor(private authService: AuthService) {}
+
+  ngOnInit(): void {}
+
+  onAuthFormSubmit(form: NgForm) {
+    const email = form.form.get('email')?.value;
+
+    const password = form.form.get('password')?.value;
+
+    const userData = {
+      email: email,
+      password: password,
+    };
+
+    if (this.isSignup) {
+      this.authService.onCreateAccount(userData);
+    } else {
+      this.authService.onLogin(userData);
+    }
+  }
+
+  onSwitchAuth() {
+    this.isSignup = !this.isSignup;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+------------------------------
+
+
+
+
+
+
+
+
+parece que também é necessário aquela propriedade de 
+
+
+
+''''    returnSecureToken: true, '''',
+
+
+
+dentro 
+
+da nossa authData enviada a essas routes...
+
+
+
+
+
+
+
+
+-> é por isso que escrevo assim:
+
+
+
+
+
+
+
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AuthService {
+  constructor(private http: HttpClient) {}
+
+  onCreateAccount(authData: { email: string; password: string, returnSecureToken: boolean }) {
+    this.http.post(
+      'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg',
+
+      authData,
+      {}
+    );
+  }
+
+  onLogin(authData: { email: string; password: string }) {
+    this.http.post(
+      'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg',
+      authData,
+
+      {}
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { AuthService } from '../auth.service';
+
+@Component({
+  selector: 'app-auth-page',
+  templateUrl: './auth-page.component.html',
+  styleUrls: ['./auth-page.component.css'],
+})
+export class AuthPageComponent implements OnInit {
+  isSignup: boolean = true;
+
+  constructor(private authService: AuthService) {}
+
+  ngOnInit(): void {}
+
+  onAuthFormSubmit(form: NgForm) {
+    const email = form.form.get('email')?.value;
+
+    const password = form.form.get('password')?.value;
+
+    const userData = {
+      email: email,
+      password: password,
+      returnSecureToken: true,
+    };
+
+    if (this.isSignup) {
+      this.authService.onCreateAccount(userData);
+    } else {
+      this.authService.onLogin(userData);
+    }
+  }
+
+  onSwitchAuth() {
+    this.isSignup = !this.isSignup;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> lá na minha versão REACT do código, o que eu costumava fazer, após esse send,
+
+
+
+
+ERA PEGAR A RESPONSE E ENTÃO FAZER 
+
+
+
+'''
+
+
+
+  .then((response) => {
+        const expirationDate = new Date(new Date().getTime() + response.data.expiresIn * 1000); ////lembre-se de adicionar '* 1000', pois o JAVASCRIPT SEMPRE CONSIDERA 'TEMPO' EM MILISSEGUNDOS, E NÃO EM SEGUNDOS.... (só o 'expiresIn' que é mostrado em segundos....)
+        localStorage.setItem('token', response.data.idToken);
+        localStorage.setItem('expirationDate', expirationDate);
+        localStorage.setItem('userId', response.data.localId);
+        localStorage.setItem('email', response.data.email )
+        dispatch(authSuccess(response.data.idToken, response.data.localId, response.data.email));
+        dispatch(checkAuthTimeout(response.data.expiresIn));
+
+
+
+
+
+
+''''''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> provavelmente farei algo similar,
+
+nesse código do 
+
+
+
+angular...
+
+
+
+
+
+
+
+
+
+
+---> acho que o 'jsonwebtoken'
+
+
+Não será necessário, pq isso é algo que é criado lá no server, aparentemente...
+
+
+
+
+
+
+
+
+
+
+
+---> BEM, MAS PARA ATIVARMOS ESSA FUNÇÃO DE 'AUTHORIZATION' 
+
+
+PROVAVELMENTE SERÁ NECESSÁRIO FAZER 'append' dos headers adequados,
+
+
+lá 
+
+
+
+nos nossos http requests, em 
+
+
+'auth.service.ts'....(terceiro parâmetro de 'http.post'...)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O IDEAL SERIA COLOCAR UMA GUARD PARA REDIRECIONAR À route de 'auth' 
+
+
+
+
+nos cases em que tentamos acessar 
+
+o nosso 'recipe-book' 
+
+
+sem ter 
+
+a necessária authorization ( a nossa  json webtoken lá no local storage, essencialmente)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS EU GANHEI UM ERROR LÁ DO FIREBASE:
+
+
+
+
+
+
+
+ERROR 
+
+
+
+HttpErrorResponse {headers: HttpHeaders, status: 400, statusText: 'OK', url: 'https://identitytoolkit.googleapis.com/v1/accounts…ignUp?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg', ok: false, …}
+error:
+error:
+code: 400
+errors: Array(1)
+0: {message: 'OPERATION_NOT_ALLOWED', domain: 'global', reason: 'invalid'}
+length: 1
+[[Prototype]]: Array(0)
+message: "OPERATION_NOT_ALLOWED"
+[[Prototype]]: Object
+[[Prototype]]: Object
+headers: HttpHeaders {normalizedNames: Map(0), lazyUpdate: null, lazyInit: ƒ}
+message: "Http failure response for https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg: 400 OK"
+name: "HttpErrorResponse"
+ok: false
+status: 400
+statusText: "OK"
+url: "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg"
+[[Prototype]]: HttpResponseBase
+
+
+
+
+
+
+
+
+
+
+
+--> é algum HEADER FALTANDO, provavelmente..
+
+
+
+--> provavelmente é o header de 
+
+''
+
+Content-Type: application/json
+
+
+''
+
+
+
+
+
+
+
+
+
+
+OK, MAS AINDA GANHEI UM ERROR:
+
+
+
+"Http failure response for https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg: 400 OK"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> talvez seja necessária mais alguma data...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CONSEGUI... .ERA UMA CONFIGURAÇÃO LÁ NO FIREBASE EM SI,
+
+
+
+
+em que vocÊ tem que ir em 'signup methods'
+ 
+ e então habilitar 
+
+
+
+ 'email/password'...
+
+
+
+
+
+
+
+
+ OK, COM ISSO AGORA 
+
+
+ É RETORNADO UM OBJECT COM VÁRIAS INFOS SOBRE O NOSSO LOGIN...
+
+
+
+
+
+ EX:
+
+
+
+
+
+ email: "sadsdadasas@sadsdasda.com"
+expiresIn: "3600"
+idToken: "eyJhbGciOiJSUzI1NiIsImtpZCI6ImY0ZTc2NDk3ZGE3Y2ZhOWNjMDkwZDcwZTIyNDQ2YTc0YjVjNTBhYTkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcmVjaXBlYm9va2R1bW15cHJvamVjdCIsImF1ZCI6InJlY2lwZWJvb2tkdW1teXByb2plY3QiLCJhdXRoX3RpbWUiOjE2NTQyMDQ2MjgsInVzZXJfaWQiOiI3NHNjYzNqRElRYjRoS1Z2SnRuejdSa2VrYzgzIiwic3ViIjoiNzRzY2MzakRJUWI0aEtWdkp0bno3Umtla2M4MyIsImlhdCI6MTY1NDIwNDYyOCwiZXhwIjoxNjU0MjA4MjI4LCJlbWFpbCI6InNhZHNkYWRhc2FzQHNhZHNkYXNkYS5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsic2Fkc2RhZGFzYXNAc2Fkc2Rhc2RhLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.SCBfL99f6WTbN7KNNQ7e2deewWJsHq-1FDh748iPitD24bhFwNEyoNPb8MVmVt16mI9TopIqdICePo_Fhuw-J3YZ2cvxaUY14TV_DjBSGttSjbq3NzEQk4i-9IeByUELnYl9E8bUi0ZoOY9bp842R4tCdxhFi3pXaP13SpO2f0jRf0nxyoQsyo6dhNvL4ib4ab7sBjnudEZBTuaPbnIL0Csf82WPLbBITDrGpPVIxByDZVBtoNOEAXAyK4tw-Rjlt-okycFiwQaZM6JIkEExXIzqLDoA3egA065DY4yTb5I9Q__Kdlm_oTFNc3fi4_hGHb4PkCewj8aYdCVlkroUVg"
+kind: "identitytoolkit#SignupNewUserResponse"
+localId: "74scc3jDIQb4hKVvJtnz7Rkekc83"
+refreshToken: "AIwUaOlQhU3eknRSCL3qVdu3vsTHLhp1aK091rAGVNEzCoWpy3Jz3nyKfZaPaNLiWq
+
+
+
+
+
+
+
+
+
+
+
+
+--> é essa info que deve ser armazenada no nosso 'localStorage',
+
+
+
+
+no storage de nosso user,
+
+
+
+ e então 
+
+
+ 'anexada' a todo e qualquer request que tentar sair de nosso app...
+
+
+
+
+
+
+
+
+
+
+
+
+ -> DE ACORDO COM NOSSO CÓDIGO DO REACT:
+
+
+
+     axios
+      .post(url, authData) ///ESSA 'key' ([API_KEY]) FOI OBTIDA LÁ DO SITE DO GOOGLE FIREBASE, na engrenagem, e depois em 'Configurações do Projeto' > 'Chave de API da web'...
+      .then((response) => {
+        const expirationDate = new Date(new Date().getTime() + response.data.expiresIn * 1000); ////lembre-se de adicionar '* 1000', pois o JAVASCRIPT SEMPRE CONSIDERA 'TEMPO' EM MILISSEGUNDOS, E NÃO EM SEGUNDOS.... (só o 'expiresIn' que é mostrado em segundos....)
+        localStorage.setItem('token', response.data.idToken);
+        localStorage.setItem('expirationDate', expirationDate);
+        localStorage.setItem('userId', response.data.localId);
+        localStorage.setItem('email', response.data.email )
+        dispatch(authSuccess(response.data.idToken, response.data.localId, response.data.email));
+        dispatch(checkAuthTimeout(response.data.expiresIn));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -> tentar fazer isso nos nossos methods de 'auth.service.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    O CÓDIGO ESTÁ FICANDO MELHOR...
+
+
+
+
+
+
+
+
+
+
+    -> O HTML ESTÁ ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+    <div class="row">
+    <div class="col-xs-12" [ngStyle]="{'display': 'flex', 'justify-content': 'center'}">
+        <form (ngSubmit)="onAuthFormSubmit(localFormReference)" #localFormReference="ngForm" >
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input 
+                type="email" 
+                class="form-control"
+                id="email"
+                required
+                email
+                name="email"
+                ngModel
+                placeholder="email@example.com"
+                >
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" 
+                class="form-control"
+                id="password"
+                required
+                name="password"
+                ngModel
+                minlength="6"
+                placeholder="Your Password"
+                >
+            </div>
+            <div [ngStyle]="{'display': 'flex', 'justify-content': 'center'}">
+            <button class="btn btn-primary" 
+            type="submit"
+            [disabled]="!localFormReference.valid"
+            >{{isSignup ? 'SIGN UP' : 'LOGIN'}}</button>
+            <button class="textBtn"
+            (click)="onSwitchAuth()"
+            [ngStyle]="{'cursor': 'pointer'}"
+        
+            >{{isSignup ? 'Switch to Login' : 'Switch to Signup'}}</button>
+        </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO TS ESTÁ ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../auth.service';
+
+@Component({
+  selector: 'app-auth-page',
+  templateUrl: './auth-page.component.html',
+  styleUrls: ['./auth-page.component.css'],
+})
+export class AuthPageComponent implements OnInit {
+  isSignup: boolean = true;
+
+  constructor(private authService: AuthService, private router: Router) {}
+
+  ngOnInit(): void {}
+
+  onAuthFormSubmit(form: NgForm) {
+    const email = form.form.get('email')?.value;
+
+    const password = form.form.get('password')?.value;
+
+    const userData = {
+      email: email,
+      password: password,
+      returnSecureToken: true,
+    };
+
+    if (this.isSignup) {
+      this.authService.onCreateAccount(userData)
+      .subscribe(
+        (responseData) => {
+
+          this.router.navigate(['/auth']);
+        }
+      )
+    } else {
+      this.authService.onLogin(userData)
+
+
+      
+    }
+  }
+
+  onSwitchAuth() {
+    this.isSignup = !this.isSignup;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+
+import { HttpHeaders } from '@angular/common/http';
+
+import { HttpParams } from '@angular/common/http';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AuthService {
+  constructor(private http: HttpClient) {}
+
+  onCreateAccount(authData: {
+    email: string;
+    password: string;
+    returnSecureToken: boolean;
+  }) {
+    const requestHeaders = new HttpHeaders();
+
+    requestHeaders.append('Content-Type', 'application/json');
+    // requestHeaders.append('Content-Type', 'application/json');
+
+   return this.http
+      .post(
+        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg',
+
+        authData,
+        {
+          headers: requestHeaders,
+        }
+      )
+      // .subscribe((responseData) => {
+      //   console.log(responseData);
+
+
+      // });
+  }
+
+  onLogin(authData: {
+    email: string;
+    password: string;
+    returnSecureToken: boolean;
+  }) {
+    const requestHeaders = new HttpHeaders();
+
+    requestHeaders.append('Content-Type', 'application/json');
+
+    this.http.post<{expiresIn: number, idToken: string, expirationDate: string, localId: string, email: string} >(
+      'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg',
+      authData,
+
+      {
+        headers: requestHeaders
+      }
+    )
+    .subscribe(
+      (responseData) => {
+        console.log(responseData);
+        const expirationDate = new Date(new Date().getTime() + responseData.expiresIn * 1000); ////lembre-se de adicionar '* 1000', pois o JAVASCRIPT SEMPRE CONSIDERA 'TEMPO' EM MILISSEGUNDOS, E NÃO EM SEGUNDOS.... (só o 'expiresIn' que é mostrado em segundos....)
+        localStorage.setItem('token', responseData.idToken);
+        localStorage.setItem('expirationDate', expirationDate.toString());
+        localStorage.setItem('userId', responseData.localId);
+        localStorage.setItem('email', responseData.email )
+      
+      }
+    )
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> já consigo fazer 'STORE' 
+
+
+
+da nossa 'token' 
+
+
+
+dentro do local storage de nosso browser,
+
+
+
+só falta agora 
+
+
+
+fazer o redirect para a page de 'recipe-book',
+
+que 
+
+
+
+CONSEGUIRÁ SER ACESSADA, POIS AGORA TEREMOS ESSA TOKEN (se eu colocar as GUARDS nas minhas routes)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+  onLogin(authData: {
+    email: string;
+    password: string;
+    returnSecureToken: boolean;
+  }) {
+    const requestHeaders = new HttpHeaders();
+
+    requestHeaders.append('Content-Type', 'application/json');
+
+    this.http.post<{expiresIn: number, idToken: string, expirationDate: string, localId: string, email: string} >(
+      'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg',
+      authData,
+
+      {
+        headers: requestHeaders
+      }
+    )
+    .subscribe(
+      (responseData) => {
+        console.log(responseData);
+        const expirationDate = new Date(new Date().getTime() + responseData.expiresIn * 1000); ////lembre-se de adicionar '* 1000', pois o JAVASCRIPT SEMPRE CONSIDERA 'TEMPO' EM MILISSEGUNDOS, E NÃO EM SEGUNDOS.... (só o 'expiresIn' que é mostrado em segundos....)
+        localStorage.setItem('token', responseData.idToken);
+        localStorage.setItem('expirationDate', expirationDate.toString());
+        localStorage.setItem('userId', responseData.localId);
+        localStorage.setItem('email', responseData.email )
+      
+        this.router.navigate(['/recipe-book'])
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ---> vou colocar um pouco de styling nas minhas forms,
+
+
+  para que fiquem melhores (styles de 'ng-invalid', talvez uma red border)..
+
+
+
+  
+
+input.ng-invalid.ng-touched {
+    border: 1px solid red;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo...
+
+
+
+agora resta colocar algumas mensagens de 'validation errors' (
+
+
+
+  poucos caracteres no input field,
+
+  ou 
+
+
+  'input field is required', etc etc....
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COLOQUEI UM POUCO MAIS DE VALIDATION...
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div
+    class="col-xs-12"
+    [ngStyle]="{ display: 'flex', 'justify-content': 'center' }"
+  >
+    <form
+      (ngSubmit)="onAuthFormSubmit(localFormReference)"
+      #localFormReference="ngForm"
+    >
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          required
+          email
+          name="email"
+          ngModel
+          placeholder="email@example.com"
+          #emailReference="ngModel"
+        />
+        <span *ngIf="!emailReference.value && emailReference.touched">Email is required</span>
+        <span *ngIf="!emailReference.valid && emailReference.value && emailReference.touched">Invalid email entered</span>
+       
+      </div>
+
+      <div class="form-group" [ngStyle]="{ 'margin-top': '12px' }">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          class="form-control"
+          id="password"
+          required
+          name="password"
+          ngModel
+          minlength="6"
+          placeholder="Your Password"
+          #passwordReference="ngModel"
+        />
+        <span *ngIf="!passwordReference.value && passwordReference.touched">Password is required</span>
+        <span *ngIf="!passwordReference.valid && passwordReference.value && passwordReference.touched ">Password must have at least 6 characters</span>
+      </div>
+
+      <div [ngStyle]="{ display: 'flex', 'justify-content': 'center' }">
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="!localFormReference.valid"
+        >
+          {{ isSignup ? "SIGN UP" : "LOGIN" }}
+        </button>
+        <button
+          class="textBtn"
+          (click)="onSwitchAuth()"
+          [ngStyle]="{ cursor: 'pointer' }"
+        >
+          {{ isSignup ? "Switch to Login" : "Switch to Signup" }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> certo...
+
+
+
+
+
+
+
+
+
+agora o próximo passo seria 
+
+
+
+
+ADICIONAR GUARDS àS NOSSAS ROUTES...
+
+
+
+
+
+
+
+
+
+
+
+-> ASSISTIREI A AULA DO PROFESSOR....
+
+
+
+
+
+
+
+
+
+
+--> EXPLICAÇÃO DE CLASSES BOOTSTRAP:
+
+
+
+
+
+
+
+'col-xs-12' ---> ISSO DEIXA A NOSSA COLUMN COM UM VALUE PADRÃO DE WIDTH EM TODOS DEVICES...
+
+
+
+
+
+
+
+'COL-MD-6' --> ISSO NOS DÁ UMA COLUMN MAIS 'NARROW', para que nossos elementos n fiquem tao grandes/wide...
+
+
+
+
+
+
+'offset-3' --> ISSO VAI CENTRALIZAR NOSSA FORM....
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------> MAIS TARDE ADICIONAREMOS LÓGICA PARA REDIRECIONAR AUTOAMTICAMENTE À 'AUTH PAGE'
+
+
+
+se tentarmos 
+
+
+entrar em 'recipes' sem essa authentication..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> ok... 
+
+
+ATÉ AÍ, TUDO BEM.... ESSE É O BASIC SETup..
+
+
+
+
+
+
+
+--> O PRIMEIRO PASSO É CONSEGUIR FAZER SWITCH ENTRE 'LOGIN' E 'SIGNUP MODE'....
+
+
+
+
+
+
+-> depois adicionaremos a lógica para esses methods (já fiz isso)...
+
+
+
+
+
+
+
+
+
+VEREMOS ISSO NA PRÓXIMA AULA....

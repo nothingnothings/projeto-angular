@@ -1,0 +1,90 @@
+<div class="row">
+  <div class="col-xs-12">
+    <form
+      (ngSubmit)="onFormSubmit(localFormReference)"
+      #localFormReference="ngForm"
+    >
+      <div class="row">
+        <div class="col-sm-5 form-group">
+          <label for="name">Name</label>
+          <input
+            type="text"
+            id="name"
+            class="form-control"
+            name="name"
+            required
+            minlength="5"
+            ngModel
+            #nameReference="ngModel"
+          />
+          <span
+            [ngStyle]="{ color: 'red' }"
+            *ngIf="nameReference.errors?.['required'] && nameReference.touched"
+            >Ingredient name is required
+          </span>
+          <span
+            [ngStyle]="{ color: 'red' }"
+            *ngIf="
+              !nameReference.valid &&
+              nameReference.value &&
+              nameReference.touched
+            "
+            >Ingredient name must be at least 5 characters long
+          </span>
+        </div>
+        <div class="col-sm-2 form-group">
+          <label for="amount">Amount</label>
+          <input
+            type="number"
+            id="amount"
+            class="form-control"
+            name="amount"
+            min="1"
+            ngModel
+            pattern="^[1-9]+[0-9]*$"
+            required
+            #amountReference="ngModel"
+          />
+          <span
+            [ngStyle]="{ color: 'red' }"
+            *ngIf="amountReference.errors?.['required'] && amountReference.touched"
+            >Amount is required
+          </span>
+          <span
+            [ngStyle]="{ color: 'red' }"
+            *ngIf="amountReference.errors?.['min'] && amountReference.touched "
+            >Please enter a value greater than 0!
+          </span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <button
+            class="btn btn-success"
+            type="submit"
+            [disabled]="!localFormReference.valid"
+          >
+            {{ editMode ? "Edit" : "Add" }}
+          </button>
+          <button
+            class="btn btn-danger"
+            type="button"
+            (click)="onDeleteRecipe()"
+            *ngIf="editMode"
+          >
+            Delete
+          </button>
+          <button
+            class="btn btn-primary"
+            type="button"
+            (click)="onClearRecipe()"
+            [disabled]="!nameReference.value && !amountReference.value"
+          >
+            Clear
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

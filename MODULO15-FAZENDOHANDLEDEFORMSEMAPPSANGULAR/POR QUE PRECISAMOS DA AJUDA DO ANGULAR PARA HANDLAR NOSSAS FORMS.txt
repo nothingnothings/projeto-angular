@@ -1,0 +1,447 @@
+
+
+
+
+
+
+
+
+
+ANGULAR E FORMS...
+
+
+
+
+
+
+
+
+
+
+
+
+-> DEVEMOS VER COMO O ANGULAR TRABALHA EM CONJUNTO COM FORMS...
+
+
+
+
+
+
+
+
+OLHE O EXEMPLO DE UM CÓDIGO HTML DE FORM:
+
+
+
+
+
+
+
+
+
+
+
+
+<form>
+    <label>Name</label>
+    <input type="text" name="name">
+    <label>Mail</label>
+    <input type="text" name="email">
+    <button type="submit">Save</button>
+    </form>
+
+
+
+
+
+
+
+
+
+
+
+
+    --> NÃO HÁ NADA DE 'ANGULAR-SPECIFIC'
+
+    sobre esse código html,
+
+
+
+
+
+
+
+QUE VOCÊ VAI POSICIONAR NOS SEUS DOCUMENTS HTML 
+PARA 
+
+
+
+
+DISPLAYAR COISAS SIMPLES COMO 
+
+
+
+
+
+
+
+
+
+Name: xxx 
+emai: xxx 
+
+[  BUTTON ]
+
+
+
+
+
+
+
+
+
+
+--> O TRABALHO DO ANGULAR __ É TE PERMITIR _ RETRIEVAR 
+
+OS VALUES 
+
+
+
+
+QUE O USER _ INPUTTA NESSES SLOTS,
+
+E TAMBÉM 
+
+PARA 
+CHECAR 
+
+OUTRAS COISAS 
+
+
+
+COMO 'IS THE FORM VALID',
+
+
+
+
+'POR ACASO O USER INPUTTOU VALID INFORMATION?'
+
+
+
+
+
+
+
+
+
+
+
+----> E É CLARO QUE TUDO ISSO VAI ACONTECER NO JAVASCRIPT/TYPESCRIPT,
+
+
+
+NO SIDE 'angular 2' 
+
+
+
+
+
+DE SEU APP... ---> ISSO SIGNIFICA QUE 
+
+
+VOCÊ PRECISA, DE ALGUMA MANEIRA,
+
+
+SER CAPAZ DE 'PARSE'
+
+
+OS 
+
+VALUES 
+
+QUE O 
+
+USER INPUTTA,
+
+
+O QUE 
+
+QUER DIZER QUE 
+
+VOCÊ PRECSIA 
+
+
+ DE UMA 
+
+ 'OBJECT REPRESENTATION' 
+
+
+  
+
+  DE SUA FORM,
+
+  NO CÓDIGO TYPESCRIPT,
+
+  PARA VOCÊ PODER TRABALHAR...
+
+
+
+
+
+
+
+
+
+
+
+  --> SEU OBJECT JAVASCRIPT FICARIA/FICA MAIS OU MENOS ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+  {
+
+
+
+      value: {
+
+      }
+  }
+
+
+
+
+
+
+
+
+  --> KEY-VALUE PAIRS,
+
+  EM QUE O NAME 
+
+  VAI SE REFERIR 
+
+   
+
+
+   AO 'name' de um input 
+
+
+
+
+
+   NO SEU HTML,
+
+   como 
+
+   'name' e 'email'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   --> AÍ ELE VAI 
+
+   _sEGURAR__ OS 
+
+
+   VALUES QUE 
+
+
+   O USER INPUTTOU,
+
+
+   tipo assim:
+
+
+
+   
+  {
+
+
+
+      value: {
+            name: 'Max',
+            email: 'test@test.com'
+      }
+  }
+
+
+
+
+
+
+
+
+
+
+
+--> E ISSO DEIXA SUPER FÁCIL O TRABALHO COM OS VALUES QUE O USER INPUTTOU..
+
+
+
+
+
+
+
+
+
+-> TAMBÉM SERIA ÚTIL SE ALGUMA 'METADATA' FOSSE 
+
+ARMAZENADA,
+
+
+
+
+
+COMO 
+
+
+'valid: true',
+
+
+
+
+
+
+
+
+
+saber se A FORM É VÁLIDA ---> ESSE VALUE SERÁ DEFINIDO COMO FALSE, DINAMICAENTE,
+
+
+
+SE O 
+
+'EMAIL ADDRESS' NÃO FOSSE VÁLIDO,
+
+POR EXEMPLO:
+
+
+
+
+
+   
+  {
+
+
+
+      value: {
+            name: 'Max',
+            email: 'test@test.com'
+      },
+
+      valid: true
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  {
+
+
+
+      value: {
+            name: 'Max',
+            email: 'test@test.com'
+      },
+
+      valid: false
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É ISSO QUE O ANGULAR FAZ PARA NÓS,
+
+
+ELE 
+
+
+NOS DÁ UMA JAVASCRIPT OBJECT 
+
+REPRESENTATION 
+
+
+
+DE SUA FORM,
+
+
+
+
+TUDO 
+
+
+PARA 
+
+
+QUE 
+
+
+
+
+FIQUE 
+
+FÁCIL 
+
+
+
+
+O TRABALHO DE RETRIEVE USER VALUES, VER O STATE DA FORM E TRABALHAR COM ELA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NA PRÓXIMA LIÇÃO DAREMOS UMA OLAHDA DE PERTO,
+
+
+
+
+O QUE PODEMOS 
+FAZER COM ELA,
+
+
+E MUITO, MUITO MAIS...

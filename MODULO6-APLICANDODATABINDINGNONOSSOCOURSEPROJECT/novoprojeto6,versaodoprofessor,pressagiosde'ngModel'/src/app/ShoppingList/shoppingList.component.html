@@ -1,0 +1,24 @@
+<div class="row">
+  <div class="col-xs-10">
+    <app-shop-list-edit (ingredientAdded)="onIngredientAdded($event)" 
+    (deleteIngredientEmitter)="ingredientRemoved($event)"
+    [ingredientToBeRemoved]="selectedIngredient"
+    
+    ></app-shop-list-edit>
+    <hr />
+    <ul class="list-group">
+      <!-- <a class="list-group-item" 
+      style="cursor: pointer"
+      *ngFor="let ingredient of ingredients"
+      > {{ingredient.name}} ({{ingredient.amount}})
+      </a> -->
+      <app-shopping-list-item
+      
+      *ngFor="let ingredient of ingredients; let index=index"
+      (click)="ingredientSelect(index)"
+      [name]="ingredient.name"
+      [amount]="ingredient.amount"
+      ></app-shopping-list-item>
+    </ul>
+  </div>
+</div>

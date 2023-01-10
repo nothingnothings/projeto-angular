@@ -1,0 +1,95 @@
+
+
+
+
+
+
+
+
+
+
+
+-------> OK... O PROFESSOR DIZ QUE DEVEMOS ADICIONAR ALGUNS 
+
+
+
+
+SERVICES 
+
+
+
+MANUALMENTE....
+
+
+
+
+
+
+
+
+
+-> DEVEMOS ADICIONAR OS SERVICES _ NO MESMO _ FOLDER_ 
+
+
+EM QUE 
+
+
+
+
+A TAL 'FEATURE' respectiva é utilizada... (
+
+    mas acho que é bobagem,
+
+    é melhor adicionar no ROOT DE SEU 
+
+
+
+    APP,
+
+
+
+    pq 
+
+    você vai usar esse service por toda parte...
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+-> escrevi os arquivos 
+
+
+
+
+
+recipeBook.service.ts 
+
+
+shoppingList.service.ts...
+
+
+
+
+
+
+
+
+
+
+
+--> OK, VAMOS COMEÇAR A TRABALHAR COM O 
+
+
+SERVICE DE 'recipeBook'...

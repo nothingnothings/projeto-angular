@@ -1,0 +1,1516 @@
+
+
+
+
+--> NESSA AULA VEREMOS O 'HIERARCHICAL INJECTOR'...
+
+
+
+
+
+
+
+-----> na última lição, o professor 
+
+NOS MOSTROU 
+
+
+COMO CRIAR UM SERIVCE.. ------> E O PROFESSOR HAVIA 
+
+DITO  PARA 
+
+
+'''NUNNCA FAZER INICIAÇAÕ __ por conta própria''......
+
+
+
+(
+
+    ou seja,
+
+    não devemos importar services e escrever 
+
+    tipo 
+
+    'const newService = new Service()'
+
+
+    'newService.xxxxx()'..
+
+    
+)
+
+
+
+
+
+--> o código, atualemnte, está assim:
+
+
+
+
+
+import { Component, OnInit, Output } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+// import { LoggingService } from '../logging.service';   //services NÃO DEVEM SER IMPORTADOS E USADOS ASSIM (com instanciação da class... isso é errado)..
+
+@Component({
+  selector: 'app-new-account',
+  templateUrl: './new-account.component.html',
+  styleUrls: ['./new-account.component.css']
+})
+export class NewAccountComponent implements OnInit {
+
+  @Output() accountAdded = new EventEmitter<{name: string, status: string}>();
+
+  onCreateAccount(accountName: string, accountStatus: string) {
+    this.accountAdded.emit(
+      {
+        name: accountName,
+        status: accountStatus
+      }
+    );
+    // console.log('A server status changed, new status: ' + accountStatus);
+
+    // const service = new LoggingService();  /////MANEIRA ERRADA DE USAR UM 'SERVICE'... -> você NÃO DEVE CRIAR AS INSTANCES MANNUALMENTE, DIZ O PROFESSOR..
+    // service.logStatusChange(accountStatus);
+
+    
+
+  }
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+(
+
+    o initialize por nossa própria conta FUNCIONA, mas você não deve fazer...
+
+
+)
+
+
+
+
+
+
+
+->PARA ESSE FIM, PARA __ INICIALIZAR SERVICES,
+
+
+O ANGULAR OFERECE 
+
+UMA FERRAMENTA MT BOA,
+
+
+que nos deixa 
+
+
+
+
+
+
+
+
+
+ficar com ACESSO AOS NOSSOS SERVICES...
+
+
+
+
+
+O NOME DESSA TOOL É """ANGULAR's DEPENDECY INJECTOR"""..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O QUE É UM DEPENDENCY INJECTOR?
+
+
+
+
+
+BEM, UMA DEPENDENCY 
+
+
+
+
+
+
+É _ ALGO QUE __ UMA CLASS DAS NOSSAS VAI DEPENDER de .... 
+--->
+
+
+
+
+
+
+
+COMO EXEMPLO DISSO,
+
+TEMOS O 
+
+
+
+COMPONENT DE 'NewAccountComponent',
+
+
+
+QUE __ DEPENDE__ 
+
+
+DO 
+
+
+
+'LoggingService'
+
+
+
+__ PQ__ ELE VAI QUERER__ CHAMAR_- UM METHOD QUE EXISTE NESSE SERVICE...
+
+
+
+
+
+
+
+
+
+
+
+--> E A TAREFA/ENCARGO __ DO DEPENDENCY _ INJECTOR__ 
+
+
+
+É __ SIMPLESMENTE INJETAR__ ESSA DEPENDENCY,
+
+
+UMA __ INSTANCE__ DESSE 'LoggingService',
+
+ DESSA 'CLASS',
+
+
+ dentro 
+
+
+
+ DO NOSSO COMPONENT,
+
+ DE FORMA __ AUTOMÁTICA...
+
+
+
+
+
+
+
+
+
+
+--> A __ ÚNICA__ COISA QUE TEMOS DE FAZER É __ 
+
+
+INFORMAR _ O ANGULAR_ DE QUE 
+
+VAMOS QUERER USAR UMA DESSAS INSTANCES NO NOSSO COMPONENT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS COMO INFORMAMOS O ANGULAR DE QUE QUEREMOS FAZER ISSO?
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, PRECISAMOS __ ADICIONAR__ UM CONSTRUCTOR__ à class/component 
+
+em que 
+
+quremos 
+
+
+
+usar 
+
+esse service (onde queremos INJETAR A 'DEPENDENCY' através do dependency injector)...
+
+
+
+
+
+
+
+
+
+--> OU SEJAM, 
+
+ESCREVA UM 
+
+'constructor() {
+    
+}
+',
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+export class NewAccountComponent implements OnInit {
+
+  @Output() accountAdded = new EventEmitter<{name: string, status: string}>();
+
+  onCreateAccount(accountName: string, accountStatus: string) {
+    this.accountAdded.emit(
+      {
+        name: accountName,
+        status: accountStatus
+      }
+    );
+    // console.log('A server status changed, new status: ' + accountStatus);
+
+    // const service = new LoggingService();  /////MANEIRA ERRADA DE USAR UM 'SERVICE'... -> você NÃO DEVE CRIAR AS INSTANCES MANNUALMENTE, DIZ O PROFESSOR..
+    // service.logStatusChange(accountStatus);
+
+    
+
+  }
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+----------------------------
+
+
+
+
+
+
+
+--> CERTO... -----> QUANDO VOCÊ ESCREVER O CONSTRUCTOR_, VOCê PODERÁ 
+
+
+
+___BINDAR__ seu SERVICE 
+
+
+_ÀLGUMA __ 
+
+
+DAS PROPRIEDADES DE SEU COMPONENT,
+
+BASTA USAR 
+
+
+as keywords de private/public 
+
+
+
+
+
+
+
+
+NO CONSTRUCTOR (shortcut typescript)...
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+constructor(
+    private LoggingService
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+-_> MAS AGORA É A PARTE IMPORTANTE!!!! -->  NESSE TYPE ASSIGNEMNT,
+
+vocÊ 
+
+
+
+deve colocar um type específico... -----> ESSA PARTE _ NÃO É OPCIONAL__... ----> VOCê 
+
+
+
+
+________PRECISA__ DEFINIR UM TYPE,
+
+
+E ESSE TYPE __ TEM QUE _ SER 
+
+
+
+A 
+
+'class que vocÊ vai querer injetar' (vulgo: o service em si)...
+
+
+
+
+
+
+
+
+-> NO CASO,
+
+ESCREVEMOS 'LoggingService'...
+
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+constructor(private LoggingService: LoggingService) {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo... isso vai automaticamente importar essa class, lá em cima...
+
+
+
+
+
+
+
+
+
+
+
+
+FICA ASSIM:
+
+
+
+
+
+
+
+export class NewAccountComponent implements OnInit {
+
+  @Output() accountAdded = new EventEmitter<{name: string, status: string}>();
+
+  onCreateAccount(accountName: string, accountStatus: string) {
+    this.accountAdded.emit(
+      {
+        name: accountName,
+        status: accountStatus
+      }
+    );
+    // console.log('A server status changed, new status: ' + accountStatus);
+
+    // const service = new LoggingService();  /////MANEIRA ERRADA DE USAR UM 'SERVICE'... -> você NÃO DEVE CRIAR AS INSTANCES MANNUALMENTE, DIZ O PROFESSOR..
+    // service.logStatusChange(accountStatus);
+
+    
+
+  }
+
+  constructor(private LoggingService: LoggingService) { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+  constructor(private LoggingService: LoggingService) {   ///É ASSIM _ QUE__ USAMOS O 'dependency  injector' do ANGULAR --> é assim que usamos SERVICES, nós os INCORPORAMOS COMO PROPRIEDADES DE NOSSOS COMPONENTS...
+
+
+
+   }
+
+
+
+
+
+
+
+------------------------------
+
+
+
+
+
+
+
+
+
+
+
+-------> ISSO, ESSA SIMPLES ESCRITA,
+
+
+INFORMARÁ O ANGULAR DE QUE 
+
+
+
+NÓS '''VAMOS PRECISAR DE UMA INSTANCE DESSE LOGGING SERVICE'''.. -->
+
+
+
+
+
+
+
+
+
+
+'''MAS COMO INFORMAMOS O ANGULAR''',
+
+
+
+''MAS PQ IMPORTA ESSE ESCREVER ESSE SERVICE NO CONSTRUCTOR?''' --> VOCÊ DEVE 
+
+PENSAR 
+
+
+
+
+EM '''QUEM É QUE NOS DÁ UMA INSTANCE DESSE COMPONENT 'new-account''' -->  BEM,
+
+
+
+COMO ISSO É UMA TYPESCRIPT CLASS,
+
+
+ISSO É _ INSTANCIADO EM ALGUM LUGAR __,
+
+
+
+
+
+TUDO PARA QUE ALGO ACONTEÇA NO NOSSO APP... -> 
+
+
+
+
+E É CLARO QUE 
+
+O 
+
+
+__RESPONSÁVEL_ _ PELO CREATE DE 
+
+
+NOSSOS COMPONENTS 
+
+
+
+
+__ É O PRÓPRIO ANGULAR,
+
+
+E, CONSEQUENTEMENTE,
+
+É 
+O _ ANGULAr__ QUE 
+
+
+É RESPONSÁVEL_ _ 
+
+
+
+
+PELO 'GIVE' de uma instance desse service que você escreveu no constructor...
+
+
+
+
+
+
+
+
+
+
+
+
+--> QUANDO COLOCAMOS UM SELECTOR NOS NOSSOS TEMPLATES,
+
+O 
+
+ANGULAR OS LÊ E 
+
+
+
+DECIDE '''HMM, VOU ENTREGAR 1 INSTANCE DE SEU COMPONENT, AQUI''...
+
+
+
+
+
+
+
+
+E __ COMO O ANGULAR É RESPONSÁVEL PELO INSTANTIATE DE NOSSOS COMPONENTS,
+
+
+O ANGULAR__ VAI TER __ DE OS 
+
+
+CONSTRUIR CORRETAMENTE... ---------> É POR ISSO QUE 
+
+
+SE NÓS 
+
+ESPECIFICAMOS NO 
+
+
+CONSTRUCTOR QUE 
+
+''''VAMOS PRECISAR DE 1 ARGUMENT ESPECÍFICO'''',
+
+
+
+
+
+
+O _ ANGULAr__ VAI RECONHECER ISSO,
+
+
+E AÍ _ VAI TENTAR 
+
+'NOS DAR ESSE ARGUMENTo',
+
+
+
+
+
+TENTAR 
+
+NOS 
+
+__DAR__ ESSE 'type', nesse caso... -----> ELE VAI RECONHECER QUE 
+
+
+
+
+'''NÓS QUEREMOS UMA INSTANCE DA CLASS DE LoggingService'''... (TUDO PQ O DEFINIMOS COMO TYPE)...
+
+
+
+
+
+
+
+
+
+
+
+
+-------> OK... -> ISSO É __ QUASE SUFICIENET...
+
+
+
+
+
+
+
+
+
+--> AGORA:
+
+
+
+
+
+1) O ANGULAR SABE ______o  QUE __ QUEREMOS __ (quermos essa class/service aí, uma INSTANCE DELE)...
+
+
+
+
+
+
+
+
+2) MAS _ ELE _ NÃO _ 
+
+
+SABE ____ COMO __ NOS DAR UMA INSTANCE DESSAS...
+
+
+
+
+
+
+
+
+
+
+
+--> PARA FAZER ISSO FUNCIONAR, PRECISAMOS ADICIONAR UMA 
+
+ETAPA EXTRa,
+
+
+
+
+
+
+
+
+
+
+
+PRECISAMOS 
+
+
+
+
+'''''PROVIDE A SERVICE'''' ao nosso component... --> ''''PROVIDE''''' ---> SIMPLESMENTE 
+
+
+
+
+
+
+
+
+
+
+
+
+'''''DIZEMOS AO __ ANGULAR_ COMO ESSE COMPONENT DEVE/DEVERÁ SER CRIADO'''... --> ISSO 
+
+
+PARECE 
+
+MT COMPLICADO,
+
+
+MAS É MT SIMPLES....
+
+
+
+
+
+
+
+
+
+
+
+--------> TUDO QUE precisamos fazer, AQUI,
+
+
+É ADICIONAR UMA _ PROPRIEDADE EXTRA AO DECORATOR DE 
+
+'@Component',
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+@Component({
+  selector: 'app-new-account',
+  templateUrl: './new-account.component.html',
+  styleUrls: ['./new-account.component.css'],
+  ...
+})
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS _ QUE PROPERTY VAMOS ADICIONAR, AQUI?
+
+
+
+
+--> SERÁ A PROPRIEDAD DE 'PROVIDERS'...
+
+
+
+
+
+
+
+
+
+
+'providers: []' 
+
+
+
+
+
+
+
+
+
+
+--> ESSA PROPRIEDADE __ TAMBÉM _ VAI ACEITAR/EXIGIR UM ARRAY,
+
+
+
+
+
+_ E AÍ, DENTRO DESSE 'providers',
+
+
+
+SÓ PRECISAMOS ESPECIFICAR O 'TYPE'
+
+
+
+
+DA COISA QUE QUEREMOS 
+
+
+
+
+SER  'CAPAZ DE GET PROVIDED'...
+
+
+
+
+
+
+
+
+
+
+
+----> no caso, passamos 'LoggingService'...
+
+
+
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+
+
+import { Component, OnInit, Output } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+import { LoggingService } from '../logging.service';
+
+// import { LoggingService } from '../logging.service';   //services NÃO DEVEM SER IMPORTADOS E USADOS ASSIM (com instanciação da class... isso é errado)..
+
+@Component({
+  selector: 'app-new-account',
+  templateUrl: './new-account.component.html',
+  styleUrls: ['./new-account.component.css'],
+  providers: [LoggingService]   ////NECESSÁRIO PARA IMPORTAR SERVICES NO SEU COMPONENT (component de 'NewAccountComponent')....
+})
+export class NewAccountComponent implements OnInit {
+
+  @Output() accountAdded = new EventEmitter<{name: string, status: string}>();
+
+  onCreateAccount(accountName: string, accountStatus: string) {
+    this.accountAdded.emit(
+      {
+        name: accountName,
+        status: accountStatus
+      }
+    );
+    // console.log('A server status changed, new status: ' + accountStatus);
+
+    // const service = new LoggingService();  /////MANEIRA ERRADA DE USAR UM 'SERVICE'... -> você NÃO DEVE CRIAR AS INSTANCES MANNUALMENTE, DIZ O PROFESSOR..
+    // service.logStatusChange(accountStatus);
+
+    
+
+  }
+
+  constructor(private LoggingService: LoggingService) {   ///É ASSIM _ QUE__ USAMOS O 'dependency  injector' do ANGULAR --> é assim que usamos SERVICES, nós os INCORPORAMOS COMO PROPRIEDADES DE NOSSOS COMPONENTS...
+
+
+
+   }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PRECISAMOS _ DECLARAR_ 
+
+
+
+
+ESSE NEGÓCIO ('service')
+
+
+
+PARA QUE 
+
+ELE CONSIGA SER 'PROVIDED' por nosso código...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA, COM ISSO,
+
+
+
+O ANGULAR,
+
+QUANDO ANALISAR O COMPONENT,
+
+VAI _ RECONHECER__ QUE 
+
+
+ELE __ É CAPAZ DE __ 
+
+
+
+'RETURN A LOGGING SERVICE',
+
+o que 
+
+FARÁ COM QUE 
+
+ELE SE PREPARE PARA FAZER ISSO...
+
+
+
+
+
+
+
+
+
+
+
+--> OK... AÍ, QUANDO __ ELE __ ACTUALLY__ CONSTRUIR O COMPONENT,
+
+
+ELE VERÁ/PERCEBERÁ 
+
+
+QUE 
+
+
+
+__ QUEREMOS TER UMA INSTANCE DESSAS,
+
+
+
+
+
+
+
+
+
+E AÍ ELE __ SABERÁ _'''COMO'''' NOS DAR 1 INSTANCE DESSAS....
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA _ USAR_ O SERVICE NO NOSSO CÓDIGO,
+
+BASTA IR ATÉ A LINHA EM QUE 
+
+
+QUEREMOS   QUE SEU CÓDIGO EXECUTE 
+
+
+
+E 
+
+
+
+FAÇA ASSIM:
+
+
+
+
+
+
+
+
+
+  onCreateAccount(accountName: string, accountStatus: string) {
+    this.accountAdded.emit(
+      {
+        name: accountName,
+        status: accountStatus
+      }
+    );
+
+    this.LoggingService.logStatusChange(accountStatus);
+    
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -> OK, COM ISSO __ EVITAMOS__ DE 
+
+
+
+    'CREATE THAT INSTANCE MANUALLY''' --> isso pq AGORA ISSO _ _ ESTÁ SENDO FEITO AUTOMATICAMENTE PELO ANGULAR (o que é melhor)...
+
+
+
+
+
+
+
+
+
+    -> esqueci de instalar o bootstrap@3...
+
+
+
+
+
+    -->CERTO, FIZ ISSO.....
+
+
+
+
+
+
+
+
+
+
+
+
+    -> OK, MAS PQ O USO DA FERRAMENTA DE 'DEPENDENCY INJECTO' É __ MELHOR_ DO QUE O WRITE MANUAL? ( SEM TOOLS)
+
+
+
+
+
+
+
+
+
+
+    --> PROFESSOR EXPLICA QUE VEREMOS OUTRAS VANTAGENS MAIS TARDE...
+
+
+
+
+
+
+
+
+
+    -> mas a questão é que isso BASICAMENTE _ NOS DEIXA 
+
+
+
+
+    '''PERMANECER NO ECOSSISTEMA ANGULAR''',
+
+
+
+
+    E O _ ANGULAR__ SABE BEM COMO _ SEU APP FUNCIONA... ---> vantagens de verdade 
+
+
+
+    VOCÊ VERÁ MAIS TARDE...
+
+
+
+
+
+
+
+
+
+
+
+    OK.... COM ISSO,
+
+
+    COM ESSAS 3 MUDANÇAS:
+
+
+
+
+
+
+
+
+
+
+    1)
+
+      providers: [LoggingService]
+
+
+
+
+
+      2)   constructor(private LoggingService: LoggingService) {   
+
+
+   }
+
+
+
+
+
+
+
+
+
+
+   3) 
+
+
+
+
+
+     onCreateAccount(accountName: string, accountStatus: string) {
+    this.accountAdded.emit(
+      {
+        name: accountName,
+        status: accountStatus
+      }
+    );
+    this.LoggingService.logStatusChange(accountStatus);  
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> COM ISSO, FICAMOS COM _ O MESMO CÓDIGO DE ANTES,
+
+
+
+  MAS AGORA USANDO 
+
+  'SERVICES'...
+
+
+
+
+
+
+
+
+
+
+  -> SE CRIARMOS UMA NOVA ACCOUNT NO NOSSO 
+
+
+
+
+  APP,
+
+  AINDA VEREMOS O LOG,
+
+  isso ainda vai funcionar,
+
+
+  MAS AGORA ESTAREMOS 
+
+
+
+  '''INJECTING THE SERVICE''' 
+
+
+
+  para conseguir fazer o console.log...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> AGORA FAREMOS A MESMA COISA NO 
+
+
+  COMPONENT DE 'ACCOUNT',
+
+
+
+  QUE FICA/FICARÁ ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  import { Component, Input, OnInit, Output } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+import { LoggingService } from '../logging.service';
+
+@Component({
+  selector: 'app-account',
+  templateUrl: './account.component.html',
+  styleUrls: ['./account.component.css'],
+  providers: [LoggingService]  ///1) USO DE SERVICES (requisito)
+})
+export class AccountComponent implements OnInit {
+  @Input() account: { name: string; status: string };
+
+  @Input() id: number;
+
+  @Output() statusChanged = new EventEmitter<{
+    id: number;
+    newStatus: string;
+  }>();
+
+  constructor(private LoggingService: LoggingService) {} ///2) USO DE SERVICES (requisito)
+
+  ngOnInit(): void {}
+
+  onSetTo(status: string) {
+    this.statusChanged.emit({ id: this.id, newStatus: status });
+    // console.log('A server status changed, new status: ' + status);
+    this.LoggingService.logStatusChange(status); //3 USO DE SERVICES (aplicação/uso)....
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------> certo.... 
+
+
+
+
+
+
+
+
+
+
+LEMBRE-SE QUE 
+
+SEMPRE PRECISAMOS DE 'providers', e aí colocar os services dentro...
+
+
+
+
+
+
+
+
+
+
+-------------
+
+
+
+
+
+
+OK.. SALVAMOS TUDO E TESTAMOS....
+
+
+
+
+
+
+
+
+
+
+--> o negócio FUNCIONOU...
+
+
+
+
+
+
+
+
+
+--> mas o 'status: unknown' não está funcionando.. vou corrigir..
+
+
+
+
+
+
+CERTO, CORRIGI...
+
+
+
+
+
+
+
+
+
+
+
+AGORA TEMOS A MESMA FUNCIONALIDADE DE 'LOGGING' OUTSOURCEADA,
+
+
+
+CENTRALIZADA EM UM 'SERVICE'...
+
+
+
+
+
+
+
+
+
+
+
+-----> ISSO FEZ NOSSO CÓDIGO FICAR MAIS 'LEAN'... -> EM APPS MAIORES,
+
+EM QUE 
+
+
+TEMOS DUPLICATE CODE,
+
+
+OS SERVICES AJUDAM MT A 'NÃO SE REPETIR',
+
+
+A
+
+
+outsourcear seu código de forma prática, em um arquivo próprio..

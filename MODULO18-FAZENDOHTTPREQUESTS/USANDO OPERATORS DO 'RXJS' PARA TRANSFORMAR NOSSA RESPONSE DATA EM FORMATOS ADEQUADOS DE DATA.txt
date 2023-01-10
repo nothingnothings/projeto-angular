@@ -1,0 +1,861 @@
+
+
+
+
+
+
+
+
+O TRANSFORM DE DATA É OUTRA COISA QUE OBVIAMENET PODEMOS FAZER AQUI,
+
+
+NAQUELE METHOD DE 'subscribe'
+
+
+QUE CHAMAMOS LÁ NO METHOD DE 
+
+
+'this.http.get()'...
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+
+  private fetchPosts() {
+    this.http.get('https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json')
+    .subscribe(
+      (responseData ) => {
+
+        console.log(responseData);
+        const newArrayDataOfObject = Object.values(responseData); ////maneira alternativa de CONVERTER NOSSO 'OBJECT COM OBJECTS' em um ARRAY de objects (sem o uso de OPERATORS DE OBSERVABLES...)
+
+
+        console.log(newArrayDataOfObject);
+
+
+
+       
+
+      }
+    )
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> O PROFESSOR DIZ QUE PODERÍAMOS FAZER 
+
+
+  ESSE TRANSFORM DE DATA DENTRO DO 
+
+
+
+
+  SUBSCRIBE,
+
+
+
+  EXATAMENTE COMO EU HAVIA FEITO:
+
+
+
+
+
+
+
+
+
+
+
+    private fetchPosts() {
+    this.http.get('https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json')
+    .subscribe(
+      (responseData ) => {
+
+        console.log(responseData);
+        // this.loadedPosts = responseData;
+
+         
+        const newArrayDataOfObject = Object.values(responseData); ////maneira alternativa de CONVERTER NOSSO 'OBJECT COM OBJECTS' em um ARRAY de objects (sem o uso de OPERATORS DE OBSERVABLES...)
+
+
+        console.log(newArrayDataOfObject);
+
+
+
+
+
+      //   console.log(newArrayDataOfObject);
+
+      
+      //  return this.loadedPosts = newArrayDataOfObject;
+
+        // this.loadedPosts = postsArray;
+
+
+       
+
+      }
+    )
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -----> MAS AÍ ELE NOS EXPLICA QUE _ GERALMENTE_ É BEM MELHOR, BEST PRACTICE,
+
+
+
+
+  USAR 
+
+
+  OBSERVABLE __ OPERATORS,
+
+
+
+
+
+PQ 
+
+ISSO SIMPLESMENTE 
+
+NOS DEIXA 
+
+ESCREVER CÓDIGO MAIS 
+
+
+
+CLEAN,
+
+
+NOS DEIXA 'FUNNEL DATA THROUGH'
+
+
+
+VÁRIAS STEPS 
+
+QUE PODEM 
+
+SER 'SWAPPED'
+
+
+
+OU 'AJUSTED',
+
+
+
+
+
+
+
+
+
+PARA QUE TENHAMOS UM PIPELINE 
+
+LEGAL,
+
+
+
+
+UM PIPELINE LEGAL E ENTÃO UMA FUNÇÃO/CALL DE 'subscribe()'
+
+
+
+MAIS LEAN,
+
+QUE FOCARÁ 
+
+
+
+EM PARTES DIFERENTES DE SUA LÓGICA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE AQUI,
+
+
+
+ANTES DE CHAMAR 
+
+'.subscribe()',.
+
+
+
+
+PODEMOS 
+
+
+CHAMAR AQUELE METHOD de '.pipe()'...
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO PQ 'PIPE',
+
+
+COMO APRENDEMOS,
+
+É UM METHOD QUE 
+
+NOS DEIXA 
+
+'FUNNEL'
+
+
+ 
+ NOSSA OBSERVABLE __ DATA_ 
+ 
+
+ POR _ DENTRO DE VÁRIOS 'OPERATORS',
+
+
+
+ANTES_ DE ELA FAZER 'REACH' ao METHOD DE SUBSCRIBE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> E O OPERATOR QUE QUEREMOS USAR AUQI, 
+É CLARO,
+
+
+
+É UM DOS MAIS FAMOSOS,
+
+
+
+É O OPERATOR DE '.map()'...
+
+
+
+
+
+
+
+--------> É POR ISSO QUE IMPORTAMOS ASSIM:
+
+
+
+
+
+
+
+
+
+import { map } from 'rxjs'
+
+
+
+
+
+
+
+
+
+  private fetchPosts() {
+    this.http.get('https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json')
+    .pipe( /////é assim que usamos 'OPERATORS' nos nossos observables (no caso, o observable de 'http')...
+    map(
+      () => {
+        
+      }
+    )
+    ) 
+    
+    .subscribe(
+      (responseData ) => {
+
+        console.log(responseData);
+
+
+    )
+    
+    }
+
+
+
+
+
+
+
+
+
+
+
+    --> ok...
+
+
+
+
+
+
+
+
+
+
+
+    ISSO QUER DIZER QUE A SINTAXE DO 
+
+
+    USO DESSE OPERATOR É TIPO 
+
+
+
+
+    '.map(
+        () => {
+
+        }
+    )
+    .subscribe(
+        () => {
+
+        }
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -------> A QUESTÃO É QUE O OPERATOR DE 'mAP'
+
+
+    NOS DEIXA 
+
+
+
+
+    __ FAZER 'GET' DE SOME DATA,,
+
+
+
+
+    E AÍ 
+
+
+    _ RETURN _ UMA NOVA DATA... -----> 
+
+
+
+
+    NOVA DATA AUTOMATICAMENTE 'RE-WRAPPED' EM UM OBSERVABLE,
+
+    PARA QUE 
+
+
+    AINDA CONSIGAMOS __ 
+
+
+
+    TRABALHAR COM ESSA DATA (rodar aquele '.subscribe()" nessa transformed data)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> O MAP EXIGE UMA OUTRA FUNCTION COMO INPUT,
+
+
+    E AÍ VAMOOS PASSAR UMA ANON FUNCTION...
+
+
+
+
+
+    ---> QUEREMOS 
+
+    RETORNAR 
+
+    UM 
+
+    ARRAY 
+
+
+
+    DE 'POSTS' , objects 'post'...
+
+
+
+
+
+
+
+
+    --> BEM, PARA CONVERTER UM JAVASCRIPT OBJECT EM E 1 ARRAY,
+
+
+
+    PRECISAMOS 
+
+    _ FAZER __ UM LOOP_ MANUAL POR DENTRO DE TODAS AS KEYS E AÍ CRIAR UM NOVO 
+
+
+    ARRAY... 
+
+    (
+
+        eu havia usado 'Object.values', mas isso tvz 
+
+
+        funcione de maneira pior....
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> NA VERDADE, O CÓDIGO DO PROFESSOR FICOU __ BEM ESTRANHO_..
+
+
+
+
+
+
+    --> FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+        map(
+      (responseData) => {
+
+
+        const transformedPostsArray = [];
+
+
+        for (const key in responseData) {
+
+          transformedPostsArray.push({...responseData[key], id: key});
+        }
+
+
+      }
+    )
+
+
+
+
+
+
+
+
+
+
+
+    --> isso quer dizer que 
+
+
+    ele vai querer ter objects com este formato:
+
+
+    {
+        title: string,
+        content: string,
+        id: asojdosaddsoajdo (antigo nome desse given object)...
+    }
+
+
+
+    e esses objects serão 'PUSHED' para dentro 
+
+
+    daquele array,
+     
+
+     por meio de 
+
+     '{
+
+     }'  (novo object) 
+
+
+
+
+
+
+    e aí o uso do SPREAD OPERATOR para 'SPREAD' aquele 
+
+
+    object de 
+
+    'responseData[key]' 
+
+
+
+    (
+
+        que será algo como 
+
+        ''
+
+
+          {
+        title: string,
+        content: string,
+    }
+
+
+
+    '''
+    )
+
+
+
+
+
+
+
+
+
+
+
+--> esse id é um ID _ GERADO AUTOMATICAMENTE PELO FIREBASE...
+
+
+
+    ->>>> OK... MAS MESMO COM TUOD ISSO,
+
+
+
+
+
+
+
+FICAMOS COM UM ERRO, ERRO DE 
+
+
+'''
+
+
+
+
+Element implicitly has an 'any' type because expression of type 'string' can't be used to index type 'Object'.
+  No index signature with a parameter of type 'string' was found on type 'Object'.ts(7
+
+
+
+
+
+  '''
+
+
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+      map(
+      (responseData) => {
+
+
+        const transformedPostsArray = [];
+
+
+        for (const key in responseData) {
+
+          transformedPostsArray.push({...responseData[key], id: key});
+        }
+
+
+        return transformedPostsArray;
+
+      }
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> cERTO... MAS AÍ O PROFESSOR DIZ QUE É BOM COLOCAR UM __ IF CHECK_ DENTRO 
+
+
+DESSE FOR LOOP,
+
+PARA CHECAR 
+
+SE RESPONSE DATA 
+
+
+
+
+'''TEM SUA PRÓPRIA PROPRIEDADE'''' ( ''''.hasOwnProperty()  '''),
+
+
+
+
+TUDO PARA QUE UM RANDOM PROTOTYPE  DENTRO DESSE OBJECT 'responseData'
+
+NÃO SEJA TARGETTADO, NÃO SEJA CONSIDERADO COMO UMA ENTRY/ITEM NESSE FOR IN LOop...
+
+
+
+
+
+fica tipo assim:
+
+
+
+
+
+
+
+
+    map(
+      (responseData) => {
+
+
+        const transformedPostsArray = [];
+
+
+        for (const key in responseData) {
+
+            if (responseData.hasOwnProperty(key)) {
+                       transformedPostsArray.push({...responseData[key], id: key});
+            }
+
+       
+        }
+
+
+        return transformedPostsArray;
+
+      }
+    )
+
+
+
+
+
+
+
+
+PARA CALAR A  BOCA DAQUELE TYPESCRIPT ERROR,
+
+
+coloco 'responseData: any'.
+
+
+
+
+
+
+
+
+
+
+
+-> o código ficou assim:
+
+
+
+
+
+
+
+
+  private fetchPosts() {
+    this.http.get('https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json')
+    .pipe( /////é assim que usamos 'OPERATORS' nos nossos observables (no caso, o observable de 'http')...
+    map(
+      (responseData: any) => {
+
+
+        const transformedPostsArray = [];
+
+
+        for (const key in responseData) {
+
+          if (responseData.hasOwnProperty(key)) {  ///VAI CHECAR SE ISSO NÃO É UM 'PROTOTYPE' dentro da 'responseData'...
+            transformedPostsArray.push({...responseData[key], id: key});
+          }
+      
+        }
+
+
+        return transformedPostsArray;
+
+      }
+    )
+    ) 
+    
+    .subscribe(
+      // (responseData ) => {
+        (posts) => {
+
+        // console.log(responseData);
+        console.log(posts);
+        // this.loadedPosts = responseData;
+        // const newArrayDataOfObject = Object.values(responseData); ////maneira alternativa de CONVERTER NOSSO 'OBJECT COM OBJECTS' em um ARRAY de objects (sem o uso de OPERATORS DE OBSERVABLES...)
+      //   console.log(newArrayDataOfObject);
+      //  return this.loadedPosts = newArrayDataOfObject;
+        // this.loadedPosts = postsArray;
+
+
+       
+
+      }
+    )
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> é ASSIM, PORTANTO, QUE USAMOS OBSERVABLE OPERATORS _ PARA TRANSFORMAR NOSSA DATA...
+
+
+
+
+
+
+
+
+
+
+nossos objects 'posts' retrievados, SUA DATA MANIPULADA, FICOU ASSIM:
+
+
+
+
+
+Array(1)
+0:
+content: "dfsdfsdf"
+id: "-N3GfPqIRHavO6XQcakl"
+title: "dsfsdfsdf
+

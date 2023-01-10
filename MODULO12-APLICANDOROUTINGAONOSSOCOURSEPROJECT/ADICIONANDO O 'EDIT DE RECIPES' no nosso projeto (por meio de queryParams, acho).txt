@@ -1,0 +1,647 @@
+
+
+
+
+
+
+
+
+
+
+
+
+--> é hora de incorporar a child route de 'recipe-book',
+
+
+
+
+'edit-recipe'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS EU AINDA NAÕ TENHO ESSE COMOPNENT DE 'EDIT RECIPE'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> QUEREMOS SER CAPAZES DE 'CREATE NEW RECIPES' e 'EDIT ALREADY EXISTING ONES'...
+
+
+
+
+
+
+
+
+
+
+
+-_> PARA ISSO,
+
+PRECISAMOS DE UM NOVO COMPONENT,
+
+um 'page component'...
+
+
+
+Ex:
+
+
+
+
+
+
+
+
+
+ng g c recipeBook/recipeEdit
+
+
+
+
+
+
+
+
+
+
+
+----> NÓS VAMOS TRABALHAR NO CONTEÚDO DESSE 'recipe-edit'
+
+
+DEPOIS DA SECTION DE 'forms',
+
+mas agora 
+
+já vamos querer A CARREGAR ATRAVÉS 
+
+DO ROUTER..
+
+
+
+
+
+
+
+
+
+
+--> TAMBÉM QUEREMOS RETRIEVAR O 'ROUTE PARAMETER'
+
+
+de sua route....
+
+
+
+
+
+
+
+
+
+
+
+--> professor registra uma nova route...
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+const appRoutes: Routes = [
+  // {   ///approach que USA UMA HOME PAGE COMO ROUTE DE '/'...
+  //   path: '',
+  //   component: HomePageComponent,
+  // },
+
+  {
+    path: '',
+    redirectTo: '/recipe-book',
+    pathMatch: 'full'  /// (COMMON GOTCHA) evita o error de 'SEMPRE VAI REDIRECIONAR PARA ESSA ROUTE DE recipe-book' (pq o padrão é 'prefix' em vez de 'full'; ou seja, é o MESMO COMPORTAMENTO DEFAULT DO REACT ROUTER)...
+  },
+  {
+    path: 'recipe-book',
+    component: RecipeBookComponent,
+    children: [
+      {
+        path: '',
+        component: SelectARecipeComponent
+      },
+      {
+        path: ':id',
+        component: RecipeDetailComponent,
+      },
+      {
+        path: 'new',
+        component: RecipeEditComponent
+      }
+
+      // {
+      //     path: 'new-recipe',
+      // }
+    ],
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -----> certo...
+
+
+
+
+
+
+
+
+
+  isso vai NOS DAR UM NOVO PATH,
+
+
+  que será 
+
+
+
+
+
+  localhost:4200/recipe-book/new
+
+
+
+
+
+
+
+
+
+  -----------
+
+
+
+--> também adiicone esse component lá em 'app.module.ts'...
+
+
+
+
+
+
+
+
+
+
+
+----> O PROFESSOR _ TAMBÉM _ ADICIONA UMA 
+
+ROUTE DE 
+
+
+
+':id/edit',
+
+
+
+QUE SERÁ 
+
+
+_USADA_ 
+
+
+
+
+
+
+PARA _ CARREGAR_ NOSSO 
+
+
+COMPONENT, sim,
+
+pq 
+
+VAMOS QUERER CARREGAR SEUS 'DETAILS' nessa route,
+
+
+
+
+_ MAS AÍ _ ADICIONAMOS ESSE 'edit'
+
+PARA _ DIFERENCIAR 
+
+ESSA ROUTE DA ROUTE DE 
+
+'view recipe item' padrão..
+
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+{
+path: ':id/edit',
+component: RecipeEditComponent
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OBS::
+
+DENTRO DO COMPONENT DE 'edit-recipe',
+
+O PROFESSOR/NÓS 
+
+VAMOS CHECAR 
+
+
+SE ESATMOS 
+
+
+
+__ EM 'EDIT MODE' 
+
+ou não....
+
+
+
+
+
+
+
+
+
+
+
+--> ok...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok... já conseguimos carregar essa route,
+
+
+
+
+
+
+
+
+MAS __ 
+
+
+VEREMOS ALGO __INESPERADO_ 
+
+
+SE TENTARMOS 
+
+
+acessar 
+
+
+
+'localhost:4200/recipe-book/new'...
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO,
+
+
+
+TENTAREMOS CARREGAR O COMPONENT DE 'DETAIL',
+
+
+
+
+
+
+
+o que resultará em um ERROR,
+
+
+pq 
+
+
+
+
+nosso app vai FALHAR EM 
+
+
+
+
+PEGAR UMA RECIPE COM O ID DE 'new'... 
+
+
+(
+
+    é o mesmo problema 
+
+
+    do
+
+    react router,
+
+    basicamente....
+)
+
+
+
+
+
+
+
+
+
+
+-> isso acontece/aconteceu 
+
+pq 
+
+
+
+__ O 'localhost:4200/recipe-book/new'
+
+
+está sendo INTERPRETADO COMO 
+
+
+'localhost:4200/recipe-book/:id'...
+
+
+
+
+
+
+--> PARA CONSERTAR ISSO,
+
+TALVEZ UMA SOLUÇÃO SEJA COLOCAR O '/new'
+
+
+na frente do 
+
+'/:id'...
+
+
+
+
+
+
+
+----------------------
+
+
+
+
+
+
+
+
+
+sim, era realmente esse o problema..
+
+
+
+
+
+
+
+
+
+
+--> para consertar, basta 
+
+
+
+colocar a route de 'new' 
+
+antes de 
+':id',
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+  {////ordem das routes importa, exatamente como no REACT ROUTER
+    
+    path: '',
+    redirectTo: '/recipe-book',
+    pathMatch: 'full', /// (COMMON GOTCHA) evita o error de 'SEMPRE VAI REDIRECIONAR PARA ESSA ROUTE DE recipe-book' (pq o padrão é 'prefix' em vez de 'full'; ou seja, é o MESMO COMPORTAMENTO DEFAULT DO REACT ROUTER)...
+  },
+  {
+    path: 'recipe-book',
+    component: RecipeBookComponent,
+    children: [
+      {
+        path: '',
+        component: SelectARecipeComponent,
+      },
+      {
+        path: 'new',
+        component: RecipeEditComponent,
+      },
+      {
+        path: ':id',
+        component: RecipeDetailComponent,
+      },
+
+      {
+        path: ':id/edit',
+        component: RecipeEditComponent,
+      },
+
+      // {
+      //     path: 'new-recipe',
+      // }
+    ],
+  },
+
+  {
+    path: 'shop-list',
+    component: ShoppingListComponent,
+  },
+
+  {
+    path: 'not-found',
+    component: GenericErrorPageComponent,
+    data: {
+      message: 'The requested page could not be found.',
+    },
+  },
+  {
+    path: '**',
+    redirectTo: '/not-found',
+  },
+];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> ok...
+
+agora as partes que faltaram foram:
+
+
+
+
+
+
+1) RETRIEVAR O 'ID'
+
+
+
+do recipe item,
+
+
+
+nesse component de 'recipe-edit',
+
+
+
+
+
+
+
+
+2) FAZER COM QUE NOSSO APP CONSIGA DETERMINAR QUE 
+
+
+'ESTAMOS NO EDITMODE OU NÃo'...
+
+
+
+
+
+
+
+
+
+
+
+--> TENTAR FAZER ISSO POR CONTA PRÓPRIA...

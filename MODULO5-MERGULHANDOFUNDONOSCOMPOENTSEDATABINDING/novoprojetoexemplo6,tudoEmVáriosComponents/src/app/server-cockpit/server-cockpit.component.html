@@ -1,0 +1,35 @@
+<div class="row">
+  <div class="col-xs-12">
+    <p>Add new Servers or Blueprints!</p>
+    <label>Server Name</label>
+    <!-- <input type="text" class="form-control" [(ngModel)]="newServerName" /> CÓDIGO COM TWOWAYBINDING em 'newServerName' -->
+    
+    
+    <!-- esta versão do código usa __ LOCAL REFERENCES (#serverNameInput), que são referenciadas mais abaixo, no call de 'onAddServer()' e afins....  (pq local references só podem ser chamadas no próprio TEMPLATE em que são criadas) -->
+    <input type="text" 
+    class="form-control"
+    #serverNameInput
+    /> <!-- versão do mesmo CÓDIGO, mas SEM TWO WAY BINDING, pq é desnecessário nesse caso específico (não queremos/precisamos displayar a coisa que estamos escrevendo na tela, diretamente enquanto escrevemos)-->
+    
+    <label>Server Content</label>
+    <!-- <input type="text" class="form-control" [(ngModel)]="newServerContent" /> CÓDIGO COM TWOWAYBINDING em 'newServerContent' -->
+    <p>{{serverNameInput.value}}</p>
+    
+    <!-- <input type="text" 
+    class="form-control" 
+    [(ngModel)]="newServerContent"
+     />  -->
+
+
+<!-- exemplo de USO DE '@ViewChild' para ACESSAR ESSE ELEMENTO (no typescript, .ts) REFERENCIADO POR '#serverContent', essa LOCAL REFERENCE, antes da local reference ser passada em um method/sem usar um method para passar essa local reference ao código typescript.... -->
+     <input type="text" 
+     class="form-control" 
+     #serverContentInput
+      />  <!-- '#serverContentInput' acaba sendo USADO por @ViewChild('serverContentInput')-->
+    <br />
+    <button class="btn btn-primary" (click)="onAddServer(serverNameInput)">Add Server</button>
+    <button class="btn btn-primary" (click)="onAddBlueprint(serverNameInput)">
+      Add Server Blueprint
+    </button>
+  </div>
+</div>

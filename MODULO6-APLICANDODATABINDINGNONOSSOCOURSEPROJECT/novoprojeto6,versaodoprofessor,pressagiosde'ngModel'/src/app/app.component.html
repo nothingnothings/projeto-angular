@@ -1,0 +1,20 @@
+<!-- <div class="container">
+  <div class="row">
+    <div class="col-md-12"></div>
+    <h2>I'm Working!</h2>
+  </div>
+</div> -->
+
+<app-header-component (selectedPage)="pageSwitcher($event)">
+</app-header-component>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <app-recipe-book
+        *ngIf="selectedPage === 'recipeBook' "
+        ></app-recipe-book>
+        <app-shopping-list
+        *ngIf="selectedPage === 'shopList' "
+        ></app-shopping-list>
+      </div>
+    </div></div>

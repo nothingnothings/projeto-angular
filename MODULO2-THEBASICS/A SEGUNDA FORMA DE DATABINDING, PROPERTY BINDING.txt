@@ -1,0 +1,1224 @@
+
+
+
+
+
+
+
+
+
+--> NA ÚLTIMA LIÇÃO,
+
+
+
+
+
+
+
+NÓS DEMOS UMA OLHADA EM STRING  INTERPOLATION,
+
+
+QUE É UMA ÓTIMA FERRAMENTA PARA OUTPUTTAR DATA EM 1 TEMPLATE..
+
+
+
+
+
+
+
+
+
+
+--> AGORA VAMOS DAR UMA OLHADA EM PROPERTY BINDING...
+
+
+
+
+
+
+
+--> MAS ANTES DISSO,
+
+UMA OBSERVAÇÃO:
+
+
+
+
+***EXISTEM MTOS CASOS EMQ UE 
+
+VOCê 
+
+PODE USAR _ OU__ PROPERTY_ BINDING _ OU 
+
+STRING INTERPOLATION...
+
+
+
+
+
+
+
+
+----> E O PROFESSOR LOGO MOSTRARÁ O QUE ELE QUER DIZER COM ISSO....
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR VAI ATÉ O COMPONENT DE 
+
+'servers',
+
+
+
+lá no SEU TEMPLATE,
+
+
+que no momento está assim:
+
+
+
+
+
+
+
+<app-server></app-server>
+<app-server></app-server>
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR NO FUTURO VAI QUERER DEIXAR UMA OPÇÃO PARA O USER CLICAR E ENTÃO 
+
+__ ADICIONAR NOVOS SERVERS....
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO, VAMOS PRECISAR DE UM BUTTON,
+
+
+
+button de 'Add Server',
+
+
+
+
+E AÍ _ O PROFESSOR VAI ADICIONAR 
+
+
+
+
+
+
+
+
+
+AS CLASSES 
+
+'btn btn-primary' 
+
+
+
+DO BOOTSTRAP PARA DEIXAR 
+ESSES BUTTONS BONITOS...
+
+
+
+
+
+
+EX:
+
+
+
+
+<button class="btn btn-primary">Add Server</button>
+<app-server></app-server>
+<app-server></app-server>
+<app-server></app-server>
+
+
+
+
+
+
+
+
+
+
+---------------------------
+
+
+
+
+
+
+
+
+
+
+-> OKK... ATÉ AÍ, TUDO BEM....
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO, SALVAMOS TUDO E ENXERGAMOS NOSSO BUTTON..
+
+
+
+
+--> mas o button AINDA NÃO FAZ COISA ALGUMA (ainda não aprendemos sobre EVENT BINDING)...
+
+
+
+
+
+
+
+  
+  ----> É POR ISSO QUE ADICIONAMOS UMA NOVA PROPRIEDADE 
+
+
+
+
+
+
+
+NO NOSSO CÓDIGO 'servers.component.ts',
+
+
+QUE SERA´
+
+
+
+
+
+
+
+
+de valor 'false'.... 
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  // selector: 'app-servers', /// QUANDO VOCÊ ESCREVE ASSIM, ESTÁ SELECIONANDO O ELEMENTO NO 'servers.component.html' A PARTIR DA SUA TAG/ELEMENT...
+  selector: '[app-servers]',  ////o selector do angular TEM COMPORTAMENTO SIMILAR A SELECTORS CSS... -> e nos selectors css, se você escreve '[attributeName] {}', você ACABA EDITANDO TODOS OS ELEMENTOS QUE POSSUEM ESSE ATTRIBUTE ATIVADO/ESCRITo...
+  
+  // selector: '.app-servers' ////use essa sintaxe se vocÊ quer SELECIONAR UM ELEMENTO NO seu 'servers.component.html' POR MEIO DE _ CLASSES__... 
+
+
+  ///ou seja, 3 approaches para SELECIONAR ELEMENTOS NO NOSSO CÓDIGO HTML ANGULAR, com o 'selector':
+
+  //  1) por ELEMENTo... -> selector: 'app-servers'
+  //  2) por ATTRIBUTE.... -> selector: '[app-servers]'
+  //  3) por CLASS --> selector: '.app-servers' 
+  
+  templateUrl: './servers.component.html',
+  styleUrls: ['./servers.component.css']
+})
+
+
+export class ServersComponent implements OnInit {
+
+
+        allowNewServer = false;
+
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+--------------------------------
+
+
+
+
+
+
+
+
+
+
+
+deixamos esse 'allowNewServer'
+
+
+
+como false _ PQ _ NÃO VAMOS QUERER QUE O USER SEJA CAPAZ DE CRIAR UM NOVO SERVER....
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> e, novamente,
+
+você pode imaginar 
+
+QUE ESSE VALUE de 
+
+'allowNewServer'
+
+
+É DERIVADO DINAMICAMENTE (de um server, por exemplo)...
+
+
+
+
+
+
+
+
+
+
+
+
+--> LOGO TRABALHAREMOS COM DYNAMIC DATA DE VERDADE...
+
+
+
+
+
+
+
+
+
+
+
+
+-----> CERTO.. AÍ NO TEMPLATE HTML DE 
+
+'servers',
+
+
+
+
+
+NÓS __ VAMOS _ QUERER __ DESABILITAR 
+
+
+AQUELE BUTTON....
+
+
+
+
+
+
+--------> COMO VOCÊ PROVAVELMENTE JÁ SABE,
+
+
+
+
+
+existe um ATTRIBUTE DE 'disabled'...
+
+
+
+
+
+
+
+
+---> SE DEIXARMOS ESSE ATTRIBUTE,
+
+ELE VAI 
+
+
+
+DEIXAR O BUTTON DESABILITADO...
+
+
+
+
+
+
+eX:
+
+
+
+
+
+<button class="btn btn-primary" disabled>Add Server</button>
+<app-server></app-server>
+<app-server></app-server>
+<app-server></app-server>
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> ok, isso é nice... --> mas o ideal seria 
+
+
+DEIXAR UM SLOT 
+
+
+
+DINÃMICO NESSE BUTTON,
+
+
+
+E AÍ 
+
+
+
+deixar true/false de acordo com nosso código typescript....
+
+
+
+
+
+
+
+
+
+
+
+-> OK, MAS COMO DIABOS USAMOS 'PROPERTY BINDING' para fazer isso?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ok.... mas isso NÃO DEU CERTO...
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR QUER QUE O VALUE DE 'allowNewServer',
+
+LÁ EM 
+
+'servers.component.ts',
+
+
+
+NÃO FIQUE COM O VALOR DE 'false' o tempo todo....
+
+
+
+
+
+
+
+
+
+----> POR ENQUANTO, 
+
+
+O PROFESSOR DEFINE NO CONSTRUCTOR 
+
+
+
+UMA FUNCTION DE 'setTimeout',
+
+
+EM QUE ELE DEFINE  QUE DEPOIS DE 2 SEGUNDOS
+
+
+
+
+
+
+DEVERÁ SER ALTERADO O VALUE DE 'allowNewServer'
+
+,
+
+PARA QUE FIQUE COMO 'true'...
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  // selector: 'app-servers', /// QUANDO VOCÊ ESCREVE ASSIM, ESTÁ SELECIONANDO O ELEMENTO NO 'servers.component.html' A PARTIR DA SUA TAG/ELEMENT...
+  selector: '[app-servers]',  ////o selector do angular TEM COMPORTAMENTO SIMILAR A SELECTORS CSS... -> e nos selectors css, se você escreve '[attributeName] {}', você ACABA EDITANDO TODOS OS ELEMENTOS QUE POSSUEM ESSE ATTRIBUTE ATIVADO/ESCRITo...
+  
+  // selector: '.app-servers' ////use essa sintaxe se vocÊ quer SELECIONAR UM ELEMENTO NO seu 'servers.component.html' POR MEIO DE _ CLASSES__... 
+
+
+  ///ou seja, 3 approaches para SELECIONAR ELEMENTOS NO NOSSO CÓDIGO HTML ANGULAR, com o 'selector':
+
+  //  1) por ELEMENTo... -> selector: 'app-servers'
+  //  2) por ATTRIBUTE.... -> selector: '[app-servers]'
+  //  3) por CLASS --> selector: '.app-servers' 
+  
+  templateUrl: './servers.component.html',
+  styleUrls: ['./servers.component.css']
+})
+
+
+export class ServersComponent implements OnInit {
+
+
+        allowNewServer = false;
+
+
+  constructor() { 
+
+
+      setTimeout(
+          () => {
+              this.allowNewServer = true
+          },
+
+          2000
+      )
+  }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+-----------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ok.... MAS COMO VAMOS CONSEGUIR BINDAR esse value de 
+
+'allowNewServer'
+
+
+
+
+
+
+a esse button? 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> PARA DEIXAR ESSA _ PROPRIEDADE __ DE 'disabled'
+
+
+
+__ DINÂMICA,,
+
+
+O QUE VOCê DEVE FAZER __ É WRAPPAR O ATTRIBUTE/PROPRIEDADE 
+
+
+
+'disabled'
+
+
+
+COM '[]',
+
+
+
+TIPO ASSim:
+
+
+
+
+
+
+<button class="btn btn-primary" [disabled]>Add Server</button>
+<app-server></app-server>
+<app-server></app-server>
+<app-server></app-server>
+
+
+
+
+
+
+
+
+
+
+-> ISSO PQ '[]'
+
+
+
+
+NO ANGULAR _ _SINALIZA_ QUE VAMOS QUERER USAR 'PROPERTY BINDING',
+
+
+
+
+QUE QUEREMOS ESSENCIALMENTE __ BINDAR__ ALGUMA OUTRA PROPRIEDADE 
+
+
+
+E DESABILITAR ESSE 
+
+
+ATTRIBUTE HTML........ 
+
+
+
+
+
+
+
+
+
+
+--> VOCë JÁ DEVE TER PERCEBIDO QUE CADA ELEMENTO DOM QUE VOCê USA 
+É 
+
+__PARSEADO__ PELO BROWSER E 'KINDOF'
+
+
+TRADUZIDO __ 
+
+
+EM 
+
+1 ELEMENT 
+
+DENTRO 
+
+
+DO DOM (document object model)... -----> PORTANTO,
+
+TEMOS UM ELEMENT NESSE DOM,
+
+
+
+
+E __ ESSE ELMENT TEM UM MONTE DE PROPRIEDADES... ------> UM MONTE DELAS NÃO 
+
+PODE 
+
+SER 
+
+'set'
+
+ATRAVÉS DE 
+
+
+ATTRIBUTES NO HTML ELEMNEt.... -->  BEM, UMA DAS PROPRIEDADES QUE 
+
+
+
+
+PODEMOS ALTERAR É 
+
+
+
+
+
+A PROPRIEDADE 'disabled',
+
+
+
+E PODEMOS _ SETTÁ-LA ATRAVÉS 
+
+DO 
+
+ATTRIBUTE 'disabled'....  ---------> ENTRETANTO, POR CAUSA DO '[]' ao redor da 
+
+PROPRIEDADE, 
+] AQUI NÃO ESTAMOS LIDANDO 
+
+
+
+
+
+
+MAIS COM 
+O 
+
+ATTRIBUTE DE 'disabled'.. -> EM VEZ DISSO, AQUI O QUE ESTAMOS FAZENDO é  
+
+
+
+'DIRECTLY BINDING' A __ ESSA PROPRIEDADE nativa 'disabled' que 
+
+esse elmento .html tem....
+
+
+
+
+
+
+
+
+
+
+--> OK.... ---> AO LADO DA PROPERTY A QUE VOCè QUER ATIVAR TWO-WAY BINDING,
+
+
+
+
+
+
+VOCÊ DEVE ADICIONAr UMA PROPRIEDAED QUE 
+
+
+__RESOLVA PARA UM BOOLEAN,,
+
+
+
+
+
+
+
+
+
+ex:
+
+<button
+class="btn btn-primary"
+[disabled]="">Add Server</button>
+
+
+
+
+
+
+
+
+
+
+
+
+[disabled]=""
+
+
+
+
+
+
+
+
+-> PARA ESSA PROPRIEDADE, O VALUE PODE SE RESOLVER COMO UM __ BOOLEAN__, 
+
+
+MAS EM OUTRA PROPREIDADE ISSO PODE SE RESOLVER COMO OUTRA COISA....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E VOCê PODE BINDAR DATA A _ QUASE _ QUALQUER UMA DAS PROPRIEDADES HTML....
+
+
+
+
+
+
+
+
+
+
+
+-> LOGO APRENDEREMOS QUE 
+
+HÁ 
+
+OUTRAS PROPRIEDADES HTML A QUE PODEMOS BINDAR, AQUi..
+
+
+
+
+
+
+
+
+
+
+
+
+
+o que o professor escreve é ISTO:
+
+
+
+
+<button
+class="btn btn-primary"
+[disabled]="allowNewServer">Add Server</button>
+
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE  VAMOS COLOCAR UM 'BANG', para converter o VALOR INICIAL PARA 'true'....
+
+
+
+
+
+ex:
+
+
+<button
+class="btn btn-primary"
+[disabled]="!allowNewServer">Add Server</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> REVISE O CÓDIGO:
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: '[app-servers]', 
+
+  templateUrl: './servers.component.html',
+  styleUrls: ['./servers.component.css'],
+})
+export class ServersComponent implements OnInit {
+  allowNewServer = false; ////EIS O CÓDIGO EM QUESTÃO.
+
+  constructor() {
+    setTimeout(
+      () => {
+        this.allowNewServer = true; ////EIS O CÓDIGO EM QUESTAÕ.
+      },
+
+      2000
+    );
+  }
+
+  ngOnInit(): void {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O RESULTADO DISSO NA PÁGINA:
+
+
+
+
+
+O BUTTON ELEMENT FICOU DESABILITADO POR 2 SEGUNDOS, DEPOIS FOI HABILITADO..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----- O QUE APRENDI:
+
+
+
+
+
+
+
+1) SE VOCÊ QUISER __ VINCULAR__ UMA PROPRIEDADE 
+
+
+
+
+HTML A UMA PROPRIEDADE 
+
+
+
+
+TYPESCRIPT/JAVASCRIPT do seu component,
+
+
+
+DEVE
+
+
+
+wrappar 
+
+
+
+
+
+a 
+
+
+
+
+propriedade com 
+
+'[]' 
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+'[disabled]' 
+
+
+
+
+
+
+
+
+2) AÍ, NO SLOT _ DO VALOR __ DESSA PROPRIEDADE (true ou false, por exemplo),
+
+
+
+VOCÊ DEVE COLOCAR UMA REFERÊNCIA À PROPRIEDADE TYPESCRIPT QUE VOCÊ QUER QUE DETERMINE 
+
+
+
+ESSA PROPRIEDADE HTML
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> COM ISSO, ESTAMOS BINDANDO DATA A ESSA PROPRIEDADE NATIVA DO HTML,
+
+BINDANDO ESSA 
+
+PROPRIEDADE 
+
+
+
+A NOSSA 
+
+PROPRIEDADE DO TYPESCRIPT --------> E A COISA CONVENIENTE, AQUI,
+É QUE 
+
+
+
+
+ESSE VALOR DE 'allowNewServer'
+
+
+VAI _ UPDATAR___ AUTOMATICAMENTE (é uma das vantagens do angular)... ----> ISSO QUER DIZER QUE 
+
+QUANDO 
+
+
+'allowNewServer'
+
+
+
+
+MUDAR,
+
+
+
+
+ESSE VALUE DE 'disabled' SERÁ COLOCADO COMO 'FALSE' no dom... --> ESSA É UMA DAS RAZÕESR 
+
+PARA USAR O ANGULAR,
+
+
+PQ 
+
+
+
+ELE DEIXA MT FÁCIL A TAREFA DE _ INTERAGIR COM O DOM DURANTE O RUNTIME,
+
+
+COMO FIZEMOOS AQUI....
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK... ESSE É O PROPERTY BINDING...
+
+
+
+
+
+
+
+
+-> MAS ALÉM DE PODER BINDAR A HTML ELEMENT PROPERTIES CLÁSSICAS
+
+
+VOCÊ 
+
+
+PODE 
+
+ 
+
+
+
+ BINDAR A _OUTRAS PROPERTIES,
+
+ COMO A 
+
+
+
+
+ 'DIRECTIVES' (que ainda veremos)
+
+
+
+
+
+
+ E A COMPONENTS EM SI (veremos mais tarde)...
+
+
+
+
+
+
+
+
+
+
+
+
+ OK, ESSE É O PROPERTY BINDING...
+
+
+
+
+
+
+
+
+
+
+
+
+ a marcação '[]' APENAS SERVE _ PARA __DEIXAR UMA DETERMINADA 
+
+ PROPRIEDADE DE ELEMENTO HTML __ DINÂMICA__ (e não estática)... -----> COMUNICAMOS AO ANGULAR QUE QUEREMOS 'DYNAMICALLY BIND' alguma propriedade...
+
+
+
+
+
+
+
+
+
+
+
+
+
+AQUI NÃO ESTAMOS USANDO O ATTRIBUTE DE 'DISABLED',
+
+
+E SIM (por meio das [])
+ 
+
+
+
+ ESTAMOS _ DIRETAMENTE BINDANDO à 'NATIVE DISABLED PROPERTY'
+
+
+ que esse elemento html tem...

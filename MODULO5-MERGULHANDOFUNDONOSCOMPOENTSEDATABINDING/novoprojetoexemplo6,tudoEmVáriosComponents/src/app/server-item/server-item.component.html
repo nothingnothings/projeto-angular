@@ -1,0 +1,22 @@
+<!-- <div class="row">
+  <div class="col-xs-12"> -->
+    
+    <div class="panel panel-default">
+      <!-- <div class="panel-heading">{{ element.name }}</div> -->
+      <div class="panel-heading"
+      #heading
+      
+      
+      >{{ name }}</div>
+      <div class="panel-body">
+        <!-- <p>    ////2 LINHAS <P> SUBSTITUÍDAS POR 'ng-content', essa DIRECTIVE ESPECIAL QUE NOS DEIXA INSERIR O CONTENT QUE É ESCRITO DENTRO do >< (opening e closing tags) de nosso component, como visto lá em 'app.component.html', com aqueles 2 <p> que foram inseridos entre o opening e closing brackes deste nosso 'app-server-item'...
+          <strong *ngIf="element.type === 'server'" style="color: red">{{
+            element.content
+          }}</strong>
+          <em *ngIf="element.type === 'blueprint'">{{ element.content }}</em>
+        </p> -->
+        <ng-content></ng-content>
+      </div>
+    </div>
+  <!-- </div>
+</div> -->

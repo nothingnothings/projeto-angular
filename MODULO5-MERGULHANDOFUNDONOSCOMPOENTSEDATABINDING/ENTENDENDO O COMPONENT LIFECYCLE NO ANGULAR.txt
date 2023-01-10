@@ -1,0 +1,857 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESTAMOS NO FINAL DESSE MÓDULO..
+
+
+
+
+
+--> MAS HÁ UMA COISA QUE HAVÍAMOS PERCEBIDO ANTES,
+
+E QUE NÃO SABÍAMOS O QUE FAZIA...
+
+
+
+
+
+
+
+
+--> É AQUEEL 
+
+
+'ngOnInit() {}' ..
+
+
+
+
+
+
+
+
+
+
+--> O QUE É ISSO? 
+
+
+
+
+
+
+
+
+--> É UM METHOD QUE TEMOS EM TODOS OS COMPONENTS QUE CRIAMOS COM A CLI..
+
+
+
+
+
+
+
+
+-_> MAS O  QUE ELE FAZ ?
+
+
+
+
+
+
+
+
+
+
+--> BEM, o 'ngOnInit()'
+
+É UM LIFECYCLE HOOK,
+
+
+
+E O 
+
+ANGULAR 
+
+ACTUALLY TEM UM PUNHADO DE LIFECYCLE HOOKS...
+
+
+
+
+
+
+
+
+
+
+
+--> DEVEMOS OS ANALISAR AGORA:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SE 1 NOVO COMPONENT É CRIADO NO ANGULAR,
+
+E É CLARO QUE 
+
+É 
+
+O 
+
+ANGULAR 
+
+
+
+
+___ É RESPONSÁVEL ___ PELO 
+
+
+CREATE 
+
+DESSES COMPONENTS,
+
+
+
+
+
+
+
+QUANDO 
+
+ELE ENCONTRA 1 DE NOSSOS SELECTORS, POR EXEMPLO,
+
+
+
+ELE 
+
+INSTANCIA UMA NOVA VERSÃO DESSE COMPONENT E ENTÃO A ADICIONA AO DOM...
+
+
+
+
+
+
+
+
+
+
+
+
+-->ok... quando um novo component é instanciado,
+
+
+o angular vai por 
+
+algumas diferentes 
+
+'PHASES'
+
+
+
+NESSE CREATION PROCCESS..
+
+
+
+
+
+
+
+
+
+--> e o ANGULAR ACTUALLY NOS DÁ UMA 'CHANCE'
+
+
+para 'HOOK'
+
+dentro 
+
+
+dessas phases e aí executar algum código apropriado a cada uma delas....
+
+
+
+
+
+
+
+
+
+
+-----> PODEMOS HOOKAR DENTRO DESSAS PHASES __ POR MEIO DO IMPLEMENT 
+
+DE ALGUNS METHODS QUE 
+
+O 
+
+
+ANGULAR 
+_ VAI CHAMAR__ SE ESTIVEREM PRESENTES (exatamente como o react)....
+
+
+
+
+
+
+
+
+
+
+
+--> A PRIMEIRA PHASE, O PRIMEIRO HOOK QUE PODEMOS 
+
+'HOOK INTO'
+
+é chamadoo de 
+
+
+
+
+
+
+
+
+1) 'ngOnChanges' -----> '''É CHAMADO DEPOIS DE UMA BOUND INPUT PROPERTY TER MUDADO'''''
+
+
+
+
+
+
+--> ESSE É UM HOOK _ QUE ACTUALLY PODE SER __ -EXECUTADOO__ MÚLTIPLAS VEZES:
+
+
+ELE É EXECUTADO __ INICIALMENTE, QUADNO UM NOVO COMPONENT É CRIADO,
+
+
+
+
+MAS __ APÓS ISSO,
+
+ELE TAMBÉM É CHAMADO SEMPRE 
+
+
+
+QUE UMA 
+
+DE NOSSAS 
+
+'BOUND INPUT PROPERTIES'
+
+
+for alterada (
+
+
+por 'bound input properties',
+
+queremos 
+
+dizer 
+
+
+______PROPERTIES__ DECORADAS 
+
+
+COM 
+
+'@Input'...
+
+
+)
+
+
+
+
+
+
+
+@INPUT --> sempre que uma dessas propriedades decoradas com isso 
+
+
+RECEBEREM NOVOS VALUES,
+
+
+
+
+o código 
+
+dentro de 'ngOnChanges' 
+SERÁ EXECUTADO...
+
+
+
+
+
+
+
+
+
+
+
+O SEGUNDO HOOK,
+
+
+
+
+
+
+2) ngOnInit -----> ESSE METHOD/HOOK É _ EXECUTADO__ SEMPRE QUE _ O 
+
+
+COMPONENT 
+
+É __ INICIALIZADO  ----------> OBS: QUANDO 
+
+UM COMPONENT É 
+
+'INICIALIZADO',
+
+
+
+ISSO 
+
+
+_ NÃO SIGNIFICA QUE __ 
+
+
+ELE 
+
+_ JÁ FOI ADICIONADO AO DOM,
+pq 
+
+
+ele ainda estará 'carregando-se' no dom -------> ELE AINDA NÃO FOI DISPLAYADO,
+
+
+MAS O ANGULAR JÁ COMPLETOU O 'BASIC INITIALIZATION',
+
+
+
+nossas propriedades já podem ser acessadas e inicializadas, por exemplo... --> ISSO QUER DIZER QUE 
+
+
+
+
+''''O OBJECT JÁ FOI CRIADO'', em outras palavras....
+
+
+
+
+
+
+
+
+
+
+-----> O 'ngOnInit()' é um method/hook que 
+
+RODA _ APÓS_ O CONSTRUCTOR, ESSA É A ORDEM DE EXECUÇÃO...
+
+
+
+
+
+o próximo hook:
+
+
+
+
+
+
+
+
+3) ngDoCheck ----> É OUTRO HOOK QUE É RODADO __ MÚLTIPLAS VEZES... ---> NA VERDADE,
+
+
+ESSE 
+
+
+
+METHOD É CHAMADO UM MONTE DE VEZES,
+
+
+PQ 
+
+
+
+
+__ ISSO VAI RODAr__ SEMPRE _ que 
+
+
+
+'CHANGE DETECTION' for executada.. --->  '''''CHANGE DETECTION''' É SIMPLESMENTE O SISTEMA 
+
+PELO QUAL O ANGULAR 
+
+DETERMINA 
+
+SE 
+
+ALGO MUDOU OU NÃO 
+
+NO TEMPLATE de um component/dentro de um component... ----> O CHANGE DETECTION 
+
+
+É O SISTEMA QUE 
+
+CHECA SE ALGO PRECISA SER ALTERADO 
+
+NO TEMPLATE...  ---. ISSO OCORRE EM CASES COMO :
+
+
+
+
+
+A ) O VALOR DE UMA PROPRIEDADE MUDOU, digamos 'de 1 para 2'... ---> E ESSA PROPRIEDADE É 
+
+OUTPUTTADA NO TEMPLATE... --> COMO O ANGULAR PRECISA RE-RENDERIZAR ESSA PARTE DO TEMPALTE,
+
+
+o 'ngDoCheck()' É 
+
+
+
+__ UM HOOK QUE É EXECUTADO__ EM 
+
+
+__ CADA __'CHECK' QUE O ANGULAR FAZ....  -------> MAS ISSO É IMPORTANTE:
+
+
+
+
+ESSE CÓDIGO DE 'ngDoCheck'
+
+VAI RODAR __ EM TODOS __ OS CHECKS,
+
+
+
+
+
+NÃO PRECISAM SER CHECKS QUE 
+DETECTAM QUE ALGO MUDOU.. --> MTAS VEZES O 
+
+'ngDoCheck' 
+
+
+VAI RODAR PQ 
+
+__VOCÊ CLICOU EM ALGUM BUTTON QUE 
+
+''NÃO MUDA COISA ALGUMA'',
+
+
+
+MAS QUE 
+
+AINDA É UM 'EVENT',
+
+
+
+
+
+
+E 
+
+
+EM 'EVENTS'
+
+O 
+ANGULAR AINDA É FORÇADO A CHECAR SE ALGO MUDOU... (
+    pq se ele não 
+
+    checasse,
+
+    ele não teria como saber...
+) ------> ELE TEM QUE 
+
+CHECAR SE ALGUMA MUDANÇA OCORREU A PARTIR DE 'TRIGGERING EVENTS',
+
+
+
+como 
+
+
+''''VOCÊ CLICOU EM ALGUM LUGAR''',
+
+
+''UM TIMER FOI DISPARADO''''
+
+
+
+''UM OBSERVABLE FOI RESOLVED''''
+
+
+
+
+
+
+
+
+
+----> NESSAS OCASIÕES,
+
+O ANGULAR __ VAI CHECAR_ SEU CÓDIGO,
+E AÍ 
+
+O 
+
+
+'ngDoCheck'
+
+VAI SER EXECUTADO... 
+
+
+
+
+
+
+
+
+
+--> ISSO PODE SOAR BEM INEFICIENTE,
+
+
+
+MAS __ O ANGULAR FAZ ESSE 'CHANGE DETECTION' de forma super eficiente... -----> NÃO CUSTA 
+
+ 
+ MT PERFORMANCE...
+
+
+
+
+
+
+
+
+
+
+
+---> O ngDoCheck é um ÓTIMO METHOD DE SER USADO 
+
+
+EM CASES EM QEU 
+
+VOCÊ 
+
+QUER FAZER ALGO EM 'CADA CHANGE DETECTION CYCLE',
+
+
+
+COMO 
+
+
+
+'informar angular manualmente SOBRE ALGUMA CHANGE QUE 
+
+ELE __ NÃO SERIA CAPAZ DE DETECTAR NORMALMENTE'''...  (
+
+    MAS ESSE É UM USE-CASE SUPER AVANÇADO...
+)
+
+
+
+
+
+
+
+
+
+AÍ TEMOS O QUARTO HOOK:
+
+
+
+
+
+
+
+
+---> 4) ngAfterContentInit --> ESSE HOOK É CHAMADO 
+
+
+
+
+
+_________APÓS O CONTENT PROJETADO 
+
+
+
+
+VIA 'ng-content'  ter sido INICIALIZADO... ------> OU SEJA,
+
+
+É CHAMADO 
+
+
+
+___ NÃO APÓS 
+
+
+
+O 'VIEW DO COMPONENT EM SI'
+
+
+
+ter sido renderizado,
+
+
+
+
+
+e SIM O __ VIEW___ DO '''PARENT COMPONENT''',
+
+
+
+ESPECIALMENTE A PARTE QUE 
+
+
+SERÁ ADICIONADA AO NOSSO COMPONENT POR MEIO DE 
+
+'ng-content'...
+
+
+
+
+
+
+
+
+----> O HOOK NÚMERO 5 É 
+
+'ngAfterContentChecked'..
+
+
+
+
+
+
+
+
+
+
+
+
+5) ngAfterContentChecked ---> É CHAMADO __ SEMPRE QUE 
+
+O 'PROJECTED CONTENT' (em ng-content)
+
+
+
+TIVER SIDO CHECADO...., OU SEJA,
+
+
+
+SEMPRE APÓS A 'CHANGE DETECTION' TIVER CHECADO ESSE CONTENT 
+
+QUE ESTAMOS PROJETANDO NO NOSSO COMPONENT....
+
+
+
+
+
+
+
+
+
+
+
+
+
+hook n6,
+
+o 'ngAfterViewInit'
+
+
+
+
+
+6) ngAfterViewInit ----> É CHAMADO 
+
+
+
+__ DEPOIS_ QUE 
+
+
+
+A 'VIEW DO COMPONENT', DO NOSSO PRÓPRIO COMPONENT,
+
+
+__TERMINOU _ DE SER INICIALIZADA 
+
+
+(
+
+
+    CALLED AFTER THE COMPONENT'S VIEW, AND CHILD VIEWS, HAS
+
+    BEEN INITIALIZED...
+)
+
+
+
+
+
+(
+
+    OU SEJA,
+
+
+    É EXECUTADO _ DEPOIS _ QUE NOSSA VIEW FOR RENDERIZADa...
+
+)
+
+
+
+
+
+
+
+7) ngAfterViewChecked --> ESSE METHOD É CHAMADO __ SEMPRE _ QUE 
+NOSSA VIEW 
+
+TIVER SIDO CHECADA,
+
+
+
+ou seja,
+
+
+
+
+QUANDO ''WE ARE SURE'' 
+
+
+
+__ QUE__ 
+
+
+TODAS AS CHANGES QUE TINHAM DE SER 
+
+
+FEITAS __ JÁ FORAM DISPLAYADAS NA VIEW,
+
+OU NENHUMA CHANGE 
+
+FOI DETECTADA PELO ANGULAR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> FINALMENTE,
+
+TEMOS O 
+
+
+HOOK 7....
+
+
+
+
+
+
+ngOnDestroy...
+
+
+
+
+
+
+
+
+
+
+
+8) ngOnDestroy -->  ESSE HOOK OCORRE SE VOCê _ DESTRUIR UM COMPONENT.. -> 
+
+
+
+OU SEJA,
+
+
+SE VOCÊ COLOCOU 'ngIf'
+
+NO SEU COMPONENT 
+
+E ENTÃO 
+ESSE 
+IF ACABA SETTADO COMO FALSE,
+
+
+AÍ 
+
+ESSE 
+
+COMPONENT 
+É 
+
+REMOVIDO DO DOM...
+
+
+ESSE 
+
+METHOD 
+
+DE 
+
+'ngOnDestroy'
+
+É
+
+EXECUTADO POUCO ANTES DESSE COMPONENT SER DESTRUÍDO PELO ANGULAR 
+
+... ---------> ISSO QUER DIZER QUE O 'ngOnDestroy'
+
+
+É UM ÓTIMO LUGAR PARA FAZER UM 'CLEANUP WORK',
+
+
+
+PQ ESSE METHOD É __ CHAMADO __ 
+
+
+
+'''''POUCO ANTES DO OBJECT SER DESTRUÍDO PELO ANGULAR'''...
+
+
+
+
+
+
+
+
+ESSES SÃO OS HOOKS,
+
+É BOM DE VÊ-LOS NA TEORIA,
+
+
+
+
+MAS AGORA É HORA DE VER ISSO NA PRÁTICA...

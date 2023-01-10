@@ -1,0 +1,2194 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NÓS ESTUDAMOS 'FEATURE MODULES',
+
+
+
+
+
+QUE SÃO COISAS COMO 'RECIPEBOOK' E 'SHOPLIST'...
+
+
+
+
+
+
+
+
+
+
+
+--> MAS AGORA É HORA DE ESTUDARMOS 
+
+'SHARED MODULES'...
+
+
+
+
+
+
+
+
+
+
+
+--> O QUE É UM 'SHARED MODULE'? 
+
+
+
+
+
+
+
+
+
+
+
+
+--> OBSERVE ESTE APP HIPOTÉTICO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ProductsModule               SalesModule 
+
+
+
+ModalComponent              ModalComponent
+
+DropdownDirective             DropdownDirective
+
+
+FormsModule               FormsModule
+
+
+ProductsComponent           SalesComponent
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK, TEMOS 2 'FEATURE MODULES.'.
+
+
+
+
+
+
+
+
+--> o 'PRODUCTS' E O 'SALES'..
+
+
+
+
+
+
+
+
+--> AMBOS SÓ SÃO DIFERENTES A RESPEITO DE 1 ÚNICO COMPONENT (SalesComponent e ProductsComponent)...
+
+
+
+
+
+--> ISSO QUER DIZER QUE TODOS OS OUTROS 
+
+
+
+COMPONENTS/DIRECTIVES QUE ELES UTILIZAM SÃO BASICAMENTE OS MESMOS..
+
+
+
+
+
+
+
+
+
+--> QUANTO A ISSO,
+
+
+
+O ANGULAR TE PERMITE 
+
+
+
+COLOCAR 'SHARED FEATURES' EM UM 
+
+
+MODULE 
+
+'SHARED',
+
+
+
+
+um MÓDULO QUE VOCÊ ENTÃO IMPORTA NESSES 2 OUTROS MODULES... -=---> ISSO, É CLARO,
+
+
+
+É MT BOM,
+
+
+PQ 
+
+
+LEVA AO AVOID DE CODE DUPLICATION E A MODULES _ MAIS 'LEAN'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> NO NOSSO APP ATUAL,
+
+
+
+
+AINDA NÃO TEMOS NENHUMA 'SHARED FEATURE'
+
+
+AO LONGO DE NOSSOS FEATURE MODULES... -----> A ÚNICA COISA QUE 
+
+
+
+
+ELES POSSUEM EM COMUM, AGORA, É O MODULE DE 
+
+
+'CommonModule' (built-in do angular, é tipo 'BrowserModule',
+mas versão dos 'FEATURE MODULES', usada para não conflitar com 'BrowserModule' usado no root do app)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> BEM, É CLARO QUE PODERÍAMOS COLOCAR 'CommonModule'
+
+
+
+ 
+
+ EM 1 SHARED MODULE (e faremos isso, na verdade),
+
+
+
+
+
+ MAS ISSO POR SI SÓ NÃO SERÁ 'WORTH IT',
+
+
+
+
+
+
+ PQ 
+
+
+ AÍ 
+
+
+
+
+
+
+ SÓ ESTARÍAMOS TROCANDO NOSSO 'COMMON MODULE's  POR ESSE 
+
+ 'shared module'
+
+
+
+ ,
+
+
+ NOS LUGARES EM QUE 
+
+
+
+ ELE É NECESSÁRIO (
+
+
+
+     não ganharíamos mt coisa...
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+ --> MAS, EM TEORIA,
+
+ NESSE APP,
+
+ TEMOS MAIS 
+
+ 'SHARED CONTENT':
+
+
+
+
+
+
+
+
+ TEMOS:
+
+
+
+
+ 1) ALERT 
+
+
+
+ 2) LOADING SPINNER 
+
+
+ 3) PLACEHOLDER DIRECTIVE 
+
+
+
+ 4) DROPDOWN DIRECTIVE...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> já os services de 'recipeBook' e 'shoplist'
+
+
+
+
+ NÃO SÃO SHAREABLE/NÃO PODEM FIGURAR NO SHARED MODULE (na versão do professor, ele tinha 'datastorage.service.ts', mas mesmo esse service aí não pode ser SHARED)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> OK...
+
+
+
+
+
+
+
+ DENTRO DO FOLDER DE 'shared',
+
+
+ O PROFESSOR CRIA UM ARQUIVO 
+
+
+ 'shared.module.ts',
+
+
+
+
+
+ E DENTRO DELE O PROFESSOR SUPOSTAMENTE VAI ENFIAR TODAS AS FEATURES 'SHARED' do nosso app...
+
+
+
+
+
+
+
+
+
+ COMEÇAMOS ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+ import { NgModule } from '@angular/core';
+
+@NgModule({
+  imports: [],
+
+  exports: [],
+})
+export class SharedModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR EXPLICA QUE 
+
+
+PODEMOS TER MÚLTIPLOS 'SHARED MODULES' NO SEU APP,
+
+
+
+
+
+mas nesses casos VOCÊ não chamaria 1 único arquivo de 'shared.module.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, VAMOS TER UM REGULAR ANGULAR MODULE NESSE SHARED MODULE,
+
+por isso 
+
+escrevemos assim:
+
+
+
+
+
+
+
+
+
+ import { NgModule } from '@angular/core';
+
+@NgModule({
+  imports: [],
+
+  exports: [],
+})
+export class SharedModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> A IDEIA É QUE VOCÊ VAI COLOCAR NESSE MODULE 
+
+
+
+FEATURES QUE SERÃO USADAS POR MAIS DE 1 ÚNICO 
+
+
+MODULE,
+
+
+
+
+
+__ MAS___ 
+
+
+COMO CADA MODULE FUNCIONA DE FORMA 'STANDALONE',
+
+
+
+
+
+
+PARA _ FAZER_ COM QUE __ 
+
+
+ESSAS FEATURES__ DE 
+
+
+
+'SharedModule'
+
+
+
+FIQUEM DISPONÍVEIS EM CADA 1 DOS MODULES,
+
+ 
+
+
+ VOCê 
+
+
+
+ TAMBÉM TERÁ DE FAZER 'export' de todas essas features/coisas,
+
+
+
+ lá nesse module de 'shared.module.ts'...
+
+
+
+
+
+
+
+
+
+
+ O CÓDIGO VAI FICANDO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+ import { NgModule } from '@angular/core';
+import { DropdownDirective } from '../dropdownDirective/dropdown.directive';
+import { PlaceholderDirective } from '../placeholderDirective/placeholder.directive';
+import { AlertDynamicComponent } from './alertVersaoImperativa/alert.component';
+
+@NgModule({
+
+
+    declarations: [
+        PlaceholderDirective,
+        DropdownDirective,
+        AlertDynamicComponent 
+    ],
+  imports: [
+
+
+
+  ],
+
+  exports: [],
+})
+export class SharedModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OU SEJA,
+
+ESTAMOS IMPORTANDO ESSAS 2 DIRECTIVES E ESSE ALERT COMPONENT...
+
+
+
+
+
+
+
+
+--> TAMBÉM O SPINNER:
+
+
+
+
+
+
+
+
+
+
+
+
+import { SpinnerComponent } from '../auth-page/spinner/spinner.component';
+import { DropdownDirective } from '../dropdownDirective/dropdown.directive';
+import { PlaceholderDirective } from '../placeholderDirective/placeholder.directive';
+import { AlertDynamicComponent } from './alertVersaoImperativa/alert.component';
+
+@NgModule({
+
+
+    declarations: [
+        PlaceholderDirective,
+        DropdownDirective,
+        AlertDynamicComponent,
+        SpinnerComponent
+    ],
+  imports: [
+
+
+
+  ],
+
+  exports: [],
+})
+export class SharedModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK.... MAS AGORA DIGAMOS QUE TAMBÉM QUEREMOS FAZER __ 'SHARE DE ALGUNS MODULES POR MEIO DESSE MODULE',
+
+
+
+
+
+como por exemplo o module de 'CommonModule',
+
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+import { SpinnerComponent } from '../auth-page/spinner/spinner.component';
+import { DropdownDirective } from '../dropdownDirective/dropdown.directive';
+import { PlaceholderDirective } from '../placeholderDirective/placeholder.directive';
+import { AlertDynamicComponent } from './alertVersaoImperativa/alert.component';
+
+@NgModule({
+
+
+    declarations: [
+        PlaceholderDirective,
+        DropdownDirective,
+        AlertDynamicComponent,
+        SpinnerComponent
+    ],
+  imports: [
+        CommonModule
+
+
+  ],
+
+  exports: [],
+})
+export class SharedModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> OK... 
+
+
+
+
+
+E COMO _ NÓS _ NÃO PLANEJAMOS USAR ESSAS FEATURES NO MODULE DE 'Shared' apenas,
+
+
+
+
+
+DEVEMOS __ FAZER__ 
+
+EXPORT DE TODOS ELES, TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+import { SpinnerComponent } from '../auth-page/spinner/spinner.component';
+import { DropdownDirective } from '../dropdownDirective/dropdown.directive';
+import { PlaceholderDirective } from '../placeholderDirective/placeholder.directive';
+import { AlertDynamicComponent } from './alertVersaoImperativa/alert.component';
+
+@NgModule({
+
+
+    declarations: [
+        PlaceholderDirective,
+        DropdownDirective,
+        AlertDynamicComponent,
+        SpinnerComponent
+    ],
+  imports: [
+        CommonModule
+
+
+  ],
+
+  exports: [
+      PlaceholderDirective,
+      DropdownDirective,
+      AlertDynamicComponent,
+      SpinnerComponent,
+      CommonModule
+
+  ],
+})
+export class SharedModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COMO _ NÕA __ QUEREMOS __ 'USAR ESSAS FEATURES DENTRO DO SHARED MODULE',
+
+e sim 
+
+
+'USAR ESSAS FEATURES DO SHARED MODULE EM OUTROS MODULES',
+
+
+
+devemos 
+
+
+escrever aqueles exports....
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { SpinnerComponent } from '../auth-page/spinner/spinner.component';
+import { DropdownDirective } from '../dropdownDirective/dropdown.directive';
+import { PlaceholderDirective } from '../placeholderDirective/placeholder.directive';
+import { AlertDynamicComponent } from './alertVersaoImperativa/alert.component';
+
+@NgModule({
+
+
+    declarations: [
+        PlaceholderDirective,
+        DropdownDirective,
+        AlertDynamicComponent,
+        SpinnerComponent
+    ],
+  imports: [
+        CommonModule
+
+
+  ],
+
+  exports: [
+      PlaceholderDirective,
+      DropdownDirective,
+      AlertDynamicComponent,
+      SpinnerComponent,
+      CommonModule
+
+  ],
+})
+export class SharedModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+A IDEIA, AGORA, É QUE 
+
+EM TODOS OS LUGARES EM QUE CHAMARMOS/IMPORTARMOOS O 
+
+
+
+'shared moduole',
+
+
+
+
+TEREMOS ACESSO A TODAS ESSAS FEATURES,
+
+
+QUE INICIALIZAMOS 
+
+
+
+
+DENTRO DESSE MODULE...
+
+
+
+
+
+
+
+(
+     isso quer dizer que nos outros modules SÓ TEREMOS DE IMPORTAR O 'sharedModule',
+
+
+
+     QUE _ ISSO _ JÁ VAI IMPLEMENTAR TODAS ESSAS FEATURES DESEJADAS POR NÓS,
+
+     tipo assim:
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { CommonModule } from "@angular/common";
+import { NgModule } from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
+// import { RouterModule } from "@angular/router";
+import { RecipeBookRoutingModule } from "./recipe-book-routing.module";
+import { RecipeBookComponent } from "./recipe-book.component";
+import { RecipeDetailComponent } from "./recipe-detail/recipe-detail.component";
+import { RecipeEditComponent } from "./recipe-edit/recipe-edit.component";
+import { RecipeItemComponent } from "./recipe-list/recipe-item/recipe-item.component";
+import { RecipeListComponent } from "./recipe-list/recipe-list.component";
+import { SelectARecipeComponent } from "./select-a-recipe/select-a-recipe.component";
+
+
+
+import { SharedModule } from "../shared/shared.module"; ///features compartilhadas entre vários modules, como 'CommonModule', spinning loader, directives, etc...
+
+@NgModule({
+
+    declarations: [
+        RecipeBookComponent,
+        RecipeDetailComponent,
+        RecipeBookComponent,
+        SelectARecipeComponent,
+        RecipeEditComponent,
+        RecipeListComponent,
+        RecipeItemComponent,
+
+    ],
+    providers: [],
+    imports: [
+       
+       SharedModule,
+        // CommonModule,
+        ReactiveFormsModule,  ///esses 3 modules são necessários, aqui, pq usamos essas 3 features dentro dos componnets/código de 'recipeBookMOdule', esse SUBMODULE de nosso app (que é representado por 'app.module.ts', o module em que esse 'recipeBookMOdule' é importado) ------> 
+        RecipeBookRoutingModule  ////assim fazemos o ACTUAL IMPORT DAS  _ROUTES_ RELATIVAS_ A ESSA FEATURE DE 'recipeBook' dentro do nosso module de 'recipeBook' (ou seja, aqui há um outsourcing bem absurdo, que deixa nossos components bem mais 'lean')...
+    ],
+     exports: [
+
+    ],
+
+})
+
+export class RecipeBookModule {
+
+    
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--. ok... comentamos o 'CommonModule'
+
+
+
+para fora,
+
+e aí 
+
+colocamos o 'SharedModule'...
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O PROFESSOR EXPLICA QUE 
+
+
+
+
+O NOSSO REPLACE DE 'CommonModule'
+
+
+
+por 'SharedModule',
+
+
+
+
+no caso 
+
+
+de 
+
+'shop-list'
+
+
+
+NÃO É NADA WORTH, PQ ESTAREMOS APENAS SUBSTITUINDO 1 'MODULE IMPORT' POR OUTRO EXATAMENTE IGUAL...
+
+
+
+
+
+
+
+--> ENTRETANTO, SE VOCÊ FOSSE USAR O 'ALERT COMPONENT',
+
+
+OU A PLACEHOLDER OU DROPDOWN DIRECTIVES,
+
+
+ISSO 
+
+
+
+NO 
+
+
+
+MODULE DE 'shop-list',
+
+
+
+SERIA WORTH TER ESSE MODULE 'SHARED' aí..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO... ISSO NOS SALVARIA TRABALHO,
+
+
+PQ NÃO TERÍAMOS 
+
+
+DE 
+
+
+ADICIONAR TODOS ESSES COMPONENTS AO 'declarations',
+
+
+
+bastando escrever esse 
+
+
+'SharedModule'
+
+
+no array de 'imports'..
+
+
+
+
+  
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { SpinnerComponent } from '../auth-page/spinner/spinner.component';
+import { DropdownDirective } from '../dropdownDirective/dropdown.directive';
+import { PlaceholderDirective } from '../placeholderDirective/placeholder.directive';
+import { AlertDynamicComponent } from './alertVersaoImperativa/alert.component';
+
+@NgModule({
+
+
+    declarations: [
+        PlaceholderDirective,
+        DropdownDirective,
+        AlertDynamicComponent,
+        SpinnerComponent
+    ],
+  imports: [
+    CommonModule
+
+
+  ],
+
+  exports: [
+    AlertDynamicComponent,
+    SpinnerComponent,
+    PlaceholderDirective,
+    DropdownDirective,
+    CommonModule
+
+
+  ],
+})
+export class SharedModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... AÍ TENTAMOS ADICIONAR ESSE MODULE DE 'SharedModule'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> qual é o resultado?
+
+
+
+
+
+
+
+
+
+
+-> UM ERRO... ESSE ERRO ACONTECEU PQ 
+
+
+
+'A DIRECTIVE DE DROPDOWNDIRECTIVE APARECE EM 2 LUGARES DE SEU CÓDIGO' (
+
+
+    ou seja,
+
+    ela ainda está aparecendo lá em 
+
+    'app.module.ts'...
+)
+
+
+
+
+
+
+
+
+
+
+
+MAS O MEU ERRO FOI DIFERENTE, FOI ESTE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+webpack-dev-server] ERROR
+src/app/recipeBook/recipe-book.module.ts:50:14 - error NG6002: Appears in the NgModule.imports of AppModule, but itself has errors
+
+50 export class RecipeBookModule {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR NOS EXPLICA QUE ISSO 
+
+
+
+EXPÕE UM CONCEITO SUPER IMPORTANTE DE MODULES, QUE DEVEMOS COMPREENDER...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR EXPLICA QUE _ _VOCÊ _ SÓ PODE DECLARAR/IMPORT 
+
+
+
+
+'COMPONNETS/PIPES/DIRECTIVES'
+
+
+1 ÚNICA VEZ ->  ISSO QUER DIZER QUE 
+
+VOCÊ 
+
+NÃO PODE 
+
+
+
+
+
+
+IMPORTAR 1 MESMO 
+
+
+COMPONENT/DIRECTIVE/PIPE 
+
+
+
+
+DIRETAMENTE EM 2 MODULES DISTINTOS,
+
+
+
+pq isso vai te dar erro..
+
+
+
+
+
+
+
+
+
+
+
+
+--> EM VEZ DISSO, VOCê PODE __ 
+
+
+FAZER IMPORT DE 1 MESMO 'MODULE' 
+
+
+
+
+EM __ MÚLTIPLOS OUTROS MODULES (só não pode fazer com coisas individuais, mesmo)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER QUE:
+
+
+
+
+1) 'IMPORTS', IMPORTS DE 1 MODULE PARA DENTRO DE OUTROS MODULES, MÚLTIPLOS MODULES, ISSO É OK...
+
+
+
+
+
+2) ENTRETANTO, A REPETIÇÃO DE 'DECLARATIONS', de 1 mesmo componnet/directive/pipe em 
+
+MÚLTIPLOS MODULES,
+
+
+ISSO É __PROIBIDO__-...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> isso quer dizer que 
+
+SE _ VOCê DECLAROU O 
+
+
+
+'ShoppingListComponent'
+
+
+
+
+
+
+DENTRO DAS DECLARATIONS DE 'shoppingList.module.ts',
+
+
+
+
+
+
+
+
+
+
+VOCê É _ OBRIGADO__ A NÃO O DECLARAR EM NENHUM OUTRO LUGAR DE SEU CÓDIGO,
+
+
+
+
+
+
+
+MESMO QUE VOCÊ PRECISE DESSA COISA EM UM OUTRO MODULE --------> a solução para 
+
+
+
+CASOS COMO ESSES,
+
+
+
+
+
+
+EM QUE 'PRECISAMOS DE UMA FEATURE DE 1 MODULE _ DENTRO DE OUTRO MODULE',
+
+
+
+
+
+
+
+É __ JUSTAMENTE__ USAR ESSA SINTAXE DE 'EXPORT DE FEATURES DE 1 MODULE,
+
+
+
+
+por meio de coisas como 'SHAREDMODULE',
+
+
+
+
+
+que vão POSSIBILITAR 
+
+
+
+
+
+
+
+
+O SHARE DE FEATURES NOS MODULES DE SEU APP,
+
+
+
+por meio de sintaxes como:
+
+
+
+
+
+
+
+
+
+
+  import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { SpinnerComponent } from '../auth-page/spinner/spinner.component';
+import { DropdownDirective } from '../dropdownDirective/dropdown.directive';
+import { PlaceholderDirective } from '../placeholderDirective/placeholder.directive';
+import { AlertDynamicComponent } from './alertVersaoImperativa/alert.component';
+
+@NgModule({
+
+
+    declarations: [
+        PlaceholderDirective,
+        DropdownDirective,
+        AlertDynamicComponent,
+        SpinnerComponent
+    ],
+  imports: [
+    CommonModule
+
+
+  ],
+
+  exports: [
+    AlertDynamicComponent,
+    SpinnerComponent,
+    PlaceholderDirective,
+    DropdownDirective,
+    CommonModule
+
+
+  ],
+})
+export class SharedModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> COM O SHARED MODULE, ESTAMOS FAZENDO EXATAMENTE ISSO,
+
+PQ 
+
+ESTAMOS 'DECLARING AND EXPORTING STUFf',
+
+
+
+
+E EM qualquer lugar que 
+
+
+USARMOOS 1 DESSAS FEATURES,
+
+
+
+
+teremos 
+de trazer o module de 'shared'.... 
+
+
+
+
+
+
+
+
+
+
+
+--> TEMOS QUE TIRAR TODAS AS DUPLICATAS DE 'declaration' no nosso app (que estavam lá em 'app.module.ts', basicamente)....
+
+
+
+
+
+
+
+
+
+a key de   'entryComponents'
+
+
+
+TAMBÉM DEVE SER TRANSPLANTADA AO MODULE DE 'Shared',
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { SpinnerComponent } from '../auth-page/spinner/spinner.component';
+import { DropdownDirective } from '../dropdownDirective/dropdown.directive';
+import { PlaceholderDirective } from '../placeholderDirective/placeholder.directive';
+import { AlertDynamicComponent } from './alertVersaoImperativa/alert.component';
+
+@NgModule({
+
+
+    declarations: [
+        PlaceholderDirective,
+        DropdownDirective,
+        AlertDynamicComponent,
+        SpinnerComponent
+    ],
+  imports: [
+    CommonModule
+
+
+  ],
+
+  exports: [
+    AlertDynamicComponent,
+    SpinnerComponent,
+    PlaceholderDirective,
+    DropdownDirective,
+    CommonModule
+
+
+  ],
+
+  entryComponents: [   ///usado com o RENDER DE COMPONENTS DENTRO DE NOSSO CÓDIGO TS... --> ou seja, components que não vão usar um 'selector' para serem renderizados, nem o ROUTE CONFIG (paths e etc) para serem renderizados... eles vão simplesmente ser 'DROPPADOS' no código, por meio de uma directive especializada e por meio de uma 'ComponentFactory' própria...
+  AlertDynamicComponent
+],
+})
+export class SharedModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------
+
+
+
+
+
+
+
+OK... AGORA O APP MODULE ESTÁ BEM 'CLEANED UP...
+
+
+
+
+
+
+
+
+
+--> MAS AGORA  AINDA PRECISAMOS NOS ASSEGURAR DE QUE 'ESTAMOS IMPORTANDO O MODULE DE SHARED',
+
+
+lá em 
+
+'app.module.ts..'...
+
+
+
+
+
+
+
+
+TIPO ASSIM::
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
+
+import { AppComponent } from './app.component';
+
+import { HeaderComponent } from './headerComponent/headerComponent.app';
+
+// import { RecipeBookComponent } from './recipeBook/recipe-book.component'; ///OUTSOURCEADOS
+// import { RecipeItemComponent } from './recipeBook/recipe-list/recipe-item/recipe-item.component';
+// import { RecipeListComponent } from './recipeBook/recipe-list/recipe-list.component';
+// import { RecipeDetailComponent } from './recipeBook/recipe-detail/recipe-detail.component';
+// import { SelectARecipeComponent } from './recipeBook/select-a-recipe/select-a-recipe.component';
+// import { RecipeEditComponent } from './recipeBook/recipe-edit/recipe-edit.component';
+
+
+
+// import { ShoppingListComponent } from './ShoppingList/shoppingList.component'; //////OUTSOURCEADOS
+// import { ShopListEditComponent } from './ShoppingList/shop-list-edit/shop-list-edit.component';
+// import { ShoppingListItemComponent } from './ShoppingList/shopping-list-item/shopping-list-item.component';
+
+
+import { RecipeBookService } from './recipeBook.service';
+import { ShoppingListService } from './shoppingList.service';
+import { GenericErrorPageComponent } from './generic-error-page/generic-error-page.component';
+import { AppRoutingModule } from './app-routing.module';
+import { HomePageComponent } from './home-page/home-page.component';
+
+import { AuthPageComponent } from './auth-page/auth-page.component';
+
+
+// import { SpinnerComponent } from './auth-page/spinner/spinner.component';   ////OUTSOURCEADO PARA O MODULE DE `Shared`....
+// import { PlaceholderDirective } from './placeholderDirective/placeholder.directive';
+// import { DropdownDirective } from './dropdownDirective/dropdown.directive';
+
+import { HttpInterceptorService } from 'src/app/httpInterceptor.service';
+// import { AuthGuardService } from './auth-guard.service';
+import { AlertDynamicComponent } from './shared/alertVersaoNgIf (bem mais pratica)/alert.component';
+
+
+
+import { RecipeBookModule } from './recipeBook/recipe-book.module';
+import { ShoppingListModule } from './ShoppingList/shoppingList.module';
+import { SharedModule } from './shared/shared.module';
+// import { AlertDynamicComponent } from './shared/alertVersaoNgIf (bem mais pratica)/alert.component';
+
+
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+    // RecipeBookComponent, ////OUTSOURCEADO
+    // RecipeItemComponent,
+    // RecipeListComponent,
+    // RecipeDetailComponent,
+    // SelectARecipeComponent,
+    // RecipeEditComponent,
+
+
+    // ShoppingListComponent,  ////OUTSOURCEADO
+    // ShopListEditComponent,
+    // ShoppingListItemComponent,
+
+
+   
+    GenericErrorPageComponent,
+    HomePageComponent,
+
+    AuthPageComponent,
+
+     // DropdownDirective,  ///OUTSOURCEADAS PARA O MODULE DE `SHARED`...
+    // SpinnerComponent,
+    // AlertDynamicComponent,
+    // PlaceholderDirective
+    // AlertDynamicComponent
+  ],
+  imports: [
+    BrowserModule,
+    ReactiveFormsModule,
+    FormsModule, //lembre-se de adicionar isso se for usar 'ngModel()'..
+    AppRoutingModule,  //módulo de routing, customizado por nós...
+    HttpClientModule,
+    RecipeBookModule,  ///////OUTSOURCING, EM UM MODULE SEPARADO...
+    ShoppingListModule,  ////OUTSOURCING, EM OUTRO MODULE SEPARADO...
+    SharedModule
+
+  ],
+//   entryComponents: [   ///usado com o RENDER DE COMPONENTS DENTRO DE NOSSO CÓDIGO TS... --> ou seja, components que não vão usar um 'selector' para serem renderizados, nem o ROUTE CONFIG (paths e etc) para serem renderizados... eles vão simplesmente ser 'DROPPADOS' no código, por meio de uma directive especializada e por meio de uma 'ComponentFactory' própria...
+//   AlertDynamicComponent
+// ],
+
+  providers: [RecipeBookService, ShoppingListService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpInterceptorService,
+      multi: true
+    }
+  
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA CONSEGUIRMOS USAR AS FEATURES DE 'SharedModule',
+
+
+
+
+
+
+SOMOS _ OBRIGADOS__ A IMPORTÁ-LO 
+
+
+
+
+TANTO NOS NOSSOS 
+
+
+'FEATURE MODULES' (como recipeBook e 'shop-list'),
+
+
+
+
+COMO __ TAMBÉM __ 
+
+
+
+NO NOSSO 'app.module.ts'... 
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
+
+import { RecipesComponent } from './recipes.component';
+import { RecipeListComponent } from './recipe-list/recipe-list.component';
+import { RecipeDetailComponent } from './recipe-detail/recipe-detail.component';
+import { RecipeItemComponent } from './recipe-list/recipe-item/recipe-item.component';
+import { RecipeStartComponent } from './recipe-start/recipe-start.component';
+import { RecipeEditComponent } from './recipe-edit/recipe-edit.component';
+import { RecipesRoutingModule } from './recipes-routing.module';
+import { SharedModule } from '../shared/shared.module';
+
+@NgModule({
+  declarations: [
+    RecipesComponent,
+    RecipeListComponent,
+    RecipeDetailComponent,
+    RecipeItemComponent,
+    RecipeStartComponent,
+    RecipeEditComponent
+  ],
+  imports: [
+    RouterModule,
+    ReactiveFormsModule,
+    RecipesRoutingModule,
+    SharedModule
+  ]
+})
+export class RecipesModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+
+import { ShoppingListComponent } from './shopping-list.component';
+import { ShoppingEditComponent } from './shopping-edit/shopping-edit.component';
+import { SharedModule } from '../shared/shared.module';
+
+@NgModule({
+  declarations: [ShoppingListComponent, ShoppingEditComponent],
+  imports: [
+    FormsModule,
+    RouterModule.forChild([
+      { path: 'shopping-list', component: ShoppingListComponent },
+    ]),
+    SharedModule
+  ]
+})
+export class ShoppingListModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+
+import { AppComponent } from './app.component';
+import { HeaderComponent } from './header/header.component';
+import { ShoppingListService } from './shopping-list/shopping-list.service';
+import { AppRoutingModule } from './app-routing.module';
+import { RecipeService } from './recipes/recipe.service';
+import { AuthComponent } from './auth/auth.component';
+import { AuthInterceptorService } from './auth/auth-interceptor.service';
+import { RecipesModule } from './recipes/recipes.module';
+import { ShoppingListModule } from './shopping-list/shopping-list.module';
+import { SharedModule } from './shared/shared.module';
+
+@NgModule({
+  declarations: [AppComponent, HeaderComponent, AuthComponent],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    AppRoutingModule,
+    RecipesModule,
+    ShoppingListModule,
+    SharedModule
+  ],
+  providers: [
+    ShoppingListService,
+    RecipeService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptorService,
+      multi: true
+    }
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo...
+
+
+
+
+--> mas ainda assim, a 'dropdown directive' não está funcionando, por alguma razão...
+
+
+
+
+
+
+
+
+
+
+--> não, esqueça, está funcionando, sim....
+
+
+
+
+
+
+
+
+
+
+--> depois tenho que LIMPAR meu código....
+
+
+
+
+
+
+
+
+ok... fiz uma cópia, com uma versão 'LIMPA' do código...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COM ISSO TUDO SALVO,
+
+
+
+TUDO VAI PARECER BEM MELHOR..
+
+
+
+
+
+
+
+
+-> testamos nosso alert,
+
+e ele 
+
+
+funciona, uma feature shared que fica funcionando..
+
+
+
+
+
+
+
+
+
+
+
+--> MAS AS COISAS AQUI APENAS ESTÃO FUNCIONANDO PQ ESTAMOS 'RESPEITANDO' 
+
+
+A REGRA DE 
+
+
+'APENAS DECLARE THINGS 
+
+
+ONCE',
+
+
+
+
+
+
+e aí 
+
+
+
+,
+
+
+depois que foram 'DECLARED',
+
+
+
+
+DEVEMOS _ USAR _ 'IMPORTS' E 'EXPORTS' 
+
+
+
+de
+
+
+MODULES para _ OS 
+
+
+
+COMPARTILHAr...
+
+
+
+
+
+
+
+
+
+--> MÚLTIPLAS DECLARATIONS DE UM MESMO COMPONENT/DIRECTIVE/PIPE 
+
+
+
+
+NÃO SÃO PERMITIDAS...

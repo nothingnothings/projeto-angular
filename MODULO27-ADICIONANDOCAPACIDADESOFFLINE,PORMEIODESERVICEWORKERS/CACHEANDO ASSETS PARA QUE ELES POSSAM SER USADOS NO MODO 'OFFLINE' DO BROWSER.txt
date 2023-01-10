@@ -1,0 +1,1239 @@
+
+
+
+
+
+
+
+
+
+-> NA AULA ANTERIOR, VIMOS COMO 
+
+
+
+
+'HARDCODED ELEMENTS' 
+
+
+
+
+ACABAM SENDO RENDERIZADOS AUTOMATICAMENTE 
+
+
+
+
+
+
+
+NAS NOSSAS PAGES QUANDO ELAS FICAM OFFLINES, ISSO QUANDO USAMOS/TEMOS SERVICE WORKERS NO NOSSO APP...
+
+
+
+
+
+
+
+
+
+
+EXEMPLO DISSO É O CÓDIGO DE 'app.component.html',
+
+
+
+
+
+em QUE TEMOS AQUELE <h1> HARDCODADO, QUE ACABOU 
+
+SENDO RENDERIZADO NA VERSÃO OFFLINE DE NOSSO APP (ao passo que O RESTO DO CÓDIGO, de 'app-post', POSSUi partes DEPENDENTES DO FETCH DE 'posts' ,QUE É ALGO QUE NÃO ESTÁ OCORRENDO AQUI, JUSTAMENTE POR ESTARMOS OFFLINE)...
+
+
+
+
+
+
+
+
+
+
+
+
+QUEREMOS 'forjar' que HOUVE O COMMUNICATE COM A API DE 'fetch posts',
+
+
+
+essencialmente, através dos SERVICE WORKERS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> O ARQUIVO QUE _CONFIGURA__ NOSSOS SERVICE WORKERS É 'ngsw-config.json':
+
+
+
+
+
+
+{
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ]
+      }
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/**",
+          "/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
+        ]
+      }
+    }
+  ]
+}
+
+
+
+
+
+
+
+
+----> o professor aponta que ESSE ARQUIVO NÃO É TÃO LONGO..
+
+--> É UM ARQUIVO JSON COMUM,
+
+
+
+
+E ANTES DE MAIS NADA TEMOS 
+
+
+
+
+
+
+
+
+a propriedade de 'index',
+
+QUE __ INDICA PRECISAMENTE ''QUAL É A ROOT PAGE DE NOSSO APP''...
+
+
+
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+{
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ]
+      }
+    },
+
+
+
+
+
+
+
+
+
+--> ESSA É A 'ROOT PAGE' DO APP, QUE VAMOS QUERER 'CACHE' E 'LOAD'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE SERÁ O 'index.html',
+
+POSICIONADO DIRETAMENTE  
+
+NO ROOT DO NOSSO PROJECT....
+
+
+
+
+
+--> ok.. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... DEPOIS DISSO,
+
+
+TEMOS 
+
+AQUELA PROPRIEDADE DE 'assetGroups':
+
+
+
+
+
+
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ]
+      }
+    },
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -------> assetgroups --> DENTRO DESSE ARRAY, TEMOS 2 ELEMENTOS:
+
+
+
+
+
+
+      "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ]
+      }
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/**",
+          "/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
+        ]
+      }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ----> CERTO... e 'assetGroups'
+
+
+
+    É UMA PROPRIEDADE QUE DITA 
+
+    '''QUAIS ___STATIC____ ASSETS DEVEM SER CACHEADOS'''',
+
+
+
+    e 
+
+    'QUAL SERÁ A FORMA DE SEU CACHING....''
+
+
+
+
+
+
+
+
+
+
+    --> DYNAMIC ASSETS, POR SUA VEZ,
+
+
+
+
+
+
+
+    SERIAM/SERÃO DATA _TIRADA _ DIRETAMENTE DA API... (resources que podem MUDAR na api a que vocÊ está fetcheando.... não são estáticos,
+    
+    e mudam com frequência)....
+
+
+
+
+
+
+
+
+
+
+
+
+    --> nosso CÓDIGO HTML, CÓDIGO JAVASCRIPT E CSS TAMBÉM 
+
+    MUDARÕA COM CADA BUILD 
+
+    QUE 
+
+
+    FIZERMOS,
+
+    MAS DEPOIS DE UMA BUILD TER SIDO CONCLUSA,
+
+
+
+
+
+    ELES SÃO 'STATIC',
+
+    PQ NÃO VÃO MUDAR EM UMA DATABASE OU QUALQUER COISA DO GÊNERO...
+
+
+
+
+
+
+
+
+
+    --> OK... É ISSO QUE É UM 'ASSET GROUP'..
+
+
+
+
+
+
+
+
+
+    ---> PODEMOS DAR A UM ASSET GROUP QUALQUER NOME QUE QUISERMOS, POR EXEMPLO AQUI:
+
+
+
+
+
+
+        {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ]
+      }
+    },
+
+
+
+
+
+
+
+
+
+
+
+
+O NAME É DE 'APP',
+
+
+e o installMode é de 'prefetch'.... (DITA COMO ESSES ASSETS DEVEM SER _ LOADED__...) --> aqui é estipulado
+ 
+
+
+ que devem ser 'PRE-FETCHED', pré-carregados, em outras palavras...
+
+
+
+
+
+
+
+
+
+
+ PRE-FETCHED --> ISSO SIGNIFICA QUE 
+
+
+
+ QUANDO SUA PAGE CARREGA,
+
+
+
+ O ANGULAR/SERVICE WORKER  VAI IR EM FRENTE E VAI 'PRE-FETCH' TODOS OS ASSETS ESPECIFICADOS 
+
+
+ NESSE ASSET GROUP (
+
+
+aqui, no caso, vemos 'favicon.ico',
+
+'index.html',
+
+e TODOS OS ARQUIVOS CSS E JAVASCIRPT...
+
+ )
+ 
+
+
+
+
+
+
+
+
+ ----> COM ESSA OPTION DE 'prefetch' ESCRITA,
+
+ O 
+
+
+
+ SEU APP/SERVICE WORKERS __ VÃO PREFETCH __ TODAS AS COISAS 
+
+
+ DO APP QUE VOCÊ ESTÁ ACESSANDO, __ '''MESMO QUE ESSAS FEATURES/PAGES DO APP 
+
+ AINDA NÃO TENHAM SIDO REQUISITADAS/NÃO SEJAM NECESSÁRIAS'''...
+
+
+
+
+
+
+
+
+
+ --> a alternativa a 'prefetch' É VISTA MAIS ABAIXO, em 
+
+ 'installMode: lazy',
+
+
+
+
+
+
+
+ O LAZY É USADO PARA CONSEGUIR LAZY LOADING (
+
+
+
+COM ESSA OPTION MARCADA,
+
+
+OS 
+
+RESOURCES APENAS SERÃO 'PRE-FETCHED' PELOS SERVICE WORKERS ASSIM QUE 
+
+CADA RESOURCE TIVER 'SIDO REQUISITADO PELO MENOS UMA VEZ'...
+
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+ --> A VANTAGEM DE 'LAZY', É CLARO, É QUE 
+
+ VOCÊ EVITA DE PREOCUPAR TODA A BANDWIDTH LOGO NO INÍCIO NO STARTUP DO SEU APP...
+
+
+
+
+
+
+
+
+
+
+
+ --> MAS A DESVANTAGEM É QUE '''SE O USER PRECISAR DESSA COISA PELA PRIMEIRA VEZ, E ELE ESTIVER OFFLINE,
+
+ ESSA FEATURE NÃO VAI  APARECER A ELE, NAQUELE MODO OFFLINE'''...
+
+
+
+
+
+
+
+
+
+
+
+
+ ----> OU SEJA,
+
+
+
+
+o 'prefetch' É GERAL,
+
+
+
+E FAZ PREFETCH DAS COISAS MESMO QUANDO NÃO SÃO NECESSÁRIAS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+POR FIM, 
+
+
+
+TEMOS A OPTION DE 'updateMode' -->  
+
+
+
+
+
+
+
+
+
+ESSA OPTION SE TORNA IMPORTANTE QUANDO O ASSUNTO É 
+
+
+
+'''PUSH __ DE UMA NOVA VERSÃO DE SEU ANGULAR APP E DE SEU SERVICE WORKER (consequencia) 
+
+
+AO SEU APP'''' ------>    OK.. ----> E O USER, NESSA 
+
+
+HIPÓTESE,
+
+
+AINDA VAI ESTAR 'BROWSING O SEU APP',
+
+
+
+VAI ESTAR BROWSING NO SEU SERVER _ COM A DATA/VERSÃO ANTIGA DO SEU FRONT... --------> 
+
+
+
+
+
+
+
+
+SE VOCÊ DEIXAR ESSA OPTION DE 'updateMode: prefetch',
+
+
+
+
+
+
+O UPDATED SERVICE WORKER AGORA PODERÁ 'PRE-FETCH' OS ASSETS NECESSÁRIOS, OU ENTÃO FAZER LAZY LOAD,
+
+
+PQ __ ELE VAI SUBSTITUIR O SERVICE WORKER ANTIGO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> CERTO... MAS OS ASSETS QUE DEVEM SER 'LOADED',
+
+
+
+SÃO 
+
+
+OS RESOURCES .... ------> 
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ]
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+
+      --> RESOURCES TEM APENAS ESSA KEY DE 'files',
+
+
+      E DENTRO DELE VOCÊ TEM UM ARRAY APONTANDO ÀS FILES QUE VOCÊ VAI QUERER CACHEAR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+      --> VOCÊ SEMPRE VAI QUERER CACHEAR DE UM PONTO DE VISTA DO 'ROOT DE SEU FOLDER, DO FOLDER DIST EM QEU TEMOS ESSE PROJECT'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+      --> E TEMOS O PATTERN DE 'TODOS OS ARQUIVOS CSS NO ROOT FOLDER ' ( '/*.css') 
+
+
+
+
+
+
+
+
+
+
+
+      ----> OK... E TAMBÉM PODEMOS COLOCAR PATTERNS DIFERENTES, COMO 
+
+
+      'todos os arquivos css, em todos os subfolders também':
+
+
+
+
+      "/**/*.css"
+
+
+
+
+
+
+
+
+
+
+
+
+      OU SEJA, VOCÊ PODE DEFINIR 'GLOB PATTERNS":
+
+
+
+      In computer programming, glob (/ɡlɑːb/) patterns specify sets of filenames with wildcard characters. For example, the Unix Bash shell command mv *.txt ...
+
+
+
+
+EX:
+
+
+
+https://en.wikipedia.org/wiki/Glob_(programming)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E VOCÊ TAMBÉM PODE APONTAR DIRETAMENTE à FILE QUE VOCÊ QUER USAR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> JÁ O SEGUNDO ASSET GROUP _ DEFAULT__ QUE TEMOS É ESTE:
+
+
+
+
+
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/**",
+          "/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
+        ]
+      }
+
+
+
+
+
+
+
+
+
+
+--> É UM ASSET GROUP PARA 
+
+'''BASICAMENTE TODAS AS IMAGES QUE TEMOS'''.... -------> 
+
+
+
+
+
+
+
+
+É DIFERENTE DO PRIMEIRO ASSET GROUP,
+
+
+PQ ESTÁ COM UM INSTALLMODE DE 'lazy',
+
+O QUE QUER DIZER QUE 
+
+
+ELAS __ APENAS __ SERÃO CACHEADAS SE TIVERMOS 
+
+AS VISITADO 1 VEZ ANTERIORMENTE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, E ESSE É O BEHAVIORQUE TEMOS NO MOMENTO..
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS TEMOS MAIS UM STATIC ASSET QUE PRECISAMOS CARREGAR, NO NOSSO PROJETO,
+
+
+E QUE NÃO ESTÁ INCLUÍDO AQUI...
+
+
+
+
+
+
+
+
+
+
+
+-------> O STATIC ASSET QUE NÃO ESTÁ SENDO CARREGADO NO MOMENTO É 
+
+
+
+A NOSSA 'FONT'...
+
+
+
+
+
+
+
+
+
+--> É NOSSA 'EXTERNAL FONT' --> FONTS NÃO SÃO ALTERADAS, 
+
+
+
+NÃO SÃO ALTERADAS REGULARMNETE,
+
+
+POR ISSO PODEM SER CONSIDERADAS COMO 'STATIC ASSETS'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS É CLARO QUE NOSSA FONT NÃO ESTÁ INCLUÍDA DENTRO DO ARRAY DE 'files',
+
+
+pq, no final das contas,
+
+NÃO É UM DE NOSSOS ARQUIVOS...
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS PODEMOS __ PEGAR _ O LINK QUE TEMOS LÁ NO INDEX.HTML,
+
+AQUELE CÓDIGO DE 
+
+
+
+
+'''  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald:300,700"> ''''
+
+
+
+
+
+
+
+
+
+
+
+
+PEGAMOS ESSE LINK INTEIRO,
+
+
+E AÍ PODEMOS 
+
+
+
+
+
+VOLTAR AO 'ngsw-config.json' 
+
+
+ 
+
+ E ENTÃO ESPECIFICAMOS QUE VAMOS QUERER 
+
+
+
+ FAZER 'PRE-FETCH' DESSA FONT,
+
+
+ LÁ NO ASSET GROUP DE 'app',
+
+
+
+
+
+ QUE TEM ESTE CÓDIGO AQUI:
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+        {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ]
+      }
+    },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> OK, MAS NÃO VAMOS COLAR ESSA URL 
+
+
+
+
+    no array de 'files',
+
+
+    pq não é uma file, conforme mencionado anteriormente...
+
+
+
+
+
+
+
+
+
+
+
+    --> MAS HÁ UM RESOURCE TYPE ADICIONAL QUE PODEMOS DEFINIR,
+
+     
+
+     que é 
+
+
+     'urls'...
+
+
+
+
+
+
+
+     --> EM 'urls',
+
+     PODEMOS COLOCAR URLS COMO ESSA NOSSA,
+
+     URLS 
+
+     QUE FAZEM 
+
+     'REACH OUT TO OTHER SERVERS',
+
+
+
+
+     PARA __ ENTÃO FAZER FETCH DE RESOURCES LÁ DESSES SERVERS ADICIONAIS..
+
+
+
+
+
+
+
+
+
+
+     EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     -----> OK... AGORA VAMOS CRIAR UMA NOVA BUILD,
+
+
+
+
+
+
+
+
+
+
+
+
+
+     com ng build...
+
+
+
+
+
+
+
+     --> DEPOIS RE-RODAMOS AQUELE 
+
+
+     http-serve 
+
+
+     no folder de 'dist'...
+
+
+
+
+
+
+
+
+     --> AÍ RECARREGAMOS NOSSA PAGE ENQUANTO DEIXAMOS A CONNECTION COMO 'OFFLINE'...
+
+
+
+
+
+
+
+     --> AÍ VEREMOS QUE NOSSA FONT NÃO ESTARÁ MAIS COMO VERMELHO (failed request),
+
+
+     PQ AGORA ELA TERÁ SIDO CARREGADA 
+
+     COm 'pre-fetching', através do CACHING PROVIDENCIADO PELO SERVICE WORKERS, e devido à configuração do arquivo 
+
+     ngsw-config.json...
+
+
+
+
+
+
+
+
+
+
+     OK... DEU CERTO....
+
+
+
+
+
+
+
+
+
+
+
+
+     --> AGORA VEMOS QUE A FONT TERÁ SIDO PRE-CACHEADA...
+
+
+
+
+
+
+
+
+
+
+     --> AGORA SOMOS CAPAZES DE USAR ESSA FONT NO OFFLINE MODE...
+
+
+
+
+
+
+
+
+     --> CERTO, MAS E QUANTO A NOSSA API, quanto À data retrievada pela API? (que é dinâmica,  e frequentemente alterada)
+
+
+
+
+
+
+
+
+
+
+     --> DEVEMOS VER ISSO NA PRÓXIMA AULA...

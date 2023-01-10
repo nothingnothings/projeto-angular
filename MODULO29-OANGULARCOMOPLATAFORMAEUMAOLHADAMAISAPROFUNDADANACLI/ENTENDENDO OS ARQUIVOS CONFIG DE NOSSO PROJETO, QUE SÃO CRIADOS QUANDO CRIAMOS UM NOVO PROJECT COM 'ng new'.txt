@@ -1,0 +1,1230 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK....
+
+
+
+
+
+
+
+
+AGORA VAMOS ESTUDAR CONFIGURATION FILES..
+
+
+
+
+
+
+
+VAMOS POR CADA UMA DELAS,
+
+
+E ENTENDER O QUE TEMOS AQUI...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> os arquivos de config SÃO:
+
+
+
+
+
+
+
+.browserlistsrc 
+
+
+
+
+.editorconfig 
+
+
+
+.gitignore
+
+
+
+
+
+angular.json 
+
+
+
+
+
+
+karma.conf.js 
+
+
+package.json 
+
+
+tsconfig.json 
+
+
+
+tsconfig.app.json 
+
+
+
+
+tsconfig.spec.json
+
+
+
+
+
+
+
+
+
+
+
+polyfills.ts 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------> É CLARO QUE MTOS DESSES ARQUIVOS MUDAM/MUDARAM/MUDARÃO COM O TEMPO, 
+
+MAS A IDEIA GERAL CONTINUARÁ A MESMA...
+
+
+
+
+
+
+
+
+
+
+--> abrimos '.editorconfig'...
+
+
+
+
+
+
+
+
+--> esse é um arquivo que, NO FINAL DAS CONTAS,
+
+
+é 
+
+'PICKED UP' por alguns EDITORS E PELO VISUAL STUDIO CODE,
+
+
+
+E QUE BASICAMENTE DIZ AO EDITOR 
+
+
+'''COMO DEVE SER FEITA A INDENTATION NESSE PROJECT''',
+
+
+tudo para que 
+
+
+
+ELE CONSIGA OVERWRITAR AS DEFAULT SETTINGS,
+
+PARA QUE 
+
+
+SUAS SETTINGS NESSE PROJETO SEJAM AS MESMAS PARA QUALQUER USER,
+ 
+ AO LONGO DE QUALQUER PARTE DO MUNDO,,,
+
+
+
+
+
+ INDEPENDENTEMENTE 
+
+
+ DO CÓDIGO QUE  ELE ESTIVER USANDO... --> ESSES SÃO OS ARQUIVOS 
+
+
+
+ 'editorconfig',
+ 
+
+
+
+
+
+
+ que INFLUENCIAM  '''COMO O CÓDIGO SE PARECE, COMO É FORMATADO'...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> o prettierRC 
+
+ é parecido com isso,
+
+
+
+
+
+
+MAS É UMA FILE QUE O PROFESSOR ADIICONOU AUQI,
+
+
+PARA 
+
+
+
+DIZER AO PRETTIER QUE ELE DEVE USAR 'SINGLE QUOTES' EM VEZ DE 'DOUBLE QUOTES'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> GITIGNORE --> 
+
+
+
+
+
+DEIXA VOCÊ IGNORAR VÁRIOS DOS ARQUIVOS DO SEU PROJECT..
+
+
+
+
+
+
+
+--> GITIGNORE 
+
+
+
+
+-> DIZ QUAIS FILES VOCÊ NÃO VAI QUERER MANAGEAR COM GIT,
+
+PQ 
+
+ELAS SERÃO RE-GENERATED CONSTANTEMENTE,
+ 
+
+
+
+
+
+
+
+
+
+ COMO 'node_modules'..
+
+
+
+
+
+
+
+
+
+
+
+ -> CERTO...
+
+
+
+
+
+
+
+
+
+
+ O 'angular.json'
+
+ É MAIS COMPLEXO,
+
+
+ 
+
+
+
+
+
+
+ PQ ELE MANAGEIA TODO SEU PROJECT CONFIG...
+
+
+
+
+
+
+
+
+
+ VAMOS SKIPPAR ELE POR ENQUANTO,
+
+
+
+
+
+
+
+ E AGORA VAMOS ATÉ O BROWSERLIST, EM VEZ DISSO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> O arquivo 'browserlist'
+
+
+ É MT BOM...
+
+
+
+
+
+
+
+ --> ELE É LIDO PELO ANGULAR  CLI SEMPRE QUE 
+ ELE 
+
+
+ BUILDA SEU PROJECT PARA PRODUCTION --> ELE DIZ AO ANGULAR CLI QUAIS 
+
+ BROWSERS 
+
+ VOCÊD 
+
+ VAI QUERRER 
+
+ SUPORTART 
+
+
+
+
+ COM SEU PROJECTL...
+
+
+
+
+
+
+
+
+
+
+
+ -> O ANGULAR CLI PEGA ESSA INFO AÍ,
+
+
+
+
+
+ PEGA ISSO AÍ E ENTENDE ''ah, você não quer suportar IE 9-11',,
+
+
+
+
+ E AI´
+
+
+ O CLI 
+
+ USA ESSA INFO PARA 
+ EDITAR SEU CÓDIGO CSS,
+
+
+ FAZER COISAS COMO 'PRE-FIXING' PARA UQE 
+
+
+
+
+ ESSES 
+
+ STYLES FUNCIONEM EM TODOS OS BROWSERS DEFINIDOS...
+
+
+
+
+
+
+
+
+
+
+
+ POR FIM, ESSE ARQUIVO TAMBÉM PEDE 
+
+
+ ''QUE SEJAM CARREGADOS OS POLYFILLS CORRETOS, E PARA QUE 
+
+ SEJAM CRIADOS CORRETAMENTE OS BUNDLES DE CÓDIGO QUE 
+
+ CONTENHAM ESSES POLYFILLS'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> MAS É MT BOM, PQ 'browserlist'
+
+
+
+ te deixa CONTROLAR QUAIS 
+
+
+
+ BROWSERS SEU APP VAI SUPORTAR.. --> VOCê 
+
+
+ QUER SER 
+
+
+ BEM 
+
+ ''ESTRITO'',
+
+
+
+
+
+
+
+
+ __ NÃO PEDIR UM NÚMERO MT ABUSRDO COMO '> 0.1%',
+
+
+
+
+
+
+
+ pq 
+
+ se 
+ você 
+
+
+ NÃO QUISER SUPORTAR O IE 9-11,
+
+
+
+
+
+ não tente o suportar, 
+
+
+
+
+ PQ ISSO VAI ADICIONAR MT CÓDIGO, QUE TERÁ DE SER BAIXADO 
+
+
+
+ PELOS SEUS USERS.. --> O ANGULAR FRAMEOWKR __ SUPORTA __ ESSES BROWSERS ANTIGOS,
+
+ SIM,
+
+
+ MAS ÀS VEZES FAZ BEM MAIS SENTIDO IGNORAR ESSES BROWSERS,
+
+
+ PQ ELES DEMANDAM O DOWNLOAD 
+
+ DE 
+
+ MT DATA....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ---> karma.config.js -----> É USADO PARA TESTING, PARA UNIT TESTS (
+
+    pq o angular testing usa 
+    KARMA POR TRÁS DAS CENAS...
+
+
+
+ )
+
+
+
+
+
+
+
+
+ --> SE VOCÊ NÃO SABE O QUE ESTÁ FAZENDO, DEIXE ESSE ARQUIVO DE LADO,
+
+ PQ ELE VAI TE DEIXAR 'fine-tune' 
+
+
+
+ A MANEIRA PELA QUAL SEUS TESTS SÃO EXECUTADOS, E ASSIM POR DIANTE...
+
+
+
+
+
+
+
+
+
+
+
+
+ package-lock.json ------------->
+
+
+
+
+
+
+
+
+
+
+
+
+MANAGEIA AS PACKAGES QUE 
+
+VOCÊ USA,
+
+
+
+
+
+
+
+
+
+e etc...
+
+
+
+
+
+
+
+
+
+
+
+-> OK... MAS PACKAGE.JSON É BEM IMPORTANTE..
+
+
+
+
+
+
+
+
+
+
+
+-----> ok... 
+
+
+DEPENDENCIES E DEVDEPENDENCIES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SÃO AS TPPs 
+usadas 
+
+pelo nosso app,
+
+para 
+rodar nosso projeto corretamente...
+
+
+
+
+
+
+
+
+
+
+AQUI TEMOS:
+
+
+
+
+
+
+1) ANGULAR FRAMEWORK PARTS...
+
+
+
+
+
+2) RXJS --> PARA OBSERVABLES
+ 
+
+
+
+
+ 3) ALGUMAS DEPENDENCIES  DO ANGULAR FRAMEOWRK (tslib e zone.js)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> MAS TAMBÉM TEMOS DEVDEPENDENCIES,
+
+ QUE SÃO USADAS 
+
+
+ APENAS PARA 'BUILD OUR APP EFFICIENTLY',
+
+
+
+
+ durante o development...
+
+
+
+
+
+
+
+
+ --> ESSE CÓDIGO DE DEVDEPENDENCIES 
+
+ não é SHIPPADO AO END USER...
+
+
+
+
+
+
+
+
+
+
+ ----> OK... VOCê USA ESSE ARQUIVO POR MEIO DO run de 'npm install',
+
+ para instalar todas as packages--> isso vai CRIAR 
+
+
+
+
+
+
+
+ O FOLDER DE NODE_MODULES COM TODAS AS PAKCAGES ESPECIFICADAS NO 'package.json'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> ISSO FEITO,
+
+ TAMBÉM GERAREMOS 
+
+
+
+ UM 'package-lock.json',
+
+
+ COM AS VERSIONS
+
+
+
+
+
+ EXATAS __ DE 
+
+
+ CADA UMA DE SUAS DEPENDENCIES..
+
+
+
+
+
+ (
+    pq em package.json 
+
+
+    ESPECIFICAMOS ALGUNS 'MINIMAL REQUIREMENTS',
+
+
+
+
+
+
+    e quando você 
+    roda 
+
+    'npm install',
+
+
+
+VOCÊ 
+
+ACABA 'LOCKANDO'  
+
+
+AS VERSIONS, QUE FICAM NO ARQUIVO 'lock'...
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ tsconfig.app.json 
+
+
+ tsconfig.json 
+
+
+
+ tsconfig.spec.json ..
+
+
+
+
+
+
+
+
+
+
+
+ TSCONFIG.JSON --> ISSO CONFIGURA O 'TYPESCRIPT COMPILER' -->
+
+
+
+
+
+
+
+
+
+
+ VOCê PODE SETTAR VÁRIAS COISAS ÁI..
+
+
+
+
+
+
+
+
+
+ --> vocÊ pode settar certas coisas interesantes,
+
+ como 'strict mode '----->
+
+
+
+ SE VOCÊ 
+ COLOCAR ESSA OPTION,
+
+
+
+
+
+
+ O TYPESCRIPT VAI SER BEM MAIS CHATO ACERCA DAQUILO QUE VOCê 
+
+
+ PODERÁ FAZER NO SEU APP (
+
+    isso pode ser positivo ou NÃO...
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> ISSO PODE TE FORÇAR A ESCREVER ´CODIGO MAIS CLEAN,
+
+ MAS àS VEZES 
+
+
+
+ ISSO PODE SIGNIFICAR QUE 
+
+
+
+ VOCÊ TERÁ DE ENCONTRAR WORKAROUNDS 
+
+ para coisas que você 'sabe que funcionarão, mas que o typescript não aceitará'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ OK...
+
+
+
+
+
+
+
+
+
+ JÁ 
+
+
+ tsconfig.app.json --------> É USADO PARA __  O SEU  'REAL APP COMPILATION'...
+
+
+
+
+
+
+
+
+ tsconfig.spec.json --> É USADO PARA O _ TESTING __  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> ALI TEMOS ALGUNS SETTINGS, QUE PODEMOS DEFINIR, MAS SÃO BEM MAIS DETALHADOS...
+
+
+
+
+
+
+
+
+
+ --> CERTO...
+
+
+
+
+
+
+
+
+
+
+ --> MAS EM 'tsconfig.json',
+
+
+
+
+ PODEMOS 
+
+ VER UMA FLAG 
+
+ EXTRA,
+
+
+
+ QUE NÃO É DEFAULT DO TYPESCRIPT,
+
+ QUE É 
+
+
+ A CHAMADA 
+
+
+ 'angularCompilerOptions'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> ESSA OPÇÃO É 'PICKED UP' PELO ANGULAR COMPILER (que é diferente do typescript compiler),
+
+
+
+
+ QUE 'KICKS IN' 
+
+
+ DEPOIS 
+
+  
+
+  _ 
+
+
+  QUE O TYPESCRIPT _ COMPILOU SEU CÓDIGO TS EM JAVASCRIPT -->  O ANGULAR COMPILER, NO CASO,
+
+
+
+  VAI COMPILAR
+   
+
+
+   SEU ANGULAR APP (compiled javascript code e HTML TEMPLATES, etc) 
+
+
+
+
+
+
+
+
+   EM __ INSTRUÇÕES__ QUE PODERÃO SER EXECUTADAS DURANTE O  RUNTIME (
+
+
+
+    ou seja,
+
+    INSTRUCTIONS PARA ADICIONAR EVENT LISTENERS,  INSERIR BUTTONS NO DOM,
+     
+     etc...
+   )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   -. OK... --> ISSO QEUR DIZER UQE 
+
+
+
+   O ANGULAR COMPILER __ VAI __ 
+
+
+   REALIZAR AS 'REAL DOM INSTRUCTIONS, QUE SÃO COMPREENDIDAS PELO BROWSER'...
+
+
+
+
+
+
+
+
+
+
+   -> É ISSO QUE O ANGULAR COMPILER FAZ,
+
+
+   E É CLARO QUE VOCÊ PODE 
+
+   CONFIGURAR ESSE COMPILER TAMBÉM...
+
+
+
+
+
+
+
+
+
+
+
+   -> de novo,
+
+
+
+   os DOCS SÃO UM ÓTIMO RECURSO..
+
+
+
+
+
+
+
+
+   --> você deve acessar 
+
+
+
+   'dev workflow' --> aot compiler (ahead of time compiler) --> ANGULAR COMPILER OPTIONS (encontramos diferentes 
+   
+   
+   
+  INFOS SOBRE O COMPILER 
+
+
+
+  E as coisas que vocE^pode settar...
+   
+    )
+
+
+
+
+
+
+
+
+
+    o default geralmente basta,
+
+
+    mas essas options são boas para construir o app que você quiser...
+
+
+
+
+
+
+
+
+
+
+
+    --> POR FIM,
+
+    TEMOS 
+
+
+
+    'tslint.json',
+
+
+
+    QUE É USADO PARA GARANTIR A CODE QUALITY,
+
+    E PARA ASSEGURAR QUE 
+
+    VOCÊ
+
+
+    ESTÁ ESCREVENDO SEU CÓDIGO DE FORMA BOA...
+
+
+
+
+
+
+
+
+
+
+    --> os errors obtidos com 'eslint'
+
+    não são errors de verdade,
+
+    mas são 
+
+
+    problemas de sintaxe (convenções, etc)...
+
+
+
+
+
+
+
+
+
+
+
+    ---->  (estou sem esse arquivo no meu project, mas tudo bem).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> AGORA DEVEMOS PENSAR UM POUCO SOBRE ALGUNS 
+
+
+    ANGULAR CLI COMMANDS,
+
+    ANTES 
+
+    DE 
+
+
+    EXAMINARMOS MAIS APROFUNDAMENTE  O ARQUIVO 'angular.json'..

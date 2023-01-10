@@ -1,0 +1,220 @@
+
+
+
+
+
+
+
+AGORA QUE 
+
+SABEMOS QUAIS 
+
+
+TOOLS DEVEMOS USAR,
+
+
+
+
+DEVEMOS 
+
+SABER 
+
+O QUE 
+
+DEVEMOS 
+
+
+TESTAR... --> e a resposta é BEM __sTRAIGHTFORWARD___... ----> 
+
+
+
+fazer 
+
+o 
+
+write 
+
+
+
+de BONS TESTES é algo bem complexo, e requer 
+
+um monte 
+
+
+
+de prática...
+
+
+
+
+
+----> prática --> é por isso que nosso curso não é um curso de testes, não temos 
+
+
+muitas coisas de prática...
+
+
+--------------------------
+
+
+
+
+
+
+
+
+
+
+--> ok... mas, primeiramente,
+
+as coisas que você __NÃO VAI QUERER TESTAR__...:
+
+
+
+
+
+1) vocÊ __NÃO VAI QUERER TESTAR ___ A LIBRARY EM SI...., você não quer testar o react ou o axios em si... --> esses 
+são TPPs (third party packages/libraries) que 
+JÁ FORAM TESTADAS PELOS DESENVOLVEDORES, vocÊ não precisa testar se eles funcionam, se o redux store funciona, etc etc...
+
+ 
+
+
+ 2) VOCÊ QUER TESTAR __ O CÓDIGO _ QUE VOCê MESMO ADICIONA AO APLICATIVO... ------> 
+
+ E, LÁ, VOCÊ QUER TESTAR O CÓDIGO QUE __NÃO USA __ ESSA LIBRARY__... --> 
+
+
+ ex: axios requests ---> se eles falham ,vocÊ provavelmente  NÃO TEM 
+ CONEXÃO DE INTERNET... ---> você tipicamente QUER 'FAKAR' a data 
+
+ que 
+ vocÊ recebe do servidor em use-cases como esse, e então você testa 
+
+ A DATA 
+ 
+RETORNADA, com os use-cases que você quer...
+
+
+
+3) VOCÊ __NÃO QUER __ TESTAR  ___ CONEXÕES COMPLEXAS___. ... --> 
+
+
+conexões mt complexas não são boas de serem testadas... ---> ex: você 
+clica um botão em 1 component,
+
+e aí 
+
+
+ALGO MUDA 
+
+EM UM 
+
+COMPONENT 
+TOTALMENTE 
+
+DIFERENTE... ------------> VOCÊ VAI QUERER 
+
+
+__tESTAR__ SE O BOTÃO REALMENTE 'CLICOU' E SEU 
+
+APP REACT TRIGGOU UM ESPECÍFICO PROP... ( e não 'testar se o react está conseguindo usar o conceito de 'props' para emitir um evento e o passar adiante... ' )
+
+
+
+
+---> outro test: TESTAR SE A 'CHANGE OF DATA' que você recebe por meio de props 
+ em primeiro lugar, em um component, LEVA A UM DIFERENTE RESULTADO SENDO RENDERIZADO...
+
+
+
+
+
+
+ -------> HÁ ALGUNS TESTING GUIDES QUE vão além; que DIZEM 
+
+ QUE 
+
+
+PARA 
+
+REACT COMPONENTS,
+
+
+você __SÓ PRECISA_ __ TESTAR __ SE O COMPONENT EM SI ESTÁ SENDO RENDERIZADO CORRETAMENTE...
+
+
+
+
+
+
+
+----> PROFESSOR VAI NOS MOSTRAR 
+
+COMO TESTAR DIFERENTES COISAS/RELAÇÕES ENTRE REACT COMPONENTS,
+
+mas 
+
+
+ele nos alerta
+ QUE 
+
+ NÃO DEVEMOS 
+
+ 'TEST COMPLEX CONNECTIONS', que isso é infrutífero.
+
+
+
+
+
+
+
+
+ -----> OK....
+
+
+
+
+
+ MAS O QUE 
+
+
+ __QUEREMOS TESTAR? --------> 
+
+
+
+ QUEREMOS 
+
+
+ __TESTAR__ 
+
+
+
+ 'ISOLATED UNITS'...
+
+
+
+
+
+ ex de isolated units:  OS REDUCERS QUE VOCÊ CRIA.
+
+                        A 'COMPONENT FUNCTION' QUE VOCÊ CRIOU
+                        
+                        TAMBÉM 'CONDITIONAL OUTPUTs'... (se você tem uma PROPRIEDADE QUE LEVA A ALGUMA COISA SER RENDERIZADA SE ELA ESTIVER COMO TRUE, VOCÊ VAI QUERER TESTAR SE ISSO REALMENTE ACONTECE... ) ------> ''e o que acontece se certa propriedade muda no nosso app, isso afeta nosso output corretamente?' 
+
+
+
+
+
+
+
+
+
+
+CERTO, VAMOS APRENDER SOBRE COMO ESCREVER E RODAR UNIT TESTS 
+
+
+EM UM 
+
+
+REACT APP...

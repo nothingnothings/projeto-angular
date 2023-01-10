@@ -1,0 +1,1253 @@
+
+
+
+
+
+
+
+
+
+
+A PRIMEIRA COISA QUE FAREI É 
+
+
+CRIAR UM SERVICE PARA 'users',
+
+
+pq 
+
+quero 
+
+fazer manage 
+
+
+
+
+
+do array de users LÁ,
+
+e não NO COMPONENT DE 'users.component.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { UsersService } from './users.service';
+
+@Component({
+  selector: 'app-users',
+  templateUrl: './users.component.html',
+  styleUrls: ['./users.component.css'],
+})
+export class UsersComponent implements OnInit {
+  // users = [
+  //   { id: 1, name: 'Max' },
+  //   { id: 2, name: 'Anna' },
+  //   { id: 3, name: 'Chris' },
+  // ];
+
+  users: {id: number, name: string}[];
+
+
+  constructor(private usersService: UsersService) {}
+
+  ngOnInit(): void {
+
+    this.users = this.usersService.users;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+
+export class UsersService {
+  users = [
+    { id: 1, name: 'Max' },
+    { id: 2, name: 'Anna' },
+    { id: 3, name: 'Chris' },
+  ];
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo...
+
+
+
+
+
+
+
+
+
+
+
+
+--> aGORA O PRÓXIMO PASSO É FAZER O FETCH BEM SUCEDIDO DE 'ROUTE PARAMETERS',
+
+
+
+a partir 
+
+
+
+
+
+
+do 'userId'
+
+que 
+
+
+RECEBO NA MINHA ROUTE DE 
+
+'localhost:4200/users/xxx',
+
+
+
+
+como observado aqui, em 'app.module.ts':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const appRoutes: Routes = [
+
+
+  {
+    path: 'users/:userId',   ////exemplo de DYNAMIC SEGMENTS (carregar user específico, dentro de list de users.... mesma coisa vista no NODEJS)...
+    component: UserComponent
+},
+
+]
+
+
+
+
+
+
+
+
+
+-> PRECISAMOS PEGAR A DATA ENCODADA NA URL...
+
+
+
+
+
+
+
+
+
+
+-> SABEMOS QUE O COMPONENT DE 'user.component.html/ts'
+
+
+será carregado...
+
+
+
+
+
+
+
+
+
+
+----> E ISSO É UMA 'PAGE'..
+
+
+
+
+
+
+SABEMOS _ QUE _ DENTRO _ 
+
+
+DA URL TEREMOS UM POUCO DE DATA,
+
+
+O NÚMERO DO ID DE CADA USER...
+
+
+
+
+
+
+
+
+--> COMO PODEMOS CONSEGUIR ESSA DATA? 
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, É NO ARQUIVO TYPESCRIPT...
+
+
+
+
+
+
+
+
+
+
+
+---> DEVEMOS IR ATÉ 'user.component.ts'
+
+
+
+E ENTÃO __ INJETAR_ ALGO NO CONSTRUCTOR DESSE COMPONENT,
+
+ALGO QUE __ JÁ INJETAMOS ANTERIORMENTE,
+
+
+QUE 
+
+SERÁ 
+
+
+
+AQUELE TYPE DE 
+
+'ActivatedRoute'
+...
+
+
+
+
+
+
+
+
+
+
+
+VAMOS ESCREVER ASSIM:
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
+@Component({
+  selector: 'app-user',
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.css'],
+})
+export class UserComponent implements OnInit {
+  user: { id: number; name: string };
+
+  constructor(private route: ActivatedRoute) {}
+
+  ngOnInit(): void {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> POR MEIO DO INJECT DESSE TYPE DE 'ActivatedRoute',
+
+
+
+NÓS _ GANHAMOS _ ACESSO, NOVAMENTE,
+
+
+à 
+'currently loaded route',
+
+
+
+
+
+
+
+
+
+
+QUE É PRECISAMENTE O QUE NOS INTERESSA,
+
+
+PQ 
+
+
+A CURRENTLY LOADED __ ROUTE __ VAI _ DEFINITIVAMENTE_ 
+
+
+SEGURAR 
+
+
+
+
+A PARTE DINÂMICA 
+
+DO PATH,
+
+
+
+
+
+
+tipo 
+
+
+'localhost:4200/users/xxxx'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------->    BEM, 
+
+
+
+
+
+E ESSE 
+
+OBJETO 
+
+'this.route',
+
+
+essa propriedade,
+
+
+
+
+_ AGORA __ VAI SER UM OBJECT JAVASCRIPT _ COM UM MONTE DE 
+
+
+
+METADA CARREGADA,
+
+
+UM MONTE DE METADAAT 
+
+
+SOBRE ESSA 'CURRENTLY LOADED ROUTE'...
+
+
+
+
+
+
+
+--> TEMOS METHODS COMO:
+
+
+
+
+'params',
+
+
+'queryParams',
+
+'children',
+
+
+etc etc....
+
+
+
+
+
+
+
+
+
+
+--> acho que o que vai nos interessar é 'params'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+VAMOS USAR O HOOK DE 'ngOnInit',
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
+@Component({
+  selector: 'app-user',
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.css'],
+})
+export class UserComponent implements OnInit {
+  user: { id: number; name: string };
+
+  constructor(private route: ActivatedRoute) {}  /////esse type é essencial para nós, pq é A PARTIR DELE QUE PODEMOS PEGAR OS VALUES DOS 'DYNAMIC SEGMENTS' de nossas urls dinÂmicas... (como 'localhost:4200/users/:id')...
+
+
+  
+  ngOnInit(): void {
+
+
+
+    this.route.
+  }
+
+
+
+  randomMethod() {
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VAMOS USAR ESSE HOOK _ PARA __ DEFINIR 
+
+AS PROPRIEDADES LOCAIS 
+
+'id' 
+
+e 
+
+'name'
+
+
+
+como sendo 
+
+EQUIVALENTES 
+
+
+
+A __ INFORMATION _ QUE 
+VAMOS EXTRAIR 
+
+LA´
+
+
+DO 
+
+
+SERVICE 
+
+
+de 
+
+
+'users.service.ts',
+
+
+
+a partir do ID 
+
+que foi passado na nossa url e que será 
+
+
+
+
+RETRIEVADO 
+
+
+por 
+
+'this.route.algumMethod'....
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO DE 'users.component.ts' é este:
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12 col-sm-4"></div>
+  <div class="list-group">
+    <a [routerLink]="['/users', user.id ]" class="list-group-item" *ngFor="let user of users">{{ user.name }}</a>
+  </div>
+</div>
+<div class="col-xs-12 col-sm-4">
+  <app-user></app-user>
+</div>
+
+
+
+
+
+
+
+
+
+--> mas o código para obter a 'PARTE DINÂMICA' de nossa url naõ é 
+
+
+
+'this.route.queryParams' 
+
+
+
+ou 
+
+'this.route.params', 
+
+aparentemente..
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> COMO PODEMOS CONSEGUIR ESSE PARAMETER DE NOSSA URL? 
+
+
+
+
+
+
+
+
+
+
+
+-----> this.route.snapshot
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-_> PRECISAMOS DO METHOD DE '.snapshot' (que é uma propriedade)...
+
+
+
+
+
+
+
+
+
+
+
+
+--> O METHOD DESEJADO POR NÓS É 
+
+
+'this.route.snapshot.params' (
+
+
+
+    tiramos uma SNAPSHOT DA ROUTE,
+
+    E AÍ 
+
+
+    _ DIZEMOS QUE QUEREMOS ACESSAR _ SOMENTE OS PARAMS...
+
+
+)
+
+
+
+
+
+
+
+
+-. E ISSO, FINALMENTE, NOS DARÁ O 'NUMBER' 
+
+
+,
+
+o index/identificador 
+
+
+
+
+do 
+
+
+
+USER QUE QUEREMOS,
+
+
+
+
+o user em que clicamos....
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
+@Component({
+  selector: 'app-user',
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.css'],
+})
+export class UserComponent implements OnInit {
+  user: { id: number; name: string };
+
+  constructor(private route: ActivatedRoute) {}  /////esse type é essencial para nós, pq é A PARTIR DELE QUE PODEMOS PEGAR OS VALUES DOS 'DYNAMIC SEGMENTS' de nossas urls dinÂmicas... (como 'localhost:4200/users/:id')...
+
+
+  
+  ngOnInit(): void {
+    
+    const selectedUserId = this.route.snapshot.params['userId'];
+
+
+    console.log(selectedUserId);    ///é com isso que conseguimos o SEGMENTO DINÂMICO NA NOSSA URL (com o userId, o value do userId)...
+  }
+
+
+
+  randomMethod() {
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> por alguma rzão, os 'params' do snapshot 
+SÃO ACESSADOS POR MEIO DE INDEXADORES ('['nomeDaPropriedade']')
+
+
+
+
+
+
+
+
+
+--> CERTO, ISSO ME DEU O NÚMERO 
+
+
+DO USER.. -. AGORA SÓ FALTA FAZER UM FIND LÁ 
+
+NO ARRAY de 'users.service.ts'..
+
+
+
+
+
+
+
+
+
+
+-> TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { UsersService } from '../users.service';
+
+@Component({
+  selector: 'app-user',
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.css'],
+})
+export class UserComponent implements OnInit {
+  user: { id: number; name: string };
+
+  constructor(
+    private route: ActivatedRoute, /////esse type é essencial para nós, pq é A PARTIR DELE QUE PODEMOS PEGAR OS VALUES DOS 'DYNAMIC SEGMENTS' de nossas urls dinÂmicas... (como 'localhost:4200/users/:id')...
+    private usersService: UsersService
+  ) {}
+
+  ngOnInit(): void {
+    const selectedUserId: string = this.route.snapshot.params['userId']; ///é com isso que conseguimos o SEGMENTO DINÂMICO NA NOSSA URL (com o userId, o value do userId)...
+
+    console.log(selectedUserId);
+
+    const selectedUser = this.usersService.users.find((user) => {
+      return user.id.toString() === selectedUserId;
+    });
+
+    this.user = selectedUser!;
+  }
+
+  randomMethod() {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, COM ISSO ESTOU REALMENTE CONSEGUINDO FETCHEAR ESSE 'name' 
+
+lá 
+
+
+do 
+
+
+
+
+array de 'users',
+e
+ aí 
+
+ estou conseguindo o outputtar 
+
+
+ no component de 
+
+
+ 'user':
+
+
+
+
+
+
+ <p>User with ID {{user ? user.id : ''}}</p>
+<p>User name is {{user ? user.name : ''}}</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+COMPONENT DE 'USERS':
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12 col-sm-4"></div>
+  <div class="list-group">
+    <a [routerLink]="['/users', user.id ]" class="list-group-item" *ngFor="let user of users">{{ user.name }}</a>
+  </div>
+</div>
+<div class="col-xs-12 col-sm-4">
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> continuo assistindo a aula do professor...
+
+
+
+
+
+
+
+
+ele fala 
+
+
+'
+this.route.snapshot.params' ...
+
+
+
+
+
+
+
+
+
+
+-> DEVEMOS 
+
+
+
+COLOCAR '['userId']',
+
+
+
+
+pq 
+
+
+FOI 
+
+_ ISSO __ 
+
+
+QUE ENCODAMOS LÁ NA NOSSA URL...
+
+
+
+
+
+
+
+
+
+
+--> bem, o professor diz que 
+
+
+
+
+
+__ NÓS HAVÍAMOS ENCODADO _ APENAS _ 
+
+O 
+
+
+
+'id/indexador'
+ 
+ na url,
+
+
+
+
+ E QUE 
+
+
+
+ TALVEZ SEJA NECESSÁRIO 
+
+
+
+ ENCODAR 
+
+
+ TAMBÉM 
+
+ O 
+
+ 'name',
+
+
+ por isso 
+
+
+ ELE DECIDE COLOCAR AINDA OUTRO 
+
+ 'DYNAMIC SEGMENT' 
+
+
+ na nossa url,
+
+
+
+
+
+
+
+ e deixa ela uma atrocidade,
+
+ deixa assim:
+
+
+
+
+
+
+
+ 'users/:id/:name' 
+
+
+
+
+
+
+
+ ---> com isso,
+
+
+NÓS 
+
+
+VAMOS TER DE CONSEGUIR 
+
+
+ISSO 
+
+
+
+COMO PARAMETER LÁ EM 'snapshot',
+
+que 
+
+
+
+
+
+escreveremos tipo assim:
+
+
+
+
+this.user = {
+    id: this.route.snapshot.params['id'],
+    name: this.route.snapshot.params['name']
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> ok.... mas eu não fiz isso, é claro... (vou deixar no meu código, apenas para fins de referência...)
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+OK... AI O PROFESSOR DEFINE STRING INTERPOLATION, TUDO NORMAL, COMO EU HAVIA FEITO....
+
+
+
+
+ex:
+
+
+
+
+
+<p>User with ID {{user ? user.id : ''}}</p>
+<p>User name is {{user ? user.name : ''}}</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> O NOSSO LINK DE 'users' ainda vai  ficar marcado como ACTIVE,
+
+PQ 
+
+ESSE 'CURRENTLY ACTIVE PATh'
+
+ainda CONTÉM 
+
+
+'/users',
+
+
+o que 
+
+faz com que 
+
+a directive de 
+
+'routerLinkActive'
+
+AINDA 
+
+FIQUE TRIGGADA e faça seu trabalho...  
+
+
+
+
+
+
+
+
+
+
+
+-> ok, isso parece estar funcionando bem,
+
+
+
+
+MAS O PROFESSOR VAI ACRESCENTAR UM NEGÓCIO __ QUE VAI QUEBRAR TODO NOSSO CÓDIGO, NA PRÓXIMA AULA...

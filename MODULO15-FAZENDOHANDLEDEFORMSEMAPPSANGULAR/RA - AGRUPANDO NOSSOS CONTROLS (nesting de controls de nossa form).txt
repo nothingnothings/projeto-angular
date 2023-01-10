@@ -1,0 +1,1540 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> NA ÚLTIMA LIÇÃO,
+
+O PROFESSOR JÁ  ESTAVA MENCIONANDO QUE 
+
+
+
+
+
+aquele 
+
+
+
+helper method, lá no nosso template,,
+
+
+
+de 
+
+
+
+
+'signupForm.get()'          (é, na verdade, a PROPRIEDADE QUE SEGURA 'formGroup', lá no nosso component.ts),
+
+
+
+
+
+
+
+
+
+
+ELE 
+
+
+
+
+PODE ACEITAR COISAS QUE 
+
+NÃO 
+
+
+SÃO 
+
+
+SÓ 
+
+os KEY NAMES DE SEUS INPUT FIELDS/CONTROLs...
+
+
+
+
+
+
+--> ex de uso clássico:
+
+
+
+'signupForm.get('username').valid' 
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO FOI VISTO EM LUGARES COMO ESTE, NO NOSSO CÓDIGO:
+
+
+
+
+
+
+
+
+        <span
+          *ngIf="
+            !signupForm.get('username')?.valid &&
+            signupForm.get('username')?.touched
+          "
+          class="help-block"
+          [ngStyle]="{ color: 'red' }"
+          >Username must have more than 4 characters</span
+        >
+
+
+
+
+
+
+
+
+
+
+
+
+---> AGORA 
+
+
+
+O PROFESSOR NOS EXPLICA UQE 
+
+
+
+PODEMOS PASSAR 
+
+
+
+
+TAMBÉM _ _ PATHS _ A ESSE METHOD DE 
+
+
+'.get()'..
+
+
+
+
+
+
+
+
+
+
+
+--> VOCÊ PODE ESPECIFICAR 
+
+UM PATH 
+
+ __ justamente _ 
+
+ PQ É POSSÍVEL QEU VOCÊ TENHA UMA 'NESTED FORm'...
+
+
+
+
+
+
+
+
+ --> DIGAMOS QUE 'username'
+
+ e 'EMAIL'
+
+
+
+ DEVEM FICAR DENTRO DE UM 'formGroup'
+
+
+
+
+ CHAMADO DE 
+
+
+ 'userData'... (fizemos a mesma coisa lá no approach 'TEMPLATE-DRIVEN')..
+
+
+
+
+
+
+
+
+
+
+
+ --> PARA ISSO,
+
+
+
+ PODERÍAMOS CRIAR UM 
+
+
+
+
+
+FormGroup,
+
+LÁ NO NOSSO CÓDIGO '.ts',
+
+
+
+
+DE NOME 
+
+'userData'...
+
+
+
+
+
+
+
+
+
+
+---> pq se queremos passar um 'path' 
+
+
+ao comando de '.get()',
+
+isso significa que 
+
+
+O NESTING DE 
+
+INPUT FIELDS/CONTROLS __ EM 'GROUPS' é possível...
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS COMO CRIAR UM 'FORM GROUP' para nestear nossos controls?
+
+
+
+
+
+
+
+
+
+
+->  BASTA 
+
+ESCREVER OUTRO 'new FormGroup',
+
+
+DENTRO 
+
+
+
+_ DO NOSSO 'OUTER FORM GROUP'..
+
+
+
+
+
+
+
+
+--> tipo assim,
+
+
+ em outras palavras:
+
+
+
+
+
+
+
+
+
+
+
+  ngOnInit(): void {
+    this.signupForm = new FormGroup({
+
+      'userData': new FormGroup({ ////AQUI É POSSÍVEL OBSERVAR O 'NESTING' de 1 form GROUP dentro do nosso 'OVERALL FORM GROUP' (que representa nossa FORM INTEIRA)...
+        'username': new FormControl(null, [Validators.required, Validators.minLength(5)]
+        ),
+        'email': new FormControl(  null, [Validators.required, Validators.email]),
+      }),
+      'gender': new FormControl(this.genders[0], [Validators.required]),
+    });
+  }
+
+
+
+
+
+
+
+
+
+
+
+->  OU SEJA,
+
+
+USAMOS O CALL DE __OUTRO_ FormGroup,
+
+
+
+NESTEADO,
+
+
+
+
+
+PARA 
+
+
+AÍ INSERIR 
+
+NOSSOS CONTROLS NO SEU INTERIOR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> CERTO... ISSO SIGNIFICA QUE AGORA TEMOS UMA 'NESTED FORM'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok, mas a pergunta agora é:
+
+
+
+
+
+
+COMO PODEREMOS _ACESSAR ESSES 'NESTED CONTROLS',
+
+
+nesteados 
+
+DENTRO 
+
+
+DESSE FORMGROUP de 'userData',
+
+
+
+LÁ NO NOSSO TEMPLATE,
+
+
+
+NAQUELE USO DO METHOD DE 
+
+
+'signupForm.get()'? 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> bem, o parâmetro desse method provavelmente ficará assim:
+
+
+
+
+        <span
+          *ngIf="
+            !signupForm.get('username')?.valid &&
+            signupForm.get('username')?.touched
+          "
+          class="help-block"
+          [ngStyle]="{ color: 'red' }"
+          >Username must have more than 4 characters</span
+        >
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        --> PRECISAMOS CONSEGUIR ACESSAR _ 
+
+
+
+      
+      a propriedade/coisa de 
+
+
+      'userData' ANTES DE CONSEGUIRMOS ACESSAR o 'username' 
+
+      para aí checar esse value...
+
+
+
+
+
+
+
+
+
+      OK, MAS COMO FAZEMOS ISSO?
+
+
+
+
+
+
+
+
+
+
+
+      --> COMO ACESSAMOS ESSE CONTROL DENTRO DO FORMGROUP DE 
+
+      'userData'?
+
+
+
+
+
+
+
+
+
+
+      -----> BEM, ANTES DE __ CONSEGUIRMOS _ USAR ESSE METHOD DE 
+
+
+
+      '.get()",
+
+
+
+
+      PRECISAMOS 
+
+
+      __ATUALIZAr_  A 
+
+    'SYNCHRONIZATION'
+
+
+
+
+    DE NOSSO CÓDIGO HTML COM O CÓDIGO TYPESCRIPT..
+
+
+
+
+
+
+
+
+
+
+    -> PODEMOS FACILMENTE FAZER ISSO  
+
+
+
+
+
+
+
+
+
+
+POR MEIO _ DO __WRAP
+
+
+
+
+
+DE NOSSOS __ FORM CONTROLS TODOS, LÁ NO TEMPLATE (html),
+
+
+
+
+
+
+_ EM _ 
+
+
+
+
+UMA __ DIV, UMA WRAPPING DIV...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VAMOS WRAPPAR 'EMAIL' E USERNAME,
+
+
+
+que serão as coisas que vão ficar dnetro do nosso 'CONTROL'...
+
+
+
+
+
+
+
+
+
+
+
+-> FAZEMOS ISSO PARA__ REPLICAR _A ESTRUTURA DE 
+
+NOSSOS INPUTS/CONTROLS QUE TEMOS LÁ NO ARQUIVO TYPESCRIPT, NAUQELE OJBECT 
+
+
+TYPESCRIPT QUE 
+
+
+
+FOI ARMAZENADO COMO PROPRIEDADE...
+
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+<div>
+  <input>
+  <input>
+</div....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO, ENTÃO,
+
+
+
+NESSA WRAPPING DIV,
+
+VAMOS COLOCAR _ _MAIS UMA VEZ A DIRECTIVE DE  (EXATAMENTE COMO FIZEMOS NO TEMPLATE-DRIVEN APPROACH)
+
+
+
+'formGroupName'.. 
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmitForm()">
+        <!--AQUI AINDA VAMOS USAR ESSA DIRECTIVE/EVENT de 'ngSubmit', pq vamos querer USAR O COMPORTAMENTO DE 'submit' do HTML/JS comum _ PARA _ EXECUTAR NOSSOS PRÓPRIOS METHODS no arquivo .ts....-->
+        <!-- É ASSIM QUE VINCULAMOS NOSSA FORM CRIADA LÁ EM UM ARQUIVO TS, nesse arquivo html, nessa form do arquivo html... através de property binding com '[formGroup]'-->
+        <div formGroupName="userData">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            [ngClass]="{
+              redBorder:
+                signupForm.get('username')?.value &&
+                !signupForm.get('username')?.valid
+                  ? 1
+                  : 0
+            }"
+            type="text"
+            id="username"
+            class="form-control"
+            formControlName="username"
+          />
+          <!-- AQUI, O QUE INTERESSA É 'formControlName', pq O VALUE PASSADO A ESSA DIRECTIVE SERÁ BUSCADO LÁ NO SEU CÓDIGO TYPESCRIPT, na form TS a que foi vinculada essa form do HTML...  (o angular vai buscar pelos KEY NAMES da sua form, lá no código typescript)-->
+        </div>
+
+        <!-- PARA GANHAR ACESSO A PROPRIEDADES como 'valid', 'invalid', 'touched', 'pristine' e 'dirty' de nossos CONTROLS, DEVEMOS USAR ESSE METHOD DE '.get()' NA NOSSA FORM TS, form criada lá no código ts...-->
+        <span
+          *ngIf="
+            !signupForm.get('username')?.valid &&
+            signupForm.get('username')?.touched
+          "
+          class="help-block"
+          [ngStyle]="{ color: 'red' }"
+          >Username must have more than 4 characters</span
+        >
+
+        <button class="btn btn-default" type="button">
+          Suggest an Username
+        </button>
+        <div class="form-group">
+          <label for="email">Mail</label>
+          <input
+            type="email"
+            [ngClass]="{
+              redBorder:
+                signupForm.get('email')?.value && !signupForm.get('email')?.valid
+                  ? 1
+                  : 0
+            }"
+            id="email"
+            class="form-control"
+            formControlName="email"
+          />
+          <!-- DE NOVO, O QUE INTERESSA É 'formControlName'-->
+        </div>
+        <span
+          *ngIf="
+            !signupForm.get('email')?.valid && signupForm.get('email')?.touched
+          "
+          class="help-block"
+          [ngStyle]="{ color: 'red' }"
+          >Please enter a valid email</span
+        >
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <div formGroupName="userData">
+      <input>
+      <input>
+      </div>
+
+
+
+
+
+
+
+
+
+-> E É MEIO ÓBVIO QUE 
+
+VOCÊ __ CONSEGUIRIA VER O 
+
+
+'schema' aqui... ----->
+
+
+
+
+
+
+
+QUEREMOS USAR 'name'
+
+PARA ESCLARECER AO TYPESCIPRT
+ __ '''QUAL PROPERTY NO  NOSSO 
+
+
+ TYPESCRIPT OBJECT REPRESENTATIVO DA INPUT  
+
+
+ SERÁ _ _VINCULADA_ A ESSE ELEMENT HTML'..
+
+
+
+
+
+
+
+
+
+
+ -> E A MESMA COISA ACONTECE PARA 'formGroup' ()
+
+
+
+
+
+
+
+
+
+
+
+ -.O PROFESSOR ESCREVE ISTO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmitForm()"> 
+        
+        <div formGroupName="userData">         <!--   AQUI É QUE VAMOS INSERIR NOSSO   -->
+        <div class="form-group"> 
+          <label for="username">Username</label>
+          <input
+            [ngClass]="{
+              redBorder:
+                signupForm.get('username')?.value &&
+                !signupForm.get('username')?.valid
+                  ? 1
+                  : 0
+            }"
+            type="text"
+            id="username"
+            class="form-control"
+            formControlName="username"
+          />
+        </div>
+
+        <span
+          *ngIf="
+            !signupForm.get('username')?.valid &&
+            signupForm.get('username')?.touched
+          "
+          class="help-block"
+          [ngStyle]="{ color: 'red' }"
+          >Username must have more than 4 characters</span
+        >
+
+        <button class="btn btn-default" type="button">
+          Suggest an Username
+        </button>
+        <div class="form-group">
+          <label for="email">Mail</label>
+          <input
+            type="email"
+            [ngClass]="{
+              redBorder:
+                signupForm.get('email')?.value && !signupForm.get('email')?.valid
+                  ? 1
+                  : 0
+            }"
+            id="email"
+            class="form-control"
+            formControlName="email"
+          />
+        </div>
+        <span
+          *ngIf="
+            !signupForm.get('email')?.valid && signupForm.get('email')?.touched
+          "
+          class="help-block"
+          [ngStyle]="{ color: 'red' }"
+          >Please enter a valid email</span
+        >
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        --> MAS PRECISAMOS PASSAR UM VALUE A ESSE 
+
+
+
+        'formGroupName',
+
+
+
+
+        para então DIZER QUAL 
+
+
+        PROPERTY No NOSSO OBJETO 'FormGroup'
+
+        GERAL __ 
+
+
+
+
+        VAI ACTUALLY SEGURAR ESSE nested FormGroup...
+
+
+
+
+
+
+        --> no nosso caso, passamos 
+
+
+        um value de 'userData',
+
+
+        pq esse é o nome que 
+
+        colocamos lá em 
+
+
+
+
+
+        'signupForm'...
+
+
+
+
+
+
+
+
+
+        Ex:
+
+
+
+
+
+         <div formGroupName="userData"> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     
+     RESUMINDO:
+
+
+
+
+
+
+
+
+  1) QUANDO VOCÊ TEM UM __ FORM _ CONTROL_ (input individual) A QUE 
+
+  VOCÊ QUER ASSIGNAR a uma form no código ts,
+
+
+
+  coloque 
+
+  'formControlName="nomeDaKeyNoArquivoTs'
+
+
+
+
+
+
+
+  2) JÁ SE VOCÊ TEM UM __ FORM GRUP A QUE VOCÊ QUER ASSIGNAR,
+
+
+  COLOQUE 
+
+  'formGroupName="nomeDaKeyDoGroupNoArquivoTs'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  EX EM NOSSO CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmitForm()">
+        <!--AQUI AINDA VAMOS USAR ESSA DIRECTIVE/EVENT de 'ngSubmit', pq vamos querer USAR O COMPORTAMENTO DE 'submit' do HTML/JS comum _ PARA _ EXECUTAR NOSSOS PRÓPRIOS METHODS no arquivo .ts....-->
+        <!-- É ASSIM QUE VINCULAMOS NOSSA FORM CRIADA LÁ EM UM ARQUIVO TS, nesse arquivo html, nessa form do arquivo html... através de property binding com '[formGroup]'-->
+        <div formGroupName="userData">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            [ngClass]="{
+              redBorder:
+                signupForm.get('username')?.value &&
+                !signupForm.get('username')?.valid
+                  ? 1
+                  : 0
+            }"
+            type="text"
+            id="username"
+            class="form-control"
+            formControlName="username"
+          />
+          <!-- AQUI, O QUE INTERESSA É 'formControlName', pq O VALUE PASSADO A ESSA DIRECTIVE SERÁ BUSCADO LÁ NO SEU CÓDIGO TYPESCRIPT, na form TS a que foi vinculada essa form do HTML...  (o angular vai buscar pelos KEY NAMES da sua form, lá no código typescript)-->
+        </div>
+
+        <!-- PARA GANHAR ACESSO A PROPRIEDADES como 'valid', 'invalid', 'touched', 'pristine' e 'dirty' de nossos CONTROLS, DEVEMOS USAR ESSE METHOD DE '.get()' NA NOSSA FORM TS, form criada lá no código ts...-->
+        <span
+          *ngIf="
+            !signupForm.get('username')?.valid &&
+            signupForm.get('username')?.touched
+          "
+          class="help-block"
+          [ngStyle]="{ color: 'red' }"
+          >Username must have more than 4 characters</span
+        >
+
+        <button class="btn btn-default" type="button">
+          Suggest an Username
+        </button>
+        <div class="form-group">
+          <label for="email">Mail</label>
+          <input
+            type="email"
+            [ngClass]="{
+              redBorder:
+                signupForm.get('email')?.value && !signupForm.get('email')?.valid
+                  ? 1
+                  : 0
+            }"
+            id="email"
+            class="form-control"
+            formControlName="email"
+          />
+          <!-- DE NOVO, O QUE INTERESSA É 'formControlName'-->
+        </div>
+        <span
+          *ngIf="
+            !signupForm.get('email')?.valid && signupForm.get('email')?.touched
+          "
+          class="help-block"
+          [ngStyle]="{ color: 'red' }"
+          >Please enter a valid email</span
+        >
+        </div>
+
+        <div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input type="radio" [value]="gender" formControlName="gender" />
+            {{ gender }}
+          </label>
+        </div>
+        <span
+          *ngIf="!signupForm?.valid && signupForm?.touched"
+          class="help-block"
+          [ngStyle]="{ color: 'red' }"
+          >Please amend your data!</span
+        >
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="!signupForm.valid"
+        >
+          Submit
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> COM ESSA PEQUENA ADIÇÃO,
+
+NÃO PRECISAMOS MAIS MUDAR COISA ALGUMA..
+
+
+
+
+
+
+
+
+-->  mas aí o professor recebe um ERROR NO CONSOLE...
+
+
+
+
+
+
+
+
+
+'CANNOT READ PROPERTY VALID OF NULL'..
+
+
+
+
+
+
+
+(
+  isso para 'username'...
+
+)
+
+
+
+
+
+
+
+
+-> ISSO ACONTECE/ACONTECEU, NO CASO,
+
+
+PQ 
+
+
+
+
+_ É CLARO QUE AGORA NOSSAS PROPRIEDADES DE 'username' 
+
+e 
+
+
+
+
+'email'
+
+
+
+
+ESTARÃO NESTEADAS EM 'userData'... ---> 
+
+
+
+
+
+
+
+E PARA CONSEGUIRMOS USAR O METHOD DE 
+
+
+
+'signupForm.get()'
+
+
+
+COM ELES,
+
+
+
+PRECISAMOS 
+
+
+
+
+
+
+PASSAR O _ PATH___ A ESSES INPUTS/CONTROLS,
+
+dentro do nosso nesting 
+
+
+de inputs no 'FormGroup'...
+
+
+
+
+
+
+
+
+
+
+isso pq nossa estrutura atual está assim:
+
+
+
+
+
+
+
+
+FormGroup {
+
+
+  userData (FormGroup) {
+    username: FormControl,
+    email: FormControl
+  },
+
+  gender: FormControl
+
+
+
+}
+
+
+
+
+
+
+
+
+-> OK, MAS COMO PODEMOS CHEGAR ATÉ 'username' e 'email'?
+
+
+
+
+
+
+
+
+---> PODEMOS USAR AQUELA SINTAXE 'PORCA' 
+
+
+do mongodb/javascript em geral,
+
+que apenas pede que escrevamos 
+
+
+assim:
+
+
+
+
+
+signupForm.get('userData.username')?.valid 
+
+
+
+
+
+
+
+
+
+
+
+tipo userData.username 
+
+
+
+e 
+
+
+userData.email....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EU CRIO UM '<span>'
+
+
+
+
+QUE MOSTRA UMA MENSAGEM DE ERROR ADICIONAL, QUE VAI APARECER QUANDO 
+
+
+ESSE 
+
+
+formGroup inteiro de 'userData'
+
+
+estiver como invalid,
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+        <span
+        *ngIf="
+          !signupForm.get('userData')?.valid && signupForm.get('userData')?.touched
+        "
+        class="help-block"
+        [ngStyle]="{ color: 'red' }"
+        >Please correct entered user data</span
+      >
+
+
+
+
+
+
+
+
+
+
+
+  --> E ISSO REALMENTE FUNCIONOU.... (bastou acessar apenas 'userData', sem acessar algo mais específico como 'userData.name' ou  'userData.email')..
+
+
+
+
+
+
+
+
+  VOCÊ TAMBÉM PODE ESTRUTURAR SEU PATH tipo assim:
+
+
+
+
+  .get('userData', 'username') 
+
+
+
+
+
+
+
+
+
+  ,
+
+
+  MAS ESSA SINTAXE NÃO É TÃO BOA...
+
+
+
+
+
+
+
+
+
+
+
+  OK, NOSSO CÓDIGO INTEIRO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmitForm()">
+        <!--AQUI AINDA VAMOS USAR ESSA DIRECTIVE/EVENT de 'ngSubmit', pq vamos querer USAR O COMPORTAMENTO DE 'submit' do HTML/JS comum _ PARA _ EXECUTAR NOSSOS PRÓPRIOS METHODS no arquivo .ts....-->
+        <!-- É ASSIM QUE VINCULAMOS NOSSA FORM CRIADA LÁ EM UM ARQUIVO TS, nesse arquivo html, nessa form do arquivo html... através de property binding com '[formGroup]'-->
+        <div formGroupName="userData">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            [ngClass]="{
+              redBorder:
+                signupForm.get('userData.username')?.value &&
+                !signupForm.get('userData.username')?.valid
+                  ? 1
+                  : 0
+            }"
+            type="text"
+            id="username"
+            class="form-control"
+            formControlName="username"
+          />
+          <!-- AQUI, O QUE INTERESSA É 'formControlName', pq O VALUE PASSADO A ESSA DIRECTIVE SERÁ BUSCADO LÁ NO SEU CÓDIGO TYPESCRIPT, na form TS a que foi vinculada essa form do HTML...  (o angular vai buscar pelos KEY NAMES da sua form, lá no código typescript)-->
+        </div>
+
+        <!-- PARA GANHAR ACESSO A PROPRIEDADES como 'valid', 'invalid', 'touched', 'pristine' e 'dirty' de nossos CONTROLS, DEVEMOS USAR ESSE METHOD DE '.get()' NA NOSSA FORM TS, form criada lá no código ts...-->
+        <span
+          *ngIf="
+            !signupForm.get('userData.username')?.valid &&
+            signupForm.get('userData.username')?.touched
+          "
+          class="help-block"
+          [ngStyle]="{ color: 'red' }"
+          >Username must have more than 4 characters</span
+        >
+
+        <button class="btn btn-default" type="button">
+          Suggest an Username
+        </button>
+        <div class="form-group">
+          <label for="email">Mail</label>
+          <input
+            type="email"
+            [ngClass]="{
+              redBorder:
+                signupForm.get('userData.email')?.value && !signupForm.get('userData.email')?.valid
+                  ? 1
+                  : 0
+            }"
+            id="email"
+            class="form-control"
+            formControlName="email"
+          />
+          <!-- DE NOVO, O QUE INTERESSA É 'formControlName'-->
+        </div>
+        <span
+          *ngIf="
+            !signupForm.get('userData.email')?.valid && signupForm.get('userData.email')?.touched
+          "
+          class="help-block"
+          [ngStyle]="{ color: 'red' }"
+          >Please enter a valid email</span
+        >
+        </div>
+        <span
+        *ngIf="
+          !signupForm.get('userData')?.valid && signupForm.get('userData')?.touched
+        "
+        class="help-block"
+        [ngStyle]="{ color: 'red' }"
+        >Please correct entered user data</span
+      >
+        <div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input type="radio" [value]="gender" formControlName="gender" />
+            {{ gender }}
+          </label>
+        </div>
+        <span
+          *ngIf="!signupForm?.valid && signupForm?.touched"
+          class="help-block"
+          [ngStyle]="{ color: 'red' }"
+          >Please amend your data!</span
+        >
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="!signupForm.valid"
+        >
+          Submit
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COMO VOCÊ PODE VER,
+
+
+É MT FÁCIL REFLETIR A STRUCTURE DE NOSSA FORM NO ARQUIVO TEMPLATE, A PARTIR DA 
+
+
+STRUCTURE NO ARQUIVO TS... 
+
+
+
+
+
+
+
+
+-> o mais importante, no caso, é manter tudo 'IN SYNC'...

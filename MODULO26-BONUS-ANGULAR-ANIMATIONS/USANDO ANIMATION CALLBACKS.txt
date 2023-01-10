@@ -1,0 +1,551 @@
+
+
+
+
+
+
+
+ÚLTIMA AULA DO MÓDULO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ACABAR COM ESSA INTRODUÇÃO ÀS ANIMATIONS,
+
+
+
+
+
+
+O PROFESSOR FALA UM POUCO DA FEATURE DE 'ANIMATION CALLBACKS',
+
+
+
+
+
+
+que é 
+
+
+
+
+UM RECURSO QUE TE DEIXA 
+
+
+
+'RODAR ALGUM OUTRO CÓDIGO ASSIM QUE SUA ANIMATION (qualquer que seja )
+
+
+ACABAR'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> PARA USARMOS UMA 'ANIMATION CALLBACK',
+
+
+
+
+O PROFESSOR 
+
+
+começa editando nosso 
+
+
+
+
+
+
+
+
+html de 'app.component.html'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> O QUE ELE FAZ, PARA COMEÇAR, É SETTAR EVENT BINDING NO HTML..
+
+
+
+
+
+
+
+
+
+--> ou seja,
+
+()="method()"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS ANTES DE ESCREVER ESSE EVENT BINDING,
+
+
+O PROFESSOR CONTA QUE 
+
+
+
+QUANDO LIDAMOS COM ANIMATIONS NO NOSSO DOM,
+
+
+
+
+a notation é sempre esta: '@'...
+
+
+
+
+
+
+
+--> É POR ISSO QUE O 'EVENT' (que é o END DA ANIMATION, NA VERDADE) A QUE VAMOS 'listen TO' 
+
+
+
+
+
+será 
+
+
+PRECEDIDO de '@',
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+(@exemplo)="methodExemplo()"...
+
+
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+      <div [@divStateExample]="animationState"
+            (@divStateExample)="..."
+        style="width: 100px; height: 100px; margin-bottom: 16px"
+      ></div> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+
+
+MAS AÍ O IMPORTANTE É QUE 
+
+
+
+
+
+'@divStateExample'
+
+
+
+
+POR SI SÓ NÃO EXISTE....
+
+
+
+
+
+
+
+
+
+
+
+não, pq sempre que vamos fazer 'listen to' a uma ANIMATION,
+
+
+devemos _ ESCOLHER__ 
+
+
+SE QUEREMOS FAZER 'LISTEN TO'
+
+
+
+AO SEU __ START__ 
+
+
+OU 'FINISH',
+
+
+
+
+
+
+
+states que serão representados 
+
+
+pelas escritas 
+
+
+
+'@divState.start' 
+
+
+
+
+e 
+
+'@divState.done'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA CONSEGUIRMOS EXECUTAR UM CALLBACK, USARMOS UM 'ANIMATION CALLBACK',
+
+
+
+
+
+
+podemos escrever assim, portanto:
+
+
+
+
+
+
+      <div [@divStateExample]="animationState"
+            (@divStateExample.start)="animationStarted()"
+        style="width: 100px; height: 100px; margin-bottom: 16px"
+      ></div> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... AGORA DEVEMOS ESCREVER UM METHOD A SER EXECUTADO, LÁ NO NOSSO COMPONENT,
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+  animationStarted() {
+
+  }
+
+
+
+  animationEnded() {
+    
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  CÓDIGO HTML:
+
+
+
+
+
+
+
+
+
+
+
+
+
+       <div [@divStateExample]="animationState"
+            (@divStateExample.start)="animationStarted()"
+            (@divStateExample.done)="animationEnded()"
+
+        style="width: 100px; height: 100px; margin-bottom: 16px"
+      ></div> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+
+
+
+
+POSSO PASSAR TAMBÉM O NOSSO '$event',
+
+para ver o que temos nesse object de 'event'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> LÁ NOS METHODS, O PROFESSOR RODA UNS CONSOLE.LOGS, 
+
+coisa bem básica...
+
+
+
+
+
+
+
+
+
+
+
+--> QUANDO REINICIAMOS NOSSO APP,
+
+
+VEMOS BREVEMENTE ESSES CONSOLE.LOGS (sinal de que a animation tocou no início, por alguma razão)....
+
+
+
+
+
+
+
+
+--> E AGORA, QUANDO CLICAMOS EM 'animate',
+
+
+
+
+VEMOS O OBJECT DE 
+
+
+
+
+
+
+'$event'
+
+DESSA ANIMATION, QUE TERÁ ESTE FORMATO:
+
+
+
+
+
+
+
+disabled: false
+element: div.ng-tns-c11-0.ng-trigger.ng-trigger-divStateExample
+fromState: "normal"
+phaseName: "done"
+toState: "highlighted"
+totalTime: 300
+triggerName: "divStateExample"
+_data: 3
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... ISSO QEUR DIZER QUE DEPOIS DE A ANIMATION ACABAR,
+PODEMOS 
+
+RODAR ALGUM CÓDIGO, TVZ UM CÓDIGO DE CLEANUP...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK.. AGORA TEMOS UMA INTRODUÇÕA ÀS ANIMATIONS DO ANGULAR...
+
+
+
+
+
+
+
+
+
+
+--> DEVEMOS TENTAR ANIMAR ALGUMAS COISAS NO NOSSO RECIPE BOOK...

@@ -1,0 +1,1093 @@
+
+
+
+
+
+
+
+
+
+
+-> QUASE ACABAMOS...
+
+
+
+
+
+
+
+
+É HORA DE 
+
+
+ ADICIONARMOS O RESTO DAS FEATURES, DO 'FEATURE SET' 
+
+
+
+
+
+
+
+
+
+ do ngrx...
+
+
+
+
+
+
+
+
+
+
+ -> PROFESSOR QUER COMEÇAR PELO CÓDIGO DE EDIT E DELETE DE RECIPES..
+
+
+
+
+
+
+
+
+ --> MAS EU JÁ CONSEGUI FAZER ISSO, ACHO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ELE COMEÇA COM O ADD DE ACTIONS NOVAS:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ import { Action } from '@ngrx/store';
+import { Ingredient } from 'src/app/shared/ingredient.model';
+import { Recipe } from '../recipe.model';
+
+export const START_FETCH_RECIPES = '[RecipeBook] START_FETCH_RECIPES';
+
+export const FETCH_RECIPES_SUCCESS = '[RecipeBook] FETCH_RECIPES_SUCCESS';
+
+export const FETCH_RECIPES_FAIL = '[RecipeBook] FETCH_RECIPES_FAIL';
+
+export const SAVE_RECIPES_START = '[RecipeBook] SAVE_RECIPES_START';
+
+export const SAVE_RECIPES_SUCCESS = '[RecipeBook] SAVE_RECIPES_SUCCESS';
+
+export const SAVE_RECIPES_FAIL = '[RecipeBook] SAVE_RECIPES_FAIL';
+
+export const ADD_RECIPE = '[RecipeBook] ADD_RECIPE';
+
+export const DELETE_RECIPE = '[RecipeBook] DELETE_RECIPE';
+
+export const EDIT_RECIPE = '[RecipeBook] EDIT_RECIPE';
+
+export const SELECT_RECIPE = '[RecipeBook] SELECT_RECIPE';
+
+export const GET_RECIPE = '[RecipeBook] GET_RECIPE';
+
+// export const GET_RECIPES = '[RecipeBook] GET_RECIPES';
+
+
+export const SEND_INGREDIENTS_TO_SHOP_LIST = '[RecipeBook] SEND_INGREDIENTS_TO_SHOP_LIST';
+
+export class StartFetchRecipes implements Action {
+  readonly type = START_FETCH_RECIPES;
+
+  constructor() {}
+}
+
+export class RecipesFetchSuccess implements Action {
+  readonly type = FETCH_RECIPES_SUCCESS;
+
+  constructor(public payload: { recipes: Recipe[] }) {}
+}
+
+export class RecipesFetchFail implements Action {
+  readonly type = FETCH_RECIPES_FAIL;
+
+  constructor(public payload: string) {}
+}
+
+export class AddRecipe implements Action {
+  readonly type = ADD_RECIPE;
+
+  constructor(public payload: Recipe) {}
+}
+
+export class EditRecipe implements Action {
+  readonly type = EDIT_RECIPE;
+
+  constructor(public payload: Recipe) {}
+}
+
+export class DeleteRecipe implements Action {
+  readonly type = DELETE_RECIPE;
+
+  constructor(public payload: number) {}
+}
+
+// export class SelectRecipe implements Action {
+// readonly  type = SELECT_RECIPE;
+
+//   constructor(public payload: { recipe: Recipe; index: number }) {}
+// }
+
+export class SaveRecipesStart implements Action {
+  readonly type = SAVE_RECIPES_START;
+
+  constructor(public payload: Recipe[]) {}
+}
+
+export class SaveRecipesSuccess implements Action {
+  readonly type = SAVE_RECIPES_SUCCESS;
+
+  constructor() {}
+}
+
+export class SaveRecipesFail implements Action {
+  readonly type = SAVE_RECIPES_FAIL;
+
+  constructor(public payload: string) {} ///nossa mensagem de error...
+}
+
+
+export class SendIngredientsToShopList implements Action {
+  readonly type = SEND_INGREDIENTS_TO_SHOP_LIST;
+
+  constructor(public payload: Ingredient[]) {} ///nossa mensagem de error...
+}
+
+export type RecipeBookActions =
+  | AddRecipe
+  // | SelectRecipe
+  | SendIngredientsToShopList
+  | DeleteRecipe
+  | EditRecipe
+  | StartFetchRecipes
+  | RecipesFetchSuccess
+  | RecipesFetchFail
+  | SaveRecipesStart
+  | SaveRecipesSuccess
+  | SaveRecipesFail
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> certo.... isso eu já fiz...
+
+
+
+
+
+
+
+O REDUCER, COM AS HELPER FUNCTIONS, FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Recipe } from '../recipe.model';
+
+import { updateObject } from 'src/app/utility/updateObject';
+
+// import * as RecipeBookActions from './recipeBookActions';
+
+import * as fromRecipeBook from './recipeBookActions';
+
+export interface RecipeBookState {
+  recipes: Recipe[];
+  // selectedRecipe: Recipe | null;
+  // selectedRecipeIndex: number;
+  isLoading: boolean;
+  error: string | null;
+}
+
+// export interface AppState {
+//   recipeBook: RecipeBookState;
+// }
+
+const initialState: RecipeBookState = {
+  recipes: [],
+  // selectedRecipe: null,
+  // selectedRecipeIndex: -1,
+  isLoading: false,
+  error: null,
+};
+
+export function recipeBookReducer(
+  state: RecipeBookState = initialState,
+  action: fromRecipeBook.RecipeBookActions
+) {
+  switch (action.type) {
+    case fromRecipeBook.START_FETCH_RECIPES:
+      return startFetchRecipes(
+        state,
+        action as fromRecipeBook.StartFetchRecipes
+      );
+    case fromRecipeBook.FETCH_RECIPES_SUCCESS:
+      return recipesFetchSuccess(
+        state,
+        action as fromRecipeBook.RecipesFetchSuccess
+      );
+    case fromRecipeBook.FETCH_RECIPES_FAIL:
+      return recipesFetchFail(state, action as fromRecipeBook.RecipesFetchFail);
+      case fromRecipeBook.SAVE_RECIPES_START:
+        return saveRecipesStart(state, action as fromRecipeBook.SaveRecipesStart);
+      case fromRecipeBook.SAVE_RECIPES_FAIL:
+        return saveRecipesFail(state, action as fromRecipeBook.SaveRecipesFail);
+      case fromRecipeBook.SAVE_RECIPES_SUCCESS:
+        return saveRecipesSuccess(state, action as fromRecipeBook.SaveRecipesSuccess)
+    case fromRecipeBook.ADD_RECIPE:
+      return addRecipe(state, action as fromRecipeBook.AddRecipe);
+    case fromRecipeBook.EDIT_RECIPE:
+      return editRecipe(state, action as fromRecipeBook.EditRecipe);
+    // case fromRecipeBook.SELECT_RECIPE:
+    //   return selectRecipe(state, action as fromRecipeBook.SelectRecipe);
+    case fromRecipeBook.DELETE_RECIPE:
+      return deleteRecipe(state, action as fromRecipeBook.DeleteRecipe);
+    default:
+      return state;
+  }
+}
+
+const addRecipe = (
+  state: RecipeBookState,
+  action: fromRecipeBook.AddRecipe
+): RecipeBookState => {
+  const updatedRecipes = [...state.recipes];
+
+  updatedRecipes.push(action.payload);
+
+  return updateObject(state, { recipes: updatedRecipes });
+};
+
+const editRecipe = (
+  state: RecipeBookState,
+  action: fromRecipeBook.EditRecipe
+): RecipeBookState => {
+  const updatedRecipes = [...state.recipes];
+
+  console.log(updatedRecipes, 'OLDRECIPES');
+
+  // console.log(state.selectedRecipeIndex);
+
+
+    ////eis o problema...
+
+
+  // updatedRecipes[state.selectedRecipeIndex] = action.payload;
+
+
+
+
+  const editedRecipeIndex = updatedRecipes.findIndex(
+    (recipe) => {
+      console.log(recipe.id, action.payload.id)
+        return recipe.id === action.payload.id;
+    }
+  )
+
+
+
+  updatedRecipes[editedRecipeIndex] = action.payload;
+
+
+
+
+  console.log(updatedRecipes, 'NEWRECIPES');
+
+  return updateObject(state, {
+    recipes: updatedRecipes,
+    // selectedRecipeIndex: -1,
+    // selectedRecipe: null,
+  });
+};
+
+// const selectRecipe = (
+//   state: RecipeBookState,
+//   action: fromRecipeBook.SelectRecipe
+// ): RecipeBookState => {
+//   return updateObject(state, {
+//     selectedRecipeIndex: action.payload.index,
+//     selectedRecipe: action.payload.recipe,
+//   });
+// };
+
+const deleteRecipe = (
+  state: RecipeBookState,
+  action: fromRecipeBook.DeleteRecipe
+): RecipeBookState => {
+  const updatedRecipes = [...state.recipes];
+
+
+  const deletedRecipeIndex = updatedRecipes.findIndex(
+    (recipe) => {
+      console.log(recipe.id, action.payload)
+        return recipe.id === action.payload;
+    }
+  )
+
+
+  updatedRecipes.splice(deletedRecipeIndex, 1);
+
+  return updateObject(state, {
+    recipes: updatedRecipes,
+    // selectedRecipeIndex: -1,
+    // selectedRecipe: null,
+  });
+};
+
+const startFetchRecipes = (
+  state: RecipeBookState,
+  action: fromRecipeBook.StartFetchRecipes
+): RecipeBookState => {
+  return updateObject(state, { isLoading: true, error: null });
+};
+
+const recipesFetchSuccess = (
+  state: RecipeBookState,
+  action: fromRecipeBook.RecipesFetchSuccess
+): RecipeBookState => {
+  return updateObject(state, {
+    error: null,
+    isLoading: false,
+    recipes: action.payload.recipes,
+  });
+};
+
+const recipesFetchFail = (
+  state: RecipeBookState,
+  action: fromRecipeBook.RecipesFetchFail
+): RecipeBookState => {
+  return updateObject(state, { error: action.payload });
+};
+
+
+
+
+
+
+
+
+
+const saveRecipesStart = (
+  state: RecipeBookState,
+  action: fromRecipeBook.SaveRecipesStart
+): RecipeBookState => {
+
+
+  return updateObject(state, { isLoading: true, error: null})
+
+
+}
+
+
+const saveRecipesFail = (
+  state: RecipeBookState,
+  action: fromRecipeBook.SaveRecipesFail
+): RecipeBookState => {
+  return updateObject(state, { isLoading: false, error: action.payload})
+
+}
+
+
+const saveRecipesSuccess = (
+  state: RecipeBookState,
+  action: fromRecipeBook.SaveRecipesSuccess
+): RecipeBookState => {
+  return updateObject(state, { isLoading: false, error: null})
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo...
+
+
+
+
+
+
+
+
+
+
+MAS AGORA FICAMOS COM UM NOVO PROBLEMA...
+
+
+--> QUANDO EDITAMOS UMA RECIPE....
+
+
+
+
+
+
+
+--> OCORRE QUE NOSSO STATE É ATUALIZADO, SIM, MAS 
+
+AÍ AUTOMATICAMENTE FIZEMOS 'NAVIGATE', 
+
+
+
+O QUE __ ATIVOU O 'RESOLVER',
+
+
+
+QUE ENTÃO SIMPLESMENTE CARREGOU 'NOVAS RECIPES, VINDAS DIRETO DO NOSSO SERVER',
+
+
+
+o que acabou OVERWRITTANDO AS CHANGES QUE FIZEMOS COM O 'EDIT RECIPE'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA CONSERTAR ISSO,
+
+
+O PROFESSOR 
+
+
+
+
+VOLTA AO resolver, que está com este código:
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+
+import {
+  ActivatedRouteSnapshot,
+  Resolve,
+  RouterStateSnapshot,
+} from '@angular/router';
+import { Store } from '@ngrx/store';
+import { map, Observable, switchMap, take } from 'rxjs';
+import { AppState } from '.';
+import { RecipeBookService } from './recipeBook.service';
+import { Recipe } from './recipeBook/recipe.model';
+
+import * as RecipeBookActions from '../app/recipeBook/store/recipeBookActions';
+
+import { ofType, Actions } from '@ngrx/effects';
+
+@Injectable({ providedIn: 'root' })
+export class RecipesResolverService implements Resolve<Recipe[]> {
+  resolve(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Recipe[] | Observable<Recipe[]> | Promise<Recipe[]> {
+    this.store.dispatch(new RecipeBookActions.StartFetchRecipes());
+
+    return this.actions$.pipe(
+      ofType(RecipeBookActions.FETCH_RECIPES_SUCCESS),
+
+      take(1)
+    );
+  }
+
+  constructor(
+    private store: Store<AppState>,
+
+    private actions$: Actions
+  ) {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> AÍ ELE DECIDE USAR UM 
+
+
+
+
+'this.store.select('recipes')'
+
+
+
+
+, 
+
+PARA AÍ 
+
+
+
+
+CARREGAR _ AS RECIPES 'PRÉVIAS' DE NOSSO STORE (se existiam) 
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+
+  resolve(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Recipe[] | Observable<Recipe[]> | Promise<Recipe[]> {
+
+    this.store.select('recipes').pipe( ///////EIS O CÓDIGO EM QUESTAÕ.
+      map(
+        (recipesState) => {
+          return recipesState.recipes;  
+        }
+      )
+    )
+
+    this.store.dispatch(new RecipeBookActions.StartFetchRecipes());
+
+    return this.actions$.pipe(
+      ofType(RecipeBookActions.FETCH_RECIPES_SUCCESS),
+
+      take(1)
+    );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> bem, esse call de 'this.store.select()'
+
+
+
+
+    VAI OU RETORNAR UM 'EMPTY ARRAY', OU UM 'FILLED ARRAY'...
+
+
+
+
+
+
+
+
+    ---> AÍ VAMOS QUERER FAZER A MESMA COISA QUE FIZEMOS NA AULA PASSADA:
+
+
+
+
+
+
+
+
+    VAMOS CRIAR UM 'GRANDE OBSERVABLE', QUE SERÁ A FUSÃO DESSE OBSERVABLE (store) 
+
+
+    de 'PEGAR O STATE ANTIGO' 
+
+
+
+  COM O OBSERVABLE __ QUE FAZ O ACTUAL DISPATCH DA ACTION DE 'START_FETCH_RECIPES' 
+
+
+  E QUE RECEBE O RESULTADO DESSE FETCH....
+
+
+
+
+
+
+
+
+
+  --> PARA CONSEGUIR CRIAR ESSE 'GRANDE OBSERVABLE',
+
+
+  VAMOS NOS UTILIZAR, NOVAMENTE, DE 'switchMap',
+
+
+  QUE 
+
+
+  VAI __ TROCAR ESSE OBSERVABLE INICIAL DE 'store'
+   
+
+   POR ESSE OBSERVABLE DE 'fetch recipes'...
+
+
+
+
+
+   ex:
+
+
+
+
+
+
+
+   
+  resolve(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Recipe[] | Observable<Recipe[]> | Promise<Recipe[]> {
+
+    this.store.select('recipes').pipe( 
+      map(
+        (recipesState) => {
+          return recipesState.recipes;  
+        }
+      ),
+
+
+      switchMap( //////////EIS O CÓDIGO EM QUESTÃO.
+        (recipes) => {
+    
+     this.store.dispatch(new RecipeBookActions.StartFetchRecipes());
+
+    return this.actions$.pipe(
+      ofType(RecipeBookActions.FETCH_RECIPES_SUCCESS),
+
+      take(1)
+    );
+        }
+      )
+    )
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS AQUI É CLARO QUE VAMOS REALIZAR UMA OPERAÇÃO,
+
+
+VAMOS USAR A INFO de 'recipes' obtida lá de 'this.store.select()';
+
+
+vamos 
+
+FUNDI-LÁ COM AS RECIPES FETCHEADAS LÁ DO BACKEND...
+
+
+
+
+
+
+
+-> MAS ANTES DISSO, EM 'switchMap'
+
+
+ADICIONAMOS UM CHECK 
+
+
+pelo 
+
+
+'LENGTH === 0'
+
+
+
+
+do array de recipes... ---> SE A LENGTH FOR REALMENTE 0,
+
+
+SABEMOS QUE 
+
+
+TEREMOS 'NENHUMA RECIPE'... --> nesse case,
+
+
+
+VAMOS QUERER DISPATCHEAR 
+
+
+
+DIRETAMENTE A ACTION DE 'FETCH RECIPES', tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+  resolve(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Recipe[] | Observable<Recipe[]> | Promise<Recipe[]> {
+
+    this.store.select('recipes').pipe( 
+      map(
+        (recipesState) => {
+          return recipesState.recipes;  
+        }
+      ),
+      switchMap( 
+        (recipes) => {
+          if (recipes.length === 0 ) {
+      this.store.dispatch(new RecipeBookActions.StartFetchRecipes()); //////////EIS O CÓDIGO EM QUESTÃO.
+
+      return this.actions$.pipe(
+      ofType(RecipeBookActions.FETCH_RECIPES_SUCCESS),
+
+      take(1)
+
+          }
+    
+
+
+
+    );
+        }
+      )
+    )
+
+
+
+
+
+
+
+CASO CONTRÁRIO, CASO ESSE CASE NÃO SEJA SATISFEITO,
+ 
+ NÓS AINDA VAMOS TER QUE RESOLVER 
+
+
+
+ 1 'OBSERVABLE',
+
+ por isso 
+
+
+ O PROFESSOR IMPORTA 'of()' (method usado PARA CRIAR OBSERVABLES)
+
+
+
+
+
+
+
+
+ PARA _ AÍ RETORNARMOS NOSSAS 'recipes'... (do state originário)...
+
+
+
+
+
+
+ eX:
+
+
+
+
+
+ 
+
+   
+  resolve(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Recipe[] | Observable<Recipe[]> | Promise<Recipe[]> {
+
+    this.store.select('recipes').pipe( 
+      map(
+        (recipesState) => {
+          return recipesState.recipes;  
+        }
+      ),
+      switchMap( 
+        (recipes) => {
+          if (recipes.length === 0 ) {
+      this.store.dispatch(new RecipeBookActions.StartFetchRecipes()); //////////EIS O CÓDIGO EM QUESTÃO.
+
+      return this.actions$.pipe(
+      ofType(RecipeBookActions.FETCH_RECIPES_SUCCESS),
+
+      take(1)
+
+          } else {
+
+            return of(recipes);
+          }
+    
+
+
+
+    );
+        }
+      )
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+CÓDIGO FINAL:
+
+
+
+
+
+
+
+
+
+
+
+
+           return this.store.select('recipeBook').pipe(
+                    
+                    map(
+                        (recipeBookState) => {
+
+                            return recipeBookState.recipes;
+                        }
+                    ),
+
+
+                    switchMap(
+                        (recipes: Recipe[]) => {
+
+
+                            if (recipes.length === 0) { ///se não tivermos NENHUM RECIPE ITEM NO STATE DE RECIPES 'LOCAL' antigo, vamos querer FETCHEAR ESSAS RECIPES LÁ DO BACKEDN...
+                                this.store.dispatch(new RecipeBookActions.StartFetchRecipes());
+
+
+                                return this.actions$.pipe(
+                                    ofType(
+                                      RecipeBookActions.FETCH_RECIPES_SUCCESS
+                                    ),
+                
+                                    take(1)  ////vamos querer apenas o PRIMEIRO 'state' que esse negócio vai nos retornar, descartados os outros states subsequentes...
+                
+                                )
+                            } else {
+
+                                return of(recipes);  ////CASO JÁ TENHAMOS ALGUM 'RECIPE ITEM' NO NOSSO STATE VELHO, vamos querer MANTÊ-LO, E NÃO FAZER 'RETRIEVE/FETCH' dos recipes lá no backend...
+
+                            }
+                        }
+                    )
+                )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------
+
+
+
+
+
+
+ OK, FUNCIONOu...
+
+
+
+
+
+
+
+
+
+está tudo funcionando, pelo visto....
+
+
+
+
+
+
+não temos nenhuma 'ongoing subscription' na nossa página...
+
+
+
+
+
+
+
+
+
+oq é bom, pq garante que não temos memory leaks...
+
+
+
+
+
+
+
+
+certo... qual é o próximo passo?

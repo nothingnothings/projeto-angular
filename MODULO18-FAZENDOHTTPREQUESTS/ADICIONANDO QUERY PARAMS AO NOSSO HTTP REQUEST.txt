@@ -1,0 +1,931 @@
+
+
+
+
+
+
+
+
+
+
+QUERY PARAMS PODEM SER EXTRAÍDOS TANTO DA URL COMO 
+
+DE NOSSOS 
+
+
+HTTP REQUESTS.... (isso foi visto lá no curso de node, se não me engano)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> HEADERS SÃO APENAS UMA DAS COISAS QUE PODEMOS SETTAR, LÁ NOS NOSSOS HTTP REQUESTS.
+
+
+
+
+
+
+
+
+
+
+
+--> PARA MTAS API endpoints,
+
+
+
+
+VOCÊ TAMBÉM PODE ANEXAR ALGUNS _ QUERY PARAMETERS... -> MAS ISSO DEPENDE DA API ENDPOINT QUE VOCê ESTÁ TARGETTANDO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--->  POR EXEMPLO,
+
+A FIREBASE REST API
+
+
+
+, NOS DOCS,
+
+
+NOS DIZ QUE 
+
+
+
+
+
+HÁ UM 
+
+QUERY PARAM _ QUE É SUPPORTADO,
+
+
+
+
+
+CUJO EFEITO 
+
+PODE SER IMEDIATAMENTE VISUALIZADO..
+
+
+
+
+
+
+
+
+
+
+--> SE VOCÊ QUER ADICIONAR QUERY PARAMETERS NO SEU HTTP REQUEST,
+
+
+
+AQUI NO 
+
+ANGULAR,
+
+
+
+VOCÊ 
+
+DEVE ADICIONAR UMA NOVA KEY,
+
+'params',
+
+
+àQUELE SEGUNDO PARÂMETRO DE CADA METHOD DE '.get()", '.post()',
+ 
+
+ '.put()',
+
+
+ '.patch()'...
+
+
+
+ TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+       .get<{ [name: string]: Post }>(
+        'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json', ///1o argumento, é a url/route/api endpoint que você quer targettar...
+        
+        {  //2o e ÚLTIMO argumento: é o 'HTTP REQUEST CONFIG' object... --> define várias coisas sobre nosso http request, como OS HEADERS..
+
+          headers: new HttpHeaders(
+            {
+              "Custom-Header": "Hello-Example"
+            }
+          ),
+          params:  ///////////////EIS O CÓDIGO EM QUESTÃO.
+        }
+      
+      
+        )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        --------> O VALUE DESSE NEGÓCIO SERÁ DE 'new HttpParams()'..
+
+
+
+
+
+
+        Ex:
+
+
+
+
+
+
+
+
+
+
+
+        
+
+
+
+       .get<{ [name: string]: Post }>(
+        'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json', ///1o argumento, é a url/route/api endpoint que você quer targettar...
+        
+        {  //2o e ÚLTIMO argumento: é o 'HTTP REQUEST CONFIG' object... --> define várias coisas sobre nosso http request, como OS HEADERS..
+
+          headers: new HttpHeaders(
+            {
+              "Custom-Header": "Hello-Example"
+            }
+          ),
+          params:  new HttpParams()
+        }
+      
+      
+        )
+
+
+
+
+
+
+
+
+
+-----------------
+
+
+
+
+NO SEU INTERIOR, TAMBÉM VAMOS PASSAR UM OBJECT, descrevendo quais serão os QUERY PARAMS 
+
+
+desse http request...
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       .get<{ [name: string]: Post }>(
+        'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json', ///1o argumento, é a url/route/api endpoint que você quer targettar...
+        
+        {  //2o e ÚLTIMO argumento: é o 'HTTP REQUEST CONFIG' object... --> define várias coisas sobre nosso http request, como OS HEADERS..
+
+          headers: new HttpHeaders(
+            {
+              "Custom-Header": "Hello-Example"
+            }
+          ),
+          params:  new HttpParams({ })
+        }
+      
+      
+        )
+
+
+
+
+
+
+
+
+
+
+
+--------------------
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+@Injectable()
+export class PostsHttpService {
+  constructor(private http: HttpClient) {}
+
+  private fetchPosts() {
+    return this.http
+      .get<{ [name: string]: Post }>(
+        'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json', ///1o argumento, é a url/route/api endpoint que você quer targettar...
+        
+        {  //2o e ÚLTIMO argumento: é o 'HTTP REQUEST CONFIG' object... --> define várias coisas sobre nosso http request, como OS HEADERS..
+
+          headers: new HttpHeaders(
+            {
+              "Custom-Header": "Hello-Example"
+            }
+          ),
+          params: new HttpParams()
+        }
+      
+      
+        )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        --> ok...
+
+
+
+
+
+
+
+
+        MAS O FUNCIONAMNETO DE 'httpParams'
+
+
+
+
+
+        É UM POUCO DIFERENTE DE 'httpHeaders'...
+
+
+
+
+
+
+
+        ----> AQUI,
+
+
+
+
+        NÓS SOMOS OBRIGADOS A CHAMAR  '.set()',
+
+        E AÍ 
+
+
+
+        DEFINIMOS UM __ VALUE_ PARA ESSE PARAM..
+
+
+
+
+
+
+
+
+
+
+
+        fica tipo 
+
+
+
+
+
+
+
+        new HttpParams().set(
+
+        )
+
+
+
+
+
+
+
+
+
+
+        --------->
+
+
+
+  OK.. QUANDO RODAMOS ESSE '.set()',
+
+
+
+
+
+  PODEMOS _ DEFINIR UM 'PARAM NAME',
+
+
+
+
+
+
+
+
+
+E 
+
+AÍ _ O VALUE__ PARA _ ESSE PARAM... -------> 
+
+
+
+
+COMO EXEMPLO,
+
+
+O PROFESSOR 
+
+VAI COLOCAR 
+
+
+O 
+
+PARAM DE 'print' (
+
+  
+
+  que é um param SUPORTADO PELO FIREBASE
+),
+
+
+
+
+E AÍ _ ELE _ DEIXA O VALUE COMO 'pretty' -------> ISSO VAI FAZER COM QUE _O  FORMATO 
+
+__ 
+
+PELO QUAL O FIREBASE RETORNA A DATA, NA RESPONSE, SEJA ALTERADO...
+
+
+
+
+
+
+
+
+O CÓDIGO COMPLETO FICA ASSIM:
+
+
+
+
+        new HttpParams().set(
+'print', 'pretty'
+        )
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIm:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  private fetchPosts() {
+    ///outsourcing.
+    return this.http
+      .get<{ [name: string]: Post }>(
+        'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json', ///1o argumento, é a url/route/api endpoint que você quer targettar...
+        
+        {  //2o e ÚLTIMO argumento: é o 'HTTP REQUEST CONFIG' object... --> define várias coisas sobre nosso http request, como OS HEADERS..
+
+          headers: new HttpHeaders(
+            {
+              "Custom-Header": "Hello-Example"
+            }
+          ),
+          params: new HttpParams().set(
+            'print', ///'NOME DO PARAM' 
+            'pretty' ///'VALUE DO PARAM' (print -> pretty)
+          )
+        }
+      
+      
+        )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO, CONSEGUIMOS ALTERAR A MANEIRA PELA QUAL 
+
+
+O FIREBASE RETORNA NOSSA DATA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA VER SE ESSE QUERY PARAM FOI ANEXADO AO NOSSO REQUEST,
+
+
+
+BASTA 
+
+
+
+
+ABRIR A NETWORK TAB NO GOOGLE CHROME,
+
+
+E AÍ CHECAR O 'REQUEST URL'...
+
+
+
+
+
+
+
+--> veremos que seu formato terá sido de 
+
+
+
+''' https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json?print=pretty
+
+
+
+''',
+
+
+
+
+
+
+
+
+
+
+OU SEJA,
+
+
+
+A QUERY PARAM DE 
+
+'?print=pretty'
+
+
+
+FOI ANEXADA AO FINAL DE NOSSA URL... (e isso é USADO PELA API DO FIREBASE)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DETALHE: É CLARO QUE PODERÍAMOS TER ADICIONADO 
+
+ESSA 
+
+
+QUERY PARAM _ AO NOSSO REQUEST _ MANUALMENTE,
+
+
+
+ESCREVÊ-LA
+
+
+
+
+lá em  
+
+
+
+''''  
+
+.get<{ [name: string]: Post }>(
+        'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json?print=pretty'
+
+
+        )
+
+
+  ''''
+
+
+
+
+
+
+
+
+
+
+  -> poderíamos ter feito isso,
+   
+   e até mesmo 
+
+   poderíamos ter feito isto, com vários query params:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.get<{ [name: string]: Post }>(
+        'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json?print=pretty&page=1'
+
+
+        )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE PODERÍAMOS TER FEITO ISSO NA URL,
+
+
+MAS É _ ÓBVIO_ QUE É BEM MAIS CONVENIENTE 
+
+DEFINIR 
+
+
+ESSES QUERY PARAMS nesse argumento de 'params' 
+
+
+
+
+no segundo parÂmetro de '.get()' (ou qualquer outro method de verb, da package de 'HttpClient')...
+
+
+
+
+
+
+
+
+
+-> ISSO PQ AÍ VOCÊ NÃO VAI PRECISAR CONCATENAR UMA STRING ABSURDAMENTE LONGA,
+
+ 
+ E
+  SIM 
+
+  _ 
+  CONSEGUIRÁ
+
+
+  DEFINIR 
+
+  ESSES QUERY PARAMS NO METHOD DE '.set()'...
+
+
+
+
+
+
+
+
+
+
+  --> SE VOCê QUISER _ ADICIONAR __ MÚLTIPLAS QUERY PARAMS A SUA URL/HTTP REQUEST,
+
+
+  você 
+
+
+
+  DEVE CRIAR 1 CONST QUE SERÁ 'TODAS' AS QUERY PARAMS, e aí 
+  
+  adicionar CADA 'query param' (key-value pair),
+
+  com 'append', 1 por 1...
+
+
+
+
+
+
+
+
+  ESCREVER TIPO ASSIM:
+
+
+
+
+
+
+
+  let searchParams = new HttpParams();
+
+  searchParams = searchParams.append('print', 'pretty');
+  searchParams = searchParams.append('page', '1');
+  searchParams = searchParams.append('custom', 'key');
+
+
+
+
+return
+
+this.http
+.get<{ [name: string]: Post }>(
+        'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json?print=pretty&page=1',
+
+
+
+        {
+          headers: xxxx,
+          params: searchParams
+        }
+
+
+        )
+
+
+
+
+
+
+
+
+
+
+
+    EX:
+
+
+
+
+
+
+
+
+
+
+      private fetchPosts() {
+    ///outsourcing.
+
+
+    let searchParams = new HttpParams();
+    searchParams = searchParams.append('print', 'pretty');
+    searchParams = searchParams.append('custom', 'key');
+    searchParams = searchParams.append('page' , '1');
+
+    return this.http
+      .get<{ [name: string]: Post }>(
+        'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json', ///1o argumento, é a url/route/api endpoint que você quer targettar...
+        
+        {  //2o e ÚLTIMO argumento: é o 'HTTP REQUEST CONFIG' object... --> define várias coisas sobre nosso http request, como OS HEADERS..
+
+          headers: new HttpHeaders(
+            {
+              "Custom-Header": "Hello-Example"
+            }
+          ),
+
+          params: searchParams //////// é assim que anexamos múltiplos query params a nosso http request...
+
+          // params: new HttpParams().set( ///usado para definir QUERY PARAMs.... --> mas esse approach só nos deixa DEFINIR 1 ÚNICO QUERY PARAM, por isso é inferior... (devemos usar aquele código de 'let searchParams', visto logo acima, que nos deixa COLOCAR MÚLTIPLOS QUERY PARAMS NO NOSSO HTTP REQUEST)...
+
+          //   'print', ///'NOME DO PARAM'  --> 'print' é um queryParam suportado pelo firebase, que vai retornar nossa data em um formato 'pretty'...
+          //   'pretty' ///'VALUE DO PARAM' (print -> pretty)
+          // )
+        }
+      
+      
+        )
+
+
+
+
+
+
+
+--------------------------------
+
+
+
+
+
+
+
+
+
+
+COMO VOCÊ PODE VER,
+
+AGORA TEREMOS MÚLTIPLOS 
+
+QUERY PARAMETERS ANEXADOS A NOSSA URL:
+
+
+https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json?print=pretty&custom=key&page=1
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É BEM MAIS CONVENIENTE DEFINIR ESSES QUERY PARAMS 
+
+
+DENTRO DE NOSSO CONFIG OBJECT 
+
+
+
+DO SEGUNDO PARÂMETRO DE '.get()', '.post()', '.put()'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO...
+
+
+
+
+
+'custom=key' --> ESSE QUERY NÃO EXISTE...
+
+
+
+
+
+
+--> 'pretty' --> deixa nossa response um pouco mais ''human readable''....

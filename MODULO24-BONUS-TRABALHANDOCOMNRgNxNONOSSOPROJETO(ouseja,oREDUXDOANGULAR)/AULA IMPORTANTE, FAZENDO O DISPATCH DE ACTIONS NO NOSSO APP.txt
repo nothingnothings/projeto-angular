@@ -1,0 +1,2447 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... JÁ SOMOS CAPAZES DE FAZER 'GET' DO  SLICE DO STATE DE 'shoppingList'
+
+
+
+DO NOSSO CENTRAL STORE, 
+
+
+GRAÇAS A ESTES CÓDIGOS:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+// import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
+
+import { AppComponent } from './app.component';
+
+import { HeaderComponent } from './headerComponent/headerComponent.app';
+
+import { RecipeBookService } from './recipeBook.service';
+import { ShoppingListService } from './shoppingList.service';
+import { GenericErrorPageComponent } from './generic-error-page/generic-error-page.component';
+import { AppRoutingModule } from './app-routing.module';
+import { HomePageComponent } from './home-page/home-page.component';
+
+
+import { HttpInterceptorService } from 'src/app/httpInterceptor.service';
+
+import { SharedModule } from './shared/shared.module';
+import { LoggingService } from './logging.service';
+import { StoreModule } from '@ngrx/store';
+import { shoppingListReducer } from './ShoppingList/store/shoppingList.reducer';
+// import { AuthModule } from './auth/auth.module';   ///LAZILY LOADED EM 'app.routing-module.ts'...
+// import { AlertDynamicComponent } from './shared/alertVersaoNgIf (bem mais pratica)/alert.component';
+
+
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+
+    GenericErrorPageComponent,
+    HomePageComponent,
+
+  ],
+  imports: [
+    // AuthModule, ///outsourcing em essa 'feature module'...  ////depois removemos esse import daqui, pq passamos a fazer LAZYLOADING desse module, com a ajuda de 'app-routing.module.ts'...
+    
+    
+    StoreModule.forRoot( ////é o 'CENTRAL STORE' de nosso app, implementado com NGRX...  //// aqui, precisamos dizer 'QUAIS REDUCERS VÃO SER USADOS NO NOSSO APP, QUE VÃO COMPOR NOSSA CENTRAL STORE, essencialmente'...
+      { ///1 identifier para cada 'PARTE/REDUCER' do seu app, cada parte do state do seu app....
+         shoppingList: shoppingListReducer         
+      }
+    ),
+
+    BrowserModule,
+ 
+    AppRoutingModule,  //módulo de routing, customizado por nós...
+    HttpClientModule,
+ 
+    SharedModule   ///outsourcing...
+
+  ],
+
+  providers: [RecipeBookService, ShoppingListService, LoggingService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpInterceptorService,
+      multi: true
+    }
+  
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(shoppingList.component.ts):
+
+
+
+
+E ESTE:
+
+
+
+
+
+
+import { Component, OnDestroy, OnInit } from '@angular/core';
+
+import { Store } from '@ngrx/store'; //IMPORTANTE
+
+import { Observable, Subscription } from 'rxjs';
+import { LoggingService } from '../logging.service';
+import { Ingredient } from '../shared/ingredient.model';
+import { ShoppingListService } from '../shoppingList.service';
+
+@Component({
+  selector: 'app-shopping-list',
+  templateUrl: './shoppingList.component.html',
+  styleUrls: ['./shoppingList.component.css'],
+})
+export class ShoppingListComponent implements OnInit {
+  ingredients: Observable<{ ingredients: Ingredient[] }>; ////IMPORTANTE
+
+  constructor(
+    private shoppingListService: ShoppingListService,
+    private loggingService: LoggingService,
+    private store: Store<{ shoppingList: { ingredients: Ingredient[] } }>  ///IMPORTANTE
+  ) {}
+
+  ngOnInit(): void {
+    this.ingredients = this.store.select('shoppingList');   ///IMPORTANTE
+  }
+
+  onShoplistItemClick(index: number) {
+    this.shoppingListService.loadShopListItem(index);
+  }
+}
+
+
+
+
+
+
+--------------------------------------------
+
+
+
+
+
+
+e, no nosso template, usamos isto: (pipe de 'async', especial)
+
+
+
+
+
+
+
+     <app-shopping-list-item  
+  
+      *ngFor="let ingredient of (ingredients | async)?.ingredients; let index=index"
+      [name]="ingredient.ingredient"
+      [amount]="ingredient.amount"
+      (click)="onShoplistItemClick(index)"
+      ></app-shopping-list-item>
+
+
+
+
+
+
+
+
+
+
+      Ex:
+
+
+
+
+
+
+
+
+
+            *ngFor="let ingredient of (ingredients | async)?.ingredients; let index=index"
+
+
+
+
+
+
+
+
+
+
+
+OK,
+
+
+ISSO SIGNIFICA QUE 
+
+
+ESTAMOS CONSEGUINDO 
+
+
+
+
+
+OBTER O STATE DA 'STORE'
+
+POR MEIO 
+
+
+DO USO DO 'ASYNC PIPE',
+
+
+
+MAS MAIS 
+
+
+PRECISAMENTE 
+
+
+GRAÇAS 
+
+
+AO 
+
+
+METHOD DE 'select' E NOSSA 'INJECTED STORE'
+
+
+
+NO CONSTRUCTOR DE 'ShoppingListComponent'...
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR REITERA:
+
+
+
+AQUELE 
+
+
+'this.ingredients' 
+
+
+
+
+DO 'ShoppingListComponent'
+
+
+
+é __ 'JUST AN OBSERVABLE',
+
+
+
+O QUE 
+
+
+QUER DIZER QUE 
+
+
+''' SE VOCÊ 
+
+PRECISA DESSE STATE _ EM QUALQUER LUGAR DE SEU 
+
+
+APP, EM QUALQUER LUGAR QUE NÃO É O TEMPLATE DO SEU APP (em que usamos o 'async' pipe),
+
+
+
+
+''',
+
+
+
+
+se vocÊ 
+
+precisa 
+
+
+desse state em algum lugar  
+QUE 
+
+
+VOCÊ NÃO TEM ACESSO AO 'ASYNC PIPE',
+
+
+VOCê 
+
+
+PODE USAR SUA DATA MESMO ASSIM,
+
+
+ 
+
+ você 
+
+
+
+PODE FAZER 'SUBSCRIBE MANUAL'
+
+ao seu 
+
+
+
+'SELECTED STATE',
+
+
+por meio 
+
+
+de uma sintaxe 
+
+como 
+
+
+
+
+
+
+
+
+
+this.store.select('shoppingList').subscribe(
+
+    (ingredients) => {
+
+            return ingredients
+    }
+)
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAIS DO QUE ISSO, PODEMOS ATÉ 
+
+MESMO USAR '.pipe()' e todos os OPERATORS DE observables
+
+
+com esse observable,
+
+para aí 
+
+MANIPULAR O STATE RETORNADO POR NOSSO OBSERVABLE,
+CONVERTER 
+
+ESSA DATA, etc etc...
+
+
+
+
+
+
+
+
+--> E QUANDO VOCÊ CRIA SUBSCRIPTIONS COM 
+
+
+
+COISAS COMO 
+
+
+
+''
+
+
+
+this.store.select('shoppingList').subscribe(
+
+    (ingredients) => {
+
+            return ingredients
+    }
+)
+
+
+
+
+
+
+
+'',
+
+
+
+
+O NGRX E O ANGULAR __ TAMBÉM_ VÃO 'CLEAR' A SUBSCRIPTION PARA NÓS,
+
+
+
+sem problemas (sem necessidade de uso de ngOnDestroy)...
+
+
+
+
+
+
+
+
+
+
+-> MAS PARA SER __sUPER__ HIPER_ SAFE,
+
+
+O PROFESSOR AINDA RECOMENDA O 'STORE'
+
+
+DESSA SUBSCRIPTION EM UMA PROPRIEDADE 
+
+
+
+'Subscription'
+
+e o posterior REMOVE DENTRO 
+
+
+DO PRÓPRIO METHOD DE SUBSCRIBE, TIPO ASSIM:
+
+
+
+
+
+
+
+this.yourSubscription = this.store.select('shoppingList').subscribe(
+
+    (ingredients) => {  
+
+
+
+            this.yourSubscription.unsubscribe();
+            
+            return ingredients
+    }
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AQUI, NO ENTANTO,
+
+
+NESSE CÓDIGO DE 
+
+
+
+
+'''
+
+
+
+ ngOnInit(): void {
+   this.ingredients = this.store.select('shoppingList')
+  
+  }
+
+
+
+  '''
+  ,
+
+
+
+
+
+
+
+  NÃO PRECISAMOS _ DE UMA SUBSCRIPTION DESSAS,
+
+
+
+
+  NÃO PRECISAMOS 
+
+
+
+  DE UM CALL 
+
+
+
+  DE
+
+
+
+
+
+ '' this.store.select('shoppingList').subscribe(() => {})'',
+
+
+
+
+
+
+
+
+ POR ISSO O PROFESSOR 
+
+
+
+ SEGUE EM FRENTE,
+
+
+
+ PARA O TÓPICO DE 
+
+
+
+
+ 'COMO PODEMOS FAZER DISPATCH DE ACTIONS NO NOSSO CÓDIGO'...
+
+
+
+
+
+
+
+
+
+
+
+--> EM QUE LUGAR VAMOS QUERER 
+FAZER 'DISPATCH' DE ACTIONS?
+
+
+
+
+
+
+
+
+
+
+
+--> BEM,   SE ESTAMOS FALANDO DA PARTE DE 'SHOP-LIST'
+
+DO APP,
+
+
+
+É CLARO QUE ISSO 
+
+DEVERÁ 
+
+SER 
+
+
+LÁ NO COMPONENT DE 'SHOPLIST-EDIT'...
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
+
+import { NgForm } from '@angular/forms';
+import { Subscription } from 'rxjs';
+
+import { Ingredient } from 'src/app/shared/ingredient.model';
+
+import { ShoppingListService } from 'src/app/shoppingList.service';
+
+@Component({
+  selector: 'app-shop-list-edit',
+  templateUrl: './shop-list-edit.component.html',
+  styleUrls: ['./shop-list-edit.component.css'],
+})
+export class ShopListEditComponent implements OnInit, OnDestroy {
+  editMode = false;
+  editedItemIndex: number;
+
+  editedItem: Ingredient;
+
+  @ViewChild('localFormReference') formReference: NgForm;
+
+  ingredientSelectedSubscription: Subscription;
+
+  constructor(private shoppingListService: ShoppingListService) {}
+
+  ngOnInit(): void {
+    this.ingredientSelectedSubscription =
+      this.shoppingListService.ingredientSelected.subscribe((index: number) => {
+        this.editedItemIndex = index;
+        this.editMode = true;
+
+        this.editedItem = this.shoppingListService.getIngredient(index);
+
+        this.formReference.form.setValue({
+          name: this.editedItem.ingredient,
+          amount: this.editedItem.amount,
+        });
+      });
+  }
+
+  onFormSubmit(form: NgForm) {
+    console.log(form);
+    const yourIngredient = new Ingredient(
+      form.value['name'],
+      form.value['amount'],
+      this.editedItemIndex
+    );
+
+    if (this.editMode) {
+      console.log(form);
+
+      this.shoppingListService.editIngredient(
+        this.editedItemIndex,
+        yourIngredient
+      );
+      this.editMode = false;
+    } else {
+      this.shoppingListService.onIngredientAdd(yourIngredient);
+    }
+
+    this.formReference.form.reset();
+  }
+
+  ngOnDestroy(): void {
+    this.ingredientSelectedSubscription.unsubscribe();
+  }
+
+  onClearRecipe() {
+    this.formReference.form.reset();
+    this.editMode = false;
+  }
+
+  onDeleteRecipe() {
+    this.shoppingListService.deleteIngredient(this.editedItemIndex);
+    this.onClearRecipe();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo...
+
+
+
+
+
+
+
+
+
+
+--> NESSE CÓDIGO AÍ, NO FINAL DAS CONTAS,
+
+
+
+
+DEVEMOS TER O CÓDIGO PARA 'DISPATCH ACTIONS'
+
+
+
+SEMPRE QUE 
+
+ESTIVERMOS 
+
+'DONE',
+
+
+
+OU SEJA,
+
+SEMPRE QUE 
+
+ESTIVERMOS 
+
+'SUBMITTING OUR FORM',
+
+
+
+PARA TANTO 
+
+
+
+'ADD' OU 'EDIT'
+ 
+
+ UM INGREDIENT (
+
+
+    esses são os 2 locais 
+
+    de nosso código em que ALTERAMOS OS NOSSOS INGREDIENTS... TAMBÉM EM DELETE, NA VERDADE..
+ )
+
+
+
+
+
+
+
+
+
+
+
+ ---> OK.... ----> 
+
+
+
+
+   onFormSubmit(form: NgForm) {
+    console.log(form);
+    const yourIngredient = new Ingredient(
+      form.value['name'],
+      form.value['amount'],
+      this.editedItemIndex
+    );
+
+    if (this.editMode) {
+      console.log(form);
+
+      this.shoppingListService.editIngredient(
+        this.editedItemIndex,
+        yourIngredient
+      );
+      this.editMode = false;
+    } else {
+      this.shoppingListService.onIngredientAdd(yourIngredient);
+    }
+
+    this.formReference.form.reset();
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> vamos querer ALTERAR O 'STORE'
+
+
+
+DE NOSSO APP,
+
+
+A PARTIR
+ 
+ DO DISPATCH DE ACTIONS NESSE LOCAL AÍ,
+
+ nesse 
+
+
+ 'onFormSubmit'...
+
+
+
+
+
+
+
+
+ -> MAS COMO FAZEMOS O DISPATCH DE ACTIONS?
+
+
+
+
+
+
+
+
+
+
+
+ --> BEM, DEVEMOS NOVAMENTE CONTAR COM O 'SERVICE' de 'Store'..
+
+
+
+
+
+
+
+
+
+
+ --> PARA ISSO,
+
+
+
+
+
+
+
+
+ DEVEMOS INJETAR O 'STORE',
+
+
+
+
+ TIPO ASSIM:
+
+
+
+
+   constructor(private shoppingListService: ShoppingListService, store: Store) {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   CERTO..
+
+
+
+
+
+
+
+   -> ENTRETANTO, MAIS UMA VEZ TEREMOS DE ESCREVER AQUELA 'DESCRIÇÃO  DE COMO NOSSO SLICE shoppingList DA STORE deve se parecer'...
+
+
+
+
+
+
+
+
+
+
+
+   --> fazemos isso assim:
+
+
+
+   constructor(private shoppingListService: ShoppingListService, private store: Store<{shoppingList: {ingredients: ingredient[]}}>) {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+  constructor(private shoppingListService: ShoppingListService, 
+    private store: Store<{shoppingList: {ingredients: Ingredient[]}}>) {} ///CÓDIGO IMPORTANTE (vamos usar nossas actions a partir dessa store.. enviar actions ao reducer, que está vinculado a essa store)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> ok.. usamos o mesmo type do 'ShoppingListComponent',
+
+
+
+
+
+
+
+
+
+
+EMBORA MAIS TARDE _ TEREMOS UM __ APPROACH MAIS ELEGANTE QUANTO A ISSO (talvez com interfaces, vai saber)..
+
+
+
+
+
+
+
+
+
+
+
+-> MAS POR ENQUANTO, PROSSEGUIMOS COM ESSE APPROACH...
+
+
+
+
+
+
+
+
+
+
+
+---> certo... temos esse negócio aí...
+
+
+
+
+
+
+
+-> AGORA, COM O STORE INJETADO NESSE COMPONENT,
+
+DEVEMOS O UTILIZAR NOS LUGARES DE NOSSO APP EM QUE FAZEMOS O DISPATCH DE ALGUMA ACTION...
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTo...
+
+
+
+
+
+
+
+
+
+
+
+
+-> mas ainda NÃO ADICIONAMOS NENHUMA ACTION PARA O 'UPDATE DE INGREDIENTS',
+
+ 
+
+ por isso vamos cuidar só do 'ADD DE INGREDIENTS',
+
+ por enquanto...
+
+
+
+
+
+
+
+
+
+
+
+
+ -> PARA ISSO,
+
+
+ EM VEZ DE CHAMARMOS AUQELE METHOD DE 'this.shoppingListService.addIngredient(data)',
+
+
+
+
+
+
+
+
+
+JUSTAMENTE PQ _ NÃO USAREMOS MAIS ESSE SERVICE AQUI,
+
+
+
+
+
+VAMOS 
+
+
+
+QUERER 
+
+CHAMAR O 'store',
+
+para aí 
+
+
+CHAMAR UM METHOD EM CIMA DELE....
+
+
+  
+
+
+
+
+
+
+
+  -> ISSO ACONTECE PQ O 'SERVICE' não será mais nosso DATA SOURCE... e sim o REDUCER/STORE é nosso data source...
+
+
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+
+    onFormSubmit(form: NgForm) {
+    const yourIngredient = new Ingredient(
+      form.value['name'],
+      form.value['amount'],
+      this.editedItemIndex
+    );
+
+    if (this.editMode) {
+      console.log(form);
+
+      // this.shoppingListService.editIngredient(  ///uso do 'ShoppingListService'
+      //   this.editedItemIndex,
+      //   yourIngredient
+      // );
+      this.editMode = false;
+    } else {
+      // this.shoppingListService.onIngredientAdd(yourIngredient); ///uso do 'ShoppingListService'
+
+
+    }
+
+    this.formReference.form.reset();
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> OK... AGORA EM VEZ DE USARMOS O SERVICE,
+
+
+
+  VAMOS 
+
+
+  CHAMAR 
+
+
+  'store',
+
+
+
+  E ENTÃO O METHOD DE 
+
+
+  '
+
+     this.store.dispatch();
+
+
+     '''
+
+     ....
+
+
+
+
+
+
+
+
+
+----> ok... podemos usar esse method de 'dispatch'
+
+
+
+
+PARA _ DISPATCHEAR __ ACTIONS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK... LEMBRE-SE QUE 
+AS 
+NOSSAS 
+
+'ACTIONS' 
+
+são/foram 
+
+
+
+definidas 
+
+lá 
+
+
+
+NO ARQUIVO DE 
+'shoppingListActions',
+
+
+
+
+
+
+COMO VOCÊ PODE OBSERVAR COM ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+import { Action } from '@ngrx/store'; ///precisamos disso para DESCREVER NOSSAS ACTIONS...
+import { Ingredient } from 'src/app/shared/ingredient.model';
+
+export const ADD_INGREDIENT = 'INGREDIENT_ADD'; ////identifiers de nossas actions
+
+export const EDIT_INGREDIENT = 'INGREDIENT_EDIT';
+
+export const DELETE_INGREDIENT = 'INGREDIENT_DELETE';
+
+export class AddIngredient implements Action {
+  readonly type: string = ADD_INGREDIENT; 
+
+payload?: Ingredient
+}
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO....
+
+
+
+
+
+
+
+
+
+até agora,
+
+
+temos apenas 1 action 'COMPLETA',
+
+
+com um payload e tudo mais...
+
+
+
+
+export class AddIngredient implements Action {
+  readonly type: string = ADD_INGREDIENT; 
+
+payload?: Ingredient
+}
+
+
+
+
+
+
+
+
+
+
+
+
+----------> ESSA ACTION TEM UM TYPE, E AÍ TEM UM PAYLOAD...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok... aí, dentro de 
+
+
+
+'this.store.dispatch()',
+
+
+
+
+PODEMOS ___ FAZER O __CREATe___ DE UM NOVO 'TYPE',
+
+UM NOVO 
+
+'OBJECT',
+
+
+
+
+BASEADO 
+
+
+
+
+
+
+
+NAQUELA 'ACTION CLASS' 
+
+
+
+de 
+
+
+
+
+''
+
+
+export class AddIngredient implements Action {
+  readonly type: string = ADD_INGREDIENT; 
+
+payload?: Ingredient
+}
+
+
+
+
+''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+hmmm... acho que entendi...
+
+
+
+
+
+
+
+
+
+
+escrevemos tipo 
+
+
+
+
+
+
+
+this.store.dispatch(new ShoppingListActions.AddIngredient())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO... E SERIA NICE, SIM, 
+SE PUDÉSSEMOS 'PASSAR O PAYLOAD COMOO UM ARGUMENT PARA O NOSSO CONSTRUCTOR'...
+
+
+
+
+
+
+
+
+
+--> sim, isso é verdade..
+
+
+
+
+
+
+
+
+
+
+
+
+--> PROFESSOR ADMITE QUE ISSO É POSSÍVEL,
+
+BASTA 
+
+
+ALTERAR A PROPRIEDADE DE 'payload',
+
+
+
+DEIXÁ-LA COMO 
+
+
+
+UM 
+ARGUMENTO DENTRO DA CONSTRUCTOR FUNCTION, TIPO ASSIM:
+
+
+
+
+
+export class AddIngredient implements Action {
+  readonly type: string = ADD_INGREDIENT; 
+
+    constructor(private payload: Ingredient)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> certo... isso é bom, acho... MAS O PROFESSOR DEIXA A PROPRIEDADE como 'public', para que seja 
+
+
+possível a acessar do lado de fora...
+
+
+
+ex:
+
+
+
+
+export class AddIngredient implements Action {
+  readonly type: string = ADD_INGREDIENT; 
+
+    constructor(public payload: Ingredient)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok, mas o problema é que isso, novamente,
+
+ME TRARÁ PROBLEMAS TYPESCRIPT:
+
+
+
+
+
+
+
+Error: src/app/app.module.ts:43:10 - error TS2322: Type '(state: { ingredients: Ingredient[]; } | undefined, action: AddIngredient) => { ingredients: Ingredient[]; }' is not assignable to type 'ActionReducer<{ ingredients: Ingredient[]; },
+
+ Action>'.
+  Types of parameters 'action' and 'action' are incompatible.
+    Property 'payload' is missing in type 'Action' but required in type 'AddIngredient'.
+
+
+
+
+
+
+
+
+
+TALVEZ A SOLUÇÃO ESTEJA NISSO:
+
+
+
+
+https://stackoverflow.com/questions/67484545/property-payload-is-missing-in-type-action-but-required-in-type-additemacti
+
+
+
+
+
+
+
+
+
+
+
+
+-> talvez usar 'createAction' e 'createReducer' para 
+
+
+
+solucionar o problema...
+
+
+
+
+
+
+
+
+
+
+--> consegui consertar o problema, segui este código:
+
+
+
+
+https://stackoverflow.com/questions/66165872/types-of-parameters-action-and-action-are-incompatible-property-payload-i
+
+
+
+
+
+
+
+(COMECE PELO USO DE UM ARQUIVO 'index.ts' para organizar seu 'REDUCER GERAL', que combinará todos os outros reducers....) 
+
+
+(isso feito, exporte a const de 'reducers' para o nosso arquivo app.module.ts, em que o colocaremos em 'StoreModule.forRoot()').
+
+
+
+
+
+
+
+  imports: [
+    StoreModule.forRoot(
+      reducers
+    ),
+
+    BrowserModule,
+ 
+    AppRoutingModule,  //módulo de routing, customizado por nós...
+    HttpClientModule,
+ 
+    SharedModule   ///outsourcing...
+
+  ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ARQUIVO 'index.ts':
+
+
+
+
+
+
+
+import { ActionReducer, ActionReducerMap } from '@ngrx/store';
+import { shoppingListReducer, ShoppingListState } from './shoppingList.reducer';
+
+export const rootReducer = {};
+
+export interface AppState {
+  shoppingList: ShoppingListState;
+}
+
+export const reducers: ActionReducerMap<AppState, any> = {
+  shoppingList: shoppingListReducer,
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> dependemos dessa interface de 'AppState'
+
+para regular a APARÊNCIA DO STATE DO NOSSO APP...
+
+
+
+
+
+
+-> já na const de 'reducers' colocamos nossos ACTUAL REDUCERS...
+
+
+
+
+
+
+--> assim ficamos com suporte typescript,
+
+e com 
+
+um app funcional...
+
+
+
+
+
+
+
+
+
+
+--> CERTO... Agora lá em 'shoppingListReducer':
+
+
+
+
+
+
+
+
+
+
+
+import * as ShoppingListActions from './shoppingListActions';
+
+import { Ingredient } from '../../shared/ingredient.model';
+
+import { updateObject } from '../../utility/updateObject';
+
+export interface ShoppingListState {
+  ingredients: Ingredient[];
+}
+
+const initialState: ShoppingListState = {
+  ingredients: [],
+};
+
+export function shoppingListReducer(
+  state: ShoppingListState = initialState,
+  action: ShoppingListActions.AddIngredient
+): ShoppingListState {
+  switch (action.type) {
+    case ShoppingListActions.ADD_INGREDIENT:
+      return {
+        ...state,
+        ingredients: [...state.ingredients, action.payload],
+      };
+      break;
+    case ShoppingListActions.DELETE_INGREDIENT:
+      return state;
+      break;
+    case ShoppingListActions.EDIT_INGREDIENT:
+      return state;
+      break;
+    default:
+      return state;
+  }
+}
+
+
+
+
+
+
+
+
+
+---> ou seja,
+
+
+escrevemos o ACTUAL REDUCER, com todo o suporte a suas actions,
+
+
+nesse arquivo de 'shoppingList.reducer.ts'....
+
+
+
+
+
+
+
+
+
+--> por fim, temos arquivos de 'actions', como 
+
+
+
+'shoppingListActions',
+
+
+
+
+QUE FICOU assim:
+
+
+
+
+
+
+
+
+
+import { Action } from '@ngrx/store';
+import { Ingredient } from 'src/app/shared/ingredient.model';
+
+import { createAction, props } from '@ngrx/store';
+
+export const ADD_INGREDIENT = 'INGREDIENT_ADD';
+
+export const EDIT_INGREDIENT = 'INGREDIENT_EDIT';
+
+export const DELETE_INGREDIENT = 'INGREDIENT_DELETE';
+
+export class AddIngredient implements Action {
+  readonly type: string = ADD_INGREDIENT;
+
+  constructor(public payload: Ingredient) {}
+}
+
+
+
+
+
+
+
+
+
+
+cada action é algo como 'AddIngredient'... (em que podemos __ OU NÃO_ TER UM PAYLOAD)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> FIZ A MESMA COISA COM O RECIPEBOOK, SÓ PARA TESTAR:
+
+
+
+
+
+
+
+
+import { ActionReducerMap } from '@ngrx/store';
+import { recipeBookReducer, RecipeBookState } from 'src/app/recipeBook/store/recipeBook.reducer';
+import { shoppingListReducer, ShoppingListState } from './shoppingList.reducer';
+
+export const rootReducer = {};
+
+export interface AppState {
+  shoppingList: ShoppingListState;
+  recipeBook: RecipeBookState;
+
+}
+
+export const reducers: ActionReducerMap<AppState, any> = {
+  shoppingList: shoppingListReducer,
+  recipeBook: recipeBookReducer
+};
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------
+
+
+
+
+
+
+
+
+
+certo... mas é claro que algumas coisas ainda estão faltando/não encaixam bem...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+dei mais uma reformatada no código (helper methods de 'updateObject' e 'addIngredient'...):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  const addIngredient = (state: ShoppingListState, action: ShoppingListActions.AddIngredient): ShoppingListState => {
+
+  const updatedIngredients = {
+      ...state.ingredients
+  }
+
+
+  updatedIngredients.push(action.payload);
+
+
+  // return {
+  //   ...state,
+  //   ingredients: updatedIngredients
+  // }
+
+
+
+  return updateObject(state, {ingredients: updatedIngredients})
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E O REDUCER:
+
+
+
+
+
+export function shoppingListReducer(state: ShoppingListState = initialState, 
+  action: ShoppingListActions.AddIngredient): ShoppingListState {
+  switch(action.type){
+    case ShoppingListActions.ADD_INGREDIENT:
+
+      return addIngredient(state, action);
+    break;
+    case ShoppingListActions.DELETE_INGREDIENT:
+      return state;
+      break;
+    case ShoppingListActions.EDIT_INGREDIENT:
+      return state;
+        break;
+      default: ////é o case do INITIALIZE DE NOSSO STATE (pq no início de nosso app, será definido/passado o 'initialState', sem o pass de nenhuma actionType...) --> e é aí que entra em jogo esse return de 'state' como o DEFAULT, pq isso significa que nosso state NÃO TERÁ SIDO ALTERADO POR ACTION NENHUMA, MAS QUE AINDA SERÁ 'returned', pq isso será necessário...
+        return state;  
+  }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(helper method de 'updateObject'):
+
+
+
+
+
+
+
+
+
+export const updateObject = (oldObject: any, updatedValues: any) => {
+    console.log(oldObject);
+    console.log(updatedValues);
+    return {
+        
+        ...oldObject,
+        ...updatedValues
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo....
+
+
+
+
+
+
+
+
+
+
+
+acho que agora posso prosseguir; 
+
+talvez criar algumas NOVAS ACTIONS no arquivo de actions de '
+
+
+
+
+shoppingListActions'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export class EditIngredient implements Action {
+
+  readonly type: string = EDIT_INGREDIENT;
+
+
+
+  constructor(public payload: {ingredient: Ingredient, index: number}) {}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> mas isso ainda não está óptimo, pq estou me repetindo...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... 
+
+
+
+
+
+
+
+ISSO QUER DIZER QUE NOSSA ACTION SERÁ DISPATCHEADA POR MEIO DE UM CÓDIGO COMO ESTE:
+
+
+
+
+ else {
+
+        this.store.dispatch(new ShoppingListActions.AddIngredient(yourIngredient))
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -> O FLOW SERÁ:
+
+
+
+
+
+
+
+
+    1) ASSIM QUE ADICIONAMOS 1 INGREDIENT, 
+
+    ESSA ACTION É DISPATCHEADA,
+
+
+    ACTION QUE É CLARAMENTE DEFINIDA NA FILE DE 'ShoppingListActions'...
+
+
+
+
+
+    2) ESSA ACTION É DISPATCHEADA AO NOSSO REDUCER, QUE ENTÃO MANIPULA 
+
+    O NGRX STORE.. (
+
+      e temos só 1 desses stores no app inteiro, settado 
+
+      lá em 
+
+      'app.module.ts'....
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -> ESSE STORE FICA 'AWARE' 
+
+    DO SHOPLIST REDUCER,
+
+
+    E É CLARO QUE JÁ VIMOS COMO 'ADICIONAR MÚLTIPLOS REDUCERS':
+
+
+
+(index.ts):
+
+
+
+
+    import { ActionReducerMap } from '@ngrx/store';
+import { recipeBookReducer, RecipeBookState } from 'src/app/recipeBook/store/recipeBook.reducer';
+import { shoppingListReducer, ShoppingListState } from './shoppingList.reducer';
+
+export const rootReducer = {};
+
+export interface AppState {
+  shoppingList: ShoppingListState;
+  recipeBook: RecipeBookState;
+
+}
+
+export const reducers: ActionReducerMap<AppState, any> = {
+  shoppingList: shoppingListReducer,
+  recipeBook: recipeBookReducer
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> e em app.module.ts:
+
+
+
+
+
+
+
+    StoreModule.forRoot(
+      reducers
+    ),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -------> OK... DENTRO DESSE REDUCER, A ACTION É 'PASSED IN',
+
+
+    como sendo aquele parâmetro de 'action',
+
+
+  E AÍ
+
+
+
+  USAMOS AQUELE 
+
+  SWITCH-CASE STATEMNT 
+
+  PARA 
+
+
+HANDLAR DIFERENTES TIPOS DE ACTION (type)
+
+E AÍ 
+
+
+REAGIR 
+
+
+APROPRIADAMENTE..
+
+
+
+
+
+
+
+
+
+--> COM ISSO, 
+
+DEVEMOS SER CAPAZES DE ADICIONAR 1 INGREDIENT À NOSSA LIST NO STATE,
+
+QUE É UPDATADA AUTOMATICAMENTE...
+
+
+
+
+
+
+
+
+
+-----> O APP NÃO TERÁ MUDANÇAS VISUAIS, MAS AGORA TUDO ISSO SERÁ 
+
+
+'POWERED' PELO NGRX,
+
+
+PQ AGORA FAZEMOS DISPATCH DA ACTION quando 
+
+
+fazemos algo por meio do NGRX...
+
+
+
+
+
+
+
+--> AÍ, NO CASO, O RESULTADO DESSA ACTION (update da UI visual, por meio do `state` interno do 'ShoppingListComponent') É DISPLAYADO POR MEIO 
+
+
+
+DO CALL 
+
+de 
+
+
+'this.store.select('shoppingList')' 
+
+
+
+
+
+,
+
+LÁ NO 'ngOnInit()' 
+
+
+em 'shoppingListComponent'...
+
+
+
+
+
+
+
+
+
+
+
+---> OK... --> ISSO QUER DIZER QUE AGORA ESTAMOS USANDO 'ngRx' 
+
+
+'END-TO-END',
+
+
+
+para fazer o ADD E O DISPLAY DE INGREDIENTS...
+
+
+
+ 
+
+
+
+
+-> AGORA DEVEMOS  FAZER COM QUE AS ACTIONS DE 'DELETE' E 'UPDATE' TAMBÉM FUNCIONEM...
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,257 @@
+
+
+ESSE FOI UM MÓDULO GIGANTE..
+
+
+
+
+
+
+
+
+
+
+--> APRENDEMOS BASTANTE SOBRE O NGRX...
+
+
+
+
+
+
+
+
+
+--> NGRX PODE SER COMPLEXO,
+
+
+SETTÁ-LO PODE SER BEM COMPLICADO...
+
+
+
+
+
+
+
+
+
+--> MAS QUANDO JÁ ESTÁ SETTUPADO,
+
+
+
+
+ ADICIONAR NOVAS ACTIONS E 
+
+
+
+ MANAGE COM EFFECTS E TAL É BEM 
+
+ MAIS STREAMLINED...
+
+
+
+
+
+
+
+ --> ASYNC CODE E TODOS OS SIDE EFFECTS,
+
+
+ ELES VÃO NO ARQUIVO DE 'EFFECTS'...
+
+
+
+
+
+
+
+
+
+ ---> STATE CHANGES VÃO NO ARQUIVO DE 'REDUCER'...
+
+
+
+
+
+
+
+
+
+
+
+ --> FICAMOS COM UM GLOBAL STORE NO NOSSO APP,
+
+ QUE PODEMOS USAR 
+
+
+
+EM QUALQUER LUGAR DE NOSSO APP,
+
+PARA ACESSAR QUALQUER DATA,
+
+
+E PARA DISPATCHEAR QUALQUER EVENT..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DE NOVO:
+
+SE VOCÊ PREFERE SERVICES E SUBJECTS,
+
+ISSO É 
+
+PERFECTLY FINE,
+
+VOCê 
+
+PODE OS UTILIZAR...
+
+
+
+
+
+
+
+
+--> MAS O NGRX PODE SER UMA ALTERNATIVA DECENTE A SUBJECTS E SERVICES 
+
+
+
+
+
+___ EM _ APPS MAIORES...------> QUANTO MAIOR FOR SEU APP,
+
+
+E
+
+
+SE 
+
+MTAS PESSOAS ESTIVEREM TRABALHANDO COM VOCÊ, UM APPROACH STREAMLINED COMO ESSE PODE SER MT ÚTIL..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+NGRX.IO --> PÁGINA OFICIAL DESSA PACKAGE..
+
+
+
+
+
+
+
+
+
+
+
+--> GITHUB NGRX --> 
+
+
+
+
+
+
+
+
+PLATFORM REPOSITORY.... --> DENTRO DE LÁ VOCê TEM UM FOLDER DE 'PROJECTS',
+
+
+
+
+
+
+
+
+que é bem útil...
+
+
+
+
+
+
+
+
+--> COM ISSO,
+
+
+FICAMOS COM TODAS AS FERRAMENTAS PARA CONSTRUIRMOS 
+
+
+
+APPS ANGULAR PODEROSOS,
+
+
+TANTO COM:
+
+
+
+1) SERVICES E SUBJECTS 
+
+
+
+2) NGRX ...
+
+
+
+
+
+
+
+
+
+
+
+
+
+The NgRx team also released an alternative syntax for creating actions, reducers, effects etc.
+
+The approach and setup shown in this course is a bit more verbose (which actually has the advantage of seeing more of the things that go on under the hood). Exploring the alternative, a bit shorter syntax might therefore be an interesting next step.
+
+Jost created a nice post where he summarizes the new syntax + how to adjust the course project to use it: https://www.udemy.com/the-complete-guide-to-angular-2/learn/lecture/14466642#questions/7350498
+
+You also find the transformed code attached to this lecture!
+
+Also check out the official docs to learn more about it: https://ngrx.io/docs
+
+Again, just because it's important: This syntax is not better, faster or more secure than the one taught in the course. The entire switch of the official docs is pretty drastic (and hard to understand to be very honest) since the syntax taught in this course was the syntax used for close to two years now. Many teams will certainly still be on that syntax and that alone is a strong reason to learn it.
+
+
+
+
+
+
+
+
+
+
+
+Official Docs: https://ngrx.io
+

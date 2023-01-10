@@ -1,0 +1,890 @@
+
+
+
+
+
+
+O PROFESSOR QUER COMEÇAR 
+
+
+
+
+
+
+
+com o 'hookup' da NAVIGATION, PARA QUE CARREGUEMOS 
+
+__ OU 
+
+A SHOPPING LIST,
+
+OU O RECIPE BOOK...
+
+
+
+
+
+
+
+
+
+
+
+--> nós mais tarde aprenderemos a maneira de fazerr isso 
+
+'the way its meant to be done',
+
+MAS A SOLUÇÃO 
+
+DE 
+AGORA 
+É 
+
+UMA VERSÃO BEM CRIATIVA DISSO... (E também não é de todo ruim)...
+
+
+
+
+
+
+
+
+-> O PROFESSOR VAI USAR 'ngIf' para carregar apenas 1 das sections por vez....
+
+
+
+
+
+
+
+
+
+
+--> VAMOS TER A LÓGICA PROVAVELMENTE NO COMPONENT DE APP (pq é aí que temos ambos os components)...
+
+
+
+
+
+
+
+--> teremos de ter a lógica 
+
+
+de 
+
+'qual deve ser displayed',
+
+E ESSA ESCOLHA DEVERÁ SER FEITA LÁ NO COMPONENT DE 'HEADER'... --> isso significa que 
+
+
+ELE PRECISA 'KIND OF' passar a info de QUAL LINK FOI CLICADO __ ao __ nosso component de 'app'...
+
+
+
+
+
+
+
+
+
+
+
+--> A INFORMAÇÃO DE 'QUAL LINK DENTRO DE HEADER FOI CLICADO' 
+deve ser 
+PASSADA 
+
+
+
+AO COMPONENT DE 'APP',
+
+para aí PROVAVELMENTE ALTERAR O 'STATE' 
+
+
+DE UMA PROPRIEDADE,
+
+ASSIM 
+
+
+RENDERIZANDO CONDICIONALMENTE 
+
+
+
+
+PARTE DE NOSSA PÁGINA (ou recipes, ou shopList)..
+
+
+
+
+
+
+
+
+-> TENTAR FAZER ISSO SOZINHO...
+
+
+
+
+
+
+
+
+
+--> o component de 'Header' tem 2 links,
+
+que devem 
+
+
+
+EMITIR UM CUSTOM EVENT que fará esse trigger aí...
+
+
+
+
+
+
+
+
+
+
+-> tentar fazer isso sozinho.
+
+
+
+
+
+
+
+
+
+-> provavelmente 
+
+
+vamos precisar de uma propriedade 
+
+
+'selectedPage'
+
+
+lá em 'app.component.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+selectedPage: string = 'RecipeBook'
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+ 
+
+
+  selectedPage: string = 'recipeBook';
+
+
+
+
+
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> no header, começamos com isto:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" (click)="collapsed = !collapsed">
+            <span class="icon-bar" *ngFor="let iconBar of [1, 2, 3]"></span>
+          </button>
+          <a routerLink="/" class="navbar-brand">Recipe Book</a>
+      </div>
+      <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true">
+        <ul class="nav navbar-nav">
+          <li><a href="#">Recipes</a></li>
+          <li><a href="#">Shopping List</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" role="button">Manage<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Save Data</a></li>
+                    <li><a href="#">Fetch Data</a></li>
+                </ul>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> mas vamos alterar aqueles '<li>',
+
+  colocar o EMIT DE UM EVENT..
+
+
+
+
+
+
+
+  FIZ FUNCIONAR POR CONTA PRÓPRIA, FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+  
+<app-header-component (selectedPage)="pageSwitcher($event)">
+</app-header-component>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <app-recipe-book
+        *ngIf="selectedPage === 'recipeBook' "
+        ></app-recipe-book>
+        <app-shopping-list
+        *ngIf="selectedPage === 'shopList' "
+        
+        
+        ></app-shopping-list>
+      </div>
+    </div></div>
+
+
+
+
+
+
+
+
+
+
+
+
+e assim:
+
+
+
+
+
+
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" (click)="collapsed = !collapsed">
+            <span class="icon-bar" *ngFor="let iconBar of [1, 2, 3]"></span>
+          </button>
+          <a routerLink="/" class="navbar-brand">Recipe Book</a>
+      </div>
+      <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true">
+        <ul class="nav navbar-nav">
+          <!-- <li><a href="#">Recipes</a></li>
+          <li><a href="#">Shopping List</a></li> -->
+          <li (click)="onRecipeBook()"><a href="#">Recipes</a></li>
+          <li (click)="onShopList()"><a href="#">Shopping List</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" role="button">Manage<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Save Data</a></li>
+                    <li><a href="#">Fetch Data</a></li>
+                </ul>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  e assim:
+
+
+
+
+
+
+  import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  selectedPage: string = 'recipeBook';
+
+  constructor() {}
+
+  pageSwitcher(page: string) {
+    this.selectedPage = page;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+e assim:
+
+
+
+
+
+
+
+import { Component, Output } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+@Component({
+  templateUrl: './headerComponent.app.html',
+  styleUrls: ['./headerComponent.app.css'],
+  selector: 'app-header-component',
+})
+export class HeaderComponent {
+  collapsed = true;
+
+  @Output() selectedPage = new EventEmitter<string>();
+
+  constructor() {}
+
+  onShopList() {
+    this.selectedPage.emit('shopList');
+  }
+
+  onRecipeBook() {
+    this.selectedPage.emit('recipeBook');
+  }
+}
+
+
+
+
+
+
+
+
+
+----------------------
+
+
+
+
+
+
+
+
+
+
+
+
+o professor admite que essa 
+
+
+
+etapa cobre múltiplas etapas... mas já consegui fazer...
+
+
+
+
+
+
+
+
+--> EU FIZ O EMIT DE UM 'EVENT' NO HEADER,
+
+
+
+QUE 
+
+NOS DEIXOU __ DETERMINAR_ 
+
+QUAL __  
+
+COMPONENT DEVE SER  RENDERIZADO NO COMPONENT DE 'APP'...
+
+
+
+
+
+
+
+
+
+--> ok, será que o professor fez de forma diferente?
+
+
+
+
+
+
+
+
+
+
+
+
+--> ele começou no template do header...
+
+
+
+
+
+
+
+
+--> nos 2 links... ----> 
+
+
+
+
+ELE COLOCOU CLICK LISTENERS NOS 2, EXATAMENTE COMO FIZ...
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+        <ul class="nav navbar-nav">
+          <li (click)="onRecipeBook()"><a href="#">Recipes</a></li>
+          <li (click)="onShopList()"><a href="#">Shopping List</a></li>
+        </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR FEZ DE UMA FORMA MEIO DIFERENTE,
+
+
+PQ ___ ELE USOU PARÂMETROS DIFERENTES;
+
+
+
+EU, NO CASO, USEI 
+
+
+2 DIFERENTES METHODS... --> 
+
+ex:
+
+
+
+
+
+  onShopList() {
+    this.selectedPage.emit('shopList');
+  }
+
+  onRecipeBook() {
+    this.selectedPage.emit('recipeBook');
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  -----> ok....
+
+
+
+
+
+
+  no component 
+
+
+  de 
+
+  header colocamos esses methods/method...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> FAZEMOS O EMIT DE NOSSO PRÓPRIO EVENT,
+   POR MEIO DO IMPORT DE 
+
+   'Output()' 
+
+
+   e 
+
+
+   'EventEmitter()'...
+
+
+
+
+
+
+
+
+
+   aí ele escreveu algo tipo assim:
+
+
+
+
+
+     @Output() selectedPage = new EventEmitter<string>();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---->  esse decorator nos deixa outputtar
+ 
+ esse 
+
+
+ event 
+
+ a outros components (no caso, 'App')
+
+
+
+
+
+
+
+
+
+
+
+
+ -> AÍ O PROFESSOSR, LÁ EM 'app.component.html',
+
+ escreve algo assim:
+
+
+
+
+
+ <app-header-component (selectedPage)="pageSwitcher($event)">
+
+
+
+
+
+
+
+
+
+
+ -----> aí vamos obter toda a data passada por 
+
+
+ 'selectedPage'
+
+ para dentro de '$event',
+
+ que será passado ao method de 'pageSwitcher'...
+
+
+
+
+
+
+
+
+
+
+
+
+ -> ok, no appComponent 
+
+ colocamos o method responsável por esse swithc...
+
+
+
+
+
+
+ ex:
+
+
+
+
+   pageSwitcher(page: string) {
+    this.selectedPage = page;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  E AÍ USAMOS UMA PROPRIEDADE NO 'APP.component.ts'
+
+  PARA SWITCHAR ENTRE UMA PAGE E OUTRA:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  selectedPage: string = 'recipeBook';
+
+  constructor() {}
+
+  pageSwitcher(page: string) {
+    this.selectedPage = page;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+ok...
+
+
+
+
+
+
+com isso essa feature funcionou,
+
+
+
+também graças ao '*ngIf':
+
+
+
+
+
+<app-header-component (selectedPage)="pageSwitcher($event)">
+</app-header-component>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <app-recipe-book
+        *ngIf="selectedPage === 'recipeBook' "
+        ></app-recipe-book>
+        <app-shopping-list
+        *ngIf="selectedPage === 'shopList' "
+        ></app-shopping-list>
+      </div>
+    </div></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo....
+
+
+
+
+
+
+
+-> A NAVIGATION ESTÁ 'KIND OF WORKING'.. ->_ vamos melhorar isso no futuro,
+
+
+mas por enquanto essa é uma ótima solução....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PRÓXIMO PASSO É TORNAR ESSES ELEMENTOS '<li>'
+
+
+
+em VERDADEIROS COMPONENTS INDEPENDENTES... ( e não coisas anexadas ao 'shoppingList')....

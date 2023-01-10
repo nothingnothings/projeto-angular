@@ -1,0 +1,290 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> AO LONGO DAS ÚLTIMAS LIÇÕES,
+
+ESCREVEMOS 
+
+ALGUNS TESTS... 
+
+
+
+
+
+
+---> certo,
+
+e 
+
+esses 
+
+SÃO TODOS OS TESTS QUE PODEMOS ESCREVER 
+
+PARA 
+
+'NavigationItems',
+no final 
+
+das contas?
+
+
+
+
+
+--> talvez, se quisermos.... ----> NÓS TALVEZ 
+
+
+
+TAMBÉM 
+
+
+QUEIRAMOS 
+
+
+TESTAR A CLASSE (classe css)
+ 
+ QUE 
+
+ USAMOS 
+
+ NESSE COMPONENT, NO FINAL DAS CONTAS.... ----> mas 
+
+ em 
+
+ geral,
+
+
+
+
+ ESSE JÁ É UM BOM
+
+
+ 'TEST COVERAGE' PARA O PROFESSOR...
+
+
+
+
+
+
+
+
+
+ 
+ ---> escrever BONS TESTS É ALGO __COMPLICADO__.... -------> é 
+
+ fácil 
+
+
+
+ escrever 
+
+ 100 diferentes testes para um component,
+
+
+
+ testar todo tipo de coisas, ao mesmo tempo que 
+
+
+ DEIXAMOS 
+
+
+
+ DE TESTAR ALGUMA FEATURE IMPORTANTE... ------> E O MESMO 
+
+
+ OCORRE, NO SENTIDO INVERSO:
+
+ você 
+
+ talvez 
+
+ SÓ PRECISE REALMENTE DE 1 ÚNICO TEST PARA VERIFICAR 
+
+ SE 1 
+
+ COMPONENT 
+
+ SE COMPORTA 
+
+ DA MANEIRA QUE VOCÊ QUER QUE ELE SE COMPORTE..
+
+
+
+
+
+-----------> O PROFESSOR QUER QUE PRATIQUEMOS,
+ 
+
+ TESTEMOS 
+
+
+ UM MONTE DE COISAS DIFERENTES,
+
+
+
+ NÃO FAZ DIFERENÇA SE FAZEM SENTIDO OU NÃO... ---> devemos aprender 
+
+
+ a pensar 
+
+
+ em 
+
+ um contexto de 'TEST ENVIRONMENT',
+
+
+
+
+
+ DEVEMOS 
+
+ APRENDER 
+
+ AS 
+
+ DIFERENTES 
+
+ FUNÇÕES 
+ PROVIDENCIADAS
+  
+  PELO 
+
+  ENZYME 
+
+  E PELO JEST.... ---> PRACTICE REQUER EXPERIÊNCIA...
+
+
+
+
+
+
+  --> A MELHOR MANEIRA DE COMEÇAR COM O TESTING 
+
+  É 
+
+  EXAMINAR SUA FUNÇÃO/COMPONENT/QUALQUER COISA QUE VOCÊ ESTÁ TESTANDO,
+
+
+
+
+
+  e aí 
+
+
+  perceber:
+
+
+  QUAIS SÃO AS COISAS CRUCIAIS QUE __MUDAM ___ A PARTIR __ DE 
+
+  INFLUÊNCIAS INTERNAS, NESSE COMPONENT...? ------> 
+
+
+  EX:
+
+
+
+
+  Os <Navigationitem>,
+
+  que 
+
+  são 
+
+  ALTERADOS/mudam seu RENDER, em '<NavigationItems />',
+
+  a 
+
+  PARTIR 
+
+  DO 
+
+  STATE/VALOR 
+
+  DE 
+
+  'logout', aquele prop lá...
+
+
+
+
+  -------> E AÍ, É PARA ISSO QUE VOCÊ ESCREVE 
+
+  UM  TEST... ----> É PARA QUE SEMPRE QUE VOCÊ MUDE ALGO 
+
+  DE FORMA ERRADA NO COMPONENT 
+
+  'NavigationItems',
+
+  cague alguma coisa,
+
+
+
+
+  como 
+
+  tirar 
+
+
+  o ! de 
+
+
+  '!props.logout ? <NavigationItem link="/auth">Authenticate</NavigationItem> ',
+
+
+
+
+  SE 
+
+  EU FIZER 
+
+  ESSE ERRO/FIZER ESSA MUDANÇA ERRADA,
+
+  NOSSO 
+
+  'TEST' VAI IMEDIATAMENTE INDICAR 
+
+  QUE 
+
+  FIZEMOS UMA CAGADA... ('test FAIL').... ----> 
+   
+
+   ISSO 
+
+   ACONTECE
+    
+    PQ 
+
+
+
+    ____ O JEST__ TAMBÉM REEXECUTA __OS 'TESTS' 
+    SE VOCÊ 
+    ALTERA 
+
+    O SEU CÓDIGO 'normal' (não é só o código de test que está sendo 'watcheado', seu CÓDIGO NORMAL TBM...)
+
+
+
+
+
+
+
+----------->  DÊ UMA OLHADA NOS 
+
+ERROS 
+
+NOS SEUS TESTS... --> pq isso TE MOSTRA O QUE VOCÊ PODE FACILMENTE QUEBRAR 
+
+O BEHAVIOR DE SEU APLICATIVO,
+
+e aí você escreve 
+TESTS EXATAMENTE PARA ISSO...

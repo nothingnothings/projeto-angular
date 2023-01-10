@@ -1,0 +1,409 @@
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> O PROFESSOR FALOU MT SOBRE OBSERVABLES..
+
+
+
+
+
+
+
+
+
+
+ --> MAS AGORA TEMOS UM EXEMPLO DE 1 OBSERVABLE,
+
+
+ E SOBRE COMO ELE SE COMPORTA 'UNDER THE HOOD'...
+
+
+
+
+
+
+
+
+
+
+
+ --> isso pode parecer confuso,
+
+
+
+
+ MAS 
+
+
+
+ AÍ VOCÊ PODE ESTAR SE PERGUNTANDO:
+
+
+
+ ''QUANDO VOU USAR ESSE CÓDIGO?''' 
+
+
+
+
+
+
+
+
+
+
+ --> eu não vou precisar desse interval
+
+
+ com tanta frequência,
+
+
+
+ e não preciso desse observable,
+
+
+ pq o 
+
+ 'setInterval'
+
+ já existe...
+
+
+
+
+
+
+
+
+
+
+ --> O PROFESSOR NOS MOSTROU ISSO PARA QUE ENTENDAMOS O QUE ACONTECE DENTRO DE UM 
+
+ OBSERVABLE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> SEMPRE QUE VOCÊ FAZ 'SUBSCRIBE'
+
+
+ E DEFINE SUAS DIFERENTES HANDLER FUNCTIONS, COMO VISTO NESTE TRECHO AQUI:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     customIntervalObservable.subscribe(
+        (count) => { 
+
+            console.log(count);
+            console.log('DATA --  data package emitted by observable. We can run some logic for EACH data packet that is emitted.')
+        },
+
+
+        (error) => {  
+          console.log(error);
+          console.log('ERROR -- "ERROR" data package emitted by observable. Observable data emissions stopped.')
+      },
+
+
+      () => {   
+        console.log('COMPLETED -- "completed" data package emitted by observable. Observable data emissions stopped/killed.')
+    }
+
+    )
+
+
+
+
+
+
+
+
+
+
+
+    SEMPRE QUE VOCÊ DEFINE ESSAS DIFERENTES HANDLER FUNCTIONS,
+
+
+
+    O QUE O RXJS 
+
+
+    vai fazer é 
+
+    'MERGE' 
+
+
+
+
+
+
+
+    TODAS _ ESSAS _ HANDLER FUNCTIONS EM 1 ÚNICO OBJECT,
+
+    E AÍ 
+
+    PASSA ESSE OBJECT,
+
+    O 'observer',
+
+
+
+
+
+
+
+
+
+
+
+
+    AO __ OBSERVABLE... --> 
+
+
+
+
+
+
+
+    E  O OBSERVABLE É 
+
+    JUSTAMENTE 
+
+
+    'const customIntervalObservable = Observable.create((observer) => {})' 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -----> DENTRO DESSE OBSERVABLE (naquela '() => {}'),
+
+
+
+
+
+
+    O 
+
+
+    RXJS _ VAI INTERAGIR COM O 
+
+
+    OBSERVER,
+
+
+
+    E A´I
+
+
+
+    'LET THE OBSERVER KNOW'
+
+    sobre 
+
+    novas datas,
+
+    errors,
+
+
+    etc etc....
+
+
+
+
+
+
+
+
+
+
+
+
+    --> MAS __ É MUITO__ MUITOO RARO
+
+
+
+    VOCÊ CONSTRUIR 
+
+    SEUS PRÓPRIOS OBSERVABLES...
+
+
+
+
+
+
+
+
+
+
+    -> É BEM MAIS FREQUENTE O USO DE BUILT-IN OBSERVABLES,
+
+
+
+    COMO OS DO ANGULAR,
+
+    como o 
+
+
+    observable de 
+
+
+
+
+
+    this.route.params.subscribe(),
+
+
+    que já usamos...
+
+
+
+
+
+
+
+
+
+
+
+    --> UNDER THE HOOD,
+
+    ISSO AÍ 
+
+    É UM 'OBSERVABLE'
+
+
+    CRIADO 
+
+    PELA TEAM DO ANGULAR,
+
+
+
+    mas nós só o utilizamos assim,
+
+
+
+    de maneira simples...
+
+
+
+
+
+
+
+
+
+
+
+
+    ->  VOCÊ RARAMENTE CONSTRÓI SEUS PRÓPRIOS OBSERVABLES,
+
+
+MAS AINDA 
+ASSIM 
+É 
+
+SUPER IMPORTANTE ENTENDER COMO ELES FUNCIONAM..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SEMPRE FUNCIONAM ASSIM:
+
+
+
+
+
+
+
+1) WRAPPAM ALGUM 'EVENT SOURCE' (nesse caso, é 'setInterval') -> em outros casos poderia ser um AJAX REQUEST (http request), ou um CLICK LISTENER, ou qualquer coisa que seja...
+
+
+
+
+
+
+
+2) A PARTIR DESSE 'EVENT SOURCE',
+
+
+OS OBSERVABLES TE DÃO DATA, ERROR OU COMPLETE EVENTS...
+
+
+
+
+
+
+
+3) A COISA QUE VOCê MAIS FARÁ,
+
+NO CASO,
+
+
+É 
+
+ESCREVER 
+
+'.subscribe()' 
+
+
+  E ENTÃO ESCREVER FUNCTIONS QUE VÃO LIDAR CCOM ESSA DATA/ERRORS/COMPLETES...

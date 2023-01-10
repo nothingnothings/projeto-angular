@@ -1,0 +1,839 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NOSSO CÓDIGO DE INTERCEPTORS, QUE MANIPULA TANTO NOSSO REQUEST COMO NOSSA RESPONSE,
+
+FICOU ASSIM:
+
+
+
+
+
+
+
+
+import { HttpEvent, HttpEventType, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http"; ///essa interface NOS FORÇA A ADICIONAR UM METHOD DE 'intercept'...
+import { map, tap, Observable } from "rxjs";
+
+
+
+export class AuthInterceptorService implements HttpInterceptor { ///nosso interceptor PRECISA SER POSICIONADO/USADO LÁ EM 'app.module.ts'....
+
+    /////o primeiro object é um object de HTTP REQUEST...
+
+    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {  ///esses 2 methods são OBTIDOS AUTOMATICAMENTE, pois são passados pelo angular...
+        
+
+        
+
+// if (req.url === 'DUMMY') {
+
+//     /////STOPS THE SEND OF THE REQUEST...
+    
+//     }
+
+/////modificações DIRETAMENTE NO NOSSO OBJECT 'req' SÃO PROIBIDAS, mas nada nos impede de CRIAR UMA CÓPIA DE NOSSO REQUEST, com 'req.clone()', e aí FORWARDAR ESSA CÓPIA, MODIFICADA, com 'next.handle(copiaDoReq)'...
+    // const requestCopy = req.clone(); 
+
+    const requestCopy = req.clone( ////com o pass de um OBJECT JAVASCRIPT dentro desse 'clone', podemos CONFIGURAR/OVERWRITTAR TODAS AS 'CORE THINGS' de nosso REQUEST ORIGINAL, nessa cópia aí..
+        {
+            // body,
+            // headers,
+            ///headers: req.headers.append('novoHeader', 'novoHeaderValue') ///assim você pode manter os antigos headers...
+            headers: req.headers.append('Auth', 'true')
+            // params,
+            // method,
+            // url
+
+
+        }
+ 
+    );   
+
+
+
+    console.log('Request is on its way!'); ///lógica que é executada _ ANTES_ DO REQUEST DEIXAR NOSSO APP (frontend)...
+
+
+    // return next.handle(req); /////lógica que é executada _ PARA _ '''LET OUR REQUEST ACTUALLY LEAVE OUR APP'''...
+    
+    
+    // return next.handle(requestCopy);  ////forwardamos A CÓPIA DO REQUEST, COM AS MODIFICAÇÕES APLICADAS POR NOSSO INTERCEPTOR... (aquele header extra de 'Auth: xyz') --> isso será recebido lá no nosso subscribe, e em todos os operators e coisas restante do flow de nosso código...
+
+
+
+
+    return next.handle(requestCopy)  ////se digitamos '.pipe()' nesse OBSERVABLE (o next.handle() RETORNA UM OBSERVABLE), conseguimos CONFIGURAR A RESPONSE QUE VAI CHEGAR AO NOSSO APP, fazer coisas como APLICAR OPERATORS na nossa response...
+        .pipe(
+        //    map(  ///cuidado cmo isso, pode quebrar seu app, se você transformar seu response body em algo incompatível
+        //    )
+
+        tap( ///usamos isso para 'look into' no nosso RESPONSE DATA e NA EVENT DATA dessa response..
+
+        (event) =>  //// no interceptor, nós SEMPRE CONSEGUIMOS UM 'EVENT' como argumento...
+        {
+            console.log(event);
+            if (event.type === HttpEventType.Response) {
+                console.log('Response arrived, body data: ' );
+                console.log(event.body);
+            }
+
+
+        }
+        )
+        )
+}
+     
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA ACABAR COM ESSE TÓPICO SOBRE INTERCEPTORS,
+
+
+
+
+
+
+
+
+
+(E VEREMOS INTERCEPTORS MAIS UMA VEZ,
+NO MÓDULO DE AUTENTICAÇÃO DESSE CURSO...
+ ),
+
+
+
+
+
+ VAMOS ADICIONAR UM SEGUNDO INTERCEPTOR 
+
+
+
+ AO NOSSO APP (pq podemos adicionar quantos quisermos ao nosso código)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> SERÁ UM INTERCEPTOR QUE FAZ CONSOLE.LOG das coisas...
+
+
+
+
+
+
+
+
+
+
+
+ -_> será 
+
+
+
+ logging-interceptor.service.ts 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ EX:
+
+
+
+
+
+
+
+import { HttpInterceptor } from "@angular/common/http";
+
+export class LoggingInterceptor implements HttpInterceptor {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ok... criei um novo interceptor...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> preciso do method de 'intercept()'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
+import { Observable } from "rxjs";
+
+export class LoggingInterceptor implements HttpInterceptor {
+
+
+
+
+
+
+    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        
+
+
+
+        
+
+
+
+        return next.handle(req);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> AGORA PRECISO ADICIONAR ESSE INTERCEPTOR LÁ EM 'app.module.ts'...
+
+
+
+
+
+
+
+
+
+
+
+--> EU ACHO QUE DEVO ADICIONAR UM __ ARRAY_ DE INTERCEPTORS 
+
+lá 
+
+
+em 
+
+
+'useClass:'...
+
+
+
+
+
+
+MAS NÃO, ISSO NÃO ESTÁ CERTO...
+
+
+
+
+
+
+
+
+
+ACHO QUE _ O ADD/USO DESSE INTERCEPTOR __ JÁ OCORRE DE MANEIRA AUTOMÁTICA,
+
+BASTA 
+
+TER AUQELA INTERFACE DE 
+
+
+'HttpInterceptor'
+
+
+
+
+IMPLEMENTADA NA NOSSA CLASS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> o professor escreve assim:
+
+
+
+
+
+
+
+export class LoggingInterceptorService implements HttpInterceptor {
+
+    intercept(req: HttpRequest<any>, next: HttpHandler) {
+         
+         return next.handle(req);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo...
+
+
+
+MAS AINDA NÃO ESTAMOS FAZENDO NENHUN LOGGING...
+
+
+
+
+
+
+
+--> DEVEMOS FAZER LOGGING... -> POR ISSO O PROFESSOR VAI FAZER UM CONSOLE.LOG DE 
+
+
+
+
+'Outgoing request' 
+
+
+
+req.url.....
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+--> NA RESPONSE,
+
+O PROFESSOR NOVAMENTE 
+
+
+VAI FAZER USO DE 'tap()',
+
+
+para 
+
+AÍ 
+
+
+
+
+CONSOLE.LOGGARMOS MAIS ALGUMAS COISAS:
+
+
+
+
+
+
+export class LoggingInterceptorService implements HttpInterceptor {
+
+    intercept(req: HttpRequest<any>, next: HttpHandler) {
+
+
+
+            console.log('Outgoing request');
+            console.log(req.url);
+
+         return next.handle(req).pipe(
+             tap(
+                 (event) => {
+                     if (event.type === HttpEventType.Response) {
+                         console.log('Incoming response');
+                         console.log(event.body)
+                     }
+                 }
+             )
+         )
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+
+
+
+
+
+
+O QUE MAIS?
+
+
+
+
+
+
+PRECISAMOS ADICIONAR AMBOS OS 
+
+
+
+INTERCEPTORS...
+
+
+
+
+
+
+
+
+----> E AQUI HÁ ALGO SUPER IMPORTANTE:
+
+
+
+_ A ORDEM__ DE 'PROVIDE'
+
+
+DOS SEUS 
+
+
+
+INTERCEPTORS _IMPORTA_,
+
+
+PQ ESSA SERÁ A ORDEM PELA QUAL ELES SERÃO EXECUTADOS, NO SEU APP...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> é por isso que 
+
+NO 'app.module.ts'
+
+
+
+
+
+__ADICIONAMOS_ UM NOVO INTERCEPTOR POR MEIO DO __ REPEAT__ DA SINTAXE DE 
+
+
+
+''
+
+
+    {   ///é assim que instalamos um 'INTERCEPTOR' no nosso app... --> precisamos dessas 3 keys, para conseguir fazê-lo funcionar...
+      provide: HTTP_INTERCEPTORS,  ///sempre você fornecerá esse value....
+      useClass: AuthInterceptorService, ///aponte ao seu ACTUAL INTERCEPTOR --> essa class desse arquivo será adicionada como um INTERCEPTOR..
+      multi: true  //isso comunica ao angular se no seu app EXISTEM/EXISTIRÃO  MÚLTIPLOS INTERCEPTORS, e que você quer que sejam todos executados (e que não ocorra 'overwrite' de 1 em cima do outro)....
+    }
+
+
+
+    '',
+
+
+
+
+
+    VAMOS REPETIR ESSE OBJECT AÍ,
+
+
+    MAS DESSA VEZ PARA O 'LoggingInterceptor'...
+
+
+
+
+
+
+
+
+    EX:
+
+
+
+
+
+
+
+
+
+
+
+    import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+
+import { AppComponent } from './app.component';
+import { PostsHttpService } from './postsHttp.service';
+import { AuthInterceptorService } from './authInterceptor.service';
+
+import { LoggingInterceptor } from './exemploMultiInterceptorsLogging-interceptor.service';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    HttpClientModule
+  ],
+  providers: [
+    PostsHttpService,
+
+
+    //A __ ORDEM_ DOS INTERCEPTORS IMPORTA... 
+
+    {   ///é assim que instalamos um 'INTERCEPTOR' no nosso app... --> precisamos dessas 3 keys, para conseguir fazê-lo funcionar...
+      provide: HTTP_INTERCEPTORS,  ///sempre você fornecerá esse value....
+      useClass: AuthInterceptorService, ///aponte ao seu ACTUAL INTERCEPTOR --> essa class desse arquivo será adicionada como um INTERCEPTOR..
+      multi: true  //isso comunica ao angular se no seu app EXISTEM/EXISTIRÃO  MÚLTIPLOS INTERCEPTORS, e que você quer que sejam todos executados (e que não ocorra 'overwrite' de 1 em cima do outro)....
+    },
+
+    {  
+      provide: HTTP_INTERCEPTORS,  
+      useClass: LoggingInterceptor, 
+      multi: true  
+    }
+
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> OK, ISSO SIGNIFICA QUE 
+
+AGORA 
+
+O AUTH INTERCEPTOR VAI RODAR PRIMIERO,
+
+
+
+e o LOGGING INTERCEPTOR 
+
+
+VAI 
+
+
+RODAR DEPOIS.. ---> 
+
+
+
+
+
+
+
+VOCê 
+
+DEVE 
+
+
+ORDENAR OS 
+
+
+
+
+INTERCEPTORS 
+
+
+
+ADEQUADAMENTE, DEPENDENDO DO SEU USE-CASE....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COMO EXEMPLO DISSO,
+ 
+
+ o professor mete um console.log de 'headers' lá em 
+
+ 'LoggingInterceptor',
+
+
+
+
+ para demonstrar que 
+
+ OS HEADERS ADICIONADOS POR 'AuthInterceptorService'
+
+
+JÁ TERÃO SIDO ADICIONADOS.... ( e isso reflete no interceptor subsequente)....
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import {
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest,
+} from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+import { tap } from 'rxjs';
+
+import { HttpEventType } from '@angular/common/http';
+export class LoggingInterceptor implements HttpInterceptor {
+  intercept(req: HttpRequest<any>,
+    next: HttpHandler): Observable<HttpEvent<any>> 
+    
+    {
+        console.log('Outgoing request');
+        console.log(req.url);
+        console.log(req.headers); ///veremos o header de 'Auth', que terá sido adicionado pelo interceptor de 'AuthInterceptor'...
+    return next.handle(req).pipe(
+      tap((event) => {
+        if (event.type === HttpEventType.Response) {
+          console.log('Incoming response');
+          console.log(event.body);
+        }
+      })
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+AGORA, PARA REALMENTE PROVAR ESSE NEGÓCIO DE 'ORDER',
+
+
+
+
+ O PROFESSOR diz que basta trocarmos a order dos 2, colocar o 'LoggingInterceptor'
+
+ antes do 'AuthInterceptor',
+
+
+
+
+
+ QUE NOS MOSTRARÁ, NO OUTPUT,
+
+ que 
+
+ o 
+
+
+
+ header de 'Auth: xyz'
+
+ TERÁ SUMIDO (pq sua order de execução agora é 'DEPOIS DE LoggingInterceptor'...)..

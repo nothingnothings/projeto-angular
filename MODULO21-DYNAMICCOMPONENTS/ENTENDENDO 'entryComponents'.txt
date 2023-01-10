@@ -1,0 +1,1037 @@
+
+
+
+
+
+
+
+
+
+
+
+NA ÚLTIMA AULA,
+
+
+ESCREVEMOS TODA A LÓGICA PARA 
+
+'INSERT/CREATE'
+
+DE NOSSO COMPONENT CRIADO PROGRAMATICAMENTE,
+
+QUE FOI ESTA:
+
+
+
+
+
+
+
+
+
+
+
+
+TEMPLATE DO COMPONENT EM QUE VAMOS O INSERIR:
+
+
+
+
+
+  <ng-template appPlaceholder></ng-template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+DIRECTIVE USADA PARA INSERIR ESSE COMPONENT (vira basicamente o 'SLOT' em que inserir esse component):
+
+
+
+
+
+
+
+
+
+import { Directive, ViewContainerRef } from '@angular/core';
+
+@Directive({
+  selector: '[appPlaceholder]',
+})
+export class PlaceholderDirective {
+  constructor(public viewContainerRef: ViewContainerRef) {}
+}
+
+
+
+
+
+
+
+
+
+METHOD, no component de 'authPage.component.ts',
+
+que ACTUALLY FAZ O RENDER DE NOSSO COMPONENT 'AlertDynamicComponent',
+
+
+
+
+
+por meio do method 'showErrorAlert':
+
+
+
+
+
+
+  constructor(private authService: AuthService, private router: Router, private componentFactoryResolver: ComponentFactoryResolver) {////componentFactoy É USADO COM A CRIAÇÃO de clones...  
+
+  }
+
+
+
+
+  @ViewChild(PlaceholderDirective, {static: false}) dynamicAlertBoxHost: PlaceholderDirective;   ///essa propriedade vai 'HOLD' nossa placeholder directive, como ela aparece no nosso tempalte..
+  
+
+
+      private showErrorAlert(errorMessage: string,) {   //METHOD
+
+    
+          const alertComponentFactory = this.componentFactoryResolver.resolveComponentFactory(AlertDynamicComponent);  /////usamos isso para CRIAR NOSSO COMPONENT DINAMICAMENTE/PROGRAMATICAMENTE, DENTRO DO CÓDIGO 'ts'...
+          const hostViewContainerRef = this.dynamicAlertBoxHost.viewContainerRef;  
+          hostViewContainerRef.clear(); 
+
+        hostViewContainerRef.createComponent(alertComponentFactory); ///cria um NOVO COMPONENT, COM (por meio de) ESSA FACTORY ESPECÍFICA, nesse 'local' (hostViewContainerRef) DE NOSSO TEMPLATE...
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... MAS MESMO COM TUDO ISSO,
+
+
+
+
+AINDA RECEBEMOS __ UM __ _ERROR  __ 
+
+
+
+
+DE 
+
+
+
+RENDERING,
+
+
+
+mostrado no console do nosso app....
+
+
+
+
+
+
+
+
+
+
+
+
+-> HMMM.... MAS ISSO ACONTECEU SÓ NA VERSÃO DO PROFESSOR, PQ 
+
+
+NA MINHA VERSÃO DO CÓDIGO,
+
+
+
+
+
+O MODAL COM BACKDROP FOI RENDERIZADO COM SUCESSO,
+
+
+apesar de ter sido renderizado SEM NENHUMA MESSAGE NO SEU INTERIOR...
+
+
+
+
+
+
+
+
+
+
+
+--> OK... AGORA CONTINUO A AULA DO PROFESSOR...
+
+
+
+
+ 
+
+
+
+
+
+
+ -_> ELE NOS EXPLICA QUE:
+
+
+
+
+
+ SE ESSE NOSSO CÓDIGO FUNCIONOU SEM MAIS 
+
+ NENHUM AJUSTE,
+
+
+
+
+ISSO SE DEU POR CONTA DO FATO DE ESTARMOS USANDO O ANGULAR VERSÃO 9+,
+
+
+
+
+
+UMA PEQUENA CHANGE FEITA 
+
+
+
+
+NO BEHIND THE SCENES DO ANGULAR,
+
+
+
+a sintaxe geral ainda funciona,
+
+MAS 
+
+
+O
+ 
+
+ angular 9+ 
+
+
+
+ TEM UMA PEQUENA CHANGE 
+
+
+
+ QUE FEZ ESSE CÓDIGO AÍ FUNCIONAR 'OUT OF THE BOX'... --> 
+
+
+
+
+
+
+
+ MAS SE VOCÊ ESTIVER RECEBENDO ESSE ERROR,
+
+
+
+
+É BOM SABER COMO CONSERTAR... (
+
+
+    para saber __ PQ _ RECEBEMOS ESSE ERROR... 
+)
+
+
+
+
+
+
+
+
+
+O ERRO É 'NÃO ACHAMOS UMA COMPONENT FACTORY PARA O COMPONENT DE 'alertComponent'...
+
+
+
+
+
+
+MAS A PRIMEIRA PARTE NÃO É INTERESSANTE, O QUE  IMPORTA É A SEGUNDA PARTE:
+
+
+
+
+'VOCê ADICIONOU ESSA COMPONENT FACTORY AO ngModule.entryComponents?'
+
+
+
+
+
+
+
+
+
+
+------> PARA ISSO,
+
+
+VOCÊ PRECISA ENTENDER 
+
+
+
+'''COMO O ANGULAR FUNCIONA, POR TRÁS DAS CENAS, QUANDO O ASSUNTO É O CREATE DE COMPONENTS'...
+
+
+
+
+
+
+É CLARO QUE QUALQUER COMPONENT, ASSIM COMO DIRECTIVES E PIPES,
+
+
+
+
+_ PRECISA _ SER ADICIONADO 
+
+
+AO ARRAY DE 'declarations',
+
+
+
+
+LÁ NO 
+
+
+
+app.module.ts:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
+
+import { AppComponent } from './app.component';
+
+import { HeaderComponent } from './headerComponent/headerComponent.app';
+
+import { RecipeBookComponent } from './recipeBook/recipe-book.component';
+import { RecipeItemComponent } from './recipeBook/recipe-list/recipe-item/recipe-item.component';
+import { RecipeListComponent } from './recipeBook/recipe-list/recipe-list.component';
+import { RecipeDetailComponent } from './recipeBook/recipe-detail/recipe-detail.component';
+import { ShoppingListComponent } from './ShoppingList/shoppingList.component';
+import { ShopListEditComponent } from './ShoppingList/shop-list-edit/shop-list-edit.component';
+import { ShoppingListItemComponent } from './ShoppingList/shopping-list-item/shopping-list-item.component';
+
+import { DropdownDirective } from './dropdownDirective/dropdown.directive';
+import { RecipeBookService } from './recipeBook.service';
+import { ShoppingListService } from './shoppingList.service';
+import { GenericErrorPageComponent } from './generic-error-page/generic-error-page.component';
+import { AppRoutingModule } from './app-routing.module';
+import { HomePageComponent } from './home-page/home-page.component';
+import { SelectARecipeComponent } from './recipeBook/select-a-recipe/select-a-recipe.component';
+import { RecipeEditComponent } from './recipeBook/recipe-edit/recipe-edit.component';
+import { AuthPageComponent } from './auth-page/auth-page.component';
+import { SpinnerComponent } from './auth-page/spinner/spinner.component';
+import { HttpInterceptorService } from 'src/app/httpInterceptor.service';
+import { AuthGuardService } from './auth-guard.service';
+import { AlertDynamicComponent } from './shared/alertVersaoNgIf (bem mais pratica)/alert.component';
+
+
+import { PlaceholderDirective } from './placeholderDirective/placeholder.directive';
+// import { AlertDynamicComponent } from './shared/alertVersaoNgIf (bem mais pratica)/alert.component';
+
+
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+    RecipeBookComponent,
+    RecipeItemComponent,
+    RecipeListComponent,
+    RecipeDetailComponent,
+    ShoppingListComponent,
+    ShopListEditComponent,
+    ShoppingListItemComponent,
+    DropdownDirective,
+    GenericErrorPageComponent,
+    HomePageComponent,
+    SelectARecipeComponent,
+    RecipeEditComponent,
+    AuthPageComponent,
+    SpinnerComponent,
+    AlertDynamicComponent,
+    PlaceholderDirective
+    // AlertDynamicComponent
+  ],
+  imports: [
+    BrowserModule,
+    ReactiveFormsModule,
+    FormsModule, //lembre-se de adicionar isso se for usar 'ngModel()'..
+    AppRoutingModule,  //módulo de routing, customizado por nós...
+    HttpClientModule
+  ],
+  providers: [RecipeBookService, ShoppingListService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpInterceptorService,
+      multi: true
+    }
+  
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> E ESSE NEGÓCIO É IMPORTANTE PARA QUE O ANGULAR ENTENDA 
+
+
+
+'O QUE É UM COMPONENT',
+
+OU QUAIS
+
+COMPONENTS E DIRECTIVES VOCê TEM NO SEU APP...
+
+
+
+
+
+
+
+--> ISSO, POR SI SÓ,
+
+
+
+SÓ DEIXA O ANGULAR 'AWARE' 
+
+DISSO,
+
+
+
+DESSES  COMPONENTS/DIRECTIVES,
+
+
+
+
+
+TUDO PARA QUE 
+
+
+ELE 
+
+
+CONSIGA CRIAR 1 DESSES COMPONENTS QUANDO ELE OS ENCONTRAR EM 1 DE 2 LUGARES:
+
+
+
+
+
+
+
+
+1o lugar) ---> DENTRO DE SEUS TEMPLATES, em coisas como <exemplo-app-exemplo></exemplo-app-exemplo> 
+
+
+--> ISSO VAI OBRIGÁ-LO A PROCURAR NO ARRAY DE DECLARATIONS, por esse negócio aí, para então criar esse component... -_> mesma coisa com directives e services...
+
+
+
+
+
+
+
+
+
+2o lugar) -------> O OUTRO LUGAR É JUSTAMENTE 
+
+
+
+__ DENTRO _ DE SUAS __ ROUTES_,
+
+
+DENTRO DO 'app-routing.module',
+
+
+
+
+LÁ NO ROUTE CONFIG,
+
+
+
+
+
+
+EM COISAS COMO 
+
+
+{
+    path: 'id',
+    component: RecipeDetailComponent,
+    resolve: [RecipesResolverService]
+}
+
+
+
+
+
+
+
+--> QUANDO VOCÊ APONTAR A UM COMPONENT LÁ,
+
+
+O ANGULAR TAMBÉM VAI CHECAR ESSE COMPONENT NO DECLARATIONS ARRAY,
+
+E SE 
+
+O ENCONTRAR, ELE É CAPAZ DE CRIAR ESSE COMPONENT E FAZER SEU 'LOAD'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> MAS É CLARO QUE O CREATE __ MANUAL__ DE COMPONENTS__ NO CÓDIGO TS 
+
+_ NÕA FUNCIONA,
+
+
+
+O 'INCLUDE' 
+
+
+
+DE ESSE NOVO COMPONENT, RECÉM FABRICADO,
+
+
+NÃO É 
+
+FEITO AUTOMATICAMENTE;
+
+ESSE 
+
+
+COMPONENT NÃO É INSERIDO EM 'DECLARATIONS' AUTOMATICAMENTE..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VOCÊ PODE RECLAMAR SOBRE ISSO, MAS AINDA É O CASO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> EM VEZ DISSO, VOCÊ DEVE INFORMAR O ANGULAR DELIBERADAMENTE QUE 
+
+
+
+
+
+'''O ALERT COMPONENT DEVERÁ SER CRIADO EM ALGUM LUGAR, E QUE O ANGULAR 
+
+
+BASICAMENTE DEVE ESTAR _ ''PREPARADO'''__ PARA ISSO...'''  --> ELE PRECISA 
+
+
+
+FICAR PREPARADO PARA RECEBER/ANALISAR 
+
+
+
+ESSE COMPONENT, A CRIAÇAÕ DESSE COMPONENT...
+
+
+
+
+
+
+
+
+
+--> PARA FAZER ISSO,
+
+
+
+VOCê 
+
+PRECISA ADICIONAR UMA PROPRIEDADE ESPECIAL AO OBJECT QUE VOCê ADICIONA EM 'ngModule'...
+
+
+
+
+
+
+
+
+------> É UMA KEY em 'ngModule'
+
+
+
+QUE AINDA NÃO UTILIZAMOS,
+
+A KEY DE 
+
+
+'entryComponents'...
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
+
+import { AppComponent } from './app.component';
+
+import { HeaderComponent } from './headerComponent/headerComponent.app';
+
+import { RecipeBookComponent } from './recipeBook/recipe-book.component';
+import { RecipeItemComponent } from './recipeBook/recipe-list/recipe-item/recipe-item.component';
+import { RecipeListComponent } from './recipeBook/recipe-list/recipe-list.component';
+import { RecipeDetailComponent } from './recipeBook/recipe-detail/recipe-detail.component';
+import { ShoppingListComponent } from './ShoppingList/shoppingList.component';
+import { ShopListEditComponent } from './ShoppingList/shop-list-edit/shop-list-edit.component';
+import { ShoppingListItemComponent } from './ShoppingList/shopping-list-item/shopping-list-item.component';
+
+import { DropdownDirective } from './dropdownDirective/dropdown.directive';
+import { RecipeBookService } from './recipeBook.service';
+import { ShoppingListService } from './shoppingList.service';
+import { GenericErrorPageComponent } from './generic-error-page/generic-error-page.component';
+import { AppRoutingModule } from './app-routing.module';
+import { HomePageComponent } from './home-page/home-page.component';
+import { SelectARecipeComponent } from './recipeBook/select-a-recipe/select-a-recipe.component';
+import { RecipeEditComponent } from './recipeBook/recipe-edit/recipe-edit.component';
+import { AuthPageComponent } from './auth-page/auth-page.component';
+import { SpinnerComponent } from './auth-page/spinner/spinner.component';
+import { HttpInterceptorService } from 'src/app/httpInterceptor.service';
+import { AuthGuardService } from './auth-guard.service';
+import { AlertDynamicComponent } from './shared/alertVersaoNgIf (bem mais pratica)/alert.component';
+
+
+import { PlaceholderDirective } from './placeholderDirective/placeholder.directive';
+// import { AlertDynamicComponent } from './shared/alertVersaoNgIf (bem mais pratica)/alert.component';
+
+
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+    RecipeBookComponent,
+    RecipeItemComponent,
+    RecipeListComponent,
+    RecipeDetailComponent,
+    ShoppingListComponent,
+    ShopListEditComponent,
+    ShoppingListItemComponent,
+    DropdownDirective,
+    GenericErrorPageComponent,
+    HomePageComponent,
+    SelectARecipeComponent,
+    RecipeEditComponent,
+    AuthPageComponent,
+    SpinnerComponent,
+    AlertDynamicComponent,
+    PlaceholderDirective
+    // AlertDynamicComponent
+  ],
+  imports: [
+    BrowserModule,
+    ReactiveFormsModule,
+    FormsModule, //lembre-se de adicionar isso se for usar 'ngModel()'..
+    AppRoutingModule,  //módulo de routing, customizado por nós...
+    HttpClientModule
+  ],
+  entryComponents: [   ///usado com o RENDER DE COMPONENTS DENTRO DE NOSSO CÓDIGO TS...
+  ],
+
+  providers: [RecipeBookService, ShoppingListService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpInterceptorService,
+      multi: true
+    }
+  
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> O ENTRY COMPONENTS TAMBÉM É UM ARRAY,
+
+
+
+E É UM ARRAY __ DE COMPONENT_ TYPES,
+
+
+
+
+MAS __ APENAS__ DE 
+
+COMPONENTS__ QUE EVENTUALMENTE 
+
+
+
+
+'WILL NEED TO BE CREATEd' __ SEM UM _ 'SELECTOR' OU 'ROUTE CONFIG'
+
+
+
+
+SENDO UTILIZADO...
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
+
+import { AppComponent } from './app.component';
+
+import { HeaderComponent } from './headerComponent/headerComponent.app';
+
+import { RecipeBookComponent } from './recipeBook/recipe-book.component';
+import { RecipeItemComponent } from './recipeBook/recipe-list/recipe-item/recipe-item.component';
+import { RecipeListComponent } from './recipeBook/recipe-list/recipe-list.component';
+import { RecipeDetailComponent } from './recipeBook/recipe-detail/recipe-detail.component';
+import { ShoppingListComponent } from './ShoppingList/shoppingList.component';
+import { ShopListEditComponent } from './ShoppingList/shop-list-edit/shop-list-edit.component';
+import { ShoppingListItemComponent } from './ShoppingList/shopping-list-item/shopping-list-item.component';
+
+import { DropdownDirective } from './dropdownDirective/dropdown.directive';
+import { RecipeBookService } from './recipeBook.service';
+import { ShoppingListService } from './shoppingList.service';
+import { GenericErrorPageComponent } from './generic-error-page/generic-error-page.component';
+import { AppRoutingModule } from './app-routing.module';
+import { HomePageComponent } from './home-page/home-page.component';
+import { SelectARecipeComponent } from './recipeBook/select-a-recipe/select-a-recipe.component';
+import { RecipeEditComponent } from './recipeBook/recipe-edit/recipe-edit.component';
+import { AuthPageComponent } from './auth-page/auth-page.component';
+import { SpinnerComponent } from './auth-page/spinner/spinner.component';
+import { HttpInterceptorService } from 'src/app/httpInterceptor.service';
+import { AuthGuardService } from './auth-guard.service';
+import { AlertDynamicComponent } from './shared/alertVersaoNgIf (bem mais pratica)/alert.component';
+
+
+import { PlaceholderDirective } from './placeholderDirective/placeholder.directive';
+// import { AlertDynamicComponent } from './shared/alertVersaoNgIf (bem mais pratica)/alert.component';
+
+
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+    RecipeBookComponent,
+    RecipeItemComponent,
+    RecipeListComponent,
+    RecipeDetailComponent,
+    ShoppingListComponent,
+    ShopListEditComponent,
+    ShoppingListItemComponent,
+    DropdownDirective,
+    GenericErrorPageComponent,
+    HomePageComponent,
+    SelectARecipeComponent,
+    RecipeEditComponent,
+    AuthPageComponent,
+    SpinnerComponent,
+    AlertDynamicComponent,
+    PlaceholderDirective
+    // AlertDynamicComponent
+  ],
+  imports: [
+    BrowserModule,
+    ReactiveFormsModule,
+    FormsModule, //lembre-se de adicionar isso se for usar 'ngModel()'..
+    AppRoutingModule,  //módulo de routing, customizado por nós...
+    HttpClientModule
+  ],
+  entryComponents: [   ///usado com o RENDER DE COMPONENTS DENTRO DE NOSSO CÓDIGO TS... --> ou seja, components que não vão usar um 'selector' para serem renderizados, nem o ROUTE CONFIG (paths e etc) para serem renderizados... eles vão simplesmente ser 'DROPPADOS' no código, por meio de uma directive especializada e por meio de uma 'ComponentFactory' própria...
+  AlertDynamicComponent
+],
+
+  providers: [RecipeBookService, ShoppingListService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpInterceptorService,
+      multi: true
+    }
+  
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS UMA NOTA FINAL SOBRE ESSE 
+
+
+
+'entryComponents':
+
+
+
+
+
+
+
+
+
+
+
+
+dependendo da versão do angular que você 
+usa,
+
+
+
+
+
+
+TALVEZ NAÕ SEJA NECESSÁRIO TER ESSA PROPRIEDADE... --> SE VOCÊ TIVER UM PROJETO COM ANGULAR 9+,
+
+
+
+VOCÊ 
+
+PODE OMITIR 
+
+
+
+
+
+ESSE ARRAY POR INTEIRO...
+
+
+
+
+
+
+
+
+
+--> ISSO ACONTECE PQ O ANGULAR MAIS RECENTE USA UMA RENDERING ENGINE DIFERENTE,
+
+A 
+
+
+'IVY'..
+
+
+
+
+
+
+
+--> VOCÊ PODE ESPECIFICAR MESMO ASSIM,
+
+
+
+
+PQ NUNCA VAI OBTER ERRORS A PARTIR DISSO...
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, AGORA NOSSO COMPONENT SERÁ RENDERIZADO...
+
+
+
+
+
+
+
+
+
+--> O ÚNICO PROBLEMA, AGORA, SERÁ 
+
+
+
+
+PASSAR 
+
+
+
+
+A NOSSA 'MESSAGE DE ERROR'
+
+PARA DENTRO DESSE COMPONENT...
+
+
+
+
+(
+
+    E TAMBÉM AINDA NÃO CONSEGUIMOS FAZER 'DISMISS' DESSE COMPONENT'...
+)
+
+

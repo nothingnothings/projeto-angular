@@ -1,0 +1,1435 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> devemos continuar o trabalho 
+
+
+
+
+
+nas nossas actions...
+
+
+
+
+
+
+
+
+
+
+
+
+--> DEVEMOS DAR UMA OLHADA EM COMO PODEMOS 'ADICIONAR MÚLTIPLOS INGREDIENTS DE 1 VEZ SÓ'' 
+
+
+
+
+
+(
+
+
+
+
+    pq esse é outro case
+
+
+
+    de nosso app;
+
+    
+
+    há mais do que o add de apenas  1 ingredient..
+)
+
+
+
+
+
+
+
+
+
+--> eu achava que o ADD DE 1 NOVO INGREDIENT ESTAVA FUNCIONANDO, MAS OBTIVE ESTE ERRO:
+
+
+
+core.mjs:6485 ERROR TypeError: updatedIngredients.push is not a function
+    at addIngredient (shoppingList.reducer.ts:202:22)
+    at shoppingListReducer (shoppingList.reducer.ts:116:14)
+    at combination (ngrx-store.mjs:306:37)
+    at ngrx-store.mjs:879:27
+    at ngrx-store.mjs:339:20
+    at reduceState (ngrx-store.mjs:486:21)
+    at scanInternals.js:11:1
+    at OperatorSubscriber._next (OperatorSubscriber.js:13:1)
+    at OperatorSubscriber.next (Subscriber.js:31:1)
+    at withLatestFrom.js:26:1
+
+
+
+
+
+
+
+
+
+
+
+--> QUAL É A RAZÃO DISSO?
+
+
+
+
+
+
+
+
+
+-> era pq eu havia colocado o negócio como 'OBJECT', quando deveria ser array:
+
+
+
+
+
+  const addIngredient = (state: ShoppingListState, action: ShoppingListActions.AddIngredient): ShoppingListState => {
+
+  const updatedIngredients = [ ////AQUI ESTAVA O ERRO...
+      ...state.ingredients
+  ]
+
+
+  updatedIngredients.push(action.payload);
+
+  return updateObject(state, {ingredients: updatedIngredients})
+
+}
+
+
+
+
+
+
+
+
+-------------------------
+
+
+
+
+
+
+
+
+
+
+
+-- OK...  AGORA O PROFESSOR QUER IMPLEMENTAR O 'ADD DE MÚLTIPLOS INGREDIENTS'...
+
+
+
+
+
+
+--> como havíamos escrito esse method de 'addIngredients' (mais de um)?
+
+
+
+
+
+
+
+
+
+
+
+--> assim:
+
+
+
+
+
+
+
+  sendToShopList(ingredients: Ingredient[]) {
+    for (let ingredient of ingredients) {
+      this.shoppingListService.onIngredientAdd(ingredient);
+      console.log('SENT');
+    }
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+certo....
+
+
+
+
+
+só usamos esse negócio em 1 único lugar de nosso código, que é aqui:
+
+
+
+
+
+
+
+
+
+
+
+  sendToShoppingList() {
+    console.log('CLICKED');
+    this.recipeBookService.sendToShopList(this.loadedRecipe.ingredients);
+    this.router.navigate(['/shop-list'])
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK... vamos querer FAZER O DISPATCH DE UMA ACTION em 'RecipeDetailComponent'...
+
+
+
+
+
+
+
+
+
+provavelmente poderemos trocar esse 
+
+
+
+'this.recipeBookService.sendToShopList(this.loadedRecipe.ingredients)'
+
+
+
+por 
+
+
+
+this.store.dispatch(new Action()) 
+
+
+
+
+
+
+
+
+algo assim,
+
+
+
+
+
+
+só temos que criar essa action....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> acho que será bem mais fácil 
+
+DEIXAR DE LADO ESSE METHOD DE 'sendToShopList'
+
+
+
+
+do service, para 
+
+então 
+
+CRIAR UMA 
+
+NOVA ACTION, AUTÔNOMA, 
+
+
+
+de 
+
+
+
+'addIngredients',
+
+mesmo..
+
+
+
+
+
+
+
+
+
+
+ok..
+
+
+
+
+
+
+
+vou tentar escrever assim:
+
+
+
+
+
+
+
+
+
+  sendToShoppingList() {
+    console.log('CLICKED');
+    // this.recipeBookService.sendToShopList(this.loadedRecipe.ingredients);
+
+    this.store.dispatch(new ShoppingListActions.AddIngredients(this.loadedRecipe.ingredients))
+  
+
+    this.router.navigate(['/shop-list'])
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... MAS ASSIM QUE EU TENTAR 
+
+
+
+ESCREVER 
+
+
+
+
+LÁ NO REDUCER ESSE CASE/ACTION DE 'addIngredients',
+
+
+VOU RECEBER ERRORS DE TYPESCRIPT...
+
+
+
+
+(
+
+    isso pq no nosso reducer definimos que o type da action é de 
+
+    'ShoppingListActions.AddIngredient',
+    mas agora 
+
+
+    estamos com uma action de type 'ShoppingListActions.AddIngredients',
+
+    o que 
+
+    ESTÁ CAUSANDO UM CONFLITO...
+)
+
+
+
+
+
+
+
+
+
+
+
+COMO PODEMOS SOLUCIONAR ESSE CONFLITO?
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> o professor menciona que 
+
+estamos DECLARANDO QUE O TYPE DA ACTION DEVERÁ SER DE 
+
+
+'ShoppingListActions.AddIngredient'...
+
+
+
+
+---> E ISSO É O QUE ESTÁ CAUSANDO O NOSSO ERROR..
+
+
+
+
+
+
+
+
+
+
+--> COMO TEMOS AGORA 2 ACTIONS, NÃO PODEMOS 'MENTIR' QUE 
+
+
+
+
+ESSAS ACTIONS SÃO IGUAIS (pq não são)....
+
+
+
+
+
+
+
+
+-->  O QUE PODEMOS FAZER, AQUI?
+
+
+
+
+
+
+
+
+
+
+
+
+
+OPÇÃO 1) PODEMOS 'FALLBACK' para a interface mais genérica de 'Action',
+
+QUE 
+
+
+
+PODE SER IMPORTADA DAQUI:
+
+
+
+
+
+
+
+
+
+
+import { Action } from '@ngrx/store'....
+
+
+
+
+
+
+
+
+
+--> MAS SE FIZERMOS ISSO, IMEDIATAMENTE FICAREMOS COM UM ERRO NO 'PAYLOAD',
+
+
+PQ 
+
+ESSA ACTION NÃO VAI CONHECER ESSE 
+PAYLOAD,
+
+
+ISSO NÃO VAI FUNCIONAR...
+
+
+
+
+
+
+
+
+
+---> É POR ISSO QUE PRECISAMOS DE UM APPROACH DIFERENTE.. --> É CLARO QUE 
+
+
+SEMPRE PODERÍAMOS COLOCAR 'any',
+
+
+e isso funcionaria,
+
+
+mas um 
+
+POUCO MAIS DE TYPESCRIPT SUPPORT SEMPRE É NICE..
+
+
+
+
+
+
+--> A SOLUÇÃO PARA ISSO (amém), aqui,
+
+É 
+
+
+EXPORTAR/CRIAR UM NOVO TYPE NO NOSSO CÓDIGO...
+
+
+
+
+
+
+-> VAMOS CRIAR ESSE TYPE LÁ 
+
+
+
+NO ARQUIVO DE 'ShoppingListActions'...
+
+
+
+
+
+---> nesse type,
+
+
+
+
+
+
+
+
+
+
+
+que escrevermos assim:
+
+
+
+
+
+
+
+
+
+
+export type ShoppingListActions = {
+
+
+}
+
+
+
+
+--> ESSE 
+
+TYPE 
+
+SERÁ 
+
+
+
+UMA SIMPLES 
+
+
+
+''COMBINAÇÃO'''
+
+
+DE _ _TODOS __ OS TYPES_ QUE VOCÊ VAI QUERER 
+
+
+
+'INCLUDE' dentro 
+
+de suas shoppingListActions...
+
+
+
+
+
+
+
+
+--> OU SEJA,
+
+VAMOS CRIAR UM 'UNION TYPE'
+
+
+
+_ DE TODOS_ _ OS DIFERENTES_ ACTION TYPES QUE 
+
+
+VOCÊ 
+
+VAI QUERER _ SUPORTAR__ NESSA PARTE DE SEU STORE...
+
+
+
+
+
+
+ESSE 'UNION TYPE'
+
+
+
+aí 
+
+
+
+VAI CONSISTIR DE:
+
+
+
+1) 'AddIngredient' 
+
+
+
+
+
+
+e 
+
+
+
+
+2) 'AddIngredients'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+OU SEJA,
+
+O CÓDIGO FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+export type ShoppingListActions = AddIngredient | AddIngredients;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E O CÓDIGO COMPLETO FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Action } from '@ngrx/store'; ///precisamos disso para DESCREVER NOSSAS ACTIONS...
+import { Ingredient } from 'src/app/shared/ingredient.model';
+
+// import { createAction, props } from '@ngrx/store';
+
+ 
+
+export const ADD_INGREDIENT = 'INGREDIENT_ADD'; ////identifiers de nossas actions
+
+export const ADD_INGREDIENTS = 'INGREDIENTS_ADD';
+
+export const EDIT_INGREDIENT = 'INGREDIENT_EDIT';
+
+export const DELETE_INGREDIENT = 'INGREDIENT_DELETE';
+
+export class AddIngredient implements Action { 
+  readonly type: string = ADD_INGREDIENT; 
+
+constructor(public payload: Ingredient) {}
+
+
+}
+
+
+
+
+
+export class AddIngredients implements Action {
+
+
+  readonly type: string = ADD_INGREDIENTS; 
+
+
+
+
+constructor(public payload: Ingredient[]) {}
+
+
+
+}
+
+
+
+
+export class RemoveIngredient implements Action {
+
+    readonly type: string = DELETE_INGREDIENT;
+
+
+
+    constructor(public payload: number) {}
+}
+
+
+
+export class EditIngredient implements Action {
+
+  readonly type: string = EDIT_INGREDIENT;
+
+
+
+  constructor(public payload: {ingredient: Ingredient, index: number}) {}
+
+
+
+}
+
+
+
+
+
+
+
+export type ShoppingListActions = AddIngredient | AddIngredients | RemoveIngredient | EditIngredient;
+
+
+
+
+
+
+
+
+
+
+-----------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+ou seja,
+
+
+esse TYPE É _ MT IMPORTANTE_,
+
+PQ __ É 
+
+
+ELE QUE 
+
+SERÁ COLOCADO LÁ NO NOSSO 'reducer',
+
+
+
+
+tipo assim:
+
+
+
+export function shoppingListReducer(state: ShoppingListState = initialState, 
+  action: ShoppingListActions): ShoppingListState {
+  switch(action.type){
+    case ShoppingListActions.ADD_INGREDIENT:
+      // return addIngredient(state, action);
+      // return state;
+
+      // return {
+      //   ...state,
+      //   ingredients: [
+      //     ...state.ingredients,
+      //     action.payload
+      //   ]
+      // }
+      return addIngredient(state, action);
+    break;
+    case ShoppingListActions.ADD_INGREDIENTS:
+      return addIngredients(state, action);
+    case ShoppingListActions.DELETE_INGREDIENT:
+      return state;
+      break;
+    case ShoppingListActions.EDIT_INGREDIENT:
+      return state;
+        break;
+      default: ////é o case do INITIALIZE DE NOSSO STATE (pq no início de nosso app, será definido/passado o 'initialState', sem o pass de nenhuma actionType...) --> e é aí que entra em jogo esse return de 'state' como o DEFAULT, pq isso significa que nosso state NÃO TERÁ SIDO ALTERADO POR ACTION NENHUMA, MAS QUE AINDA SERÁ 'returned', pq isso será necessário...
+        return state;  
+  }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  OK... VOU TESTAR ISSO AÍ...
+
+
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+
+  export type ShoppingListActionTypes = AddIngredient | AddIngredients | RemoveIngredient | EditIngredient;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK, MAS AINDA ESTOU RECEBENDO ERRORS...
+
+
+
+
+
+
+
+
+export function shoppingListReducer(state: ShoppingListState = initialState, 
+  // action: ShoppingListActions.AddIngredient  //maneira errada (vai pegar o type de SÓ UMA DAS ACTIONS)
+  action: ShoppingListActions.ShoppingListActionTypes
+  
+  ): ShoppingListState {
+  switch(action.type){
+    case ShoppingListActions.ADD_INGREDIENT:
+
+      return addIngredient(state, action); //ERROR EM 'action'
+    break;
+    case ShoppingListActions.ADD_INGREDIENTS:
+      return addIngredients(state, action); ///ERROR EM 'action'
+    case ShoppingListActions.DELETE_INGREDIENT:
+      return state;
+      break;
+    case ShoppingListActions.EDIT_INGREDIENT:
+      return state;
+        break;
+      default: ////é o case do INITIALIZE DE NOSSO STATE (pq no início de nosso app, será definido/passado o 'initialState', sem o pass de nenhuma actionType...) --> e é aí que entra em jogo esse return de 'state' como o DEFAULT, pq isso significa que nosso state NÃO TERÁ SIDO ALTERADO POR ACTION NENHUMA, MAS QUE AINDA SERÁ 'returned', pq isso será necessário...
+        return state;  
+  }
+  }
+
+
+
+
+
+
+
+
+
+--> O ERRO É ESTE:
+
+
+
+
+
+
+
+Argument of type 'ShoppingListActionTypes' is not assignable to parameter of type 'AddIngredient'.
+  Type 'AddIngredients' is not assignable to type 'AddIngredient'.
+    Types of property 'payload' are incompatible.
+      Type 'Ingredient[]' is missing the following properties from type 'Ingredient': ingredient, amount, recipeIndexts(2345)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+coloquei um if check bem bootleg para consertar esse problema de type safety....
+
+(
+
+
+
+
+
+
+  if (action.payload instanceof Array) {
+    
+    updatedIngredients.push(...action.payload);
+  }
+  
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok... continuando a aula do professor....
+
+
+
+
+
+
+
+
+
+-> AGORA DEVO TESTAR ESSE ´CODIGO, VER SE O BUTTON DE 'ADD TO SHOPPING CART' realmente funciona,
+
+e se 
+
+esse method de 
+
+
+
+
+'addIngredients'
+
+
+
+FUNCIONA..
+
+
+
+
+-> EM RECIPE DETAIL, TEMOS:
+
+
+
+
+
+
+
+
+
+  sendToShoppingList() {
+    console.log('CLICKED');
+    this.store.dispatch(new ShoppingListActions.AddIngredients(this.loadedRecipe.ingredients))
+  
+
+    this.router.navigate(['/shop-list'])
+  }
+
+
+
+
+
+
+
+
+
+
+
+OK... FUNCIONOU...
+
+
+
+
+
+
+-> agora estamos adicionando esses ingredients ao 'state' de nosso app 
+
+
+POR MEIO 
+
+
+
+DO DISPATCH DE UMA ACTION , E NÃO MAIS 
+
+
+POR MEIO DO SERVICE DE 'shoppingListService'....
+
+
+
+O CÓDIGO DE RECIPE DETAIL FICOU ASSIM;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit, Input } from '@angular/core';
+import { RecipeBookService } from 'src/app/recipeBook.service';
+
+import { Recipe } from '../recipe.model';
+
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ShoppingListService } from 'src/app/shoppingList.service';
+import { Store } from '@ngrx/store';
+import { Ingredient } from 'src/app/shared/ingredient.model';
+
+
+import * as ShoppingListActions from '../../ShoppingList/store/shoppingListActions';
+
+@Component({
+  selector: 'app-recipe-detail',
+  templateUrl: './recipe-detail.component.html',
+  styleUrls: ['./recipe-detail.component.css']
+})
+export class RecipeDetailComponent implements OnInit {
+
+
+
+
+  loadedRecipe: Recipe;
+  id: number;
+
+  constructor(private recipeBookService: RecipeBookService, 
+    private route: ActivatedRoute, 
+    private router: Router, 
+    private shoppingListService: ShoppingListService,
+    private store: Store<{shoppingList: {ingredients: Ingredient[]}}>
+    
+    ) { 
+
+
+
+    
+
+
+
+  }
+
+
+
+  ngOnInit(): void {
+
+
+
+    this.route.params.subscribe(
+      (params: Params) => {
+        console.log('TEST');
+
+        this.id = +params['id'];
+        console.log(+params['id'])
+        console.log(this.recipeBookService.getRecipe(+params['id']), 'LINE');
+        console.log(this.recipeBookService.getRecipes());
+        this.loadedRecipe = this.recipeBookService.getRecipe(+params['id']);
+
+  
+      }
+    )
+
+
+
+
+
+
+  }
+
+
+  sendToShoppingList() {
+    console.log('CLICKED');
+
+    this.store.dispatch(new ShoppingListActions.AddIngredients(this.loadedRecipe.ingredients))
+  
+
+    this.router.navigate(['/shop-list'])
+  }
+
+
+
+
+  onEditRecipe() {
+
+    this.router.navigate(['/recipe-book', this.id, 'edit']);
+
+
+  }
+
+
+
+
+  onDeleteRecipe() {
+
+
+    this.recipeBookService.onRecipeDeleted(this.id);
+    this.shoppingListService.cleanupDeleteIngredients(this.id);
+    console.log(this.shoppingListService.getIngredients());
+
+
+    this.router.navigate(['/recipe-book']);
+
+
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> O PROFESSOR NOS EXPLICA QUE AGORA 
+
+
+
+
+
+É BEM MAIS VANTAJOSO 
+
+
+
+
+REESTRUTURARMOS ISSO AÍ... --> 
+
+
+
+
+
+
+uma ótima ideia é 
+
+
+FAZER 'INJECT' da nossa store 
+
+DIRETAMENTE NOS SERVICES DE 'recipeBookService'
+
+
+
+e 
+
+
+'ShoppingListService',
+
+
+
+
+
+
+
+
+
+e aí SIMPLESMENTE FAZER O DISPATCH _DE NOSSAS ACTIONS _ POR 
+
+
+
+
+MEIO DOS METHDOS NO INTERIOR DO SERVICE...
+
+
+
+
+(aaah, isso é bem genial)..
+
+
+
+
+
+
+----> de acordo com a sintaxe proposta pelo professor, o código de 'recipeBookService' fica assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  constructor(
+    private shoppingListService: ShoppingListService,
+    private http: HttpClient,
+    private store: Store<{shoppingList: {ingredients: Ingredient[]}}>  /////isso pq agora vamos VINCULAR A NOSSA 'STORE' (que é o nosso SOURCE OF TRUTH, AGORA; é o nosso STATE CENTRAL, em outras palavras) A ESSE SERVICE AÍ...
+///declaramos o 'formato que nosso slice de state relativo a 'shoppingList' terá....
+  ) {}
+
+
+
+
+
+  sendToShopList(ingredients: Ingredient[]) {
+
+    this.store.dispatch(new ShoppingListActions.AddIngredients(ingredients));
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ÁI LÁ NO 'recipe-detail':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  sendToShoppingList() {
+    console.log('CLICKED');
+    // this.recipeBookService.sendToShopList(this.loadedRecipe.ingredients);
+
+
+      ///vou fazer dispatch, sim, mas DENTRO DO METHOD DE 'sendToShopList', lá no nosso 'recipeBookService' (mais conveniente fazer dispatches de dentro de services...)...
+    // this.store.dispatch(new ShoppingListActions.AddIngredients(this.loadedRecipe.ingredients))
+
+
+
+    this.recipeBookService.sendToShopList(this.loadedRecipe.ingredients);  ///dispatch de uma ACTION de DENTRO DO METHOD DE UM SERVICE...
+
+
+
+    this.router.navigate(['/shop-list'])
+  }
+
+
+
+
+
+
+
+
+
+ok, isso quer dizer que o estopim desse código será
+
+
+''''''
+
+
+this.recipeBookService.sendToShopList(this.loadedRecipe.ingredients);
+
+
+
+''''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COM ISSO,
+
+
+
+
+
+SE VOLTAMOS AO NOSSO APP E CLICAMOS em 'SEND to shop list',
+
+
+
+VEREMOS QUE O NEGÓCIO ESTARÁ FUNCIONANDO..
+
+
+
+
+
+
+(mas ainda estou com aquele PROBLEMA do  type bootleg de 'ShoppingListActions.ShoppingListActionTypes')...
+
+
+
+
+
+

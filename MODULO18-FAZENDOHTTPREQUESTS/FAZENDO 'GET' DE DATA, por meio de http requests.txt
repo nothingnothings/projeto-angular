@@ -1,0 +1,504 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... REQUESTS SÃO ENVIADOS COM O METHOD DE 'POST',
+
+
+
+E
+ NÓS _ SÓ OS ENVIAMOS 
+
+
+ QUANDO EFETIVAMENTE FAZEMOS 'SUBSCRIBE'...
+
+
+
+
+
+
+
+
+ CÓDIGO ATUAL:
+
+
+
+
+
+
+   onCreatePost(formReference: NgForm) { ///VAI FUNCIONAR, PQ USAMOS _ OBSERVABLES COM ESSE HTTP REQUEST....
+    //send HTTP POST request
+
+    console.log(formReference.value);
+
+    const postData = formReference.value;
+
+
+      //você não precisa chamar 'ngOnDestroy()' para dar unsubscribe em subscriptions feitas em cima de 'this.http.post()'...
+    ///this.http.post VAI NOS RETORNAR UM __ OBSERVABLE, SEMPRE... E AÍ VAMOS TER DE FAZER __ SUBSCRIBE __ A ELE..
+    this.http.post('https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json',    //// '/posts.json' --> é uma IDIOSSINCRASIA DO 'FIREBASE', e não do angular --> precisamos definir um 'NOVO PATH' para armazenar nossos posts diretamente, e aí, AO FINAL DESSA ROUTE, SOMOS OBRIGADOS A ESCREVER '.json' (coisa do FIREBASE , que é MALUCO)...
+    
+    postData ///NOSSO OBJECT JAVASCRIPT SERÁ CONVERTIDO EM JSON DATA AUTOMATICAMENTE...
+    
+    
+    
+    ).subscribe(
+      (responseData) => {  //// 'responseData' --> é o equivalente ao nosso 'BODY' da response... não vai reunir TUDO TUDO da response (coisas como headers e tal, essas coisas são acessadas por OUTROS METHODS DA RESPONSE, NO ANGULAR)...
+ 
+
+          console.log(responseData);
+      }
+    )
+
+    formReference.reset(); //resetta os values de todos os fields a partir de um submit bem sucedido...
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> OK.... 
+
+
+
+
+
+
+
+
+
+IGNORAMOS A DATA QUE RECEBEMOS NO MOMENTO,
+
+POR ENQUANTO...
+
+
+
+
+
+
+
+
+-> AGORA VAMOS QUERER _ ESCREVER UM REQUEST __ QUE 
+
+ACTUALLY __ 
+
+NOS DÁ/DARÁ DE VOLTA TODOS OS NOSSOS POSTS..
+
+
+
+
+
+
+
+--> PARA ISSO,
+O PROFESSOR ADICIONA UM NOVO PRIVATE METHOD,
+
+de nome 
+
+
+
+'fetchPosts(){}',
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EM QUE ELE VAI QUERER USAR 'this.http.get()'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+EU COMEÇO ESCREVENDO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+  private fetchPosts() {
+    this.http.get('https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json')
+    .subscribe(
+      (responseData) => {
+
+        this.loadedPosts = responseData;
+      }
+    )
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> MAS NÃO SEI SE ISSO ESTÁ CERTO...
+
+
+
+
+
+
+
+
+
+
+
+  VAMOS USAR A MESMA URL QUE USAMOS 
+
+
+
+  PARA O 'POST' DE UM POST...
+
+
+
+
+
+
+
+
+  --> SE EXAMINARMOS O FIREBASE,
+
+
+  VEREMOS QUE 
+
+
+
+  AGORA 
+
+
+  TEMOS 
+
+
+
+
+  UMA ENTRY DE 'posts',
+
+  QUE FOI CRIADA QUANDO FIZEMOS O SEND/CREATE DAQUELE POST,
+
+  NA AULA PASSADA..
+
+
+
+
+
+
+
+  -> SE CLICAMOS NA KEY DE 'posts,'
+
+
+  É POSSÍVEL 
+
+  VER CADA UM DOS 'post',
+
+  QUE SERÃO REPRESENTADOS POR AQUELE 
+
+
+
+
+  VALUe inscrito em {name: 'xxasxasihfjasi'} NA NOSSA RESPONSE... (essa é uma CONVENIENCE FEATURE DO FIREBASE)..
+
+
+
+
+
+
+
+
+
+
+  --> OK.. NOSSO OBJETIVO AGORA É 
+
+
+
+  FAZER GET DE TODOS OS POSTS QUE FORAM CRIADOS..
+
+
+
+
+
+
+
+  --> COMO ISSO É UM GET REQUEST,
+
+  NÃO PRECISAMSO DE NENHUM SEGUNDO PARÂMETRO,
+
+
+  pq 
+
+
+
+  get requests 
+
+  não 
+
+
+
+  possuem request body...
+
+
+
+
+
+
+  -> NÓS _ESPERAMOS__ QUE O QUE SERÁ RETORNADO SERÃO NOSSOS POSTS,
+
+  POR ISSO 
+
+  QUE EU ESCREVI ASSIM:
+
+
+
+
+
+    private fetchPosts() {
+    this.http.get('https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json')
+    .subscribe(
+      (responseData) => {
+
+        this.loadedPosts = responseData;
+      }
+    )
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------> OK...
+
+
+
+
+-> E VAMOS CHAMAR ESSE METHOD DE 'fetchPosts'
+
+
+LÁ DE DENTRO DE 'onFetchPosts'
+
+
+E 
+
+em 'ngOnInit()',
+
+
+pq vamos querer esse mesmo código nos 2 lugares...
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR FAZ A  MESMA COISA,
+
+
+
+ESCREVE ESSE CÓDIGO AÍ,
+
+
+MAS __ ELE NÃO RECEBE UM  ERRO (e eu recebo).
+
+
+
+
+
+
+
+
+
+
+
+
+
+BEM, A ESTRUTURA DE NOSSO OBJECT RESPONSE É 
+
+
+
+
+
+{
+    dassadjhiosadhjsdaioj: {
+        content: 'asdsadasd',
+        title: 'asdasdsadd'
+    }
+}
+
+
+
+
+
+
+
+
+--> QUEREMOS QUE ESSE POST SEJA OUTPUTTADO NA NOSSA PÁGNIA,
+
+DEFINIDO COMO O STATE DE 'loadedPosts'...
+
+
+
+
+
+
+
+
+
+
+
+> OK, MAS ISSO NÃO FUNCIONOU....
+
+
+
+
+
+
+
+
+
+
+
+
+--> PROFESSOR COMENTA QUE ESTAMOS CONSEGUINDO 1 JAVASCRIPT OBJECT DE VOLTA,
+
+
+
+
+E QUE AGORA PODEMOS MANIPULAR ESSA 
+
+
+DATA DENTRO 
+
+
+DE NOSSO ARRAY DE 'loadedPosts'... --> 
+
+
+
+
+PRECISAMOS TRANSFORMAR ESSE OBJECT JAVASCRIPT EM UM ARRAY....
+
+
+
+
+
+
+
+
+
+
+
+
+
+---->  EU TENTEI FAZER ISSO POR CONTA PRÓPRIA, MAS FALHEI...
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR DIZ QUE O APPROACH CORRETO É 
+
+
+COM O USO DE 'OBSERVABLE OPERATORS'...
+
+
+
+
+
+
+
+
+
+
+-> E MAIS: 
+
+O CALL 
+
+
+
+
+DE METHODS __ QUE FAZEM 'subscribe'
+
+
+
+DE DENTRO 
+
+
+
+DE NOSSO 'ngOnInit()"
+
+
+PODE DAR MUITO ERRADO... (aqui o state NAÕ UPDATA NUNCA)...

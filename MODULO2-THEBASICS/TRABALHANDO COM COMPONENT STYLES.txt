@@ -1,0 +1,828 @@
+ 
+
+
+
+
+
+
+
+
+
+
+
+ ----> NÓS ENTENDEMOS que templates SÃO MUITO IMPORTNATES,
+
+ E QUE PODEMOS 
+
+ TANTO USÁ-LOS 
+
+
+ COM 'EXTERNAL FILES'
+
+ COMO TAMBÉM 
+
+
+
+
+ de forma 'inline'....
+
+
+
+
+
+
+
+
+
+
+ ----> MAS E QUANTO AOS STYLES? 
+
+
+
+
+
+
+
+
+
+
+
+ -> bem, em cada 1 de nossos components,
+
+
+ temos esta estrutura:
+
+
+
+
+
+
+ import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-exemplo-component-com-inline-template',
+  template: '<p>exemplo</p>', ////ISSO MOSTRA QUE TAMBÉM É POSSÍVEL DEFINIR 'INLINE TEMPLATES' nos nossos arquivos 'ts' (em vez de usar um template EXTERNO...)
+  styleUrls: ['./exemplo-component-com-inline-template.component.css']
+})
+export class ExemploComponentComInlineTemplateComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+------> COMO VOCÊ PODE VER,
+
+DENTRO DESSE ARQUIVO TEMOS 
+
+
+
+
+
+'component',
+
+e dentro desse decorator/object
+
+
+temos 
+
+
+aquela key de 
+
+
+'styleUrls'... 
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O QUE PODEMOS FAZER COM ISSO?
+
+
+
+
+
+
+
+
+--> DEVEMOS VOLTAR AO NOSSO 'app.component.html'
+
+
+para saber mais sobre isso..
+
+
+
+
+
+
+
+
+
+
+lá, nós temos isto:
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h3>I'm in the AppComponent!</h3>
+<hr>
+<!-- <app-server></app-server> -->
+<app-servers></app-servers>
+<exemplo></exemplo>
+<app-exemplo-component-com-inline-template></app-exemplo-component-com-inline-template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OU SEJA,
+
+TEMOS ESSE H3 E ENTÃO AQUELAS BABOSEIRAS....
+
+
+
+
+
+
+
+
+
+SE OLHARMOS A NOSSA PÁGINA,
+
+VEREMOS 
+QUE
+
+
+
+OS STYLES NÃO ESTÃO MT 
+
+BONITOS...
+
+
+
+
+
+
+
+
+
+
+
+> COMO ESTAMOS USANDO __ BOOSTRAP COM O ANGULAR,
+
+PODEMOS USAR 
+
+
+ALGUMAS CLASSES 
+
+
+
+BOOTSTRAP PARA MELHORAR 
+
+A APARÊNCIA DE NOSSA PÁGINA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> PARA ISSO,
+
+o professor escreve:
+
+
+
+
+
+
+
+<div class="container">
+    <div class="row">
+
+
+
+
+
+
+
+
+    -> ESSAS SÃO CLASSES DO BOOTSTRAP, ESPECIFICAMENTE...
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+<div class="container">
+  <h3>I'm in the AppComponent!</h3>
+  <hr />
+  <!-- <app-server></app-server> -->
+  <div class="row">
+    <div class="col-xs-12">
+      <app-servers></app-servers>
+    </div>
+  </div>
+  <exemplo></exemplo>
+  <app-exemplo-component-com-inline-template></app-exemplo-component-com-inline-template>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> professor coloca esse style de 
+
+
+'col-xs-12'
+
+
+
+
+para ter UMA COLUMN EM TODOS 'DEVICE WIDTH'...
+
+
+
+
+
+
+
+
+-> ok... com isso teremos adicionado um pouco de styling,
+
+
+CSS STYLING,
+
+NADA 'ANGULAR-SPECIFIC'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO, OS ESTILOS FICARAM UM POUQUINHO MELHORES....
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO É BOM, CLARO,
+
+MAS PODEMOS _ USAR ALGUMAS FERRAMENTAS 
+
+
+
+CONCEDIDAS A NÓS PELO _ ANGULAR... -----> DIGAMOS QUE 
+
+
+
+QUEREMOS QUE 
+
+ESSE 
+
+HEADER DE 
+
+
+'Im in the app component'
+
+
+
+DEVE FICAR __ COM UMA COR __ AZUL...  ------------>
+
+
+
+
+
+
+
+
+SE QUEREMOS ISSO,
+
+DEVEMOS 
+
+IR ATÉ O ARQUIVO CSS 
+
+
+
+de 
+
+
+'app.component.css',
+
+
+
+
+E AÍ __ 
+ADICIONAR UM SELECTOR/CLASS PARA ESSE ELEMENTO ESPECÍFICO...
+
+
+
+
+ 
+
+'app.component.css' -> define o STYLING PARA TODO NOSSO APP...
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+h3 {
+    color: darkblue;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> VEREMOS QUE NOSSO APP TERÁ MUDADO,
+
+TERÁ REFLETIDO ESSE ESTILO..
+
+
+
+
+
+
+
+
+--> É ASSIM QUE USAMOS 
+
+
+
+ESSE ARQUIVO CSS,
+
+
+
+mostrado aqui..
+
+
+
+
+
+
+
+
+
+--> É RELEVANTE MENCIONAR QUE ESSE ARQUIVO CSS 
+
+
+
+
+deve ser REFERENCIANDO 
+
+
+lá em 
+
+'app.component.ts',
+
+como observamos:
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'] ///// AQUI......
+})
+export class AppComponent {
+  title = 'projetobasico';
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO.... E SEMELHANTEMENTE A COMO PODÍAMOS ESCOLHER ENTRE 
+
+
+'INLINE TEMPLATE' E 
+
+
+'EXTERNAL TEMPLATE'
+
+
+
+naquela 
+
+
+key de 'templateUrl/template',
+
+
+
+
+
+
+NO 'styleUrls'
+
+
+TAMBÉM
+
+
+PODEMOS FAZER A MESMA COISA COM O STYLING DE NOSSA PÁGINA...
+
+
+
+
+
+
+
+
+
+
+
+
+----> MAS UMA DIFERENÇA ENTRE 
+
+
+
+'templateUrls/template' 
+
+e 
+
+
+'styleUrls'
+
+
+É QUE 
+
+
+
+
+
+___STYLEURLS É UM __ ARRAY... -> 
+
+
+
+
+
+
+
+É UM ARRAY _ DE STYLES__ JUSTAMENTE __ PQ PODEMOS, SE QUISERMOS,
+
+REFERENCIAR MÚLTIPLOS EXTERNAL STYLE SHEETS...
+
+
+(
+
+    isso quer dizer que você poderia 
+
+    escrever pointers a MÚLTIPLOS 
+
+    STYLE SHEETS...
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+------> MAS A ALTERNATIVA É 
+
+
+
+__SETTAR A PROPRIEDADE DE 'styles',
+
+
+
+
+
+
+QUE 
+
+
+_ TAMBÉM É UMA KEY QUE ACEITA/EXIGE UM ARRAY,
+
+
+
+MAS SERÁ UM __ ARRAY__ DE 
+
+STRINGS EM QUE VOCÊ DEFINE O STYLE EM CADA STRING...
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-exemplo-component-com-inline-styles',
+  templateUrl: './exemplo-component-com-inline-styles.component.html',
+  // styleUrls: ['./exemplo-component-com-inline-styles.component.css']
+
+  styles: [ ///aqui vocÊ define os MÚLTIPLOS SELECTORS DOS STYLES A SEREM APLICADOS NA SUA PAGE, de forma 'inline'... (dispensa/afasta o uso de um arquivo css externo...)
+    `
+      h3 {
+        color: dodgerblue;
+      }
+
+  
+  `
+] 
+})
+export class ExemploComponentComInlineStylesComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> OU SEJA,,
+
+
+
+AQUI ESCREVEMOS COM BACKTICKS 
+
+para definir 
+
+MÚLTIPLOS STYLES/selectors...
+
+
+
+
+
+
+
+
+
+
+
+
+---> O INLINE STYLE 
+
+
+
+
+FUNCIONA, PORTANTO...
+
+
+
+
+
+
+
+
+
+--> assim como o 'templateUrl/template',
+
+
+
+
+o 
+
+'styleUrls/styles'
+
+
+
+TAMBÉM _ EXIGE QUE VOCÊ ESCOLHA UMA DAS MODALIDADES:
+
+
+
+
+
+É IMPOSSÍVEL ESCOLHER AS 2,
+VOCÊ DEVE OPTAR POR 
+
+
+'USAR UM ARQUIVO EXTERNO'
+
+ou 
+
+'USAR OS ESTILOS/TEMPLATES DE FORMA INLINE'...
+
+
+
+
+
+
+
+
+
+-----> MAS A  COISA INTERESSANTE DOS STYLES,
+
+
+
+tanto 
+
+do 
+
+
+'styleUrls' 
+
+como 
+
+
+do 
+
+
+'styles',
+
+
+É QUE 
+
+_AMBOS EXIGEM UM ARRAY...
+
+
+
+
+
+
+
+
+
+-> JÁ NO CASO DO 'template',
+
+VOCÊ __ SÓ PODE _ TER 1 ÚNICO 'TEMPLATE' 
+
+por component...
+
+
+
+
+
+
+
+
+
+
+--> MESMA NOÇÃO DO TEMPLATE:
+
+
+SE VOCÊ TEM MAIS CÓDIGO CSS DENTRO DE SEU COMPONENT,
+
+
+
+É MELHOR USAR UM ARQUIVO EXTERNO COMO FONTE DOS ESTILOS...
+
+
+
+
+
+
+-> SE TEM __ POUCO CÓDIGO CSS,
+
+
+é melhor usar esse approach inline..
+
+
+
+
+
+
+
+
+
+
+
+
+--> É ASSIM QUE VOCÊ PODE TRABALHAR COM TEMPLATES E STYLES...

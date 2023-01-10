@@ -1,0 +1,1659 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> NA ÚLTIMA LIÇÃO,
+
+ 
+ APRENDEMOS SOBRE 'LOCAL REFERENCES', 
+
+
+
+ por meio de códigos como estes:
+
+
+
+
+
+ <div class="row">
+  <div class="col-xs-12">
+    <p>Add new Servers or Blueprints!</p>
+    <label>Server Name</label>
+
+    <input type="text" 
+    class="form-control"
+    #serverNameInput   ///este código aqui
+    /> 
+
+    <button class="btn btn-primary" (click)="onAddServer(serverNameInput)">Add Server</button>
+
+
+
+
+
+(o method de 'onAddServer' realmente se refere Àquela LOCAL REFERENCE....)
+
+
+
+
+
+    E ESTE:
+
+
+
+
+
+
+
+
+  onAddServer(nameInput: any) {
+    console.log(nameInput)
+    console.log(nameInput.value)
+
+    this.serverCreated.emit(
+
+      {
+        serverName: nameInput.value,
+        serverContent: this.newServerContent,
+      }
+    );
+  }
+
+
+
+
+
+
+(
+    'nameInput' acaba sendo o __ PRÓPRIO ELEMENTO 'input' representado POR 
+
+
+    'serverNameInput', que acaba se tornando aquele 'nameInput' argument....
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS AGORA O PROFESSOR NOS DIZ QUE _ EXISTE_ OUTRA MANEIRA 
+
+
+
+
+
+
+DE CONSEGUIR 
+
+ACESSO A 'LOCAL REFERENCES/qualquer elemento de seu dom/template'... ->  E ESSA 
+
+
+MANEIRA _ CONSEGUE ACESSO A ESSES ELEMENTOS HTML 
+
+
+
+
+
+
+
+_____ DIRETAMENTE DE DENTRO DO CÓDIGO TYPESCRIPT... -------> ISSO PQ ATÉ AGORA ESTAMOS/ESTIVEMOS 
+
+
+
+APENAS CONSEGUINDO ESSA 'REFERENCE' por meio do 
+
+pass 
+dela a 
+
+
+methods 
+
+
+chamados dentro do código de nosso template,
+
+
+como 
+
+
+
+
+
+o código-exemplo que temos nesta linha:
+
+
+
+
+<input 
+  type="text"
+  class="form-control"
+  #serverNameInput>
+
+
+
+
+<button 
+class="btn btn-primary"
+(click)="onAddBlueprint(serverNameInput)>Add Server Blueprint</button>
+
+
+
+
+
+
+
+
+
+
+-------> ISSO FUNCIONA 'FINE',
+
+É CLARO,
+
+
+
+
+
+__ MAS O PROFESSOR NOS RESSALTA QUE 
+
+
+
+''''EXISTIRÃO CASOS EM QUE __ VOCê VAI QUERER TER 
+
+__ACCESS__ 
+
+AO SEU 
+
+elemento ________ antes__ de um method ser chamado'''' -->  PARA ISSO,
+
+
+
+
+
+
+
+EXISTE UM DECORATOR BEM LEGAL QUE PODEMOS UTILIZAR,
+
+
+
+O DECORATOR 
+
+
+
+
+
+
+de 
+
+'@ViewChild'....
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR VAI DEMONSTRAR SUA UTILIZAÇÃO COM UM EXEMPLO, CCOM 
+
+'newServerContent'....
+
+
+
+
+
+
+
+
+
+
+
+a solução velha, que usava/usa TWO-WAY BINDING, É ESTA:
+
+
+
+
+
+
+    
+    <input type="text" 
+    class="form-control" 
+    [(ngModel)]="newServerContent"
+     /> 
+
+
+
+
+
+
+
+
+
+
+
+    -- >VAMOS SUBSTITUIR ISSO 
+
+
+
+    PELA NOVA SOLUÇÃO,
+
+    QUE 
+
+
+
+    _ NÃO VAI USAR TWO WAY BINDNIG,
+
+
+
+    E SIM 
+
+
+
+
+
+    _ TAMBÉM _ TERÁ UMA 'LOCAL REFERENCE' (mesmo código INICIAL usado com o 'pass de nossa local reference a um method', portanto),
+
+
+    tipo assim:
+
+
+
+
+
+        
+    <input type="text" 
+    class="form-control" 
+    [(ngModel)]="newServerContent"
+    #serverContent
+     /> 
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+<!-- exemplo de USO DE '@ViewChild' para ACESSAR ESSE ELEMENTO (no typescript, .ts) REFERENCIADO POR '#serverContent', essa LOCAL REFERENCE, antes da local reference ser passada em um method/sem usar um method para passar essa local reference ao código typescript.... -->
+     <input type="text" 
+     class="form-control" 
+     #serverContent  
+      />  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ------> OK...  AÍ LÁ NO COMPONENT DE 
+
+
+
+  'Cockpit.component.html',
+
+
+
+
+
+  O PROFESSOR COMENTA PARA FORA AQUELA PROPRIEDADE DE 
+
+
+  'newServerContent',
+
+
+  pq não vamos mais usar twowaybinding com essa propriedade...
+
+
+
+
+
+
+
+
+
+
+
+AÍ ELE ADICIONA UMA NOVA PROPRIEDADE, DE NOME 'serverContentInput'...
+
+
+
+
+
+  ex:
+
+
+
+
+
+
+export class ServerCockpitComponent implements OnInit {
+  // newServerContent: string = '';  ///usado com TWOWAYBINDING em 'server-cockpit.element.html', naquele trecho de [(ngModel)]="newServerName", no input field...
+  // newServerName: string = '';  ////trocamos isso por 'LOCAL REFERENCES' lá no template (mas esse approach de twoway databinding também funcionaria..)
+
+
+    serverContentInput
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -----> ok.. -> ATÉ AGORA, ESSA PROPRIEDADE NÃO FAZ NADA DE MAIS,
+
+
+
+  MAS O PROFESSOR VAI EM FRENTE  _E ADICIONA __ UM 
+
+
+  DECORATOR 
+  DE 
+
+
+  '@ViewChild()'
+
+
+  a ele..
+
+
+
+
+
+
+
+  FICA TIPO ASSIm:
+
+
+
+  export class ServerCockpitComponent implements OnInit {
+  // newServerContent: string = '';  ///usado com TWOWAYBINDING em 'server-cockpit.element.html', naquele trecho de [(ngModel)]="newServerName", no input field...
+  // newServerName: string = '';  ////trocamos isso por 'LOCAL REFERENCES' lá no template (mas esse approach de twoway databinding também funcionaria..)
+
+
+    @ViewChild() serverContentInput
+
+
+
+
+
+
+
+
+
+
+
+
+
+VAI FICANDO TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+import { Output } from '@angular/core';
+
+import { ViewChild } from '@angular/core';
+
+@Component({
+  selector: 'app-server-cockpit',
+  templateUrl: './server-cockpit.component.html',
+  styleUrls: ['./server-cockpit.component.css'],
+})
+export class ServerCockpitComponent implements OnInit {
+  // newServerContent: string = '';  ///usado com TWOWAYBINDING em 'server-cockpit.element.html', naquele trecho de [(ngModel)]="newServerName", no input field...
+  // newServerName: string = '';  ////trocamos isso por 'LOCAL REFERENCES' lá no template (mas esse approach de twoway databinding também funcionaria..)
+
+
+    @ViewChild() serverContentInput;   ///usado NO LUGAR DE TWO WAY BINDING (para conseguir ACESSO AO ELEMENTO INPUT referenciado pela local reference de '#serverContent' _ DENTRO DESSE NOSSO CÓDIGO TYPESCRIPT)....
+
+
+
+
+
+
+
+
+
+--------------------------------
+
+
+
+
+
+
+
+
+OK...MAS O VIEWCHILD ESCRITO DESSA FORMA AÍ_ SIMPLESMENTE NÃO FUNCIONARÁ.... --> PRECISAMOS 
+
+
+
+
+__ PASSAR__ UM ARGUMENTO _ DENTRO 
+
+
+DESSE DECORATOR... 
+
+
+
+
+
+
+
+
+--> ESSE __ ARGUMENTO __ DEVE SER, OBRIGATORIAMENTE,
+
+
+
+'''O SELECTOR DO ELEMENTO QUE DESEJAMOS''' -> OU SEJA,
+
+ 
+ DEVE SER '''COMO QUEREMOS SELECIONAR UM ELEMENT''''... ---> 
+
+
+
+
+
+
+
+
+ E ESSE SELECTOR AÍ __ NÃO FUNCIONA __ COMO UM 'CSS SELECTOR'... --->
+
+
+
+
+
+
+ poedmos simplesmente 
+
+ passar,
+
+
+
+ COMO UMA __ _STRING_,
+
+
+
+
+ O 
+
+
+
+ '''NOME DE NOSSA LOCAL REFERENCE''',
+
+ que no caso é 
+
+
+
+ '#serverContentInput',
+
+
+
+
+
+
+ a local reference que escrevemos lá no template de 
+
+ 'cockpit.component.html':
+
+
+
+
+
+
+
+      <input type="text" 
+     class="form-control" 
+     #serverContentInput
+      />  
+
+
+
+
+
+
+
+
+
+E O CÓDIGO TYPESCRIPT:
+
+
+
+
+
+
+export class ServerCockpitComponent implements OnInit {
+  // newServerContent: string = '';  ///usado com TWOWAYBINDING em 'server-cockpit.element.html', naquele trecho de [(ngModel)]="newServerName", no input field...
+  // newServerName: string = '';  ////trocamos isso por 'LOCAL REFERENCES' lá no template (mas esse approach de twoway databinding também funcionaria..)
+
+
+    @ViewChild('serverContentInput') serverContentInput;  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK... VOCÊ PASSA ESSA 'LOCAL REFERENCE' COMO SENDO UMA STRING..
+
+
+
+
+
+
+---> AÍ O PROFESSOR BOTA UM DETALHE:
+
+
+
+
+
+
+'''COM O ANGULAR 8+, O CÓDIGO DEVERÁ SER 
+
+
+
+
+
+''''@ViewChild('...', {static: true})'''',
+
+
+
+
+
+
+
+
+VISTO QUE __ NÓS _ TAMBÉM VAMOS USAR O 
+
+
+_ ELEMENT__ SELECIONADO _ em outro lugar,
+
+vamos também o utilizar 
+
+LÁ EM 
+
+'ngOnInit()'....
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE O CÓDIGO FICA ASSIM:
+
+
+
+export class ServerCockpitComponent implements OnInit {
+  // newServerContent: string = '';  ///usado com TWOWAYBINDING em 'server-cockpit.element.html', naquele trecho de [(ngModel)]="newServerName", no input field...
+  // newServerName: string = '';  ////trocamos isso por 'LOCAL REFERENCES' lá no template (mas esse approach de twoway databinding também funcionaria..)
+
+
+    @ViewChild('serverContentInput', {static: true}) serverContentInput;  
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO.... ISSO VAI SELECIONAR NOSSO ELEMENTO '<input>'
+
+
+com essa local reference 
+de 
+
+
+
+'serverContentInput'...
+
+
+
+
+
+
+
+
+
+
+----> MAS SE VOCÊ NÃO QUER SELECIONAR UMA __ STRING, QUER __ SELECIONAR UM COMPONENT EM VEZ DISSO,
+
+
+
+VOCÊ PODE _ SIMPLESMENTE_ PASSAR O 
+
+
+'COMPONENT TYPE'
+
+
+dentro 
+
+desse decorator,
+
+
+
+
+
+
+tipo 'ServerCockpitComponent',
+
+
+
+SE ESTIVÉSSEMOS NO 
+
+
+
+
+'root' de nosso app (lá no component 'app.component.ts')....
+
+
+ex:
+
+
+
+
+export class ServerCockpitComponent implements OnInit {
+  // newServerContent: string = '';  ///usado com TWOWAYBINDING em 'server-cockpit.element.html', naquele trecho de [(ngModel)]="newServerName", no input field...
+  // newServerName: string = '';  ////trocamos isso por 'LOCAL REFERENCES' lá no template (mas esse approach de twoway databinding também funcionaria..)
+
+
+    @ViewChild(ServerCockpitComponent, {static: true}) serverContentInput;  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> SE VOCê QUER __ SELECIONAR 1 COMPONENT EM SI (seja ele CUSTOM OU NÃO),
+
+
+
+você escreve o nome dele ASSIM MESMO,
+
+sem as quotes "" 
+
+,
+
+sem definir isso como uma string... -> ISSO FARÁ COM QUE __ 
+
+
+SEJA SELECIONADA/ACESSADA
+
+
+
+_ A PRIMEIRA OCORRÊNCIA DESSE COMPONENT 
+
+'ServerCockpitComponent' no component 'app.component.html', por exemplo...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS AQUI O PROFESSOR AQUI VOLTA AO 
+
+
+
+
+
+APPROACH/ALTERNATIVA QUE 
+
+'''GETS ACCESS TO THE LOCAL REFERENCE''',
+
+ 
+ PQ 
+
+
+
+
+ ESSE É O USE-CASE QUE PROVAVELMENTE VEREMOS COM MAIOR FREQUÊNCIA...
+
+
+
+
+
+
+
+
+
+
+
+ COM ISSO, AGORA TEREMOS ACESSO AO 
+
+
+
+ COMPONENT/input element 
+
+ que tem aquela 
+
+
+ LOCAL REFERENCE 
+ de 
+
+
+ '#serverContentInput'....
+
+
+
+
+
+
+
+
+
+
+
+ --> NOSSO CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+ export class ServerCockpitComponent implements OnInit {
+  // newServerContent: string = '';  ///usado com TWOWAYBINDING em 'server-cockpit.element.html', naquele trecho de [(ngModel)]="newServerName", no input field...
+  // newServerName: string = '';  ////trocamos isso por 'LOCAL REFERENCES' lá no template (mas esse approach de twoway databinding também funcionaria..)
+
+
+    @ViewChild('serverContentInput', {static: true}) serverContentInput;  
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> COM ISSO,
+
+TEREMOS ACESSO AO '<input>'
+
+
+com local reference de 'serverContentInput' 
+
+
+
+__ DE DENTRO _ DE NOSSO CÓDIGO TYPESCRIPT,
+
+DE DENTRO DE 
+
+'cockpit.component.ts'....
+
+
+
+
+
+
+
+
+
+-----> OK, MAS O QUE DIABOS 
+
+
+
+O 
+
+'serverContentInput'
+
+
+
+ACTUALLY SEGURA?
+
+
+
+
+
+
+
+
+--> O PROFESSOR COMENTA O CÓDIGO DE 
+
+'onAddServer'
+
+
+PARA FORA,
+
+pq quer nos mostrar isso....
+
+
+
+
+
+
+
+
+
+
+
+-> EM 'onAddServer',
+
+
+
+o professor FAZ UM CONSOLE.LOG DE 'serverContentInput',
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+onAddServer(nameInput: HTMLInputElement) {
+  console.log(this.serverContentInput);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> voltamos ao nosso app.... 
+
+
+
+
+
+
+
+QUANDO O PROFESSOR CONSOLE.LOGGAR ESSE 
+
+'this.serverContentInput',
+
+
+ELE VERÁ, NO CONSOLE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ElementRef {
+  nativeElement: input.form-control 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK, PERCEBEMOS QUE ESSE 
+
+
+
+ELEMENTO SERÁ DE TYPE 'elementRef'... ------->  ISSO QUER DIZER QUE _ AO CONTRÁRIO 
+
+
+
+DAS 
+
+
+
+LOCAL REFERENCES QUE PASSAMOS DIRETAMENTE 
+
+
+
+_ 'DO TEMPLATE AO ARQUIVO TS' 
+
+
+por meio 
+
+
+DE METHODS (parâmetros em methods) 
+
+chamados nos templates,
+
+
+
+
+
+
+
+
+
+
+__ AQUI _ ACABAMOS FICANDO COM UM 
+
+
+OBJECT DE TYPE 
+
+
+'elementRef'.... ---->  
+
+
+
+
+
+
+É POR ISSO QUE 
+
+
+
+PODEMOS DEFINIR O TYPE DE 
+
+
+
+
+'serverContentInput'
+
+
+COMO SENDO 
+
+'ElementRef',
+
+POR MEIO DA SINTAXE TYPESCRIPT,
+
+
+TIPO ASSIM:
+
+
+
+
+
+ export class ServerCockpitComponent implements OnInit {
+  // newServerContent: string = '';  ///usado com TWOWAYBINDING em 'server-cockpit.element.html', naquele trecho de [(ngModel)]="newServerName", no input field...
+  // newServerName: string = '';  ////trocamos isso por 'LOCAL REFERENCES' lá no template (mas esse approach de twoway databinding também funcionaria..)
+
+
+    @ViewChild('serverContentInput', {static: true}) serverContentInput: ElementRef ///eis o código em questão.
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+    @ViewChild('serverContentInput', {static: true}) serverContentInput: ElementRef;   ///usado NO LUGAR DE TWO WAY BINDING (para conseguir ACESSO AO ELEMENTO INPUT referenciado pela local reference de '#serverContent' _ DENTRO DESSE NOSSO CÓDIGO TYPESCRIPT)....
+
+
+    ///o argumento (..., {static: true/false})  É OBRIGATÓRIO __ no angular 8+
+    //ElementRef é sempre o TYPE obtido por '@ViewChild', a partir dos elementos html (sejam eles custom ou não)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK.... MAS 'ElementRef'
+
+é um _ TYPE_ QUE PRECISA _ SER IMPORTADO LÁ DE '@angular/core'...
+
+
+
+
+
+
+
+
+
+----> É UM _ ANGULAR TYPE...
+
+
+
+
+
+
+
+
+
+
+
+-> MAS ESSE 'elementRef'
+
+
+OBJECT _ POSSUI _ UMA PROPRIEDADE __ ÚTIL QUE PODEMOS UTILIZAr...
+
+
+
+
+
+
+
+----> É A PROPRIEDADE CHAMADA DE 'native' , ELEMENT PROPERTY DE NOME 'native'...
+
+
+
+
+
+
+
+
+
+---> PARA DEMONSTRAR SEU USO,
+
+
+o professor 
+
+
+PRIMEIRAMENTE ARMAZENA 
+o 
+
+
+
+'elementRef'
+
+
+
+
+na propriedade 
+
+
+
+'serverContentInput' 
+
+
+em 
+
+'CockpitComponent',
+
+
+
+
+PARA SÓ 
+
+
+ENTÃO,
+
+
+LÁ NO 
+
+METHOD DE 
+
+'onAddServer',
+
+
+
+
+ACESSAR A PROPRIEDADE 
+
+
+'.nativeElement'
+
+
+
+
+nesse 'serverContentInput'... 
+
+
+
+
+
+
+
+
+-> ISSO PQ 'nativeElement' __ NOS __ DÁ ACESSO 
+
+AO 
+
+'UNDERLYING ELEMENT' 
+
+que reside 
+
+
+sob esse elemento/local reference de 'serverContentInput'....
+
+
+
+
+
+
+
+---> vai ficando tipo assim:
+
+
+
+
+    export class CockpitComponent implements OnInit {
+        @Output() serverCreated = new EventEmitter<{serverName: string, serverContent: string}>();
+
+
+
+
+
+
+    @ViewChild('serverContentInput', {static: true}) serverContentInput: ElementRef;   //
+
+
+
+    
+
+
+    onAddServer(nameInput: HTMLInputElement) {
+      this.serverCreated.emit(
+        {
+          server: nameInput.value,
+          serverContent: this.serverContentInput.nativeElement
+        }
+      )
+    }
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    export class CockpitComponent implements OnInit {
+        @Output() serverCreated = new EventEmitter<{serverName: string, serverContent: string}>();
+
+
+
+
+
+
+    @ViewChild('serverContentInput', {static: true}) serverContentInput: ElementRef;   //
+
+
+
+    
+
+
+    onAddServer(nameInput: HTMLInputElement) {
+      this.serverCreated.emit(
+        {
+          server: nameInput.value,
+          serverContent: this.serverContentInput.nativeElement
+        }
+      )
+    }
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, AGORA TEMOS ESSE 'UNDERLYING ELEMENT' (o elemento 'input', na verdade...)
+
+
+
+
+
+
+
+
+
+--> agora basta acessar '.value' DENTRO DESSE ELEMENTO 'INPUT' QUE FOI EXPOSTO,
+
+para conseguirmos o value que 
+
+O 
+
+USER REALMENTE INPUTTOU,
+
+tipo assim:
+
+
+
+
+
+
+
+
+    export class CockpitComponent implements OnInit {
+        @Output() serverCreated = new EventEmitter<{serverName: string, serverContent: string}>();
+
+
+
+
+
+
+    @ViewChild('serverContentInput', {static: true}) serverContentInput: ElementRef;   //
+
+
+
+    
+
+
+    onAddServer(nameInput: HTMLInputElement) {
+      this.serverCreated.emit(
+        {
+          server: nameInput.value,
+          serverContent: this.serverContentInput.nativeElement.value
+        }
+      )
+    }
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR FAZ A MESMA COISA COM 'onAddBlueprint',
+
+
+
+REPLICA ESSE CÓDIGO,
+
+
+
+
+
+
+
+E AÍ 
+
+
+
+COM ISSO 
+
+
+
+'CONSEGUIMOS DIRETO ACESSO A ELEMENTOS DO DOM, NO NOSSO TEMPLATE,
+
+
+ATRAVÉS DE 'viewChild'...
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+    export class CockpitComponent implements OnInit {
+        @Output() serverCreated = new EventEmitter<{serverName: string, serverContent: string}>();
+
+
+
+
+
+
+    @ViewChild('serverContentInput', {static: true}) serverContentInput: ElementRef;   //
+
+
+
+    
+
+
+    onAddServer(nameInput: HTMLInputElement) {
+      this.serverCreated.emit(
+        {
+          server: nameInput.value,
+          serverContent: this.serverContentInput.nativeElement.value
+        }
+      )
+    }
+
+
+    
+    onAddBlueprint(nameInput: HTMLInputElement) {
+      this.blueprintCreated.emit(
+        {
+          server: nameInput.value,
+          serverContent: this.serverContentInput.nativeElement.value
+        }
+      )
+    }
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok... NOSSO CÓDIGO FUNCIONARÁ PERFEITAMENTE,
+
+AGORA 
+
+
+SEM TWO WAY BINDING (
+
+
+
+agora 
+
+
+
+com  
+
+
+
+1) OU LOCAL REFERENCES PASSADAS ATRAVÉS DE METHODS CALLS, COmo parâmetros  
+
+
+
+
+OU 
+
+
+
+2)  local references FETCHEADAS ATRAVÉS DO DECORATOR DE '@ViewChild'...
+
+)
+
+
+
+
+
+
+
+
+
+
+
+-----> MAS UMA COISA QUE __ VOCÊ DEVE TER EM MENTE,
+
+QUE DEVE SEMPRE EVITAR,
+
+
+É 
+
+
+
+
+''''MUDAR O ELEMENT ATRAVÉS 
+
+
+
+DESSE CÓDIGO QUE REPRESENTA O ELEMENTO''' ->  PQ É CLARO QUE 
+
+
+
+__ PODERÍAMOS ESCREVER ALGO COMO 
+
+
+
+
+
+this.serverContentInput.nativeElement.value = 'BATATA',
+
+
+
+
+
+
+
+
+SEMPRE PODERÍAMOS FAZER ISSO...
+
+
+
+
+
+
+
+
+-----> MAS O PROFESSOR __ RECOMENDA__ FORTEMENTE  
+
+
+
+
+
+
+____NUNCA ___ ACESSAR O DOM ASSIM.... ->  O PROFESSOR DIZ QUE 
+
+
+O
+ 
+
+
+
+
+ ANGULAR _ OFERECE UMA MANEIRA BEM MELHOR DE ACESSAR O DOM DO QUE ESTA AQUI,
+
+
+ E QUE 
+
+ VAMOS APRENDER MAIS SOBRE ISSO 
+
+ LÁ 
+
+
+
+ NO MODULE DE 
+
+
+ 'directives'...
+
+
+
+
+
+
+
+
+ -_> MAS GERALMENTE VOCê DEVE USAR OUTRAS TOOLS,
+
+ COMO STRING INTERPOLATION E PROPERTY BINDING,
+
+ SE VOCÊ QUER OUTPUTTAR ALGO DINAMICAMENTE  no dom (
+
+
+
+_TENTE _ EVITAr__ 
+
+MEXER DIRETAMENTE COM 
+
+
+ELEMENTOS QUE VOCÊ PODE 'GET' 
+
+através de 'ViewChild'...
+ )

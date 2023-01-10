@@ -1,0 +1,865 @@
+
+
+
+
+
+
+
+
+
+
+--> ADICIONAMOS O HEADER NA ÚLTIMA LIÇÃO,
+
+E AGORA 
+
+
+É HORA DE TRABALHARMOS NAS 'RECIPES'...
+
+
+
+
+
+
+
+
+
+--> NÓS TEMOS O COMPONENT DE 'RECIPEBOOK',
+
+
+QUE SEGURA TANTO  A RECIPE LIST COMO 'RECIPE DETAIL'...
+
+
+
+
+
+
+
+
+
+
+-> E AGORA QUEREMOS PREENCHER A 'RECIPE LIST' 
+
+
+
+COM VIDA...
+
+
+
+
+
+
+
+
+
+
+--> para isso,
+
+o professor vai até o component de 'recipeList'...
+
+
+
+
+
+
+
+
+
+---> --> NO COMPONENT DE RECIPE LIST,
+
+O QUE O PROFESSOR FAZ 
+
+É 
+
+ADICIONAR UM ARRAY DE 'recipes',
+
+
+
+
+QUE INICIALMENTE DEVERÁ SER VAZIO...
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-recipe-list',
+  templateUrl: './recipe-list.component.html',
+  styleUrls: ['./recipe-list.component.css']
+})
+export class RecipeListComponent implements OnInit {
+
+  recipes = [];
+
+
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> DEVEMOS DEFINIR COMO  UMA 'RECIPE' DEVE SE PARECER..
+
+
+
+
+
+
+
+
+
+-> ISSO PQ VAMOS USAR 'RECIPE' UM MONTE AO LONGO DESSE APPp...
+
+
+
+
+
+
+
+-> DEFINITIVAMENTE DEVEMOS DEFINIR CLARAMENTE SUA APARÊNCIA,
+
+
+PARA QUE 
+
+SEMPRE 
+
+CONSIGAMOS NOS REFERIR 
+
+AO MESMO 
+
+'recipe'
+
+
+
+
+AO LONGO DE NOSSOS COMPONENTS.. (mesmo tjpo de OBJECT)..
+
+
+
+
+
+
+
+
+
+
+
+-> PARA ISSO,
+
+ O PROFESSOR VAI CRIAR UM __ MODEL...
+
+
+
+
+
+
+
+
+
+--> O QUE É UM 'MODEL'?
+
+
+
+
+
+
+
+
+--> É SIMPLESMENTE UM _ ARQUIVO TYPESCRIPT..
+
+
+
+
+
+
+--> LÁ NO FOLDER DE 
+
+'recipeBook',
+
+
+
+
+(
+PQ VAMOS CRIAR UM MODEL PARA 'recipe'
+),
+
+
+
+
+
+
+VAMOS CRIAR um NOVO 
+
+ARQUIVO, QUE SERÁ CHAMADO DE 
+
+'recipe.model.ts'...
+
+
+
+
+
+
+
+
+
+
+-> O '.model' é OPCIONAL,
+
+
+
+MAS É UMA BOA CONVENÇÃO PQ DESCREVE O QUE VOCE VAI ESCREVER DENTRO DESSE AQRUIVO....
+
+
+
+
+
+
+
+
+
+
+--> COMO ESSA FILE DEVE SE PARECER? 
+
+
+
+
+
+
+
+
+
+
+
+
+-> A PRIMEIRA COISA QUE O PROFESSOR FARÁ É O EXPORT DE UMA CLASS CHAMADA 
+
+SIMPLESMENTE DE 
+'recipe',
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+export class Recipe {
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+- >VOCÊ PODERIA PENSAR QUE AQUI FARÍAMOS IMPORT DE ALGUMA COISA COMO 
+
+
+'@Model'
+
+,
+
+ou algo assim... -_> mas isso NÃO EXISTE,
+
+
+NÃO EXISTE UM decorator como esse...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> NÓS NÃO PRECISAMOS DE UM 'MODEL' decorator pq 
+
+
+nós podemos usar VANILLA TYPESCRIPT PARA ISOS...
+
+
+
+
+
+
+
+
+
+
+-> UM MODEL, NO FINAL DAS CONTAS,
+
+
+
+DEVE SER SÓ 
+
+UM 'BLUEPRINT'
+
+PARA OBJECST QUE 
+
+CRIAMOS... 
+
+
+
+
+
+
+-> E UMA CLASS DE JAVASCRIPT FAZ EXATAMENTE ESSE TRABALHO... ---> uma class pode ser 
+
+INSTANCIADA,
+
+
+POR ISSO 
+
+
+
+PODEMOS 
+
+
+CRIAR NOVOS OBJECTS A PARTIR DO SETUP QUE PROVIDENCIAMOS NESSA CLASS...
+
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS 
+
+DEFINIR COMO UMA RECIPE 
+
+
+SE PARECE, NESSA CLASS AÍ..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+escrevemos assim:
+
+
+
+
+
+
+
+
+
+
+
+
+export class Recipe {
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+-> CADA RECIPE DEVERÁ TER UM 'name'....  --> E O PROFESSOR 
+
+ADICIONA UM 
+
+'ACESSOR' 
+
+
+
+para deixar bem claro 
+
+
+
+
+
+
+
+
+QUE __ ISSO _ PODERÁ SER ACESSADO DO LADO DE FORA,
+
+
+
+se usado 
+
+
+como um instantiated object....
+
+
+
+
+
+ 
+
+
+
+
+
+ export class Recipe {
+     public name: string
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+ --> O TYPE SERÁ DE STRING, SIM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ OK... -> NÓS TAMBÉM VAMOS QUERER TER UM 'DESCRIPTION'
+
+ em cada recipe,
+
+
+
+
+
+ POR ISSO ADICIONAMOS UMA PROPERTY 
+
+ de 
+ 'description',
+
+ QUE TAMBÉM SERÁ UMA STRING..
+
+
+
+
+
+
+ --> MAS TVZ QUEIRAMOS 
+
+
+ ARMAZENAR UMA 'IMAGE'
+
+
+ para cada recipe,
+
+
+ por isso 
+
+ devemos ter um 
+
+ 'imagePath',
+
+
+ PQ 
+
+
+
+ VAMOS QUERER _ 
+
+
+
+ TER UM PATH __ NESSE 
+
+
+
+ OBJECT (
+     pq não 
+
+
+     podemos armazenar  images no nosso código,
+     e sim apenas 
+
+
+     paths a 
+
+
+     FILES NO NOSSO SERVEr....
+ )
+
+
+
+
+
+
+
+
+
+ -> nós por enquanto usaremos apenas IMAGES DA WEB AQUI,
+
+
+
+
+
+ o que quer dizer que isso segurará uma URL..
+
+
+
+
+
+ ex:
+
+
+
+
+ export class Recipe {
+     public name: string = 
+     public description: string = 
+     public imagePath : string = 
+ }
+
+
+
+
+
+
+
+
+ EX:
+
+
+
+
+
+
+
+
+
+
+ export class Recipe {
+    public name: string = '';
+    public description: string = '';
+    public imagePath : string = '';
+}
+
+
+
+
+
+
+
+
+
+
+-> TAMBÉM ADICIONAMOS UM CONSTRUCTOR A ESSE OBJECT,
+
+TUDO PARA QUE CONSIGAMOS INSTANCIAR ESSA CLASS 
+
+
+COM 
+
+
+'new Recipe()"
+
+
+
+
+,
+
+
+com o pass dos parametros ao constructor..
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+ export class Recipe {
+    public name: string = '';
+    public description: string = '';
+    public imagePath : string = '';
+}
+
+
+
+constructor( 
+    name: string, desc: string, imagePath: string
+)
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+export class Recipe {
+    public name: string = '';
+    public description: string = '';
+    public imagePath : string = '';
+
+
+
+    constructor(name: string, desc: string, imagePath: string) {
+         
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> NO CONSTRUCTOR BODY,
+
+
+
+
+VAMOS DEFINIR 
+
+
+
+
+
+AQUELAS PROPREIDADES COMO SENDO ISSO AÍ...
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+export class Recipe {
+    public name: string = '';
+    public description: string = '';
+    public imagePath : string = '';
+
+
+
+    constructor(name: string, desc: string, imagePath: string) {
+        
+        this.name = name;
+        this.description = desc;
+        this.imagePath = imagePath
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+LEMBRE-ME DE UM SHORTCUT PARA O TYPESCRIPT:
+
+
+
+
+
+
+
+
+
+
+class Project { //usamos uma CLASS e não um type JUSTAMENTE PQ _ QUEREMOS __ SER CAPAZES __ DE __ INSTANCIAR__ ESSA CLASS... (com types/interfaces, isso não é possível)...
+
+  constructor( ///shortcut que DEFINE ESSES NEGÓCIOS AO MESMO TEMPO COMO 'PARAMETERS' DE NOSSA CLASS E __ PROPRIEDADES_ DELA...
+    public id: string, 
+    public title: string, 
+    public description: string, 
+    public people: number, 
+    public projectStatus: ProjectStatus /////uso de ENUM, aquele enum ali de cima (passamos ou '0' ou '1', quando instanciamos esse 'project')...
+    // public projectStatus: 'active' | 'finished' ///PROPRIEDADE ESSENCIAL... (filter for active/finished projects)... --> aqui, nessa VERSÃO, usaríamos LITERAL TYPES COM UNION TYPE, para definir apenas essas 2 hipóteses de valores nesse parameter dessa class..
+     ) {
+
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+-> definir isso diretamente 
+
+no negócio... shorthand...
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export class Recipe {
+    // public name: string = '';   ////sem shorthand
+    // public description: string = '';
+    // public imagePath : string = '';
+
+
+
+    // constructor(name: string, desc: string, imagePath: string) { ///sem shorthand
+
+
+    //     this.name = name;
+    //     this.description = desc;
+    //     this.imagePath = imagePath
+
+    // }
+
+    constructor(public name: string, public desc: string, public imagePath: string) {  ///sem shorthand....
+
+
+        
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+-----> COM ISSO, FICAMOS COM UM MODEL DE 'RECIPE',
+
+que devemos utilizar na próxima aula...

@@ -1,0 +1,1295 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VOCÊ PODE GOOGLAR POR FIREBASE AUTH REST API,
+
+
+
+
+
+para ver os docs do negócio... -> te mostra os endpoints oferecidos pelo firebsae....
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+--> JÁ OS ESTUDAMOS, SÃO ESTES:
+
+
+
+
+
+
+
+
+ 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBK3AXsu9Gn0fqLmA0zOdUAknDM48Nwk_o', 
+
+
+ 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBK3AXsu9Gn0fqLmA0zOdUAknDM48Nwk_o',   ////VERSÃO COM AUTHENTICATE, DEPLOY
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NAÕ É A MESMA COISA QUE A REST API QUE 
+
+
+
+
+USAMOS ANTERIORMENTE,
+
+
+NÃO É A 
+
+
+MESMA 'DATABASE API'
+
+
+QUE USAMOS 
+
+
+A
+NTERIORMENTE....
+
+
+
+
+
+
+
+
+--> PRECISAMOS DESSES 2 METHODS AÍ..
+
+
+
+
+
+
+
+--> O PROFESSOR FALA DA DATA,
+
+ QUE É 'email',
+
+ 'password'
+
+
+ e 
+ o 
+
+
+  boolean de 
+  'returnSecureToken'..
+
+
+
+
+
+
+
+
+
+
+  --> O PROFESSOR 
+
+
+
+
+  FALA QUE VAMOS GANHAR DE VOLTA UM OBJECT RESPONSE ASSIM:
+
+
+
+
+
+
+  'email' (o email address)...
+
+
+
+
+  'localId' --> pq o FIREBASE SEMPRE CRIA UM UNIQUE ID PARA CADA USEr...
+
+
+
+
+
+
+
+  'idToken' --> É ESSA TOKEN QUE O PROFESSOR HAVIA MENCIONADO NO SLIDE, A 'json webtoken'...
+  (
+
+      ISSO QUER DIZER QUE 
+
+      O 
+
+      'FIREBASE JÁ DÁ ESSA TOKEN AO USER QUANDO 
+
+      ELE FAZ 
+
+      'SIGNUP', o que 
+
+      TORNA DESNECESSÁRIO O SUBSEQUENTE 'login' do user... -> você pode definir 
+
+      esse comportamento de 'login subseqeunte desnecessário' 
+
+      OU NÃO, pode deixar que nem site de banco,
+
+      em que 
+
+      você 
+
+      tem que 
+
+      FAZER O LOGIN DE NOVO, COM AS MESMAS INFORMAÇÕES...
+
+  )
+
+
+
+
+
+
+
+
+  -> também temos a feature de 'expiresIn',
+
+
+
+QUE DIZ POR QUANTO TEMPO 
+
+ESSAS TOKENS DURAM.. --> 
+
+
+
+
+
+quando o assunto é firebase,
+
+
+AS TOKENS _ DURAM EXATAMENTE 1 HORA...
+
+
+
+
+
+
+
+
+
+--> DEPOIS DESSA HORA,
+
+
+VOCÊ 
+
+
+
+TEM QUE OU FAZER 'REFRESH' DESSAS TOKENS (algo que o professor não quer cobrir aqui )
+
+
+
+OU ENTAÕ FAZER LOGIN MAIS UMA VEZ...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK.... DE VOLTA à URL.... --> PRECISAMOS 
+
+ENVIAR O REQUEST...
+
+
+
+
+
+
+
+-> E É POR ISSO QUE 
+
+
+VAMOS CRIAR UM NOVO SERVICE,
+
+
+
+
+
+
+QUE SERÁ 
+
+'auth.service.ts'..
+
+
+
+
+
+
+
+
+
+--> ESSE SERVICE SERÁ RESPONSÁVEL POR:
+
+
+
+1) SIGN USERS UP 
+
+
+
+2) SIGN USERS IN 
+
+
+
+3) MANAGE O TOKEN DO USER...
+
+
+
+
+
+
+
+
+
+-> ok, acho que já escrevi esse service, ficou tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+
+import { HttpHeaders } from '@angular/common/http';
+
+import { HttpParams } from '@angular/common/http';
+import { Router } from '@angular/router';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AuthService {
+  constructor(private http: HttpClient, private router: Router) {}
+
+  onCreateAccount(authData: {
+    email: string;
+    password: string;
+    returnSecureToken: boolean;
+  }) {
+    const requestHeaders = new HttpHeaders();
+
+    requestHeaders.append('Content-Type', 'application/json');
+    // requestHeaders.append('Content-Type', 'application/json');
+
+   return this.http
+      .post(
+        // 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg',  ///VERSÃO _ DUMMY__ (sem authentication rules no firebase)
+        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBK3AXsu9Gn0fqLmA0zOdUAknDM48Nwk_o',  ////VERSÃO COM AUTHENTICATE, DEPLOY
+
+        authData,
+        {
+          headers: requestHeaders,
+        }
+      )
+      // .subscribe((responseData) => {
+      //   console.log(responseData);
+
+
+      // });
+  }
+
+  onLogin(authData: {
+    email: string;
+    password: string;
+    returnSecureToken: boolean;
+  }) {
+    const requestHeaders = new HttpHeaders();
+
+    requestHeaders.append('Content-Type', 'application/json');
+
+    this.http.post<{expiresIn: number, idToken: string, expirationDate: string, localId: string, email: string} >(
+      // 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg', //VERSÃO DUMMY (sem authentication rules no firebase)
+      'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBK3AXsu9Gn0fqLmA0zOdUAknDM48Nwk_o',   ////VERSÃO COM AUTHENTICATE, DEPLOY
+      authData,
+
+      {
+        headers: requestHeaders
+      }
+    )
+    .subscribe(
+      (responseData) => {
+        console.log(responseData);
+        const expirationDate = new Date(new Date().getTime() + responseData.expiresIn * 1000); ////lembre-se de adicionar '* 1000', pois o JAVASCRIPT SEMPRE CONSIDERA 'TEMPO' EM MILISSEGUNDOS, E NÃO EM SEGUNDOS.... (só o 'expiresIn' que é mostrado em segundos....)
+        localStorage.setItem('token', responseData.idToken);
+        localStorage.setItem('expirationDate', expirationDate.toString());
+        localStorage.setItem('userId', responseData.localId);
+        localStorage.setItem('email', responseData.email )
+      
+        this.router.navigate(['/recipe-book'])
+      }
+    )
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+ -> ESSE SERVICE VAI 
+
+ RECEBER 
+
+ O DECORATOR DE 'Injectable',
+
+ é claro...
+
+
+
+
+
+ AÍ O PROFESSOR COLOCA AQUELA GAMBIARRA DE 
+
+
+
+ @Injectable({providedIn: 'root'}),
+
+
+
+
+
+
+
+
+
+
+ PARA 
+
+
+
+
+ __ FAZER COM QUE ISSO SEJA AUTOMATICAMENTE INCLUSO EM 'app.module.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> O PROEFSSOR ENTÃO INJETA O SERVICE DE 'HttpClient'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+ import { HttpClient, HttpResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+
+import { HttpHeaders } from '@angular/common/http';
+
+import { HttpParams } from '@angular/common/http';
+import { Router } from '@angular/router';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AuthService {
+  constructor(private http: HttpClient, private router: Router) {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> OK, QUANTO AOS METHODS, O PROFESSOR VAI ESCREVENDO ASSIM:
+
+
+
+
+
+
+
+    onCreateAccount(authData: {
+    email: string;
+    password: string;
+    returnSecureToken: boolean;
+  }) {
+    const requestHeaders = new HttpHeaders();
+
+    requestHeaders.append('Content-Type', 'application/json');
+    // requestHeaders.append('Content-Type', 'application/json');
+
+   return this.http
+      .post(
+        // 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg',  ///VERSÃO _ DUMMY__ (sem authentication rules no firebase)
+        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBK3AXsu9Gn0fqLmA0zOdUAknDM48Nwk_o',  ////VERSÃO COM AUTHENTICATE, DEPLOY
+
+        authData,
+        {
+          headers: requestHeaders,
+        }
+      )
+      // .subscribe((responseData) => {
+      //   console.log(responseData);
+
+
+      // });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  E ASSIm:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    onLogin(authData: {
+    email: string;
+    password: string;
+    returnSecureToken: boolean;
+  }) {
+    const requestHeaders = new HttpHeaders();
+
+    requestHeaders.append('Content-Type', 'application/json');
+
+    this.http.post<{expiresIn: number, idToken: string, expirationDate: string, localId: string, email: string} >(
+      // 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg', //VERSÃO DUMMY (sem authentication rules no firebase)
+      'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBK3AXsu9Gn0fqLmA0zOdUAknDM48Nwk_o',   ////VERSÃO COM AUTHENTICATE, DEPLOY
+      authData,
+
+      {
+        headers: requestHeaders
+      }
+    )
+    .subscribe(
+      (responseData) => {
+        console.log(responseData);
+        const expirationDate = new Date(new Date().getTime() + responseData.expiresIn * 1000); ////lembre-se de adicionar '* 1000', pois o JAVASCRIPT SEMPRE CONSIDERA 'TEMPO' EM MILISSEGUNDOS, E NÃO EM SEGUNDOS.... (só o 'expiresIn' que é mostrado em segundos....)
+        localStorage.setItem('token', responseData.idToken);
+        localStorage.setItem('expirationDate', expirationDate.toString());
+        localStorage.setItem('userId', responseData.localId);
+        localStorage.setItem('email', responseData.email )
+      
+        this.router.navigate(['/recipe-book'])
+      }
+    )
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... ISSO ENVIARÁ 
+
+REQUESTS A ESSES 2 ENDPOINTS, E RETORNARÁ A DATA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> O PROFESSOR COLOCA QUE A AUTHDATA TERÁ 3 'PIECES',
+
+
+que serão 
+
+
+
+1) email 
+
+
+
+2) password 
+
+
+3) returnSecureToken: true...
+
+
+
+
+
+
+
+
+
+
+
+
+> OK...  com isso será enviado um http request 
+
+
+
+
+
+a essa api route...
+
+
+
+
+
+
+
+-> AÍ O PROFESSOR FAZ UM RETURN DO 'PREPARED OBSERVABLE' de 'this.http.post'...
+
+
+
+
+
+
+
+
+--> NOSSO COMPONENT DE 'auth.component.ts'
+
+
+
+
+
+
+
+VAI QUERER SABER O ESTADO DE NOSSO REQUEST,
+
+ATRAVÉS DE 
+
+'.subscribe()',
+
+
+
+
+PQ ELE VAI QUERER TAMBÉM RETORNAR MENSAGENS DE ERROR NAS HIPÓTESES EM QUE 
+
+
+OCORRER ALGUM ERRO DE AUTH/ERRO NO ENDPOINT DA API, POR EXEMPlo...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR ENTAÕ DECIDE __ CRIAR UMA NOVA INTERFACE,
+
+
+PARA NOSSA 
+
+'RESPONSEDATA',
+
+
+
+que 
+
+
+vai segurar 
+
+AQUELAS 
+
+6 PROPRIEDADES IMPORTANTES:
+
+
+
+
+
+KIND 
+
+
+idToken
+
+
+
+EMAIL 
+
+
+REFRESHTOKEN 
+
+
+EXPIRESIN 
+
+
+
+LOCALID...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... -> 
+
+PARA DEFINIR ESSA INTERFACE,
+
+
+O PROFESSOR ESCREVE LÁ NO 
+
+'auth.service.ts' (
+
+  pq só vamos usá-la no auth service...
+
+
+
+
+
+)
+
+
+
+
+
+
+
+
+-->  TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+interface AuthResponseData {
+
+
+  kind: string;
+  email: string;
+  refreshToken: string;
+  idToken: string;
+  localId: string;
+  expiresIn: string;
+
+
+}
+
+
+
+
+
+
+
+
+
+--> ISSO VAI DEFINIR COMO NOSSAS RESPONSES VÃO SE PARECER..
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ISSO É OPCIONAL, É CLARO,
+
+
+MAS __ É UMA BOA PRÁTICA DEFINIR O TIPO DE DATA COM QUE VOCÊ VAI TRABALHAR...
+
+
+
+
+
+
+
+
+-> VOCÊ FARÁ ISSO,
+
+NO CASO,
+
+
+PQ 
+
+TODOS ESSES METHODS 
+
+'this.http.post()', 'this.http.get()'
+
+
+E ETC 
+
+SÃO _ GENÉRICOS (exigem '<>'),
+
+
+EXIGEM QUE VOCê DEFINA BEM QUAL SERÁ 
+
+
+
+
+O 'DATA TYPE' RETORNADO 
+
+
+por eles..
+
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+return this.http.post<{expiresIn: number, idToken: string, expirationDate: string, localId: string, email: string} >(
+      // 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg', //VERSÃO DUMMY (sem authentication rules no firebase)
+      'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBK3AXsu9Gn0fqLmA0zOdUAknDM48Nwk_o',   ////VERSÃO COM AUTHENTICATE, DEPLOY
+      authData,
+
+      {
+        headers: requestHeaders
+      }
+    )
+
+
+
+
+
+
+
+
+--> ENTRETANTO, AQUI, NO CASO,
+
+
+PODEMOS SIMPLESMENTE PASSAR 
+
+
+ESSA 
+
+INTERFACE,
+
+
+
+
+
+pq 
+
+
+serão esses dados, de fato,
+
+que 
+
+O 
+
+
+firebase vai nos retornar...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+
+import { HttpHeaders } from '@angular/common/http';
+
+import { HttpParams } from '@angular/common/http';
+import { Router } from '@angular/router';
+
+
+
+
+interface AuthResponseData {
+
+
+  kind: string;
+  email: string;
+  refreshToken: string;
+  idToken: string;
+  localId: string;
+  expiresIn: string;
+
+
+}
+
+
+
+
+
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AuthService {
+  constructor(private http: HttpClient, private router: Router) {}
+
+  onCreateAccount(
+    
+    authData: {
+    email: string;
+    password: string;
+    returnSecureToken: boolean;
+  }
+  
+  ) {
+    const requestHeaders = new HttpHeaders();
+
+    requestHeaders.append('Content-Type', 'application/json');
+    // requestHeaders.append('Content-Type', 'application/json');
+
+   return this.http
+      .post<AuthResponseData>(
+        // 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg',  ///VERSÃO _ DUMMY__ (sem authentication rules no firebase)
+        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBK3AXsu9Gn0fqLmA0zOdUAknDM48Nwk_o',  ////VERSÃO COM AUTHENTICATE, DEPLOY
+
+        authData,
+        {
+          headers: requestHeaders,
+        }
+      )
+      // .subscribe((responseData) => {
+      //   console.log(responseData);
+
+
+      // });
+  }
+
+  onLogin(authData: {
+    email: string;
+    password: string;
+    returnSecureToken: boolean;
+  }) {
+    const requestHeaders = new HttpHeaders();
+
+    requestHeaders.append('Content-Type', 'application/json');
+
+    return this.http.post<AuthResponseData>(
+    // <{expiresIn: number, idToken: string, expirationDate: string, localId: string, email: string}>
+
+      // 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg', //VERSÃO DUMMY (sem authentication rules no firebase)
+      'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBK3AXsu9Gn0fqLmA0zOdUAknDM48Nwk_o',   ////VERSÃO COM AUTHENTICATE, DEPLOY
+      authData,
+
+      {
+        headers: requestHeaders
+      }
+    )
+    // .subscribe(
+    //   (responseData) => {
+    //     console.log(responseData);
+    //     const expirationDate = new Date(new Date().getTime() + responseData.expiresIn * 1000); ////lembre-se de adicionar '* 1000', pois o JAVASCRIPT SEMPRE CONSIDERA 'TEMPO' EM MILISSEGUNDOS, E NÃO EM SEGUNDOS.... (só o 'expiresIn' que é mostrado em segundos....)
+    //     localStorage.setItem('token', responseData.idToken);
+    //     localStorage.setItem('expirationDate', expirationDate.toString());
+    //     localStorage.setItem('userId', responseData.localId);
+    //     localStorage.setItem('email', responseData.email )
+      
+    //     this.router.navigate(['/recipe-book'])
+    //   }
+    // )
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------
+
+
+
+
+
+
+
+
+
+
+
+NA PRÓXIMA AULA,
+
+VAMOS 'ACTUALLY' disparar esse method 
+
+DE 
+
+
+'signup'
+
+DE DENTRO DO 'auth.component.ts',
+
+
+
+
+
+E AÍ TAMBÉM 
+
+
+
+
+ASSEGURAR QUE ERRORS EM POTENCIAL
+ 
+
+
+ FIQUEM 'HANDLED'...
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ COLOQUEI UM CÓDIGO DE ERROR HANDLING BÁSICO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../auth.service';
+
+@Component({
+  selector: 'app-auth-page',
+  templateUrl: './auth-page.component.html',
+  styleUrls: ['./auth-page.component.css'],
+})
+export class AuthPageComponent implements OnInit {
+  isSignup: boolean = true;
+
+  isLoading: boolean = false;
+
+  constructor(private authService: AuthService, private router: Router) {}
+
+  ngOnInit(): void {}
+
+  onAuthFormSubmit(form: NgForm) {
+    this.isLoading = true;
+
+    const email = form.form.get('email')?.value;
+
+    const password = form.form.get('password')?.value;
+
+    const userData = {
+      email: email,
+      password: password,
+      returnSecureToken: true,
+    };
+
+    if (this.isSignup) {
+      this.authService.onCreateAccount(userData).subscribe(
+        (responseData) => {
+          this.isLoading = false;
+          form.reset();
+          this.router.navigate(['/auth']);
+        },
+
+        (errorData) => {
+          this.isLoading = false;
+
+          if (errorData.error.error.message === 'EMAIL_EXISTS') {
+            confirm(
+              'Entered email already exists, please create an account with a different email.'
+            );
+          }
+          console.log(errorData);
+        }
+      );
+    } else {
+      this.authService.onLogin(userData).subscribe(
+        (responseData) => {
+          console.log(responseData);
+          const expirationDate = new Date(
+            new Date().getTime() + +responseData.expiresIn * 1000
+          ); ////lembre-se de adicionar '* 1000', pois o JAVASCRIPT SEMPRE CONSIDERA 'TEMPO' EM MILISSEGUNDOS, E NÃO EM SEGUNDOS.... (só o 'expiresIn' que é mostrado em segundos....)
+          localStorage.setItem('token', responseData.idToken);
+          localStorage.setItem('expirationDate', expirationDate.toString());
+          localStorage.setItem('userId', responseData.localId);
+          localStorage.setItem('email', responseData.email);
+
+          this.isLoading = false;
+
+          this.router.navigate(['/recipe-book']);
+        },
+
+        (error) => {
+          console.log(error);
+
+          this.isLoading = false;
+        }
+      );
+    }
+  }
+
+  onSwitchAuth() {
+    this.isSignup = !this.isSignup;
+  }
+}
+
+
+
+
+
+
+
+
+
+DEVO ASSISTIR A PRÓXIMA AULA,
+
+
+'sending the signup request'...
+
+
+
+
+

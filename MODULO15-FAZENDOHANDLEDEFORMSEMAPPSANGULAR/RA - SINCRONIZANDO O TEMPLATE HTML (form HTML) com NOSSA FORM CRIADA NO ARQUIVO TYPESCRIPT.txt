@@ -1,0 +1,1459 @@
+
+
+
+
+
+
+
+
+
+
+
+
+--> nosso código typescript atualmente está assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { FormControl, FormGroup } from '@angular/forms'; /// NO REACTIVE APPROACH, usamos UM MONTE DAS CLASSES OFERECIDAS POR ESSA PACKAGE...
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent implements OnInit {
+    genders = ['Male', 'Female'];
+
+    signupForm: FormGroup;  //nossa 'overall form' sempre será isso, um 'FORM GROUP', um grande COMPILADO DE TODOS OS input fields, selects, textareas, radio buttons, etc
+
+
+
+    ngOnInit(): void {   ////é bem melhor inicializar iniicalmente nossa form AQUI, em 'ngOnInit()'....
+
+
+      this.signupForm = new FormGroup({  /////ISSO VAI __ CRIAR UMA _ NOVA FORM _ QUASe__ VÁLIDA...
+
+        ////sempre wrappe o nome de seus input fields em _ STRINGS_...
+        'username': new FormControl(  ////é usado para CRIAR A REPRESENTAÇÃO DESSE INPUT FIELD em si... e ele tem VÁRIOS ARGUMENTOS QUE DEVEM SER PASSADOS..
+
+        null, //// 1/////// O PRIMEIRO PARÂMETRO É o 'INITIAL VALUE' de seu input field... colocamos 'null' pq queremos que fique EM BRANCO...
+
+
+        ),
+
+        'email': new FormControl( ///user input de 'email'
+          
+          null,
+
+        ),
+
+        'gender': new FormControl(this.genders[0] //queremos definir o 'initial value', value default, como sendo 'male' no início...
+          
+          )
+
+      }
+      
+      
+      
+      );
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> NOSSA FORM FOI CRIADA NO TYPESCRIPT, SIM,
+
+
+
+
+mas o problema é que 
+
+nossa 
+
+
+'ACTUAL FORM'
+
+
+sempre vai viver lá 
+
+
+
+no template, no código html...
+
+
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE PRECISAMOS, DE ALGUM MODO,
+
+
+
+SINCRONIZAR NOSSa form 
+
+
+
+
+DE TYPESCRIPT com 
+
+
+
+
+NOSSOS HTML INPUTS, no template...
+
+
+
+
+
+
+
+
+
+
+
+--> O CÓDIGO 
+
+
+
+
+DA FORM HTML ATÉ AGORA, ESTÁ ASSIM:
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form>
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" class="form-control" />
+        </div>
+
+        <button class="btn btn-default" type="button">
+          Suggest an Username
+        </button>
+        <div class="form-group">
+          <label for="email">Mail</label>
+          <input type="email" id="email" class="form-control" />
+        </div>
+        <div class="form-group">
+          <label for="secret">Secret Questions</label>
+          <select id="secret" class="form-control">
+            <option value="pet">Your first Pet?</option>
+            <option value="teacher">Your first teacher?</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <textarea
+            class="form-control"
+            id="exampleFormControlTextarea1"
+            rows="3"
+            type="text"
+          >
+          </textarea>
+        </div>
+
+        <textarea
+          name="answer"
+          row="3"
+          [(ngModel)]="questionAnswer"
+          class="form-control"
+        >
+        </textarea>
+        <div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input type="radio" />
+            {{ gender }}
+          </label>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+        <div class="row" *ngIf="submitted">
+          <div class="col-xs-12">
+            <h3>Your Data</h3>
+            <p>Username: {{ user.username }}</p>
+            <p>Mail: {{ user.email }}</p>
+            <p>Secret Question: {{ user.secretQuestion }}</p>
+            <p>Answer: {{ user.answer }}</p>
+            <p>Gender: {{ user.gender }}</p>
+            <p>TextValue: {{ user.textValue }}</p>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+->  ISSO PQ 
+
+
+O ANGULAR NÃO TEM COMO SABER QUAIS 
+
+
+
+
+
+
+TYPESCRIPT CONTROLS POSSUEM RELAÇÃO COM 
+
+
+
+
+
+
+
+OS 
+
+TEMPLATE CONTROLS.... --> 
+
+
+
+
+
+
+NA VERDADE,
+
+
+
+ELE NEM SABE QUE 
+
+
+
+NOSSA FORM TYPESCRIPT DEVE SER ASSIGNADA A ESSA FORM 
+
+
+
+
+no template de 'app.component.html'...
+
+
+
+
+
+
+
+
+
+
+-> AGORA, NO MOMENTO,
+
+A __ ÚNICA__ COISA QUE ELE ESTÁ FAZENDO E CONSEGUE FAZER É 
+
+
+
+'''autodetect'''
+
+
+QUE ESSA FORM NO TEMPLATE É UMA FORM,
+
+
+
+E AÍ 
+
+CRIA UMA FORM PARA NÓS.... -----------------> MAS É PRECISAMENTE ESSE COMPORTAMENTO QUE 
+
+
+
+
+__ NÃO VAMOS QUERER ___ --> NAÕ QUEREMOS QUE 
+
+
+ELE CRIE UMA 
+
+
+
+FORM PARA NÓS, A PARTIR DA FORM DO CÓDIGO HTML,
+
+
+
+POR ISSO 
+
+
+
+VAMOS ADICIONAR ALGUMAS _ DIRECTIVES __ PARA _____OVERWRITTAR 
+
+
+
+
+ESSE COMPORTAMENTO 
+
+DEFAULT,
+
+
+PARA COM ISSO  _ 
+
+
+
+DAR AO ANGULAR ALGUMAS _ INSTRUÇÕES 
+
+
+
+
+DIFERENTES ACERCA DO QUE FAZER COM 
+
+A NOSSA FORM DO HTML...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-. ANTES DE MAIS NADA, É ÓBVIO QUE 
+
+
+
+
+
+__ É OBRIGATÓRIO __ O ADD 
+
+
+DO MODULE DE 
+
+
+'ReactiveFormsModule'
+
+lá 
+
+em 'app.module.ts'... -----> CASO CONTRÁRIO, VOCÊ RECEBERÁ __ ERRORS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... A PRIMEIRA  DIRECTIVE QUE 
+
+
+VAMOS ADICIONAR __ SERÁ _ ADICIONADA NA 'FORM EM SI',
+
+
+
+
+
+
+lá em 
+
+'<form>',
+
+
+
+POR MEIO __ DE PROPERTY BINDING..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SERÁ ___ A DIRECTIVE ESPECIAL
+
+
+
+
+de 
+
+'formGroup',
+
+QUE 
+
+
+SERÁ ADICIONADA POR MEIO DE _ PROPERTY _ BINDING..  ou seja, usa '[]'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ela é escrita ASSIM, PORTANTO:
+
+
+
+
+
+
+
+<form [formGroup] >
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO VAI SIMPLESMENTE DIZER AO ANGULAR:
+
+
+
+
+
+'HEY, POR FAVOR PEGUE MEU FORMGROUP,
+
+
+__ SEM_ __ FAZER __ "INFER"__ DE UM, E SEM CRIAR UMA FORM 
+ADICIONAL,
+
+
+E __ SIM __ APENAS _ PEGUE ___ MEU__ FORMGROUP'''' ---->    E É EXATAMENTE POR ISSO QUE 
+
+
+
+
+VAMOS USAR PROPERTY BINDING AQUI,
+
+
+
+
+PQ __ NÓS VAMOS _ DEFINIR O VALUE DESSE 
+
+
+
+'[formGroup]' 
+
+
+
+
+
+
+
+
+COMO _ SENDO _ EQUIVALENTE _ À PROPRIEDADE _ EM QUE VOCÊ ENFIOU/DEFINIU SUA FORM,
+
+
+
+
+LÁ NO CÓDIGO .ts...
+
+
+
+
+
+
+
+
+----> NO CÓDIGO TS, ESCREVEMOS NOSSA FORM ASSIm:
+
+
+
+
+
+
+
+
+signupForm: FormGroup;
+
+
+
+
+
+
+
+    ngOnInit() {
+
+
+      this.signupForm = new FormGroup({ 
+        'username': new FormControl( 
+        null, 
+        ),
+
+        'email': new FormControl( 
+          
+          null,
+
+        ),
+
+        'gender': new FormControl(this.genders[0]
+          )
+
+      }
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      --> É POR ISSO QUE VAMOS 
+
+
+
+      ESCREVER 
+
+      'signupForm' 
+
+
+      NO VALUE 
+
+
+
+      DESSE PROPERTY BINDING de '[formGroup]'
+
+
+
+
+
+
+
+
+      --> FICA TIPO ASSIM, PORTANTO:
+
+
+
+
+
+
+
+
+
+
+    <form [formGroup]="signupForm">
+
+
+
+
+
+
+
+
+
+
+
+    ----------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    OK...
+
+
+
+
+
+
+
+
+
+
+
+    AGORA ESSA FORM ESTARÁ _ _ACTUALLY__ SINCRONIZADA
+
+    COM A FORM 
+
+    QUE 
+
+    TEMOS LÁ NO ARQUIVO '.ts'..
+
+
+
+
+
+
+
+
+
+    ------> MAS NÓS AINDA PRECISAMOS DIZER AO ANGULAR:
+
+
+
+
+'''QUAIS CONTROLS DEVEM __ SER _ CONECTADOS A QUAIS INPUTS,
+
+NO CÓDIGO DO TEMPLATE'''' 
+
+
+
+
+
+
+
+
+
+
+
+
+-----> PARA ISSO,
+
+
+É CLARO QUE _ TEMOS __ OUTRA __ DIRECTIVE ESPECIAL.. -----> 
+
+
+
+
+
+
+PARA ISSO,
+
+
+
+VAMOS USAR DE EXEMPLO O INPUT DE 'username':
+
+
+
+
+
+        <div class="form-group">
+          <label for="username">Username</label>
+
+          <input 
+          type="text" 
+          id="username" 
+          
+          class="form-control" />
+
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ADICIONAREMOS A DIRECTIVE DE 'formControlName',
+
+
+
+QUE É UMA DIRECTIVE _ USADA _ 
+
+
+
+
+
+
+PARA DIZER AO ANGULAR 
+
+
+'''HEY, ESTE _ É O NAME_ _ DESSE INPUT, NESSA NOSSA FORM HTML, QUE DEVE SER ENCONTRADO 
+
+TAMBÉM NA NOSSA FORM NO CÓDIGO TYPESCRIPT...'''..
+
+
+
+
+
+
+
+
+
+
+
+
+-------> COMO NÓS HAVÍAMOS DEFINIDO ASSIM:
+
+
+
+      this.signupForm = new FormGroup({ 
+        'username': new FormControl( 
+        null, 
+        ),
+
+
+
+
+
+
+
+
+
+
+
+        como havíamos DEFINIDO A KEY DESSE INPUT COMO SENDO 'username',
+
+
+        devemos 
+
+
+
+        ESCREVER 
+
+
+
+
+       ''''' formControlName="username" ''''
+
+
+
+
+
+
+       EX:
+
+
+
+       
+
+       
+
+        <div class="form-group">
+          <label for="username">Username</label>
+
+          <input 
+          type="text" 
+          id="username" 
+          formControlName="username"
+          
+          class="form-control" />
+
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form [formGroup]="signupForm">  <!-- É ASSIM QUE VINCULAMOS NOSSA FORM CRIADA LÁ EM UM ARQUIVO TS, nesse arquivo html, nessa form do arquivo html... através de property binding com '[formGroup]'-->
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input 
+          type="text" 
+          id="username" 
+          class="form-control" 
+          formControlName="username"
+          
+          />  <!-- AQUI, O QUE INTERESSA É 'formControlName', pq O VALUE PASSADO A ESSA DIRECTIVE SERÁ BUSCADO LÁ NO SEU CÓDIGO TYPESCRIPT, na form TS a que foi vinculada essa form do HTML...  (o angular vai buscar pelos KEY NAMES da sua form, lá no código typescript)-->
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+        E ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { FormControl, FormGroup } from '@angular/forms'; /// NO REACTIVE APPROACH, usamos UM MONTE DAS CLASSES OFERECIDAS POR ESSA PACKAGE...
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent implements OnInit {
+    genders = ['Male', 'Female'];
+
+    signupForm: FormGroup;  //nossa 'overall form' sempre será isso, um 'FORM GROUP', um grande COMPILADO DE TODOS OS input fields, selects, textareas, radio buttons, etc
+
+
+
+    ngOnInit(): void {   ////é bem melhor inicializar iniicalmente nossa form AQUI, em 'ngOnInit()'....
+
+
+      this.signupForm = new FormGroup({  /////ISSO VAI __ CRIAR UMA _ NOVA FORM _ QUASe__ VÁLIDA...
+
+        ////sempre wrappe o nome de seus input fields em _ STRINGS_...
+        'username': new FormControl(  ////é usado para CRIAR A REPRESENTAÇÃO DESSE INPUT FIELD em si... e ele tem VÁRIOS ARGUMENTOS QUE DEVEM SER PASSADOS..
+
+        null, //// 1/////// O PRIMEIRO PARÂMETRO É o 'INITIAL VALUE' de seu input field... colocamos 'null' pq queremos que fique EM BRANCO...
+
+
+        ),
+
+        'email': new FormControl( ///user input de 'email'
+          
+          null,
+
+        ),
+
+        'gender': new FormControl(this.genders[0] //queremos definir o 'initial value', value default, como sendo 'male' no início...
+          
+          )
+
+      }
+      
+      
+      
+      );
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------------------
+
+
+
+
+
+
+
+
+
+
+
+OK... SIMPLESMENTE PASSAMOS 'username' como name 
+
+
+desse negócio, aí no exemplo..
+
+
+
+
+
+
+
+
+
+--> MAS AÍ O PROFESSOR NOS PERGUNTA:
+
+
+
+
+'pq naõ estamos usando PROPERTY BINDING ('[]')
+
+
+
+COM ESSA DIRECTIVE AÍ?' ----->  
+
+
+
+
+
+
+
+
+
+BEM, SE VOCÊ __ QUER_ USAR PROPERTY BINDING COM 
+
+ESSA DIRECTIVE,
+
+
+
+
+você pode, é quase a mesma coisa,
+
+
+mas aí 
+
+você 
+
+terá 
+
+
+de escrever ASSIM:
+
+[formControlName] 
+
+
+
+
+e depois o value assim:
+
+
+
+"'username'"      (SÓ ASSIM ISSO VAI FUNCIONAR, pq caso contrário o angular VAI PROCURAR _POR UMA PROPERTY COM NOME DE 'username', e vai ignorar aquela string... )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> mas esse define por meio de property binding é desnecessariamente complexo;
+
+
+é melhor só passar uma string e pronto,
+
+
+
+
+
+
+
+sem usar '[]'....
+
+
+
+
+
+
+
+
+
+
+
+
+----> COM ISSO,
+
+ESTAMOS DIZENDO AO ANGULAR QUE A FORM  HTML  DEVE FICAR CONECTADA 
+
+
+
+
+À form 
+
+
+
+ARMAZENADA 
+
+
+
+na propriedade 
+
+'signupForm'
+
+
+
+
+no arquivo .ts... ------> E, ALÉM DISSO,
+
+
+
+POR MEIO DA DIRECTIVE 
+
+
+
+
+de 
+
+
+'formControlName',
+
+
+estamos dizendo que 
+
+
+
+ESSE INPUT FIELD de nome 'username'
+
+
+DEVERÁ _ 
+
+
+
+SER CONECTADO _ 
+
+
+
+AO CONTROL 
+
+
+NO CÓDIGO TYPESCRIPT QUE TEM O KEYNAME DE 'username' também....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> BEM, AGORA PODEMOS SIMPLESMENTE REPETIR ISSO COM O EMAIL:
+
+
+
+
+        <div class="form-group">
+          <label for="email">Mail</label>
+          <input 
+          type="email" 
+          id="email" 
+          class="form-control" 
+          formControlName="email"
+          
+          /> <!-- DE NOVO, O QUE INTERESSA É 'formControlName'-->
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> POR FIM, CONECTAMOS O FIELD DE 'gender',
+também:
+
+
+
+
+
+
+        <div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input type="radio" [value]="gender" />
+            {{ gender }}
+          </label>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O CÓDIGO  INTEIRO FICA ASSIM:
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form [formGroup]="signupForm">
+        <!-- É ASSIM QUE VINCULAMOS NOSSA FORM CRIADA LÁ EM UM ARQUIVO TS, nesse arquivo html, nessa form do arquivo html... através de property binding com '[formGroup]'-->
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            class="form-control"
+            formControlName="username"
+          />
+          <!-- AQUI, O QUE INTERESSA É 'formControlName', pq O VALUE PASSADO A ESSA DIRECTIVE SERÁ BUSCADO LÁ NO SEU CÓDIGO TYPESCRIPT, na form TS a que foi vinculada essa form do HTML...  (o angular vai buscar pelos KEY NAMES da sua form, lá no código typescript)-->
+        </div>
+
+        <button class="btn btn-default" type="button">
+          Suggest an Username
+        </button>
+        <div class="form-group">
+          <label for="email">Mail</label>
+          <input
+            type="email"
+            id="email"
+            class="form-control"
+            formControlName="email"
+          />
+          <!-- DE NOVO, O QUE INTERESSA É 'formControlName'-->
+        </div>
+
+        <div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input 
+            type="radio" 
+            [value]="gender"
+            formControlName="gender"
+            
+            
+             />
+            {{ gender }}
+          </label>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> CERTO... 
+
+
+
+
+
+
+
+
+AGORA, COM ISSO,
+
+
+devemos salvar  TUDO E COMPILAR...
+
+
+
+
+
+
+
+
+
+
+
+
+-_> DEVEMOS VER SE DEU CERTO..
+
+
+
+
+
+
+
+
+
+
+
+--> 
+
+AO INICIAR A PAGE,
+
+
+VEMOS QUE:
+
+
+1) OS INPUT FIELDS ESTÃO VAZIOS (sinal de que nosso define do value inicial como 'null' FUNCIONOU)
+
+
+
+
+
+2) O 'male/female' radio buttons estão marcados COMO _ MALE__ .... (sinal que o set do value default/inicial como sendo male, 'genders[0]', deu CERTO)....
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------------
+
+
+
+
+
+
+
+
+
+CERTO..
+
+
+
+
+
+
+
+E SE TROCARMOS PARA 'female',
+
+veremos QUE APENAS 1 DOS ELEMENTS FICARÁ SELECIONADO....
+
+
+
+
+
+
+
+
+
+-> TAMBÉM PERCEBEMOS QEU 
+
+
+SE 
+
+
+__ SELECIONAMOS 'email' aqui,
+
+
+
+
+
+
+AS CLASSES DINÂMICAS DO ANGULAR,
+
+
+
+
+
+
+SÃO _ ADICIONADAS _ NORMALMENTE (
+
+    untouched,
+
+    pristine,
+
+    valid, 
+
+    etc...
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO SIGNIFICA QUE 
+
+
+
+
+
+
+
+
+QUE __ NOSSOS INPUTS NO HTML ESTÃO CORRETAMENTE SINCRONNIZADOS 
+
+
+
+à FORM QUE 
+
+CRIAMOS NO TYPESCRIpt...
+
+
+
+
+
+
+
+
+
+--> isso tudo deu certo,
+
+o próximo passo é ACTUALLY SUBMITAR A FORM,
+
+PARA VER COMO 
+
+ISSO FUNCIONA COM O REACTIVE APPROACH...
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,2716 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... VAMOS ADICIONAR O ANGULAR UNIVERSAL AO NOSSO PROJETO DO CURSO...
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR EXPLICA QUE __ PARA IMPLEMENTARMOS ANGULAR UNIVERSAL NO NOSSO APP ANGULAR,
+
+
+É NECESSÁRIO RODAR APENAS 1 ÚNICO COMANDO,
+
+
+
+
+
+
+
+
+
+
+
+
+O COMANDO DE 
+
+
+
+
+
+
+'ng add @nguniversal/express-engine --clientProject'
+
+
+
+
+
+
+
+
+
+
+ESCREVA ISSO, E ENTÃO ADICIONE O ''''identifier de seu projeto''',
+
+
+
+que é um nome encontrado 
+
+
+LÁ NO ARQUIVO 
+
+'angular.json'
+
+DO SEU PROJETO,
+
+
+NA PARTE DE 
+
+
+
+
+
+"projects",
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "novoprojeto5": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:application": {
+          "strict": true
+        }
+      },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COMO VOCÊ PODE OBSERVAR, NOSSO IDENTIFER DESSE PROJETO É 
+
+
+
+'novoprojeto5'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> BASTA PEGARMOS ESSE NOME E ADICIONARMOS LÁ NO comando,
+
+tipo assim:
+
+
+
+
+
+'ng add @nguniversal/express-engine --clientProject novoprojeto5'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO.... QUANDO VOCÊ FIZER ISSO,
+
+
+
+SEU PROJETO FICARÁ TRANSFORMADO..
+
+
+
+
+PS A:\projeto8-ANGULAR\MODULO25-BONUS-ANGULARUNIVERSAL\novoprojeto15-VERSAODENOSSOAPPCOMONGRX> ng add @nguniversalexpress-engine --clientProject^C
+PS A:\projeto8-ANGULAR\MODULO25-BONUS-ANGULARUNIVERSAL\novoprojeto15-VERSAODENOSSOAPPCOMONGRX> 'ng add @nguniversalexpress-engine --clientProject^C
+PS A:\projeto8-ANGULAR\MODULO25-BONUS-ANGULARUNIVERSAL\novoprojeto15-VERSAODENOSSOAPPCOMONGRX> ng add @nguniversal/express-engine --clientProject novoprojeto5
+ℹ Using package manager: npm
+✔ Found compatible package version: @nguniversal/express-engine@14.0.2.
+✔ Package information loaded.
+
+The package @nguniversal/express-engine@14.0.2 will be installed and executed.
+Would you like to proceed? Yes
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO,
+
+
+
+
+
+
+TRANSFORMADO,
+
+
+SEU PROJETO AINDA FUNCIONARÁ COMO ANTES,
+
+
+
+
+
+
+VOCÊ AINDA PODERÁ O EXECUTAR COMO UM 'NORMAL ANGULAR APP',
+
+
+
+
+
+
+
+
+
+MAS AGORA VOCÊ TERÁ O BONUS DE TER A __ OPÇÃO__ DE RODAR SEU APP ANGULAR COMO UM 
+
+
+'ANGULAR UNIVERSAL APP',
+
+
+
+com todos aqueles benefícios do pre-rendering e etc...
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS CONSEGUI UM ERRO:
+
+
+
+
+
+The package @nguniversal/express-engine@14.0.2 will be installed and executed.
+Would you like to proceed? Yes
+npm ERR! code ERESOLVE
+npm ERR! ERESOLVE could not resolve
+npm ERR!
+npm ERR! While resolving: novoprojeto5@0.0.0
+npm ERR! Found: @angular/animations@14.0.2
+npm ERR! node_modules/@angular/animations
+npm ERR!   peerOptional @angular/animations@"14.0.2" from @angular/platform-browser@14.0.2
+npm ERR!   node_modules/@angular/platform-browser
+npm ERR!     peer @angular/platform-browser@"14.0.2" from @angular/forms@14.0.2
+npm ERR!     node_modules/@angular/forms
+npm ERR!       @angular/forms@"^14.0.2" from the root project
+npm ERR!     peer @angular/platform-browser@"14.0.2" from @angular/platform-browser-dynamic@14.0.2
+npm ERR!     node_modules/@angular/platform-browser-dynamic
+npm ERR!       @angular/platform-browser-dynamic@"^14.0.2" from the root project
+npm ERR!     2 more (@angular/router, the root project)
+npm ERR!   @angular/animations@"^14.0.2" from the root project
+npm ERR!
+npm ERR! Could not resolve dependency:
+npm ERR! @nguniversal/express-engine@"14.0.2" from the root project
+npm ERR!
+npm ERR! Conflicting peer dependency: @angular/animations@14.0.3
+npm ERR! node_modules/@angular/animations
+npm ERR!   peer @angular/animations@"14.0.3" from @angular/platform-server@14.0.3
+npm ERR!   node_modules/@angular/platform-server
+npm ERR!     peer @angular/platform-server@"^14.0.0-next" from @nguniversal/express-engine@14.0.2
+npm ERR!     node_modules/@nguniversal/express-engine
+npm ERR!       @nguniversal/express-engine@"14.0.2" from the root project
+npm ERR!
+npm ERR! Fix the upstream dependency conflict, or retry
+npm ERR! this command with --force, or --legacy-peer-deps
+npm ERR! to accept an incorrect (and potentially broken) dependency resolution.
+npm ERR!
+npm ERR! See C:\Users\Usuário\AppData\Local\npm-cache\eresolve-report.txt for a full report.
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     C:\Users\Usuário\AppData\Local\npm-cache\_logs\2022-06-26T20_05_07_919Z-debug.log
+✖ Packages installation failed, see above.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+bastantes problemas de versioning... (conflito entre versões do app)...
+
+
+
+
+
+
+
+
+
+-> para consertar isso, tive de rodar:
+
+
+
+
+
+
+
+
+git add . (Adiciona todos os arquivos ao repositório)
+
+
+
+
+
+
+
+
+git commit -am 'Old Angular verson' 
+
+
+
+
+
+
+
+
+
+
+depois 
+
+
+
+
+
+
+
+ng update @angular/core@14 @angular/cli@14
+
+
+
+
+
+
+
+-> isso updatou meu projeto:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{
+  "name": "novoprojeto5",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^14.0.3",
+    "@angular/common": "^14.0.3",
+    "@angular/compiler": "^14.0.3",
+    "@angular/core": "^14.0.3",
+    "@angular/forms": "^14.0.3",
+    "@angular/platform-browser": "^14.0.3",
+    "@angular/platform-browser-dynamic": "^14.0.3",
+    "@angular/router": "^14.0.3",
+    "@ngrx/effects": "^14.0.0",
+    "@ngrx/router-store": "^14.0.0",
+    "@ngrx/store": "^14.0.0",
+    "@ngrx/store-devtools": "^14.0.0",
+    "bootstrap": "^3.4.1",
+    "jsonwebtoken": "^8.5.1",
+    "rxjs": "~7.5.0",
+    "zone.js": "~0.11.4"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^14.0.3",
+    "@angular/cli": "^14.0.3",
+    "@angular/compiler-cli": "^14.0.3",
+    "@types/jasmine": "~3.10.0",
+    "@types/node": "^12.11.1",
+    "jasmine-core": "~4.0.0",
+    "karma": "~6.3.0",
+    "karma-chrome-launcher": "~3.1.0",
+    "karma-coverage": "~2.1.0",
+    "karma-jasmine": "~4.0.0",
+    "karma-jasmine-html-reporter": "~1.7.0",
+    "tslib": "^2.4.0",
+    "typescript": "~4.6.2"
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA SÓ ME RESTA 
+
+
+
+
+
+
+
+
+INCORPORAR O 'ANGULAR UNIVERSAL' a ele....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> acho que funcionou.
+
+
+
+
+
+
+
+mas ganhei um error estranho:
+
+
+
+
+
+
+
+
+
+
+
+
+
+Schematic input does not validate against the Schema: {"clientProject":"novoprojeto5","project":"novoprojeto5"}
+Errors:
+
+  Data path "" must NOT have additional properties(clientProject).
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  JÁ ESTE CÓDIGO FUNCIONOU:
+
+
+
+
+
+
+
+  ''''ng add @nguniversal/express-engine novoprojeto5'''''
+
+
+
+
+
+
+
+  (OU SEJA, sem '--clientProject'...)
+
+
+
+
+
+
+
+
+certo, qual é o próximo passo?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR APONTA QUE O NEGÓCIO VAI FAZER UM SETUP 'BEM COMPLEXOZINHO'...
+
+
+
+
+
+
+
+
+
+
+
+--> E, ATÉ POUCO TEMPO ATRÁS,
+
+
+TODO ESSE CONFIG ERA FEITO MANUALMENTE, O QUE ERA UMA MÃO...
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR VAI DEIXAR O APPROACH MANUAL AQUI,
+
+
+PARA QUE SAIBAMOS COMO É...
+
+
+
+
+
+
+
+
+
+--> OK, MAS COM ISSO FEITO,
+
+
+
+
+
+DEVEMOS CONSIDERAR 2 COISAS IMPORTANTES ANTES DE COMEÇARMOS A TIRAR VANTAGEM DO 
+
+
+
+'ANGULAR UNIVERSAL'...
+
+
+
+
+
+
+
+
+
+
+--> A PRIMEIRA COISA IMPORTANTE É QUE VOCê DEVE IR ATÉ 
+
+
+
+
+
+O ARQUIVO 
+
+
+'app.server.module.ts'...
+
+
+
+
+
+
+
+
+
+--> O CÓDIGO DELE É ESTE:
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { ServerModule } from '@angular/platform-server';
+
+import { AppModule } from './app.module';
+import { AppComponent } from './app.component';
+
+@NgModule({
+  imports: [
+    AppModule,
+    ServerModule,
+  ],
+  bootstrap: [AppComponent],
+})
+export class AppServerModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DENTRO DESSE ARQUIVO, O PROFESSOR AFIRMA QUE 
+
+
+
+'''VOCÊ DEVE SE CERTIIFCAR DE QEU 
+
+AQUELE 
+
+MODULE DE 
+
+
+ModuleMapLoaderModule'
+
+
+
+
+
+
+FOI REALMENTE IMPORTADO'''.... (
+
+
+
+
+  mas ele depois nos informa que esse import NÃO  É MAIS NECSSÁRIO...
+)
+
+
+
+
+
+A quick note: In the next lecture, I mention that it's important to add ModuleMapLoader to your app.server.ts file - if you're using Angular 9, this is NOT required anymore!
+
+
+
+
+
+
+
+
+
+
+
+
+----> ESSE 'ModuleMapLoaderModule
+'
+
+
+deve 
+
+
+SER ADICIONADO PARA _ QUE O LAZY LOADING _ CONSIGA_ SER ATIVAOD/ENABLADO NO NOSSO APP, COM O ANGULAR UNIVERSAL...
+
+
+
+
+
+(
+
+
+  sem isso, seu app VAI _ FALHAR_ se você tentar usar o lazy loading com o angular universal,
+
+PQ 
+
+AÍ AS ROUTES CARREGADAS LAZILY _ NÃO CONSEGUEM SER CARREGADAS...
+
+)
+
+
+
+
+
+
+
+
+
+--> OK, AGORA VOU DAR UMA LIMPADA NO MEU APP...
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK.... LIMPEI QUASE TUDO...
+
+
+
+
+
+
+
+
+agora de volta à aula...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> 
+
+
+
+
+MAS HÁ UMA COISA IMPORTANTE QUE DEVEMOS ENTENDER NO NOSSO APP:
+
+
+
+
+
+
+1) SEU CÓDIGO TODO, AGORA, SERÁ ___ PRIMEIRAMENTE __ RENDERIZADO/EXECUTADO_ _ 
+
+
+
+
+NO SERVER, E NÃO NO BROWSER...
+
+
+
+
+
+
+
+
+--> A PRIMEIRA PAGE/LOAD _ É RENDERIZADA __ NO SERVER...
+
+
+
+
+
+--> APENAS DEPOIS QUE A PRIMEIRA PAGE FOI 'RENDERED NO SERVER' 
+
+
+E ENTÃO __ RETORNADA AO USER,
+
+
+
+APENAS DEPOIS DESSE PROCESSO,
+
+
+
+
+
+
+APENAS __ ENTÃO __ A 'NORMAL SINGLE PAGE APPLICATION'
+
+
+PASSA A RODAR NO BROWSER DO USUÁRIO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+2) e esse fato TEM UMA _ OUTRA IMPORTANTE IMPLICATION ... ----> ISSO SIGNIFICA QUE 
+
+
+CERTAS 
+
+'BROWSER-ONLY APIs' 
+
+
+
+
+NÃO FICAM _ IMEDIATAMENTE DISPONÍVEIS NO NOSSO APP... 
+
+
+
+
+
+
+exemplo clássico disso é a API de 'local storage',
+
+
+
+
+que SÓ FICA DISPONÍVEL ASSIM QUE A PAGE É 'OBTIDA' pelo user, no browser...
+
+
+
+
+
+
+
+
+
+----> SE VOCê PROCURAR POR 'localStorage'
+
+
+
+NO NOSSO APP,
+
+
+VERÁ QUE 
+
+
+
+ESSE MOVIMENTO APARECE LÁ EM 'auth.effects.ts',
+
+
+
+
+EM QUE 
+
+
+FAZEMOS 'STORE' E 'READ' DE DATA LÁ DA LOCAL STORAGE.. (ex: effect de 'auto-login')...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ISSO, EM OUTRAS PALAVRAS,
+QUER DIZER QUE 
+O 
+
+
+'localStorage'
+
+
+VAI __ _FALHAR__ 
+
+
+
+
+
+COM ESSE SISTEMA DE CARREGAMENTO,
+
+PQ 
+
+
+SE NÓS ESTAMOS CARREGANDO ESSA PAGE 
+
+LÁ NO SERVER,
+
+
+O 'localStorage' api 
+
+
+NÃO VAI ESTAR DISPONÍVEL ,  pq o localStorage é BROWSER-ONLY...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA CONSERTAR ESSE PROBLEMA,
+
+
+
+SOMOS OBRIGADOS A __ IR __ ATÉ O COMPONENT DE 
+
+
+'app.component.ts',
+
+
+
+
+
+QUE É O LOCAL EM QUE FAZEMOS O DISPATCH DA ACTION DE 'auto-login',
+
+COMO OBSERVAMOS DESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { AppState } from '.';
+import { AuthService } from './auth/auth.service';
+import { LoggingService } from './logging.service';
+
+import * as AuthActions from './auth/store/authActions';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent implements OnInit {
+  constructor(
+    private authService: AuthService,
+    private loggingService: LoggingService,
+    private store: Store<AppState>
+  ) {}
+
+  ngOnInit(): void {
+    this.loggingService.printLog('Hello From AppComponent NgOnInit!');
+
+    this.store.dispatch(new AuthActions.AutoLogin());
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> BEM, NESSE LOCAL,
+
+
+
+DEVEMOS __ ASSEGURAR __ QUE ESSE 'dispatch'
+
+
+
+
+NÃO ___ SERÁ FEITO  __ 
+
+
+QUANDO 
+
+
+
+
+ESSA LINHA FOR LIDA/EXECUTADA _ LÁ NO SERVER....
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, PARA QUE ISSO FUNCIONE,
+
+
+
+PARA QUE 
+
+
+
+
+SEJA EVITADO O 'RUN' DE LINHAS 
+
+
+
+QUE _DEVEM SER EXECUTADAS APENAS PELO BROWSER,
+
+
+LÁ 
+
+
+NO SERVER,
+
+
+
+
+
+VOCÊ 
+
+
+
+
+
+
+
+DEVE _ SE CERTIFICAR/VERIFICAR 
+
+
+
+
+_ SE VOCÊ ESTÁ REALMENTE RODANDO ESSE SEU CÓDIGO ESPECÍFICO _ NO SERVER OU NÃO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VOCê PODE REALIZAR ESSE '''''CHECK SE ESTAMOS RODANDO ESSE CÓDIGO NO SERVER OU NO BROWSER'''''
+
+
+
+
+
+
+
+
+POR MEIO DE UM RECURSO ESPECIAL,
+
+UM NEGÓCIO QUE VAMOS INJECT __ DIRETAMENTE __ NO COMPONENT 'app.component.ts'...
+
+
+
+
+
+
+
+
+------> QUE RECURSO É ESSE?  
+
+
+
+
+
+
+
+
+
+é um IDENTIFIER, PROVIDENCIADO PELO ANGULAR,
+
+
+ 
+ QUE BASICAMENTE 
+
+ 'TE DIZ EM QUE PLATAFORMA VOCÊ ESTÁ RODANDO/ESTÁ NO MOMENTO'...
+
+
+
+
+
+ --> PARA FAZER ISSO,
+
+
+
+ DEVEMOS INJETAR ESSE VALUE EM UMA PROPRIEDADE,
+
+
+
+
+
+
+
+
+que fazemos assim:
+
+
+
+
+
+
+
+  constructor(
+    private authService: AuthService,
+    private loggingService: LoggingService,
+    private store: Store<AppState>,
+    private platformId: 
+  ) {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SERÁ ESSE 'PLATFORM ID'...
+
+
+
+
+
+
+
+
+
+--> OK... MAS AQUI __ NAÕ VAMOS __ 
+
+
+INTEGRAR ESSE RECURSO POR MEIO DO ASSIGN DE UM TYPE ( como sempre fizemos antes, com coisas como 'private store: Store'...)
+
+
+
+
+
+
+
+
+
+NÃO, EM VEZ DISSO 
+
+
+
+
+O PROFESSOR DIZ QUE __ dEVEMOS USAR __ UM DECORATOR SUPER ESPECIAL,
+
+
+QUE NUNCA HAVÍAMOS USADO ATÉ O MOMENTO,
+
+PQ É RARAMENTE 
+
+
+UTILIZADO...
+
+
+
+
+
+
+
+
+
+
+
+--> É O DECORATOR DE 'Inject()"..
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO PQ __ 
+
+
+
+AS INJECTIONS NO ANGULAR GERALMENTE FUNCIONAM DE MODO QUE 
+
+'''você geralmente define um type no seu injectable,
+
+
+
+e aí o ANGULAR PROCURA POR ESSE TYPE'''... -->  
+
+
+
+
+
+
+
+
+
+MAS COMO AQUI NÃO ESTAMOS FAZENDO INJECT DE UMA CLASS,
+
+
+
+NÃO USAMOS O TYPE DE UMA CLASS,
+
+
+
+
+E SIM __ USAREMOS/USAMNOS UM 
+
+
+
+'HARDCODED VALUE',
+
+
+
+
+E ESSE 
+
+VALUE 
+
+
+
+
+POSSUI UM IDENTIFIER,
+
+
+TAMBÉM DEFINIDO PELO ANGULAR,
+
+
+
+
+e que também devemos importar...
+
+
+
+
+
+
+
+--> É A CONSTANTE DE 'PLATFORM_ID'...
+
+
+
+
+
+
+
+
+
+--> 
+
+
+o código vai ficando assim:
+
+
+
+
+
+
+
+
+
+import { Inject, PLATFORM_ID } from '@angular/core';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SIM..... E VOCê VAI USAR ISSO,
+
+NO CASO,
+
+
+
+
+
+
+
+
+
+
+COM O '@Inject()'..
+
+
+
+
+
+
+
+--> VOCÊ DEVE COLOCAR OS 2 DENTRO DO CONSTRUCTOR, TIPO ASSIM:
+
+
+
+
+
+
+
+
+ 
+import { Inject, PLATFORM_ID } from '@angular/core';
+
+
+
+
+constructor(
+  private store: Store<AppState>
+  private loggingService: LoggingService,
+  @Inject() private platformId
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DENTRO DO 'Inject',
+
+
+VOCÊ PASSA O 'PLATFORM_ID'..
+
+
+
+
+
+
+
+
+
+
+---> isso vai dizer ao angular 'POR FAVOR PROCURE PELO __ VALUE __ PROVIDENCIADO GLOBALMENTE 
+
+
+
+_ QUE _ TENHA __ ESSE IDENTIFIER AÍ,
+
+
+E AÍ 
+
+
+
+INJETE ESSE VALUE DE PLATFORM_ID DENTRO DESSA CLASS'...
+
+
+
+
+
+
+
+
+
+
+
+NÓS NEM MESMO PRECISAMOS DEFINIR UM TYPE,
+
+O CÓDIGO FICA ASSIM:
+
+
+
+
+
+ 
+import { Inject, PLATFORM_ID } from '@angular/core';
+
+
+
+
+constructor(
+  private store: Store<AppState>
+  private loggingService: LoggingService,
+  @Inject(PLATFORM_ID) private platformId
+)
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { AppState } from '.';
+import { AuthService } from './auth/auth.service';
+import { LoggingService } from './logging.service';
+
+import * as AuthActions from './auth/store/authActions';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent implements OnInit {
+  constructor(
+    private authService: AuthService,
+    private loggingService: LoggingService,
+    private store: Store<AppState>,
+    @Inject(PLATFORM_ID) private platformId    ///////ESSA É A NOSSA SINTAXE PARA O INJECT DESSE 'platFormId'...
+  ) {}
+
+  ngOnInit(): void {
+    this.loggingService.printLog('Hello From AppComponent NgOnInit!');
+
+    this.store.dispatch(new AuthActions.AutoLogin());
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, MAS ISSO ESTÁ ME DANDO MUITOS ERRORS...
+
+
+
+
+
+
+--> NÃO SEI COMO OS CONSERTAR....
+
+
+
+
+
+
+
+
+--> COM ISSO INJETADO,
+
+
+O PROFESSOR DIZ QUE JÁ PODEMOS O UTILIZAR DENTRO DE 'ngOnInit()'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O PROFESSOR APONTA QUE PRECISAMSO DE MAIS UMA COISA LÁ DE '@angular/common'....
+
+
+
+
+
+
+
+
+--> É UMA FUNCTION PROVIDENCIADA PELO ANGULAR,
+
+
+ que é o 'isPlatformBrowser'...
+
+
+
+
+
+
+
+
+
+ --> ESSA FUNCTION NOS PERMITE VERIFICAR SE A PLATAFORM EM QUE ESSE CÓDIGO ESTÁ SENDO EXECUTADO É UM BROWSER OU NÃO...
+
+
+
+
+
+
+
+
+ problema:
+
+
+
+ Property 'platformId' is declared but its value is never read.
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> ainda naõ consigo solucionar esse problema...
+
+
+
+
+ (
+  talvez seja necessário escrever algo mais...
+ )
+
+
+
+
+
+
+
+
+
+ CERTO...
+
+
+
+
+
+
+
+
+
+
+
+
+ ESSE VALUE DE 'PLATFORM_ID'
+
+
+ ESTÁ 
+
+ ARMAZENAOD DENTRO DE 'platformId',
+
+ essa propriedade aí...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> CERTO...
+
+
+
+
+
+
+
+ MAS DEPOIS DISSO VAMOS PRECISAR DE __ OUTRA __ COISA,
+
+
+
+ O 
+
+ 'isPlatformBrowser',
+
+
+
+
+
+ QUE VAI NOS PERMITIR CHECAR SE 
+
+
+
+ O NOSSO CÓDIGO/LINHA ESTÁ SENDO RODADO NO BROWSER OU NÃO...
+
+
+
+
+
+
+
+
+
+
+
+ EX:
+
+
+
+
+
+
+
+
+
+ 
+  ngOnInit(): void {
+
+
+
+    if (isPlatformBrowser(this.platformId)) {
+
+      console.log('IN BROWSER')
+    }
+    this.loggingService.printLog('Hello From AppComponent NgOnInit!');
+
+    this.store.dispatch(new AuthActions.AutoLogin());
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  ----> OK, ISSO QUER DIZER QUE ESSE 'console.log'
+
+
+  SÓ VAI _ SER EXECUTADO__ SE REALMENTE_ _ ESTIVERMOS _ 'NO BROWSER',
+
+
+
+  NOSSO CÓDIGO ESTIVER SENDO LIDO E EXECUTADO NA PARTE DO BROWSER....
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> O PROFESSOR JÁ VAI LÁ E SE ADIANTA UM POUCO,
+
+
+
+  VAI LÁ E 
+
+  COLOCA O call de 
+
+
+  'this.store.dispatch(new AuthActions.AutoLogin())'
+
+
+
+
+
+  DENTRO DAQUELE IF CHECK (pq ele quer que esse código, que vai fazer o CHECK PELA EXISTÊNCIA DE DATA NA NOSSA LOCAL STORAGE),
+
+
+
+  TIPO ASSIM: 
+
+
+
+
+ 
+  ngOnInit(): void {
+
+
+
+    if (isPlatformBrowser(this.platformId)) {
+
+      console.log('IN BROWSER');
+
+      
+    this.store.dispatch(new AuthActions.AutoLogin());
+
+
+    }
+    this.loggingService.printLog('Hello From AppComponent NgOnInit!');
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> ok... ISSO QUER DIZER QUE 
+ESSE CÓDIGO SÓ VAI SER EXECUTADO, ESSA ACTION SÓ VAI SER DISPATCHEADA SE ESTIVERMOS COM O CÓDIGO SENDO EXECUTADO 'INSIDE OF THE BROWSER'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO, MAS E AQUELE 'this.loggingService',
+
+
+
+ele é EXECUTADO EM QUE LUGAR? (browser ou backend? )
+
+
+
+
+
+
+--> O PROFESSOR EXPLICA A NÓS 
+
+
+QUE __ ELE __ APENAS VAI DEIXAAR ESSE CALL DO LOGGING SERVICE 
+
+PQ 
+
+
+ELE QUER NOS COMPROVAR QUE 
+
+
+'''ESSE CÓDIGO DE CONSOLE.LOG __ AINDA VAI __ RODAR NO BROWSER''',
+
+
+ou seja,
+
+
+
+O FATO DE QUE 
+
+
+
+
+ELE ESTÁ NO NOSSO CÓDIGO, EM 'ngOnInit'
+
+
+
+E __ FORA__ DAQUELE IF CHECK DE 'isPlatformBrowser'
+
+
+
+
+NÃO É SUFICIENTE A EVITAR SEU RUN,
+
+
+
+
+ISSO PQ 
+
+
+
+O CÓDIGO ESCRITO DENTRO DE 
+
+
+
+'ngOnInit'
+
+
+
+
+_ NÃO DEIXA DE SER EXECUTADO _ DENTRO DO BROWSER...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER QUE O CÓDIGO DE 
+
+
+'
+if (isPlatformBrowser())'
+
+
+
+
+
+DENTRO DESSE IF BLOCK,
+
+
+
+___ VAI_ _ SER REPETIDO NO BROWSER... (
+
+
+
+  isso quer DIZER QUE _ QUANDO A DATA FOR 'PRE-RENDERED'
+
+  NO SERVER,
+
+
+
+__ ELA_  VAI_ _ LER E RODAR ESSE CÓDIGO,
+
+
+
+
+
+MAS ASSIM QUE 
+
+A DATA FOR SERVIDA AO USER NO BROWSER,
+
+
+
+ESSE CODIGO VAI RODAR TAMBÉM NO BROWSER... -------> 
+
+
+)
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+ this.loggingService.printLog('Hello From AppComponent NgOnInit!'); 
+
+
+
+
+
+
+
+
+
+
+
+
+ ISSO AINDA _ VAI __ RODAR ___ NO BROWSER...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ok, em outras palavras:
+
+
+
+
+
+
+
+
+
+ 1) o DISPATCH, QUE ESTÁ DENTRO DAQUELE CHECK POR 'isPlatformBrowser' --> isso vai rodar __ APENAS _ NO BROWSER...
+
+
+
+
+
+ 2) o call de 'printLog' --> isso vai rodar TANTO NO SERVER COMO NO BROWSER, pq está 'SOLTO' dentro de 'ngOnInit()'...
+
+
+
+
+
+
+
+
+ --> ISSO QUER DIZER QUE 'NOSSO CÓDIGO SERÁ LIDO 2x', 
+
+
+
+
+ mas aquele 'if isPlatformBrowser' 
+
+
+
+
+ vai __IMPEDIR_ O CÓDIGO DE 'localStorage', que existe dentro do 'AutoLogin',
+
+
+
+ de ser executado no server....
+
+
+
+
+
+
+
+
+
+
+
+
+ --> OK, ISSO SIGNIFICA QUE O AUTOLOGIN VAI FUNCIONAR NO __ BROWSER,
+
+
+ MAS NÃO NO 
+
+ SERVER.. --> e é isso que queremos, pq o autoLogin depende 
+
+
+ DA LOCAL STORAGE,
+
+
+ QUE NÃO VAI ESTAR DISPONÍVEL NO SERVER...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> OK.... COM ISSO,
+
+
+
+ TERMINAMOS COM O SETUP _ DO ANGULAR_ UNIVERSAL NO NOSSO APP,...
+
+
+
+
+
+
+
+
+
+
+ --> SIM... E ESSE SETUP COM 'if isPlatformBrowser'
+
+
+
+
+ e 'if isPlatformServer'
+
+
+
+
+
+ _ SEMPRE É NECESSÁRIO,
+
+ QUANDO VOCÊ ESTÁ TRABALHANDO COM ALGUMA API 'BROWSER-ONLY' OU 'SERVER-ONLY'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> OK..... COM ISSO,
+
+
+
+ SE EXAMINARMOS NOSSO 'package.json',
+
+
+
+
+ CONSTATAREMOS QUE 
+
+
+ TEREMOS _ NOVOS COMANDOS/SCRIPTS,
+
+
+ COMO ESTES:
+
+
+
+
+
+
+
+   "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "dev:ssr": "ng run novoprojeto5:serve-ssr",
+    "serve:ssr": "node dist/novoprojeto5/server/main.js",
+    "build:ssr": "ng build && ng run novoprojeto5:server",
+    "prerender": "ng run novoprojeto5:prerender"
+  },
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+  -------> TEMOS OS COMANDOS NOVOS 
+
+  de 
+
+  'dev:ssr' 
+
+
+
+  'serve:ssr' 
+
+
+
+'build:ssr'
+
+
+
+
+
+  É 'SERVERSIDE RENDERING'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -----> O PROFESSOR FALA QUE DEVEMOS RODAR O 'npm build:ssr',
+
+
+
+
+
+
+  PARA_ CONSEGUIRMOS 
+
+
+  '''BUILD OUR APP FOR UNIVERSAL'''.....
+
+
+
+
+
+
+
+
+
+
+
+  esse comando faz:
+
+
+
+
+
+  1) ELE RODA 'Ng build' PARA BUILDAR NOSSO PROJECT PARA PRODUCTION..
+
+
+
+
+
+
+
+  2) MAS ALÉM DISSO,
+
+  ELE CRIA UM 'UNIVERSAL SERVERSIDE BUILD' --> E É ISSO QUE NOS DEIXA __ FAZER  'SERVE' DO APP...
+
+
+
+
+
+
+
+
+  ok... mas aquele error de typescript ainda continua....
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+
+
+
+
+  70
+
+First, to make typescript tolerate parameters without declaring their type, edit the tsconfig.json
+
+// disable this rule:
+// "strict": true,
+
+// enable this rule:
+"noImplicitAny": false
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, CONSERTEI..
+
+
+
+
+
+
+
+
+
+
+
+--> SÃO ESSES ARQUIVOS DA 'BUILD' feita com 
+
+
+
+
+npm run build:ssr 
+
+
+
+
+
+QUE VÃO NOS PERMITIR SERVIR ESSE APP..........
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AÍ O PROFESSOR SOLTA ALGUNS DETALHES SOBRE O SERVING DESSE APP...
+
+
+
+
+
+
+
+1o detalhe: --> VOCÊ ______________PRECISA____ DE UM NODEJS SERVER, OU SEJA,
+
+
+UM WEBHOST CAPAZ _ DE RODAR _ CÓDIGO NODEJS,
+
+
+PARA CONSEGUIR 
+
+SERVIR 
+
+
+
+ESSE SEU APP com 'serverside rendering'... (
+
+
+
+
+  SEU APP ANGULAR UNIVERSAL __ DEPENDE DISSO...
+)
+
+
+
+
+
+
+
+
+CONTINUANDO: ISSO SIGNIFICA QUE 
+
+UM 'STATIC WEBHOST',
+
+
+
+
+UM SITE ESTÁTICO DE HOSTING, COMO VIMOS COM O 'GOOGLE FIREBASE', ISSO 
+
+
+NÃO SERÁ SUFICIENTE,
+
+
+PQ __ SEU SITE NÃO SERÁ MAIS ESTÁTICO,
+
+O QUE QUER DIZER QUE 
+
+
+SEU SITE NÃO SERÁ 
+
+MAIS APENAS 
+
+'''CÓDIGO PURO HTML CSS E JAVASCRIPT'... --------> COMO VOCÊ AGORA TEM CÓDIOG QUE É 
+
+
+__EXECUTADO_ _NO SERVER,
+
+
+AGORA VOCê 
+
+PRECISA 
+
+DE UM SERVER QUE É CAPAZ DE RODAR ESSE CÓDIGO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK.... -> ISSO SIGNIFICA QUE 
+
+
+PRECISAMOS DE UM SERVER CAPAZ DE RODAR NODEJS.. (COMO O HEROKU)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NESSE SERVER CAPAZ DE RODAR NODEJS,
+
+
+
+
+VOCê É OBRIGADO A ENTÃO RODAR UM COMANDO...  --> 
+
+
+
+
+
+
+
+É O COMANDO DE 'npm run serve:ssr'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA CONSEGUIR SERVIR SEU APP,
+
+VOCÊ 
+
+
+1) UPLOADA TODO O CONTEÚDO DO SEU FOLDER DO PROJETO...  (no node server)...
+
+
+
+
+
+
+
+
+
+2) roda 'npm run serve:ssr'
+
+
+NESSE SERVER,
+
+
+
+PARA ENTÃO O INICIAR.... --> ISSO FAZ COM QUE O 'ANGULAR UNIVERSAL' SEJA SERVIDO... --> COM ISSO,
+
+
+QUANDO REQUESTS ATINGIREM O SERVER,
+
+
+
+CONSIGAM SER RETRIEVADAS VERSÕES 'PRE-RENDERED ' DE NOSSO APP (criadas no server)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... ISSO ACABOU DE SER EXECUTADO,
+
+
+
+
+
+
+
+o código de 'npm run build:ssr'...
+
+
+
+
+
+
+
+
+
+
+--> DEPOIS QUE ISSO ACABOU, O PROFESSOR EXECUTA AQUELE MESMO CÓDIGO QUE RECÉM MENCIONAMOS,
+
+o 
+
+
+'npm run serve:ssr'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> ISSO VAI SERVIR O ARQUIVO DE NOSSA BUILD 
+
+
+
+NO NOSSO PC LOCAL,
+
+
+E AÍ PODEMOS VISITAR NOSSO APP NO ENDEREÇO 'localhost:4200'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... 
+
+
+
+
+
+
+
+
+E SE EXAMINARMOS 
+
+
+
+O 
+
+
+
+DEVTOOLS DO CHROME E NOSSO TERMINAL,
+
+
+CONSTATAREMOS QUE O CÓDIGO DE 'Hello from appComponent ngOnInit'
+
+
+
+
+
+TERÁ SIDO EXECUTADO _ EM AMBOS OS LUGARES 
+
+
+
+(
+
+  comprovando aquilo que o  professor recém explicou..
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK, MAS GRAÇAS AO NOSSO CHECK,
+
+
+NÃO EXECUTAMOS AQUELE CÓDIGO QUE FAZ 'CHECK PELA LOCAL STORAGE'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS SE EXAMINAMSO A PAGE-SOURCE,
+
+
+VEMOS QUE 
+
+
+
+
+
+
+
+FICARMEOS COM 
+
+
+
+CONTEÚDO DE VERDADE,
+
+
+
+
+
+A DATA QUE É REALMENTE CARREGADA NO NOSSO APP.... -> ISSO É ÓTIMO,
+
+PQ NOSSA  
+
+
+PAGE __ É 
+
+
+CARREGADA E APRESENTADA 'DA MANEIRA QUE DEVERIA SER',
+
+
+
+
+
+E AÍ AS SEARCH ENGINES ENXERGAM NOSSA PAGE DA MANEIRA QUE QUEREMOS QUE A VEJAM...
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, É ASSIM QUE ENABLAMOS O 'ANGULAR UNIVERSAL'.....
+
+
+
+
+
+
+
+
+--> ANTIGAMENTE ERAMOS FORÇADOS A FAZER ESSE SETUP WORK TODO MANUALMENTE,
+
+
+
+MAS AGORA PODEMOS SEGUIR ESTE APPROACH DESSA AULA,
+
+
+
+QUE USA AQUELE SCRIPT DE 'ng add' 
+
+
+
+
+
+visto anteriromente...

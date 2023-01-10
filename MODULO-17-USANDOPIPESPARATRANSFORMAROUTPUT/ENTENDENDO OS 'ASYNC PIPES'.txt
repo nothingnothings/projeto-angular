@@ -1,0 +1,561 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NESSE MÓDULO, APRENDEMOS MT SOBRE PIPES:
+
+
+
+
+
+1) O QUE SÃO  --> TRANSFORMAM NOSSA DATA, NO MOMENTO DE SEU OUTPUT NO TEMPLATE..
+
+
+
+2) COMO OS UTILIZAR:            {{ exemploDePropriedadeDoArquivoTS | date }}
+
+
+
+
+
+3) COMO PARAMETRIZE ELES...
+
+
+
+  transform(value: any, filterString: string): any {
+    console.log(value);
+    if (value.length === 0 || filterString === '') {
+      return value;
+    }
+
+    ...
+
+    }
+
+
+
+
+
+
+
+
+4) COMO _ CHAINAR _ PIPES_   --> por meio do uso de     {{ exemploDePropriedadeDoArquivoTS  |  uppercase | date }}
+
+
+
+
+
+4.5) como passar MÚLTIPLOS PARÂMETROS A UM PIPE:
+
+
+
+    {{ exemploDePropriedadeDoArquivoTS  | filter:2:4:3 }}
+
+
+
+
+
+
+
+
+5) COMO CRIAR NOSSOS PRÓPRIOS PIPES  (arquivos xxx.pipe.ts e  uso do  decorator de '@Pipe({})' ) ---> também o uso do comando do terminal 'ng g p xxxx' 
+
+
+
+
+
+
+
+6) COMO _ TALVEZ__ CRIAR UM 'IMPURE PIPE', com  '@Pipe({pure: false})', propriedade que FAZ COM QUE O PIPE SEJA REEXECUTADO A PARTIR DE DATA CHANGES (qualquer change de data na página, e naõ só nos ARGUMENTS PASSADOS AO PIPE, contrariamente a esse comportamento comum de 'check for parameter changes', do 'pure: true')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS AGORA O PROFESSOR QUER NOS MOSTRAR 1 PIPE QUE FAZ UMA COISA UM POUCO DIFERENTE DE TODOS NOSSOS OUTROS PIPES...
+
+
+
+
+
+
+
+
+
+
+-> É UM PIPE QUE NOS AJUDA COM O HANDLE DE ASYNC DATA...
+
+
+
+
+
+
+
+
+
+
+--. PARA DEMONSTRAR COMO ISSO FUNCIONA,
+
+
+O PROFESSOR 
+
+
+
+CRIA UMA NOVA PROPRIEDADE,
+
+
+
+
+
+
+que será 
+
+
+'appStatus'...
+
+
+
+
+
+
+
+
+
+
+----> MAS ISSO NÃO SERÁ UMA PROPRIEDADE ESTÁTICA, COMO 'OFFLINE'...
+
+
+
+
+
+
+
+
+-> em vez disso,
+
+
+
+ELE VAI SETTAR ESSA PROPRIEDADE COMO SENDO UMA 
+
+
+'PROMISE',
+
+
+PARA SIMULAR QUE ISSO É UMA 'DATA RETRIEVADA DE UM SERVER' ou algo assim...
+
+
+
+
+
+
+
+--> tipo assim:
+
+
+
+
+
+
+appStatus = new Promise(
+    (resolve, reject) => {
+
+            setTimeout(
+                () => {
+                    
+                    resolve('stable')
+                },
+
+                2000
+            )
+    }
+)
+
+
+
+
+
+
+
+--------------------------------------
+
+
+
+
+
+-_> OK.. LÁ 
+
+
+
+
+NO TEMPLATE , ESCREVEMOS ASSIM:
+
+
+
+
+<h2>App Status: {{ appStatus }} </h2>
+
+
+
+
+
+
+
+
+
+
+-----> SE FAZEMOS ISSO,
+
+
+INICIALMENTE VEREMOS 
+
+
+
+'App Status: [object Object]' 
+
+
+
+
+
+
+
+
+
+
+
+--> E ISSO ESTÁ CORRETO,
+
+PQ 
+
+
+
+ISSO É UM OBJECT,
+
+
+
+PROMISES SÃO OBJECTS... --> 
+
+MAS 
+DEPOIS 
+
+
+DE 
+
+2 SEGUNDOS,
+
+
+
+
+
+
+
+TEREMOS CERTEZA QUE __ ISSO __ NÃO SERÁ MAIS UM OBJECT DE TIPO 'PROMISE',
+
+
+E SIM SERÁ UMA _ _ STRING_...
+
+
+
+
+
+
+
+
+
+--> CERTO, NÓS SABEMOS DISSO, MAS O __ ANGULAR __ NAÕ TEM COMO SABER....
+
+
+
+
+
+
+--> NÃO TEM COMO SABER PQ ELE NÃO FAZ 'WATCH' DESSE OBJECT... -> ISSO SIGNIFICA QUE 
+
+
+
+ele não tem como 'SEE' 
+
+QUE ESSE OBJECT VAI ACTUALLY SE TRANSFORMAR EM ALGO COMPLETAMENTE DIFERENTE... (
+
+    e que nos retorna um value de 'stable'.
+)
+
+
+
+
+
+
+
+
+--> A ÚNICA COISA QUE ELE SABE É QUE 
+
+'''THAT IS A PROMISE, I AM DONE''....
+
+
+
+
+
+
+
+
+
+
+-> E É BOM QUE 
+
+ELE SE COMPORTE ASSIM, PQ NOS SALVA 
+
+
+PERFORMANCE..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> MAS AINDA BEM QUE 
+
+
+HÁ UM PEQUENO PIPE QUE PODEMOS USAR, AQUI,
+
+
+
+
+PARA _ FAZER A __ TRANSFORMATION DESSA DATA DE 
+
+
+
+'appStatus'
+
+
+
+MAIS FÁCIL...
+
+
+
+
+
+
+
+
+--------> SABEMOS:
+
+
+
+
+1) ISSO SERÁ UMA STRING _ DEPOIS DE 2 SEGUNDOS... (vai resolve como uma string, depois de 2 segundos)....
+
+
+
+
+
+
+
+2) QUEREMOS OUTPUTTAR ESSA STRING...
+
+
+
+
+
+
+
+
+
+------> PARA ISSO,
+
+
+PODEMOS 
+
+
+ADICIONAR 
+
+
+
+
+
+__ UM __ PIPE MUITO ESPECIAL,
+
+QUE É O PIPE DE 
+
+
+
+```` | async ````
+
+
+
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE É UM BUILT-IN PIPE,
+
+
+
+E QUANDO O ADICIONAMOS 
+
+
+EM UM 
+
+STRING INTERPOLATION 
+
+
+
+,
+
+
+
+ELE __ REALMENTE FAZ COM QUE:
+
+
+
+
+
+
+
+
+
+1) RECONHECE QUE NOSSO 'VALUE', O 'VALUE' DE NOSSA PROPRIEDADE 'appStatus'
+
+É _ UMA PROMISE 
+
+
+
+(
+
+
+    E ISSO _ TAMBÉM FUNCIONA COM OBSERVABLES; COM OBSERVABLES,
+
+
+
+    ESSE PIPE DE 'ASYNC' faz o SUBSCRIBE AUTOMATICAMENTE...
+)
+
+
+
+
+2)  DEPOIS DE 2 SEGUNDOS,
+
+ELE VAI SIMPLESMENTE RECONHECER 
+
+QUE 
+
+
+'''SOMETHING CHANGED'''',
+
+E QUE 
+
+
+A PROMISE 'RESOLVED',
+
+
+
+
+ALGO,
+ 
+ NO CASO DE UM OBSERVABLE,
+
+ 'DATA WAS SENT THROUGH A SUBSCRIPTION' -> 
+
+
+
+
+
+
+ AÍ O QUE ESSE PIPE VAI FAZER É  _ 'PRINT_ 'ESSA DATA À TELA....
+
+
+
+
+
+
+
+
+ -> OK, VIMOS ESSE PIPE, BEM IMPORTANTE..
+
+
+
+
+
+
+
+
+
+
+
+
+ --. AGORA SABEMOS COMO USAR E CRIAR NOSSOS PRÓPRIOS PIPES..
+
+
+
+ -> TAMBÉM A TRABALHAR COM ASYNC PIPE...
+
+
+
+
+
+
+
+
+ --> VEREMOS ESSE PIPE 
+
+
+ MAIS TARDE,
+
+
+ NA SECTION DE 'HTTP'...
+
+
+
+
+ --> AGORA DEVEMOS VER ALGUNS EXERCÍCIOS SOBRE PIPES..

@@ -1,0 +1,1264 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ANEXADO A ESSA AULA,
+
+
+TEMOS UM COURSE PROJECT....
+
+
+
+
+
+
+
+
+
+
+--> é um projeto demo,
+
+para ver como o routing funciona...
+
+
+
+
+
+
+
+
+-> É UM PROJETO NORMAL,
+
+MAS TEM UM PROBLEMA CORE:
+
+
+NÃO __ CONSEGUIMOS TROCAR ENTRE PAGES..
+
+
+
+
+
+
+--> TEMOS AS TABS NO TOPO DA PAGE,
+
+MAS AS TABS NÃO FUNCIONAM...
+
+
+
+
+
+
+
+--> TODAS AS COISAS QUE VEMOS NESSA 'HOME PAGE'
+
+
+SÃO OS COMPONENTS QUE MAIS TARDE O PROFESSOR VAI QUERER _ SPLITTAR 
+
+
+
+'AO LONGO DE MÚLTIPLAS PAGES'....
+
+
+
+
+
+
+
+
+
+
+---> TEMOS:
+
+
+
+1) HOME 
+
+
+
+2) SERVERS 
+
+
+
+
+3) USERS 
+
+
+
+
+
+
+
+
+TUDO NA MESMA PAGE....
+
+
+
+
+
+
+
+
+--> SERIA BOM TER PAGES SEPARADS,
+
+
+
+
+UMA PARA '/users',
+
+outra para 
+
+'/servers',
+
+
+
+
+outra '/'...
+
+
+
+
+
+
+
+
+
+-> NESSE MÓDULO VAMOS PRECISAR DO ANGULAR ROUTER... ---> E O ANGULAR ROUTER __ PRECISA _SABER QUAIS 
+
+
+ROUTES NOSSO FRONTEND APP PRECISA...
+
+
+
+
+
+
+
+
+
+--> VOCÊ 
+
+
+JÁ DEVE CONHECER ESSE PADRÃO,
+ROUTES 
+
+VISITADAS PELO FRONTNED.... (routes expostas pelo backend)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok, criei um novo projeto...
+
+
+
+
+
+
+
+
+
+O COMPONENT 'app' ficou assim:
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="#">Home</a></li>
+        <li role="presentation" class="active"><a href="#">Servers</a></li>
+        <li role="presentation" class="active"><a href="#">Users</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <app-home></app-home>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+    <app-users></app-users>
+  </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+    <app-servers></app-servers>
+  </div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+--> agora o código ts:
+
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> agora os outros components:
+
+
+
+
+
+
+
+
+
+
+
+
+
+servers:
+
+
+
+
+
+
+
+
+
+
+
+--> servers tem alguns SUBCOMPONENTS,
+
+como 
+
+'edit-server' 
+
+
+e 
+
+'server' (server-list-item)....
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12 col-sm-4">
+    <div class="list-group">
+      <a href="#" class="list-group-item">
+        {{ server.name }}
+      </a>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4">
+    <app-edit-server></app-edit-server>
+    <hr />
+    <app-server></app-server>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+ok, agora o código typescript...
+
+
+
+
+
+
+
+
+
+
+
+
+
+É BASICAMENTE O QUE EU HAVIA VISTO ANTES:
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+
+
+@Component({
+  selector: 'app-servers',
+  templateUrl: './servers.component.html',
+  styleUrls: ['./servers.component.css']
+})
+export class ServersComponent implements OnInit {
+
+
+
+  public servers: {id: number, name: string, status: string}[] = [];
+
+  constructor(private serversService: ServerService) { }
+
+  ngOnInit(): void {
+    this.servers = this.serversService.getServers();
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> e agora preciso escrever o 'servers.service.ts'... (o arquivo SERVICE dessa nossa feature de 'servers')... --> deve fazer o maange de nossos 'servers', assumo...
+
+
+
+
+
+
+O CÓDIGO DE 'servers.service.ts':
+
+
+
+
+
+
+
+
+
+
+export class serversService {
+  private servers = [
+    {
+      id: 1,
+      name: 'ProductionServer',
+      status: 'online',
+    },
+    {
+      id: 2,
+      name: 'TestServer',
+      status: 'offline',
+    },
+    {
+      id: 3,
+      name: 'DevServer',
+      status: 'offline',
+    },
+  ];
+
+  getServers() {
+    return this.servers;
+  }
+
+  getServer(id: number) {
+    const server = this.servers.find((server) => {
+      return server.id === id;
+    });
+
+    return server;
+  }
+
+  updateServer(id: number, serverInfo: { name: string; status: string }) {
+    const server = this.servers.find((server) => {
+      return server.id === id;
+    });
+
+    if (server) {
+      server.name = serverInfo.name;
+      server.status = serverInfo.status;
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ certo...
+
+
+
+
+
+
+
+
+
+ agora faltou 
+
+
+
+ 'server' 
+
+
+ e 
+
+
+ 'edit-server'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+SERVER:
+
+
+
+
+
+
+
+
+
+<h5>{{ server.name }}</h5>
+<p>Server status is {{ server.status }}</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="form-group">
+  <label for="name">Server Name</label>
+  <input type="text" class="form-control" [(ngModel)]="serverName" />
+</div>
+<div class="form-group">
+  <label for="status">Server Status</label>
+  <select id="status" class="form-control" [(ngModel)]="serverStatus">
+    <option value="online">Online</option>
+    <option value="offline">Offline</option>
+  </select>
+</div>
+<button class="btn btn-primary" (click)="onUpdateServer()">
+  Update Server
+</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo....
+
+
+
+
+
+
+
+e o código ts:
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ServersService } from '../servers.service';
+
+@Component({
+  selector: 'app-edit-server',
+  templateUrl: './edit-server.component.html',
+  styleUrls: ['./edit-server.component.css'],
+})
+export class EditServerComponent implements OnInit {
+  server: { id: number; name: string; status: string };
+
+  serverName = '';
+  serverStatus = '';
+
+  constructor(private serversService: ServersService) {}
+
+  ngOnInit(): void {
+    // this.server = this.serversService.getServer(1);
+    this.serverName = this.server.name;
+    this.serverStatus = this.server.status;
+  }
+
+  onUpdateServer() {
+    this.serversService.updateServer(this.server.id, {
+      name: this.serverName,
+      status: this.serverStatus,
+    });
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> agora o component de 'home':
+
+
+
+
+
+<h4>Welcome to Server Manager 4.0</h4>
+<p>Manage your Servers and Users.</p>
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> agora o component de 'users' (provavelmente será a pAGE EM SI)...
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-users',
+  templateUrl: './users.component.html',
+  styleUrls: ['./users.component.css'],
+})
+export class UsersComponent implements OnInit {
+  users = [
+    { id: 1, name: 'Max' },
+    { id: 2, name: 'Anna' },
+    { id: 3, name: 'Chris' },
+  ];
+  constructor() {}
+
+  ngOnInit(): void {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO....
+
+
+
+
+
+
+
+
+agora 
+
+
+os outros,
+
+
+
+o component de 'user':
+
+
+
+
+
+
+<p>User with ID _ID_ loaded.</p>
+<p>User name is _NAME_</p>
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-user',
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.css'],
+})
+export class UserComponent implements OnInit {
+  user: { id: number; name: string };
+
+  constructor() {}
+
+  ngOnInit(): void {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok, agora devemos ver se o app fica igual ao do professor..
+
+
+
+
+
+
+
+--> ganhei um error:
+
+
+
+
+
+
+
+Error: src/app/servers/edit-server/edit-server.component.html:3:43 - error NG8002: Can't bind to 'ngModel' since it isn't a known property of 'input'.
+
+3   <input type="text" class="form-control" [(ngMode
+
+
+
+
+
+
+
+
+
+
+-> basta colocar o 'FormModule' 
+
+
+
+como 
+
+
+PROVIDER 
+
+de nosso app,
+
+lá em 'app.module.ts'...
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppComponent } from './app.component';
+import { HomeComponent } from './home/home.component';
+import { ServersComponent } from './servers/servers.component';
+import { UsersComponent } from './users/users.component';
+import { ServerComponent } from './servers/server/server.component';
+import { EditServerComponent } from './servers/edit-server/edit-server.component';
+import { UserComponent } from './users/user/user.component';
+import { FormsModule } from '@angular/forms';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    ServersComponent,
+    UsersComponent,
+    ServerComponent,
+    EditServerComponent,
+    UserComponent,
+  ],
+  imports: [BrowserModule, FormsModule],
+  providers: [],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+AGORA O ERRO É ESTE:
+
+
+
+
+
+
+
+
+
+
+
+
+Error: src/app/servers/servers.component.html:5:12 - error TS2551: Property 'server' does not exist on type 'ServersComponent'. Did you mean 'servers'?
+
+5         {{ server.name }}
+             ~~~~~~
+
+  src/app/servers/servers.component.ts:9:16
+    9   templateUrl: './servers.component.html',
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component ServersComponent.
+
+
+
+
+
+
+
+
+
+
+
+
+
+CORRIGI, O 'ngFor'
+
+estava faltando:
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12 col-sm-4">
+    <div class="list-group">
+      <a href="#" class="list-group-item" *ngFor="let server of servers">
+        {{ server.name }}
+      </a>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4">
+    <app-edit-server></app-edit-server>
+    <hr />
+    <app-server></app-server>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok, mas meu app ainda está bugado,
+
+
+não  vejo coisa alguma...
+
+
+
+
+
+
+
+
+
+-> o problema é o service de 'servers.service.ts',
+
+
+que não incorporei ainda ao 'app.module.ts'...
+
+
+
+
+
+
+
+
+
+-> OK, MAS AINDA FIQUEI COM ALGUNS ERRORS:
+
+
+
+ERROR DOMException: Failed to execute 'setAttribute' on 'Element': '{{user.name}}' is not a valid attribute name.
+    at EmulatedEncapsulationDomRenderer2.setAttribute (http://localhost:4200/vendor.js:52044:10)
+    at setUpAttributes (http://localhost:4200/vendor.js:15880:30)
+    at ɵɵelementStart (http://localhost:4200/vendor.js:27580:9)
+    at Module.ɵɵelement (http://localhost:4200/vendor.js:27658:5)
+    at UsersComponent_Template (http://localhost:4200/main.js:399:64)
+    at executeTemplate (http://localhost:4200/vendor.js:22657:9)
+    at renderView (http://localhost:4200/vendor.js:22457:13)
+    at renderComponent$1 (http://localhost:4200/vendor.js:23764:5)
+    at renderChildComponents (http://localhost:4200/vendor.js:22322:9)
+    at renderView (http://localhost:4200/vendor.js:22482:13)
+
+
+    
+  
+
+------------------------
+
+
+
+
+
+
+
+
+CONSERTEI, FOI SÓ COLOCAR UM '!' 
+
+para 
+
+GARANTIR QUE UM SERVER SEMPRE SERÁ ENCONTRADO NESSE NOSSO ARRAY DE 'SERVERS':
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ServersService } from '../servers.service';
+
+@Component({
+  selector: 'app-edit-server',
+  templateUrl: './edit-server.component.html',
+  styleUrls: ['./edit-server.component.css'],
+})
+export class EditServerComponent implements OnInit {
+  server: { id: number; name: string; status: string };
+
+  serverName = '';
+  serverStatus = '';
+
+  constructor(private serversService: ServersService) {}
+
+  ngOnInit(): void {
+    this.server = this.serversService.getServer(1)!;
+    this.serverName = this.server.name;
+    this.serverStatus = this.server.status;
+  }
+
+  onUpdateServer() {
+    this.serversService.updateServer(this.server.id, {
+      name: this.serverName,
+      status: this.serverStatus,
+    });
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+  ngOnInit(): void {
+    this.server = this.serversService.getServer(1)!;
+    this.serverName = this.server.name;
+    this.serverStatus = this.server.status;
+  }
+
+
+
+
+
+
+
+
+
+  ex:
+
+
+    this.server = this.serversService.getServer(1)!
+
+
+
+
+
+
+
+
+
+
+
+-----------------------
+
+
+
+
+
+
+
+
+ok.... mas nada está aparecendo na nossa page, ainda....
+
+
+
+
+
+
+
+
+
+
+
+
+-> PRONTO, AGORA ESTAVA FUNCIONANDO ('*ngFor' faltando, lá em 'users')...
+
+
+
+
+
+
+
+
+
+
+vejo todos os PEDAÇOS de nosso app (as pages)..
+
+
+
+
+
+
+
+
+
+
+
+--> OK, HORA DE VER A AULA DO PROFESSOR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PRECISAMOS DE ROUTES,
+
+PRECISAMOS _ DO ANGULAR ROUTER....
+
+
+
+
+
+
+
+
+
+
+--> E O ANGULAR ROUTER PRECISA 
+
+SABER 
+'QUAIS ROUTES NOSSA FRONTEND APP 
+
+TEM'...
+
+
+
+
+
+
+
+
+
+-> podemos registrar algumas routes, faremos isso na próxima aula...

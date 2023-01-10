@@ -1,0 +1,129 @@
+ACABAMOS COM ESTE MÓDULO 
+
+
+
+
+
+
+
+
+
+Useful Resources:
+
+Official Docs: https://angular.io/guide/ngmodules
+
+NgModules FAQ: https://angular.io/guide/ngmodule-faq
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DEMOS UMA BOA OLHADA EM NGMODULES,
+
+
+
+
+
+
+
+
+
+1) O QUE ELES FAZEM  (dividem nosso app e permitem a implementação de lazy loading)..
+
+
+
+2) QUAIS TIPOS DE MODULES TEMOS  (FEATURE MODULES, CORE MODULES (inúteis) E SHARED MODULES)...
+
+
+
+3) QUANDO OS UTILIZAR.. (lazy loading e organização)
+
+
+
+
+
+
+
+
+
+
+--> TAMBÉM VIMOS ROUTING (com MODULES e DEPOIS COM LAZY LOADING E MODULES) E LAZY LOADING NESSE MÓDULO
+
+
+
+
+
+
+
+
+
+
+--> TAMBÉM VIMOS QUE PODEMOS SETTAR 'PRELOADING' NOS NOSSOS APPS,
+
+PARA 
+
+
+
+ACABAR COM UM LAZY LOADING AINDA MAIS EFICIENTE:
+
+
+
+
+
+@NgModule({
+  imports: [RouterModule.forRoot(appRoutes, {
+    // preloadingStrategy: NoPreload  //// esse é o DEFAULT (não faz o preload de nada; sem optimização para o LAZY LOADING)
+    preloadingStrategy: PreloadAllModules   /////ESSA É A OPTION USADA PARA 'OPTIMIZAR O LAZY LOADING', pq teremos um pre-load para cada route, essencialmente...
+      ////com isso, ganhamos o MELHOR DOS 2 MUNDOS: LAZY-LOADING e 'pre-load' de routes que não estamos visitando..
+ 
+  })],
+
+  exports: [RouterModule],
+})
+export class AppRoutingModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+POR FIM,
+
+
+
+O PROFESSOR FALOU SOBRE 'AHEAD OF TIME COMPILATION',
+
+
+que é um approach que você quer seguir antes de uploadar seu código a um server 
+
+(
+
+    por meio do 
+
+    PRODUCTION WORKFLOW,
+
+
+    com 'ng build'....
+)

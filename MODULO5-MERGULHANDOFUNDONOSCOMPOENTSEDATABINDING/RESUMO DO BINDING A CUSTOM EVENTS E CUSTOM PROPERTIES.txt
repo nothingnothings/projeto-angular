@@ -1,0 +1,367 @@
+
+
+
+
+
+
+
+
+
+
+
+
+-> DEVEMOS RAPIDAMENTE RESUMIR O QUE APRENDEMOS ATÉ AGORA:
+
+
+
+ESSA KEY-FEATURE DE COMPONENT COMMUNICATION É ESSENCIAL...
+
+
+
+
+
+
+
+
+
+
+
+---> COM @Input e 
+
+
+COM A ABILIDADE 
+
+DE FAZER SUAS PROPERTIES 'BINDABLE FROM OUTSIDE',
+
+
+
+PASSANDO DATA ÀS SUAS PROPRIEDADES DOS COMPONENTS __ POR MEIO DE UM FLOW 
+
+'PARENT -> CHILD',
+
+
+
+
+
+ISSO É MT IMPORTANTE...
+
+
+
+
+
+
+
+
+-->  O MESMO SE APLICA AO '@Output',
+
+QUE FAZ O CAMINHO INVERSO,
+
+
+
+
+PERMITINDO QUE VOCÊ USE 'events'
+
+PARA 
+
+
+
+__ PASSAR_ DATA__ DE SEUS COMPONENTS _ CHILD_ AOS _ 
+
+
+
+COMPONENTS 'PARENT'....
+
+
+
+
+
+
+
+
+
+
+
+-> OS PARENT COMPONENTS FAZEM 'LISTEN TO' A events 
+
+
+__cUSTOMIZADOS__ (criados com 'EventEmitter')  
+
+__EMITIDOS __ PELOS CHILD COMPONENTS, QUE OS CRIAM E EMITEM...
+
+
+
+
+
+
+
+
+
+
+
+
+-> ESSAS SÃO 2 FEATURES 
+ESSENCIAIS DO SEU APP.
+
+
+
+
+
+
+
+
+--> UTILIZAREMO-NAS 
+
+
+
+
+__ NA 'RECIPebook',
+
+
+NO PRÓXIMO MÓDULO,
+
+
+
+PQ 
+
+
+ISSO 
+
+REALMENTE TE PERMITE DEIXAR SEU APP 
+ 
+
+
+ __ MUITO__ DINÂMICO_,
+   
+
+
+
+
+
+
+USAR UM MONTE DE COMPONENTS E AO MESMO TEMPO PERMITIR QUE 
+
+
+ELES 
+
+
+SE COMUNIQUEM ENTRE SI.... -> 
+
+
+
+
+
+
+
+
+
+
+
+
+MAS __ UM _ PROBLEMA __ QUE 
+
+
+
+
+PODE EXISTIR COM ESSE APPROACH É:
+
+
+
+
+
+
+
+
+
+_ SE VOCÊ QUER 'TALK TO' 
+
+
+
+
+2 components que 
+
+
+'SIT RIGHT NEXT TO EACH OTHER',
+
+
+
+
+pode ficar 
+
+
+'KIND OF COMPLICATED'
+
+
+
+
+___ DE __ FAZER O EMIT__ DE 
+
+
+
+1 EVENT 
+
+
+
+
+
+
+
+''EM 1 COMPONENT'',
+
+
+
+
+''AÍ TROCAR ALGO NO PARENT COMPONENT'',
+
+
+
+
+''AÍ PASS THIS DATA DOWN TO THE NEW CHILD COMPONENT'''... -----> ESSAS CHAINS DE 
+
+
+
+'INPUTS' 
+
+
+
+E 'OUTPUTS' 
+
+
+PODEM 
+
+
+
+
+
+ACABAR CRESCENDO E SE TORNANDO MAIS E MAIS COMPLEXAS...
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE _ APESAR__ DE ISSO SER TOTALMENTE 'FINE' AQUI,
+
+
+ 
+
+ E SER UMA FEATURE _ QUE VOCê VAI USAR UM MONTE_... (
+
+     pq 
+     não é ruim, 
+
+     não é uma feature ruim 
+
+     de forma alguma
+ ) ,
+
+
+
+
+
+
+
+
+
+
+ EXISTIRÃO CASOS EM QUE 
+
+ A 
+
+ 'DISTÂNCIA' entre 
+
+
+ 2 
+
+
+
+
+ COMPONENTS QUE DEVEM 'TALK TO EACH OTHER' 
+
+ é tão GRANDE QUE 
+
+  
+  _fazer o BUILD DE UMA CHAIN DE 'OUTPUTS E INPUTS'
+
+
+
+
+  __ NÃO SERÁ/NÃO É ALGO MT PRACTICAL...
+
+
+
+
+
+
+
+
+
+
+
+
+  ----> É POR ISSO QUE 
+
+  NO MÓDULO DE 'SERVICES' 
+
+  DESSE CURSO 
+
+
+
+  O PROFESSOR VAI ENTÃO NOS MOSTRAR _ OUTRO ___ APPROACH_ 
+
+
+
+
+
+
+
+  __ ,
+
+
+
+
+  um outro approach de 'TER OS COMPONENTS TALKING TO EACH OTHER',
+
+  EMBORA 
+
+  esse não  SEJA __ UM APPROACH NECESSARIAMENTE MELHOR,
+
+  E 
+  SIM 
+
+
+  APENAS 
+
+
+  '''UMA FERRAMENTA MELHOR PARA UM SPECIFIC USE CASE''...
+
+
+
+
+
+
+
+
+
+  ------> UM USE-CASE COMO ESSE NOSSO DE AGORA,
+
+
+
+
+  ELE É TIPICAMENTE _ REOSLVIDO COM 'OUTPUT' E 'input',
+
+
+  EXATAMENTE COMO 
+
+
+
+  ESTAMOS FAZENDO NO MOMENTo... ------> é a ferramenta perfeita para esse 
+
+
+  trabalho,
+
+  e é tão importante que 
+
+  a veremos múltiplas vezes ao longo deste curso....

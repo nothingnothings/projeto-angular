@@ -1,0 +1,316 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+professor escreve 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let myString: string;
+
+
+
+
+
+
+
+
+
+
+
+não podemos escrever 
+
+
+
+
+
+
+
+
+myString = 4;
+
+
+
+
+
+
+
+
+
+
+pq isso nos dará um error...
+
+
+
+
+
+
+
+
+
+
+
+
+------> 'tsc'
+
+
+É USADO PARA COMPILAR NOSSOS ARQUIVOS TYPESCRIPT EM 
+
+
+JAVASCRIPT....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> arquivos .js são criados a partir de arquivos '.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+----> o typescript 'infers' os nossos types...
+
+
+
+
+
+
+
+
+
+
+
+
+
+SE DECLARAMOS UMA VALUE SEM SETTAR UM VALUE,
+
+
+
+
+infering NÃO FUNCIONA... (e isso é bom)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> e usar 'let xxxx: any' 
+
+é 
+
+uma má practice..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let yetAnotherString;
+
+
+
+
+
+yetAnotherString = 'This is a string';
+
+
+
+
+
+
+
+
+
+
+--> MESMO COM ISSO AÍ,
+
+O TYPE DESSA VARIABLE NÃO ESTARÁ COMO 
+
+
+'string',
+
+
+pq 
+
+
+
+
+
+PODE TER SIDO UM ERRO... --> PQ QUANDO ESCREVEMOS 
+
+
+
+'let xxx;',
+
+
+
+
+
+O TYPE DA NOSSA DECLARATION FICOU COMO 'any'....
+
+
+
+
+
+
+
+
+
+
+
+
+--> VOCÊ SEMPRE DEVE USAR O STRONG TYPING, PQ ELE PREVINE ERRORS...
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS QUE TYPES PODEM SER USADOS?
+
+
+
+
+
+
+
+
+
+
+string number 
+
+boolean 
+
+
+Array<string>  (array de strings) ...
+
+
+
+ou 
+
+string[] ----> array de strings...
+
+
+
+
+
+
+
+
+
+
+
+
+além disso,
+
+temos 'void',
+
+
+que 
+significa NADA,
+
+
+
+
+
+
+como functions que NÃO RETORNAM COISA ALGUMA 
+
+
+
+
+
+
+ou 'enums',
+
+
+
+que 
+
+
+são BASICAMENTE SETS OF NUMERIC VALUES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> É CLARO QUE SE CRIARMOS NOSSOS PRÓPRIOS TYPES/CLASSES,
+
+podemos os utilizar 
+
+PARA GARANTIR QUE CERTAS 
+
+VARIABLES SÓ PODERÃO TER ESSES TYPES...

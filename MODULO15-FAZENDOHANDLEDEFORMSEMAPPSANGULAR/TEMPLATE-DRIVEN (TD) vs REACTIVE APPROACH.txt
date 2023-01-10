@@ -1,0 +1,278 @@
+
+
+
+
+
+
+
+
+
+TWO APPROACHES DIFERENTES,
+
+
+
+que podemos decidir para o nosso app...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> antes de vermos o código de verdade,
+
+
+
+é super 
+
+importante entender que 
+
+
+o 
+
+
+angular actually 
+
+
+
+nos oferece 
+
+
+
+DUAS DIFERENTES 
+
+
+APPROACHES QUNADO O ASSUNTO É HANDLE DE FORMS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> TEMOS O 'TEMPLATE-DRIVEN APPROACH':
+
+ 
+
+
+
+
+
+
+
+
+ --> É CHAMADO ASSIM PQ LÁ,
+
+ NELE,
+ VOCÊ 
+
+ SIMPLESMENTE SETTA SUA FORM, LÁ NO TEMPLATE,
+
+
+
+
+ NO CÓDIGO HTML MESMO,
+
+
+ E AÍ __ 
+
+ O 
+
+
+
+ ANGULAR_ _ 
+
+ VAI AUTOMATICAMENTE _ 
+
+ 'INFER'
+
+ A ESTRUTURA DA SUA FORM,
+
+
+
+
+
+ VAI 
+
+
+ 'INFER' OS CONTROLS QUE SUA FORM TEM,
+
+
+
+
+ QUAIS INPUTS ELA TEM,
+
+
+ E ISSO 
+
+
+
+
+ DEIXA BEM FÁCIL PARA VOCÊ 'GET STARTED QUICKLY'...
+
+
+
+
+
+
+
+
+
+('Angular infers the Form Object from the DOM')
+
+
+
+
+
+
+
+
+ ------> TAMBÉM TEMOS UM APPROACH MAIS COMPLEXO,
+
+
+ O 'REACTIVE APPROACH',
+
+
+
+
+
+
+
+
+
+
+
+REACTIVE --> 'Form is created programmatically and synchronized with the DOM'
+
+
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER QUE 
+
+
+__ VOCÊ 
+ACTUALLY__ DEFINE _ 
+
+
+A ESTRUTURA 
+
+
+
+
+
+DA FORM 
+
+
+LÁ 
+
+NO CÓDIGO TYPESCRIPT,
+
+
+
+
+E AÍ ISSO É REFLETIDO NO DOM... (é o sentido contrário, portanto)..
+
+
+
+
+
+
+--> VOCê __ TAMBÉM __ SETTA O HTML CODE ,
+
+
+
+
+E AÍ VOCÊ 
+
+
+
+CONECTA MANUALMENTE ESSE CÓDIGO HTML COM SEU CÓDIGO TYPESCRIPT QUE VOCÊ ESCREVE ANTERIORMENTE...
+
+
+
+
+
+
+
+
+
+
+(
+
+    SOA MAIS COMPLICADO DO QUE REALMENTE É...
+)
+
+
+
+
+
+
+
+--> MAS O APPROACH 'REACTIVE'
+
+
+TE DÁ 
+MAIS CONTROLE 
+
+SOBRE A FORM,
+
+
+
+VOCÊ PODE 'FINE-TUNE' TODO PEQUENO DETALHEZINHO SOBRE A FORM..
+
+
+
+
+
+
+
+
+
+
+--> nesse module daremos uma olhada em ambos approaches..
+
+
+
+
+
+
+
+
+
+
+
+
+--> VEREMOS O TEMPLATE-DRIVEN APPROACH,
+
+QUE É FINE PARA 
+MTOS USE-CASES,
+
+
+
+
+
+PARA ENTÃO PASSARMOS AO APPROACH MAIS 'REACT-DRIVEN'... 'reactive approach'..

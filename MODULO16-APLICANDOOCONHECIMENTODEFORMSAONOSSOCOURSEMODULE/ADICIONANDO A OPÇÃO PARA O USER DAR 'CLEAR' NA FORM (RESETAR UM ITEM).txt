@@ -1,0 +1,444 @@
+
+
+
+
+
+
+
+
+
+--> O BOTÃO DE CLEAR DOS INPUTS SERÁ IMPLEMENTADO DE MANEIRA BEM SIMILAR AO 'RESET DAS FORM DEPOIS DE ADICIONAR/EDITAR'...
+
+
+
+
+
+
+
+
+
+
+
+--> usaremos o method de 
+
+
+
+'form.form.reset'...
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+  onDeleteRecipe() {
+      this.formReference.form.reset();
+  }
+
+
+
+
+  -> mas é claro que tenho que fazer algo quanto ao state de 
+
+
+  'editMode'...
+
+
+
+
+
+
+
+
+
+
+
+  --> acho que a moral é sempre redefinir como 'false'...
+
+
+
+
+
+
+
+
+
+
+  TIPO ASSIM:
+
+
+
+
+
+
+
+
+  
+  onDeleteRecipe() {
+      this.formReference.form.reset();
+      this.editMode = false;
+  }
+
+
+
+
+
+
+
+
+
+
+  CERTO, FUNCIONOU...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> ASSIM CONSEGUIMOS 'CANCEL' 
+
+
+
+  o value do input na nossa form....
+
+
+
+
+
+
+
+
+
+
+
+  --> CERTO, ESSE FOI O BUTTON DE 'CLEAR'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> COMO ÚLTIMO PASSO, VAMOS QUERER ASSEGURAR QUE OS ITEMS QUE SELECIONAMOS CONSIGAM SER DELETADOS....
+
+
+
+
+
+
+
+
+
+
+
+
+  --> JÁ CONSEGUI FAZER ISSO, O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <button class="btn btn-success" type="submit" [disabled]="!localFormReference.valid" > {{editMode ? 'Edit' : 'Add'}}</button>
+          <button class="btn btn-danger" type="button" (click)="onDeleteRecipe()">Delete</button>
+          <button class="btn btn-primary" type="button" (click)="onClearRecipe()" >Clear</button>
+
+
+
+
+
+
+
+
+
+
+
+
+-->    onDeleteRecipe() {
+      this.shoppingListService.deleteIngredient(this.editedItemIndex);
+      this.formReference.form.reset();
+      this.editMode = false;
+  }
+
+
+
+
+
+
+
+
+
+  deleteIngredient(index: number) {
+    this.ingredients.splice(index, 1);
+
+
+    this.ingredientsChanged.next([...this.ingredients]);
+  }
+
+
+
+
+
+
+
+
+
+'(SHOPPING-LIST COMPONENT)':
+
+
+
+
+     this.ingredientsChangedSubscription = this.shoppingListService.ingredientsChanged.subscribe(
+      (ingredients) => {
+        this.ingredients = ingredients;
+      }
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------
+
+
+
+É CLARO QUE A LÓGICA DE 'reset das forms' e 'editMode=false' 
+
+
+
+
+
+
+SERÁ A MESMA 
+
+
+
+
+NESSE METHOD DE 'onDelete',
+
+
+por isso podemos SÓ REPETIR UM CALL DE 'onClearRecipe()' dentro de 'deleteIngredient'...
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+  onDeleteRecipe() {
+    
+    
+      this.shoppingListService.deleteIngredient(this.editedItemIndex);
+      this.onClearRecipe();
+      // this.formReference.form.reset();
+      // this.editMode = false;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> CERTO, MAS AQUI TEREMOS UM PROBLEMA... --> SE CLICAMOS EM 'DELETE AN ITEM'
+
+SEM UM ITEM ESTAR CARREGADO, VAMOS ERROR OUT...
+
+
+
+
+
+
+
+
+--> POR ISSO PRECISAMOS DEIXAR NOSSO BUTTON DE __ DELETE_ DISABLADo _ DE ALGUMA FORMA...
+
+
+
+
+
+
+
+--> podemos fazer isso por meio do access ao value de 'editMode'... (True/false)..
+
+
+
+
+
+
+
+
+
+
+->  certo, eu tentei fazer isso, e só consegui deixar o comportamento + ou -, 
+
+
+
+com a propriedade de 'pristine':
+
+
+
+
+
+          <button class="btn btn-success" type="submit" [disabled]="!localFormReference.valid" > {{editMode ? 'Edit' : 'Add'}}</button>
+          <button class="btn btn-danger" type="button" (click)="onDeleteRecipe()" [disabled]="!editMode">Delete</button>
+          <button class="btn btn-primary" type="button" (click)="onClearRecipe()" [disabled]="localFormReference.pristine">Clear</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> certo... e professor nos diz que é melhor DEIXAR O button de 'delete' completament SUMIDO/NÃO RENDERIZADO QUANDo 'editMode' estiver como true,
+
+    por isso usamos ngIf assim:
+
+
+
+
+
+
+
+
+
+
+    CONSEGUI FAZER TUDO FUNCIONAR, O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+              <button class="btn btn-success" type="submit" [disabled]="!localFormReference.valid" > {{editMode ? 'Edit' : 'Add'}}</button>
+          <button class="btn btn-danger" type="button" (click)="onDeleteRecipe()" *ngIf="editMode">Delete</button>
+          <button class="btn btn-primary" type="button" (click)="onClearRecipe()" [disabled]="!nameReference.value && !amountReference.value">Clear</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS AINDA É BIZARRA ESSA COISA DE 'NOSSA FORM está inválida'...
+
+
+
+
+
+--> MAS ISSO TUDO NOS MOSTROU COMO PODEMOS USAR O TEMPLATE-DRIVEN APPROACH,
+
+
+
+COMO PODEMOS RESETTAR A FORM,
+
+E COMO PODEMOS 
+
+
+CONSTRUIR AS COISAS DE QUE PRECISAMOS...
+
+
+
+
+
+
+
+
+
+
+---> NAS PRÓXIMAS LIÇÕES,
+
+VEREMOS A PARTE DE 
+
+'RECIPE-EDIT',
+
+
+
+QUE CRIAREMOS USANDO O REACTIVE APPROACH...

@@ -1,0 +1,29 @@
+<div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+        <!-- <form (ngSubmit)="onSubmitForm(formReference)" #formReference="ngForm" >  ESSA DIRECTIVE VAI CAPTURAR O 'TRIGGER DO SUBMIT' de sua form e então vai o utilizar para RODAR OS METHODS QUE VOCê DEFINIU LÁ NO ARQUIVO '.ts'.. -->
+        <form (ngSubmit)="onSubmitForm(formReference)" #formReference="ngForm">
+    
+          <div id="user-data">
+            <textarea
+            name="answer"
+            row="3"
+            [(ngModel)]="questionAnswer"
+            class="form-control"
+            textAreaReference="ngModel"
+            >
+
+            </textarea>
+            <p>{{questionAnswer}}</p>
+            <span class="help-block" 
+            [ngStyle]="{'color': 'red'}"
+            *ngIf="!textAreaReference.valid && textAreaReference.value">Textarea text too short, please input more than 4 characters.</span>
+            <button class="btn btn-primary" type="submit" [disabled]="!formReference.valid"> <!-- AQUI USAMOS A LOCAL REFERENEC DE '#formReference', para usar essa propriedade 'valid' de nosso object javascript de form, para aí enablar/disablar esse nosso button, dinamicamente (validation)..-->
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  

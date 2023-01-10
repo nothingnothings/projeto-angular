@@ -1,0 +1,343 @@
+
+
+
+
+
+
+
+
+
+
+
+--> UMA COISA CONFUSA QUE VOCÊ PODE 
+
+
+
+ENFRENTAR QUANDO ESTIVER APRENDENDO ANGULAR É A 
+
+'QUANTIDADE DE ANGULAR VERSIONS'
+
+
+
+que exisetm por aí...
+
+
+
+
+
+
+
+
+
+
+-> BEM, NESSA LIÇÃO,
+
+VEREMOS AS DIFERENTES VERSÕES,
+
+
+
+
+COMO SÃO CONECTADAS,
+
+
+E 
+
+
+SE ISSO SIGNIFICA QUE 
+
+O 
+
+'ANGULAR ' 
+
+
+
+MUDA TODA HORA (não muda, essa é a verdade)....
+
+
+
+
+
+
+
+
+
+
+
+
+'AngularJS' --> É O ANGULAR 1 --> era uma coisa SUPER GRANDE 
+
+há um tempo atrás...
+
+
+
+
+
+
+
+
+
+--> MAS NOSSO CURSO NÃO É SOBRE ANGUALR 1... --> ISSO PQ 
+
+
+
+
+
+EMBORA ELE TENHA SIDO GRANDE,
+
+
+
+
+
+ELE __ TAMBÉM TINHA ISSUES QUE 
+
+LEVAVAM A PERFORMANCES PIORES EM APPS MAIORES... -->  ESSA VERSÃO 
+
+1 
+
+
+DO 
+
+
+ANGULAR,
+
+
+
+
+HOJE É CHAAMDA DE 
+
+
+
+'AngularJS' --> 
+
+
+
+
+
+
+ANGULARJS --> PROVAVELMENTE ESTARÃO SE REFERENDO 
+
+AO ANGULAR1 ...
+
+
+
+
+
+
+O ANGULAR 1 É ___TOTALMENTE DIFERENTE DO ANGULAR 2 QUE ESCREVMOS HOJE..
+
+
+
+
+
+
+
+
+
+
+
+--> PQ HOUVE UM 
+
+TOTAL REWRITE 
+
+
+DA ANGULAR FRAMEWORK ENTREW 
+O 
+
+ANGULAR 1 E ANGULAR 2.... --------> O ANGULAR 2 FOI LANÇADO EM 2016,
+
+
+
+
+E FOI REESCRITO,
+
+
+
+FUNCIONA DE FORMA COMPLETAMENTE DIFERNTE DO 1,
+
+
+
+
+
+PARA CONSERTAR TODAS AS ISSUES QUE O ANGULAR 1 TINHA... ----> DESDE 
+
+
+
+
+ESSE MOMENTOM,
+
+
+DO ANGULAR 1,
+
+
+TIVEMOS OUTRAS VERSÕES
+
+DO ANGULAR...
+
+
+
+
+
+
+
+
+
+
+
+ANGULAR 3 NÃO EXISTE...
+
+
+
+
+
+
+
+
+
+
+ANGULAR 6, 7, 8 E AGORA O 9.... -> PQ 
+
+
+TEMOS TODOS ESSES 
+
+
+
+
+VERSION NUMBERS?
+
+
+
+
+
+
+ISSO NAÕ SIGNIFICA QUE 
+
+ELE FOI REESCRITO TODAS ESSAS VEZES....
+
+
+
+
+
+
+
+
+
+
+-> DESDE O ANGULAR 2 ,
+
+
+
+
+A ANGULAR TEAM _ SIMPLESMENTE __ 
+
+
+LANÇA 
+
+
+1 
+
+
+NOVA VERSÃO DO ANGULAR A CADA 6 MESES... --> cada veersão nova não é um complete rewrite,
+
+
+
+
+E A MAIOR PARTE DOS UPDATES NÃO UPDATA NADA,
+
+
+OU COISAS BEM PEQUENAS... -->
+
+
+
+
+
+angular 9 é quase a mesma coisa que o angular 2....
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR CRIOU ESSE CURSO PARA O ANGULAR 2,
+
+
+MAS QUASE NADA 
+
+MUDOU ENTRE O 2 E O 9...
+
+
+
+
+
+
+--> MT POUCA COISA MUDOU...
+
+
+
+
+
+
+
+
+
+
+-_> PEQUENAS 
+
+
+CHANGES INCREMENTAIS, BACKWARD COMPATIBLE,
+
+ENTRE AS VERSÕES...
+
+
+
+
+
+
+
+
+
+--> CERTO...
+
+
+
+
+
+
+
+
+
+-> OK... SÓ O ANGULARJS É DIFERENTE, PORTANTO..
+
+
+
+
+
+
+
+---> ANGULAR É ANGULAR,
+
+NÃO PRECISA FALAR DA 'VERSÃO',
+
+
+pq 
+
+o 
+
+2 ao 9 são a mesma coisa,
+
+
+essencialmente...
+
+
+
+
+
+
+
+
+-

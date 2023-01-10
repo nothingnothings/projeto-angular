@@ -1,0 +1,1262 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COMEÇAMOS A TRABALHAR COM O NGRX....
+
+
+
+
+
+
+
+
+
+
+--> MAS ANTES DE PROSSEGUIRMOS E CONTINUAR INTEGRANDO NOSSO APP 
+
+
+COM O NGRX,
+
+
+
+
+
+É IMPORTANTE RELEMBRAR O QUE FIZEMOS COM O NGRX,
+
+
+
+
+
+
+
+... é importante 
+
+
+seguir bem 
+
+
+essa explicação,
+
+
+para aí entender quais 
+
+
+as 
+
+
+
+
+FORÇAS E FRAQUEZAS 
+
+
+
+
+
+do ngrx... --> AÍ PODEMOS DECIDIR SE 'QUEREMOS O UTILIZAR OU NÃO'..
+
+
+
+
+
+
+
+
+
+
+--> ok... adicionamos NGRX ao nosso app,
+
+
+tudo por meio 
+
+
+
+
+
+DA ESCRITA DE 'StoreModule.forRoot({})' 
+
+
+
+
+
+
+
+
+lá em 'app.module.ts',
+
+na parte dos 
+
+
+
+IMPORTS:
+
+
+
+
+
+
+import { reducers } from '.';
+
+
+
+  imports: [
+    StoreModule.forRoot(reducers),
+
+    BrowserModule,
+
+    AppRoutingModule,
+    HttpClientModule,
+
+    SharedModule,
+  ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo... -->
+
+
+
+
+
+
+
+É CLARO QUE ESSE 'forRoot'
+
+
+
+PRECISAVA DE UM 'ActionReducerMap',
+
+
+
+
+QUE É BASICAMENTE UM OBJECT QUE DIZ AO NGRX
+
+
+''''QUAIS REDUCERS TEMOS NO NOSSO APP''' ----> ISSO PQ 
+
+
+O CONJUNTO DESSES REDUCERS 
+
+
+FFORMA 
+
+O 
+
+'STORE'
+
+
+DE NOSSO APP... -----> FAZEM O 'NGRX STORE'.. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> CERTO.... -----> 
+
+
+
+
+NÓS  ESCREVEMOS/COMPOMOS ESSE 'REDUCER COMBINADO' lá em 'index.ts',
+
+
+como observamos por este código:
+
+
+
+
+
+
+
+
+import { ActionReducerMap } from '@ngrx/store';
+import {
+  recipeBookReducer,
+  RecipeBookState,
+} from 'src/app/recipeBook/store/recipeBook.reducer';
+import {
+  shoppingListReducer,
+  ShoppingListState,
+} from './ShoppingList/store/shoppingList.reducer';
+
+export const rootReducer = {};
+
+export interface AppState {
+  //// 'AppState' é usado para DEFINIR O 'APPLICATION WIDE STATE'...
+  shoppingList: ShoppingListState;
+  recipeBook: RecipeBookState;
+}
+
+export const reducers: ActionReducerMap<AppState, any> = {
+  shoppingList: shoppingListReducer,
+  recipeBook: recipeBookReducer,
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... E A COISA IMPORTANTE SOBRE AS NOSSAS 'REDUCER FUNCTION' (Cada uma delas, uma para cada 'slice' do nosso state)
+
+
+
+
+
+,
+
+
+QUE POSSUEM CÓDIGOS COMO ESTE:
+
+
+
+
+
+
+export function shoppingListReducer(
+  state: ShoppingListState = initialState,
+
+  action: ShoppingListActions.ShoppingListActionTypes
+): ShoppingListState {
+  switch (action.type) {
+    case ShoppingListActions.ADD_INGREDIENT:
+      return addIngredient(state, action as ShoppingListActions.AddIngredient);
+      break;
+    case ShoppingListActions.ADD_INGREDIENTS:
+      return addIngredients(
+        state,
+        action as ShoppingListActions.AddIngredients
+      );
+      break;
+    case ShoppingListActions.DELETE_INGREDIENT:
+      return removeIngredient(
+        state,
+        action as ShoppingListActions.RemoveIngredient
+      );
+      break;
+    case ShoppingListActions.EDIT_INGREDIENT:
+      return editIngredient(
+        state,
+        action as ShoppingListActions.EditIngredient
+      );
+      break;
+    case ShoppingListActions.START_EDIT:
+      return startEdit(state, action as ShoppingListActions.StartEdit);
+      break;
+    case ShoppingListActions.STOP_EDIT:
+      return stopEdit(state, action as ShoppingListActions.StopEdit);
+      break;
+    default:
+      return state;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> A COISA INTERESSANTE DAS REDUCER FUNCTIONS 
+
+É QUE CADA UMA DELAS VAI CONSEGUIR AUTOMATICAMENTE, POR CONTA DO NGRX,
+
+
+
+O 'currentState' 
+
+
+
+
+
+E ENTÃO _ UMA __ ACTION_ 
+
+
+
+QUE ESSE REDUCER  VAI RECEBER (dispatch de actions) --> ISSO SIGNIFICA QUE 
+
+
+
+
+
+O REDUCER SERÁ EXECUTADO CADA VEZ QUE UMA ACTION FOR DISPATCHED...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------->  DENTRO DO REDUCER, USAMOS OU 'on()' ou UM SWITCH-CASE 
+
+
+STATEMENT,
+
+
+
+
+
+
+
+
+
+E AÍ A PARTIR DE CADA 'type' nos 'object' de 'action',
+
+
+
+
+EXECUTAMOS DIFERENTES METHODS/LÓGICAS QUE ATUAM SOBRE O NOSSO STATE...
+
+
+
+
+
+
+
+
+
+
+--> e é assim que reducers sempre funcionam:
+
+
+
+1) DATA IN 
+
+
+2) DATA OUT 
+
+
+
+
+--> não há nenhum uso de código async,
+
+é tudo SÍNCRONO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... --> ISSO QUER DIZER QUE SÓ TEMOS CÓDIGO SYNC,
+
+E QUE SEMPRE RETORNAMOS UM NOVO OBJECT,
+
+QUE ENTÃO É USADO PARA 
+
+
+SUBSTITUIR O STATE APROPRIADO A ESSA PARTE DO APP... --> E ESSE 
+
+RETURNED STATE É AQUELE 
+
+
+que o 
+
+'ngRx'
+
+VAI REGISTRAR PARA ESSE DETERMINADO 'SLICE' DO OVERALL APP STORE 
+
+que 
+
+
+ele 
+
+gerencia..
+
+
+
+
+
+
+
+--> OK... ISSO É O QUE ADICIONAMOS, ESSE REDUCER DE 
+
+
+
+'shoppingList',
+
+
+
+também um ARQUIVO DE ACTIONS DE 'shoppingList',
+
+
+
+
+
+
+
+
+
+
+E TAMBÉM UM 'index.ts'
+
+em que inserimos esse reducer...
+
+
+
+
+
+
+
+
+
+--> O ARQUIVO shoppingListActions:
+
+
+
+
+
+
+import { Action } from '@ngrx/store';
+import { Ingredient } from 'src/app/shared/ingredient.model';
+
+export const GET_INGREDIENT = 'INGREDIENT_GET';
+
+export const ADD_INGREDIENT = 'INGREDIENT_ADD';
+
+export const ADD_INGREDIENTS = 'INGREDIENTS_ADD';
+
+export const EDIT_INGREDIENT = 'INGREDIENT_EDIT';
+
+export const DELETE_INGREDIENT = 'INGREDIENT_DELETE';
+
+export const START_EDIT = 'START_EDIT';
+
+export const STOP_EDIT = 'STOP_EDIT';
+
+export class AddIngredient implements Action {
+  readonly type: string = ADD_INGREDIENT;
+
+  constructor(public payload: Ingredient) {}
+}
+
+export class AddIngredients implements Action {
+  readonly type: string = ADD_INGREDIENTS;
+
+  constructor(public payload: Ingredient[]) {}
+}
+
+export class RemoveIngredient implements Action {
+  readonly type: string = DELETE_INGREDIENT;
+
+  constructor() {}
+}
+
+export class EditIngredient implements Action {
+  readonly type: string = EDIT_INGREDIENT;
+
+  constructor(public payload: Ingredient) {}
+}
+
+export class StartEdit implements Action {
+  readonly type: string = START_EDIT;
+
+  constructor(public payload: number) {}
+}
+
+export class StopEdit implements Action {
+  readonly type: string = STOP_EDIT;
+}
+
+export type ShoppingListActionTypes =
+  | AddIngredient
+  | AddIngredients
+  | EditIngredient
+  | RemoveIngredient
+  | StartEdit
+  | StopEdit;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CADA ACTION:
+
+1) PRECISA TER 1 IDENTIFIER, COLOCADO DENTRO DE UMA PROPRIEDADE 'type' -->   readonly type: string = ADD_INGREDIENTS;
+
+
+
+
+
+
+
+
+2) PRECISA SER COLOCADO NAQUELE 'type' de 'ShoppingListActionTypes'...
+
+
+
+
+
+
+
+
+3) PODE TER, OPCIONALMENTE, UM PAYLOAD,
+
+que é definido com 
+
+
+
+'''
+
+  constructor(public payload: Ingredient) {}
+''''
+
+
+
+
+
+
+
+
+-> COMO VISTO NA ACTION DE 'add_ingredient',
+
+
+em que 
+
+usamos isso para adicionar um 
+
+
+
+ingredient ao nosso state....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... ISSO TUDO 
+
+
+
+GEROU MT TRABALHO --> TIVEMOS QUE:
+
+
+
+1) ADICIONAR O/OS REDUCERS...
+
+
+
+
+
+2) ADICIONAR/INJETAR O STORE  (tanto no 'app.module.ts' quanto nos components que o requerem, requerem seus updates) 
+
+
+
+
+
+3) ADICIONAR AS ACTIONS E ENTÃO DISPATCHEAR AS ACTIONS, DE LUGARES ESPECÍFICOS DE NOSSO APP...
+
+
+
+
+
+
+
+
+
+
+-> ISSO É MT 'OVERHEAD WORK'...
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE 
+
+
+
+
+
+__ É _ _SIMPLESMENTE _ MAIS FÁCIL USAR UM SERVICE EM VEZ DO 'NGRX'...
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE 
+
+
+USAR UM __ SERVICE_ COM SUBJECTS _ 
+
+
+
+É __ 
+
+
+
+UMA ALTERNATIVA MAIS DO QUE 'FINE' 
+
+
+
+
+AO USO DO 'NGRX'...
+
+
+
+
+
+
+
+
+
+
+--> o ngrx é tipo:
+
+
+
+
+
+A) RUIM _ DE SETTAR, UM SACO DE SETTAR ...
+
+
+
+
+
+B) MAS QUANDO ESTÁ SETTADO, É UMA MÃO NA RODA...
+
+
+
+
+
+
+
+
+
+
+--> É BEM FÁCIL ADICIONAR NOVAS ACTIONS, NOVOS 'STATE SLICES',
+
+
+
+
+
+
+PORTANTO
+
+
+
+BEM FÁCIL DE 'GROW OUR STATE' 
+
+
+
+
+ou 'manage everything in our app', com o NGRX...
+
+
+
+
+
+
+
+
+
+
+--> OU SEJA,
+
+
+O 'INITIAL SETUP' 
+
+
+
+REQUER UM MONTE DE TRABALHO,
+
+
+
+
+MAS QUANDO TUDO ISSO ESTÁ SETTADO,
+
+
+
+
+O NGRX É BEM PRÁTICO...
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+ -----> MAS SEMPRE DEPENDE DE VOCÊ 
+
+
+
+ se você 
+
+
+ quer 
+
+ usar o ngrx 
+
+
+
+ ou se 
+
+
+ vocÊ 
+
+ quer 
+ 'SÓ USAR SERVICES E NORMAL SUBJECTS'..
+
+
+
+
+
+
+
+ --> E ESSE APPROACH DOS SERVICES É 'FINE PARA A MAIOR PARTE DOS PROJECTS.'..
+
+
+
+
+
+
+
+
+
+
+
+
+ -> MAS AGORA JÁ ESTAMOS MANAGEANDO TUDO DO 'shoppingList'
+
+
+
+
+ COM A AJUDA DO NGRX... 
+
+
+
+
+
+
+
+
+ --> É POR ISSO QUE PODEMOS NOS LIVRAR DO SHOPPINGLISTSERVICE,
+
+
+
+
+
+
+
+
+
+
+ISSO SE NOS LIVRARMOS DAS PARTES QUE SOBRARAM DELE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export class ShoppingListService {
+  ingredientsChanged = new Subject<Ingredient[]>();
+
+  ingredientSelected = new Subject<number>();
+
+  private ingredients: Ingredient[] = [];  ///não será mais utilizado, pq agora nosso 'source of truth' será o STORE DO NGRx...
+
+
+
+
+
+  constructor(
+    private store: Store<fromShoppingList.AppState>  
+    ) {}
+
+
+
+
+
+
+
+  cleanupDeleteIngredients(recipeId: number) {
+    this.ingredients = this.ingredients.filter((ingredient) => {
+      return ingredient.recipeIndex !== recipeId;
+    });
+
+
+
+  getIngredient(index: number) {
+
+    console.log('TEST', 'LINE2')
+    console.log(this.ingredients);
+    return this.ingredients[index]; //código sem NGRX
+
+
+  getIngredients() {
+    return [...this.ingredients];  ///sem o NGRX 
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+-->  SÓ TEMOS QUE REMOVER TODA A LÓGICA DE NOSSOS COMPONENTS QUE USA ESSE SERVICE (lá no recipeBook, majoritariamente)..
+
+
+
+
+
+
+
+
+--> E AGORA TEMOS QUE REMOVER O INJECT DE 'shoppingListService'
+
+
+em 
+
+
+
+todos os components que o injetamos..
+
+
+
+
+
+
+
+
+
+
+
+
+ok... fiz exatamente isso...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... LIMPEI TUDO...
+
+
+
+
+
+
+
+
+agora nosso app está powered pelo NGRX, nessa parte do shoppingList..
+
+
+
+
+
+
+
+
+
+--> O PRÓXIMO PASSO É ADICIONAR NG REDUCERS 
+PARA 
+
+OUTRAS PARTES DE NOSSO APP...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+import { Action } from '@ngrx/store';
+import { Recipe } from '../recipe.model';
+
+export const ADD_RECIPE = 'ADD_RECIPE';
+
+export const DELETE_RECIPE = 'DELETE_RECIPE';
+
+export const EDIT_RECIPE = 'EDIT_RECIPE';
+
+export const SELECT_RECIPE = 'SELECT_RECIPE';
+
+export class AddRecipe implements Action {
+  type = ADD_RECIPE;
+
+  constructor(public payload: Recipe) {}
+}
+
+export class EditRecipe implements Action {
+  type = EDIT_RECIPE;
+
+  constructor(public payload: Recipe) {}
+}
+
+export class DeleteRecipe implements Action {
+  type = DELETE_RECIPE;
+
+  constructor() {}
+}
+
+export class SelectRecipe implements Action {
+  type = SELECT_RECIPE;
+
+  constructor(public payload: number) {}
+}
+
+export type RecipeBookActions =
+  | AddRecipe
+  | SelectRecipe
+  | DeleteRecipe
+  | EditRecipe;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Recipe } from '../recipe.model';
+
+import { updateObject } from 'src/app/utility/updateObject';
+
+// import * as RecipeBookActions from './recipeBookActions';
+
+import * as fromRecipeBook from './recipeBookActions';
+
+export interface RecipeBookState {
+  recipes: Recipe[];
+  selectedRecipe: Recipe | null;
+  selectedRecipeIndex: number;
+}
+
+const initialState: RecipeBookState = {
+  recipes: [],
+  selectedRecipe: null,
+  selectedRecipeIndex: -1,
+};
+
+export function recipeBookReducer(
+  state: RecipeBookState = initialState,
+  action: fromRecipeBook.RecipeBookActions
+) {
+  switch (action.type) {
+    case fromRecipeBook.ADD_RECIPE:
+      return addRecipe(state, action as fromRecipeBook.AddRecipe);
+    case fromRecipeBook.EDIT_RECIPE:
+      return editRecipe(state, action as fromRecipeBook.EditRecipe);
+    case fromRecipeBook.SELECT_RECIPE:
+      return selectRecipe(state, action as fromRecipeBook.SelectRecipe);
+    case fromRecipeBook.DELETE_RECIPE:
+      return deleteRecipe(state, action as fromRecipeBook.DeleteRecipe);
+    default:
+      return state;
+  }
+}
+
+const addRecipe = (
+  state: RecipeBookState,
+  action: fromRecipeBook.AddRecipe
+) => {
+  const updatedRecipes = [...state.recipes];
+
+  updatedRecipes.push(action.payload);
+
+  return updateObject(state, { recipes: updatedRecipes });
+};
+
+const editRecipe = (
+  state: RecipeBookState,
+  action: fromRecipeBook.EditRecipe
+) => {
+  const updatedRecipes = [...state.recipes];
+
+  updatedRecipes[state.selectedRecipeIndex] = action.payload;
+
+  return updateObject(state, {
+    recipes: updatedRecipes,
+    selectedRecipeIndex: -1,
+    selectedRecipe: null,
+  });
+};
+
+const selectRecipe = (
+  state: RecipeBookState,
+  action: fromRecipeBook.SelectRecipe
+) => {
+  return updateObject(state, {
+    selectedRecipeIndex: action.payload.index,
+    selectedRecipe: action.payload.recipe,
+  });
+};
+
+const deleteRecipe = (
+  state: RecipeBookState,
+  action: fromRecipeBook.DeleteRecipe
+) => {
+  const updatedRecipes = [...state.recipes];
+
+  updatedRecipes.splice(state.selectedRecipeIndex, 1);
+
+  return updateObject(state, {
+    recipes: updatedRecipes,
+    selectedRecipeIndex: -1,
+    selectedRecipe: null,
+  });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+acho que está + ou - certo...
+
+
+
+
+
+
+
+
+
+
+--> agora devo injetar essa parte da store nos components apropriados,
+
+e aí fazer o dispatch das actions..
+
+
+
+
+
+
+--> também devo remover completamente o service de 'recipeBookService'...
+
+
+
+
+
+
+
+
+
+
+
+
+-> e preciso de um state como 'isLoading' para mostrar que 
+
+
+
+
+ESTOU RODANDO CÓDIGO ASYNC (fetch das recipes, por exemplo)...
+
+
+
+
+
+
+
+
+
+
+--> ok, continuando a aula do professor....

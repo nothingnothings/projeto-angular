@@ -1,0 +1,1228 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+---->  APRENDEMOS UM MONTE SOBRE O 'TEMPLATE DRIVEN APPROACH'..
+
+
+
+
+
+
+
+
+
+
+
+-> ANTES DE CONCLUIR ESSA PARTE DO MÓDULO,
+
+DEVEMOS 
+
+
+VER 
+
+
+
+AQUELE 
+
+
+BUTTON DE 
+
+'SUGGEST AN USERNAME'...
+
+
+
+
+
+
+
+
+
+
+
+-> ELE AINDA NÃO FUNCIONA,
+
+
+
+MAS O PROFESSOR ADICIONOU AQUELE METHOD DE 'suggestedUserName' no nosso component,
+
+
+que possui este código:
+
+
+
+
+
+
+
+
+
+
+
+suggestedUserName() {
+    const suggestedName = 'Superuser';
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> no nosso template, possui este código:
+
+
+
+
+
+         <button class="btn btn-default" type="button">
+            Suggest an Username
+          </button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SERIA NICE SE,
+ A 
+
+ PARTIR DE UM CLICK,,
+
+
+
+ NOSSO 
+
+
+
+
+
+ input 
+
+
+ field de 
+
+
+
+
+ 'username',
+
+ QUE 
+
+ TEM ESTE CÓDIGo:
+
+
+
+
+
+
+
+            <input
+              type="text"
+              id="username"
+              class="form-control"
+              ngModel
+              placeholder="Your name"
+              name="username"
+              required
+              #nameReference="ngModel"
+              minlength="5"
+            />
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+    SERIA NICE SE, A PARTIR DO CLICK NESSE BUTTON,
+
+
+
+    ESSE 
+
+    INPUT FIELD FOSSE 'POPULATED' POR esse value 
+
+    de 
+    'suggestedName'...
+
+
+
+
+
+
+
+
+
+
+-------> ok, MAS COMO PODERÍAMOS FAZER ISSO?
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR APONTA QUE 
+
+
+'''VOCÊ PODE ESTAR PENSANDO SOBRE 
+
+SOLUÇÕES USANDO 
+
+
+TWO-WAY DATABINDING,
+
+E QUE 
+
+ELAS PROVAVELMENTE FUNCIONARIAM''',
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> E ELAS _ CERTAMENTE _ PROVAVELMENTE _ 
+
+
+
+FUNCIONARIAM...
+
+
+
+
+
+
+-> você poderia fazer TWO-WAY DATABIND 
+
+
+DESSE 
+
+
+
+elemento 'input'
+
+
+
+A UMA PROPRIEDADE 
+
+DE 
+
+
+'yourUsername'
+
+lá 
+
+em 'app.component.ts',
+
+
+
+PROPRIEDADE QUE ENTÃO VOCÊ 
+
+
+
+
+
+MANIPULARIA A PARTIR DESSE METHOD DE 'suggestedUserName',
+
+
+
+
+TIPO ASSIM, por exemplo:
+
+
+
+
+
+
+
+
+
+
+            <button (click)="suggestedUserName()"></button>
+
+
+
+            <input
+              type="text"
+              id="username"
+              class="form-control"
+              [(ngModel)]="suggestedName"
+              placeholder="Your name"
+              name="username"
+              required
+              #nameReference="ngModel"
+              minlength="5"
+            />
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+export class AppComponent {
+
+  suggestedName: String;
+
+
+  suggestedUserName() {
+    const suggestedName = 'Superuser';
+  }
+
+
+  onSubmitForm(formReference: NgForm) { ///aqui será passado o ACTUAL FORM element, com todos seus input fields e <selects> (os controls de sua form, essencialmente)..
+    console.log(formReference);
+    console.log('submitted!');
+
+    console.log('ISDIRTY?', formReference.dirty);
+
+    console.log(formReference.value);
+    console.log('ISVALID?', formReference.valid);
+    console.log('ISTOUCHED?', formReference.touched);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO PROVAVELMENTE (na verdade, 100%)
+
+
+DARIA CERTO...
+
+
+
+
+
+
+
+
+
+
+
+------> MAS O PROFESSOR APENAS QUER NOS MOSTRAR UM APPROACH DIFERENTE, QUE TAMBÉM FUNCIONA....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> LEMBRE-SE DAQUELE CÓDIGO QUE _ NOS _ DÁ UM __ ACESSO _ ALTERNATIVO 
+
+
+À NOSSA FORM...
+
+
+
+
+
+
+
+
+-> é aquele uso do decorator de '@ViewChild',
+
+que é escrito assim:
+
+
+
+
+
+
+
+
+
+@ViewChild('formReference') formReference: NgForm;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> ISSO É VISTO NAQUELE FOLDER DE 'app2-acessandonossaformpormeiode....''
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE SERIA BEM NICE SE PUDÉSSEMOS 
+
+
+
+'''SET THE VALUE''''
+
+
+
+DE ALGUMA DE NOSSAS INPUTS 
+
+
+POR MEIO 
+
+
+
+DESSA REFERÊNCIA 
+
+
+
+DO VIEW CHILD...
+
+
+
+
+
+-> E, NA VERDADE, PODEMOS PRECISAMENTE FAZER ISSO...
+
+
+
+
+
+
+
+
+ 
+
+-> 
+
+
+
+
+
+
+na verdade,
+
+
+O PROFESSOR DIZ QUE 
+
+
+
+ __ HÁ 2 METHODS QUE PODEMOS USAR:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 1o method ---> O PRIMEIRO 
+
+
+
+ É:
+
+
+
+
+
+
+ NA NOSSA 'this.formReference',
+
+
+
+
+
+ PODEMOS USAR O METHOD DE 
+
+
+ '.setValue()'...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> ESSE É UM METHOD _ QUE _ TE DEIXA_  
+
+ 'SET THE VALUE OF THE WHOLE FORM' ------>  
+
+
+
+
+
+
+
+ OU SEJA,
+
+
+ VOCÊ 
+
+ PODE, COM ISSO, ACABAR _ REDEFININDO OS VALUES DA FORM INTEIRA...
+
+
+
+
+
+
+
+
+
+
+
+ -> O CÓDIGO FICA TIPO ASSIM:
+
+
+
+
+
+
+@ViewChild('formReference') formReference: NgForm;
+
+
+
+
+
+ suggestedUserName() {
+     const suggestedName = 'Ronaldo';
+     this.formReference.setValue(
+         {
+
+         }
+     )
+ }
+
+
+
+
+
+
+
+
+
+
+ --------> OK, ISSO SIGNIFICA QUE _ PRECISAMOS __ PASSAR 
+
+
+ UM _ OBJECT JAVASCRIPT _ QUE REPRESENTE _ __
+
+
+ EXATAMENTE A NOSSA FORM....
+
+
+
+
+
+
+
+
+
+
+
+ --> COMO QUEREMOS DEIXAR TUDO DE NOSSA FORM __ INTACTO,
+
+ MENOS __ O 
+
+
+ VALUE DO INPUT DE 'username',
+
+
+
+ acho que PODEMOS USAR _ O SPREAD OPERATOR,
+
+ tipo assim:
+
+
+
+
+
+ 
+ suggestedUserName() {
+     const suggestedName = 'Ronaldo';
+
+    const formCopy = {...this.formReference}; ///críamos COPY da nossa form....
+
+
+    formCopy.username.value = suggestedName;
+
+     this.formReference.setValue(
+        formCopy
+     )
+ }
+
+
+
+
+
+
+
+
+
+--> TALVEZ ASSIM?
+
+
+
+NAÕ SEI...
+
+
+
+
+
+
+
+
+
+
+TIPO ALGO ASSIM?
+
+
+
+
+
+
+
+
+
+  suggestedUserName() {
+    const suggestedName = 'Ronaldo'
+
+    const formCopy: any = {...this.formReference}; ///críamos COPY da nossa form....
+
+
+    formCopy.username.value = suggestedName;
+
+     this.formReference.setValue(
+        formCopy
+     )
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> NÃO SEI SE ISSO FUNCIONA..
+
+
+
+
+
+
+
+
+
+
+
+
+  --> o professor falou de outra versão desse código, em que 
+
+
+
+  DEFINIMOS MANUALMENTE CADA 'VALUE'
+
+  dentro 
+
+
+  de cada input desse negócio, tipo assim:
+
+
+
+
+
+    suggestedUserName() {
+
+        cosnt suggestedName = 'Ronaldo';
+
+        this.formReference.setValue(
+            {
+                userData: {
+                    username: suggestedName,
+                    email: ''
+                },
+                secret: 'pet',
+                questionAnswer: '',
+                gender: 'male'
+            }
+        )
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> MAS A DESVANTAGEM DESSE APPROACH DO PROFESSOR É QUE 
+
+
+
+
+
+
+    ISSO VAI _ OVERWRITTAR __TODOS OS VALUES_ QUE ANTES ESTAVAM 
+
+
+    INPUTTADOS PELO USER..
+
+
+
+
+
+
+    -> esse click no button vai realmente overwrittar todos os values 
+
+
+    em nossos inputs..
+
+
+
+
+
+
+
+
+
+
+    --> esse não é o 'melhor approach',
+
+    mas 
+
+    JÁ 
+
+    NOS DÁ UMA IDEIA DE __
+
+    '''COMO VOCÊ PODE REDEFINIR OS VALUES DE TODOS OS CONTROLS DE UMA FORM''',
+
+
+
+
+    TUDO POR MEIO DESSE METHOD CONVENIENTE DE 'this.formReference.setValue({})'
+
+
+
+
+
+
+
+
+
+
+
+    --> ok... --> NESSE METHOD DE 'setValue'
+
+
+
+    NÓS PASSAMOS UMA EXATA CÓPIA DE NOSSA FORM,
+
+
+    DO VALUE 
+
+
+    DA FORm,
+
+
+    COMO UM 
+
+    __ OBJECT JAVASCRIPT,
+
+
+
+
+
+object js 
+EM QUE 
+
+VOCÊ PODE DEFINIR O VALUE DE CADA CONTROL, individualmente...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS ESSA NÃO É A MELHOR APPROACH...
+
+
+
+
+
+
+
+---> O APPROACH SUPERIOR SERIA:
+
+
+
+
+
+
+
+
+2) ACESSAR 
+
+
+
+
+
+___ O 
+
+'this.formReference',
+
+
+
+E AÍ 
+
+
+
+ACESSAR 
+
+
+O 
+
+OBJECT DE 
+
+'form',
+
+DENTRO 
+
+DELE.... --------> ISSO PQ 
+
+
+
+
+essa 
+
+'formReference'/'signupForm' OBJECT 
+
+
+
+
+É _ _KINDOF __ 
+
+
+
+O CONTAINER DE SUA FORM,
+
+ 
+ você poderia dizer...
+
+
+
+
+
+
+
+
+
+
+ ------> AÍ, DENTRO 
+
+ DESSE 
+
+
+
+ 'this.formReference.form',
+
+
+ você 
+
+ tem 
+
+
+
+
+ o
+
+
+
+ METHOD DE 
+
+ '.patchValue()'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ----------> ISSO SIGNIFICA QUE 
+
+ ESSE METHOD NÃO FICA DISPONÍVEL NA 'formReference'
+
+
+ em si,
+
+
+ E SIM _ APENAS _ 
+
+
+
+ NO 'formGroup'
+
+
+
+ WRAPPADO POR ESSE 'CONTAINER' aí...
+
+
+
+
+
+
+
+
+ -> fica tipo assim:
+
+
+
+
+
+
+     this.formReference.form.patchValue({
+
+      
+    }) ////METHOD PREFERÍVEL AO DE CIMA... --> vamos querer patchear APENAS O FIELD QUE NOS INTERESSA.... (alterar seu value para um value diferente)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> nesse method aí,
+
+
+VOCÊ 
+
+PASSA UM OBJECT JAVASCRIPT EM QUE VOC~E VAI QUERER 
+
+
+
+
+__ALTERAR_ APENAS_ CERTOS _'CONTROLS'
+
+dentro da form,
+
+E NAÕ TODOS..
+
+
+
+
+
+
+
+
+
+
+-> NO CASO,
+
+O PROFESSOR 
+
+ESCREVE 
+
+
+
+
+
+
+
+
+userData: {
+    username: suggestedName
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK, SE SALVARMOS TUDO ISSO E TESTARMOS O BUTTON,
+
+VEREMOS QUE SÓ O INPUT FIELD 
+
+
+
+de 'username'
+
+será alterado,
+
+
+E TODOS OS OUTROS CONTROLS SERÃO DEIXADOS INTACTOS..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> 'setValue'
+
+
+e 
+
+
+'patchValue',
+
+
+
+
+
+DOIS METHODS 
+
+
+
+
+BEM __ INTERESSANTES,
+
+
+
+que podemos usar 
+
+PARA ALTERAR 
+
+
+
+OS VALUES QUE TEMOS NOS NOSSOS INPUT FIELDS,
+
+EM NOSSAS FORMS...
+
+
+
+
+
+
+
+
+
+
+
+PONTOS IMPORTANTES:
+
+
+
+
+1) 'setValue' fica disponível NO FORM ___ ELEMENT _ 'cru', no 'formReference', no nosso caso.... (type de 'NgForm')..
+
+
+
+(
+    mas também é/fica disponível em 
+
+    'this.formReference.form', por alguma razão...
+
+
+)
+
+
+
+
+
+2) 'patchValue' SÓ FICA DISPONÍVEL NA 'FORM WRAPPADA PELA ngForm',
+
+
+
+ou seja,
+
+
+disponível 
+
+em 
+'formReference.form.xxx',
+
+
+que fica 
+
+
+'formReference.form.patchValue()'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SETVALUE É USADO PARA REDEFINIR SUA FORM INTEIRA..
+
+
+
+
+
+
+
+--> 'patchValue' é usado para REDEFINIR APENAS UM PEDAÇO DE SUA FORM,
+
+APENAS 1 CONTROL ESPECÍFICO....
+
+
+
+
+
+
+
+
+
+-> HELPER METHODS BEM ÚTEIS...

@@ -1,0 +1,932 @@
+
+
+ 
+
+ AGORA VAMOS APLICAR NOSSO CONHECIMENTO RECÉM ADQUIRIDO SOBRE 
+
+
+
+
+ OBSERVABLES LÁ NO NOSSO RECIPEBOOK PROJECT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ----- ATÉ AGORA,
+
+
+ NO COURSE PROJECT,
+
+ 
+
+
+ JÁ ESTAMOS USANDO 
+
+ UM PATTERN
+
+
+ QUE 
+
+
+
+
+ APRENDEMOS NA ÚLTIMA SECTION,
+
+
+
+
+
+
+ um pattern de 'event emitter'
+
+
+ QUE NÃO DEVEMOS USAR,
+
+ QUE DEVE 
+
+ SER 
+
+
+ _SUBSTITUÍDO POR UM PADRÃO QUE É SIMPLESMENTE MELHOR,
+
+
+
+ QUE É O PADRÃO 
+
+
+ DOS 
+
+
+ 'OBSERVABLES',
+
+
+
+
+ MAIS PROPRIAMENTE DOS 'SUBJECTS',
+
+
+
+ que devem ser posicionados diretamente nos nossos services..
+
+
+
+
+
+
+
+
+
+
+
+
+ --> DEVEMOS SUBSTITUIR TODOS OS NOSSOS EVENT EMITTERS
+
+
+
+
+ POR SUBJECTS...
+
+
+
+
+
+
+
+
+
+
+
+ ----> tentar fazer isso por conta própria...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> COMO O EVENT EMITTER LÁ DE 'shop-list' --> o event emitter de 'ingredientsChanged'...
+
+
+
+
+
+
+
+
+
+
+
+ --> VAMOS TROCAR ISSO, COLOCAR UM SUBJECT NO SEU LUGAR..
+
+
+
+
+
+
+
+
+ --> certo...
+
+
+
+
+
+
+
+ PRECISAMOS 
+
+ FAZER ISSO AÍ...
+
+
+
+
+
+
+
+
+
+ --> vamos focar na shoppingList..
+
+
+
+
+
+
+
+
+ --> O CÓDIGO FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+ import { 
+  
+  
+  // EventEmitter, ///AGORA VAMOS USAR UM 'SUBJECT' no lugar de 'EVENTEMITTER', pq a cross-component communication com ele é SIMPLESMENTE MELHOR..
+  
+  
+  
+  Injectable, Output } from '@angular/core';
+import { Subject } from 'rxjs';
+import { Ingredient } from './shared/ingredient.model';
+
+
+@Injectable()
+export class ShoppingListService {
+  // @Output() ingredientsChanged = new EventEmitter<Ingredient[]>();
+
+  ingredientsChanged = new Subject<Ingredient[]>();
+
+
+
+  //   ingredients: Ingredient[] = [  ///versão SEM O USO DE 'private' e 'getIngredients'...
+  private ingredients: Ingredient[] = [
+    // new Ingredient('Potato', 1, 1651882246336.7927),
+    // new Ingredient('Tomato', 3, 1651882348842.3665),
+    // new Ingredient('Banana', 5, 1651882373138.5793)
+
+    new Ingredient('Potato', 1),
+    new Ingredient('Tomato', 3),
+    new Ingredient('Banana', 5),
+  ];
+
+  getIngredients() {
+    return [...this.ingredients];
+  }
+
+  onIngredientAdd(ingredient: Ingredient) {
+    console.log('RECEIVED');
+    this.ingredients.push(ingredient);
+    // this.ingredientsChanged.emit([...this.ingredients]);  ///será captado por 'shoppingListComponent', no 'ngOnInit', por meio de 'subscribe'...
+    this.ingredientsChanged.next([...this.ingredients]);
+
+    // console.log(this.ingredients);
+  }
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> certo....
+
+
+
+
+
+
+
+
+
+
+--> E TAMBÉM TEREI DE FAZER ISSO EM 'recipeBook.service.ts',
+
+provavelmente:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import {
+  
+  
+  EventEmitter, ///TROCAMOS POR 'SUBJECT', que é simplesmente MELHOR como CROSS-COMPONENT COMMUNICATION TOOL....
+  
+  
+  Injectable, Output } from '@angular/core';
+import { Subject } from 'rxjs';
+import { Recipe } from './recipeBook/recipe.model';
+import { Ingredient } from './shared/ingredient.model';
+import { ShoppingListService } from './shoppingList.service';
+
+
+@Injectable()
+export class RecipeBookService {
+  private recipes: Recipe[] = [
+    //professor colocou como PRIVATE....
+    new Recipe(
+      'Chicken Wings',
+      'Delicious chicken wings',
+      'https://www.farmfor.com.br/wp-content/uploads/2022/02/coxinha-da-asa-superbowl.jpg',
+      [
+        new Ingredient('Potato', 1),
+        new Ingredient('Tomato', 3),
+        new Ingredient('Banana', 5),
+      ]
+    ),
+    new Recipe(
+      'Pork Chops',
+      'Tasty pork chops, check them out',
+      'http://t2.gstatic.com/licensed-image?q=tbn:ANd9GcQsRbNYL4S-Noacb27Vi-sbWzURFRjW9YN8VOScbiJ0DxTAiGxTyqlNdG1TWHKN1xWqOV4UhHaFef-fBD8-PGo',
+      [
+        new Ingredient('Potato', 1),
+        new Ingredient('Tomato', 3),
+        new Ingredient('Banana', 5),
+      ]
+    ),
+    new Recipe(
+      'Caesar Salad',
+      'Fresh and healthy salad',
+      'https://www.confeiteiradesucesso.com/wp-content/uploads/2019/06/ceasarsalad-fb.jpg',
+      [
+        new Ingredient('Potato', 1),
+        new Ingredient('Tomato', 3),
+        new Ingredient('Banana', 5),
+      ]
+    ),
+  ];
+
+  getRecipes() {
+
+    return [...this.recipes];
+  }
+
+  // @Output() recipeItemClickedEmitter = new EventEmitter<Recipe>();
+
+
+  recipeItemClickedEmitter = new Subject<Recipe>()
+
+  // loadedRecipe: Recipe;
+
+
+
+
+  recipeItemClicked(index: number) {
+
+    const recipe = this.recipes[index];
+    // this.recipeItemClickedEmitter.emit(recipe);
+
+    this.recipeItemClickedEmitter.next(recipe);
+  }
+
+
+
+  constructor(private shoppingListService: ShoppingListService) {
+
+  }
+
+  sendToShopList(ingredients: Ingredient[]) {
+    for (let ingredient of ingredients) {   ////minha versão do código --> downside: mtos events disparados, mas não há problema..
+        this.shoppingListService.onIngredientAdd(ingredient);
+        console.log('SENT');
+        }
+
+
+    ////after that, sends the user to the 'shoppingList' page...
+
+
+  }
+
+
+
+
+  
+  getRecipe(id: number) {
+    return this.recipes[id];
+}
+
+
+  editRecipe(id: number, recipe: Recipe) {
+    this.recipes[id] = recipe;
+  }
+
+
+
+}
+
+
+
+
+
+
+
+
+--------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+TODOS OS 'SUBSCRIBES' 
+
+
+
+
+
+NOS NOSSOS COMPONENTS FICAM INTACTOS,
+
+FICAM EXATAMENTE COMO ANTES:
+
+
+
+
+
+
+
+
+
+
+  ngOnInit(): void {
+    // this.ingredients = this.shoppingListService.ingredients;
+
+    // this.ingredients = this.shoppingListService.getIngredients();
+    this.ingredients = this.shoppingListService.getIngredients(); ////define o array inicial...
+
+    this.shoppingListService.ingredientsChanged.subscribe(
+      (ingredients) => {
+        this.ingredients = ingredients;
+      }
+    )
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> SÓ HÁ 1 ÚNICA COISINHA QUE TEMOS FAZER,
+
+
+  ALÉM DE 
+
+
+
+
+
+
+trocar '.emit()" por '.next()'
+
+
+
+nesses calls aí...
+
+
+
+
+
+
+
+---> BEM , O QUE TEMOS QUE FAZER É ESCREVER O HOOK DE 'onDestroy()'
+
+
+nos nossos 'page components',
+
+
+PQ NENHUM DOS OBSERVABLES/SUBJECTS VAI ''SE DESTRUIR SOZINHO''..
+
+
+
+
+
+
+
+
+
+
+
+->  NÓS NÃO P´RECISAMOS MUDAR A SINTAXE,
+MAS 
+
+
+É 
+UMA BOA PRACTICE ARMAZENAR 
+
+A 
+
+
+
+SUBSCRIPTION EM UMA PROPERTY E ENTÃO A LIMPAR QUANDO SAIRMOS DO COMPONENT..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+É POR ISSO QUE ESCREVEMOS ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+
+import { Ingredient } from '../shared/ingredient.model';
+import { ShoppingListService } from '../shoppingList.service';
+
+@Component({
+  selector: 'app-shopping-list',
+  templateUrl: './shoppingList.component.html',
+  styleUrls: ['./shoppingList.component.css'],
+})
+export class ShoppingListComponent implements OnInit, OnDestroy {
+
+  ingredients: Ingredient[] = [];
+
+  selectedIngredient: Ingredient;
+
+
+  private ingredientsChangedSubscription: Subscription;
+
+
+
+  constructor(private shoppingListService: ShoppingListService) {
+    
+   
+  }
+
+  ngOnInit(): void {
+    // this.ingredients = this.shoppingListService.ingredients;
+
+    // this.ingredients = this.shoppingListService.getIngredients();
+    this.ingredients = this.shoppingListService.getIngredients(); ////define o array inicial...
+
+   this.ingredientsChangedSubscription = this.shoppingListService.ingredientsChanged.subscribe(
+      (ingredients) => {
+        this.ingredients = ingredients;
+      }
+    )
+
+  }
+
+
+
+
+  ngOnDestroy(): void {
+
+    this.ingredientsChangedSubscription.unsubscribe();
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------------
+
+
+
+
+
+
+
+
+
+
+  ngOnDestroy(): void {
+
+    this.ingredientsChangedSubscription.unsubscribe();
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  --> certo...
+
+
+
+
+
+
+
+
+
+
+
+  -> FAZEMOS A MESMA COISA COM O 
+
+  'recipe-book'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> COMO USAMOS UM EVENT EMITTER PARA 
+
+
+  'CROSS-COMPONENT' COMMUNICATION,
+
+
+
+
+
+  E NÃO 
+
+
+
+  um use-case em que '@Output'
+
+
+  
+
+  É ESCRITO JUNTO DESSe 'event emitter'
+
+
+  DENTRO DE UM COMPONENT,
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  COMO ESTAMOS FAZENDO ISSO 
+
+
+
+
+  TENDO O OBJETIVO DE 'CROSS-COMMUNICATION ENTRE COMPONENTS, USANDO UM SERVICE',
+
+
+
+  poodemos usar um subject  no lugar desse event emitter, também...
+
+
+
+
+
+
+
+
+
+
+
+
+  --> como estamos usando ROUTING para 
+
+  selecionar 
+
+
+
+
+  nossas recipes, e não mais 'event emitter',
+
+  podemos REMOVER o 'selectedRecipe' state 
+
+
+
+
+
+
+  em SUA INTEGRALIDAED, ASSIM COMO OS CALLS DE 'event emitter'....
+
+
+
+
+
+
+
+  --------------------------------
+
+
+
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+
+
+  import { Component, OnInit, Output } from '@angular/core';
+// import { EventEmitter } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
+import { RecipeBookService } from '../recipeBook.service';
+
+// import { Recipe } from './recipe.model';
+
+@Component({
+  selector: 'app-recipe-book',
+  templateUrl: './recipe-book.component.html',
+  styleUrls: ['./recipe-book.component.css'],
+})
+export class RecipeBookComponent implements OnInit {
+
+
+
+
+  constructor(private recipeBookService: RecipeBookService, private route: ActivatedRoute) {}
+
+  ngOnInit(): void {
+
+
+
+  
+
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK, AGORA ESTAMOS USANDO:
+
+
+
+
+
+
+
+
+1) O 'SUBJECT' LÁ NA AREA DE 'SHOPLIST',
+
+
+mas 
+
+
+
+
+2) NÃO ESTAMOS USANDO EM 'recipeBOOK', PQ NÃO TEMOS NENHUM USE CASE PARA ISSO, POR ENQUANTO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> com isso, NOSSO APP FICOU BONITO, E FUNCIONA EXATAMENTE COMO ANTES,
+
+
+
+MAS AGORA 
+
+
+
+ESTAMOS USANDO 
+
+
+
+
+'SUBJECT'
+
+em vez de um EVENT EMITTER...
+
+
+
+
+
+
+
+
+
+
+
+-> AS OUTRAS PARTES QUE APRENDEMOS SOBRE OBSERVABLES,
+
+
+SOBRE COMO FUNCIONAM,
+
+
+
+O QUE FAZEM E 
+
+
+O QUE FAZEM POR TRÁS DAS CENAS,
+
+
+O FATO DE QUE 
+
+PODEM ATIRAR ERRORS 
+
+
+E QUE 
+
+
+VOCÊ PODE USAR OPERATORS COM ELES,
+
+
+
+
+
+VÃO SE TORNAR UM POUCO MAIS IMPORTANTES MAIS PARA FRENTE NO CURSO,
+
+
+MAS AGORA 
+
+
+
+
+
+
+
+ESSA COISA DE 'ROUTING PARAMS'
+
+
+
+já deve ter ficado mais clara,
+
+
+
+E COMO 
+
+PODEMOS 
+
+CONVENIENTEMENTE PASSAR DATA DE A PARA B,
+
+DA FORMA MAIS CONVENIENTE POSSÍVEL,
+
+
+TUDO POR MEIO DE SUBJECTS...

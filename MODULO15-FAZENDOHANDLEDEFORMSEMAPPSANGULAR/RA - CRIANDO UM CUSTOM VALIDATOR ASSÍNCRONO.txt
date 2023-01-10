@@ -1,0 +1,1193 @@
+
+
+
+
+
+
+
+
+
+
+--> na última lição,
+
+
+vimos como podemos 
+
+
+
+USAR 
+
+
+
+ERROR CODES 
+
+
+
+
+EM NOSSOS 
+
+
+
+VALIDATORS, 
+
+
+
+e VIMOS TAMBÉM QUE PODEMOS ADICIOANR NOSSO PRÓPRIO VALIDATOR:
+
+
+
+
+
+  /////EXEMPLO DE CUSTOM  VALIDATOR (isso só existe no approach REACTIVE)
+forbiddenNamesValidator(control: FormControl): {  //ISSO SIGNIFICA QUE ESSE METHOD DEVERÁ NOS RETORNAR UM OBJECT com formato como ''{nameIsForbidden: true}'''
+    [s: string]: boolean} | null 
+    
+    
+    {
+
+    console.log(this);
+      ///'this' dentro dessa class estará _ ERRADO__....
+
+
+      ///// '-1' é considerado como 'truthy', lembre-se disso...
+  if (this.forbiddenUsernames.indexOf(control.value) !== -1) { ////SE NOSSA VALIDATION __ FALHAR_, vamos querer retornar 'true'... (paradoxal, eu sei)...
+    return {'isForbiddenName': true }
+  }
+
+
+
+  return null;  //SE NOSSA VALIDATION __ FOR BEM SUCEDIDA, VAMOS QUERER RETORNAR 'null' ou 'nothing'... ( ou seja, VOCÊ NAÕ DEVE RETORNAR ESSE OBJECT com algo como '{'nameIsForbidden: false'}' )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ENTRETANTO,
+
+TIPICAMETNE 
+
+
+VOCê 
+
+TERÁ 
+
+DE 
+
+
+FAZER REACH OUT A UM WEBSERVER 
+
+
+PARA FAZER ESSES CHECKS.... ------> MAS O PROBLEMA, NO CASO,
+
+
+É QUE 
+
+
+ESSA SERÁ UMA ASYNC OPERATION ------> ASYNC PQ A RESPOSTA NÃO VAI CHEGAR INSTANTANEAMENTE.
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> É POR ISSO QUE TAMBÉM PRECISAMOS 
+
+
+DE ASYNC CUSTOM VALIDATORS,
+
+
+
+
+QUE 
+
+SÃO 
+
+CAPAZES DE 'WAIT'
+
+
+
+ANTES 
+DE RETORNAREM UMA 
+
+
+
+RESPOSTA 
+
+
+
+DE 
+
+'É VÁLIDO OU NÃO'..
+
+
+
+
+
+
+-> NO CASO,
+
+
+
+PODEMOS CRIAR UM ASYNC VALIDATOR DESSES 
+
+
+
+LÁ NO NOSSO 'app.component.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR CHAMA ELE DE 'forbiddenEmails'...
+
+
+
+
+
+
+
+
+
+
+
+-> a estrutura inicial será a mesma do 
+
+custom validator síncrono,
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+forbiddenEmails(control: FormControl) {
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... MAS AÍ TAMBÉM VAMOS TER QUE RETORNAR ALGO POR MEIO DESSE VALIDATOR..
+
+
+
+
+
+
+
+--> E O QUE SERÁ RETORNADO _ NÃO SERÁ UM OBJECT 
+
+
+
+
+''''com um error code e um boolean value nesse error code'',
+
+
+
+
+
+E 
+
+
+ __ SIM __ SERÁ 
+
+
+
+
+ __ UMA __ PROMISE___,
+
+
+
+
+
+ PROMISE QUE VAI 
+
+
+
+ WRAP 'QUALQUER COISA' (como um boolean)
+
+
+
+
+ OU UM _ OBSERVABLE..
+
+
+
+
+
+
+ ex:
+
+
+
+
+
+
+
+
+ 
+forbiddenEmails(control: FormControl): Promise<any> | Observable<any> { 
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+forbiddenEmails(control: FormControl): Promise<any> | Observable<any> { 
+
+
+
+
+
+
+
+
+
+
+
+
+  return 
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... SÃO 2 CONSTRUCTS QUE 
+
+
+RETORNAM 
+
+
+
+
+
+ASYNC DATA.... (esses return types) -------> E É EXATAMENTE 'WHAT THIS VALIDATOR IS ALL ABOUT'..
+
+
+
+
+
+
+
+
+
+
+---> PARA COMEÇAR, O PROFESSOR CRIA UMA NOVA PROMISE,
+
+
+
+
+
+assim:
+
+
+
+
+
+
+
+
+const promise = new Promise<any>();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> COMO TODAS AS PROMISES,
+
+
+
+ESSA PROMISE VAI RECEBER UMA FUNCTION com 'resolve' e 'reject'
+
+como argumentos..
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+forbiddenEmails(control: FormControl): Promise<any> | Observable<any> { 
+
+
+
+
+    const promise = new Promise<any>(
+        (resolve, reject) => {
+
+        }
+    )
+
+
+
+
+
+
+
+  return 
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... AÍ DENTRO DESSA FUNCTION VAMOS QUERER EXECUTAR O CLÁSSICO 
+
+
+
+'setTimeout()'..
+
+
+
+
+
+--> DEPOIS DE 1500 ms,
+
+
+VAMOS QUERER RETORNAR UMA RESPONSE,
+
+PARA SIMULAR QUE 
+
+TIVEMOS UMA ASYNC TASK,
+
+COMO O REACH OUT A UM SERVER...
+
+
+
+
+
+
+
+forbiddenEmails(control: FormControl): Promise<any> | Observable<any> { 
+
+
+
+
+    const promise = new Promise<any>(
+        (resolve, reject) => {
+
+
+                setTimeout(
+                    () => {},
+
+                    1500
+                )
+        }
+    )
+
+
+
+
+
+
+
+  return 
+
+}
+
+
+----------------------------------------------
+
+
+
+
+
+
+
+
+
+
+ok...
+
+
+
+
+ESSA ANON FUNCTION SERÁ EXECUTADA APÓS 1.5 segundos...
+
+
+
+
+
+
+
+O PROFESSOR VAI CHECAR SE 'control.value'
+
+
+
+É EQUIVALENTE A 
+
+
+
+'test@test.com'...
+
+
+
+
+
+
+
+--> SE ISSO FOR 'true',
+
+
+
+VAMOS QUERER _ 
+
+
+
+
+DIZER QUE A VALIDATION FALHOU,
+
+E ASSIM COMO NO VALIDATOR SÍNCRONO,
+
+AQUI VAMOS 
+
+
+
+RETORANR UM OBJECT COM 1 KEY-VALUE PAIR,
+
+
+
+COM ESSE 'error code'..
+
+
+
+
+
+
+
+
+
+--> tipo 
+
+
+
+resolve(
+    {
+        'isForbiddenEmail': true
+    }
+)
+
+
+
+
+
+-> no ELSE CASE,
+
+
+retornamos/resolvemos um 'null'...
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+forbiddenEmails(control: FormControl): Promise<any> | Observable<any> { 
+
+
+
+
+    const promise = new Promise<any>(
+        (resolve, reject) => {
+
+
+                setTimeout(
+                    () => {
+
+                        if (control.value === 'test@test.com') {
+                            resolve({'isForbiddenEmail': true})
+                        } else {
+                            resolve(null);
+                        }
+                    },
+
+                    1500
+                )
+        }
+    )
+
+
+
+
+
+
+
+  return promise;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NO FINAL, RETORNAMOS ESSA PROMISE, QUE É 
+
+CÓDIGO ASYNC...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK... O CÓDIGO FINAL FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+forbiddenEmails(control: FormControl): Promise<any> | Observable<any> { 
+
+
+
+    const promise = new Promise(
+      (resolve, reject) => {
+
+        setTimeout(
+          () => {
+
+              if (control.value === 'test@test.com') { //input foi INVÁLIDO. Email foi o case 'test@test.com'....
+                resolve(
+                  {
+                    'isForbiddenEmail': true
+                  }
+                )
+              } else {
+                resolve(null); ////input foi VÁLIDO. Email não foi o caso 'test@test.com'
+              }
+
+          },
+          1500
+        )
+      }
+    )
+
+
+
+
+  return promise;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> AGORA, NO CASO, A TAREFA É _ __ASSIGNAR_ 
+
+
+
+ESSE 'CUSTOM VALIDATOR ASSÍNCRONO'
+
+
+a algum de nossos 'Control'....
+
+
+
+
+
+
+
+
+---> EM VEZ DE 
+
+ 
+
+
+
+COLOCARMOS 
+
+
+ESSE VALIDATOR _ COMO __ 
+
+
+
+SEGUNDO ARGUMENTO 
+
+
+de cada 
+
+'new FormControl()',
+
+
+
+
+
+
+
+
+(o segundo argumento é reservado para _ SYNCHRONOUS  VALIDATORS, tanto builtin como custom)..
+
+
+
+
+
+
+
+
+-> VAMOS USAR O TERCEIRO ARGUMENTO,
+
+
+
+QUE É USADO PARA 
+
+'ASYNC VALIDATORS', tanto 
+
+builtin como custom...
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+
+  ngOnInit(): void {
+    this.signupForm = new FormGroup({
+      ///////this.forbiddenNamesValidator.bind(this)  --> com isso, consertamos aquele bug dos custom validators, que não se referem ao 'this' de nossa class IMEDIATAMENTE; é necessário esse bind aí...
+      'userData': new FormGroup({ ////AQUI É POSSÍVEL OBSERVAR O 'NESTING' de 1 form GROUP dentro do nosso 'OVERALL FORM GROUP' (que representa nossa FORM INTEIRA)...
+        'username': new FormControl(null, [Validators.required, this.forbiddenNamesValidator.bind(this), Validators.minLength(5)]
+        ),
+        'email': new FormControl(  null, //1o argumento
+          
+          [Validators.required, Validators.email], ///2o argumento
+          
+
+          [this.forbiddenEmails] ///3o argumento
+          
+          ),
+      }),
+      'gender': new FormControl(this.genders[0], [Validators.required]),
+      'hobbies': new FormArray([])
+    });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS ISSO ME TROUXE ERRORS...
+
+
+
+
+
+
+
+
+
+---> se você QUER USAR O 'this' 
+
+DENTRO DE SUA ASYNC FUNCTION,
+
+VOCÊ É OBRIGADO A BINDAR 'THIS'
+
+TAMBÉM
+
+
+
+nesse seu custom async validator..
+
+
+
+
+
+
+
+
+
+--. tipo assim:
+
+
+
+
+
+  ngOnInit(): void {
+    this.signupForm = new FormGroup({
+      ///////this.forbiddenNamesValidator.bind(this)  --> com isso, consertamos aquele bug dos custom validators, que não se referem ao 'this' de nossa class IMEDIATAMENTE; é necessário esse bind aí...
+      'userData': new FormGroup({ ////AQUI É POSSÍVEL OBSERVAR O 'NESTING' de 1 form GROUP dentro do nosso 'OVERALL FORM GROUP' (que representa nossa FORM INTEIRA)...
+        'username': new FormControl(null, [Validators.required, this.forbiddenNamesValidator.bind(this), Validators.minLength(5)]
+        ),
+        'email': new FormControl(  null, //1o argumento
+          
+          [Validators.required, Validators.email], ///2o argumento
+          
+
+          [this.forbiddenEmails.bind(this)] ///3o argumento
+          
+          ),
+      }),
+      'gender': new FormControl(this.genders[0], [Validators.required]),
+      'hobbies': new FormArray([])
+    });
+  }
+
+
+
+
+
+
+
+
+
+
+
+--> MAS AINDA ESTOU COM ALGUNS ERRORS...
+
+
+
+
+
+
+
+
+
+
+
+
+O ERRO É ESTE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+Type '(control: FormControl) => Promise<any> | Observable<any>' is not assignable to type 'AsyncValidatorFn'.
+  Types of parameters 'control' and 'control' are incompatible.
+    Type 'AbstractControl' is missing the following properties from type 'FormControl': defaultValue, registerOnChange, registerOnDisabledChange, _applyFormStatets(2322)
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+https://stackoverflow.com/questions/58903484/angular-8-not-assignable-to-asyncvalidatorfn
+
+
+
+
+
+
+
+
+
+
+
+
+
+A SOLUÇÃO FOI ESTE CÓDIGO:
+
+
+
+
+
+
+
+          [this.forbiddenEmails.bind(this) as AsyncValidatorFn] ///3o argumento
+
+
+
+
+
+
+
+
+
+
+
+---------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> agora testamos nossa form,
+
+testamos o control de 'email'....
+
+
+
+
+
+
+
+
+
+-->  agora QUANDO DEIXAMOS 
+
+'test@test.com',
+
+
+O NEGÓCIO FICA __ INVALID_...
+
+
+
+
+
+
+
+
+-> MAS __ SE NÓS _ TIRARMOS O 'test@test.com'
+
+
+
+e 
+
+escrevermos algo como 'test2@test.com' (ou qualquer outra string),
+
+
+
+
+VEREMOS QUE 
+O 
+
+
+
+STYLE 
+
+
+DE 
+
+'ng-pending'
+
+TERÁ SIDO 
+
+
+
+
+POSICIONADO NO NOSSO ELEMENTO... ----->  ELE FICOU 'pending'
+
+
+
+POR ALGUNS SEGUNDOS,
+
+ATÉ QUE TROCOU PARA 
+
+'ng-valid'....
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO ACONTECEU PQ ELE ESTAVA 'EVALUATING' o NOSSO INPUT (
+
+    é aquele código de 'setTimeout()'
+
+    QUE COLOCAMOS 
+
+
+    LÁ 
+
+
+    NO 
+
+    NOSSO 
+    CUSTOM VALIDATOR...
+     
+)
+
+
+
+
+
+
+
+-----> AGORA SE O PROFESSOR 
+
+DIGITA 
+
+
+'test@test.com'
+
+
+
+MAIS UMA VEZ,
+
+
+
+
+O 
+
+
+__ VALUE __ DE 'ng-valid' 
+
+
+VAI _ TROCAR PARA 'ng-pending'
+
+
+
+POr 
+
+'1.5'
+
+SEGUNDOS,
+
+
+ATÉ QUE 
+
+
+VAI 
+
+
+TROCAR NOVAMENTE PARA 'ng-invalid'..
+
+
+
+
+
+
+
+
+
+-----> OK, 
+
+
+
+É ASSIM QUE O ASYNC VALIDATOR FUNCIONA....
+
+
+
+
+
+
+
+
+
+
+--> e é claro que 
+
+ISSO FUNCIONA/FUNCIONARIA COM CÓDIGO QUE VOCÊ FAZ 'REACH OUT à WEB',
+
+
+e aí 
+
+poderíamos assignar error messages a isso,
+
+
+
+bem normal...
+
+
+
+
+
+
+
+
+
+
+--> OK, ESSES SÃO ASYNC VALIDATORS,
+
+QUE SÃO DE FÁCIL USO,
+
+QUANDO EMPREGAMOS O REACTIVE APPROACH...

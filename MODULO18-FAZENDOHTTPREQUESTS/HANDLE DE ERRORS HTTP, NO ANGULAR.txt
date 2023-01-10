@@ -1,0 +1,880 @@
+
+
+
+
+
+
+
+
+
+
+
+--> ATÉ AGORA, NOSSOS REQUESTS SEMPRE FORAM BEM SUCEDIDOS... 
+
+
+
+
+
+
+
+
+
+--> mas é claro que QUANDO INTERAGIMOS COM SERVERS,
+
+
+
+AS COISAS PODEM DAR ERRADO:
+
+
+
+
+
+
+
+1) VOCÊ PODE NÃO TER CONEXÃO DE INTERNET NO MOMENTO 
+
+
+
+
+2) VOCÊ PODE __ ESTAR ENVIANDO UM REQUEST COM DATA INCORRETA (por conta de um BUG no seu programa, ou qualquer razão que o seja )
+
+
+
+
+
+3) SEU SERVER FALHOU (talvez está offline, ou há um erro no server)
+
+
+
+
+4) VOCÊ PODE NÃO ESTAR AUTENTICAOD....
+
+
+
+
+-->  DEZENAS DE COISAS PODEM 
+
+
+
+'DAR ERRADO'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA SIMULAR UMA SITUAÇÃO EM QUE 'ALGO DÁ ERRADO',
+
+
+PODEMOS IR ATÉ O 
+
+
+
+FIREBASE 
+
+
+E AÍ 
+
+__ALTERAR_  
+
+
+
+AS RULES _DE 
+
+
+
+NOSSA 
+
+
+DATABASE- ->  PODEMOS 
+
+
+
+ALTERAR O READ E WRITE ACCESS,
+
+
+
+
+COLOCAR QUE 
+
+
+
+
+__ NEM _ TODAS AS PESSOAS PODEM FAZER 'READ/WRITE',
+
+
+
+O QUE VAI ACARRETAR 
+
+
+UM __ ERRO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE ADICIONAREMOS AUTHENTICATION MAIS TARDE NO CURSO,
+
+
+NO MODULO DE AUTHENTICATION...
+
+
+
+
+
+
+
+
+
+
+-> MAS POR ENQUANTO,
+
+
+TEMOS 'TODA AUTHENTICATION DO MUNDO' OU 'NENHUMA AUTHENTICATION' 
+
+
+
+(
+
+
+    o professor coloca 'read' como 'false',
+
+
+    PQ 
+
+
+    __AÍ SERÁ IMPOSSÍVEL 
+
+
+    FAZER FETCH DESSES POSTS...
+
+
+
+)
+
+
+
+
+
+
+
+
+------> QUANDO DEFIINIMOS ESSA OPÇÃO,
+
+
+
+
+
+E QUANDO TENTARMOS FAZER O FETCH DE POSTS,
+
+
+
+
+NOSSO APP VAI FICAR COM O 'LOADING...' infinito,
+
+
+
+
+vai realmente quebrar o app..... ------> E ESSA __ NÃO É UMA BOA USER EXPERIENCE..
+
+
+
+
+
+
+--> ISSO PQ NÓS, COMO USERS,
+
+
+NÃO 
+
+VAMOS TER IDEIA ALGUMA DE QUE HOUVE UM ERRO, 
+
+E DE QUE 
+
+ALGO FALHOU....
+
+
+
+--------------------------------
+
+
+
+
+
+
+
+
+É POR ISSO QUE PROPER ERROR HANDLING SEMPRE IMPORTA UM MONTE...
+
+
+
+
+
+
+
+
+
+
+OK, MAS COMO PODEMOS _ HANDLAR ERRORS? 
+
+
+
+
+
+
+
+
+--> HÁ DIFERENTES MANEIRAS DE FAZER ISSO...
+
+
+
+
+
+
+
+
+
+
+
+--> lá em 'onFetchPosts()',
+
+
+
+
+tanto NO APP COMPONENT quanto no SERVICE de 'posts',
+
+
+ESTAMOS COM ESSE ERRO... -> ATÉ AGORA,
+
+
+
+
+
+
+
+
+NÓS SEMPRE PASSAMOS APENAS 1 FUNCTION AO 'subscribe()'..
+
+
+
+
+
+
+
+
+--> E ESSA FUNCTION ERA _ JUSTAMENTE_ A FUNCTION QUE É DISPARADA QUANDO 
+
+
+'GANHAMOS NEW DATA/NOVA DATA É EMITTADA' (data de tipo 'SUCCESS')...
+
+
+
+
+
+
+--> ok...
+
+
+
+
+
+
+
+
+
+
+-> mas como aprendemos na seção de 'observables',
+
+
+
+VOCê PODE _ PASSAR_ MAIS ARGUMENTOS AO 'subscribe',
+
+
+
+
+
+que são os argumentos 2 e 3....
+
+
+
+
+
+
+
+
+
+
+---> O SEGUNDO ARGUMENTO É A __ FUNCTION QUE TRIGGARÁ __ SEMPRE QUE 
+
+
+
+UM _- ERROR __ FOR 'THROWN' por nosso observable...
+
+
+
+
+
+
+
+
+
+
+OU SEJA,
+
+A REPRESENTAÇÃO DISSO É ASSIM:
+
+
+
+
+
+onFetchPosts() {
+
+    this.isLoading = true;
+    this.postsHttpService.fetchPosts().subscribe(
+        (posts) => { //////PRIMEIRA FUNCTION, de 'success'...
+            this.isLoading = false;
+            this.loadedPosts = posts;
+        },
+
+        (error) => { //////SEGUNDA FUNCTION, de 'error'...
+
+        }
+    )
+}
+
+
+
+
+
+
+
+
+
+
+-> PODEMOS FAZER ALGO EM RELAÇÃO A ESSE ERROR, PARA ENTÃO PROVIDENCIAR UMA USER EXPERIENCE SUPERIOR... -- > PROVIDENCIAR 
+
+UMA USER INTERFACE MELHOR..
+
+
+
+
+
+
+---> OK.... ---> POR EXEMPLO,
+
+
+PODEMOS COMEÇAR PELO DISPLAY DE UMA MENSAGEM DE ERRO, POR MEIO DE UMA NOVA PROPRIEDADE 
+
+
+
+NO NOSSO COMPONENT DE 'app.component.ts'...
+
+
+
+
+
+
+
+
+ESCREVEMOS TIPO:
+
+
+
+
+
+
+
+export class AppComponent {
+  loadedPosts: Post[];
+
+  isLoading: boolean = false;
+
+
+  error = null;
+
+
+
+
+
+
+
+
+
+
+
+
+  ------> ESSE VALOR SERÁ INICIALMENTE DE 'NULL', É CLARO....
+
+
+
+
+
+
+
+
+
+  -> AGORA SE TIVERMOS 
+
+
+
+  UM ERRO, VAMOS QUERER DEFINIR 'error' COMO SENDO PROVAVELMENTE A MENSAGEM DE ERRO, OU ALGO DO GÊNERO...
+
+
+
+
+
+
+
+
+  -> LÁ NO NOSSO TEMPLATE, PARA REFLETIR ESSA MENSAGEM DE ERRO VISUALMENTE,
+
+
+  ESCREVEMOS:
+
+
+
+
+
+
+
+      <p *ngIf="isLoading">Loading...</p>
+    <div class="alert alert-danger" *ngIf="error">
+      <h1>An Error Occured!</h1>
+      <p>{{ error }}</p>
+    </div>
+      <ul  class="list-group" *ngIf="loadedPosts.length >= 1 && !isLoading">
+        <li *ngFor="let post of loadedPosts" class="list-group-item" >
+          <h1>{{post.title}}</h1>
+          <p>{{post.content}}</p>
+        </li>
+      </ul>
+      
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+ok... 
+CERTO... AGORA QUANDO UM ERROR ACONTECER NO NOSSO CÓDIGO, ESSE ALERT SERÁ MOSTRADO. (isso se eu codar a lógica do case de 'ERROR', lá no subscribe)...
+
+
+
+
+
+
+
+
+
+
+O ´CODIGO COMPLETO FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+
+
+
+/////OUTSOURCEADOS.
+// import { HttpClient } from '@angular/common/http'; ///DEVE SER UTILIZADO, JUNTO DE 'HttpClientModule', lá em 'angular.module.ts', PARA CONSEGUIRMOS FAZER SEND DE HTTP REQUESTS...
+
+// import { map } from 'rxjs'; ////UM DE NOSSOS OPERATORS, a ser usado em nossos OBSERVABLES (no caso, será usado NO OBSERVABLE DE 'http'...)...
+
+import { Post } from './post.model'; ///modelo de post, CRIADO POR NÓS,  a ser usado PARA ESPECIFICAR COMO É A DATA QUE SERÁ RETORNADA DE NOSSO HTTP REQUEST...
+import { PostsHttpService } from './postsHttp.service';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  loadedPosts: Post[];
+
+  isLoading: boolean = false;
+
+
+  error = null;
+
+  // loadedPosts: any[] = [];
+
+  // constructor(private http: HttpClient) {
+  // constructor(private http: HttpClient) {}
+  constructor(private httpPosts: PostsHttpService) {}
+
+  ngOnInit() {
+    // this.fetchPosts();
+
+    this.fetchPosts();
+
+    console.log(this.loadedPosts);
+  }
+
+
+  onCreatePost(formReference: NgForm) {
+
+    console.log(formReference.value);
+
+    const postData = formReference.value;
+
+    this.httpPosts.onCreatePost(postData).subscribe(
+      (responseData) => {
+
+        console.log(responseData);
+        formReference.reset(); //resetta os values de todos os fields a partir de um submit bem sucedido...
+
+        this.loadedPosts.push(
+        postData
+        )
+      }
+    )
+
+    
+  }
+
+  onClearPosts() {
+    //send HTTP request
+
+    this.httpPosts.onDeletePosts()
+    .subscribe(
+      (responseData) => {
+
+        console.log(responseData);
+        this.loadedPosts = [];
+      }
+    )
+
+   
+
+  }
+
+  fetchPosts() {
+    this.isLoading = true;
+
+    this.httpPosts.onFetchPosts().subscribe(
+      
+      
+      (postsData) => {
+      this.loadedPosts = postsData;
+      this.isLoading = false;
+    },
+
+    (error) => {  
+        this.error = error;
+    } 
+
+    
+    );
+  }
+}
+
+
+
+
+
+
+
+
+MAS ISSO AINDA NÃO ESTÁ FUNCIONANDO..
+
+
+
+
+
+
+
+
+-> NÃO ESTAVA FUNCIONANDO por causa do código frontend...
+
+
+
+
+
+
+
+
+
+- OK, ISSO REALMENTE NÃO ESTÁ FUNCIONANDo..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+era só um erro de lógica typescript....
+
+
+
+
+
+
+
+ficou ASSIM:
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-md-6 col-md-offset-3">
+      <form (ngSubmit)="onCreatePost(postForm)" #postForm="ngForm">
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input
+            type="text"
+            class="form-control"
+            id="title"
+            required
+            ngModel
+            name="title"
+          />
+        </div>
+        <div class="form-group">
+          <label for="content">Content</label>
+          <textarea
+            type="text"
+            class="form-control"
+            id="content"
+            required
+            ngModel
+            name="content"
+          ></textarea>
+        </div>
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="!postForm.valid"
+        >
+          Send Post
+        </button>
+      </form>
+    </div>
+  </div>
+  <hr />
+  <div class="row">
+    <div class="col-xs-12 col-md-6 col-md-offset-3">
+      <button class="btn btn-primary" type="button" (click)="fetchPosts()">
+        Fetch Posts
+      </button>
+      |
+      <button
+        class="btn btn-danger"
+        [disabled]="loadedPosts.length < 1"
+        (click)="onClearPosts()"
+      >
+        Clear Posts
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-md-6 col-md-offset-3" *ngIf="loadedPosts.length < 1 && !isLoading && !error">
+      <p>No posts available!</p>
+    </div>
+    <div class="alert alert-danger" *ngIf="error">
+      <h1>An Error Occured!</h1>
+      <p>{{ error }}</p>
+    </div>
+    <p *ngIf="isLoading && !error">Loading...</p>
+      <ul  class="list-group" *ngIf="loadedPosts.length >= 1 && !isLoading">
+        <li *ngFor="let post of loadedPosts" class="list-group-item" >
+          <h1>{{post.title}}</h1>
+          <p>{{post.content}}</p>
+        </li>
+      </ul>
+      
+  </div>
+</div>
+
+
+
+
+
+
+
+----------------------------
+
+
+
+
+
+
+
+ <div class="col-xs-12 col-md-6 col-md-offset-3" *ngIf="loadedPosts.length < 1 && !isLoading && !error">
+
+
+
+
+ --> SÓ QUEREMOS MOSTRAR 'NO POSTS AVAILABLE' 
+
+
+ se 
+
+ NÃO TIVERMOS NENHUM POST,
+
+ SE NÃO ESTIVER CARREGANDO,
+
+ E SE NÃO TIVERMOS UM ERROR....
+
+
+
+
+
+
+-> só a mensagem de error não é mt útil...
+
+
+
+
+
+
+
+
+-> MAS VOCê PODE HANDLAR ERRORS POR CONTA PRÓPRIA...
+
+
+
+
+
+
+--> basta console.loggar o object de 'error' para ver outros detalhes sobre o error..
+
+
+
+
+
+
+
+
+
+
+
+-> ESSE ERROR É UMA 'ERROR RESPONSE' CUSTOMIZADA, enviada pelo 
+
+
+FIREBASE EM SI..
+
+
+
+
+
+
+
+--> MAS O ANGULAR SEMPRE VAI TE DAR UM 'OBJECT DE ERROR',
+
+e dentro 
+
+desse object SEMPRE TEREMOS ESSA KEY DE 'error' --> ENTRETANTO,
+
+
+
+O QUE EXISTE/EXISTIRÁ 
+
+DENTRO 
+
+DESSE 
+
+
+
+OBJECT 
+
+
+
+DEPENDE DA API QUE VOCÊ USA/USARÁ --> a própria api que vocÊ usa 
+
+
+
+pode acabar settando outra data nessa propriedae.... ----> 
+
+
+
+VOCÊ TEM QUE SABERR O QUE UMA API ENVIA NO CASO DE UMA MENSAGEM DE SUCESSO,
+
+E O QUE ENVIA EM UM CASO DE ERROR...
+
+
+
+
+
+
+
+--> DENTRO DE NOSSO OBJECT DE 'ERROR',
+
+
+TEMOS OS HEADERS,
+
+
+o status code, que e´MT ÚTIL PARA FAZER SHOW DE MESSAGES 
+
+
+ÚTEIS DE ERRO...
+
+
+
+
+
+
+--> ASSIM VOCÊ CONSEGUE HANDLAR ERRORS DE FORMA ADEQUADA,
+
+NO SEU APP...
+
+
+
+
+
+
+----> essa é APENAS UMA DAS MANEIRAS DE FAZER HANDLE DE ERRORS,
+
+
+MAS NA PRÓXIMA AULA O PROFESSOR VAI MOSTRAR OUTRA MANEIRA, Q TVZ SEJA ÚTIL PARA O HANDLE DE OUTROS CASES...

@@ -1,0 +1,1955 @@
+
+
+
+
+
+
+
+
+
+
+
+
+---> CERTO... A PAGE QUE TEMOS, AGORA,
+
+É UMA PAGE VAZIA, RÉPLICA DO CÓDIGO QUE TÍNHAMOS NO MÓDULO 1...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-_> bem... a estrutura do projeto está assim:
+
+
+
+
+
+
+
+
+<vs code (pasta)
+
+
+
+
+> node_modules (pasta) 
+
+
+
+
+>src (pasta) 
+
+
+
+
+.browserlistrc 
+
+
+
+.editorconfig 
+
+
+
+.gitignore 
+
+
+angular.json 
+
+
+
+karma.conf.js 
+
+
+package-lock.json 
+
+
+
+package.json 
+
+
+README.md 
+
+
+tsconfig.app.json 
+tsconfig.json
+tsconfig.spec.json....
+
+
+
+
+
+
+
+
+todas coisas bem familiares...
+
+
+
+
+
+
+
+
+
+
+
+
+-> ENTRAMOS NO LINK 'localhost:4200'... 
+
+
+
+
+
+
+
+--> nossa página está em branco, por enquanto...
+
+
+
+
+
+
+
+
+-> PODEMOS ALTERAR O CONTEÚDO INICIAL DESSA PÁGINA, BASTA IR ATÉ O ARQUIVO 
+
+
+
+'app.component.html'
+
+
+e escrever o 
+
+
+
+código html que quisermos...
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+<h3>I'm in the AppComponent!</h3>
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE O STYLING PADRÃO DO BOOTSTRAP VAI SER APLICADO 
+
+SOBRE ESSA TAG,
+
+PQ 
+
+
+NÓS O ADICIONAMOS AO FINAL DA ÚLTIMA SECTION, também...
+
+
+
+
+
+
+
+
+
+---> APESAR DE PARECER MEIO ÓBVIO QUE 
+
+
+
+
+CONSIGAMOS VER ESSA TAG ALI,
+
+
+ainda 
+
+
+
+é meio estranho que o browser/nosso server 
+
+
+SABE 
+
+
+
+
+
+QUE _ DEVE __ SERVIR O CONTEÚDO NO INTERIOR DE 
+
+'app.component.html'...
+
+
+
+
+
+
+
+
+
+---> VOCÊ PODERIA ARGUMENTAR QUE 
+
+
+'BEM, ESSE É O ÚNICO COMPONENT QUE TEMOS ATÉ AGORA, ´é por isso' '... --> E MAIS TARDE 
+
+DAREMOS 
+
+UMA OLAHDA NISSO, NO COMPONENT,
+
+
+
+
+MAS __ 
+
+ESSA NA VERDADE 
+
+
+NÃO É A RAZÃO de 
+
+
+
+
+esse conteúdo ter sido servido... --> ACTUALLY,
+
+
+
+
+
+
+
+
+
+
+
+
+o arquivo 
+
+
+
+'app.component.html'
+
+
+
+
+___NÃO É _ O ARQUIVO SERVIDO PELO SERVER... ----> EM VEZ DISSO,
+
+
+
+
+
+É O __ INDEX_.HTML QUE É SERVIDO PELO SERVER... ----> ok...
+
+
+
+
+
+
+
+
+
+
+
+1) O ESQUELETO 'index.html' é servido pelo server rodando o angular...
+
+
+
+
+
+
+
+
+
+2) DEVEMOS NOS LEMBRAR QUE 
+
+
+
+'ANGULAR É UM FRAMEWORK QUE TE PERMITE CRIAR SINGLE PAGE APPLICATIONS'...
+
+
+
+
+
+
+
+
+
+3) PORTANTO, 'index.html' É A PAGE EM QUESTÃO QUE _ACABA_ CARREGADA/servida pelo server...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SE OBSERVARMOS O ARQUIVO 'index.html',
+
+vemos isto:
+
+
+
+
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Projetobasico</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+
+
+<body>
+  <app-root>Loading...</app-root>
+</body>
+
+
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OU SEJA, É UM ARQUIVO HTML COMUM,
+
+
+
+
+
+DEFINIMOS o 'title' que vemos na TAB do browser,
+
+
+
+
+
+
+
+E TAMBÉM 
+
+
+
+
+TEMOS O BODY... -> 
+MAS O BODY É INTERESSANTE.... -> NÓS 
+
+
+
+TEMOS AQUELE 
+
+
+
+
+NEGÓCIo 
+
+
+'<app-root>Loading</app-root>''''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ESSE É UM DOS LOCAIS QUE DEFINIMOS COMO 'SLOTS' de inserção 
+
+
+
+de nosso conteúdo dinÂmico do angular,
+
+como visto em 
+
+
+'app.component.ts':
+
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'projetobasico';
+}
+
+
+----------------------
+
+
+
+
+
+
+
+certo..
+
+
+
+
+
+
+
+
+
+
+eu ACHO que é assim:
+
+
+
+
+
+
+1) quando a page é carregada 'no início', é mostrado aquele 'Loading...'
+
+
+
+
+
+2) ASSIM QUE A PAGE É CARREGADA E O RESTO DO CÓDIGO (o código de app.component.ts, que 
+é o código type/javascript que 
+
+
+acaba sendo executado APÓS O LOAD DO 'esqueleto html' inicial)
+
+
+É CARREGADO,
+
+
+
+ESSE 'Loading', esse value aí,
+
+
+é 
+
+
+
+TROCADO,  É SUBSTITUÍDA ESSA TAG INTEIRA 
+
+
+
+
+
+POR AQUELA TAG QUE VOCê CODOU EM 
+
+'app.component.html'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> é por isso que aqui temos o funcionamento de todos os elementos do angular,
+
+de forma bem detalhada:
+
+
+
+
+
+
+
+1) ARQUIVO HTML, index.html, com o conteúdo estático (geralmente vai ter 'Loading' escrito em algumas tags, etC)...
+
+
+
+
+
+
+2) O ARQUIVO 'xxxx.component.html' ----> ESSE É O CONTEÚDO QUE VAI SER REALMENTE RENDERIZADO NA TELA, NOS LOCAIS DO DOM/index.html QUE VOCê DISCRIMINOU EM 'app.component.ts' (ou qualquer nome similar)...
+
+
+
+
+
+
+3) O ARQUIVO 'app.component.ts' -----> ESSE É O CÓDIGO QUE 
+
+
+
+__ É ESSENCIAL:
+
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+
+
+
+
+
+
+
+
+
+
+
+---> como você pode ver,
+
+ele:
+
+
+
+
+A) ESCOLHE O LOCAL EM QUE SERÁ INSERIDO ESSE COMPONENT EM SI... ('selector')
+
+
+
+
+
+
+2) A __ TEMPLATEURL ('.html') 
+QUE DEVERÁ SER USADA 
+
+
+NESSE SLOT de inserção, o elemento/componennt que será inserido no lugar de coisas como '<app-root>Loading...</app-root>'....
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... HORA DE TESTAR ISSO...
+
+
+
+
+
+
+
+
+
+
+
+
+OK.. FOI EXATAMENTE O QUE EU HAVIA PENSADO....
+
+
+
+
+
+
+
+
+
+
+----> OK... --> NÓS VEMOS 
+
+
+
+'loading...'
+
+
+
+
+INICIALMENTE..
+
+
+
+
+
+
+
+
+
+--> PROFESSOR EXPLICA QUE 'app-root' 
+
+
+
+NÃO É UM DEFAULT HTML ELEMENT/TAG.... 
+
+
+
+
+
+(
+
+
+
+    OPA, REALMENTE, AGORA VI A DIFERENÇA...
+
+
+
+
+
+
+
+    NO REACT, O QUE TEMOS É COISAS COMO 
+
+    <div id="my-app"/>'
+
+
+
+JÁ NO ANGULAR,
+ 
+ O 
+
+ 'ELEMENTO INTEIRO'
+
+ é algo customizado,
+
+
+ e é a coisa em que vamos inserir O CONTEÚDO DINÂMICO DA PÁGINA...
+
+
+
+
+
+)
+
+
+
+
+
+-----> EM VEZ DISSO,
+
+
+
+
+
+ELE É 'UM DE NOSSOS COMPONENTS ANGULAR'... -----> NÓS LOGO _VEREMOS __
+
+
+O PROCESSO 
+
+
+DE CRIAÇAÕ DE NOSSOS PRÓPRIOS COMPONENTS.... ----> MAS O QUE INTERESSA 
+
+
+
+
+
+
+
+é que 
+
+
+o 
+
+'cli'
+
+
+
+
+CRIOU AUTOMATICAMENTE UM 
+
+COMPONENT PARA NÓS... ---> O COMPONENT QUE O ANGULAR CLI 
+
+
+
+SEMPRE NOS DÁ 
+É 
+
+
+O 
+
+'ROOT COMPONENT DE NOSSO APP',
+
+
+
+
+
+ou seja,
+
+
+O COMPONENT QUE 
+
+VAI 
+
+'LIGAR'
+
+
+
+TODO O NOSSO APLICATIVO, NO FINAL DAS CONTAS....
+
+
+
+
+
+
+
+
+
+(
+
+
+
+
+    ISSO QUER DIZER QUE __ TODOS _ OS ARQUIVOS DENTRO DO FOLDER DE 
+
+    'app' 
+
+
+    QUE _ POSSUEM 'component' NO SEU NOME 
+
+    (
+
+        app.component.css 
+        app.component.html 
+        app.component.spec.ts
+        app.component.ts
+    )
+
+
+
+
+
+    _____ POSSUEM RELAÇAÕ DIRETA COM ESSE COMPONENT...
+)
+
+
+
+
+
+
+
+
+
+---> OK... --> o professor vai nos explicar melhor essas mtas files de 'component' DENTRO DO 
+
+
+
+FOLDER 'app' EM UMA LIÇÃO FUTURA,
+
+
+
+
+
+
+
+
+MAS POR ENQUANTO 
+
+
+
+
+
+TEMOS QUE DAR UMA OLHADA NO CONTEÚDO DO ARQUIVO 
+
+'app.component.ts'... ------>VOCê OBSERVARÁ/CONSTATARÁ 
+
+
+
+
+
+que 
+
+ 
+
+lá TEMOS UM DECORATOR DE 
+
+'@Component'
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'projetobasico';
+}
+
+
+
+
+
+
+
+
+
+-----> <div id="app-root"/> (rEACT) VS 
+
+
+<app-root></app-root> (ANGULAR)
+
+
+
+
+
+
+
+
+
+
+-> ESSE COMPONENT PARECE SER IMPORTANTE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS O MAIS INTERESSANTE NESSE CÓDIGO É AQUELA PROPRIEDADE 'selector',
+
+
+QUE  É UMA KEY/propriedade 
+
+
+QUE _ VAI 
+
+
+
+
+'ASSIGN A STRING AS A VALUE',
+
+
+E ESSA 
+
+STRING SEGURA O 'app-root'...
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+@component(
+    {
+        selector: 'app-root',
+        ...
+        ...
+    }
+)
+
+
+
+
+
+
+
+
+---> 
+
+
+
+
+
+
+--> OK... ENTÃO O QUE INTERESSA É:
+
+
+
+
+1) O WRITE NO HTML QUE ESTARÁ SENDO SERVIDO, talvez mostrar uma 
+
+mensagem de erro..
+
+
+
+
+
+
+
+2) O CONTEÚDO NO 'app.component.html' ( ou qualquer outro component),
+
+pq é isso que 
+
+
+SERÁ SERVIDO 
+
+
+no ELEMENTO que vocÊ especificou em 'selector: ...' 
+
+e que 
+
+VOCÊ ESCREVEU NO DOm (ex: ''<app-root>''...)
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK...  
+
+
+
+
+
+
+CONTINUANDO:
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'projetobasico';
+}
+
+
+
+
+
+
+
+
+
+
+
+
+'templateUrl' ----> É O TEMPLATE/HTML QUE FOI INSERIDO 
+
+
+
+NESSE SLOT de '<app-root>'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> O PROFESSOR AINDA NOS MOSTRARÁ:]
+
+
+
+
+1) COMO CRIAR COMPONENTS 
+
+
+
+
+
+
+
+
+
+2) COMO CONFIGURAR COMPONENTS...
+
+
+
+
+
+
+
+--> mas é sempre isso que acontecerá no STARTUP,
+
+é o 
+
+
+
+LOAD DO INDEX.HTML, E AÍ O LOAD DOS COMPONENTS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS A INFORMAÇÃO QUE ESTÁ FALTANDO É:
+
+
+
+
+
+
+
+
+1) COMO _ O ANGULAR É _'TRIGGADO'? 
+COMO 
+
+ELE 
+
+
+É 
+
+'KICKED OFF' 
+
+
+PARA ACTUALLY 'run over our body'
+
+
+de nosso arquivo 'index.html'?
+
+
+
+
+
+
+
+
+
+------> A RESPOSTA É:
+
+
+
+
+NO INDEX.HTML FINAL,
+
+
+
+QUE ACABA SENDO SERVIDO NO BROWSER 
+
+
+(
+
+
+    e podemos 
+
+    INSPECIONAR ISSO, NO PAGE SOURCE 
+
+    de nosso website... 
+),
+
+
+
+
+
+
+
+ENCONTRAMOS 
+
+
+_ UM MONTE_ DE SCRIPTS, TODOS ELES __ ADICIONADOS PELO CLI __ AUTOMATICAMENTE....
+
+
+
+
+
+
+ex:
+
+
+<script src="runtime.js" type="module">
+</script><script src="polyfills.js" type="module"></script><script src="styles.js" defer>
+</script><script src="vendor.js" type="module"></script><script src="main.js" type="module">
+</script></body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ESSES SCRIPTS NÃO SÃO ENCONTRADOS NO NOSSO 'index.html' no nosso file system,
+
+MAS SEMPRE QUE 
+
+ESSE PROCESSO 'ng serve' 
+
+
+
+É _ USADO, 
+
+
+SEMPRE QUE ELE 
+
+'REBUILDS OUR PROJECT',
+
+
+
+ELE ACABA/ACABARÁ 
+
+
+CRIANDO 
+
+
+
+'JAVASCRIPT SCRIPT BUNDLES',
+
+
+
+
+E AÍ AUTOMATICAMENTE ADICIONARÁ 
+
+
+
+
+OS __ IMPORTS CORRETOS NO ARQUIVO INDEX.HTML... -----> é um pouco de conveniência a nós...
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE 
+
+
+NO ARQUIVO HTML FINAL,
+
+
+
+ESSES SCRIPT IMPORTS ESTARÃO PRESENTES,
+
+
+E ESSES 
+SCRIPT IMPORTS __ CONTERÃO __ NOSSO 
+
+
+
+
+
+_ PRÓPRIO CÓDIGO__ TAMBÉM... -----> ESSES 
+
+
+
+
+
+
+
+
+
+
+_ SCRIPT_ FILES__ SÃO ENTÃO EXECUTADOS...
+
+
+
+
+
+
+
+------> >>> NA VERDADE,
+
+
+
+ESSES ARQUIVOS SCRIPT __ 
+
+
+
+
+SÃO _ A PRIMEIRA COISA QUE É 
+
+
+EXECUTADA NO FLOW DE NOSSOS PROJETOS ANGULAR,
+
+
+E ISSO É ALGO QUE VOCÊ TEM QUE TER EM MENTE:
+
+
+
+
+
+
+
+
+
+
+
+
+o código ESCRITO LÁ EM 'main.ts'
+
+
+IMPORTA.... (main.ts é um arquivo que fica no mesmo nível de 'index.html')...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'main.ts'-->  O CÓDIGO QUE ESTÁ EM 'main.ts'
+
+
+
+
+__ É O PRIMEIRO CODE A SER EXECUTADO NO 
+
+
+
+NOSSO PROJETO ANGULAR...
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO DE MAIN É:
+
+
+
+
+
+
+
+
+import { enableProdMode } from '@angular/core';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+
+import { AppModule } from './app/app.module';
+import { environment } from './environments/environment';
+
+if (environment.production) {
+  enableProdMode();
+}
+
+platformBrowserDynamic().bootstrapModule(AppModule)
+  .catch(err => console.error(err));
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> AQUI VEMOS:
+
+
+
+
+
+
+
+1) UM PUNHADO DE IMPORTS 
+
+
+
+2) AÍ É CHECADO SE ESTAMOS SEM 'production mode' ou não... (
+
+    quando você está em production mode, algumas MENSAGNES DE ERRO SÃO DESLIGADAS...
+)
+
+
+
+
+
+
+
+
+
+3) MAS A __ PARTE__ MAIS IMPORTANTE DO CÓDIGO É A ÚLTIMA LINHA,
+
+
+a 
+
+
+
+platformBrowserDynamic().bootstrapModule(AppModule)
+  .catch(err => console.error(err));
+
+
+
+
+
+
+
+
+
+
+
+
+----> esse 'boostrap'
+
+
+BASICAMENTE _ _ 
+
+INICIA 
+
+
+___ NOSSO APP ANGULAR 
+
+
+
+
+
+
+
+
+
+
+POR MEIO DO PASS DE 
+
+
+
+
+'AppModule' --------> APP MODULE É UM MÓDULO, 
+
+
+UMA 
+
+DAS COISAS ESSENCIAIS DO ANGULAR...
+
+
+
+
+
+
+
+
+
+--> o AppModule que é passado aqui 
+
+
+
+
+
+
+É _ IMPORTADO _ LÁ DO ARQUIVO 
+
+
+'app.module.ts' NO FOLDER DE 'app'...
+
+
+
+
+
+
+
+
+-> E O CÓDIGO DE 'app.module.ts',
+
+
+CONFORME JÁ HAVÍAMOS CONFERIDO,
+
+É ASSIM:
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> OK... SE EXAMINAMOS ESSE ARQUIVO 'app.module.ts',
+
+
+
+
+
+
+
+
+CONSTATAMOS QUE, SIMILARMENTE ao 'app.component.html',
+
+
+
+
+
+
+__ TAMBÉM TEMOS __ ESSE NEGÓCIO ESTRANHO DE 
+
+
+
+'@'  
+
+
+(é um decorator)...
+
+
+
+
+
+
+
+
+
+
+-> MAS A PARTE MAIS IMPORTANTE DE 
+
+'app.module.ts' 
+
+
+É O TRECHO 
+
+
+
+
+
+
+''  bootstrap: [AppComponent]''' ,
+
+
+
+
+QUE __ BASICAMENTE_ É UMA LIST/LISTS _ TODOS OS COMPONENTS 
+
+
+QUE 
+DEVERÃO 
+
+SER 
+'KNOWN' 
+
+
+AO _ ANGULAR__ NO MOMENTO 
+
+
+
+EM QUE 
+
+
+
+
+o angular   _ANALISA__ NOSSO ARQUIVO index.html... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK...
+
+
+
+
+
+
+
+
+RESUMINDO, O FLOW É ESTE:
+
+
+
+
+
+
+
+
+
+
+1) O INDEX.HTML É CARREGADO _ E LIDO_....
+
+
+
+
+
+
+
+2) AO SER LIDO O INDEX.HTML,
+
+
+
+É _ EXECUTADO INICIALMENTE (antes de todo o resto) O CÓDIGO DE 'main.ts'....
+
+
+
+
+
+import { enableProdMode } from '@angular/core';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+
+import { AppModule } from './app/app.module';
+import { environment } from './environments/environment';
+
+if (environment.production) {
+  enableProdMode();
+}
+
+platformBrowserDynamic().bootstrapModule(AppModule)
+  .catch(err => console.error(err));
+
+
+
+
+
+
+
+3) ESSA LINHA '.bootstrapModule()'  __ FAZ O 'BOOTSTRAP/START' 
+
+
+DE UM_ APP ANGULAR,
+
+
+
+
+
+
+
+
+4) MAS ESSA LINHA __ EXIGE O PASS DE 1 
+
+'MODULE' 
+
+
+
+COMO ARGUMENTO... (e passamos o module escrito em 'app.module.ts')
+
+
+
+
+
+
+
+
+
+
+
+
+5) DENTRO DESSE MODULE (app.module.ts) 
+QUE FOI PASSADO 
+
+
+COMO __PARÂMETRO AO CÓDIGO 'STARTER' de nosso app,
+
+
+
+
+NÓS DIZEMOS __ QUE __ DEVE _ SER USADO 
+
+O 
+
+
+COMPONENT de 'App',
+
+
+que é compreendido 
+
+
+
+por 
+
+
+'app.component.css',
+
+'app.component.html'
+
+
+e 
+
+
+'app.component.ts'....
+
+
+
+
+
+
+
+----> E ISSO TUDO É EXPRESSADO NA LINHA 
+
+
+
+
+''   bootstrap: [AppComponent] '' ---> e isso acaba importando a CLASS/OBJECT lá do arquivo 'app.component.ts' (e não 'app.component.html'...)
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppComponent } from './app.component';
+
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> NESSA LINHA 
+
+de 
+
+''bootstrap: [AppComponent]'',
+
+
+
+ESTAMOS BASICAMENTE DIZENDO 'HEY, há esse component AppComponent '
+
+QUE VOCê DEVE RECONHECER QUANDO VOCE~TENTAR SE EXECUTAR..
+
+
+
+
+
+
+
+
+
+
+
+6) DECLARADO ESSE 'AppComponent',
+
+
+
+
+
+O ANGULAR VAI ANALISAR SEU ARQUIVO,
+
+ 
+
+
+
+
+LER E __CONSIDERAR_ O SETUP QUE DEFINIMOS LÁ EM 
+
+'app.component.ts' 
+
+
+(
+
+
+
+    OU SEJA,
+
+
+
+    ele vai reconhecer o selector de 'app-root'...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA, COM ISSO,
+
+COM ESSA SÉRIE DE ARQUIVOS,
+
+
+
+O 
+
+ANGULAR FICA CAPAZ DE 
+
+HJANDLAR APP-ROOt 
+
+
+
+NO INDEX.HTML.. ->   MAS A ÚNICA COISA QUE PODEREMOS EDITAR/HANDLAR É ISTO:
+
+
+
+
+
+
+
+  bootstrap: [AppComponent]
+
+
+
+
+
+
+
+
+
+
+
+  --. SÓ PDEMOS ALTERAR ESSE ARQUIVO AÍ...
+
+
+
+
+
+
+
+
+
+
+
+
+  ---. OK.. AGORA O ANGULAR É CAPAZ DE  HANDALR 'app-root'
+
+  NO ARQUIVO INDEX.HTML...
+
+
+
+
+
+
+
+
+
+  -> E AGORA ELE SABE '''certo, esse é o selector que eu conheço; eu conheço ele pq 
+
+  VOCÊ ME DISSE QUE EU TENHO QUE SABER DELE,
+
+  PQ 
+
+
+  ESSE COMPONENT FOI listado NO ARRAY __ DE BOOSTRAP (Do angular, no arquivo 'app.module.ts'),'''
+
+  
+
+
+
+
+
+
+
+
+
+----> ou seja, o professor agora SABE/o angular SABE  
+
+QUE ESSE CÓDIGO HTML
+
+DEVE 
+
+ SER ADICIONADO AO 'app-root'....
+
+
+
+
+
+
+ ->
+
+
+ OK.... TMEOS CÓDIGO HTML, UMA TEMPALTE E UM ARQUIVO H3....
+
+
+
+
+
+
+
+ ----> ok... -> vimos um monte de informação, acerca de como os componentes funcionam...
+
+
+
+
+
+
+
+ DEVEMOS VER MAIS COISAS,
+
+ VER COMO COMPONENTS REALMENTE FUNCIONAm....
+
+
+
+
+
+
+
+
+
+
+ --> VAMOS VER O QUE FAZEM OS COMPONENTS, COMO SÃO CRIADOS, E O QUE ESSE 
+
+
+ ARQUIVO DE 
+
+ 'app.module.ts'
+
+ FAZ, EM DETALHES...

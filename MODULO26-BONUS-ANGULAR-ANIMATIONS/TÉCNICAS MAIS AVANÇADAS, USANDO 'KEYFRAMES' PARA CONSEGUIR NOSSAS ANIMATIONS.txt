@@ -1,0 +1,2065 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+VIMOS MUITAS COISAS, SIM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+import { style, trigger } from '@angular/animations'; ///ESSENCIAL.
+
+import { state } from '@angular/animations'; //também essencial.  --> é um method TIPICAMENTE USADO NO TRABALHO COM ANIMATIONS...
+
+
+import { transition } from '@angular/animations';  ///TAMBÉM É ESSENCIAL... deve ser colocado dentro dos 'trigger', no mesmo NÍVEL do set dos seus diferentes 'state()'..
+
+
+import { animate } from '@angular/animations'; ////////TAMBÉM É NECESSÁRIO... define 'COMO DEVE SER FEITA A ANIMATION ENTRE ESSE (STATE A) E ESSE (STATE B)'....
+ 
+
+// @Component({
+//   selector: 'app-root',
+//   templateUrl: './app.component.html',
+//   styleUrls: ['./app.component.css'],
+//   //colocamos o nome de 'divState' pq QUEREMOS ALTERAR O 'STATE' DO ELEMENTO '<div></div>' que temos lá no nosso HTML, NESSE COMPONENT...
+//   animations: [
+//     trigger(
+//       'divStateExample', ////////////É ASSIM QUE ADICIONAMOS ANIMATIONS ANGULAR AOS NOSSOS COMPONENTS...
+
+//       [
+//         /////É O ARRAY DE 'ANIMATIONS' que serão TRIGGADAS a partir do 'satisfact' da primeira condição, que é o trigger...
+
+//         ////style define 'COMO DEVERÁ SER O INITIALSTATE desse service/component....
+
+//         state(
+//           'divStateExample', //sempre vamos querer ter MAIS DE 1 'state' em 1 trigger/animation, isso pq TODA ANIMATION DEPENDE DE PELO MENOS 2 'states' DIFERENTES para conseguir existir uma animation...
+
+//           style({})
+//         ),
+//         state('hightlighted'),
+//       ]
+//     ),
+//   ],
+
+//   ///1o argumento de 'trigger' --> é o IDENTIFIER DO SEU TRIGGER... se for constatado que esse identifier está no seu template, SERÁ ATIVADO O TRIGGER....
+//   ////2o argumento --> É A ANIMATION QUE VAI 'PLAY OUT' a partir do set off desse trigger...
+// })
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  animations: [
+    trigger('divStateExample', [
+      state('normal', style({ /////queremos que o value desse 'starting state' SEJA IGUAL ao value do state ('normal', nesse caso) que temos ali embaixo, o starting state...
+
+        'background-color': 'red',
+        'transform': 'translateX(0px) '
+
+      })), 
+      state('highlighted', style({
+
+        'background-color': 'blue',
+        'transform': 'translateX(200px)'
+      })),
+
+      transition( ///////É UM METHOD SUPER INTUITIVO --> --> ELE NOS DEIXA 'DESCREVER COMO A TRANSITION DE UM STATE PARA OUTRO DEVE SE PARECER/acontecer''...
+      
+      'normal => highlighted',  ////com isso, especificamos que 'A TROCA DE VALUE DE NORMAL PARA HIGHLIGHTED DEVE....'
+
+     
+      animate( /////a coisa mais simples que você pode fazer é passar um NÚMERO, que será o NÚMERO DE ms até que essa transition ACABE..
+
+      300
+      )
+      ),
+
+      transition(
+      'highlighted => normal',
+      animate(
+      100
+      )
+      ),
+
+      // transition( ////////USE ESTA VERSÃO SE VOCê QUER QUE '(STATE A) => (STATE B)'  e '(STATE B) => (STATE A)' OCORRAM COM A MESMA VELOCIDADE....
+      //   'normal <=> highlighted',
+      //   animate(
+      //   100
+      //   )
+      //   ),
+
+
+
+
+
+    ]),
+
+
+    trigger('wildStateExample',
+    
+    [
+
+
+      state('normal', style( ///STATE A
+        {
+          'background-color': 'green',
+          'transform': 'translateX(0) scale(1)'
+        }
+      )),
+      state('highlighted', style( ///STATE B
+      {
+        'background-color': 'blue',
+        'transform': 'translateX(100px) scale(1)'
+      }
+    )),
+
+    state('shrunken', style( ///STATE C
+    {
+      'background-color': 'red',
+
+      'transform': 'translateX(0) scale(0.5)'  ///transformation mais complexazinha, queremos que o cubo diminua pela METADE..
+    }
+  )),
+
+  transition('normal <=> highlighted', animate(300)),
+  // transition('shrunken <=> *', animate(300))  ////////COM ISSO, ESSENCIALMENTE DEFINIMOS QUE ''SE SAÍMOS DO VALUE DA STRING DE SHRUNKEN PARA QUALQUER VALUE, OU SE TROCAMOS DE QUALQUER VALUE PARA ESSE  VALUE DA STRING DE SHRUNKEN', queremos que SEJA __ APLICADA_ ESSA VELOCIDADE DE ANIMATION/ESSA ANIMATION DEFINIDA EM 'animate()'...
+
+
+
+
+  /////^^^^essa é a versão SIMPLES DA ANIMATION DA TRANSITION DE 'string de shrunken/state de shrunken para qualquer outra string/state'... --> mais simples pq no 'animtate()' apenas especifiquei o TEMPO QUE ESSA ANIMATION DEVE LEVAR...
+
+
+
+  //////VVVVVV essa é a versão COMPLEXA, em que definimos aspectos mais delicados da animation...
+
+
+  //na versão mais complexa, colocamos um segundo parâmetro em 'animate()', que será um call de 'style()' para definir bem COMO SERÁ O STYLING DE NOSSO ELEMENTO durante a animation..
+
+
+
+  // transition('shrunken <=> *', animate(300, style({ //////MAS ESSA VERSÃO É MEIO RUIM, PQ É MEIO BUGADA... (vai animate a sua ordem de 'style', e aí vai DIRETAMENTE PULAR AO END STATE... é bem feio)
+
+  //   'border-radius': '50px'
+
+
+  // })) )
+
+
+
+
+
+/////esse é o melhor jeito de EDITAR DETALHADAMENTE UMA DETERMINADA TRANSITION... --> DEVE-SE PASSAR UM ARRAY no lugar daquele 'animate()' method ..
+
+
+
+  transition('shrunken <=> *', 
+
+  [ ///o array notation delimita essa 'ANIMATION INTEIRA'... (que tem 3 'PASSOS' nesse exemplo, por assim dizer; são: 1) o starting state... (é instantaneo). 2) o primeiro animate, que vai: A) por alguma razão, deixar o border-radius INSTANTANEAMENTE '50px'..., B) CONVERTER, AO LONGO DE '5s', a cor do elemento em LARANJA...
+
+
+
+  ///'style', quando definido dentro das PHASES de uma transition, acaba APLICANDO UNS STYLES IMEDIATAMENTE (ao contrário de usos de 'animate()', que pressupõem um TEMPO até ocorrer a transformaçõa/aplicação dos styles)...
+    style({'background-color': 'purple'}),  ///o nosso 'starting state' na animation, dentro dessa animation, vai ter essa característica (esses styles)...
+
+
+    animate(1000, style({'background-color': 'orange', 'border-radius': '15px'})), 
+
+    animate(5000, style({'background-color': 'orange', 'border-radius': '50px'})), 
+
+    animate(10000) /// esse código aí vai REMOVER o BORDER-RADIUS ao final da animation, pq é esse o 'END STATE' que definimos lá no 'state' de shrunken, como vocÊ pode ver mais acima...
+   
+    //o animate(500) vai REDUZIR O OBJECT (por conta do código do state de 'END' 'shrunken', mais acima) E AÍ VAI TRANSFORMAR A COR, VAI TRANSFORMAR DE 'ORANGE 'PARA 'RED' (end state)...
+      ///ver aula 'phases em suas transtions'..
+
+
+      ///se vocÊ quer ter um 'SMOOTH TRANSITION TO YOUR END STATE', talvez seja uma boa ideia colocar um 'animate(tempo)', pq o objetivo desse method com apenas o tempo sendo passado (e sem um 'style({})' ) é justamente TROCAR PARA O 'END STATE' depois de transcorridos x milissegundos
+  ]
+  
+  )
+
+    ]
+    ),
+
+
+
+
+    trigger(
+      'list1',
+  
+      [
+        state(
+        'in',
+        style({ 'opacity': '1',
+                    'transform': 'translateX(0)'})),
+    
+        transition('void => *',  //// ou seja, não interessa se o value é 'in' ou 'out' ou 'whatever', o que interessa é que essa transition APENAS SERÁ TRIGGADA quando 'o elemento estiver em um ESTADO DE VOID (não existir no dom), para então PASSAR A EXISTIR (ter um 'value' de seu state, pode ser 'in', no caso)....
+        
+        [
+
+      style({ ///esse style também é necessário, queremos que nosso elemento fique INSTANTANEAMENTE com esse style, por 1 fração de segundo, quando a animation começar/começa... (e depois transicionamos para o end state, através daquele 'animate(300)', que vai fazer o 'FADE-IN')..
+
+            'opacity': '0',
+            'transform': 'translateX(-20px)'
+      }),
+
+        animate(300)]),
+
+
+        transition(
+          '* => void',
+        [
+
+        animate(
+          300, style(
+            {
+              'opacity': '0',
+              'transform': 'translateX(50px)'
+            }
+          )
+        )
+        ]
+
+        )
+
+
+
+
+
+
+
+
+
+      ,
+
+
+
+
+
+
+
+
+
+      ]
+    )
+  ],
+})
+export class AppComponent {
+  animationState = 'normal'; ////vamos USAR ESSA PROPRIEDADE COMO 'CONDITION' para dar PLAY EM DIFERENTES ANIMATIONS, por meio do bind do nosso trigger de 'divStateExample' a essa propriedade....
+
+
+  wildAnimationState = 'normal';
+
+
+
+
+  items: string[] = ['Milk', 'Sugar', 'Bread'];
+
+  constructor() {}
+
+  // onDeleteItem(item: string) {
+    onDeleteItem(index: number) {
+   
+
+
+      this.items.splice(index, 1);
+
+
+
+
+
+  }
+
+  onAddItem(item: string) {
+
+    if (!item) {
+      return;
+    }
+    this.items.push(item);
+  }
+
+
+  
+
+
+  animateBox() {
+
+
+
+    switch(this.animationState) {
+
+      case 'normal':
+        this.animationState = 'highlighted';
+        break;
+      case 'highlighted':
+        this.animationState = 'normal';
+        break;
+
+    }
+
+
+
+    switch(this.wildAnimationState) {
+
+      case 'normal':
+        this.wildAnimationState = 'highlighted';
+        break;
+      case 'highlighted':
+        this.wildAnimationState = 'normal';
+        break;
+      case 'shrunken':
+        this.wildAnimationState = 'normal';
+
+    }
+
+
+}
+
+
+
+
+
+// animateWildBox() {
+
+// }
+
+
+
+onShrink() {
+
+  this.wildAnimationState !== 'shrunken' ? this.wildAnimationState = 'shrunken' : this.wildAnimationState = 'normal'; 
+
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <h1>Animations</h1>
+      <button class="btn btn-primary" (click)="animateBox()">Animate!</button> |
+      <button class="btn btn-primary" (click)="onShrink()">Shrink!</button>
+      <hr />
+
+
+
+       <!-- ESSE É O ELEMENTO QUE SOFRERÁ AS 'ANIMATIONS'. OBS: o trigger sempre é colocado/posicionado em algum elemento, usando essa notation de [@nomeDoTrigger]   -->
+      <!-- QUEREMOS QUE ESSE TRIGGER DE 'divStateExample' FIQUE _ VINCULADO_  à PROPRIEDADE DE 'state' DE NOSSO COMPONENT.....--> 
+      <div [@divStateExample]="animationState"
+        style="width: 100px; height: 100px; margin-bottom: 16px"
+      ></div> 
+
+      <div [@wildStateExample]="wildAnimationState"
+      style="width: 100px; height: 100px"
+    ></div> 
+
+    </div>
+  </div>
+<hr />
+<div class="row">
+  <div class="col-xs-12">
+    <input type="text" #input >
+    <button class="btn btn-primary" (click)="onAddItem(input.value)">
+      Add Item!
+    </button>
+    <hr />
+    <ul class="list-group">
+      <li
+        [@list1]
+        style="cursor: pointer;"
+        class="list-group-item"
+        (click)="onDeleteItem(index)"
+        *ngFor="let item of items; let index=index"
+      >
+        {{ item }}
+      </li>
+    </ul>
+  </div>
+</div>
+<hr />
+<div class="row">
+  <div class="col-xs-12">
+    <ul class="list-group">
+      <li
+      style="cursor: pointer;"
+        class="list-group-item"
+        (click)="onDeleteItem(index)"
+        *ngFor="let item of items; let index=index"
+      >
+        {{ item }}
+      </li>
+    </ul>
+  </div>
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> MAS O PROFESSOR QUER NOS MOSTRAR MAIS 2 COISAS, quer mencionar mais 2 
+
+
+coisas...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> A PRIMEIRA 'COISA' 
+
+
+é uma maneira de CONSEGUIR UM CONTROLE MAIS PRECISO DURANTE AS 
+
+STEPS INDIVIDUAIS DO PROCESSO DE ANIMATION...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NÓS JÁ VIMOS QUE PODEMOS DEFINIR MÚLTIPLAS 'PHASES'
+
+
+nas nossas transitions, como por meio deste código aqui:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        transition(
+          'shrunken <=> *',
+
+          [
+            style({ 'background-color': 'purple' }),
+
+            animate(
+              1000,
+              style({ 'background-color': 'orange', 'border-radius': '15px' })
+            ),
+
+            animate(
+              5000,
+              style({ 'background-color': 'orange', 'border-radius': '50px' })
+            ),
+
+            animate(10000),
+          ]
+        ),
+      ]
+    ),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> MAS É CLARO QUE,
+
+
+
+    NESSE EXEMPLO AÍ,
+
+
+
+
+    ''EACH PHASE GOT THE SAME IMPORTANCE'' --> ou seja,,
+
+
+
+
+
+
+    CADA PHASE FICA MAIS OU MENOS NO MESMO NÍVEL,
+
+
+
+
+
+    É CONSIDERADA 'TÃO IMPORTANTE QUANTO ÀS OUTRAS'...
+
+
+
+
+
+
+
+
+
+--> SERIA NICE SE PUDÉSSEMOS DEFINIR 
+
+
+'KEY-FRAMES',
+
+
+
+
+PARA QUE 
+
+
+
+
+
+
+SEJA POSSÍVEL FAZER COISAS COMO:
+
+
+
+
+
+
+'''OK, ANIMATE PELA DURAÇÃO DE 1 SEGUNDO... MAS DEPOIS DE 2 SEGUNDOS,
+
+
+
+VOCê DEVE TER O STATE (X), E DEPOIS DE 5 SEGUNDOS, VOCÊ DEVE TER O STATE (Y)''',
+
+ 
+
+E ASSIM POR DIANTE...
+
+
+
+
+
+
+
+
+
+
+
+OK, MAS COMO PODEMOS FAZER ISSO?
+
+
+
+
+
+
+
+
+
+
+
+
+
+O PROFESSOR 
+
+
+
+
+
+
+
+COPIA O TRIGGER DE 'list1',
+
+
+que é aquele trigger 
+
+
+do 'void => *' 
+
+
+e 
+
+
+'* => void'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> E AÍ, AGORA, O PROFESSOR VAI QUERER DEFINIR O TRIGGER DE 'list2',
+
+
+QUE SERÁ __ BINDADO __ 
+
+
+À NOSSA SEGUNDA LIST 
+
+
+
+do template,
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+trigger(
+    'list2',
+
+    [
+
+
+        state(),
+
+        state(),
+
+
+        state(),
+
+
+        transition()
+
+
+
+    ]
+)
+
+
+
+
+
+
+
+
+
+
+
+
+E LÁ NO TEMPLATE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <ul class="list-group">
+      <li
+      [@list2]
+      style="cursor: pointer;"
+        class="list-group-item"
+        (click)="onDeleteItem(index)"
+        *ngFor="let item of items; let index=index"
+      >
+        {{ item }}
+      </li>
+    </ul>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+E EU COMEÇO ASSIM:
+
+
+
+
+
+
+
+
+
+    trigger('list2',
+    
+    [
+      state('example', style({})),
+
+
+      state('example2', style({})),
+
+      state('example3', style({})),
+
+      transition('example => example2', [
+
+
+        animate(300)
+
+
+      ])
+    ]
+  
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA PODEMOS DEFINIR AS ANIMATIONS 
+
+
+
+
+
+
+desse trigger...
+
+
+
+
+
+
+
+
+
+
+
+
+--> para o 'state' 
+
+
+desse negócio, podemos deixar o 'in', talvez colocar um 'dummyIn'...
+
+
+
+
+
+
+
+
+
+--> devemos TIRAR O RESTO DOS 'state',
+
+
+pq 
+
+aqui vamos animar com KEY-FRAMES OS __ 
+
+
+LIST ITEMS 
+
+
+DA LIST 2...
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+    trigger('list2',
+    
+    [
+      state('in2Exemplo', style({})),
+
+
+
+
+
+      transition('example => example2', [
+
+
+        animate(300)
+
+
+      ])
+    ]
+  
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> ok...
+
+
+
+
+
+
+
+    MAS PARA A TRANSITION DOS ITEMS 'COMING IN', 
+
+
+
+    aparecendo no nosso dom (apensos ao nosso dom, renderizados nele),
+
+
+
+
+
+    O PROFESSOR QUER MUDAR __ O FORMATO__ DE NOSSA ANIMATION..
+
+
+
+
+
+
+
+
+
+    --> ou seja, o primeiro parâmetro, 'void => *', 
+
+
+    CONTINUA O MESMO (a condição para o animate continua a mesma, só O ANIMATE EM SI QUE VAI MUDAR)...
+
+
+
+
+
+
+
+
+
+    --> para mudar apenas o ANIMATE dessa transition, o professor altera APENAS 
+
+
+    O SEGUNDO PARÂMETRO, AQUELE __array__ de especificações de nossa animation...
+
+
+
+
+
+
+    ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        trigger('list2',
+    
+    [
+      state('in2Exemplo', style({})),
+
+
+
+
+
+      transition('example => example2', ) //////PROFESSOR TIROU O ARRAY DE ANIMATIONS...
+    ]
+  
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --. ok... reformato o código, e ele fica assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        trigger('list2',
+    
+    [
+      state('in2Exemplo', style({
+
+        'opacity': '1',
+        'transform': 'translateX(0)'
+      })),
+
+
+
+
+
+      transition('void => *', ) //EIS O CÓDIGO EM QUESTÃO.
+    ]
+  
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PARÂMETRO 'keyframes' É ESPECIAL, E DEVE SER IMPORTADO LÁ DO 'angular/animations'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo...
+
+
+
+
+
+
+
+
+
+
+--> esse method 'keyframes', na function de 'animate', NOS DEIXA SER '''MAIS PRECISOS''' ACERCA DE QUANTO TEMPO CERTAS PARTES DA ANIMATION, DEFINIDAS POR MÚLTIPLOS STYLES, DEVERÃO TER... (essa parte deve durar mais, essa parte deve durar menos, etc)...
+
+
+
+
+
+
+
+
+
+
+
+
+--> isso significa que A 'OVERALL ANIMATION' vai durar um segundo,
+
+
+
+
+mas que 
+
+
+O PROFESSOR VAI PODER 'CONTROLAR QUAIS STATES  
+
+DENTRO DAQUELA ANIMATION VAO TOMAR QUANTO TEMPO, ETC ETC'...
+
+
+
+
+
+
+
+ex:
+
+
+
+        trigger('list2',
+    
+    [
+      state('in2Exemplo', style({
+
+        'opacity': '1',
+        'transform': 'translateX(0)'
+      })),
+
+
+
+
+
+      transition('void => *', 
+      
+      
+      
+      
+      animate(1000, keyframes(  //EIS O CÓDIGO EM QUESTÃO.
+            []
+      ))              
+      ) 
+    ]
+  
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK, E DENTRO DE 'keyframes' teremos OUTRO  ARRAY,
+
+
+DESSA VEZ COM AS 'INDIVIDUAL PHASES'
+
+
+
+que comporão a animation..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DENTRO DESSE ARRAY, SIMPLESMENTE COLOCAMOS 
+
+
+
+
+um punhado de styles, com o method de 'style()"
+
+mais uma vez..
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+style(
+    {
+
+    }
+)
+
+
+
+
+
+
+
+
+
+
+
+-> PARA O INITIAL STATE, VAMOS QUERER QUE 
+
+O ELEMENTO FIQUE NO LUGAR INICIAL DE ANTES, QUE É '-100px'...
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+        trigger('list2',
+    
+    [
+      state('in2Exemplo', style({
+
+        'opacity': '1',
+        'transform': 'translateX(0)'
+      })),
+
+
+
+
+
+      transition('void => *', 
+      
+      
+      
+      
+      animate(1000, keyframes(  //EIS O CÓDIGO EM QUESTÃO.
+            [
+
+                style(
+                    {
+                        'transform': 'translateX(-100px)'
+                    }
+                )
+            ]
+      ))              
+      ) 
+    ]
+  
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> OK, MAS AGORA DIGAMOS QUE QUEREMOS TER OUTRO STYLE DURANTE ANIMATION DE 
+    'FLY-IN'...
+
+
+
+
+
+
+
+
+
+
+
+--> queremos que a animation tenha outro key-frame, que será 
+
+
+
+'translateX(50px)'... ( um pouco para a direita)..
+
+
+
+
+
+EX:
+
+
+
+
+
+
+        trigger('list2',
+    
+    [
+      state('in2Exemplo', style({
+
+        'opacity': '1',
+        'transform': 'translateX(0)'
+      })),
+
+
+
+
+
+      transition('void => *', 
+      
+      
+      
+      
+      animate(1000, keyframes(  //EIS O CÓDIGO EM QUESTÃO.
+            [
+
+                style(
+                    {
+                        'transform': 'translateX(-100px)'
+                    }
+                ),
+
+                
+                style(
+                    {
+                        'transform': 'translateX(50px)'
+                    }
+                ),
+
+            ]
+      ))              
+      ) 
+    ]
+  
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EXEMPLO DE ANIMATION 'SMOOTH' USANDO 
+
+O 
+
+'keyframes':
+
+
+
+
+
+
+
+
+
+
+     [animate(1000, keyframes( //aqui definimos as DIFERENTES KEYFRAMES de nossa animation..
+        [
+
+          style(   ////PRIMEIRA KEYFRAME de nossa animation
+            {
+              'transform': 'translateX(-100px)',
+              'opacity': '0'
+            }
+          ),
+          style(   ////PRIMEIRA KEYFRAME de nossa animation
+          {
+            'transform': 'translateX(-80px)',
+            'opacity': '0.20'
+          }
+        ),
+        style(   ////PRIMEIRA KEYFRAME de nossa animation
+        {
+          'transform': 'translateX(-60px)',
+          'opacity': '0.40'
+        }
+      ),
+          style(   ///SEGUNDA KEYFRAME de nossa animation
+          {
+            'transform': 'translateX(-40px)',
+            'opacity': '0.60'
+          }
+        ),
+
+        style(   ///TERCEIRA KEYFRAME de nossa animation
+        {
+          'transform': 'translateX(-20px)',
+          'opacity': '0.80'
+        }
+      ),
+
+      style(   ///TERCEIRA KEYFRAME de nossa animation
+      {
+        'transform': 'translateX(0px)',
+        'opacity': '1'
+      }
+    )
+        ]
+      )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      -----> EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+trigger('list2',
+    
+    [
+      state('inExemplo2', style({
+        'opacity': '1',
+        'transformation': 'translateX(0)'
+      })),
+
+
+
+
+
+      transition('void => *', 
+      
+    
+      // [    animate(300),      ]  /// para definir key-frames para nossa animation, devemos deixar de lado esse ARRAY com as especificações do animate 'comum' (menos complexo)... (não queremos 'different, equally weighted phases', pq agora queremos que CERTAS PHASES SEJAM MAIS IMPORTANTES)...
+
+///o diferencial é esse parâmetro de 'keyframes'...
+
+///// esse method 'keyframes', na function de 'animate', NOS DEIXA SER '''MAIS PRECISOS''' ACERCA DE QUANTO TEMPO CERTAS PARTES DA ANIMATION, DEFINIDAS POR MÚLTIPLOS STYLES, DEVERÃO TER... (essa parte deve durar mais, essa parte deve durar menos, etc)... ou seja, as phases não são consideradas 'EQUAL', pq vamos poder definir algumas como MAIS IMPORTANTES (duram mais) do que outras (duram menos)..
+      [animate(1000, keyframes( //aqui definimos as DIFERENTES KEYFRAMES de nossa animation..
+        [
+
+          style(   ////PRIMEIRA KEYFRAME de nossa animation
+            {
+              'transform': 'translateX(-100px)',
+              'opacity': '0'
+            }
+          ),
+          style(   ////SEGUNDA KEYFRAME de nossa animation
+          {
+            'transform': 'translateX(-80px)',
+            'opacity': '0.20'
+          }
+        ),
+        style(   ////TERCEIRA KEYFRAME de nossa animation
+        {
+          'transform': 'translateX(-60px)',
+          'opacity': '0.40'
+        }
+      ),
+          style(   ///QUARTA KEYFRAME de nossa animation
+          {
+            'transform': 'translateX(-40px)',
+            'opacity': '0.60'
+          }
+        ),
+
+        style(   ///QUINTA KEYFRAME de nossa animation
+        {
+          'transform': 'translateX(-20px)',
+          'opacity': '0.80'
+        }
+      ),
+
+      style(   ///SEXTA KEYFRAME de nossa animation
+      {
+        'transform': 'translateX(0px)',
+        'opacity': '1'
+      }
+    )
+        ]
+      )
+        
+        )]
+
+
+      )
+    ]
+  
+    )
+
+
+
+
+
+
+
+
+-------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok.... 
+
+
+
+mas e se eu quiser que certa PHASE dure MAIS DO QUE OUTRA, há um jeito de priorizar isso?
+
+
+
+
+
+
+
+
+---> sim, foi o que eu pensei...
+
+
+
+
+
+
+
+por DEFAULT, todas essas etapas em 'key-frames'
+
+TOMAM O MESMO TEMPO...
+
+
+
+
+
+
+
+
+SE TEMOS 5 ELEMENTOS, CADA UM DELES É TRIGGADO POR 1/5 do tempo...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA DAR 'OVERRIDE' nessa equalizaçaõ de importância entre 'phases',
+
+
+
+
+
+devemos usar a  PROPRIEDADE 'offset'
+
+
+
+
+
+no method 'style'...
+
+
+
+
+
+
+
+
+--> ESSA PROPRIEDADE TE DEIXA 
+
+
+DIZER 
+
+
+
+
+'EM QUE MOMENTO DOS 1000ms 
+
+
+
+DEVEMOS ESTAR NESSE STATE AÍ'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    trigger('list2',
+    
+    [
+      state('inExemplo2', style({
+        'opacity': '1',
+        'transformation': 'translateX(0)'
+      })),
+
+
+
+
+
+      transition('void => *', 
+      
+    
+      // [    animate(300),      ]  /// para definir key-frames para nossa animation, devemos deixar de lado esse ARRAY com as especificações do animate 'comum' (menos complexo)... (não queremos 'different, equally weighted phases', pq agora queremos que CERTAS PHASES SEJAM MAIS IMPORTANTES)...
+
+///o diferencial é esse parâmetro de 'keyframes'...
+
+///// esse method 'keyframes', na function de 'animate', NOS DEIXA SER '''MAIS PRECISOS''' ACERCA DE QUANTO TEMPO CERTAS PARTES DA ANIMATION, DEFINIDAS POR MÚLTIPLOS STYLES, DEVERÃO TER... (essa parte deve durar mais, essa parte deve durar menos, etc)... ou seja, as phases não são consideradas 'EQUAL', pq vamos poder definir algumas como MAIS IMPORTANTES (duram mais) do que outras (duram menos)..
+      [animate(1000, keyframes( //aqui definimos as DIFERENTES KEYFRAMES de nossa animation..
+        [
+
+          style(   ////PRIMEIRA KEYFRAME de nossa animation
+            {
+              'transform': 'translateX(-100px)',
+              'opacity': '0',
+              // 'offset' /////PROPRIEDADE USADA PARA __ 'DEIXAR ESSA ETAPA MAIS IMPORTANTE DO QUE AS OUTRAS' (durar mais do que as outras)
+           
+              'offset': '0.00'   ////é, em ms, O MOMENTO, a partir daquele tempo total (de 1000ms, nesse caso), em que QUEREMOS QUE NOSSA ANIMATION ESTEJA NESSA 'PHASE' específica... coloquei aqui o 'default' para esse nosso case, que é '0' (pq como temos 5 phases, o tempo total foi dividido em 5)...
+            }
+          ),
+          style(   ////SEGUNDA KEYFRAME de nossa animation
+          {
+            'transform': 'translateX(-80px)',
+            'opacity': '0.20',
+             // 'offset' /////PROPRIEDADE USADA PARA __ 'DEIXAR ESSA ETAPA MAIS IMPORTANTE DO QUE AS OUTRAS' (durar mais do que as outras)
+          
+             'offset': '0.200'
+          
+          
+            }
+        ),
+        style(   ////TERCEIRA KEYFRAME de nossa animation
+        {
+          'transform': 'translateX(-60px)',
+          'opacity': '0.40',
+           // 'offset' /////PROPRIEDADE USADA PARA __ 'DEIXAR ESSA ETAPA MAIS IMPORTANTE DO QUE AS OUTRAS' (durar mais do que as outras)
+      
+           'offset': '0.400'
+          }
+      ),
+          style(   ///QUARTA KEYFRAME de nossa animation
+          {
+            'transform': 'translateX(-40px)',
+            'opacity': '0.60',
+             // 'offset' /////PROPRIEDADE USADA PARA __ 'DEIXAR ESSA ETAPA MAIS IMPORTANTE DO QUE AS OUTRAS' (durar mais do que as outras)
+          
+            'offset': '0.600'
+            }
+        ),
+
+        style(   ///QUINTA KEYFRAME de nossa animation
+        {
+          'transform': 'translateX(-20px)',
+          'opacity': '0.80',
+           // 'offset' /////PROPRIEDADE USADA PARA __ 'DEIXAR ESSA ETAPA MAIS IMPORTANTE DO QUE AS OUTRAS' (durar mais do que as outras)
+        
+        
+          'offset': '0.800'
+          }
+      ),
+
+      style(   ///SEXTA KEYFRAME de nossa animation
+      {
+        'transform': 'translateX(0px)',
+        'opacity': '1',
+         // 'offset' /////PROPRIEDADE USADA PARA __ 'DEIXAR ESSA ETAPA MAIS IMPORTANTE DO QUE AS OUTRAS' (durar mais do que as outras)
+      
+        'offset': '1'
+        }
+    )
+        ]
+      )
+        
+        )]
+
+
+      )
+    ]
+  
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+    certo...
+
+
+
+
+
+
+
+
+
+dividimos nosso tempo, 
+
+
+
+
+
+
+
+
+
+com '0.2',
+
+
+
+
+'0.4',
+
+
+'0.6',
+
+ etc etc... (é tipo uma porcentagem, em cada elemento)...
+
+
+
+
+
+
+
+
+
+
+
+
+ --. É ASSIM QUE USAMOS KEYFRAMES PARA CONTROLAR COM PRECISÃO:
+
+
+
+
+ 1) QUAL STATE QUEREMOS TER, EM DETERMINADO TEMPO, DE NOSSA TRANSITION, durante a animation...
+
+
+
+
+
+
+
+
+
+
+
+ 2) KEYFRAMES --> O IMPORTANTE É ENTENDER QUE SÃO USADOS PARA DEFINIR O 'TIME OVER THE TRANSITION', 
+
+
+ transition que toca DURANTE A FUNCTION DE 'ANIMATE'...
+
+
+
+
+
+
+
+
+
+
+ E É CLARO QUE PODEMOS TER MÚLTIPLAS ANIMATIONS/'animate()'
+
+
+ dentro de UMA MESMA TRANSITION,
+
+
+
+ MÚLTIPLAS FUNCTIONS DE 'ANIMATE',
+
+ E CADA FUNCTION DE 'animate' poderia ter 
+
+
+
+ MÚLTIPLOS KEY FRAMES,
+
+ tipo assim:
+
+
+
+
+
+
+
+ transition(
+    'void => *',
+
+    [
+
+        animate(1000, keyframes(
+            [
+
+                style({x}),
+
+                style({y}),
+
+                   style({z})
+            ]
+        )),
+
+
+
+                  animate(2000, keyframes(
+            [
+
+                style({a}),
+
+                style({b}),
+
+                   style({c})
+            ]
+        ))
+
+
+
+
+
+    ]
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> POSSIBILIDADES ILIMITADAS, AQUI...

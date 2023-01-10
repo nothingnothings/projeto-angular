@@ -1,0 +1,1335 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> no último vídeo,
+
+
+VIMOS O SETUP BÁSICO DE NOSSA FORM, QUE É ESTE:
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form> <!-- NO ANGULAR, VOCÊ NUNCA COLOCA 'action=xxx' na sua tag de FORM, pq sua form vai ser handldada PELO ANGULAR EM SI... é por isso que não temos 'action' APONTANDO A ALGUMA ROUTE DE NOSSO APP.. NÓS TAMBÉM NÃO VAMOS COLOCAR 'method=POST', esse outro attribute famoso...-->
+        <div id="user-data">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" class="form-control" />
+          </div>
+          <button class="btn btn-default" type="button">
+            Suggest an Username
+          </button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input type="text" id="email" class="form-control" />
+          </div>
+          <div class="form-group">
+            <label for="secret">Secret Questions</label>
+            <select id="secret" class="form-control">
+              <option value="pet">Your first Pet?</option>
+              <option value="teacher">Your first teacher?</option>
+            </select>
+          </div>
+          <button class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------> AGORA DEVEMOS ENTENDER COMO O ANGULAR CRIA UM JAVASCRIPT OBJECT 
+
+
+
+QUE VAI REPRESENTAR NOSSA FORM,
+
+
+ISSO NO 
+
+'TEMPLATE-DRIVEN APPROACH'..
+
+
+
+
+
+
+
+
+
+ 
+
+ ---> AS BOAS NOTÍCIAS SÃO QUE 
+
+
+ 'NÃO PRECISAMOS FAZEDR QUASE NADA LÁ NO NOSSO CÓDIGO'.... ----> na verdade,
+
+
+
+ QUASE NADA....
+
+
+
+
+
+
+
+
+
+
+
+ -> ASSEGURE QUE DENTRO DO 'app.module.ts'
+
+
+ VOCÊ TENHA O 'FormsModule'
+
+ IMPORTADO...
+
+
+
+
+
+
+
+
+ ---> COMO O NOME SUGERE,
+
+ ESSE BUILT-IN MODULE,
+
+ QUE VEM COM O ANGULAR,
+
+
+
+
+
+
+
+
+VEM COM UM MONTE DE 'FORMS-RELATED FUNCTIONALITIES',
+
+
+
+
+
+E 
+
+É ACTUALLY _NECESSÁRIO PARA 
+
+
+
+FAZER ESSA 'TEMPLATE-DRIVEN APPROACH'
+
+
+
+funcionar..
+
+
+
+
+
+
+
+
+--> ESSA FORM-CREATION POR MEIO DO ANGULAR _ REQUER _ QUE VOCÊ IMPORTE E 
+
+
+
+
+use esse 'FormsModule'...
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> POR DEFAULT,
+
+EM UM CLI PROJECT,
+
+ISSO JÁ DEVE ESTAR INCLUÍDO (mas não está)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AS PRÓXIMAS ETAPAS REQUEREM ESSE IMPORT..
+
+
+
+
+
+
+
+
+
+-> ASSIM QUE VOCÊ 
+
+
+
+IMPORTAR ESSE MODULE,
+
+O ANGULAR JÁ VAI AUTOMATICAMENTE 
+
+'CREATE A FORM FOR YOU',
+
+
+
+VAI CRIAR UMA 
+
+JAVASCRIPT REPRESENTATION DESSA FORM,
+
+
+
+
+
+
+
+
+SEMPRE QUE _ DETECTAr__ UM <FORM> ELEMENT DENTRO DO SEU CÓDIGO HTML...
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER QUE VOCÊ PODE PENSAR NESSE ELEMENTO 'FORM' 
+ 
+
+
+ COMO 
+
+
+
+
+
+ UM NEGÓCIO QUE SERVE DE 
+
+ 'SELECTOR'
+
+
+ PARA UMA 
+
+ 'ANGULAR DIRECTIVE'
+
+
+ 
+
+ QUE VAI ENTÃO CRIAR UMA REPRESENTAÇÃO JAVASCRIPT DA FORM,
+
+
+ PARA VOCÊ...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> É CLARO QUE VOCÊ AINDA NÃO PODE VER ESSA FORM REPRESENTATION, AINDA... --> 
+
+
+
+
+
+ E ESSA FORM REPRESENTATION ESTARIA BEM 'VAZIA',
+
+ no momento..
+
+
+
+
+
+
+
+
+
+
+
+ --> ISSO PQ ESTAMOS COM UMA COISINHA FALTANDO:
+
+
+
+ O ANGULAR __ NÃO VAI __ DETECTAR_ AUTOMATICAMENTE OS SEUS INPUTS NESSA FORM AÍ..
+
+
+
+
+
+
+
+
+
+
+
+ -> E A RAZÃO PARA ISSO É SIMPLES:
+
+
+
+
+
+
+
+ VOCê PODERIA ARGUMENTAR QUE 
+
+ '''ele deveria ser capaz de detectar nosso código html e então 
+
+ler que temos 
+
+um 
+
+select ali,
+
+um input ali,
+ etc''',
+
+
+  
+  VOCÊ 
+
+
+
+
+
+  _ MESMO __ ASSIM _ NÃO IRIA GOSTAR QUE 
+
+
+
+
+
+  __ TODOS ESSES ELEMENTS 
+
+
+  FOSSEM
+
+  ADICIONADOS COMO 
+
+  'CONTROLS'
+
+
+
+
+  NA SUA FORM...
+
+
+
+
+
+
+
+
+
+
+
+
+  -> quando o professor quer dizer 
+
+
+  'CONTROL',
+
+
+
+  O PROFESSOR QUER DIZER '''' O QUE ESTÁ/PASSA A EXISTIR NO JAVASCRIPT OBJECT'''...
+
+
+
+
+
+
+
+
+
+
+
+  -->E, DE NOVO,
+
+
+
+
+  NEM TODO INPUT NO SEU CÓDIGO HTML
+
+
+    SERÁ UM CONTROL QUE VOCê 
+
+    VAI QUERER TER NA SUA 'JAVASCRIPT FORM'...
+
+
+
+
+
+
+
+
+
+
+    ex: talvez você tenha um dropdown 
+
+
+
+    CUJO VALUE SÓ 
+
+
+    __MUDA__ ALGO QUE VOCÊ VISUALIZA NA UI,
+
+
+
+    MAS CUJO INPUT/VALUE __ DE VERDADE __
+
+
+    NÃO DEVE 
+
+
+    FAZER PARTE DAQUILO QUE É 'ACTUALLY SUBMITTADO' ao server/angular...
+
+
+
+
+
+
+
+
+
+--> OUTRO EXEMPLO:
+
+
+
+
+
+TALVEZ VOCÊ ADICIONE _ UM OUTRO THIRD PARTY PACAKGE,
+
+
+TPP QUE ADICIONA UNS 
+
+CUSTOM  
+
+
+FORM CONTROLS,
+
+
+
+
+
+
+que NÃO TEM UMA LABEL de 'INPUT' como  selector (
+
+
+
+aí isso faria com que o angular ficasse 
+
+
+IMPOSSIBILITADO   
+
+DE DETECTAR QUE 
+
+ISSO SE TRATA DE UM CONTROL DE SUA FORM...
+
+
+)
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE VOCÊ PRECISA DIZER AO ANGULAR UQE 
+
+'HEY, NESSE FORM ELEMENT,
+
+ISSO AQUI 
+DEVE SER UM ELEMENT DE NOSSA FORM, UM CONTROL DE NOSSA FORM'...
+
+
+
+
+
+
+
+
+
+
+-. PRECISAMOS DIZER, EM OUTRAS PALAVRAS,
+
+
+
+COMO O FORM DEVE SE PARECER..
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK, O ELEMENTo '<form>'
+
+
+
+VAI SERVIR COMO UM SELECTOR PARA A DIRECTIVE DO ANGULAR... (uma directive unnamed)....
+
+
+
+
+
+
+
+
+
+-> ESSA DIRECTIVE VAI CRIAR UMA JAVASCRIPT REPRESENTATION DA FORM, PARA NÓS...
+
+
+
+
+
+
+
+
+
+
+
+-> É CLARO QUE NÃO PODEMOS ,ATÉ AGORA,
+
+
+VER ESSA 'FORM REPRESENTATION'.... 
+
+
+
+
+
+
+
+
+--> se conseguissemos,
+
+seria bem vazia... ---> BEM VAZIA PQ 
+
+
+
+
+
+NENHUM DOS INPUTS DE NOSSA FORM SERIA RECONHECIDO, ELES NÃO SÃO RECONHECIDOS AUTOMATICAMENTE...
+
+
+
+
+
+
+
+
+
+
+
+
+NEM TODO INPUT EM SEU HTML 
+
+
+
+
+SERÁ OBRIGATORIAMENTE UM CONTROL NO SEU JAVASCRIPT,
+
+
+VOCÊ 
+TALVEZ 
+
+
+
+NÃO QUEIRA QUE ALGUNS INPUT FIELDS SEJAM CONSIDERADOS/ENFIADOS NA REPRESENTAÇÃO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> VOCÊ PRECSIA DIZER AO ANGULAR 'HEY, DENTRO DESSE FORM ELEMENT, ISTO ISTO E ISTO DEVEM SER 
+
+FORM ACTUAL CONTROLS DE NOSSA FORM'...
+
+
+
+
+
+
+
+
+--> É ISSO QUE FAREMOS AGORA,
+
+
+
+DIZER AO ANGULAR 'QUAIS CONTROLS VAMOS QUERER USAR'...
+
+
+
+
+
+
+
+
+
+
+->_ E NO 
+
+TEMPLATE-DRIVEN APPROACHJ,
+
+ESSE PROCESSO É SUPER SIMPLES...
+
+
+
+
+
+
+
+
+-> BASTA IR ATÉ O INPUT QUE 
+
+VOCÊ QUER ADICIONAR COMO CONTROL:
+
+
+
+        <input type="text" id="email" class="form-control" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ----> CERTO...
+
+
+
+
+
+
+    melhor ler assim:
+
+
+
+
+
+         <input type="text" 
+         id="email" 
+         class="form-control" />
+
+
+
+
+
+
+
+
+
+
+      --> AÍ VOCê ADICIONA AQUELA DIRECTIVE 
+
+
+
+      ESPECIAL,
+
+      QUE JÁ VIMOS VÁRIAS VEZES,
+
+
+
+      o 
+
+
+      'ngModel'...
+
+
+
+
+
+
+      ------> 
+
+
+
+
+
+
+
+      JÁ VIMOS 'ngModel' LÁ NA MATÉRIA DO 'TWO WAY DATA-BINDING'.. --> E, ACTUALLY,
+
+
+
+
+      ESSA É _ A EXATA MESMA DIRECTIVE QUE 
+
+
+
+      VIMOS 
+
+
+
+
+
+      NAQUELA OCASIÃO,
+
+      mas agora 
+
+      aplicada 
+
+
+
+      DIRETAMENTE NOS NOSSOS INPUT FIELDS...
+
+
+
+
+
+
+
+
+
+      isso quer dizer que 'ngModel' e 'inputs'/'selects' SÃO CORRELATOS..
+
+
+
+
+
+
+
+
+
+
+
+  ------> MAS NO TWO-WAY DATA-BINDING,
+
+
+
+
+  VIMOS QUE 
+
+
+
+  o 'ngModel' 
+
+
+
+  ERA __ WRAPPADO __ COM 
+
+
+  '[()]' 
+
+
+
+
+
+
+
+
+
+  ----> VEREMOS ESSA COISA ESTRANHA DE '[(ngModel)]'
+
+
+  MAIS TARDE,
+
+
+
+  MAS AGORA 
+
+
+
+
+
+
+VAMOS ADICIOANR ESSA DIRECTIVE 
+
+
+
+
+DIRETAMENNTE ASSIM,
+
+
+SEM '()" e sem '[]' ...
+
+
+
+
+
+
+
+
+
+--> ISSO AÍ SERÁ SUFICIENTE,
+
+VAI CONSEGUIR COMUNICAR AO ANGULAR 
+
+
+
+
+'''hey, esse input field é ACTUALLY UM CONTROL DE MINHA FORM'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> a escrita é assim:
+
+
+
+
+
+
+
+<input type="text" id="email" class="form-control" ngModel />
+
+
+
+
+
+
+
+
+
+
+--> ngModel,
+
+no final das contas,
+
+
+É UMA 
+
+
+
+DIRECTIVE DISPONIBILIZADA PELO MODULE DE 'formsModule'...
+
+
+
+
+
+
+
+
+
+
+
+--> É ESSENCIAL ENTENDER ISSO:
+
+
+
+
+*** O NGMODEL pode ser usado para conseguir two-way databinding, sim,
+
+
+
+MAS _ ELE 
+
+NA VERDADE É PARTE DE 
+
+UM MODULE BEM MAIOR,
+
+
+
+COM MAIS FEATURES.... ------> FEATURES QUE TE DÃO CONTROLE COMPLETO SOBRE FORMS..
+
+
+
+
+
+
+
+
+
+
+----> mas para que essa directive  de 'ngModel' 
+
+funcione,
+
+
+PARA QUE ISSO SEJA RECONHECIDO COMO UM __ CONTROL__ NA SUA FORM,
+
+
+
+
+PRECISAMOS __ DAR AO ANGULAR UM 
+
+
+
+
+
+OUTRO PEDAÇO DE INFORMAÇÃO,
+
+
+
+ESSENCIAL,
+
+
+
+
+QUE É 
+O 
+
+
+'name'
+
+desse control específico..
+
+
+
+
+
+
+
+
+
+--> para isso,
+
+ 
+
+ você escreve 
+
+
+
+ 'name="xxxxxx" ' 
+
+
+
+
+
+
+
+
+ ------>  OU SEJA,
+
+
+
+
+
+
+ O NOME
+
+
+ DESSE CONTROL, NA REPRESENTAÇÃO DA FORM,
+
+
+
+
+ é atribuído por meio do attribute de 
+
+ 'name',
+
+
+
+ QUE É UM 
+
+ ATTRIBUTE HTML COMUM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ NAME -----------> É UM ATTRIBUTE DEFAULT, QUE VOCÊ PODE ADICIONAR A QUALQUER 
+
+
+ HTML CONTROL....
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -_> ok..
+
+
+
+
+
+ --> COLOCAMOS 'username' no primeiro input,
+
+
+
+
+ pq 
+
+
+ isso faz sentido...
+
+
+
+
+
+
+ nosso código fica assim:
+
+
+
+
+
+
+
+
+
+ <div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form>
+        <!-- NO ANGULAR, VOCÊ NUNCA COLOCA 'action=xxx' na sua tag de FORM, pq sua form vai ser handldada PELO ANGULAR EM SI... é por isso que não temos 'action' APONTANDO A ALGUMA ROUTE DE NOSSO APP.. NÓS TAMBÉM NÃO VAMOS COLOCAR 'method=POST', esse outro attribute famoso...-->
+        <div id="user-data">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              class="form-control"
+              ngModel
+              name="username"
+            />
+          </div>
+          <button class="btn btn-default" type="button">
+            Suggest an Username
+          </button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              ngModel
+              name="email"
+            />
+            <!-- o angular vai RECONHECER ESSE INPUT FIELD como um dos 'CONTROLS' da REPRESENTAÇAÕ TYPÉSCRIPT DA FORM SE VOCê ADICIONAR 'ngModel' como directive-->
+            <!-- VOCÊ TAMBÉM PRECISA DE 'name', essa directive/attribute que vai dizer ao ANGULAR __ como _ deverá ser o nome desse control/input na REPRESENTAÇÃO TYPESCRIPT DESSA FORM.. .-->
+          </div>
+          <div class="form-group">
+            <label for="secret">Secret Questions</label>
+            <select id="secret" class="form-control">
+              <option value="pet">Your first Pet?</option>
+              <option value="teacher">Your first teacher?</option>
+            </select>
+          </div>
+          <button class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+ok....
+
+
+
+
+
+
+
+
+
+
+-------> E A MESMA COISA SE APLICA AO 'SELECT',
+
+
+QUE NÃO DEIXA SER OUTRO TIPO DE 'HTML INPUT'...
+
+
+
+
+
+
+
+--> name="secret"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form>
+        <!-- NO ANGULAR, VOCÊ NUNCA COLOCA 'action=xxx' na sua tag de FORM, pq sua form vai ser handldada PELO ANGULAR EM SI... é por isso que não temos 'action' APONTANDO A ALGUMA ROUTE DE NOSSO APP.. NÓS TAMBÉM NÃO VAMOS COLOCAR 'method=POST', esse outro attribute famoso...-->
+        <div id="user-data">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              class="form-control"
+              ngModel
+              name="username"
+            />
+          </div>
+          <button class="btn btn-default" type="button">
+            Suggest an Username
+          </button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              ngModel
+              name="email"
+            />
+            <!-- o angular vai RECONHECER ESSE INPUT FIELD como um dos 'CONTROLS' da REPRESENTAÇAÕ TYPÉSCRIPT DA FORM SE VOCê ADICIONAR 'ngModel' como directive-->
+            <!-- VOCÊ TAMBÉM PRECISA DE 'name', essa directive/attribute que vai dizer ao ANGULAR __ como _ deverá ser o nome desse control/input na REPRESENTAÇÃO TYPESCRIPT DESSA FORM.. .-->
+          </div>
+          <div class="form-group">
+            <label for="secret">Secret Questions</label>
+            <select id="secret" class="form-control" name="secret" ngModel>
+              <option value="pet">Your first Pet?</option>
+              <option value="teacher">Your first teacher?</option>
+            </select>
+          </div>
+          <button class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+----------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COM ISSO, REGISTRAMOS TODOS OS CONTROLS..
+
+
+
+
+
+
+
+
+
+--> MAS É CLARO QUE 
+
+
+AINDA NÃO PODEMOS VER MT O RESULTADO DISSO LÁ NO CÓDIGO TYPESCIPT..
+
+
+
+
+
+
+
+
+
+
+----> CONSERTAREMOS ISSO NA PRÓXIMA AULA,
+
+
+
+QUANDO 
+
+
+
+ESTUDARMOS COMO PODEMOS 'SUBMIT' UMA FORM DESSAS,
+
+
+
+E AÍ 
+
+
+
+
+ENTENDEREMOS COMO PODEMOS 'SEE' ESSES KEY-VALUE PAIRS 
+
+
+
+REPRESENTATIVOS DAS COISAS QUE O USER INPUTTOU NOS INPUT FIELDS DAS FORMS...
+
+
+
+
+
+
+
+
+
+
+
+
+----> ok...

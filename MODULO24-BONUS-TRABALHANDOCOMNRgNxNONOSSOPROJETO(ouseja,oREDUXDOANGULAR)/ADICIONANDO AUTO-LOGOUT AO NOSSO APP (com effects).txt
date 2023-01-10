@@ -1,0 +1,1836 @@
+
+
+
+
+
+
+
+
+
+
+ESTAMOS QUASE ACABADOS COM O USO DE 'NGRX/EFFECTS' PARA A NOSSA AUTHENTICATION..
+
+
+
+
+
+
+
+
+
+
+
+--> O USO DE NGRX/EFFECTS PARA AUTH 
+
+É BEM COMPLEXO,
+
+
+
+
+PQ ENVOLVE 
+
+MTAS COISAS DIFERENTES....
+
+
+
+
+
+
+
+
+
+
+
+
+-> certo...
+
+
+
+
+
+
+
+
+
+
+
+
+--> A COISA FALTANDO, AGORA,
+
+É 
+
+A 
+
+
+'INVALIDATION' DA NOSSA TOKEN,
+
+que deve acontecer ao longo do tempo,
+
+
+ou quando a TOKEN FOR INVÁLIDA...
+
+
+
+
+
+
+
+
+--> E QUANDO ISSO ACONTECER,
+
+
+
+QUEREMOS 
+
+
+QUE 
+
+
+__ A ACTION DE 'LOGOUT' SEJA DISPATCHEADA,
+PARA QUE O CÓDIGO 
+
+
+DE NOSSO EFFECT TAMBÉM SEJA 
+
+DISPATCHEADO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ANTIGAMENTE, COM O SERVICE,
+
+
+NÓS ESTÁVAMOS FAZENDO ISSO COM 
+
+
+
+
+
+
+
+
+O METHOD DE 'this.autoLogout()",
+
+
+
+
+
+
+
+
+
+QUE 
+
+
+NO FINAL DAS CONTAS BASICAMENTE DEFINIA UMA 
+
+
+'EXPIRATION DURATION'
+
+
+
+através do SET DE UM TIMER,
+
+que 
+
+
+era vinculado ao 'expirationDuration':
+
+
+
+
+
+
+
+
+
+
+
+  autoLogout(expirationTime: number) {  //define um TIMER para então FAZER LOGOUT do user (quando o tempo acabar).... em milissegundos...
+
+  this.tokenExpirationTimer = setTimeout(
+       () => {
+
+        this.logoutUser();
+
+
+       },
+       expirationTime * 1000  ///vai transformar isso, nossos segundos, em MILISSEGUNDOS...
+
+     );
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE TIMER BASICAMENTE CHAMAVA 'logout'
+
+
+quando acabava..
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ ----> O PROFESSOR DIZ QUE 
+
+
+ REALMENTE PODERÍAMOS 
+
+
+ PENSAR EM SETUPS 
+
+
+
+
+
+
+
+ENVOLVENDO O NGRX/EFFECTS,
+
+
+
+
+SETUPS 
+
+
+
+
+DE AUTOLOGOUT usando os effects..
+
+
+
+
+
+
+-------> MAS O PROFESSOR 
+
+
+NÃO GOSTA MT DESSA IDEIA.... --> ISSO PQ O OBJETIVO DO PROFESSOR,
+
+AQUI,
+
+É _ 
+
+
+APENAS 
+
+
+'DISPATCH _ O LOGOUT EFFECT ASSIM QUE UM TIMER 
+
+
+
+TIVER EXPIRADo'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> SIM, PODERÍAMOS USAR UMA 'MÁGICA DE OBSERVABLE'
+
+para conseguir esse efeito de 'depois desse timer acabar, dispatche logout',
+
+
+
+
+
+
+
+
+
+
+MAS O PROFESSOR ACHA QUE 
+
+
+
+
+
+
+
+__ É BEM MELHOR SÓ USARMOS 
+
+O 
+
+
+
+
+SERVICE DE 
+
+'auth.service.ts',
+
+
+
+
+
+DAR UMA BOA LIMPADA NELE 
+
+
+E ENTAÕ O UTILIZAR 
+
+
+
+
+
+COM ESSE METHOD DE 'autoLogout'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> CERTO....
+
+
+
+
+
+
+
+
+
+
+
+
+ISSO QUER DIZER QUE, AO FINAL,
+
+
+NOSSO 
+
+SERVICE FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... O SERVICE FICA BEM 'PELADO',
+
+fica com APENAS O MANAGE DAQUELE 'LOGOUT TIMER':
+
+
+
+
+
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+
+exhaustMap;
+
+import { BehaviorSubject, catchError, exhaustMap, Subject, tap } from 'rxjs';
+
+import { Store } from '@ngrx/store';
+import { AppState } from '..';
+
+import * as fromAuthActions from '../auth/store/authActions';
+
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AuthService {
+  tokenExpirationTimer: any;
+
+  constructor(private store: Store<AppState>) {}
+
+  autoLogout(expirationTime: number) {
+    this.tokenExpirationTimer = setTimeout(() => {
+      this.store.dispatch(new fromAuthActions.AuthLogout());
+    }, expirationTime * 1000);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+------> OK.... E O PROFESSOR RENOMEIA ESSE METHOD DE 'autoLogout'
+
+PARA 
+
+
+'setLogoutTimer()',
+
+
+
+
+PQ 
+
+É SÓ ISSO QUE 
+
+
+ESSE METHOD FARÁ..
+
+
+
+
+
+
+
+--> DENTRO DESSE NEGÓCIO,
+
+ELE VAI SIMPLESMENTE QUERER DAR DISPATCH DA ACTION DE 'AUTHLOGOUT',
+
+
+
+
+
+
+PQ ISSO, SIM, É HANDLADO PELO NGRX/EFFECTS..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> mas há um outro method que ele adiciona,
+
+
+que é 
+
+
+
+
+
+
+
+clearLogoutTimer()
+
+
+
+
+
+
+
+
+
+
+--> ESSE METHOD VAI CHECAR SE 'this.tokenExpirationTimer'
+
+
+
+ESTIVER SETTADO.... -> 
+
+
+
+
+
+
+
+SE CONSTATAR QUE ESSE TIMER ESTÁ 
+
+
+PRESENTE,
+
+ESSE METHOD VAI FAZER 'clearTimeout()'
+
+
+dele....
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+
+exhaustMap;
+
+import { BehaviorSubject, catchError, exhaustMap, Subject, tap } from 'rxjs';
+
+import { Store } from '@ngrx/store';
+import { AppState } from '..';
+
+import * as fromAuthActions from '../auth/store/authActions';
+
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AuthService {
+  tokenExpirationTimer: any;
+
+  constructor(private store: Store<AppState>) {}
+
+  setLogoutTimer(expirationTime: number) {
+    this.tokenExpirationTimer = setTimeout(() => {
+      this.store.dispatch(new fromAuthActions.AuthLogout());
+    }, expirationTime * 1000);
+  }
+}
+
+
+
+
+
+
+
+
+    clearLogoutTimer() {
+
+      if (this.tokenExpirationTimer) {
+
+        clearTimeout(this.tokenExpirationTimer);
+
+
+        this.tokenExpirationTimer = null;
+      }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------> esse segundo method, 'clearLogoutTimer',
+
+
+__ SERÁ USADO NOS NOSSOS EFFECTS, COMO AQUELE 'setLogoutTimer',
+
+
+
+
+PARA HANDLAR __ O LOGOUT DE NOSSO USER A PARTIR DE UM CERTO TEMPO...
+
+
+
+
+
+
+
+
+
+
+
+OK, ASSIM FICAMOS COM 1 SERVICE BEM MAIS 'LEAN',
+
+MAS COMO VAMOS UTILIZAR ESSES METHODS?
+
+
+
+
+
+
+_> BEM, VAMOS OS CHAMAR LÁ DENTRO DOS NOSSOS 'EFFECTS',
+
+
+
+em auth.effects.ts..
+
+
+
+
+
+
+
+
+
+DEVEMOS INJETAR NOSSO SERVICE DE 'auth.service.ts'
+
+DENTRO DO CONSTRUCTOR DOS EFFECTS,
+
+PARA AÍ 
+
+
+USAR ESSES 2 METHODS DO SERVICE, lá nos effects...
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+  constructor(
+    private actions$: Actions,
+    private http: HttpClient,
+    private router: Router,
+    private authService: AuthService
+  ) {
+    //// a naming convention é realmente usar 'actions$' ($ ao final)  ---> uma das naming conventions é nomear TODOS OS OBSERVABLES DO ANGULAR Com '$' AO FINAL...
+  }
+
+
+
+
+
+
+
+
+
+
+
+  CERTO...
+
+
+
+
+
+
+
+  E COMO VAMOS 
+
+
+
+  USAR ESSES METHODS?
+
+
+
+
+
+
+
+  -> provavelmente vamos chamar EM TODOS OS LUGARES EM QUE 
+
+
+  'DEFINIRÍAMOS UM TIMER'...
+
+
+
+
+
+
+
+
+--> OU SEJA,
+
+VAMOS CHAMAR ESSE 
+
+
+
+
+SET DO TIMER LÁ DENTRO DO call de 'map()' em que chamamos o method de 'handleAuthentication':
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+private loginUser(operationType: 'LOGIN' | 'SIGNUP') {  ///como essa é basicamente a lógica de nossos 'effects' outsourceada, é OBRIGATÓRIO FAZER O RETURN DE UM NOVO OBSERVABLE AO FINAL (como o dispatch de uma nova action)...
+    let url: string;
+
+    let type: string = AuthActions.AUTH_START;
+
+    if (operationType === 'LOGIN') {
+      url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`;
+    } else {
+      url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.firebaseAPIKey}`;
+      type = AuthActions.AUTH_SIGNUP_START;
+    }
+
+    return this.actions$.pipe(
+      ofType(type as any),
+      switchMap(
+        (authData: AuthActions.AuthStart | AuthActions.AuthSignupStart) => {
+          const requestHeaders = new HttpHeaders();
+          requestHeaders.append('Content-Type', 'application/json');
+
+          const httpAuthData: {
+            email: string;
+            password: string;
+            returnSecureToken: boolean;
+          } = {
+            email: authData.payload.email,
+            password: authData.payload.password,
+            returnSecureToken: true,
+          };
+
+          return this.http
+            .post<AuthResponseData>(
+              // `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`,
+
+              url,
+              httpAuthData,
+
+              {
+                headers: requestHeaders,
+              }
+            )
+            .pipe( //pipe no INNER OBSERVABLE DE 'this.http.post()'...
+              map((resData) => {
+          
+                return handleAuthentication( //faz o ACTUAL LOGIN e _ TAMBÉM_ armazena a data do user no localStorage...
+                  +resData.expiresIn,
+                  resData.email,
+                  resData.localId,
+                  resData.idToken
+                )
+
+              }),
+
+              catchError((errorRes: any) => {  //aqui não devemos fazer o THROW DE ERRORS (pq isso mata a observable chain), E SIM DEVEMOS _ FAZER O DISPATCH DA ACTION DE 'AuthFail' APrOPRIADA....
+                let errorMessage = 'An unknown error has occured.';
+                console.log(errorRes);
+
+                if (!errorRes.error || !errorRes.error.error) {
+                  return of(new AuthActions.AuthFail(errorMessage));
+                }
+
+                switch (errorRes.error.error.message) {
+                  case 'EMAIL_NOT_FOUND':
+                    errorMessage = 'No user found for the entered email!';
+                    break;
+                  case 'INVALID_PASSWORD':
+                    errorMessage = 'Invalid password, please try again.';
+                    break;
+                  case 'EMAIL_ALREADY_EXISTS':
+                    errorMessage = 'Email already exists, please try again.';
+                }
+
+                return of(new AuthActions.AuthFail(errorMessage));
+              })
+            );
+        }
+      )
+    );
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  nessa linha aqui:
+
+
+
+
+
+
+
+
+
+
+
+
+            .pipe( //pipe no INNER OBSERVABLE DE 'this.http.post()'...
+              map((resData) => {
+
+
+
+          
+                return handleAuthentication( //faz o ACTUAL LOGIN e _ TAMBÉM_ armazena a data do user no localStorage...
+                  +resData.expiresIn,
+                  resData.email,
+                  resData.localId,
+                  resData.idToken
+                )
+
+              }),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ANTES DESSE 'map()',
+
+
+
+
+PODEMOS ADICIONAR UM 'tap()',
+
+PARA AÍ 
+
+
+
+
+
+RODARMOS 
+
+
+'this.authService.setLogoutTimer(+resData.expiresIn)'
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+            .pipe( //pipe no INNER OBSERVABLE DE 'this.http.post()'...
+
+
+
+
+            tap(
+              (resData) => {
+
+
+                  this.authService.setLogoutTimer(+resData.expiresIn);
+              }
+            )
+              map((resData) => {
+
+
+
+          
+                return handleAuthentication( //faz o ACTUAL LOGIN e _ TAMBÉM_ armazena a data do user no localStorage...
+                  +resData.expiresIn,
+                  resData.email,
+                  resData.localId,
+                  resData.idToken
+                )
+
+              }),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  private loginUser(operationType: 'LOGIN' | 'SIGNUP') {  ///como essa é basicamente a lógica de nossos 'effects' outsourceada, é OBRIGATÓRIO FAZER O RETURN DE UM NOVO OBSERVABLE AO FINAL (como o dispatch de uma nova action)...
+    let url: string;
+
+    let type: string = AuthActions.AUTH_START;
+
+    if (operationType === 'LOGIN') {
+      url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`;
+    } else {
+      url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.firebaseAPIKey}`;
+      type = AuthActions.AUTH_SIGNUP_START;
+    }
+
+    return this.actions$.pipe(
+      ofType(type as any),
+      switchMap(
+        (authData: AuthActions.AuthStart | AuthActions.AuthSignupStart) => {
+          const requestHeaders = new HttpHeaders();
+          requestHeaders.append('Content-Type', 'application/json');
+
+          const httpAuthData: {
+            email: string;
+            password: string;
+            returnSecureToken: boolean;
+          } = {
+            email: authData.payload.email,
+            password: authData.payload.password,
+            returnSecureToken: true,
+          };
+
+          return this.http
+            .post<AuthResponseData>(
+              // `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`,
+
+              url,
+              httpAuthData,
+
+              {
+                headers: requestHeaders,
+              }
+            )
+            .pipe( //pipe no INNER OBSERVABLE DE 'this.http.post()'...
+
+
+            tap(
+              (resData) => {
+                this.authService.setLogoutTimer(+resData.expiresIn);  ////ISSO VAI SETTAR UM 'TIMER' para rodar um dispatch de LOGOUT...
+              }
+            ),
+
+              map((resData) => {
+                // const expirationDate = new Date(
+                //   new Date().getTime() + +resData.expiresIn * 1000
+                // );
+
+                // return new AuthActions.AuthSuccess({
+                //   email: resData.email,
+                //   token: resData.idToken,
+                //   userId: resData.localId,
+                //   expirationDate: expirationDate,
+                // });
+
+                return handleAuthentication( //faz o ACTUAL LOGIN e _ TAMBÉM_ armazena a data do user no localStorage...
+                  +resData.expiresIn,
+                  resData.email,
+                  resData.localId,
+                  resData.idToken
+                )
+
+              }),
+
+              catchError((errorRes: any) => {  //aqui não devemos fazer o THROW DE ERRORS (pq isso mata a observable chain), E SIM DEVEMOS _ FAZER O DISPATCH DA ACTION DE 'AuthFail' APrOPRIADA....
+                let errorMessage = 'An unknown error has occured.';
+                console.log(errorRes);
+
+                if (!errorRes.error || !errorRes.error.error) {
+                  return of(new AuthActions.AuthFail(errorMessage));
+                }
+
+                switch (errorRes.error.error.message) {
+                  case 'EMAIL_NOT_FOUND':
+                    errorMessage = 'No user found for the entered email!';
+                    break;
+                  case 'INVALID_PASSWORD':
+                    errorMessage = 'Invalid password, please try again.';
+                    break;
+                  case 'EMAIL_ALREADY_EXISTS':
+                    errorMessage = 'Email already exists, please try again.';
+                }
+
+                return of(new AuthActions.AuthFail(errorMessage));
+              })
+            );
+        }
+      )
+    );
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  CERTO... MAS ESSA É A LÓGICA PARA O LOGIN 'FEITO MANUALMENTE'...
+
+
+
+
+
+
+
+
+  quanto ao login FEITO AUTOMATICAMENTE, COM O 'autoLogin',
+
+
+
+  NÓS 
+
+  __TAMBÉM PRECISAMOS DE UM TIMER..
+
+
+
+
+
+
+
+
+
+
+  --> É POR ISSO 
+
+  QUE 
+
+
+  COLOCAMOS O CALL DESSE METHOD 
+
+
+  DENTRO DO 'BLOCK EM QUE SABEMOS QUE TEMOS UM VALID USER',
+
+
+
+
+
+
+
+
+  por isso o código ficará aqui:
+
+
+
+
+
+
+
+
+  if (loadedUser.token) {
+
+
+    this.authService.setLogoutTimer(expirationDuration);
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  CERTO.... E QUANDO FAZEMOS 'LOGOUT', O PROFESSOR VAI QUERER RODAR AQUELE 'clearLogoutTimer',
+
+
+  PARA LIMPAR OS TIMERS JÁ SETTADOS E PREVENIR MEMORY LEAKS...
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+
+
+    authLogout$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(AuthActions.AUTH_LOGOUT),
+
+        tap(() => {
+          this.authService.clearLogoutTimer(); ////previne memory leaks em razão de nossos timers para logout...
+          localStorage.removeItem('userData');
+          console.log('entered');
+          // this.router.navigate(['/auth']);
+        })
+      );
+    },
+
+    { dispatch: false }
+  );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  AGORA O SET DE NOSSO TIMER, EM 'login/signup' E 'AUTO-LOGIN':
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  private loginUser(operationType: 'LOGIN' | 'SIGNUP') {  ///como essa é basicamente a lógica de nossos 'effects' outsourceada, é OBRIGATÓRIO FAZER O RETURN DE UM NOVO OBSERVABLE AO FINAL (como o dispatch de uma nova action)...
+    let url: string;
+
+    let type: string = AuthActions.AUTH_START;
+
+    if (operationType === 'LOGIN') {
+      url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`;
+    } else {
+      url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.firebaseAPIKey}`;
+      type = AuthActions.AUTH_SIGNUP_START;
+    }
+
+    return this.actions$.pipe(
+      ofType(type as any),
+      switchMap(
+        (authData: AuthActions.AuthStart | AuthActions.AuthSignupStart) => {
+          const requestHeaders = new HttpHeaders();
+          requestHeaders.append('Content-Type', 'application/json');
+
+          const httpAuthData: {
+            email: string;
+            password: string;
+            returnSecureToken: boolean;
+          } = {
+            email: authData.payload.email,
+            password: authData.payload.password,
+            returnSecureToken: true,
+          };
+
+          return this.http
+            .post<AuthResponseData>(
+        
+              url,
+              httpAuthData,
+
+              {
+                headers: requestHeaders,
+              }
+            )
+            .pipe( 
+
+            tap(
+              (resData) => {
+                this.authService.setLogoutTimer(+resData.expiresIn);  ////ISSO VAI SETTAR UM 'TIMER' para rodar um dispatch de LOGOUT...
+              }
+            ),
+
+              map((resData) => {
+    
+                return handleAuthentication( //faz o ACTUAL LOGIN e _ TAMBÉM_ armazena a data do user no localStorage...
+                  +resData.expiresIn,
+                  resData.email,
+                  resData.localId,
+                  resData.idToken
+                )
+
+              }),
+
+              catchError((errorRes: any) => {  //aqui não devemos fazer o THROW DE ERRORS (pq isso mata a observable chain), E SIM DEVEMOS _ FAZER O DISPATCH DA ACTION DE 'AuthFail' APrOPRIADA....
+                let errorMessage = 'An unknown error has occured.';
+                console.log(errorRes);
+
+                if (!errorRes.error || !errorRes.error.error) {
+                  return of(new AuthActions.AuthFail(errorMessage));
+                }
+
+                switch (errorRes.error.error.message) {
+                  case 'EMAIL_NOT_FOUND':
+                    errorMessage = 'No user found for the entered email!';
+                    break;
+                  case 'INVALID_PASSWORD':
+                    errorMessage = 'Invalid password, please try again.';
+                    break;
+                  case 'EMAIL_ALREADY_EXISTS':
+                    errorMessage = 'Email already exists, please try again.';
+                }
+
+                return of(new AuthActions.AuthFail(errorMessage));
+              })
+            );
+        }
+      )
+    );
+  }
+
+
+
+
+
+
+
+
+
+  E ESTE:
+
+
+
+
+
+
+
+    autoLogin$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(AuthActions.AUTO_LOGIN),
+
+
+        map(  //tudo que é retornado aqui será AUTOMATICAMENTE DISPATCHEADO COMO UMA 'NOVA ACTION'...
+          () => {
+
+              const userData: {
+                email: string,
+                id: string,
+                _token: string,
+                _tokenExpirationDate: string
+              } = JSON.parse(localStorage.getItem(
+                'userData'
+              )!);
+
+
+              if (!userData) {
+                // return { type: 'DUMMY'};  ///action falsa... não vai fazer coisa alguma...
+                return new AuthActions.DummyAction();
+              }
+
+              const loadedUser = new User(
+                userData.email,
+                userData.id,
+                userData._token,
+                new Date(userData._tokenExpirationDate)
+              )
+
+              if (loadedUser.token) {
+
+                const expirationDuration =
+                new Date(userData._tokenExpirationDate).getTime() - new Date().getTime();
+
+
+                this.authService.setLogoutTimer(expirationDuration);
+
+                return new AuthActions.AuthSuccess({
+                  email: loadedUser.email,
+                  userId: loadedUser.id,
+                  token: loadedUser.token,
+                  expirationDate: new Date(userData._tokenExpirationDate)
+                });
+
+              }
+              return new AuthActions.DummyAction();
+              // return { type: 'DUMMY'};
+          }
+        )
+      )
+    }
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO... SALVAMOS TUDO ISSO E TESTAMOS NOSSO CÓDIGO...
+
+
+
+
+
+-> PARA VER SE ISSO REALMENTE FUNCIONA, O PROFESSOR TROCA O VALUE DE NOSSO LOGOUTTIMER, PARA QUE 
+ELE EXPIRE EM 3 SEGUNDOS, E NÃO EM 3600....
+
+
+
+
+
+
+
+
+
+
+
+
+ok.... testando...
+
+
+
+
+
+
+
+
+ok, funcionou...
+
+
+
+
+
+
+
+
+
+
+
+
+-> FUNCIONOU, MAS A ÚNICA COISA QUE _ NÃO FUNCIONOU _ FOI O 'REDIRECT AUTOMÁTICO À PAGE 
+
+
+
+DE 
+
+
+
+'/' '...
+
+
+
+
+
+
+
+
+
+
+mas pq isso?
+
+
+
+
+
+
+
+
+-> NÓS TEMOS A NOSSA LÓGICA DE REDIRECT, SIM, QUE É ESTA:
+
+
+
+
+
+  
+authRedirect = createEffect( ///redireciona o user a partir das actions de 'success' e 'logout', ambos os cases vão para a page de '/'...
+  () => {
+      return this.actions$.pipe(
+          ofType(AuthActions.AUTH_SUCCESS, AuthActions.AUTH_LOGOUT),
+
+          tap(
+              () => {
+                  this.router.navigate(['/']);
+              }
+          )
+      )
+  },
+  {dispatch: false}
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O PROBLEMA É QUE TEMOS 'KIND OF A RACE CONDITION'
+
+
+
+ENTRE _ O NOSSO 'LOGOUT NO REDUCER' ,
+
+
+
+
+
+
+
+QUE TEM ESTA LÓGICA AQUI:
+
+
+
+
+
+
+const authLogout = (
+  state: AuthState,
+  action: AuthActions.AuthLogout
+): AuthState => {
+  // localStorage.removeItem('userData'); ///REMOVE A DATA DO USER DE SUA 'LOCALSTORAGE', aquela 'cookie' que fica lá.... //talvez esse seja um lugar ruim para colocar esse código ('side effect', não tem relação direta com o reducer, esse movimento)...
+
+  return updateObject(state, {
+    token: null,
+    email: null,
+    userId: null,
+    expirationDate: null
+  });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---->  ISSO É IMPORTANTE, PQ ESTAMOS COM UMA 'RACE CONDITION' ENTRE O LOGOUT NO REDUCER ,
+
+
+EM QUE NÓS REALMENTE FAZEMOS CLEAR DA DATA DO USER, O QUE É IMPORTANTE PARA O 'AUTH-GUARD' (Que é, no final das contas, 
+a coisa que DECIDE QUAL PAGE VAMOS EVENTUALMENTE VER E PODER ACESSAR)
+
+
+
+
+
+CORRIDA ENTRE O LOGOUT NO REDUCER (helper function a partir da action) 
+
+
+
+
+E O LOGOUT EFFECT, LÁ NOS EFFECTS.... 
+
+
+
+
+
+
+
+(
+
+  ou seja, o authguard e esse effect ESTÃO _ CONFLITANDO, ESTÃO REDIRECIONANDO AO MESMO TEMPO...
+
+
+
+
+
+)
+
+
+
+
+
+
+
+
+--> A SOLUÇÃO _ MAIS SIMPLES A ESSE PROBLEMA É _ SIMPLESMENTE_ REMOVER O 'LOGOUT'
+
+
+
+dos CASES 
+
+
+ADEQUADOS PARA O REDIRECT, TIPO ASSIM:
+
+
+
+
+
+  
+authRedirect = createEffect( ///redireciona o user a partir das actions de 'success' e 'logout', ambos os cases vão para a page de '/'...
+  () => {
+      return this.actions$.pipe(
+          ofType(AuthActions.AUTH_SUCCESS),
+
+          tap( 
+              () => {
+                  this.router.navigate(['/']);
+              }
+          )
+      )
+  },
+  {dispatch: false}
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK... --> ISSO VAI FAZER COM QUE NOSSO USER NÃO SEJA REDIRECIONADO A PARTIR DO DISPATCH DE 'authLogout()'.
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... E AÍ, FEITA ESSA MUDANÇA, O PROFESSOR DECIDE COLOCAR UM 'this.router.navigate(['/auth'])'
+
+
+
+
+
+
+DENTRO DO EFFECT DE 'authLogout',
+
+PARA ASSEGURAR QUE O USER ENTÃO SERÁ REDIRECIONADO AO 'auth' page....
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+    authLogout$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(AuthActions.AUTH_LOGOUT),
+
+        tap(() => {
+          this.authService.clearLogoutTimer(); ////previne memory leaks em razão de nossos timers para logout...
+          localStorage.removeItem('userData');
+          console.log('entered');
+           this.router.navigate(['/auth']);
+        })
+      );
+    },
+
+    { dispatch: false }
+  );
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  authLogout$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(AuthActions.AUTH_LOGOUT),
+
+        tap(() => {
+          this.authService.clearLogoutTimer(); ////previne memory leaks em razão de nossos timers para logout...
+          localStorage.removeItem('userData');
+          console.log('entered');
+          this.router.navigate(['/auth']);
+        })
+      );
+    },
+
+    { dispatch: false }
+  );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... COM ISSO, 
+
+
+
+
+
+
+
+
+
+FINALMENTE NOSSO SETUP DE 'EFFECTS' PARA A AUTHENTICATION ESTÁ _ PRONTO...
+
+
+
+
+
+
+-> MAS AINDA TENHO UM PROBLEMA... -> QUANDO REINICIO O APP (reload na page),
+
+PERCO TODO O STATE DO USER, na localStorage..
+
+
+
+
+
+
+
+
+
+
+
+certo... era um problema de MEDIDAS, de '1000' (ms, segundos, etc, esse tipo de coisa, com 'setTimeout()')...
+
+
+
+
+
+
+
+
+
+
+
+-> CONSERTEI..
+
+
+
+
+
+
+
+
+COM ISSO, NOSSO SETUP DE 'EFFECTS' PARA AUTHENTICATIOn finalmente está funcionando....
+
+
+
+
+
+
+
+
+
+
+
+-> COM ISSO, NOSSO AUTH SERVICE __ SÓ SERVE PARA HANDLAR O 'TIMER',
+
+
+E TODO O RESTO É MANAGEADO SOMENTE PELO NGRX...

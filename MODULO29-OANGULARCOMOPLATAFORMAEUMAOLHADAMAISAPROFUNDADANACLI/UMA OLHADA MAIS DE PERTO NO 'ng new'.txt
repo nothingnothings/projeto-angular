@@ -1,0 +1,1052 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... PARA COMEÇAR,
+
+
+COMEÇAMOS COM UM NOVO PROJECT..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+escreva 
+
+'npm install -g @angular/cli@latest '
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ISSO VAI INSTALAR O ANGULAR GLOBALMENTE..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA CRIAR UM NOVO PROJECT,
+
+ESCREVEMOS 'ng new'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo...
+
+
+
+
+
+
+
+
+
+se você quer CRIAR UM NOVO PROJECT,
+
+
+
+VOCê PODE OU ESCREVER 
+
+'ng new' 
+
+E ENTÃO INPUTTAR O PROJECT NAME,
+
+
+
+
+
+
+
+
+
+
+ou então 
+
+
+
+escrever 
+
+'ng new nome'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ CERTO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> DEPOIS DISSO,
+
+ O PROFESSOR ESCREVE 
+
+
+
+
+ 'ng new --help'... 
+
+
+
+
+
+
+
+
+
+
+
+
+ -->  A FLAG  '--help'
+
+
+
+
+
+
+
+
+PODE SER USADA EM QUALQUER COMANDO, PARA 
+
+
+
+SABER MAIS SOBRE O COMMAND,
+
+
+
+
+
+
+E SOBRE AS DIFERENTES OPTIONS POSSÍVEIS COM ELE..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR 
+
+
+
+
+
+
+
+COLOCA 
+
+
+'ng new --help' ...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> 
+
+
+
+VEMOS AS DIFERENTES OPTIONS:
+
+
+
+
+
+
+
+Arguments:
+  name  The name of the new workspace and initial project.                                                       [string]
+
+Options:
+      --help                Shows a help message for this command in the console.                               [boolean]      --interactive         Enable interactive input prompts.                                   [boolean] [default: true]      --dry-run             Run through and reports activity without writing out results.      [boolean] [default: false]      --defaults            Disable interactive input prompts for options with a default.      [boolean] [default: false]      --force               Force overwriting of existing files.                               [boolean] [default: false]  -c, --collection          A collection of schematics to use in generating the initial application.             [string]      --commit              Initial git repository commit information.                          [boolean] [default: true]      --create-application  Create a new initial application project in the 'src' folder of the new workspace. When      
+                            false, creates an empty workspace with no initial application. You can then use the generate 
+                            application command so that all applications are created in the projects folder.
+                                                                                                [boolean] [default: true]      --directory           The directory name to create the workspace in.                                       [string]  -s, --inline-style        Include styles inline in the component TS file. By default, an external styles file is       
+                            created and referenced in the component TypeScript file.                            [boolean]  -t, --inline-template     Include template inline in the component TS file. By default, an external template file is   
+                            created and referenced in the component TypeScript file.                            [boolean]      --minimal             Create a workspace without any testing frameworks. (Use for learning purposes only.)
+                                                                                               [boolean] [default: false]      --new-project-root    The path where new projects will be created, relative to the new workspace root.
+                                                                                           [string] [default: "projects"]      --package-manager     The package manager used to install dependencies.
+                                                                        [string] [choices: "npm", "yarn", "pnpm", "cnpm"]  -p, --prefix              The prefix to apply to generated selectors for the initial project. [string] [default: "app"]      --routing             Generate a routing module for the initial project.                                  [boolean]  -g, --skip-git            Do not initialize a git repository.                                [boolean] [default: false]      --skip-install        Do not install dependency packages.                                [boolean] [default: false]  -S, --skip-tests          Do not generate "spec.ts" test files for the new project.          [boolean] [default: false]      --strict              Creates a workspace with stricter type checking and stricter bundle budgets settings. This   
+                            setting helps improve maintainability and catch bugs ahead of time. For more information, see                            https://angular.io/guide/strict-mode                                [boolean] [default: true]      --style               The file extension or preprocessor to use for style files.
+                                                                        [string] [choices: "css", "scss", "sass", "less"]      --view-encapsulation  The view encapsulation strategy to use in the initial project.
+                                                                      [string] [choices: "Emulated", "None", "ShadowDom"]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> o primeiro é engraçado:
+
+
+
+
+
+
+
+
+
+ng new --interactive...
+
+
+
+
+
+
+   Enable interactive input prompts.
+
+
+
+
+
+
+
+
+
+
+
+
+
+   temos 'dry-run':
+
+       --dry-run             Run through and reports activity without writing out results. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSAS FLAGS MUDAM AO LONGO DO TEMPO, ALGUMAS SÃO ADICIONADAS,
+
+ALGUMAS SÃO DEPRECADAS...
+
+
+
+
+
+
+
+
+
+
+
+
+--> algumas são importantes, outras naõ..
+
+
+
+
+
+
+
+
+
+
+
+
+--> A PRIMEIRA IMPORTANTE É 
+
+
+'ng new --create-application'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSA OPTION FICA DEFINIDA COMO 'TRUE' ,
+
+
+
+
+
+
+
+por default...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ESSA OPTION _ CRIA_  UM NOVO PROJECT,
+
+UM NOVO 'INITIAL APP' 
+
+
+
+project, LÁ NO FOLDER 'src' 
+
+
+
+DO SEU NOVO WORKSPACE....
+
+
+
+
+
+
+
+
+
+
+
+
+--> SE VOCÊ DEFINE COMO 'false',
+
+
+
+
+
+
+O ANGULAR CLI __ VAI __ CRIAR UM EMPTY WORKSPACE,
+
+
+COM NENHUM 'INITIAL APP'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE COMANDO _ PODE __ SER ÚTIL SE VOCÊ 
+
+
+
+
+
+
+QUISER FAZER MANAGE DE 'MÚLTIPLOS APPS E LIBRARIES' DENTRO 
+
+
+ 
+
+
+
+
+DE 'ONE AND ONLY CLI-MANAGED PROJECT'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> VEREMOS MAIS SOBRE ISSO MAIS TARDE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> 'dry-run' ------> PODE SER ÚTIL __ NAS HIPÓTESES EM QUE ''''VOCÊ SÓ QUER VER O QUE O CLI __ FARIA_ COM SEU 
+
+COMANDO,
+
+
+
+COM O COMANDO ng new'''',
+
+
+
+
+MAS SEM __ ACTUALLY_ 
+
+ACONTECER O CREATE DO CONTEÚDO NO SEU DISCO...
+
+
+
+
+
+
+
+
+
+ 
+-----> o 'dry-run'
+
+
+
+PODE PARECER SEM SENTIDO,
+
+MAS SE 
+
+VOCê 
+ESTÁ PASSANDO 
+
+MÚLTIPLAS CONFIGURATION FLAGS,
+
+
+
+
+
+
+
+
+
+
+
+O RUN DE '--dry-run'
+
+
+
+
+VAI 
+
+
+__MOSTRAr__ O QUE 
+
+ O CLI 
+
+ VAI ACTUALLY FAZER, POSTERIORMENTE... (
+
+
+
+  você faz isso para VERIFICAR SE VOCÊ VAI REALMENTE CONSEGUIR O PROJECT QUE VOCê QUER,
+
+
+ISSO SEM 
+
+ACTUALLY IR ATRAVÉS 
+
+DE TODO O SETUP PROJECT,
+
+O QUE PODE SER BOM, às VEZES...
+
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> OUTRO COMANDO:
+
+
+
+
+
+
+
+
+
+
+ ng new --inline-style 
+
+
+
+ ng new --inline-template..
+
+
+
+
+
+
+
+
+
+
+
+ ----> COM ESSAS OPTIONS,
+
+
+
+ VOCÊ PODE DETERMINAR SE 
+
+
+
+
+ '''OS COMPONENTS QUE VOCÊ VAI GENERATE VÃO ACTUALLY COMEÇAR COM INLINE-STYLES 
+
+
+ OU INLINE-TEMPLATES'''', ou se então vão começar com 
+
+
+ 'EXTERNAL FILES'...
+
+
+
+(
+
+
+ISSO PODE TE AJUDAR A EVITAR O INCÔMODO DE TER 
+
+DE 
+
+
+
+SETTAR ESSA OPTION PAR __ TODO __ 
+
+
+COMPONENT __ QUE ACABA SENDO 'NEWLY GENERATED' individualmente...
+
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+JÁ o
+
+
+
+
+
+''' ng new --prefix''''
+
+
+
+
+
+
+
+
+TE DEIXA __ CONFIGURAR O 'DEFAULT PREFIX' 
+
+
+
+
+QUE __ CADA_ _ COMPONENT__ GERADO COM 'ng g c'  VAI TER...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK... --> MAS O PROFESSOR JÁ NOS MENCIONA QUE 
+
+
+
+''MUITAS DESSAS OPTIONS PODEM SER CONFIGURADAS/SETTADAS 
+
+
+
+
+NO _ EXISITNG PROJECT, MAIS TARDE',
+
+
+
+
+
+E O PROFESSOR VAI NOS MOSTRAR COMO MUDAR CADA UMA DESSAS COISAS,
+
+
+
+
+E ONDE AJUSTAR ESSA CONFIG EM GERAL... isso na próxima aula....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok...
+
+
+
+
+AÍ TEMOS 
+'--routing' ------> A OPTION DE ROUTING TE DEIXA 
+
+
+
+ESPECIFICAR ''' SE VOCÊ QUER COMEÇAR SEU APP COM UM ROUTING MODULE JÁ 
+
+DEFINIDO, E COM ALGUMAS INITIAL ROUTES''...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> JÁ '--skip-tests'
+
+
+
+TE DEIXA DEFINIR SE 
+
+
+NEWLY GENERATED COMPONENTS, SERVICES E ETC 
+
+ 
+
+ TERÃO 
+
+ TESTING FILES 
+
+
+
+ DO LADO DELES OU NÃO...
+
+
+
+
+ (
+  e já usei esse comando uma vez...
+
+
+
+
+
+
+
+
+  ng new --skip-tests
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> também temos '--skip-install',
+
+
+
+ QUE TE DEIXA __ CRIAR _ UM NOVO PROJECT,
+
+
+
+ COM NOVAS FILES 
+
+
+
+ ESCRITAS NO DISCO,
+
+ MAS SEM AS 'NPM DEPENDENCIES' SENDO INSTALADAS... (economiza espaço, pq deixamos de baixar o 'angular/core' e outras coisas)....
+
+
+
+
+
+
+
+
+
+
+
+ ( OU SEJA,
+ FICAMOS SEM O 'NODE_MODULES')...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> ISSO ACELERA O  CREATION PROCESS,
+
+ E VOCê SEMPRE PODE INSTALAR AS DEPENDENCIES MANUALMENTE, MAIS TARDE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> ok, 
+
+ o 
+
+
+
+ 'ng new --help'
+
+
+ TE AJUDA A DESCOBRIR O QUE FAZER COM CADA UM DESSES COMMANDS..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> VOCê TAMBÉM PODE CHECAR OS ANGULAR DOCS,
+
+ PARA TER MAIS INFO SOBRE O CLI,
+
+ TODOS OS COMANDOS QUE ELE 
+
+ SUPORTA, ETC ETC..
+
+
+
+
+
+ (as options de cada command, etc)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ COM ISSO, DEVEMOS CRIAR UM NOVO PROJECT,
+
+ com ng new....
+
+
+
+
+
+
+A:\projeto8-ANGULAR\MODULO29-OANGULARCOMOPLATAFORMAEUMAOLHADAMAISAPROFUNDADANACLI>ng new angularConfigExample
+
+
+
+
+
+
+
+
+
+
+
+
+
+-->  VOCê PODE ESCOLHER SEU STYLE SHEET 
+
+
+FORMAT..
+
+
+
+
+
+
+
+
+
+--> VOCÊ PODERIA ESCOLHER 'SASS',
+
+
+ 
+ que é um 
+
+
+
+ 'STYLE PRE-PROCESSOR'...
+
+
+
+
+
+
+
+
+
+
+
+ OK ... ISSO VAI CRIAR O PROJECT, INSTALAR TODAS AS DEPENDENCIES e escreve tudo no disco..
+
+
+
+
+
+
+
+
+
+
+ veremos mais sobre isso NA PRÓXIMA AULA...
+
+
+
+
+
+
+
+

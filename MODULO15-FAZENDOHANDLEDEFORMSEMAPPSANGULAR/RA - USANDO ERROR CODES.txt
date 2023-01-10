@@ -1,0 +1,537 @@
+
+
+
+
+
+
+
+
+
+--> VIMOS UM ERROR CODE ESTRANHO, VAMOS VER O QUE ELE SIGNIFICA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> O PROFESSOR DEIXA O VALUE DE 'Anna' 
+
+
+
+
+
+
+NO INPUT... ----> O FIELD ESTÁ COMO INVALID,
+
+E A OVERALL FORM ESTÁ COMO INVALID..
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR DIZ QUE AINDA PODEMOS CLICAR NO BUTTON, CONTUDO,
+
+
+pq 
+
+
+ele não definiu código condicional para seu disable (property binding)...
+
+
+
+
+
+
+
+
+
+
+--> MAS AÍ ELE FALA DE ALGO INTERESSANTE:
+
+
+ 
+
+ SE ABRIMOS O OBJETO 'FORM' 
+
+
+
+
+
+
+ ,
+
+ o object 'FormGroup',
+
+
+
+
+ TEMOS A PROPRIEDADE DE 'errors'..
+
+
+
+
+
+
+
+ --> SE ABRIMOS ESSA PROPRIEDADE,
+
+
+
+
+ PERCEBEMOS QUE ELA ESTÁ COMO 'null'... (mesmo com a form INVÁLIDA)..
+
+
+
+
+
+
+
+
+
+
+ --> A OUTRA PARTE INTERESSANTE É SE ENTRARMOS NOS 
+  
+
+  'FormControl'
+
+  desse FormGroup ------> SE OLHJARMOS 
+
+
+
+  OS 
+
+  ERRORS DE cada control,
+
+
+
+
+
+
+  VEREMOS _ QUE __ 
+
+
+
+
+
+
+
+  O NOSSO 'FormControl' 
+
+
+
+
+  de 
+
+
+
+'username',
+
+
+QUE ESTÁ COM AQUELE __ CUSTOM VALIDATOR __ DE 'usernames não podem ser anna ou chris'
+
+
+
+
+ESTARÁ __ 
+
+
+
+
+COM 
+
+
+UMA DISPOSIÇÃO ASSIM:
+
+
+
+
+
+
+
+errors: {
+    isForbiddenName: true
+}
+
+
+
+
+
+
+
+
+
+
+
+
+------> ISSO SIGNIFICA QUE ___ É NESSE __ LUGAR_ QUE O ANGULAR_ ACTUALLY_ 
+
+
+ADICIONA OS CÓDIGOS DE ERROR.... --> ELE 
+
+
+
+_ SÓ ADICIONA OS CÓDIGOS DE ERROR_  
+
+
+
+
+NOS 'individiual controls' 
+
+
+
+no object de 'errors'... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> PODEMOS TIRAR VANTAGEM DESSE FATO.... ----> BASTA 
+
+
+
+
+IR ATÉ 
+
+
+O 
+
+
+
+
+
+CÓDIGO HTML 
+
+
+
+E ENTÃO 
+
+
+
+DAR UM FINE-TUNE 
+
+
+
+NAQUELA MENSAGEM DE ERROR 
+
+
+
+QUE ESCREVEMOS ASSIM:
+
+
+
+
+
+
+
+
+          <span
+            *ngIf="
+              !signupForm.get('userData.username')?.valid &&
+              signupForm.get('userData.username')?.touched
+            "
+            class="help-block"
+            [ngStyle]="{ color: 'red' }"
+            >Username IS invalid!</span
+          >
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          ---> DIGAMOS QUE QUEREMOS DIZER 
+
+
+
+          QUE 'username is required'
+
+
+
+          SE O FIELD ESTIVER EMPTY,
+
+
+
+          E 
+
+
+          'Chris and Anna are Forbidden'
+
+
+          se 
+
+          o 
+
+
+          error for realmente atribuído 
+
+
+          a 'isForbiddenName: true'...
+
+
+
+
+
+
+
+
+
+
+
+          --> OU, ENTÃO,
+
+
+
+          dizer 'the username is required' se o FIELD ESTIVER VAZIO
+
+
+
+
+          E 
+
+          'this username is invalid'
+
+
+
+          SE O USERNAME REALMENTE FOR INVÁLIDO...
+
+
+
+
+
+
+
+
+          -----> SE QUISERMOS FAZER ISSO,
+
+
+
+          NOSSO CHECK ATUAL _ NÃO SERÁ SUFICIENTE..
+
+
+
+
+
+
+
+
+
+          -> PRECISAMOS ESCREVER ALGUNS CHECKS ADICIONAIS, E ESCREVER MAIS UNS SPANS, para cada CASE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ---> O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          <span *ngIf="
+          !signupForm.get('userData.username')?.valid &&
+          signupForm.get('userData.username')?.touched
+        "
+        class="help-block">
+          <span
+            
+          [ngStyle]="{ color: 'red' }"
+          *ngIf="signupForm.get('userData.username')?.errors?.['isForbiddenName']"
+          >This username is invalid!</span
+        >
+        <span
+        *ngIf="signupForm.get('userData.username')?.errors?.['required']"
+        class="help-block"
+        [ngStyle]="{ color: 'red' }"
+        >Username is required!</span
+      >
+    </span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> ou seja,
+
+    bastou acessar o object de 'errors'
+
+
+    dentro 
+
+
+
+    de nossa form,
+
+
+
+    e aí 
+
+
+    acessar as key names adequadas...
+
+
+
+
+    (
+
+
+
+        podemos colocar 'required',
+
+        ou 
+
+
+        os keynames que usamos para nossos custom validators...
+
+
+
+        
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+    --> É CLARO QUE 
+
+    PODERÍAMOS USAR 'ngSwitch'
+
+
+    AQUI, OU QUALQUER OUTRO SETUP...
+
+
+
+
+
+
+
+
+
+    --> MAS A COISA IMPORTANTE AQUI É ENTENDER QUE 
+
+
+
+
+    ESSES ERROR CODES PODEM SER USADOS PARA 
+
+    MOSTRAR 
+
+    AS MENSAGENS DE ERRO QUE VOCê QUISER...
+
+
+
+
+
+
+
+
+
+
+
+    --> É CLARO QUE VOCê PODE USAR SETUPS 
+
+
+
+    AINDA MAIS COMPLEXOS,
+
+      
+
+      EM QUE 
+
+      VOCê TEM TYPESCRIPT OBJECTS EM SEU CÓDIGO TS,
+
+
+
+      E AÍ 
+
+
+      EM QUE 
+
+      VOCê 
+
+      MAPPEI 
+
+
+    ERROR CODES A MENSAGENS ESPECÍFICAS NO SEU HTML,
+
+    e
+     aí outputtar isso dinamicamente no seu html....
+
+
+
+
+
+
+
+     --> ESSA É A MANEIRA BÁSICA DE USAR ESSES CODES....

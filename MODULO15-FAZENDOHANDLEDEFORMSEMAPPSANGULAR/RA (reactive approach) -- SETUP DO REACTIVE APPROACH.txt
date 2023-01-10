@@ -1,0 +1,1106 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ESTUDARMOS 
+
+O 
+
+
+
+REACTIVE APPROACH DE DEFINIÇAÕ DE FORMS,
+
+
+
+
+
+
+DEVEMOS _ CRIAR _ UM 
+
+
+
+
+NOVO PROJETO angular...
+
+
+
+
+
+
+
+
+
+
+
+ng new --> criamos um novo projeto...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> COMO O PROFESSOR HAVIA MENCIONADO,
+
+
+
+NO REACTIVE APPROACH A 
+
+FORM É CRIADA _ PROGRAMATICAMENTE... ----> OU SEJA,
+
+
+
+É CRIADA NO CÓDIGO TYPESCRIPT..
+
+
+
+
+
+
+
+
+
+
+
+-> lá, QUEREMOS 
+
+
+CRIAR UMA NOVA PROPRIEDADE,
+
+QUE 
+
+VAI 
+
+'HOLD'
+
+nossa form,
+
+
+NO FINAL DAS CONTAS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> NOSSO CÓDIGO COMEÇA ASSIM, É CLARO:
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+    genders = ['Male', 'Female'];
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> QUEREMOS CRIAR UMA NOVA PROPRIEDADE,
+
+
+QUE VAI SEGURAR 
+
+NOSSA FORM....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... A PRIMEIRA COISA QUE VOCÊ TEM QUE SABER É QUE 
+
+
+
+'PROGRAMMATICALLY'
+
+
+NÃO SIGNIFICA 'FROM SCRATCH' ---------> ISSO PQ O ANGULAR _ NOS OFERECE UM MONTE DE 
+
+
+FERRAMENTAS 
+
+
+PARA RAPIDAMENTE 
+
+CRIAR UMA FORM DESSAS..
+
+
+
+
+
+
+
+
+
+
+
+----> OK... QUEREMOS ARMAZENAR  
+
+ESSA 
+
+FORM EM UMA PROPERTYY,
+
+
+PROPERTY 
+
+
+
+que vocÊ pode 
+
+
+nomear como o que vocÊ quiser...
+
+
+
+
+
+
+
+--> O PROFESSOR BOTA UM NAME DE 'signupForm'...
+
+
+
+
+
+
+
+
+
+
+--------> E ESSA PROPERTY TERÁ UM TYPE DE 'FormGroup'...
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+    genders = ['Male', 'Female'];
+    signupForm: FormGroup;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> CERTO...
+
+
+
+
+
+
+
+COMEÇAMOS ASSIM,
+ 
+ PORTANTO:
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+import { FormGroup } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+    genders = ['Male', 'Female'];
+
+    signupForm: FormGroup;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> O PROFESSOR NOS EXPLICA QUE VAMOS QUERER IMPORTAR ESSE 'FormGroup'
+
+
+
+
+
+
+
+lá 
+
+
+da package de 
+
+
+'@angular/forms'....
+
+
+
+
+
+
+
+
+
+
+--> ESSA É A PACKAGE DE 
+
+'forms',
+
+
+e 
+
+
+_ utilizaremos _ UM MONTE __ 
+
+DE CLASSES 
+
+QUE 
+
+ELA OFERECE..
+
+
+
+
+
+
+
+
+
+
+
+
+----> LÁ NO 
+
+
+
+
+TEMPLATE-DRIVEN APPROACH,
+
+
+NÓS JÁ 
+
+HAVÍAMOS 
+
+
+
+
+IMPORTADO 
+
+o 
+
+'ngForm'
+
+
+
+
+dessa pcakge aí,
+
+
+
+
+
+
+
+HAVÍAMOS IMPORTADO AQUELE TYPE de 'NgForm'
+
+QUE ENTÃO FOI USADO 
+
+EM VÁRIOS LUGARES,
+
+
+
+
+TANTO EM METHODS COMO com '@ViewChild()'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> BEM, MAS O QUE INTERESSA MENCIONAR É QUE 
+
+
+
+'NgForm'
+
+
+ERA _ 
+
+
+
+
+
+
+,
+
+EXPLICA O PROFESSOR AGORA,
+
+
+
+__ 
+
+UMA ESPÉCIE DE 
+
+
+''''WRAPPER CRIADO DE FORMA AUTOMÁTICA PELO ANGULAR''' ,
+
+
+
+
+
+
+
+
+
+___ ERA UM __ WRAPPER __ QUE 
+
+SEMPRE WRAPPAVA 
+
+UM 
+
+'FORMGROUP' (todas aqueles seus input fields, selects, textareas, radio buttons, etc, tudo isso era agrupado em 1 FORMGROUP, ou em 1 grande formgroup com formGroups menores no seu interior)..
+
+
+
+
+
+
+
+
+
+
+
+------> ISSO PQ _ NO ANGULAR,
+
+
+
+
+
+1 FORM É, 
+
+NO FINAL DAS CONTAS,
+
+
+
+
+'''JUST A GROUP OF CONTROLS''' -> E É EXATAMENTE ISSO QUE 
+
+
+UMA 
+
+'FORMGROUP'
+
+SEGURA,
+
+
+
+
+UM GRANDE GRUPO 
+
+DE CONTROLS....
+
+
+
+
+
+
+
+
+
+
+-> ISSO QUER DIZER QUE A 'OVERALL FORM'
+
+
+TAMBÉM É 
+UM SIMPLES 
+
+'FORMGROUP'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+E PODEMOS SÓ DEFINIR ESSE TYPE INICIAL DE 'FormGroup',
+
+
+sem colocar um value para isso....
+
+
+
+
+
+
+
+
+
+
+
+
+O NOSSO CÓDIGO HTML, INICIALMENTE,
+
+ESTÁ ASSIM (resquícios do uso do 'TEMPLATE-DRIVEN APPROACH'):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form (ngSubmit)="onSubmitForm(formReference)" #formReference="ngForm">
+        <div
+          id="user-data"
+          ngModelGroup="userData"
+          #userDataReference="ngModelGroup"
+        >
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              class="form-control"
+              ngModel
+              placeholder="Your name"
+              name="username"
+              required
+              #nameReference="ngModel"
+              minlength="5"
+            />
+            <span
+              class="help-block"
+              [ngStyle]="{ color: 'red' }"
+              *ngIf="!nameReference.valid && nameReference.value"
+            >
+              Your name must have at least 5 characters!</span
+            >
+          </div>
+
+          <button class="btn btn-default" type="button">
+            Suggest an Username
+          </button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              ngModel
+              name="email"
+              required
+              placeholder="example@test.com"
+              email
+              #emailReference="ngModel"
+            />
+            <span
+              class="help-block"
+              [ngStyle]="{ color: 'red' }"
+              *ngIf="!emailReference.valid && emailReference.value"
+            >
+              Please enter a valid email!</span
+            >
+          </div>
+        </div>
+        <p *ngIf="!userDataReference.valid && userDataReference.touched">
+          There is some user data that is still invalid.
+        </p>
+
+        <div class="form-group">
+          <label for="secret">Secret Questions</label>
+          <select
+            id="secret"
+            class="form-control"
+            name="secret"
+            [ngModel]="defaultQuestion"
+          >
+            <option value="pet">Your first Pet?</option>
+            <option value="teacher">Your first teacher?</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <textarea
+            class="form-control"
+            id="exampleFormControlTextarea1"
+            rows="3"
+            [ngModel]="defaultTextValue"
+            required
+            type="text"
+            name="textValue"
+          >
+          </textarea>
+        </div>
+
+        <textarea
+          name="answer"
+          row="3"
+          [(ngModel)]="questionAnswer"
+          class="form-control"
+          required
+          minlength="5"
+          #textAreaReference="ngModel"
+        >
+        </textarea>
+        <p>{{ questionAnswer }}</p>
+        <span
+          class="help-block"
+          [ngStyle]="{ color: 'red' }"
+          *ngIf="!textAreaReference.valid && textAreaReference.value"
+          >Textarea text too short, please input more than 4 characters.</span
+        >
+        <div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input
+              required
+              type="radio"
+              name="gender"
+              [ngModel]="exemploGender"
+              [value]="gender"
+            />
+            {{ gender }}
+          </label>
+        </div>
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="!formReference.valid"
+        >
+          Submit
+        </button>
+        <div class="row" *ngIf="submitted">
+          <div class="col-xs-12">
+            <h3>Your Data</h3>
+            <p>Username: {{ user.username }}</p>
+            <p>Mail: {{ user.email }}</p>
+            <p>Secret Question: {{ user.secretQuestion }}</p>
+            <p>Answer: {{ user.answer }}</p>
+            <p>Gender: {{ user.gender }}</p>
+            <p>TextValue: {{ user.textValue }}</p>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK....
+
+
+
+
+
+
+
+
+
+--> ESSE define de 
+
+
+'signupForm: FormGroup'
+
+
+NOS DÁ UMA __ PROPRIEDADE 
+
+
+
+COM A QUAL 
+
+PODEREMOS 
+
+TRABALHAR,
+
+
+E QUE 
+
+VAI, NO FINAL DAS CONTAS,
+
+
+
+SEGURAR _ NOSSA FORM...
+
+
+
+
+
+
+
+
+
+
+
+
+->  MAS HÁ ALGO BEM IMPORTANTE, AQUI:
+
+
+
+
+
+
+
+
+
+PARA QUE O REACTIVE APPROACH _ FUNCIONE,
+
+
+ESPECIALMENTE MAIS TARDE,
+
+ 
+
+ QUANDO CONECTARMOS NOSSA 
+
+
+ ''FORM CRIADA PROGRAMATICAMENTE'''
+
+
+
+
+ AO NOSSO ACTUAL CÓDIGO HTML,
+
+
+
+
+
+
+
+
+
+
+ __ VOCÊ PRECISA __ IMPORTAR UMA 
+
+
+ COISA ADICIONAL,
+
+
+ LÁ EM 
+ 'app.module.ts':
+
+
+
+
+
+
+
+
+
+
+
+
+ --> LÁ NESSE ARQUIVO,
+
+ NO MOMENTO TEMOS APENAS OS IMPORTS DE 
+
+
+ 'BrowserModule',
+
+ 'FormsModule' ( e o httpmodule, na versão do professor):
+
+
+
+
+
+
+
+
+
+
+ import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> MAS O PROFESSOR  _ _JÁ _ NOS EXPLICA QUE O __ MODULE 
+
+
+DE 
+
+'FormsModule'
+
+
+
+__NÃO É MAIS NECESSÁRIO... -> ELE SOMENTE É NECESSÁRIO 
+
+
+LÁ 
+
+NO 
+
+'TEMPLATE-DRIVEN APPROACH'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> EM VEZ DISSO,
+
+
+
+EM VEZ DE USAR 
+
+O 
+
+
+
+'FormsModule',
+
+
+
+
+
+
+VOCê 
+
+
+DEVE IMPORTAR O 
+
+
+'ReactiveFormsModule',
+
+
+
+
+
+
+
+
+QUE É O MÓDULO QUE VAI TE DEIXAR 
+
+
+
+
+USAR/CRIAR FORMS USANDO O 
+
+
+'reactive approach'..
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+// import { FormsModule } from '@angular/forms'; NÃO É NECESSÁRIO.... SÓ É NECESSÁRIO NO 'template-driven approach' (TD)...
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    // FormsModule  ////NÃO É NECESSÁRIO.... SÓ É NECESSÁRIO NO 'template-driven approach' (TD)...
+    ReactiveFormsModule ////////ESSE É O MODULE QUE VOCÊ TEM QUE IMPORTAR, PARA PODER ESCREVER FORMS USANDO O 'REACTIVE APPROACH'..
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO....
+
+
+
+
+
+
+
+
+
+
+
+
+-> 'ReactiveFormsModule' ------> ESSE É O MODULE CONTENDO 
+
+TODAS AS TOOLS DE  QUE 
+
+
+
+PRECISAMOS PARA CONSTRUIR 
+
+NOSSA FORM POR  CONTA PRÓPRIA,
+
+
+
+
+PARA ENTÃO MAIS TARDE 
+
+
+A CONECTAR 
+
+
+
+
+_ AO CCÓDIGO HTML...
+
+
+
+
+
+
+
+
+
+
+
+-> NO PRÓXIMO VÍDEO,
+
+
+VAMOS 'CRIAR A ACTUAL FORm'....
+
+
+

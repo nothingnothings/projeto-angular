@@ -1,0 +1,382 @@
+
+
+
+
+
+
+
+
+----> AGORA QUE 
+
+DEMOS UMA OLHADA EM COMO PODEMOS 'SEND REQUESTS',
+
+
+'POST DATA',
+
+
+
+'GET DATA',
+
+
+
+
+
+VAMOS ACABAR ESSE TRECHO 
+
+
+MOSTRANDO COMO VOCÊ PODE 
+
+
+
+FAZER O DELETE 
+
+
+
+DE 
+
+
+
+ELEMENTOS DE SEU BACKEND, POR MEIO DO  SEND DE UM REQUEST DE TIPO 'DELETE'....
+
+
+
+
+
+
+
+
+
+
+
+-> começo assim:
+
+
+
+
+
+
+
+
+
+
+
+  onDeletePost() {
+
+    return this.http.delete(
+        'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json'
+    );
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> Certo... mas 
+
+  esse request de 'delete'
+
+  PROVAVELMENTE REQUER UM ID... --. ou pode ser que nem uma database, em que 
+
+
+
+  SE VOCÊ NÃO PASSA UM ID, TODOS OS ITEMS SÃO DELETADOS..
+
+
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+
+    onDeletePosts() {
+
+    return this.http.delete(
+        'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json'
+    );
+
+  }
+
+
+
+
+
+    onClearPosts() {
+    //send HTTP request
+
+    this.httpPosts.onDeletePosts()
+    .subscribe(
+      (responseData) => {
+
+        console.log(responseData);
+      }
+    )
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  --> CERTO, E ISSO FUNCIONOU, AGORA QUANDO CLICAMOS EM 
+
+  'clear posts',
+
+
+  TODOS OS POSTS SÃO DELETADOS (
+
+      isso provavelmente acontece pq o firebase é um misto de database com backend...
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+  -> o professor vai nos explicando:
+
+
+
+
+
+
+
+
+LÁ NO SERVICE...
+
+
+
+  onClearPosts() {
+
+
+     return this.http.delete(
+          url
+      )
+  }
+
+
+
+
+
+
+
+LÁ NO COMPONENT:
+ 
+
+
+
+  deletePosts() {
+      this.serviceHttp.onClearPosts.subscribe(
+          (responseData) => {
+
+                console.log(responseData);
+          }
+      )
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OK... MAS SERIA BOM TAMBÉM LIMPAR O ARRAY DE 'loadedPosts'
+
+
+  no component, já que todos os posts serão deletados mesmo...
+
+
+
+
+
+
+
+  --> por isso o código fica assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ---> 
+  onClearPosts() {
+    //send HTTP request
+
+    this.httpPosts.onDeletePosts()
+    .subscribe(
+      (responseData) => {
+
+        console.log(responseData);
+        this.loadedPosts = [];
+      }
+    )
+
+   
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ----> VOLTAMOS AO PROJETO, E AÍ CONSTATAMOS QUE ISSO FUNCIONOU...
+
+
+
+
+
+
+
+
+
+
+  -----> O ÚNICO PROBLEMA, NO MOMENTO, É QUE NOSSA LIST NÃO É ATUALIZADA 
+
+  AUTOMATICAMENTE QUANDO ADICIONAMOS UM NOVO POST (
+
+
+
+      mas isso 
+
+      pode ser 
+
+
+      solucionado com código javascript vanilla...
+  ) 
+
+
+
+  (REACT AO SEND DE UM POST TER ACABADO)....
+
+
+
+
+
+
+--> FOI BEM SIMPLES ADICIONAR ESSA LÓGICA, FOI SÓ ESCREVER ASSIM:
+
+
+
+
+
+
+
+  onCreatePost(formReference: NgForm) {
+
+    console.log(formReference.value);
+
+    const postData = formReference.value;
+
+    this.httpPosts.onCreatePost(postData).subscribe(
+      (responseData) => {
+
+        console.log(responseData);
+        formReference.reset(); //resetta os values de todos os fields a partir de um submit bem sucedido...
+
+        this.loadedPosts.push(
+        postData
+        )
+      }
+    )
+
+    
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  --> fazer o push dessa data do novo post COMO UM __ OBJECT_ 
+
+  dentro 
+
+  de nosso array de 'loadedPosts'... (parte visual do app)....
+
+
+
+
+
+
+
+
+
+  --> OK, ISSO É BOM E TUDO MAIS, MAS E SE ALGO DESSE ERRADO NO NOSSO CÓDIGO?
+
+
+
+
+
+
+
+
+
+  --> OU SEJA, AGORA VEREMOS ERROR HANDLING, NA PRÓXIMA AULA...

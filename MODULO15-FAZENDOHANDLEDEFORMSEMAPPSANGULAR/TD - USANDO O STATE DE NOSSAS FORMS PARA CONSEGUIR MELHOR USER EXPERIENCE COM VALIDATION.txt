@@ -1,0 +1,1931 @@
+
+
+
+
+
+
+
+
+
+
+--> NA ÚLTIMA AULA,
+
+VIMOS QUE O ANGULAR 
+
+TRACKA 
+O 
+
+STATE 
+
+
+DE CADA _ CONTROL __ NA NOSSA FORM,
+
+E DA 
+
+FORM INTEIRA,
+
+TAMBÉM...
+
+
+
+
+
+
+
+
+
+----------> DEPOIS,
+
+
+DESCOBRIMOS QUE A PARTIR DO STATUS/STATE 
+
+DE 
+
+CADA 
+
+
+
+INPUT FIELD/ELEMENT 
+
+
+
+NA NOSSA FORM,
+
+
+
+ELE 
+
+
+
+CONDICIONALMENTE 
+
+
+
+ADICIONA 
+
+
+
+CLASSES CSS 
+
+aos elements,
+
+
+
+como 
+
+
+
+
+
+
+
+'ng-dirty',
+
+
+'ng-touched' 
+
+
+'ng-invalid'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> CERTO..... -> COM ESSA INFORMAÇÃO,
+
+
+
+PODEMOS VOLTAR A NOSSA FORM 
+
+
+
+E ENTAÕ 
+
+TIRAR 
+
+VANTAGEM DISSO..
+
+
+
+
+
+
+
+
+
+
+
+--> ANTES 
+
+
+
+
+DE VOLTARMOS ÀS CLASSES CSS,
+
+
+
+
+
+
+
+
+
+A MANEIRA MAIS FÁCIL DE TIRAR 
+
+VANTAGEM 
+
+
+
+
+DESSE ALTER DE NOSSAS CLASSES PELO ANGULAR,
+
+
+
+
+
+
+
+
+
+
+
+É __ ENCONTRADA LÁ EM 
+
+
+
+'button',
+
+
+
+NO NOSSO CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+          <button class="btn btn-primary">Submit</button>
+
+
+
+
+
+
+
+
+
+--> SE A FORM _ NÃO ESTIVER COMO 'valid',
+
+
+VAMOS QUERER _ DAR _ DISABLE__ NESSE BUTTON ESPECÍFICO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS COMO  FAZER ISSO?
+
+
+
+
+
+
+
+
+
+
+
+--> BASTA ADICIONAR _ UM POUCO _ 
+
+
+
+
+
+
+
+DE PROPERTY BINDING A ESSE BUTTON....
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR QUER MANIPULAR A PROPRIEDADE 
+
+
+
+DIRETA DE 
+
+
+'disabled',
+
+
+
+
+
+
+
+
+[disabled],
+
+
+
+
+
+
+
+QUE _ VAI 
+
+__ 
+
+DETERMINAR/SETTAR 
+
+
+
+O STATE DE 'disabled'
+
+
+
+
+
+DESSE 
+
+
+
+
+ELEMENTO AÍ....
+
+
+
+
+
+
+-----> E ESSE STATE/VALUE DE 'disabled,'
+
+
+que é 
+
+TRUE 
+
+OU 
+
+
+FALSE,
+
+
+
+
+PODE 
+
+
+
+
+SER 
+
+
+
+
+CODADO,
+
+NESSE LUGAR AÍ,
+
+
+ATRAVÉS __DO DEFINE DE UMA 
+
+
+
+CONDITION 
+
+
+(
+
+
+
+    bem comum:
+
+
+
+    '''SE MINHA FORM NÃO ESTIVER COMO VALID,
+
+    SE TODOS SEUS INPUT FIELDS NÃO FOREM CONSIDERADOS COMO VALID,
+
+    RESULTANDO NO SEU valid:true,
+
+
+    VOU QUERER QUE ESSE BUTTON FIQUE COMO DISABLED'..
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ACHO QUE UM JEITO DE FAZER ISSO 
+
+
+É 
+
+
+__ COM O CREATE DE UM LOCAL STATE 
+
+
+
+
+
+
+PARA NOSSA FORM,
+
+
+
+E AÍ 
+
+
+
+COM O WRITE, NO TEMPLATE,
+
+
+
+de uma 
+
+
+TERNARY EXPRESSION CHECANDO 
+
+
+
+SE 
+
+
+A PROPRIEDADE 
+
+'form.valid'
+
+
+
+
+
+RETORNA COMO 'true'..
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+       <button class="btn btn-primary"
+       type="submit"
+       [disabled]="form.valid"
+       
+       
+       >Submit</button>
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS COMO ISSO FICA LÁ NO SEU CÓDIGO,
+
+
+
+
+
+
+
+LÁ 
+
+
+
+
+
+
+NO COMPONENT DE 'app.component.ts'?
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> isso pq MINHA FORM _ SÓ É PASSADA _ QUANDO EU _ ACTIVELY CHAMO 
+
+
+
+'onSubmitForm()' (
+
+
+    E EU NUNCA VOU CONSEGUIR SUBMITTAR A FORM 
+
+    SE 
+
+
+    MEU button de 'submit' estiver como 
+
+    DISABLED...
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+-> TALVEZ NESSE CASE SEJA MELHOR O APPROACH DO 
+'ViewChild()'..
+
+
+(
+
+
+    que nos deixa MANIPULAR A FORM _ UM POUCO ANTES DE ELA SER ENVIADA, TIPO ISSO...
+)
+
+
+
+
+
+
+
+
+
+
+--> nossa.... isso realmente funcionou...
+
+
+
+
+
+
+
+era mais simples do que parecia...
+
+
+
+
+
+
+
+
+
+
+
+
+--> o código ficou assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+
+
+      <!-- <form (ngSubmit)="onSubmitForm(formReference)" #formReference="ngForm" >  ESSA DIRECTIVE VAI CAPTURAR O 'TRIGGER DO SUBMIT' de sua form e então vai o utilizar para RODAR OS METHODS QUE VOCê DEFINIU LÁ NO ARQUIVO '.ts'.. -->
+        <form (ngSubmit)="onSubmitForm()" #formReference="ngForm" >
+        <!-- NO ANGULAR, VOCÊ NUNCA COLOCA 'action=xxx' na sua tag de FORM, pq sua form vai ser handldada PELO ANGULAR EM SI... é por isso que não temos 'action' APONTANDO A ALGUMA ROUTE DE NOSSO APP.. NÓS TAMBÉM NÃO VAMOS COLOCAR 'method=POST', esse outro attribute famoso...-->
+
+        <!-- VOCÊ TAMBÉM PRECISA DEFINIR O VALOR DE SUA LOCAL REFERENCE COMO EQUIVALENTE A 'ngForm', para CONSEGUIR PASSAR A _ ACTUAL_ REPRESENTAÇÃO JAVASCRIPT DE SUA FORM AO seu method em 'xxx.ts', ao código typescript-->
+        <div id="user-data">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              class="form-control"
+              ngModel 
+              name="username" 
+              required
+            /> <!-- required É UM DEFAULT HTML ATTRIBUTE, mas quando você o escreve em código angular, É USADO COMO UM SELECTOR PARA UMA DAS DIRECTIVES BUILT-IN DO ANGULAR...-->
+          </div>
+          <button class="btn btn-default" type="button">
+            Suggest an Username
+          </button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              ngModel 
+              name="email" 
+              required
+              email
+            /> <!-- 'EMAIL' é outra DIRECTIVE DO ANGULAR, UMA DAS 'VALIDATOR DIRECTIVES', pq é algo que assegura a validation dos inputs do user, e que NÃO É UM DEFAULT HTML ATTRIBUTE, E SIM UMA DIRECTIVE...-->
+            <!-- o angular vai RECONHECER ESSE INPUT FIELD como um dos 'CONTROLS' da REPRESENTAÇAÕ TYPÉSCRIPT DA FORM SE VOCê ADICIONAR 'ngModel' como directive-->
+            <!-- VOCÊ TAMBÉM PRECISA DE 'name', essa directive/attribute que vai dizer ao ANGULAR __ como _ deverá ser o nome desse control/input na REPRESENTAÇÃO TYPESCRIPT DESSA FORM.. .-->
+          </div>
+          <div class="form-group">
+            <label for="secret">Secret Questions</label>
+            <select id="secret" 
+            class="form-control" 
+            name="secret" 
+            ngModel>
+              <option value="pet">Your first Pet?</option>
+              <option value="teacher">Your first teacher?</option>
+            </select>
+          </div>
+          <button class="btn btn-primary"
+          type="submit"
+          [disabled]="!formReference.valid"
+          
+          
+          
+          >Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIm:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+
+
+
+
+
+  @ViewChild('formReference') formReference: NgForm; /////IMPORTANTE...
+
+
+  suggestedUserName() {
+    const suggestedName = 'Superuser';
+  }
+
+
+
+
+
+
+
+  
+  onSubmitForm() {  
+    console.log(this.formReference);
+    console.log('submitted!')
+
+    console.log('ISDIRTY?', this.formReference.dirty);
+
+    console.log(this.formReference.value);
+    console.log('ISVALID?', this.formReference.valid);
+    console.log('ISTOUCHED?', this.formReference.touched);
+
+
+    
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> AS PARTES MAIS IMPORTANTES FORAM ESTAS:
+
+
+
+
+
+
+     <form (ngSubmit)="onSubmitForm()" #formReference="ngForm" > ///IMPORTANTE (faz o actual send de nossa form, quando o button é desbloqueado/enabled)
+
+
+
+
+
+
+
+          <button class="btn btn-primary"
+          type="submit"
+          [disabled]="!formReference.valid" ///usamso o nosso state...
+          
+          
+          
+          >Submit</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> COMO VOCÊ PODE VER, ALI USAMOS O __ STATE_ DE 'formReference',
+
+
+E A PROPRIEDADE 'valid' que existia dentro dela (pq eu havia armazenado a PRÓPRIA FORM DENTRO desse 'this.formReference' lá no arquivo ts...)...
+
+
+
+
+
+
+
+
+
+
+--------------------
+
+
+
+
+
+
+
+
+
+
+
+
+----> eu __ ACHAVA_ que era assim... 
+
+
+
+
+
+--> MAS EU __ ESTAVA ENGANADO... --> essa sintaxe está __ERRADA___...
+
+
+
+
+
+
+ESTÁ ERRADA__ PQ _ NÃO É NECESSÁRIO 
+
+
+
+
+USAr 
+
+'@ViewChild'
+
+
+PARA 
+
+
+CONTROLAR 
+
+
+AQUELE BUTTON lá...
+
+
+
+
+
+
+
+
+---> em vez disso, podemos _ TIRAR__ O 'ViewChild',
+
+
+
+
+
+
+
+
+
+DEIXAR TUDO LIMPO,
+DESSA FORMA AQUI:
+
+
+
+
+
+
+
+
+
+
+
+import { Component, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  suggestedUserName() {
+    const suggestedName = 'Superuser';
+  }
+
+
+
+
+  onSubmitForm(formReference: NgForm) {
+    console.log(formReference);
+    console.log('submitted!');
+
+    console.log('ISDIRTY?', formReference.dirty);
+
+    console.log(formReference.value);
+    console.log('ISVALID?', formReference.valid);
+    console.log('ISTOUCHED?', formReference.touched);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E DESSA FORMA AQUi:
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+    
+      <form (ngSubmit)="onSubmitForm(formReference)" #formReference="ngForm">
+        <div id="user-data">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              class="form-control"
+              ngModel
+              name="username"
+              required
+            />
+            <!-- required É UM DEFAULT HTML ATTRIBUTE, mas quando você o escreve em código angular, É USADO COMO UM SELECTOR PARA UMA DAS DIRECTIVES BUILT-IN DO ANGULAR...-->
+          </div>
+          <button class="btn btn-default" type="button">
+            Suggest an Username
+          </button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              ngModel
+              name="email"
+              required
+              email
+            />
+     
+          </div>
+          <div class="form-group">
+            <label for="secret">Secret Questions</label>
+            <select id="secret" class="form-control" name="secret" ngModel>
+              <option value="pet">Your first Pet?</option>
+              <option value="teacher">Your first teacher?</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" type="submit" [disabled]="">
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO, ISSO QUER DIZER QUE VOLTAMOS 
+
+A TER ESTA SINTAXE:
+
+
+
+
+
+      <form (ngSubmit)="onSubmitForm(formReference)" #formReference="ngForm">
+
+
+
+
+      E ISTO:
+
+
+
+
+
+               <button class="btn btn-primary" type="submit" [disabled]="">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        OK,
+
+
+
+        MAS A PERGUNTA ENTÃO É:
+
+
+
+
+
+
+        ''A QUE DIABOS VOU VINCULAR ESSE PROPERTY BINDING DE "disabled"?'''
+
+
+
+
+        ---> o professor explica que 
+
+
+        ___ É _ CLARO/LÓGICO QUE 
+
+
+
+        _VAMOS VINCULAR ESSA 
+
+        PROPRIEDADE 
+
+
+
+        AÍ __ 
+
+
+        A 
+
+
+        NOSSA PRÓPRIA FORM,
+
+        que é/será
+
+
+
+
+        REPRESENTADA POR AQUELA 'local reference'
+
+
+
+        de 
+
+        'formReference',
+
+
+        que eu escrevi NO PRÓPRIO ELEMENTO 
+
+
+
+        DE '<form>'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PRESTE ATENÇÃO:
+
+
+
+
+      <form (ngSubmit)="onSubmitForm(formReference)" #formReference="ngForm">
+                                                        ^^^^^^^
+                                                        ISTO 
+
+
+
+    SERÁ CHAMADO/VINCULADO A ISTO AQUI:
+
+
+
+        <button class="btn btn-primary" type="submit" [disabled]="!formReference.valid">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OU SEJA
+
+
+
+SE ESSA PROPRIEDADE DE 'valid'
+
+
+NA NOSSA FORM ESTIVER COMO 
+
+'false',
+
+
+ESSA EXPRESSÃO DARÁ 
+'true',
+
+ O QUE FARÁ COM QUE O BUTTON FIQUE __ DISABLED__...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ CÓDIGO COMPLETO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ <div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <!-- <form (ngSubmit)="onSubmitForm(formReference)" #formReference="ngForm" >  ESSA DIRECTIVE VAI CAPTURAR O 'TRIGGER DO SUBMIT' de sua form e então vai o utilizar para RODAR OS METHODS QUE VOCê DEFINIU LÁ NO ARQUIVO '.ts'.. -->
+      <form (ngSubmit)="onSubmitForm(formReference)" #formReference="ngForm">
+        <!-- NO ANGULAR, VOCÊ NUNCA COLOCA 'action=xxx' na sua tag de FORM, pq sua form vai ser handldada PELO ANGULAR EM SI... é por isso que não temos 'action' APONTANDO A ALGUMA ROUTE DE NOSSO APP.. NÓS TAMBÉM NÃO VAMOS COLOCAR 'method=POST', esse outro attribute famoso...-->
+
+        <!-- VOCÊ TAMBÉM PRECISA DEFINIR O VALOR DE SUA LOCAL REFERENCE COMO EQUIVALENTE A 'ngForm', para CONSEGUIR PASSAR A _ ACTUAL_ REPRESENTAÇÃO JAVASCRIPT DE SUA FORM AO seu method em 'xxx.ts', ao código typescript-->
+        <div id="user-data">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              class="form-control"
+              ngModel
+              name="username"
+              required
+            />
+            <!-- required É UM DEFAULT HTML ATTRIBUTE, mas quando você o escreve em código angular, É USADO COMO UM SELECTOR PARA UMA DAS DIRECTIVES BUILT-IN DO ANGULAR...-->
+          </div>
+          <button class="btn btn-default" type="button">
+            Suggest an Username
+          </button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              ngModel
+              name="email"
+              required
+              email
+            />
+            <!-- 'EMAIL' é outra DIRECTIVE DO ANGULAR, UMA DAS 'VALIDATOR DIRECTIVES', pq é algo que assegura a validation dos inputs do user, e que NÃO É UM DEFAULT HTML ATTRIBUTE, E SIM UMA DIRECTIVE...-->
+            <!-- o angular vai RECONHECER ESSE INPUT FIELD como um dos 'CONTROLS' da REPRESENTAÇAÕ TYPÉSCRIPT DA FORM SE VOCê ADICIONAR 'ngModel' como directive-->
+            <!-- VOCÊ TAMBÉM PRECISA DE 'name', essa directive/attribute que vai dizer ao ANGULAR __ como _ deverá ser o nome desse control/input na REPRESENTAÇÃO TYPESCRIPT DESSA FORM.. .-->
+          </div>
+          <div class="form-group">
+            <label for="secret">Secret Questions</label>
+            <select id="secret" class="form-control" name="secret" ngModel>
+              <option value="pet">Your first Pet?</option>
+              <option value="teacher">Your first teacher?</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" type="submit" [disabled]="!formReference.valid"> <!-- AQUI USAMOS A LOCAL REFERENEC DE '#formReference', para usar essa propriedade 'valid' de nosso object javascript de form, para aí enablar/disablar esse nosso button, dinamicamente (validation)..-->
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK, AGORA CONSEGUIMOS ENABLAR/DISABLAR 
+
+ESSE 
+
+
+BUTTON A PARTIR DO STATE DE NOSSA FORM...
+
+
+
+
+
+
+
+
+
+
+--> AGORA A SEGUNDA MELHORIA QUE QUEREMOS 
+
+É 
+
+'TIRAR VANTAGEM DAS CSS CLASSES 
+
+QUE 
+
+O ANGULAR NOS ADICIONA 
+
+DINAMICAMENTE'..
+
+
+
+
+
+
+
+
+
+
+--> ou seja,
+
+
+
+
+
+
+
+PODEMOS IR ATÉ O 
+
+'app.component.css'
+
+E ENTÃO 
+
+
+DEFINIR 
+
+
+
+ 
+ VÁRIAS COISAS, COMO ISTO:
+
+
+
+
+
+
+
+
+
+
+.ng-invalid {
+    border: 1px solid red;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--- MAS ESSA SERÁ UMA __PÉSSIMA IDEIA.. -> pq 
+
+
+isso vai COLORIR TUDO DE VERMELHO....
+
+
+
+
+
+
+
+
+
+-> OS 2 CONTROLS FICARÃO COLORIDOS, SIM,
+
+MAS A OVERALL FORM TAMBÉM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> A RAZÃO PARA ISSOO,
+
+NO CASO,
+
+
+É QUE 
+
+
+A 'OVERALL FORM'
+
+TAMBÉM ESTÁ COMO 'invalid',
+
+
+
+E O 
+
+
+
+
+
+ANGULAR _ TAMBÉM ADICIONA ESSA CLASS DE 
+
+
+
+'ng-invalid'
+
+
+
+
+na nossa form (nos inputs e na form em si)...
+
+
+
+
+
+
+
+
+
+
+
+
+------> OK, MAS COMO PODEMOS IMPEDIR ESSE COMPORTAMENTO?
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR DIZ QUE 
+
+
+
+O APPROACH CORRETO 
+
+
+SERIA _ 
+
+
+
+
+ASSEGURAR QUE 
+
+NÃO É ADICIONADA 
+à FORM...
+
+
+
+
+
+
+
+
+
+----> PROFESSOR DIZ QUE HÁ MÚLTIPLAS ALTERNATIVAS PARA FAZER ISSO,
+
+
+
+
+E QUE 
+
+ISSO É 
+
+'PURA 
+LÓGICA CSS',
+
+
+
+
+
+MAS UMA IDEIA, NO CASO,
+
+
+
+É 
+
+
+
+COLOCAR 
+
+'[ngStyle]' 
+
+
+ou 
+
+
+'[ngClass]'
+
+
+
+
+
+NOS NOSSOS ELEMENTS, E AÍ 
+IR ESTILIZANDO DE ACORDO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> A MANEIRA MAIS FÁCIL __ É SER 'BEM EXPLÍCITO',
+
+dizer 
+
+
+bem que 
+
+'QUEREMOS ADICIONAR ISSO A INPUTS',
+
+
+por isso 
+
+
+
+
+escrever algo como 
+
+
+
+
+
+
+
+
+
+
+
+
+
+input.ng-invalid {
+
+}
+
+
+
+
+
+
+
+
+
+
+FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+div {
+    margin-top: 5px;
+}
+
+
+
+/* 
+
+.ng-invalid { ////NÃO ESCREVA ASSIM, SEUS STYLES ANGULAR DAS FORMS...
+    border: 1px solid red;
+}
+ */
+
+
+
+/* bem melhor, pq evitamos o apply desse style na nossa form.. */
+ input.ng-invalid {  
+    border: 1px solid red;
+}
+
+
+
+
+
+
+
+
+
+
+-------------------------------
+
+
+
+
+
+
+
+
+COM ISSO 
+
+
+NO LUGAR,
+
+
+VEREMOS QUE 
+
+
+
+
+
+
+
+VAMOS FICAR COM AQUELA BORDA VERMELHA AO REDOR DOS 2 INPUTS,
+
+
+
+mas TEREMOS 1 PROBLEMA:
+
+
+
+
+
+
+
+
+
+ESSA BORDER ESTARÁ PRESENTE 
+
+'right from the start',
+
+
+O QUE 
+
+
+NÃO É BOM, DE UM PONTO DE VISTA DE UI... ----> 
+
+
+
+
+
+
+
+
+UMA MANEIRA DE CONSERTAR ESSE APPLY DESSE ESTILO IMEDIATAMENTE 
+
+
+
+
+ao 
+
+
+
+nossos elements 
+
+
+seria 
+
+
+USAR A PROPRIEDADE DE 'touched',
+
+
+
+
+mas aí eu teria de usar 
+
+O APPROACH PROGRAMÁTICO 
+
+
+
+de 
+
+forms (em que começamos a escrever a form lá do código ts, e não do template html)...
+
+
+
+
+
+
+
+
+-->  ok, mas como fazer isso?
+
+
+
+
+
+-> talvez por meio de um STATE 
+
+
+
+no nosso component...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+AAAAAAAAAAAAAAAAH, ESPERE.... ---> 
+
+
+
+
+
+
+
+
+EU DEVERIA TER ME LEMBRADO,
+
+MAS HÁ MAIS CLASSES QUE SÃO ADICIONADAS 
+
+
+AOS NOSSOS ELEMENTS,
+PELO ANGULAR,
+
+a depender do 
+
+
+
+state dos input fields..
+
+
+
+
+
+
+
+
+
+
+------> também são adicionadas as classes 
+'ng-untouched'
+
+e 
+
+'ng-dirty'...
+
+
+
+
+
+
+-> É SÓ EU ESCREVER STYLES PARA ELAS, NA FOLHA DE ESTILOS:
+
+
+
+
+
+
+ input.ng-invalid.ng-touched {  
+    border: 1px solid red;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK, ISSO REALMENTE FUNCIONARÁ....
+
+
+
+
+
+
+
+
+-> funcionará pq 
+
+
+QUANDO EU PARO DE DIGITAR/CLICO FORA 
+
+
+DE 
+
+MEU INPUT FIELD,
+
+deixando info lá dentro,
+
+
+ele vai aplicar 
+
+
+a class de 'touched'
+
+JUNTO DA CLASS de 'invalid',
+
+CRIANDO ESSA RED BORDER....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, 
+
+COM ISSO TIRAMOS VANTAGEM DESSE 'FORM STATE'
+
+fornecido pelo angular... -> CONSEGUIMOS DESABILITAR O 
+
+BUTTON E MOSTRAR FEEDBACK VISUAL AO USER....
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE VOCÊ PODERIA IR MUITO ALÉM,
+
+
+VOCÊ 
+PODERIA TAMBÉM 
+MOSTRAR UMA MENSAGEM DE ERROR 
+
+DEBAIXO DO INPUT,
+
+
+UMA MENSAGEM CONDICIONAL em um '<p>',
+
+dizendo 
+
+
+'PLEASE ENTER A VALID VALUE!'...
+
+
+-> AÍ ADICIONE UM 'ngIf'
+
+PARA CONDICIONALMENTE RENDERIZAR ESSE CÓDIGO...
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              ngModel
+              name="email"
+              required
+              email
+            />
+            <p *ngIf="" [ngStyle]="{'color': 'red'}">Please enter a valid value!</p>
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO,
+
+MAS 
+
+
+
+ISSO NOS DÁ UM 
+
+
+
+
+
+PROBLEMA ADICIONAL:
+
+
+
+''COMO VAMOS CONTROLAR/RECEBER O VALUE DIZENDO 
+
+
+SE 
+
+ESSE 
+
+INPUT AÍ 
+
+ESTÁ SEGURANDO UM VALOR ERRADO OU NÃO'?
+
+
+
+
+
+
+
+--> DAREMOS UMA OLHADA MELHOR NISSO, NA PRÓXIMA AULA..
+
+
+
+
+
+
+
+
+

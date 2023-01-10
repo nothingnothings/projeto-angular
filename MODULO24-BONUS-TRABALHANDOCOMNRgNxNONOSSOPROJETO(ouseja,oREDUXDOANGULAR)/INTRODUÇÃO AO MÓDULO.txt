@@ -1,0 +1,131 @@
+
+
+
+
+
+
+ESSE É UM MÓDULO BÔNUS..
+
+
+
+
+
+
+
+
+
+--> NESSE CURSO JÁ APRENDEMOS UM MONTE SOBRE ANGULAR...
+
+
+
+
+
+
+
+
+
+--> NA VERDADE,
+
+
+JÁ VIMOS TODOS OS FUNDAMENTALS IMPORTANTES DO ANGULAR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--. ESSE É UM MÓDULO BONUS,
+
+
+
+SOBRE 
+
+
+
+
+
+
+'NGRX',
+
+
+
+
+
+
+QUE É 
+
+
+
+
+
+UM NEGÓCIO TAMBÉM 
+
+
+__ MAINTAINED 
+
+
+POR PARTES 
+
+
+
+DA EQUIPE OFICIAL DO ANGULAR,
+
+
+E QEU 
+
+PODE TE AJUDAR COM O STATE MANAGEMENT 
+
+DE 
+
+
+APPS ANGULAR MAIORES..
+
+
+
+
+
+
+
+
+
+
+--> VEREMOS ''QUAIS PROBLEMAS ELE TENTA SOLUCIONAR''',
+
+
+
+
+para aí 
+
+
+
+
+observarmos DETALHADAMENTE COMO 
+
+PODEMOS 
+USAR 
+O 
+
+
+NGRX 
+
+
+
+PARA 
+
+MANAGEAR O STATE DE SEU APP 
+
+
+
+
+DE UMA MANEIRA MAIS 'STREAMLINED' E ELEGANTE (
+
+
+    tipo o redux do angular?
+)

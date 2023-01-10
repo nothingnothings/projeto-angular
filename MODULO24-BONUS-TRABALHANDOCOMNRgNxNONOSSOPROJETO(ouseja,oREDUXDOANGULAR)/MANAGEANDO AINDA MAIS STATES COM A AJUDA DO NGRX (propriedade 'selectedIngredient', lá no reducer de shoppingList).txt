@@ -1,0 +1,1747 @@
+
+
+
+
+
+
+
+
+
+O INITIAL STATE DE NOSSO REDUCER DE 'shoppingList'
+
+
+ESTÁ ASSim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const initialState: ShoppingListState = {
+
+  ingredients: [new Ingredient('Lettuce', 5, 0.1221412452154)],
+  selectedIngredient: null
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> OK... MAS  _PARA _ CONSEGUIRMOS FAZER 
+
+
+'MANAGE' 
+
+
+DO NOSSO 'selectedIngredient',
+
+
+
+
+
+OBVIAMENTE PRECISAREMOS _ DE MAIS _ ACTIONS _ 
+
+
+
+
+
+NO REDUCER DE 'ShoppingList':
+
+
+
+
+
+
+
+
+
+
+
+export function shoppingListReducer(state: ShoppingListState = initialState, 
+  // action: ShoppingListActions.AddIngredient  //maneira errada (vai pegar o type de SÓ UMA DAS ACTIONS)
+  action: ShoppingListActions.ShoppingListActionTypes
+  
+  ): ShoppingListState {
+  switch(action.type){
+    case ShoppingListActions.ADD_INGREDIENT:
+      // return addIngredient(state, action);
+      // return state;
+
+      // return {
+      //   ...state,
+      //   ingredients: [
+      //     ...state.ingredients,
+      //     action.payload
+      //   ]
+      // }
+      return addIngredient(state, action as ShoppingListActions.AddIngredient);
+      break;
+    case ShoppingListActions.ADD_INGREDIENTS:
+      return addIngredients(state, action as ShoppingListActions.AddIngredients);
+      break;
+    case ShoppingListActions.DELETE_INGREDIENT:
+      return removeIngredient(state, action as ShoppingListActions.RemoveIngredient);
+      break;
+    case ShoppingListActions.EDIT_INGREDIENT:
+      return editIngredient(state, action as ShoppingListActions.EditIngredient);
+        break;
+    default: ////é o case do INITIALIZE DE NOSSO STATE (pq no início de nosso app, será definido/passado o 'initialState', sem o pass de nenhuma actionType...) --> e é aí que entra em jogo esse return de 'state' como o DEFAULT, pq isso significa que nosso state NÃO TERÁ SIDO ALTERADO POR ACTION NENHUMA, MAS QUE AINDA SERÁ 'returned', pq isso será necessário...
+      return state;  
+  }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> PARA SERMOS MAIS PRECISOS,
+
+
+
+  TEMOS NECESSIDADE DE UM NÚMERO MAIOR DE ACTIONS...
+
+
+
+
+
+
+
+
+
+  -> queremos uma action como 
+
+
+  'SELECT_INGREDIENT',
+  que 
+
+  
+
+  ACTUALLY  CONSIGA ATUALIZAR O NOSSO STATE,
+
+
+  CONSIGA FAZER COM QUE 'selectedIngredient'
+
+
+
+  fique como 
+
+
+
+  'o ingredient que o user recém selecionou'...
+
+
+
+
+
+
+
+
+
+
+  --> ok, tentar fazer isso um pouco por conta própria (create da action, vinculação ao reducer, etc)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  O CÓDIGO FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  export function shoppingListReducer(state: ShoppingListState = initialState, 
+  // action: ShoppingListActions.AddIngredient  //maneira errada (vai pegar o type de SÓ UMA DAS ACTIONS)
+  action: ShoppingListActions.ShoppingListActionTypes
+  
+  ): ShoppingListState {
+  switch(action.type){
+    case ShoppingListActions.ADD_INGREDIENT:
+      // return addIngredient(state, action);
+      // return state;
+
+      // return {
+      //   ...state,
+      //   ingredients: [
+      //     ...state.ingredients,
+      //     action.payload
+      //   ]
+      // }
+      return addIngredient(state, action as ShoppingListActions.AddIngredient);
+      break;
+    case ShoppingListActions.ADD_INGREDIENTS:
+      return addIngredients(state, action as ShoppingListActions.AddIngredients);
+      break;
+    case ShoppingListActions.DELETE_INGREDIENT:
+      return removeIngredient(state, action as ShoppingListActions.RemoveIngredient);
+      break;
+    case ShoppingListActions.EDIT_INGREDIENT:
+      return editIngredient(state, action as ShoppingListActions.EditIngredient);
+        break;
+    case ShoppingListActions.SELECT_INGREDIENT:
+      return selectIngredient(state, action as ShoppingListActions.SelectIngredient);
+
+
+    default: ////é o case do INITIALIZE DE NOSSO STATE (pq no início de nosso app, será definido/passado o 'initialState', sem o pass de nenhuma actionType...) --> e é aí que entra em jogo esse return de 'state' como o DEFAULT, pq isso significa que nosso state NÃO TERÁ SIDO ALTERADO POR ACTION NENHUMA, MAS QUE AINDA SERÁ 'returned', pq isso será necessário...
+      return state;  
+  }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  E O HELPER METHOD FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+  const selectIngredient = (state: ShoppingListState, action: ShoppingListActions.SelectIngredient): ShoppingListState => {
+
+
+
+  const ingredient = state.ingredients.find(
+    (ingredient, index) => {
+          return index === action.payload;
+    }
+  );
+
+
+  if (!ingredient) {
+    alert('Invalid ')
+    return state;
+  }
+
+
+  const updatedState = {
+    ...state
+  }
+
+  
+  return updateObject(updatedState, {selectedIngredient: ingredient})
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> é claro que agora SÓ NOS RESTA FAZER DISPATCH DISSO, NO LUGAR APROPRIADDO EM MEU CÓDIGO (
+
+    é o 
+
+    method de 
+
+
+
+    
+  onShopListItemClick(index: number) {
+
+    this.shoppingListService.onIngredientClicked(index);
+  }
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+- OK, ASSISTINDO O VIDEO DO PROFESSOR..
+
+
+
+
+
+
+
+
+
+-> PRECISAMOS DE ACTIONS:
+
+
+
+
+
+
+1) para O COMEÇO DO PROCESSO DE HANDLING ('selectIngredient'),
+
+
+
+
+
+
+
+
+
+e 
+
+
+2) PARA CONSEGUIRMOS __ PARAR0/CANCELAR 
+
+O EDITING PROCCESS..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> É POR ISSO QUE O PROFESSOR CRIA UMA CONST DE 'START_eDIT'
+
+
+
+
+
+
+
+E 
+
+'STOP_EDIT'..
+
+
+
+
+
+
+
+
+
+
+--> AÍ O PROFESSOR ESCREVE OS HELPER METHODS:
+
+
+
+
+
+
+
+
+
+
+
+const StartEdit = (state: ShoppingListState, action: ShoppingListActions.StartEdit): ShoppingListState => {
+
+
+
+  const ingredient = state.ingredients.find(
+    (ingredient, index) => {
+          return index === action.payload;
+    }
+  );
+
+
+  if (!ingredient) {
+    alert('Invalid Input, please try again.')
+    return state;
+  }
+
+
+  const updatedState = {
+    ...state
+  }
+
+  
+  return updateObject(updatedState, {selectedIngredient: ingredient})
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+export class StartEdit implements Action {
+
+  readonly type: string = START_EDIT;
+
+
+  constructor (public payload: number) {}
+
+
+}
+
+
+
+
+
+export class StopEdit implements Action { ///resetta o 'selectedIngredient' e 'selectedIngredientIndex' aos seus values iniciais (null)...
+
+  readonly type: string = STOP_EDIT;
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+- NO  REDUCER:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export function shoppingListReducer(state: ShoppingListState = initialState, 
+  // action: ShoppingListActions.AddIngredient  //maneira errada (vai pegar o type de SÓ UMA DAS ACTIONS)
+  action: ShoppingListActions.ShoppingListActionTypes
+  
+  ): ShoppingListState {
+  switch(action.type){
+    case ShoppingListActions.ADD_INGREDIENT:
+      return addIngredient(state, action as ShoppingListActions.AddIngredient);
+      break;
+    case ShoppingListActions.ADD_INGREDIENTS:
+      return addIngredients(state, action as ShoppingListActions.AddIngredients);
+      break;
+    case ShoppingListActions.DELETE_INGREDIENT:
+      return removeIngredient(state, action as ShoppingListActions.RemoveIngredient);
+      break;
+    case ShoppingListActions.EDIT_INGREDIENT:
+      return editIngredient(state, action as ShoppingListActions.EditIngredient);
+        break;
+    case ShoppingListActions.START_EDIT:
+      return startEdit(state, action as ShoppingListActions.StartEdit);
+
+
+    default: ////é o case do INITIALIZE DE NOSSO STATE (pq no início de nosso app, será definido/passado o 'initialState', sem o pass de nenhuma actionType...) --> e é aí que entra em jogo esse return de 'state' como o DEFAULT, pq isso significa que nosso state NÃO TERÁ SIDO ALTERADO POR ACTION NENHUMA, MAS QUE AINDA SERÁ 'returned', pq isso será necessário...
+      return state;  
+  }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export function shoppingListReducer(state: ShoppingListState = initialState, 
+  // action: ShoppingListActions.AddIngredient  //maneira errada (vai pegar o type de SÓ UMA DAS ACTIONS)
+  action: ShoppingListActions.ShoppingListActionTypes
+  
+  ): ShoppingListState {
+  switch(action.type){
+    case ShoppingListActions.ADD_INGREDIENT:
+      return addIngredient(state, action as ShoppingListActions.AddIngredient);
+      break;
+    case ShoppingListActions.ADD_INGREDIENTS:
+      return addIngredients(state, action as ShoppingListActions.AddIngredients);
+      break;
+    case ShoppingListActions.DELETE_INGREDIENT:
+      return removeIngredient(state, action as ShoppingListActions.RemoveIngredient);
+      break;
+    case ShoppingListActions.EDIT_INGREDIENT:
+      return editIngredient(state, action as ShoppingListActions.EditIngredient);
+        break;
+    case ShoppingListActions.START_EDIT:
+      return startEdit(state, action as ShoppingListActions.StartEdit);
+      break;
+    case ShoppingListActions.STOP_EDIT:
+      return stopEdit(state, action as ShoppingListActions.StopEdit);
+      break;
+    default: ////é o case do INITIALIZE DE NOSSO STATE (pq no início de nosso app, será definido/passado o 'initialState', sem o pass de nenhuma actionType...) --> e é aí que entra em jogo esse return de 'state' como o DEFAULT, pq isso significa que nosso state NÃO TERÁ SIDO ALTERADO POR ACTION NENHUMA, MAS QUE AINDA SERÁ 'returned', pq isso será necessário...
+      return state;  
+  }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  lembre-se sempre do helper method de 'updateObject',
+
+  que é usado para COPIAR O STATE DE FORMA IMUTÁVEL...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> ok... agora consigo fazer o dispatch dessa action, mas ainda não sei 
+
+
+COMO FAZER 'OUTPUT'
+ 
+
+ DO STATE DE MEU APP (Que agora está ficando com 'selectedIngredient: Ingredient')
+
+
+
+
+ PARA DENTRO DOS INPUT FIELDS DE 
+
+ ''shop-list edit.component''...
+
+
+
+
+
+
+
+
+
+
+
+
+ -> JÁ O 'stop_edit'
+
+ SERÁ DISPATCHEADO LÁ EM 'shop-edit' component,
+
+
+ no method de 'onClear()'...
+
+
+
+
+
+
+
+ EX:
+
+
+
+
+
+
+
+  ngOnDestroy(): void {
+    this.ingredientSelectedSubscription.unsubscribe();
+    this.store.dispatch(new ShoppingListActions.StopEdit());
+  }
+
+  onClearRecipe() {
+    this.formReference.form.reset();
+    this.editMode = false;
+    this.store.dispatch(new ShoppingListActions.StopEdit()); ///reverte o state de 'selectedIngredient' para null...
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> queremos que QUANDO 
+
+
+
+NOSSA PAGE FOR TROCADA/DESTRUÍDA,
+
+
+
+
+
+nosso state também (de selectedIngredient) 
+
+seja resettado,
+
+
+
+por isso 
+
+também fazemos dispatch daquela action ali... (evitamos comportamentos estranhos ao revisitar essa page)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK....... A ÚNICA COISA QUE ESTÁ FALTANDO, AGORA,
+
+
+
+
+É 
+
+
+
+'''THAT WE ADJUST HOW WE FETCH OUR DATA FROM THE STORE,
+
+IN SHOP-EDIT COMPONENT''....
+
+
+
+
+
+
+
+
+
+
+
+--> O LOCAL QUE DEVERÁ SER EDITADO É 'ngOnInit()':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+atualmente temos este código:
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    this.ingredientSelectedSubscription = ////código SEM USO DO NGRX...
+      this.shoppingListService.ingredientSelected.subscribe((index: number) => {
+        console.log('TEST', 'LINE')
+        this.editedItemIndex = index;
+        this.editMode = true;
+          console.log(index, 'LINE');
+        this.editedItem = this.shoppingListService.getIngredient(index);  ///agora com o uso do DISPATCH DE UMA ACTION, lá no service....
+
+
+        this.formReference.form.setValue({
+          name: this.editedItem.ingredient,
+          amount: this.editedItem.amount,
+        });
+      });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -------> EM VEZ DE USARMOS O 'SHOPPINGLIST SERVICE'
+
+
+
+  e 
+
+
+
+
+realizarmos um LISTEN TO AO 'ingredientSelected',
+
+
+
+
+
+
+
+
+
+
+DEVEMOS SELECIONAR NOSSA 'SLICE' de shoppingList,
+
+
+com este código:
+
+
+
+
+
+
+
+
+
+
+
+
+this.store.select('shoppingList)'...
+
+
+
+
+
+
+
+--> ENTRETANTO, AGORA,
+
+
+EM VEZ DE USAR O 'ASYNC PIPE',
+
+
+
+
+
+VAMOS __ QUERER __ SETTAR__ NOSSA PRÓPRIA 
+
+
+
+SUBSCRIPTION,
+
+
+TIPO ASSIM (como ele havia explicado antes):
+
+
+
+
+
+
+
+
+
+
+
+
+
+this.store.select('shoppingList').subscribe()
+
+
+
+
+
+
+
+
+
+
+
+-----> COMO VAMOS GANHAR NOSSA 'STATE DATA'
+
+PARA ESSA PARTE 
+
+
+DA STORE,
+
+
+
+
+VAMOS QUERER PEGAR 
+
+A DATA PERTINENTE AO 
+
+
+
+
+'selectedIngredient'
+
+
+
+
+e 
+
+
+'selectedIngredientIndex'...
+
+
+
+
+
+
+
+
+COMEÇAMOS TIPO ASSIM:
+
+
+
+
+
+ngOnInit() {
+
+
+
+this.store.select('shoppingList').subscribe(
+  (shoppingListState) => {
+
+
+    .....
+  }
+)
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK... O PROFESSOR, DENTRO DESSE SUBSCRIBE,
+
+
+
+escreve um if check chencando por
+
+
+
+
+
+
+
+
+
+
+
+if (shoppingListState.selectedIngredientIndex > -1) {
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+--> PQ SE ISSO FOR CONSTATADO COMO 'TRUE',
+
+SIGNIFICA QUE 
+
+
+'NENHUM ITEM FOI SELECIONADO',
+
+razão pela qual vamos definir 'editMode'
+
+como sendo false:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if (shoppingListState.selectedIngredientIndex > -1) {
+
+
+} else {
+
+
+  this.editMode = false;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------> MAS SE TIVERMOS UM VALID INDEX,
+
+
+VAMOS QUERER DEFINIR 'editMode'
+
+
+COMO _ TRUE_,
+
+E TAMBÉM 
+
+
+
+
+VAMOS QUERER DEFINIR O 'editedItem'
+ 
+  
+
+  como sendo igual a 
+
+
+
+
+shoppingListState.selectedIngredient...
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+ngOnInit() {
+
+
+
+this.store.select('shoppingList').subscribe(
+  (shoppingListState) => {
+
+
+
+        
+if (shoppingListState.selectedIngredientIndex > -1) {
+
+    this.editMode = true;
+    this.editedIngredient = shoppingListState.selectedIngredient;
+    this.editedIngredientIndex = shoppingListState.selectedIngredientIndex;
+
+} else {
+
+  this.editMode = false;
+}
+
+
+
+
+
+
+  
+  }
+)
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO COMPLETO FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+  ngOnInit(): void {
+
+
+
+     this.store.select('shoppingList')
+    .subscribe(
+      (shoppingListState) => {
+
+        if (shoppingListState.selectedIngredientIndex! > -1 ) {
+
+          this.editMode = true;
+          this.editedItem = shoppingListState.selectedIngredient!;
+          this.editedItemIndex = shoppingListState.selectedIngredientIndex!;
+          this.formReference.form.setValue({
+            name: this.editedItem.ingredient,
+            amount: this.editedItem.amount,
+          });
+
+        } else {
+          this.editMode = false;
+        }
+
+      }
+    )
+}
+
+
+
+
+
+
+
+
+-> ok, agora finalmente estamos inicializando a `shop-list form' 
+
+
+
+
+
+com data LÁ DAQUELE 'editedItem',
+
+que por sua vez 
+
+RECEBEMOS LÁ DE NOSSO STATE, POR MEIO DO SUBSCRIBE A ELE...
+
+
+
+
+
+
+OK... HORA DO TESTE
+
+
+
+
+
+
+
+
+
+
+
+
+-> O CÓDIGO DE 'START EDIT'
+
+
+está funcionando:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const startEdit = (state: ShoppingListState, action: ShoppingListActions.StartEdit): ShoppingListState => {
+
+  const updatedState = {
+    ...state
+  }
+
+
+  const ingredient = state.ingredients.find(
+    (ingredient, index) => {
+          return index === action.payload;
+    }
+  );
+
+
+  if (!ingredient) {
+    alert('Invalid Input, please try again.')
+    return state;
+  }
+
+
+
+
+  
+  return updateObject(updatedState, {selectedIngredient: ingredient, selectedIngredientIndex: action.payload})
+
+}
+
+
+
+const stopEdit = (state: ShoppingListState, action: ShoppingListActions.StopEdit): ShoppingListState => {
+
+
+
+
+
+  const updatedState = {
+    ...state
+  }
+
+  
+  return updateObject(updatedState, {selectedIngredient: null, selectedIngredientIndex: null})
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MESMA COISA COM O DE STOP EDIT..
+
+
+
+
+
+
+
+
+
+--> mas o stop edit me dá um erro quando clico em 'clear' (
+
+
+
+
+
+
+ERROR TypeError: Cannot read properties of null (reading 'ingredient')
+    at Object.next (shop-list-edit.component.ts:68:35)
+    at ConsumerObserver.next (Subscriber.js:91:1)
+    at SafeSubscriber._next (Subscriber.js:60:1)
+    at SafeSubscriber.next (Subscriber.js:31:1)
+    at distinctUntilChanged.js:14:1
+    at OperatorSubscriber._next (OperatorSubscriber.js:13:1)
+    at OperatorSubscriber.next (Subscriber.js:31:1)
+    at map.js:7:1
+    at OperatorSubscriber._next (OperatorSubscriber.js:13:1)
+    at OperatorSubscriber.next (Subscriber.js:31:1
+
+
+
+
+
+)
+
+tentar consertar....
+
+
+
+
+
+
+
+
+
+-> é pq não reverti o 'selectedIngredientIndex' para -1 (reverti para null)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo... mas ainda tenho que CONSERTAR O CÓDIGO DE 'EDIT INGREDIENT'...
+
+
+
+
+
+
+
+
+
+--> pq 'edit ingredient' está ADICIONANDO UM NOVO INGREDIENT, EM VEZ DE 
+
+
+
+
+dar 'replace' em 1 ingredient já existente...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok, consertei, o código ficou assim:
+
+
+
+
+
+
+
+
+
+
+
+const editIngredient = (state: ShoppingListState, action: ShoppingListActions.EditIngredient): ShoppingListState => {
+
+
+  const updatedIngredients = [
+    ...state.ingredients
+  ]
+
+
+  updatedIngredients[action.payload.index] = action.payload.ingredient;
+
+
+
+  return updateObject(state, {ingredients: updatedIngredients});
+
+
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+agora o nosso código está funcionando, em geral....
+
+
+
+
+
+
+
+
+
+
+--> mas há mais uma coisa que o professor recomenda que façamos:
+
+
+
+
+
+
+
+
+
+-> ELE RECOMENDA QUE FAÇAMOS 'MANAGE' DA SUBSCRIPTIOn 
+
+
+
+
+
+
+
+dessa data por conta própria, 
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ O CÓDIGO COMPLETO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ import {
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
+
+import { NgForm } from '@angular/forms';
+import { Store } from '@ngrx/store';
+import { map, Observable, Subscription } from 'rxjs';
+
+import { Ingredient } from 'src/app/shared/ingredient.model';
+
+import { ShoppingListService } from 'src/app/shoppingList.service';
+
+import * as fromShoppingList from '../store/shoppingList.reducer';
+
+import * as ShoppingListActions from '../store/shoppingListActions';
+
+@Component({
+  selector: 'app-shop-list-edit',
+  templateUrl: './shop-list-edit.component.html',
+  styleUrls: ['./shop-list-edit.component.css'],
+})
+export class ShopListEditComponent implements OnInit, OnDestroy {
+  editMode = false;
+  editedItemIndex: number;
+
+  editedItem: Ingredient;
+
+  @ViewChild('localFormReference') formReference: NgForm;
+
+  subscription: Subscription;
+
+  constructor(
+    private shoppingListService: ShoppingListService,
+
+    private store: Store<fromShoppingList.AppState>
+  ) {}
+
+  ngOnInit(): void {
+    this.subscription = this.store
+      .select('shoppingList')
+      .subscribe((shoppingListState) => {
+        if (shoppingListState.selectedIngredientIndex > -1) {
+          this.editMode = true;
+          this.editedItem = shoppingListState.selectedIngredient!;
+          this.editedItemIndex = shoppingListState.selectedIngredientIndex!;
+          this.formReference.form.setValue({
+            name: this.editedItem.ingredient,
+            amount: this.editedItem.amount,
+          });
+        } else {
+          this.editMode = false;
+        }
+      });
+  }
+
+  onFormSubmit(form: NgForm) {
+    const yourIngredient = new Ingredient(
+      form.value['name'],
+      form.value['amount'],
+      this.editedItemIndex
+    );
+
+    if (this.editMode) {
+      console.log(form);
+
+      this.shoppingListService.editIngredient(
+        this.editedItemIndex,
+        yourIngredient
+      );
+
+      this.editMode = false;
+    } else {
+      this.shoppingListService.onIngredientAdd(yourIngredient);
+    }
+
+    this.formReference.form.reset();
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+    this.store.dispatch(new ShoppingListActions.StopEdit());
+  }
+
+  onClearRecipe() {
+    this.formReference.form.reset();
+    this.editMode = false;
+    this.store.dispatch(new ShoppingListActions.StopEdit());
+  }
+
+  onDeleteRecipe() {
+    this.onClearRecipe();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> para fazermos 'unsubscribe'
+
+
+dessa subscription a esse nosso STATE,
+
+
+fazemos assim:
+
+
+
+
+
+
+
+
+
+  subscription: Subscription;
+
+
+
+  ngOnInit(): void {
+    this.subscription = this.store
+      .select('shoppingList')
+      .subscribe((shoppingListState) => {
+        if (shoppingListState.selectedIngredientIndex > -1) {
+          this.editMode = true;
+          this.editedItem = shoppingListState.selectedIngredient!;
+          this.editedItemIndex = shoppingListState.selectedIngredientIndex!;
+          this.formReference.form.setValue({
+            name: this.editedItem.ingredient,
+            amount: this.editedItem.amount,
+          });
+        } else {
+          this.editMode = false;
+        }
+      });
+  }
+
+
+
+
+
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+    this.store.dispatch(new ShoppingListActions.StopEdit());
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  certo... agora as coisas estão funcionando um pouco melhor...
+
+
+
+
+
+
+
+
+
+
+
+  -. ENTRETANTO, NA VERSÃO DO _ PROFESSOR_ DO CÓDIGO,
+
+
+
+  as changes 
+
+
+
+  feitas 
+
+
+
+com 'edit ingredient' AINDA NÃO ESTÃO SENDO REFLETIDAS NO NGRX..
+
+
+
+
+
+ELE DIZ QUE ALGO ESTÁ ERRADO, MAS NÃO SEI O QUE É...

@@ -1,0 +1,789 @@
+
+
+
+
+
+
+
+
+
+
+
+
+-> JÁ REORGANIZAMOS UM BOCADO DE NOSSO CÓDIGO,
+
+
+
+
+ADICIONAMOS FEATURE MODULES PARA 
+
+
+
+'RecipeBook'
+
+
+
+e 
+
+
+'Shop-list'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> o que falta agora, no 'app module',
+
+
+
+É JUSTAMENT O 'AUTH COMPONENT',
+
+
+
+
+
+
+QUE VAMOS QUERER 
+
+
+
+COLOCAR EM UM MODULE PRÓPRIOP..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> NOSSO APP COMPONENT JÁ ESTÁ BEM 'LEAN'...
+
+
+
+
+
+
+
+
+
+
+---> PODEMOS TIRAR MAIS ALGUNS MODULE IMPORTS DO 'app.module.ts',
+
+
+
+COMO 
+
+
+
+
+'ReactiveFormsModule',
+
+
+
+
+
+
+
+mas vamos precisar de 'FormsModule'
+
+
+
+
+e do 
+
+'HttpClientModule',
+
+
+
+pq 
+
+
+
+usamos os 2 
+
+
+em coisas diversas  ( o http é sempre obrigatório)...
+
+
+
+
+
+
+
+
+
+
+
+--. o resto dos modules também é necessário...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS AGORA O PROFESSOR QUER 
+
+
+
+
+OUTSOURCEAR O MODULE DE 'FormsModule'
+
+
+
+
+e 
+
+de 
+'AuthComponent',
+
+
+
+
+isso 
+
+
+PQ 
+
+
+PODEMOS CRIAR 1 NOVO FEATURE MODULE ESPECÍFICO PARA ISSO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É A NOSSA 'TERCEIRA FEATURE AREA',
+
+
+
+
+por isso 
+
+vamos criar um 'auth.module.ts'...
+
+
+
+
+
+
+
+
+
+
+
+--> TENTAR FAZER ISSO POR CONTA PRÓPRIA...
+
+
+
+
+
+
+
+
+
+COMEÇO ESCREVENDO ASSIM:
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { AuthPageComponent } from './auth-page.component';
+
+@NgModule({
+  declarations: [AuthPageComponent],
+
+  imports: [FormsModule],
+  exports: [AuthPageComponent, FormsModule],
+})
+export class AuthModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> até agora, pouca coisa foi declarada, importada e exportada nesse local...
+
+
+
+
+
+
+
+
+
+-> coloquei o 'AuthComponent' NAS DECLARATIONS,
+
+
+
+pq 
+
+
+
+é isso que usei para essa feature....
+
+
+
+
+
+
+
+
+
+--> mas a page de 'AuthPageComponent'
+
+
+usa algumas ANGULAR  FEATURES,
+
+
+
+como  
+
+
+
+
+O
+
+
+'FormsModule' (usamos forms)..
+
+
+
+
+
+
+
+
+
+--> também precisamos de 'CommonModule',
+
+
+pq 
+
+
+
+todas os 'feature modules' 
+
+
+
+de nosso app geralmente precisam desse module... (é tipo 'BrowserModule')...
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { AuthPageComponent } from './auth-page.component';
+
+@NgModule({
+  declarations: [AuthPageComponent],
+
+  imports: [
+    FormsModule,
+
+    CommonModule, //obrigatório..
+  ],
+  exports: [AuthPageComponent, FormsModule],
+})
+export class AuthModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> com isso, agora podemos importar esse 'AuthModule'
+
+
+LÁ NO NOSSO APP.MODULE.TS,
+
+
+
+
+TIPO ASSIm:
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+
+import { AppComponent } from './app.component';
+
+import { HeaderComponent } from './headerComponent/headerComponent.app';
+
+import { RecipeBookService } from './recipeBook.service';
+import { ShoppingListService } from './shoppingList.service';
+import { GenericErrorPageComponent } from './generic-error-page/generic-error-page.component';
+import { AppRoutingModule } from './app-routing.module';
+import { HomePageComponent } from './home-page/home-page.component';
+
+import { AuthPageComponent } from './auth/auth-page.component';
+
+import { HttpInterceptorService } from 'src/app/httpInterceptor.service';
+
+import { RecipeBookModule } from './recipeBook/recipe-book.module';
+import { ShoppingListModule } from './ShoppingList/shoppingList.module';
+import { SharedModule } from './shared/shared.module';
+import { AuthModule } from './auth/auth.module';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+
+    GenericErrorPageComponent,
+    HomePageComponent,
+
+    AuthPageComponent,
+  ],
+  imports: [
+    AuthModule,
+
+    BrowserModule,
+
+    AppRoutingModule,
+    HttpClientModule,
+    RecipeBookModule,
+    ShoppingListModule,
+    SharedModule,
+  ],
+
+  providers: [
+    RecipeBookService,
+    ShoppingListService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpInterceptorService,
+      multi: true,
+    },
+  ],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS É CLARO QUE __ NÃO ACABAMOS POR AQUI, AINDA...
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO PQ AINDA PRECISAMOS FAZER 'OUTSOURCE'
+
+
+de nossas routes, as routes de 'auth'...
+
+
+
+
+
+
+
+
+
+
+
+--> para isso,
+
+
+
+escrevo assim (pego as routes lá de 'app-routing.module.ts)':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TENTO ESCREVER ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { AuthGuardService } from './auth-guard.service';
+import { AuthPageComponent } from './auth-page.component';
+
+const authRoutes: Routes = [
+  {
+    path: 'auth',
+    canActivate: [AuthGuardService], ////VAI REDIRECIONAR à '/recipe-book', SE O USER JÁ ESTIVER AUTHENTICATED...
+    component: AuthPageComponent,
+  },
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(authRoutes)],
+  exports: [RouterModule],
+})
+export class AuthRoutingModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+o professor diz que isso está certo...
+
+
+
+
+
+
+
+
+
+
+
+--> NOSSO 'AUTH MODULE' 
+
+
+
+
+
+
+
+vai ser destinado, portanto,
+
+ao handle de todas as coisas relativas ao AUTH,
+
+
+
+
+
+
+
+
+e o service continua existindo, aplicado 'applicaiton-wide'.
+
+
+
+
+
+
+
+
+
+
+--> SALVAMOS TUDO ISSO,
+
+E AÍ 
+
+
+GANHAMOS UM ERROR:
+
+
+
+
+
+
+'app-loading-spinner' is not a known element...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER QUE PRECISAMOS IMPORTAR TAMBÉM AQUELE MODULE DE 'SharedModule'
+
+
+dentro desse 
+
+'AuthModule'...
+
+
+
+
+
+
+--. TIPO ASSIM:
+
+
+
+
+
+
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { SharedModule } from '../shared/shared.module';
+import { AuthPageComponent } from './auth-page.component';
+
+@NgModule({
+  declarations: [AuthPageComponent],
+
+  imports: [
+    FormsModule,
+    SharedModule, //usamos o spinner
+
+    CommonModule, //obrigatório..
+  ],
+  exports: [AuthPageComponent, FormsModule],
+})
+export class AuthModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------------------
+
+
+
+
+
+
+
+
+OK.... AÍ TENTAMOS ACESSAR A PAGE DE 'Auth'...
+
+
+
+--> GANHEI UM ERROR:
+
+
+
+
+
+
+core.mjs:6485 ERROR Error: Uncaught (in promise): Error: Cannot match any routes. URL Segment: 'auth'
+Error: Cannot match any routes. URL Segment: 'auth'
+    at ApplyRedirects.noMatchError (
+
+
+
+
+
+
+
+
+
+    E PQ EU HAVIA ESQUECIDO O 'AuthRoutingModule'...
+
+
+
+
+
+
+
+
+
+    EX:
+
+
+
+
+
+
+
+
+
+    import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { SharedModule } from '../shared/shared.module';
+import { AuthPageComponent } from './auth-page.component';
+import { AuthRoutingModule } from './auth-routing.module';
+
+@NgModule({
+  declarations: [AuthPageComponent],
+
+  imports: [
+    FormsModule,
+    SharedModule, //usamos o spinner
+    AuthRoutingModule,
+    CommonModule, //obrigatório..
+  ],
+  exports: [AuthPageComponent, FormsModule],
+})
+export class AuthModule {}
+
+
+
+
+
+
+
+--------------------------------
+
+
+
+
+
+
+
+
+CERTO, AGORA ESTÁ FUNCIONANDO...

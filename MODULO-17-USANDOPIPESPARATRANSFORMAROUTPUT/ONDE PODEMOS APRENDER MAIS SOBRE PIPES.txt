@@ -1,0 +1,349 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> NA ÚLTIMA LIÇAÕ,
+
+
+FIZEMOS PARAMETRIZE DE NOSSOS PIPES...
+
+
+
+
+
+
+
+--.AGORA DEVEMOS DESCOBRIR MAIS SOBRE 
+
+
+PIPES, E SOBRE COMO OS CONFIGURAR...
+
+
+
+
+
+
+
+
+
+--> VAMOS ATÉ 'angular.io',
+
+
+
+LÁ EM 'docs',
+
+
+
+CLICAMOS EM 'API REFERENCE'..
+
+
+
+
+
+
+
+
+
+
+-----> OK.. TEMOS ALGUNS PIPES BUILT-IN..
+
+
+
+
+
+
+
+-> SÃO ELES:
+
+
+
+ASYNC PIPE 
+
+
+
+DECIMAL PIPE 
+
+
+
+JSON PIPE 
+
+
+SLICEPIPE 
+
+
+
+
+CURRENCY PIPE 
+
+
+
+
+
+l18PluralPipe 
+
+
+LowerCasePipe 
+
+
+UpperCasePipe 
+
+
+
+
+DatePipe 
+
+
+
+
+l18nSelectPipe 
+
+
+
+PercentPipe
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'Pipe' 
+
+
+
+'Pipe Transform'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> UM QUE É INTERESSANTE É O 'SLICE PIPE' ------> ESSE SLICE PIPE _ NOS _ DEIXA_ 
+
+
+
+
+TIRAR UMA 'SLICE' 
+
+
+DO NOSSO INPUT,
+
+
+OUTPUTTAR APENAS ESSA SLICE ESPECÍIFCA -------> 
+
+
+
+
+
+
+SE EXAMINARMOS ESSE PIPE,
+
+VERMOS QUE 
+
+ELE ACTUALLY ACEITA/EXIGE MÚLTIPLOS 
+
+
+
+ARGUMENTS...
+
+
+
+
+
+
+
+
+
+SEU FORMATO É ESTE:
+
+
+
+
+
+
+array_or_string_expression | slice:start[:end]
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO, PODEMOS ESPECIFICAR O LOCAL POR ONDE COMEÇAR A CORTAR,
+
+E AÍ 
+
+POR ONDE TERMINAR..
+
+
+
+
+
+
+
+
+--> TEMOS EXPLICAÇÕES E EXEMPLOS...
+
+
+
+
+
+
+
+--> PROFESSOR NÃO VAI NOS EXPLICAR TUDO SOBRE ELES, PQ SEUS USE-CASES SÃO BEM ESPECÍFICOS..
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO FORA DO CAMINHO,
+
+O PROFESSOR QUER NOS MOSTRAR O PIPE DE 
+
+'date'..
+
+
+
+
+
+
+
+
+
+
+
+
+-> TEMOS SHORTCUTS PARA CONSEGUIR DIFERENTES TIPOS DE DATE:
+
+
+
+
+
+
+
+
+
+
+'medium' 
+
+
+'short' 
+
+
+
+
+'fullDate' 
+
+
+
+'longDate' 
+
+
+'mediumDate' 
+
+
+'shortDate'
+
+
+
+'mediumTime' 
+
+
+'shortTime'...
+
+
+
+
+
+
+
+
+
+----> VOCê TAMBÉM PODE FORMATAR 
+
+
+
+SUA DATE 'FROM SCRATCH',
+
+
+com símbolos como  'y, m, d, e, j' 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ E ETC....
+
+
+
+
+
+
+
+
+ --> É ASSIM QUE PODEMOS FAZER NOSSA DATE SE PARECER __ EXATAMENTE COMO QUEREMOS..
+
+
+
+
+
+
+
+
+
+ --> COM ISSO, DEVEMOS PROSSEGUIR 
+
+ ATÉ 
+
+
+ 1 PEQUENA COISINHA, ANTES DE ESTUDAR _ COMO _ PODEMOS _ FAZER 
+
+
+ NOSSA PRÓPRIA 
+
+ PIPE...

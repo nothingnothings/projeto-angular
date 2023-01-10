@@ -1,0 +1,599 @@
+
+
+
+
+
+
+
+
+
+--> NOSSO CÓDIGO DE PIPE CRIADO POR NÓS,
+
+
+NO MOMENTO,
+
+
+ESTÁ ASSIM>:
+
+
+
+
+
+
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'shorten',
+})
+export class ShortenPipe implements PipeTransform {
+  transform(value: any) {
+    if (value.length > 10) {
+      return value.substr(0, 10) + ' ...';
+    }
+
+    return value;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... CRIAMOS ESSE PIPE AÍ, O PIPE DE 'SHORTEn',
+
+
+E ELE ESTÁ FUNCIONANDO BEM...
+
+
+
+
+
+
+--> MAS SERIA BOM 
+
+
+SE O 
+USER 
+
+CONSEGUISSE
+
+
+
+
+
+
+_ _ESPECIFICAR _ 
+
+A
+ QUANTIDADE 
+
+
+ DE 
+
+
+
+
+
+ CARACTERES PELOS QUAIS ELE GOSTARIA DE 'SHORTEN' UM DETERMINADO VALUE...
+
+
+
+
+
+
+ --> PARA ISSO,
+
+
+ DEVO CRIAR 
+ UM 
+
+
+ SEGUNDO PIPE,
+
+ O 'shortenSpecific.pipe.ts'....
+
+
+
+
+
+
+
+
+
+
+ EX:
+
+
+
+
+
+
+
+
+
+
+ import { Pipe, PipeTransform } from '@angular/core';
+
+
+
+@Pipe(
+    {
+        name: 'shortenSpecific'
+    }
+)
+export class ShortenSpecificPipe implements PipeTransform {
+  transform(value: any) {
+
+
+
+
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> CERTO.. MAS 
+
+PRECISAMOS 
+
+
+
+
+
+
+
+
+
+COLOCAR NOVOS PARAMETERS EM 'transform',
+
+
+
+UM SEGUNDO E TERCEIRO PARÂMETROS (start e END do cut de caracteres de nossa string/input)..
+
+
+
+
+
+
+
+
+
+
+--> A LÓGICA SERÁ DIFERENTE, É CLARO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM, CREIO EU:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Pipe, PipeTransform } from '@angular/core';
+
+
+
+@Pipe(
+    {
+        name: 'shortenSpecific'
+    }
+)
+export class ShortenSpecificPipe implements PipeTransform {
+  transform(value: any, start: number, end: number) {
+
+
+
+
+
+
+
+
+
+    return value;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> O PROFESSOR ESCREVE DIFERENTE,
+
+
+ESCREVE UM PARAMETER DE 'limit',
+
+QUE DEVERÁ SER UM NUMBER...
+
+
+
+
+
+
+-->  
+AÍ VAMOS QUERER __ QUE 
+
+
+SEJA EXECUTADO O CÓDIGO DE 'ABREVIAÇÃO' (que é 'substr()')
+
+
+
+
+
+APENAS SE A LENGTH DE NOSSO VALUE FOR SUPERIOR AO 'limit'
+
+DEFINIDO PELO USER,
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+import { Pipe, PipeTransform } from '@angular/core';
+
+
+
+@Pipe(
+    {
+        name: 'shortenSpecific'
+    }
+)
+export class ShortenSpecificPipe implements PipeTransform {
+  transform(value: any, limit: number) {
+
+      if (value.length > limit) {
+          return value.substr(0, 10) + ' ...';
+      }
+
+
+
+    return value;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'shortenSpecific',
+})
+export class ShortenSpecificPipe implements PipeTransform {
+  transform(value: any, limit: number) {
+    if (value.length > limit) {
+      return value.substr(0, 10) + ' ...';
+    }
+
+    return value;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+--------------
+
+
+
+
+
+
+
+
+-> MAS O PROFESSOR TAMBÉM DECIDE USAR 'limit'
+
+
+NAQUELE METHOD DE '.substr()',
+
+TIPO ASSIm:
+
+
+
+
+
+
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'shortenSpecific',
+})
+export class ShortenSpecificPipe implements PipeTransform {
+  transform(value: any, limit: number) {
+    if (value.length > limit) {
+      return value.substr(0, limit) + ' ...';
+    }
+
+    return value;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK... AGORA 
+
+
+,
+
+COM ESSA PEQUENA MUDANÇA,
+
+
+
+
+
+
+
+FAZEMOS COM QUE SEJA EXIGIDO AO USER O PASS DE UM PARAMETER A ESSE PIPE.... (por conta desse argumento no method de 'transform')..
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER QUE AGORA O USER TERÁ DE PASSAR UM PARAMETER AO PIPE...
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'shortenSpecific',
+})
+export class ShortenSpecificPipe implements PipeTransform {
+  transform(value: any, limit: number) { ////user será OBRIGADO a passar 1 PARAMETER ao nosso pipe, que será esse 'limit' aí... a usage do pipe ficará tipo {{ string | shortenSpecific: '5'}}
+    if (value.length > limit) {
+      return value.substr(0, limit) + ' ...';
+    }
+
+    return value;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="list-group">
+        <li class="list-group-item"
+        *ngFor="let server of servers"
+        [ngClass]="getStatusClasses(server)"
+        >
+          <span class="badge" >{{ server.status }}</span> <!-- `shorten` É UM EXEMPLO DE CUSTOM PIPE, PIPE CRIADO POR NÓS MESMOS..-->
+          <strong>{{ server.name | shorten
+             }}
+
+             {{ server.name | shortenSpecific: 5
+             }}
+            
+            </strong> || {{ server.instanceType | uppercase }} ||
+          {{ server.started }} ||
+          {{ server.started | date }} ||
+          {{server.started | date: 'fullDate' }}  ||
+          {{server.started | date: 'fullDate' | uppercase }} ||
+       
+        </li> <!-- AQUI CONSTATAMOS O USO DE ALGUNS PIPES (uppercase e DATE... Aug 9, 1920)-->
+            <!-- PIPES _ TAMBÉM ACEITAKM PARÂMETROS, E ELES SÃO PASSADOS COM ESTA SINTAXE, de ':' :  '''{{ server.started | date: 'xxx' }}'''' -->
+      
+      
+        <!--     {{server.started | uppercase | date: 'fullDate' }}   - ISSO NÃO FUNCIONA -- NÃO FUNCIONA PQ A 'ORDER' DOS PIPES, ORDER DE TRANSFORMAÇÃO DE SUA DATA PELOS PIPES, SEMPRE IMPORTA...  E NÃO É POSSÍVEL CONVERTER UMA DATA DE TYPE 'DATE' EM UPPERCASE, pq só strings permitem essa conversão..-->
+          </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+Ex:
+
+
+
+
+
+
+      {{ server.name | shortenSpecific: 5
+             }}
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> OK, É ASSIM QUE ADICIONAMOS MÚLTIPLOS PARAMETERS...
+
+
+
+
+
+
+
+    --> E PODEMOS COLOCAR INFINITOS PARAMETERS...
+
+
+
+
+     PARA PASSAR MÚLTIPLOS PARAMETERS NO NOSSO CALL DO PIPE,
+
+
+
+
+     escrevemos tipo assim:
+
+
+
+
+
+     shorten:15:3:4:5
+
+
+
+
+
+
+
+
+
+
+     --> AGORA DEVEMOS VER ALGUNS ADVANCED USE CASES,
+
+     E ALGUMAS LIMITAÇÕES QUE PODEMOS ENFRENTAR QUANDO USAMOS PIPES...

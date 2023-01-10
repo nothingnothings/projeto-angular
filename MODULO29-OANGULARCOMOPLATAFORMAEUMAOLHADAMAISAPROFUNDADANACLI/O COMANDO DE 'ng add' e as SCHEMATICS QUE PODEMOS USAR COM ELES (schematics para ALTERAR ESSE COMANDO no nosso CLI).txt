@@ -1,0 +1,1578 @@
+
+
+
+
+
+
+
+
+
+
+
+UM SCHEMATIC __ MUITO FAMOSO __ É 
+
+
+'Angular Material'...
+
+
+
+
+
+
+
+
+
+
+
+
+-> É UM THIRD PARTY PACKAGE,
+
+
+QUE TAMBÉM É 'MAINTAINED'
+ 
+ por 
+
+
+
+
+ PARTES 
+
+
+ DO ANGULAR TEAM,
+
+
+ MAS QUE É __ TOTALMENTE OPCIONAL...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ->_ ELE __ ADICIONA _ COMPONENTS,
+
+ PRE-BUILT COMPONENTS,
+
+
+
+
+
+
+AO SEU ANGULAR APP,
+
+
+
+
+
+E TODOS 
+
+ESSES 
+
+
+COMPONENTS 
+
+
+SEGUEM/SEGUIRÃO 
+
+O 
+
+
+'MATERIAL DESIGN SPEC'...
+
+
+
+
+
+
+O MATERIAL DESIGN É UMA 'DESIGN LANGUAGE'
+
+
+CRIADA __ PELO GOOGLE...
+
+
+
+
+
+
+
+
+
+
+
+
+--> O VISUAL DO 'MATERIAL DESIGN'
+
+
+
+
+
+é aquele visual típico do google, cores simples, bem divididas...
+
+
+
+
+
+
+
+
+
+
+--> BASTA ACESSAR 'material.angular.io'...
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+https://material.angular.io/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK...
+
+
+
+
+
+
+COM 
+
+ISSO, COM ESSE SCHEMATIC,
+
+PODEMOS 
+
+VER 
+
+
+VÁRIOS 
+
+DOS
+
+
+
+
+
+COMPONENTS QUE ISSO NOS OFERECE.... 
+
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE ISSO 
+
+NÃO É O FOCO DO MÓDULO ATUAL,
+
+
+MAS O BOM É QUE 
+
+
+
+
+ISSO TE DÁ 
+
+PRE-BUILT COMPONENTS BEM NICE,
+
+os quais você pode DROPPAR NO SEU APP
+
+
+
+PARA OS UTILIZAR LÁ...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------->  OK.... NOS DOCS do 'angular material',
+
+
+
+
+
+
+SE CLICAMOS EM 
+
+'get started',
+
+
+
+
+
+
+PERCEBEMOS QUE BASTA RODAR UM SIMPLES CÓDIGO DE 
+
+
+
+
+'ng add @angular/material' 
+
+
+
+
+
+PARA ADICIONAR 
+
+
+
+
+ESSE 
+
+
+SCHEMATIC AO NOSSO PROJECT...
+
+
+
+
+
+
+
+
+--> PARA TESTAR O FUNCIONAMENTO DO ANGULAR MATERIAL,
+
+VOU CRIAR UM NOVO PROJECT,
+
+
+
+de nome 
+
+
+
+'exemploAngularMaterial'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK...
+
+
+
+
+
+
+
+
+
+
+O PROFESSOR ESCREVE 
+
+
+
+
+
+
+
+
+'ng add @angular/material' 
+
+
+
+PARA _ ADICIONAR__ ESSE SCHEMATIC AO NOSSO PROJECT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E O 'ANGULAR MATERIAL'
+
+obviamente 
+
+NÃO É O ÚNICO TPP QUE SUPORTA 
+
+ESSE COMANDO de 'add'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> QUALQUER 
+
+TPP suporta esse comando de 'ng add',
+
+
+NÃO IMPORTA SE O PACKAGE FOI 
+
+
+CONSTRUÍDO PELA ANGULAR TEAM OU NÃO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E HÁ __ UM MONTE_ DE THIRD PARTY PACKAGES lá fora,
+
+
+
+
+como 
+
+
+'ionic',
+
+
+QUE 
+
+
+
+
+__ SÃO SUPORTADAS PELO 
+
+ANGULAR...
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+https://ionicframework.com/ 
+
+
+
+
+
+
+
+
+
+
+(IONIC É SUPORTADO TANTO EM ANGULAR, COMO EM REACT E VUE)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... HÁ MTOS PACKAGES QUE SUPORTAM O ANGULAR...
+
+
+
+
+
+
+
+
+
+
+
+-> OK, MAS PARA QUE SEJAM SUPORTADAS,
+
+
+ESSAS PACKAGES 
+
+
+
+__PRECISAM __ INCLUIR ALGUNS CONFIG FILES 
+
+
+
+
+dentro 
+
+
+
+DO PACKAGE SOURCE CODE delas... --> e o 'ng add' 
+
+
+VAI ENCONTRAR ESSES ARQUIVOS,
+
+
+E SE ELES EXISTIREM,
+
+
+ELE SERÁ CAPAZ DE EXECUTAR 
+
+
+
+
+ESSE CÓDIGO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSES ARQUIVOS,
+
+
+que têm de estar incluídos nesses packages,
+
+
+
+
+
+
+_ AÍ _ 
+
+
+COMUNICAM AO 'NG ADD' 
+
+
+
+o QUE ELE DEVE FAZER...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK.,.. AGORA VEREMOS O QUE 
+
+
+O 'ng add'
+
+
+FAZ QUANDO TENTAMOS ADICIONAR O 'ANGULAR MATERIAL'...
+
+
+
+
+
+
+
+escrevemos o código de 
+
+
+
+'''ng add @angular/material '''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PS A:\projeto8-ANGULAR\MODULO29-OANGULARCOMOPLATAFORMAEUMAOLHADAMAISAPROFUNDADANACLI\exemploAngularMaterial> ng add @angular/material
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... COMO PRIMEIRA ETAPA,
+
+ELE 
+
+INSTALA PACKAGES ATRAVÉS DO NPM... --> (é a primeira parte daquilo que ele faz; ele 
+
+instala todas as pacakges 
+
+
+
+NECESSÁRIAS _ PARA __ USAR O ANGULAR MATERIAL)
+
+
+
+
+
+
+
+
+(
+
+
+    ou seja,
+
+
+    ele vai baixar O ANGULAR MATERIAL EM SI,
+
+
+    MAS TAMBÉM QUAISQUER 
+
+
+    DEPENDENCIES REQUISITADAS POR ESSA PACKAGE... 
+)
+
+
+
+
+
+
+
+
+
+
+
+-_> aí,
+
+
+certas packages/tools 
+
+
+
+
+
+
+
+
+PODEM PEDIR A VOCÊ ALGUMAS ESCOLHAS,
+
+
+
+
+
+
+como aqui:
+
+
+
+
+
+
+
+AQUI,
+ 
+
+ O ANGULAR MATERIAL PEDE UM 'DEFAULT THEME' 
+
+
+
+
+
+
+
+
+
+
+QUE VAMOS QUERER USAR INICIALMENTE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> temos:
+
+
+
+
+> Indigo/Pink        [ Preview: https://material.angular.io?theme=indigo-pink ]      
+  Deep Purple/Amber  [ Preview: https://material.angular.io?theme=deeppurple-amber ] 
+  Pink/Blue Grey     [ Preview: https://material.angular.io?theme=pink-bluegrey ]    
+  Purple/Green       [ Preview: https://material.angular.io?theme=purple-green ]     
+  Custom 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> O PROFESSOR COLOCA 'DEEP PURPLE AND AMBER',
+
+
+  MAS Eu coloco 'purple/green'...
+
+
+
+
+
+
+
+
+
+
+
+
+  ---> DEPOIS , O NEGÓCIO PERGUNTA SE QUEREMOS USAR 
+
+  'HAMMERJS'
+
+
+
+  ppara conseguir 
+
+  'gesture recognition'... --> 
+
+  o professor coloca que SIM...
+
+
+
+
+
+
+
+
+
+
+
+
+  --> no meu caso, a pergunta é 
+
+
+  '' ? Set up global Angular Material typography styles? ''
+
+
+
+
+
+
+
+
+
+
+
+
+
+  depois ele pede:
+
+
+  '' ? Include the Angular animations module? (Use arrow keys) ''' 
+
+
+
+
+  COLOQUEI 'include and enable animations'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> CERTO...
+
+
+
+
+
+
+
+
+
+
+
+  --> AGORA COLOCAMOS ENTER... --> 
+
+  AGORA VEREMOS QUE 
+
+  A PACKAGE TERÁ SIDO UPDATADA (
+
+    pq mais dependencies terão sido atualizadas...
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... MAS AGORA TEMOS A PARTE LEGAL:
+
+
+
+QUANDO ESSE PROCESSO TIVER CONCLUÍDO,
+
+TEREMOS MAIS DO QUE APENAS 
+
+'PACKAGES ADICIONAIS',
+
+PQ NOSSO 
+
+PRÓPRIO 
+
+
+COMANDO DE 'ng generate' 
+
+TERÁ SIDO ALTERADO,
+
+AGORA 
+
+
+
+
+
+TERÁ UM COMPORTAMENTO 
+
+LEVEMENTE ALTERADO POR CONTA DESSE 'SCHEMATIC' de 'angular material'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> hmmmm... certo... mas o estranho é que os ARQUIVOS DESSE COMPONENT CONTINUAM OS MESMOS:
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-exemplo-component',
+  templateUrl: './exemplo-component.component.html',
+  styleUrls: ['./exemplo-component.component.css']
+})
+export class ExemploComponentComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+--------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OS ARQUIVOS UPDATADOS TERÃO SIDO:
+
+
+
+
+
+1) 'main.ts' 
+
+
+
+
+2) app.module.ts 
+
+
+
+
+
+
+
+3) angular.json 
+
+
+4) index.html 
+
+
+
+
+5) styles.css....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VAMOS COMEÇAR O BREAKDOWN DAS 'COISAS ALTERADAS' 
+
+
+com o arquivo de 'main.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> o professor aponta que em 'main.ts' 
+
+
+FOI ADICIONADO 1 IMPORT PARA 'HAMMERJS' (
+
+    mas no meu código, isso não aconteceu, tvz essa package já foi deprecada..
+)
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+https://github.com/angular/components/blob/master/guides/v9-hammerjs-migration.md 
+
+
+
+
+
+
+
+
+
+
+Angular Material, as of version 9, no longer requires HammerJS for any component. Components which previously depended on HammerJS no longer provide a HAMMER_GESTURE_CONFIG that will enable use of HammerJS events in templates.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo.... mas ainda não entendi qual é a diferença 
+
+
+nos nossos components..
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo...
+
+
+
+
+em main.ts,
+
+
+
+
+
+ANTIGAMENTE ERA ADICIONADO O CÓDIGO DE 'hammerjs'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> JÁ EM 'index.html',
+
+
+TEMOS ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>ExemploAngularMaterial</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body class="mat-typography">
+  <app-root></app-root>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> como efeito do add de 'google material',
+
+
+temos aqueles IMPORTS dos links
+
+ali,
+
+
+
+estas linhas:
+
+
+
+
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> FOI IMPORTADA A FONT DE 'ROBOTO',
+
+   
+
+   E TAMBÉM 
+
+
+
+   __ MATERIAL ICONS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+   --> esse foi um ajuste, sim...
+
+
+
+
+
+
+
+
+
+
+
+
+   OUTRO AJUSTE:
+
+
+
+
+
+
+
+
+
+
+
+
+   Em 'app.module.ts',
+
+
+
+
+FORAM ADICIONADOS ALGUNS MODULES:
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppComponent } from './app.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ExemploComponentComponent } from './exemplo-component/exemplo-component.component';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    ExemploComponentComponent
+  ],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> o module que foi adicionado foi 
+
+
+
+'BrowserAnimationsModule'... ->  
+
+
+
+
+
+
+ISSO 
+
+
+
+PQ __ ALGUNS COMPONENTS DO 'ANGULAR MATERIALs'
+
+
+
+
+USAM ANIMATIONS, E ESSAS ANIMATIONS DEVEM FUNCIOANR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> em 'styles.css',
+
+
+
+
+
+FICAMOS COM ISTO:
+
+
+
+
+
+
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SÃO ALGUNS DEFAULT STYLES PARA 
+
+SEU WEBSITE (como height e uma default font)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> FINALMENTE, A MUDANÇA MAIS IMPORTANTE FOI EM 'angular.json',
+
+
+
+AQUELE ARQUIVO QUE GOVERNA AS CONFIGS DE NOSSOS BUILDS,
+
+
+
+
+
+pq 
+
+
+
+
+
+lá,
+
+
+
+
+debaixo do command de 'build',
+
+
+
+
+
+
+_ AGORA __ TAMBÉM ENCONTRAMOS 
+
+
+
+
+O PATH A 1 DE NOSSOS 'THEME STYLES',
+
+
+do style que escolhemos,
+
+
+tipo assim:
+
+
+
+
+
+
+
+            "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/purple-green.css",
+              "src/styles.css"
+            ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> ou seja,
+
+
+  esse 'add' 
+
+
+  do 
+
+  'angular material '
+
+
+
+
+
+
+
+
+
+
+
+FEZ COM QUE 
+
+
+
+OS STYLES DESSE FILE AÍ _ TAMBÉM FOSSEM IMPORTADOS/UTILIZADOS... 
+
+
+
+
+
+
+
+
+
+
+
+ok.. -> isso significa que nosso theme é 'PICKED UP' 
+quando construímos para production...
+
+
+
+
+
+
+
+
+
+
+
+--> o professor explica que 
+
+
+
+
+ESSA É O SCHEMATIC DE 'NG ADD',
+
+
+
+QUE 
+
+
+
+
+
+
+É MT ÚTIL,
+
+
+
+
+
+
+PRINCIPALMENTE PARA TPPs que o suportam,
+
+
+PQ ELE FAZ MAIS 
+
+
+
+
+
+
+DO QUE O INSTALL DE PACKAGES EM 'node_modules'
+
+
+
+e em 
+
+'package.json',
+
+
+
+FAZ TAMBÉM ALGUNS 'ADJUSTMENTS ESPECÍFICOS',
+
+
+
+
+
+ESPECIFICADOS PELO TPP,
+
+
+
+
+QUE PRECISAM SER DEFINIDOS PARA QUE VOCÊ CONSIGA USAR CADA PACKAGE com o angular...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, AGORA SÓ FALTA ESTUDAR O 'ng generate' 
+
+e o 
+
+'ng update'..
+
+
+
+
+
+
+
+
+--> DEVEMOS ESTUDAR O QUE ESSES COMMANDS/SCHEMATICS FAZEM... 

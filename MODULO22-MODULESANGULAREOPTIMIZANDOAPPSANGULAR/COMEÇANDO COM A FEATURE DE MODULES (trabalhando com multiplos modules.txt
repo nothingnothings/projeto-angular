@@ -1,0 +1,1663 @@
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+ EM VEZ DE TERMOS UM APP MODULE GIGANTE,
+
+
+
+
+
+
+
+
+ PODEMOS __ 
+
+
+
+
+
+
+SPLITTAR ESSE APP MODULE QUE 
+
+
+
+
+'DEFINE NOSSO APP COMPONENT' 
+
+
+
+
+EM 1 MODULE 
+
+PRÓPRIO,
+
+
+
+PARA ENTAÕ 
+
+
+
+
+
+CRIAR 
+
+
+
+
+''''2  DIFERENTES MODULES''' PARA O NOSSO APP,
+
+
+
+
+
+QUE NESSE CASO SERÃO:
+
+
+
+
+
+
+
+
+1) PRODUCTS MODULE 
+
+
+
+
+
+
+
+2) ORDERS MODULE..
+
+
+
+
+
+
+
+
+
+--> NESSE EXEMPLO,,
+
+TEMOS 
+
+
+2 MODULES,
+
+
+2 'FEATURE MODULES'... ------->  
+
+
+
+
+
+
+
+
+
+
+
+
+VOCÊ CRIA ESSES MODULES DA EXATA MESMA 
+
+FORMA,
+
+COm 
+
+'NgModule({})',
+
+
+
+
+
+
+
+
+
+
+o fato de serem 'feature modules' APENAS SIGNIFICA QUE 
+
+
+
+ESSES MODULES AGRUPAM 
+
+
+COISAS COMO 
+
+COMPONENTS, DIRECTIVES, PIPES,
+
+ETC,
+
+
+
+QUE 
+
+
+SÃO USADAS 
+
+
+
+NESSAS ÁREAS ESPECÍFICAS DE SEU APP...
+
+
+
+
+
+
+
+
+
+
+--> NESSE EXEMPLO DA LOJA,
+
+
+
+uma online shop,
+
+
+
+PODERÍAMOS TER:
+
+
+
+
+
+
+
+1) COMPONENTS DEDICADOS AO RENDER DE PRODUCTS INDIVIDUAIS...
+
+
+
+
+
+
+
+2) AÍ PODEMOS TER UMA ÁREA DE NOSSO APP 
+
+
+RESPONSÁVEL POR 'ORDERS'...
+
+
+
+
+
+
+
+
+
+--.----> E ESSA É UMA PARTE IMPORTANTE 
+
+
+DO DEVELOPMENT 
+
+DE 
+
+ANGULAR APPS --> PQ 
+
+
+
+
+ESSE É O PRÉ-REQUISITO 
+
+PARA PERFORMANCE IMPROVEMENTS,
+
+
+
+
+E 
+
+
+
+ISSO TAMBÉM 
+
+GARANTE QUE 
+
+
+
+
+ATÉ MESMO 
+
+VOCÊ , DEPOIS DE UMA BREVE PAUSA,
+
+
+
+
+CONSEGUIRÁ 
+
+
+ENCONTRAR A PARTE ESPECÍFCA 
+
+
+
+
+DE SEU 
+
+
+APP QUE 
+
+VOCÊ 
+
+QUER CONSERTAR, ETC... ---> ISSO PQ VOCÊ PODE 
+
+
+
+
+
+ESTAR CONSTRUINDO UM APP COM CENTENAS,
+
+MILHARES DE COMPONENTS E DIRECTIVES,
+
+
+
+E AÍ 
+
+
+O GROUPING DELES 
+
+EM 
+
+
+MODULES 
+
+LÓGICAS 
+
+E o
+
+
+REFACTOR DE SEU CÓDIGO BEM MAIS FÁCIL...
+
+
+
+
+
+
+
+
+
+
+
+
+-->DEVEMOS APLICAR ISSO AO NOSSO COURSE PROJECT,
+
+
+EM QUE 
+
+
+
+TAMBÉM 
+
+TEMOS CORE FEATURES,
+
+
+
+PELAS QUAIS PODEMOS DIVIDIR NOSSO APP...
+
+
+
+
+
+
+
+
+
+NO NOSSO APP,
+
+NO CASO,
+ 
+ TEMOS 3 'MAJOR FEATURE AREAS':
+
+
+
+
+
+
+
+
+
+ 1) RECIPES 
+
+
+
+
+ 2) SHOPPING LIST 
+
+
+
+
+ 3) AUTH 
+
+
+
+
+
+
+
+
+
+
+
+
+ -------> OK... ESSAS SÃO AS 3 FEATURE AREAS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> O HEADER E COMPONENTS DE 'SHARED'
+
+
+
+
+ NÃO 
+
+
+ SÃO FEATURES DO APP,
+
+
+
+ E SIM 
+
+ SÃO ALGO COMPARTILHADO...
+
+
+
+
+
+
+
+
+ --> É CERTO QUE EM 'shared' temos algumas FEATURES/COMPONENTS QUE SÃO USADOS EM APENAS ALGUMAS PARTES DO APP (como o 'alert', que só é usado no component de 'auth' ),.
+
+
+
+
+
+
+
+ MAS 
+
+
+
+ FAZ SENTIDO QUE 
+
+ ESSES NEGÓCIOS DEVERÃO SER 'SHARED'
+
+
+ AO LONGO DE DIFERENTES FEATURES DE NOSSO APP (
+
+
+     pq 
+
+     o 
+
+     alert pdoeria 
+
+
+     ser mostradoo 
+
+
+
+     também na área de 'recipes',
+
+
+
+     quando 
+
+    ocorrer algum erro....
+
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+ -> É POR ISSO QUE CUIDAREMOS DO 'shared' 
+
+
+
+ E DESSAS FEATURES COMPARTILHADAS __ MAIS _ TARDE,
+
+
+
+ PQ 
+ 
+
+ ELES NA VERDADE NÃO SERÃO UMA 'CORE FEATURE' 
+
+
+
+ DO NOSSO APP.... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> É POR ISSO QUE DEVEMOS FOCAR EM ALGO COMO 
+
+ 
+
+ 'O CREATE DE UM MODULE PARA AS NOSSAS 'RECIPES' '''
+
+
+
+
+
+
+
+
+
+
+
+
+---> PARA CRIAR UM NOVO MODULE, 
+
+
+UM MODULE PARA NOSSAS RECIPES,
+
+
+
+
+
+
+DEVEMOS CRIAR 
+
+UM NOVO ARQUIVO 
+
+
+LÁ NO FOLDER DE 
+
+'recipe-book',
+
+
+
+
+QUE SERÁ 
+
+
+
+CHAMADO DE 
+
+'recipeBook.module.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE MODULE SERÁ RESPONSÁVEL 
+
+
+
+
+
+PELO DEFINE DOS BUILDING BLOCKS DO 'RECIPE FEATURE AREA'...
+
+
+
+
+
+
+
+
+
+
+
+--> PARA DEFINIR UM NOVO MODULE,
+
+COMEÇAMOS COM O DEFINE DE UMA NOVA CLASS..
+
+
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export class RecipesModule {
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PROVAVELMENTE O CÓDIGO FICARÁ ASSIm:
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from "@angular/core";
+
+
+
+
+@NgModule({
+
+})
+
+export class RecipesModule {
+
+    
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TIPO ALGO ASSIm:
+
+
+
+
+
+
+
+
+
+import { NgModule } from "@angular/core";
+
+
+
+
+@NgModule({
+
+    declarations: [],
+    providers: [],
+     exports: [],
+
+})
+
+export class RecipeBookModule {
+
+    
+} 
+
+
+
+--> OK, COM ISSO TEREMOS ESSE MODULE DE 'RecipeBook'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----->  ESSA CLASS PRECISA DESSE DECORATOR DE 'NgModule()'..
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO...
+
+
+
+
+
+
+
+
+
+
+ESSE DECORATOR EXIGE UM OBJECT,
+
+
+
+E DENTRO DESSE OBJECT CONFIGURAMOS ESSE 
+
+
+
+NGMOODULE..
+
+
+
+
+
+
+
+
+
+--> colocamos 
+
+
+
+
+as declarations,
+
+
+e DENTRO desse 
+
+'declarations'
+
+
+DEVEMOS ADICIONAR TODOS OS 'RECIPES RELATED COMPONENTS',
+
+
+tudo que 
+
+
+existia antes lá em 'app.module.ts',
+
+
+
+TIPO ASSIM:
+
+
+
+
+import { NgModule } from "@angular/core";
+import { RecipeBookComponent } from "./recipe-book.component";
+import { RecipeDetailComponent } from "./recipe-detail/recipe-detail.component";
+import { RecipeEditComponent } from "./recipe-edit/recipe-edit.component";
+import { RecipeItemComponent } from "./recipe-list/recipe-item/recipe-item.component";
+import { RecipeListComponent } from "./recipe-list/recipe-list.component";
+import { SelectARecipeComponent } from "./select-a-recipe/select-a-recipe.component";
+
+
+
+
+@NgModule({
+
+    declarations: [
+        RecipeDetailComponent,
+        RecipeBookComponent,
+        SelectARecipeComponent,
+        RecipeEditComponent,
+        RecipeListComponent,
+        RecipeItemComponent,
+        
+    ],
+    providers: [],
+     exports: [],
+
+})
+
+export class RecipeBookModule {
+
+    
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok... TIRAMOS TUDO ISSO LÁ DE 'app.module.ts',
+
+
+
+
+no caso...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... MAS É CLARO QUE ISSO NÃO É SUFICIENTE,
+
+
+PQ AINDA PRECISAMOS _ IMPORTAR __ AQUELE MODULE DE 
+
+'RecipeBookModule'
+
+
+
+
+PARA DENTRO DO 'app.module.ts',
+
+
+
+
+
+POR MEIO DESTES CÓDIGOS:
+
+
+
+
+
+
+import { NgModule } from "@angular/core";
+import { RecipeBookComponent } from "./recipe-book.component";
+import { RecipeDetailComponent } from "./recipe-detail/recipe-detail.component";
+import { RecipeEditComponent } from "./recipe-edit/recipe-edit.component";
+import { RecipeItemComponent } from "./recipe-list/recipe-item/recipe-item.component";
+import { RecipeListComponent } from "./recipe-list/recipe-list.component";
+import { SelectARecipeComponent } from "./select-a-recipe/select-a-recipe.component";
+
+
+
+
+@NgModule({
+
+    declarations: [
+        RecipeDetailComponent,
+        RecipeBookComponent,
+        SelectARecipeComponent,
+        RecipeEditComponent,
+        RecipeListComponent,
+        RecipeItemComponent,
+        
+    ],
+    providers: [],
+     exports: [RecipeBookModule],
+
+})
+
+export class RecipeBookModule {
+
+    
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ESTE:
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
+
+import { AppComponent } from './app.component';
+
+import { HeaderComponent } from './headerComponent/headerComponent.app';
+
+// import { RecipeBookComponent } from './recipeBook/recipe-book.component';
+// import { RecipeItemComponent } from './recipeBook/recipe-list/recipe-item/recipe-item.component';
+// import { RecipeListComponent } from './recipeBook/recipe-list/recipe-list.component';
+// import { RecipeDetailComponent } from './recipeBook/recipe-detail/recipe-detail.component';
+import { ShoppingListComponent } from './ShoppingList/shoppingList.component';
+import { ShopListEditComponent } from './ShoppingList/shop-list-edit/shop-list-edit.component';
+import { ShoppingListItemComponent } from './ShoppingList/shopping-list-item/shopping-list-item.component';
+
+import { DropdownDirective } from './dropdownDirective/dropdown.directive';
+import { RecipeBookService } from './recipeBook.service';
+import { ShoppingListService } from './shoppingList.service';
+import { GenericErrorPageComponent } from './generic-error-page/generic-error-page.component';
+import { AppRoutingModule } from './app-routing.module';
+import { HomePageComponent } from './home-page/home-page.component';
+// import { SelectARecipeComponent } from './recipeBook/select-a-recipe/select-a-recipe.component';
+// import { RecipeEditComponent } from './recipeBook/recipe-edit/recipe-edit.component';
+import { AuthPageComponent } from './auth-page/auth-page.component';
+import { SpinnerComponent } from './auth-page/spinner/spinner.component';
+import { HttpInterceptorService } from 'src/app/httpInterceptor.service';
+// import { AuthGuardService } from './auth-guard.service';
+import { AlertDynamicComponent } from './shared/alertVersaoNgIf (bem mais pratica)/alert.component';
+
+
+import { PlaceholderDirective } from './placeholderDirective/placeholder.directive';
+import { RecipeBookModule } from './recipeBook/recipe-book.module';
+// import { AlertDynamicComponent } from './shared/alertVersaoNgIf (bem mais pratica)/alert.component';
+
+
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+    // RecipeBookComponent, ////OUTSOURCEADO
+    // RecipeItemComponent,
+    // RecipeListComponent,
+    // RecipeDetailComponent,
+    ShoppingListComponent,
+    ShopListEditComponent,
+    ShoppingListItemComponent,
+    DropdownDirective,
+    GenericErrorPageComponent,
+    HomePageComponent,
+    // SelectARecipeComponent,
+    // RecipeEditComponent,
+    AuthPageComponent,
+    SpinnerComponent,
+    AlertDynamicComponent,
+    PlaceholderDirective
+    // AlertDynamicComponent
+  ],
+  imports: [
+    BrowserModule,
+    RecipeBookModule,
+    ReactiveFormsModule,
+    FormsModule, //lembre-se de adicionar isso se for usar 'ngModel()'..
+    AppRoutingModule,  //módulo de routing, customizado por nós...
+    HttpClientModule
+  ],
+  entryComponents: [   ///usado com o RENDER DE COMPONENTS DENTRO DE NOSSO CÓDIGO TS... --> ou seja, components que não vão usar um 'selector' para serem renderizados, nem o ROUTE CONFIG (paths e etc) para serem renderizados... eles vão simplesmente ser 'DROPPADOS' no código, por meio de uma directive especializada e por meio de uma 'ComponentFactory' própria...
+  AlertDynamicComponent
+],
+
+  providers: [RecipeBookService, ShoppingListService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpInterceptorService,
+      multi: true
+    }
+  
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+  imports: [
+    BrowserModule,
+    RecipeBookModule,
+    ReactiveFormsModule,
+    FormsModule, //lembre-se de adicionar isso se for usar 'ngModel()'..
+    AppRoutingModule,  //módulo de routing, customizado por nós...
+    HttpClientModule
+  ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  acho que isso fará o truque...
+
+
+
+
+
+
+
+
+
+  não, na verdade ISSO _ __ NÃO FARÁ O TRUQUE...
+
+
+
+
+
+
+
+
+
+
+  --> ISSO PQ 
+
+
+  NÓS TAMBÉM DEVEMOS COLOCAR,
+
+
+  naquele 
+
+  array de 'exports'
+
+  lá de 'recipeBook.module.ts',
+
+
+
+
+
+  __ TODOS OS COMPONENTS E DIRECTIVES QUE USAMOS DIRETAMENTE NELE,
+
+
+  PARA QUE ESSES COMPONENTS __ TAMBÉM __ POSSAM SER 
+
+  USADOS __ EM OUTROS COMPONENTS DE NOSSO APP (que é representado por 'app.module.ts')...
+
+
+
+
+
+
+  O CÓDIGO, NO CASO, FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  import { NgModule } from "@angular/core";
+import { RecipeBookComponent } from "./recipe-book.component";
+import { RecipeDetailComponent } from "./recipe-detail/recipe-detail.component";
+import { RecipeEditComponent } from "./recipe-edit/recipe-edit.component";
+import { RecipeItemComponent } from "./recipe-list/recipe-item/recipe-item.component";
+import { RecipeListComponent } from "./recipe-list/recipe-list.component";
+import { SelectARecipeComponent } from "./select-a-recipe/select-a-recipe.component";
+
+
+
+
+@NgModule({
+
+    declarations: [
+        RecipeDetailComponent,
+        RecipeBookComponent,
+        SelectARecipeComponent,
+        RecipeEditComponent,
+        RecipeListComponent,
+        RecipeItemComponent,
+
+    ],
+    providers: [],
+     exports: [
+        RecipeDetailComponent,
+        RecipeBookComponent,
+        SelectARecipeComponent,
+        RecipeEditComponent,
+        RecipeListComponent,
+        RecipeItemComponent
+    ],
+
+})
+
+export class RecipeBookModule {
+
+    
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ENTRETANTO, A VERSÃO DO PROFESSOR NÃO COLOCOU O EXPORT DE 'RecipeBook'
+
+EM SI...
+
+
+
+
+
+
+
+
+--------> 
+
+
+
+
+
+
+ok.. aí importe o 'RecipeBookModule' lá 
+
+
+
+no 
+'app.module.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SALVAMOS TUDO ISSO 
+
+
+
+E TENTAMOS ABRIR NOSSO APP --> IMEDIATAMETNE GANHAMOS UM ERROR:
+
+
+
+
+
+
+
+
+
+
+'''ROUTER-OUTLET IS NOT A KNOWN ELEMENT '----->   e esse 
+
+
+
+
+ERROR 
+
+
+
+
+
+
+se origina 
+
+LA´
+
+DO COMPONENT DE 
+
+
+
+'RecipeBookModule/RecipeBookComponent.html' '''
+
+
+
+
+
+
+
+
+
+
+-->  E O PROBLEMA DISSO ESTÁ NESTE CÓDIGO:
+
+
+
+
+
+<div class="row" >
+    <div class="col-md-5">
+        <app-recipe-list>
+
+        </app-recipe-list>
+    </div>
+    <div class="col-md-7" [ngStyle]="{'margin-top': '36px'}">
+        <router-outlet></router-outlet>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COMO VOCê PODE OBSERVAR, ALI ESTAMOS USANDO O 'router-outlet',
+
+
+
+
+E O PROBLEMA É QUE ESSE 
+
+'router-outlet'
+
+
+
+
+
+É __ JUSTAMENTE _ UMA DIRECTIVE PROVIDENCIADA PELO ANGULAR...
+
+
+
+
+
+(
+    E ISSO QUER DIZER QUE 
+
+
+    ELA NÃO É 'MAGICALLY DISPONÍVEL EM TODO NOSSO APP',
+
+
+E SIM 
+
+
+FICA DISPONÍVEL 
+
+
+
+APENAS POR MEIO 
+
+
+
+
+DAQUELE 
+
+
+
+
+'RouterModule',
+
+
+
+IMPORTADO LÁ EM 
+
+'app-routing.module.ts',
+
+
+
+
+
+
+
+
+
+QUE EXISTE/É UTILIZADO 
+
+
+NÃO APENAS PARA _ CONFIGURAR _ NOSSAS ROUTES,
+
+
+
+
+MAS TAMBÉM ADICIONA ROUTING FEATURES 
+
+COMO 
+
+
+
+'[routerLink]' 
+
+
+'routerLinkActive' 
+
+
+
+
+
+
+
+E _ _TAMBÉM O 
+
+'router-outlet'
+
+DIRECTIVE...
+
+
+
+
+
+
+
+
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+--> E COMO ESSE 'RouterModule'
+
+
+
+FOI _ IMPORTADO _ LÁ 
+
+
+
+Em 
+
+'app.module.ts',
+
+
+
+
+
+AS FEATURES DESSE ROUTER MODULE SÓ FICARAM DISPONÍVEIS LÁ EM
+
+
+
+'app.module.ts'...
+
+
+(
+
+
+    AS ROUTER FEATURES SÓ FICARAM DISPONÍVEIS LÁ...
+)
+
+
+
+
+
+
+
+
+VOCÊ PODERIA PENSAR QUE AS FEATURES DE ROUTING TAMBÉM FICARIAM DISPONÍVEIS 
+
+
+
+
+LÁ NO MODULE DE 'recipeBook',
+
+
+
+
+TALVEZ PQ 
+
+O 
+
+'recipeBook'
+
+ESTAVA/ESTÁ COMO UM DOS COMPONENTS RENDERIZADOS 
+
+
+
+
+NAS ROUTES DO 'app-routing.module.ts',
+
+
+
+
+MAS __ ESSE NÃO É O CASO...
+
+
+
+
+
+
+
+
+--> EM VEZ DISSO,
+
+
+
+CONFORME O PROFESSOR MENCIONOU,
+
+
+
+
+E ISSO É ALGO QUE VOCê DEVE DECORAR,
+
+
+
+
+
+
+
+
+'''''''TUDO EM 1 MODULE FUNCIONA __ STANDALONE__''''' ---> ISSO QUER DIZER QUE 
+
+
+
+
+VOCÊ 
+
+
+
+PODE 
+
+
+
+''EXPORTAR ALGO''
+
+PARA CONSEGUIR USAR ESSE ALGO EM UM OUTRO ARQUIVO,
+
+
+
+
+
+MAS ISSO POR SI SÓ 
+
+
+
+NÃO SIGNIFICA QUE 
+
+
+
+NESSE OUTRO MODULE,
+
+
+
+
+NO MODULE QUE 
+
+VOCê 
+
+
+__EXPORTOU_,
+
+
+VOCÊ 
+
+terá 
+
+
+FEATURES 
+
+
+
+
+DO 'LOCAL PARA O QUAL VOCÊ EXPORTOU ESSE MODULE' (o 'RecipeBookModule', portanto, não vai 'ABSORVER' as features do local em que foi inserido/importado)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO QUER 
+
+
+
+DIZER QUE 
+
+
+''VOCÊ SÓ PODE EXPORTAR ALGO QUE É USÁVEL/PASSA A SER USÁVEL EM TODOS OS OUTROS LUGARES,
+''',
+
+
+
+MAS 
+
+VOCÊ NÃO VAI AUTOMATICAMENTE 
+
+GANHAR ACESSO 
+
+
+
+AO OUTRO CONTEÚDO, DOS OUTROS COMPONENTS/MODULES...
+
+
+
+
+
+
+
+
+--> isso quer dizer que, nativamente,
+
+
+O 
+
+
+
+'RecipeBookModule'
+
+
+E TODOS OS COMPONENTS QUE FAZEM PARTE DELE __ NÃO _ TERÃO ACESSO 
+
+
+ALGUM A TODAS AS FEATURES/MODULES 
+
+QUE 
+
+
+
+
+IMPORTAMOS PARA DENTRO 
+
+
+
+
+DO 'app.module.ts' (
+
+
+
+
+    ou seja,
+
+    coisas 
+
+    como 
+
+
+    O ROUTING MODULE,
+
+    TAMBÉM AS FORMS,
+
+    NADA DISSO FICA DISPONÍVEL EM 
+
+    'RecipeBookModule'...
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS COMO PODEMOS CONSERTAR ESSE PROBLEMA?

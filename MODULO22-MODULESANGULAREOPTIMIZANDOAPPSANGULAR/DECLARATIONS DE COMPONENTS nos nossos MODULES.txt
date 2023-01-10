@@ -1,0 +1,748 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok.. SPLITTAMOS NOSSO APPP 
+
+
+
+
+
+EM PELO MENOS 2 MODULES ( app e 'recipe', dentro desse 'app')
+
+
+
+
+
+
+
+
+
+
+
+TAMBÉM USAMOS MODULES SEPARADOS PARA NOSSAS 'ROUTING CONFIGs'.....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> mas antes de splittarmos ainda mais nosso código (e também aprenderemos sobre os 'DIFERENTES TIPOS DE MODULES QUE PODEMOS ADICIONAR'),
+
+
+
+
+
+
+
+
+o professor  DIZ QUE DEVEMOS VER UM DETALHE IMPORTANTE,
+
+
+
+SOBRE 
+
+
+
+OS COMPONENTS QUE SÃO CARREGADOS ATRAVÉS 
+
+
+
+
+
+DE ROUTING..
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+O PROFESSOR FALA DO COMPONENT  de 'recipeBookComponent':
+
+
+
+
+
+
+const recipeBookRoutes: Routes = [
+    {
+        path: 'recipe-book',
+        component: RecipeBookComponent,
+        canActivate: [AuthGuardService], ////VAI REDIRECIONAR à 'auth', SE O USER NÃO ESTIVER AUTH....
+        children: [
+          {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> COMO VOCê PODE OBSERVAR,
+
+
+
+    O COMPONENT DE 'RECIPEBook'
+
+
+
+    É __ CARREGADO__ SEMPRE QUE VISITAMOS 
+
+
+
+
+    'recipe-book'....
+
+
+
+
+
+
+
+
+
+
+    --> E O COMPONENT DE 'recipe-book'
+
+
+    TAMBÉM 
+
+
+
+
+    É DECLARADO 
+
+    LÁ 
+
+
+    EM 
+
+    'recipe-book.module.ts',
+
+
+
+
+
+
+
+
+
+    DENTRO 
+
+
+
+
+
+    DESSE MODULE AÍ,
+
+
+
+
+
+
+
+
+LÁ NAS DECLARATIONS:
+
+
+
+
+
+
+
+
+
+@NgModule({
+
+    declarations: [
+        RecipeBookComponent,
+        RecipeDetailComponent,
+        RecipeBookComponent,
+        SelectARecipeComponent,
+        RecipeEditComponent,
+        RecipeListComponent,
+        RecipeItemComponent,
+
+    ],
+
+
+
+
+     exports: [
+         RecipeBookComponent,
+        RecipeDetailComponent,
+        RecipeBookComponent,
+        SelectARecipeComponent, 
+        RecipeItemComponent
+    ],
+
+
+
+
+
+
+
+
+
+
+
+
+    --> OK.. MAS AGORA _ O PROFESSOR VAI QUERER _ REMOVER_ ESSA DECLARATIOn,
+
+    REMOVER TAMBÉM O EXPORT DESSE COMPONENT,
+
+     
+
+
+
+
+
+     PARA ENTÃO 'CHECAR SE O APP AINDA FUNCIONA', mesmo 
+
+
+
+
+
+
+
+
+     sem o DECLARE E O EXPORT DESSE COMPONENT,
+
+     dentro 
+
+
+
+
+     do MODULE DE 'recipeBook'..
+
+
+
+
+
+
+
+     --> ASSIM QUE FIZERMOS ISSO, GANHAREMOS UM __ ERROR_....
+
+
+
+
+
+
+
+
+
+
+
+     --> O ERROR SERÁ QUE 
+
+
+     'RecipeBookComponent não faz parte de 
+
+
+
+     QUALQUER NGMODULE,
+
+
+     OU O MODULE NÃO FOI IMPORTADO 
+
+     DENTRO DO SEU MODULE (de app.module.ts, provavelmente)'''
+
+
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO,
+
+NO CASO,
+
+
+QUE É MT IMPORTANTE ENTENDER QUE 
+
+VOCÊ 
+
+
+
+
+
+SEMPRE 
+
+
+VAI 
+
+
+
+
+_ NÃO SÓ _ 'add declarations sobre o que (COMPONENT) você planeja usar NOS SEUS TEMPLATES' (como 'recipeBookComponent', lá no array de 'declarations', ),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS _ TAMBÉM 'ADD ANY ROUTES QUE VCOÊ 
+TALVEZ 
+
+
+
+VENHAM A SER CARREGADAS POR MEIO DE ROUTING,
+
+
+POR MEIO 
+
+
+DE SUA 
+ROUTING CONFIG'..
+
+
+
+
+
+
+
+
+
+E É EXATAMENTE POR ISSO QUE TEMOS 
+
+
+'recipeBookComponent'
+
+
+LÁ NAS DECLARATIONS DE 
+
+
+
+'recipe-book.module.ts'..
+
+
+
+
+
+
+
+
+
+Ex:
+
+
+
+
+
+
+
+
+
+import { CommonModule } from "@angular/common";
+import { NgModule } from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
+import { RouterModule } from "@angular/router";
+import { RecipeBookRoutingModule } from "./recipe-book-routing.module";
+import { RecipeBookComponent } from "./recipe-book.component";
+import { RecipeDetailComponent } from "./recipe-detail/recipe-detail.component";
+import { RecipeEditComponent } from "./recipe-edit/recipe-edit.component";
+import { RecipeItemComponent } from "./recipe-list/recipe-item/recipe-item.component";
+import { RecipeListComponent } from "./recipe-list/recipe-list.component";
+import { SelectARecipeComponent } from "./select-a-recipe/select-a-recipe.component";
+
+
+
+
+@NgModule({
+
+    declarations: [
+        RecipeBookComponent,
+        RecipeDetailComponent,
+        RecipeBookComponent,
+        SelectARecipeComponent,
+        RecipeEditComponent,
+        RecipeListComponent,
+        RecipeItemComponent,
+
+    ],
+    providers: [],
+    imports: [
+       
+        RecipeBookRoutingModule,  ////assim fazemos o ACTUAL IMPORT DAS  _ROUTES_ RELATIVAS_ A ESSA FEATURE DE 'recipeBook' dentro do nosso module de 'recipeBook' (ou seja, aqui há um outsourcing bem absurdo, que deixa nossos components bem mais 'lean')...
+        CommonModule,
+        ReactiveFormsModule  ///esses 3 modules são necessários, aqui, pq usamos essas 3 features dentro dos componnets/código de 'recipeBookMOdule', esse SUBMODULE de nosso app (que é representado por 'app.module.ts', o module em que esse 'recipeBookMOdule' é importado) ------> 
+        ///A RAZÃO PARA TERMOS DE 'REPETIR' ESSES IMPORTS, AQUI, É QUE __ IMPORTS REALIZADOS LÁ EM 'app.module.ts' NÃO SÃO TRANSFERIDOS/INHERITED AUTOMATICAMENTE PELOS 'child modules' importados nele...
+    ],
+     exports: [
+         RecipeBookComponent,
+        RecipeDetailComponent,
+        RecipeBookComponent,
+        SelectARecipeComponent, 
+        RecipeItemComponent
+    ],
+
+})
+
+export class RecipeBookModule {
+
+    
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> a outra coisa importante que o professor queria destacar é que 
+
+
+
+AGORA,
+
+AGORA QUE 
+
+
+
+
+
+SOMOS _ CAPAZES_ DE FAZER 'MANAGE'
+
+
+
+DO LOADING 
+
+DE NOSSOS COMPONENTS,
+
+
+
+por meio de 'recipe-book-routing.module.ts',
+
+
+
+
+
+
+
+
+
+
+NÃO _ EXISTIRÁ _ NENHUMA RAZÃO PARA FAZER EXPORT DE TODOS AQUELES COMPONENTS RELACIONADOS COM 'recipes',
+
+
+
+
+
+
+AQUELES COMPONENTS VISTOS NESTE CÓDIGO:
+
+
+
+
+
+
+     exports: [
+         RecipeBookComponent,
+        RecipeDetailComponent,
+        RecipeBookComponent,
+        SelectARecipeComponent, 
+        RecipeItemComponent
+    ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ------> ok.. não precisamos EXPORTAR TODOS ESSES RECIPE COMPONENTS,
+
+
+    PQ 
+
+    AGORA 
+
+
+
+    _ ESTAMOS USANDO TODOS ELES _ APENAS_ INTERNAMENTE,
+
+    DENTRO 
+
+    DO 
+
+
+    MODULE DE 
+
+
+
+
+    'RECIPE-book.module.ts'..
+
+
+
+
+
+
+
+
+    --> ESTAMOS OS UTILIZANDO ou:
+
+
+
+
+
+
+    1) COMO 'EMBEDDED COMPONENTS', DENTRO DE OUTROS COMPONENTS, POR MEIO DO TEMPLATE 
+
+
+
+
+
+
+
+
+
+
+    2) _ POR MEIO _ DO __ LOAD DESSES COMPONENTS, ATRAVÉS DO USO DO ANGULAR ROUTER..
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -> E AMBAS AS POSSIBILIDADES FICAM CONTEMPLADAS 
+
+
+
+
+    em 'recipe-book.module.ts',
+
+
+    QUE 
+
+
+
+
+    IMPORTOU TODAS AS FEATURES REQUISITADAS por 
+
+
+    esses components que declarou em 'declarations',
+
+
+    O QUE QUER 
+
+    DIZER QUE 
+
+
+    __ NÃO VAMOS USAR 
+
+
+    ESSES 'RECIPE COMPONENTS'
+
+
+
+
+
+
+
+
+
+    LÁ 
+
+    NO APP COMPONENT OU EM QUALQUER CHILD COMPONENT 
+
+
+
+DO APP COMPONENT (como 'ShoppingList', por exemplo)....
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+import { CommonModule } from "@angular/common";
+import { NgModule } from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
+import { RouterModule } from "@angular/router";
+import { RecipeBookRoutingModule } from "./recipe-book-routing.module";
+import { RecipeBookComponent } from "./recipe-book.component";
+import { RecipeDetailComponent } from "./recipe-detail/recipe-detail.component";
+import { RecipeEditComponent } from "./recipe-edit/recipe-edit.component";
+import { RecipeItemComponent } from "./recipe-list/recipe-item/recipe-item.component";
+import { RecipeListComponent } from "./recipe-list/recipe-list.component";
+import { SelectARecipeComponent } from "./select-a-recipe/select-a-recipe.component";
+
+
+
+
+@NgModule({
+
+    declarations: [
+        RecipeBookComponent,
+        RecipeDetailComponent,
+        RecipeBookComponent,
+        SelectARecipeComponent,
+        RecipeEditComponent,
+        RecipeListComponent,
+        RecipeItemComponent,
+
+    ],
+    providers: [],
+    imports: [
+       
+        RecipeBookRoutingModule,  ////assim fazemos o ACTUAL IMPORT DAS  _ROUTES_ RELATIVAS_ A ESSA FEATURE DE 'recipeBook' dentro do nosso module de 'recipeBook' (ou seja, aqui há um outsourcing bem absurdo, que deixa nossos components bem mais 'lean')...
+        CommonModule,
+        ReactiveFormsModule  ///esses 3 modules são necessários, aqui, pq usamos essas 3 features dentro dos componnets/código de 'recipeBookMOdule', esse SUBMODULE de nosso app (que é representado por 'app.module.ts', o module em que esse 'recipeBookMOdule' é importado) ------> 
+        ///A RAZÃO PARA TERMOS DE 'REPETIR' ESSES IMPORTS, AQUI, É QUE __ IMPORTS REALIZADOS LÁ EM 'app.module.ts' NÃO SÃO TRANSFERIDOS/INHERITED AUTOMATICAMENTE PELOS 'child modules' importados nele...
+    ],
+     exports: [
+    ],
+
+})
+
+export class RecipeBookModule {
+
+    
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE NOSSO APP VAI FUNCIONAR EXATAMENTE COMO ANTES,
+
+
+MAS AGORA SEM 
+
+
+
+
+
+O EXPORT DE COMPONENTS INÚTEIS AOS OUTROS PEDAÇOS/FEATURES DE NOSSO APP  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+isso quer dizer que NEM MESMO 'recipeBookComponent'
+
+
+É ÚTIL AO RESTANTE DO CÓDIGO/APP,
+
+
+
+
+
+PQ 
+
+
+
+TODOS ESSES COMPONENTS AÍ (até o 'recipeBook.component.ts')
+
+
+
+
+SÓ SERÃO USADOS  DENTRO DESSE MODULE DE 'recipeBookModule',
+
+
+
+
+
+
+
+por isso não precisamos os importar...

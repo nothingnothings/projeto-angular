@@ -1,0 +1,2596 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VEMOS NOSSO SOURCE CODE...
+
+
+
+
+
+
+
+
+-> temos vários components, e aí os SUBCOMPONENTS DESSES COMPONENTS..
+
+
+
+
+
+
+
+
+
+
+
+--> NO COMPONENT 'APP.component.html',
+
+
+ESTAMOS 
+
+CARREGANDO TODOS NOSSOS COMPONENTS DE 1 VEZ SÓ...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> estamos carregando:
+
+
+
+
+1) HOME COMPONENT 
+
+
+
+
+2) USERS COMPONENT 
+
+
+
+3) APP-SERVERS COMPONENT..
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO DISSO TUDO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <app-home></app-home>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+    <app-users></app-users>
+  </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+    <app-servers></app-servers>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ----> CERTo..
+
+
+
+
+
+
+
+
+
+  --> POR ENQUANTO, O PROFESSOR VAI IGNORAR OS SUBCOMPONENTS (como  'edit-server', 'server'),
+
+
+
+
+
+
+
+
+  etc,
+
+
+  PQ 
+
+
+
+  MAIS TARDE NESTEARAMOS NOSSAS PAGES AINDA MAIS...
+
+
+
+
+
+
+
+
+
+
+  --> SERIA NICE SE CONSEGUÍSSEMOS FAZER 'LOAD' DE NOSSOS COMPONENTS, COMO 'PAGES',
+
+  1
+   POR VEZ,
+
+
+
+   A PARTIR 
+
+   DE 
+   CLICKS 
+
+
+
+   NOS 
+
+
+
+
+
+   LINKS QUE TEMOS LÁÁÁÁ EM CIMA, em 'app.component.html',
+
+
+   aqueles links de 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ''
+
+
+     <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="#">Home</a></li>
+        <li role="presentation" class="active"><a href="#">Servers</a></li>
+        <li role="presentation" class="active"><a href="#">Users</a></li>
+      </ul>
+
+
+
+
+
+
+''
+
+
+
+
+
+
+
+
+
+--> AO CLICARMOS NESSES LINKS AÍ,
+
+
+DEVEM SER CARREGADAS NOSSAS ROUTES/DIFERENTES PAGES...
+
+
+
+
+
+
+
+
+
+-> ISSO VAI CARREGAR DIRERENTES ROUTES NO NOSSO APP...
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS ONDE REGISTRAMOS ESSAS ROUTES?
+
+
+
+
+
+
+
+
+
+
+
+-> DEVEMOS PENSAR SOBRE ISSO __ LOGICAMENTE:
+
+
+
+
+
+
+
+_ ESSAS ROUTES SÃO RESPONSÁVEIS POR NOSSO APP INTEIRO,
+
+
+
+
+
+EM TODO LUGAR DE NOSSO APP,
+
+
+VAMOS QUERER _ CARREGAR_ 
+
+
+O 
+
+'users component'
+
+
+COMO NOSSA MAIN PAGE, podemos dizer...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COMO ESSA É UMA PARTE 'CORE' 
+
+DE NOSSO APP,
+
+
+
+
+
+EM QUE LUGAR DEVEMOS O REGISTRAR? 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PROFESSOR DIZ QUE UM LUGAR__ QUE PARECE ADEQUADO É 'app.module.ts',
+
+
+
+PQ __ É NESSE LUGAR QUE CONFIGURAMOS NOSSO APp,
+
+
+É 
+
+
+
+
+ALI QUE 
+ __aDICIONAMOS TODOS NOSSOS COMPONENTS....
+
+
+
+
+
+
+
+
+
+
+
+
+ --> é por isso que ESSE É O LUGAR IDEAL PARA INFORMAR NOSSO APP ANGULAR ACERCA DE TODAS AS ROUTES QUE 
+
+ TEREMOS...
+
+
+
+
+
+
+
+
+ -> O CÓDIGO INICIAL DE 'app.module.ts'
+
+
+ É ESTE:
+
+
+
+
+
+
+
+ import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppComponent } from './app.component';
+import { HomeComponent } from './home/home.component';
+import { ServersComponent } from './servers/servers.component';
+import { UsersComponent } from './users/users.component';
+import { ServerComponent } from './servers/server/server.component';
+import { EditServerComponent } from './servers/edit-server/edit-server.component';
+import { UserComponent } from './users/user/user.component';
+import { FormsModule } from '@angular/forms';
+import { ServersService } from './servers/servers.service';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    ServersComponent,
+    UsersComponent,
+    ServerComponent,
+    EditServerComponent,
+    UserComponent,
+  ],
+  imports: [BrowserModule, FormsModule],
+  providers: [ServersService],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AÍ,
+
+
+
+ACIMA DE ESSE DECORATOR DE 
+
+'@NgModule',
+
+
+
+
+
+
+
+
+
+O __ PROFESSOR VAI ADICIONAR UMA _ NOVA CONSTANTE,
+
+QUE SERÁ 
+
+
+CHAMADA DE 
+
+
+
+
+'appRoutes',
+
+
+
+
+
+
+
+
+PQ _ ELA DEVERÁ _ SEGURAR __TODAS AS ROUTES_  DE NOSSO APP..
+
+
+
+
+
+
+
+
+
+
+
+
+--> começamos assim, portanto:
+
+
+
+
+
+
+
+
+
+
+
+
+const appRoutes: 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> E ESSA CONST DEVERÁ SEGURAR UM VALUE ESPECÍFICO,
+
+QUE SERÁ _UM VALUE_ QUE TERÁ UM TYPE ESPECIAL,
+
+CHAMADO DE 
+
+'Routes'....
+
+
+
+
+
+
+
+
+
+-> ESSE TYPE DEVE SER IMPORTADO LÁ DE '@angular/router',
+
+E NÃO DE '@angular/core'....
+
+
+
+
+
+
+
+
+VAI FICANDO ASSIM:
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { Routes  } from '@angular/router'; //USADO PARA DEFINIR ROUTES/ROUTING NO NOSSO APP...
+
+import { AppComponent } from './app.component';
+import { HomeComponent } from './home/home.component';
+import { ServersComponent } from './servers/servers.component';
+import { UsersComponent } from './users/users.component';
+import { ServerComponent } from './servers/server/server.component';
+import { EditServerComponent } from './servers/edit-server/edit-server.component';
+import { UserComponent } from './users/user/user.component';
+import { FormsModule } from '@angular/forms';
+import { ServersService } from './servers/servers.service';
+
+
+const appRoutes: Routes
+
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    ServersComponent,
+    UsersComponent,
+    ServerComponent,
+    EditServerComponent,
+    UserComponent,
+  ],
+  imports: [BrowserModule, FormsModule],
+  providers: [ServersService],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> essa packge _ NÃO PRECISA SER NECESSARIAMENTE IMPORTADA NESSE LUGAR,
+
+
+
+MAS É UMA __ GOOD PRACTICE...
+
+
+
+
+
+
+
+ 
+ OK... .MAS COM ESSE IMPORT ADICIONADO,
+
+ E ESSA CONST 
+
+
+
+ ESCRITA,
+
+
+ O QUE __ 
+
+
+ ESSA CONST DEVERÁ ACTUALLY SEGURAR?
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ---> BEM, O PROFESSOR EXPLICA QUE _ 
+
+
+ ESSE NEGÓCIO DEVERÁ _ SEGURAR __ 
+
+
+ UM ARRAY,
+
+
+
+ PQ 
+
+
+
+ NO NOSSO APP _ SEMPRE_ VAMOS 
+
+ 'HOLD'
+
+
+
+ __ MÚLTIPLAS ROUTES...
+
+
+
+
+
+
+
+
+
+ --> É POR ISSO QUE ESCREVEMOS ASSIM:
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { Routes  } from '@angular/router'; //USADO PARA DEFINIR ROUTES/ROUTING NO NOSSO APP...
+
+import { AppComponent } from './app.component';
+import { HomeComponent } from './home/home.component';
+import { ServersComponent } from './servers/servers.component';
+import { UsersComponent } from './users/users.component';
+import { ServerComponent } from './servers/server/server.component';
+import { EditServerComponent } from './servers/edit-server/edit-server.component';
+import { UserComponent } from './users/user/user.component';
+import { FormsModule } from '@angular/forms';
+import { ServersService } from './servers/servers.service';
+
+
+const appRoutes: Routes = []
+
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    ServersComponent,
+    UsersComponent,
+    ServerComponent,
+    EditServerComponent,
+    UserComponent,
+  ],
+  imports: [BrowserModule, FormsModule],
+  providers: [ServersService],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+
+
+
+
+
+----------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> POR ENQUANTO, VAMOS ADICIONAR 'TODAS AS ROUTES QUE QUEREMOS INCORPORAR AO NOSSO APP',
+
+nesse array aí...
+
+
+
+
+
+
+
+
+--> E CADA 'ROUTE' DO NOSSO APP,
+
+NESSE ARRAY,
+
+_SERÁ__ REPRESENTADA COMO UM 'JAVASCRIPT OBJECT'...
+
+
+
+
+
+
+
+
+
+
+
+-> MAS A PERGUNTA É:
+
+
+
+
+'''' COMO DEVE UMA ROUTE DESSAS SER CONFIGURADA EM UM 
+
+
+ANGULAR APP?'''' -->  ISSO PQ 
+
+
+CADA 
+'OBJETO ROUTE'
+
+
+
+__ PRECISA _ SEGUIR UM CERTO PADRÃO,
+
+
+
+UM 
+
+ESQUEMA,
+
+PARA 
+
+CONSEGUIR 
+
+
+
+SER UTILIZADO 
+
+PELO ANGULAR... 
+
+
+
+
+
+
+
+
+
+
+
+----> COMEÇAMOS ASSIM:
+
+
+
+
+
+
+
+
+
+const appRoutes: Routes = [
+
+    {}
+]
+
+
+
+
+
+
+
+
+
+
+-> 
+
+
+DENTRO DESSE 'OBJETO ROUTE',
+
+
+
+sempre vamos colocar uma key chamada de 'path',
+
+
+QUE SERÁ 
+
+
+
+
+_ A COISA _ QUE SERÁ INPUTTADA NA URL,
+
+LOGO APÓS SEU DOMAIN....
+
+
+
+
+
+
+
+
+
+--> COMO QUEREMOS QUE 
+
+
+
+UM DOS PATHS SEJA 
+
+localhost:4200/users,
+
+
+
+O PROFESSOR ESCREVE ASSIM:
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { Routes  } from '@angular/router'; //USADO PARA DEFINIR ROUTES/ROUTING NO NOSSO APP...
+
+import { AppComponent } from './app.component';
+import { HomeComponent } from './home/home.component';
+import { ServersComponent } from './servers/servers.component';
+import { UsersComponent } from './users/users.component';
+import { ServerComponent } from './servers/server/server.component';
+import { EditServerComponent } from './servers/edit-server/edit-server.component';
+import { UserComponent } from './users/user/user.component';
+import { FormsModule } from '@angular/forms';
+import { ServersService } from './servers/servers.service';
+
+
+const appRoutes: Routes = [
+
+    {
+        path: 'users'
+    }
+]
+
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    ServersComponent,
+    UsersComponent,
+    ServerComponent,
+    EditServerComponent,
+    UserComponent,
+  ],
+  imports: [BrowserModule, FormsModule],
+  providers: [ServersService],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+const appRoutes: Routes = [
+
+    {
+        path: 'users'
+    }
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK.... ISSO VAI NOS DEIXAR VISITAR 
+
+'localhost:4200/users'...
+
+
+
+
+
+
+
+
+---> OK, ESSE É O PATH... -> 
+
+
+
+ISSO MAIS TARDE VAI DEIXAR O 
+
+
+
+ANGULAR 
+
+'DETERMINAR'
+
+QUAL __ ROUTE__ NO NOSSO _ 
+aRRAY DE ROUTES 
+
+
+DEVERÁ 
+
+
+SER 
+
+SELECIONADA (isso se INPUTTARMOS ALGO NA NOSSA URL, OU SE CLICARMOS EM UM LINK),
+
+
+PQ ISSO VAI DEFINIR BEM CLARAMENTE QUAL PATH ESSA ROUTE DEVERÁ 
+
+
+
+LIDERAR....
+
+
+
+
+
+
+
+
+
+
+
+-> OK... 
+
+
+
+ESSA É A PRIMEIRA LINHA... DEPOIS DISSO,
+
+
+PRECISAMOS__ DEFINIR _' O QUE ACONTECERÁ QUANDO ESSA ROUTE FOR ALCANÇADA'...
+
+
+
+
+
+
+
+
+
+-> PRECISAMOS DE UMA 'ACTION' 
+
+A SER ANEXADA A ESSE PATH...
+
+
+
+
+
+
+
+
+------> UMA 'action', no ANGULAR,
+TIPICAMENTE É UM _ COMPONENT__...
+
+
+
+
+
+--> é por isso que 
+
+
+você escreve a key 'component'...
+
+
+
+
+
+
+
+
+
+--> AÍ VOCÊ VAI 
+
+
+
+INFORMAR O ANGULAR DE QUE 
+
+'ALGUM COMPONENT DEVERÁ SER CARREGADO'.... -> E ESSE COMPONENT 
+
+SERÁ 
+A
+ 
+
+ 'PAGE'
+  
+
+  QUE ACABA CARREGADA, EM OUTRAS PALAVRAS...
+
+
+
+
+
+
+
+
+
+
+
+
+  -> É POR ISSO QUE ESCREVEMOS ALGO ASSIM:
+
+
+
+
+
+
+
+
+  const appRoutes: Routes = [
+      {
+          path: 'users',
+          component: 'UsersComponent'
+      },
+
+            {
+          path: 'servers',
+          component: 'ServersComponent'
+      }
+  ]
+
+
+
+
+
+
+  ----------------------------
+
+
+
+
+
+
+
+
+
+
+  CÓDIGO COMPLETO:
+
+
+
+
+
+
+
+  import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { Routes  } from '@angular/router'; //USADO PARA DEFINIR ROUTES/ROUTING NO NOSSO APP...
+
+import { AppComponent } from './app.component';
+import { HomeComponent } from './home/home.component';
+import { ServersComponent } from './servers/servers.component';
+import { UsersComponent } from './users/users.component';
+import { ServerComponent } from './servers/server/server.component';
+import { EditServerComponent } from './servers/edit-server/edit-server.component';
+import { UserComponent } from './users/user/user.component';
+import { FormsModule } from '@angular/forms';
+import { ServersService } from './servers/servers.service';
+
+
+const appRoutes: Routes = [
+  {
+    path: 'users',
+    component: UsersComponent
+  }
+]
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    ServersComponent,
+    UsersComponent,
+    ServerComponent,
+    EditServerComponent,
+    UserComponent,
+  ],
+  imports: [BrowserModule, FormsModule],
+  providers: [ServersService],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK... E É CLARO QUE 
+
+
+
+__DEPENDE DE VOCê,
+
+
+
+VOCÊ É O RESPONSÁVEL
+
+PELO 'CONFIGURE' 
+
+
+
+do seu 
+
+
+
+
+PROJETO,
+
+
+CONFIGURAR SEU PROJETO DE MODO 
+
+QUE 
+
+
+OS COMPONENTS QUE 
+
+VOCÊ REFERENCIA EM CADA 'route'
+
+
+SÃO _ 'PAGE-COMPONENTS',
+
+
+components que servirão como pages...
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+const appRoutes: Routes = [
+
+  {  /////é a nossa primeira route... cada object nesse array é uma ROUTE, que é governada por um 'PAGE-COMPONENT' (o page-component é a ROUTE/page, no caso)...
+    path: 'users', ///   localhost:4200/users
+    component: UsersComponent  ///users.component.html
+  }
+]
+
+
+
+
+
+
+
+
+
+
+
+-> ISSO QUER DIZER QUE ESSA NOSSA ROUTE VAI OUTPUTTAR ISTO:
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12 col-sm-4"></div>
+  <div class="list-group">
+    <a href="#" class="list-group-item" *ngFor="let user of users">{{ user.name }}</a>
+  </div>
+</div>
+<div class="col-xs-12 col-sm-4">
+  <app-user></app-user>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------
+
+
+
+
+
+
+
+
+
+
+------> ok, mas isso AINDA NÃO ESTÁ FUNCIONANDO...
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O QUE INTERESSA É QUE ESSA É AGORA NOSSA 'PRIMEIRA ROUTE',
+
+
+COM O COMPONENT DE 'UsersComponent'
+
+
+
+
+
+sendo carregando quando a route de 'localhost:4200/users'
+
+
+
+ACABA CARREGADA...
+
+
+
+
+
+
+
+
+
+
+O PROFESSOR CRIA OUTRAS ROUTES,
+
+
+
+
+
+
+
+__ E AÍ _ NOS DIZ QUE __ ELE VAI QUERER _tER UMA PAGE QUE 
+
+SERÁ CARREGADA 
+
+
+
+__ QUANDO TIVERMOS 
+
+
+
+
+APENAS 
+
+'localhost:4200/' 
+
+
+
+
+NA URL BAR (
+
+
+    ou seja,
+    um EMPTY PATH 
+
+
+    depois do domain..
+)
+
+
+
+
+
+
+
+
+--> ESSE É O 'DEFAULT CASE',
+
+no caso....
+
+
+
+
+
+
+
+----> PARA CONSEGUIR UMA ROUTE 
+
+'DEFAULT',
+
+BASTA 
+
+DEFINIR _ O PATH COMO 
+
+
+
+
+'' (empty string),
+
+
+
+
+E AÍ _ DEFINIR O 
+
+
+'HomeComponent'
+
+
+
+COMO SENDO O COMPONENT CARREGADO A PARTIR DISSO...
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+const appRoutes: Routes = [
+
+
+    
+  {
+    path: '',
+    component: HomeComponent
+  }
+
+  {
+    path: 'users',
+    component: UsersComponent
+  }
+]
+
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE VOCê NÃO PRECISA DE UM 'EMPTY PATH',
+
+
+
+
+MAS 
+
+O PROFESSOR DIZ QUE 
+
+
+
+AINDA ASSIM VOCÊ PRECISA DE UMA FORMA DE 'HANDLE'
+
+
+DE ESSE 'EMPTY PATH' inputtado pelo user...
+
+
+
+
+
+
+
+
+
+
+
+-> VAMOS QUERER TAMBÉM TER UMA ROUTE PARA O 'ServersComponent'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+É POR ISSO QUE FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { Routes  } from '@angular/router'; //USADO PARA DEFINIR ROUTES/ROUTING NO NOSSO APP...
+
+import { AppComponent } from './app.component';
+import { ServersComponent } from './servers/servers.component';
+import { UsersComponent } from './users/users.component';
+import { ServerComponent } from './servers/server/server.component';
+import { EditServerComponent } from './servers/edit-server/edit-server.component';
+import { HomeComponent } from './home/home.component';
+import { UserComponent } from './users/user/user.component';
+import { FormsModule } from '@angular/forms';
+import { ServersService } from './servers/servers.service';
+
+
+const appRoutes: Routes = [
+
+  {
+    path: '', ////localhost:4200/   (É O _ DEFAULT, A HOME PAGE, PQ É o domain.com SEM O PATH depois)...
+    component: HomeComponent
+
+  },
+
+  {  /////é a nossa primeira route... cada object nesse array é uma ROUTE, que é governada por um 'PAGE-COMPONENT' (o page-component é a ROUTE/page, no caso)...
+    path: 'users', ///   localhost:4200/users
+    component: UsersComponent  ///users.component.html
+  },
+
+  {  
+    path: 'servers',  //localhost:4200/servers
+    component: ServersComponent //servers.component.html
+  }
+]
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    ServersComponent,
+    UsersComponent,
+    ServerComponent,
+    EditServerComponent,
+    UserComponent,
+  ],
+  imports: [BrowserModule, FormsModule],
+  providers: [ServersService],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO, TEREMOS DECLARADO ESSAS ROUTES.
+
+
+
+
+
+
+
+
+
+--> CERTO, MAS ISSO, POR SI SÓ,
+
+
+NÃO FARÁ NADA NO NOSSO PROJETO..
+
+
+
+
+
+
+
+
+
+--> como diabos o ANGULAR CONSEGUIRIA 
+
+
+
+SABER QUE 
+
+
+
+'''QUEREMOS USAR ESSA CONSTANT DE appRoutes''' ? 
+
+
+
+
+
+
+--> PQ VOCÊ 
+
+
+
+
+
+PODERIA TER ESCRITO QUALQUER CONSTANT AQUI,
+
+
+
+com esse type de 'Routes.'...
+
+
+
+
+
+
+
+--> E O NOME 'appRoutes'
+ 
+
+ É TOTALMENTE 
+
+
+
+
+ _'UP TO US', nós que escolhemos...
+
+
+
+
+
+
+
+
+
+
+ --> ISSO SIGNIFICA QUE 
+
+ ESSAS ROUTES POR ENQUANTO __ SERÃO COMPLETAMENTE IGNORADAS PELO ANGULAR...
+
+
+
+
+
+
+
+
+
+ -> E O TYPE DE 'ROUTES' TAMBÉM NÃO FAZ COISA ALGUMA,
+
+ por si só...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> PARA __ EFETIVAMENTE__ 
+
+
+
+ REGISTRAR _ 
+
+ ESSAS ROUTES COMO ROUTES DE NOSSO APP ANGULAR,
+
+
+ PRECISAMOS 
+
+
+ EDITAR 
+
+
+
+
+ o '@NgModule',
+
+
+
+
+
+
+
+colocar UM NOVO 
+
+'import'
+
+
+
+NAQUELE ARRAY DE IMPORTS,
+
+QUE SERÁ O 
+
+
+'RouterModule'...
+
+
+
+
+
+
+
+
+
+-. FICA TIPO ASSIM:
+
+
+
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    ServersComponent,
+    UsersComponent,
+    ServerComponent,
+    EditServerComponent,
+    UserComponent,
+  ],
+  imports: [BrowserModule, FormsModule, RouterModule],
+  providers: [ServersService],
+  bootstrap: [AppComponent],
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+->  adicionamos esse module de 'RouterModule'...
+
+
+
+
+
+
+
+
+
+COM ELE ADICIONADO,
+
+
+FICAMOS COM A 'ROUTING FUNCTIONALITY' adicionada ao nosso app,
+
+
+
+
+MAS _ NOSSAS ROUTES__ 
+
+AINDA 
+
+
+
+NÃO ESTARÃO 'REGISTERED'...
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+const appRoutes: Routes = [
+
+  {
+    path: '', ////localhost:4200/   (É O _ DEFAULT, A HOME PAGE, PQ É o domain.com SEM O PATH depois)...
+    component: HomeComponent
+
+  },
+
+  {  /////é a nossa primeira route... cada object nesse array é uma ROUTE, que é governada por um 'PAGE-COMPONENT' (o page-component é a ROUTE/page, no caso)...
+    path: 'users', ///   localhost:4200/users
+    component: UsersComponent  ///users.component.html
+  },
+
+  {  
+    path: 'servers',  //localhost:4200/servers
+    component: ServersComponent //servers.component.html
+  }
+]
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    ServersComponent,
+    UsersComponent,
+    ServerComponent,
+    EditServerComponent,
+    UserComponent,
+  ],
+  imports: [BrowserModule, FormsModule, 
+    
+    
+    RouterModule], ///vocÊ deve ESCREVER o 'RouterModule', declará-lo aqui, para o TER COMO __ FUNCIONALIDADE DE SEU APP (routing)..
+  providers: [ServersService],
+  bootstrap: [AppComponent],
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> PARA __ ACTUALLY__ CONSEGUIR _ REGISTRAR NOSSAS 
+
+ROUTES 
+
+
+
+NO NOSSO APP,
+
+REGISTRÁ-LAS EM 
+
+'RouterModule',
+
+
+
+
+
+
+PRECISAMOS __ 
+
+
+
+USAR UM METHOD ADICIONAL
+
+O METHOD DE 
+
+'.forRoot()',
+
+
+
+
+
+QUE VAI POSSIBILITAR O SEU REGISTEr...
+
+
+
+
+
+
+
+
+
+
+
+----------> PARA ISSO,
+
+
+VOCÊ DEVE ESCREVER 
+
+
+
+'RouterModule.forRoot()'....
+
+
+
+
+
+
+
+
+
+
+----> E O PARÂMETRO EXIGIDO/ACEITO PELO '.forRoot()'
+
+
+
+
+SERÁ JUSTAMENTE _UM __ _ 
+
+
+
+ARRAY__ COM 
+
+
+
+NOSSAS ROUTES,
+
+OBJECTS QUE REPRESENTAM 
+
+
+NOSSA ROUTE,
+
+
+
+que é 
+
+JUSTAMENTE 
+
+
+A
+QUELE ARRAY QUE 
+
+ARMAZENAMOS 
+
+NA CONST 
+DE 
+
+
+
+
+'appRoutes.'..
+
+
+
+
+
+
+
+
+
+
+-. FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule, Routes  } from '@angular/router'; //USADO PARA DEFINIR ROUTES/ROUTING NO NOSSO APP...
+
+import { AppComponent } from './app.component';
+import { ServersComponent } from './servers/servers.component';
+import { UsersComponent } from './users/users.component';
+import { ServerComponent } from './servers/server/server.component';
+import { EditServerComponent } from './servers/edit-server/edit-server.component';
+import { HomeComponent } from './home/home.component';
+import { UserComponent } from './users/user/user.component';
+import { FormsModule } from '@angular/forms';
+import { ServersService } from './servers/servers.service';
+
+
+const appRoutes: Routes = [
+
+  {
+    path: '', ////localhost:4200/   (É O _ DEFAULT, A HOME PAGE, PQ É o domain.com SEM O PATH depois)...
+    component: HomeComponent
+
+  },
+
+  {  /////é a nossa primeira route... cada object nesse array é uma ROUTE, que é governada por um 'PAGE-COMPONENT' (o page-component é a ROUTE/page, no caso)...
+    path: 'users', ///   localhost:4200/users
+    component: UsersComponent  ///users.component.html
+  },
+
+  {  
+    path: 'servers',  //localhost:4200/servers
+    component: ServersComponent //servers.component.html
+  }
+]
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    ServersComponent,
+    UsersComponent,
+    ServerComponent,
+    EditServerComponent,
+    UserComponent,
+  ],
+  imports: [BrowserModule, FormsModule, 
+    
+    
+    RouterModule.forRoot(appRoutes)], ///vocÊ deve ESCREVER o 'RouterModule', declará-lo aqui, para o TER COMO __ FUNCIONALIDADE DE SEU APP (routing)..
+  providers: [ServersService],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+imports: [
+    BrowserModule,
+    FormsModule,
+    HttpModule,
+    RouterModule.forRoot(appRoutes)
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------------
+
+
+
+
+
+
+COM 
+
+
+
+ISSO,
+
+
+
+NOSSAS ROUTES __ FINALMENTE _ ESTARÃO 'REGISTERED'
+
+
+NO NOSSO APP ANGULAR,
+
+
+
+DENTRO DE ESSE 'ROUTERMODULE',
+
+
+que 
+
+NOS DÁ 
+
+ESSA FUNCTIONALITY 
+
+
+
+
+
+
+DE 'ROUTING'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> AGORA A ÚNICA COISA QUE FALTA,
+
+
+
+A 'PIECE' FALTANDO,
+
+
+
+É __ 
+
+ALGO PARA 
+
+
+ACTUALLY 
+
+'RENDER THE CURRENTLY SELECTED COMPONENT.'..
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO _ PQ 
+
+
+
+NOSSO APP,
+
+NO MOMENTO,
+
+ESTÁ 
+SEMPRE CARREGANDO AQUELE 
+
+
+'app.component.html'
+
+
+
+COM __ TODOS OS COMPONENTS CARREGADOS NA PÁGINA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="#">Home</a></li>
+        <li role="presentation" class="active"><a href="#">Servers</a></li>
+        <li role="presentation" class="active"><a href="#">Users</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <app-home></app-home>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+    <app-users></app-users>
+  </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+    <app-servers></app-servers>
+  </div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----->  SE ACESSARMOS 'localhost:4200/users',
+
+
+
+
+O 
+
+
+
+ANGULAR SABE QUE VAMOS QUERER 'LOAD THE USERS PAGE',
+
+
+
+
+
+
+MAS ELE _ NÃO SABE _ EM QUE LUGAR DE NOSSO 
+
+
+
+
+APP/HTML DEVE_  MOSTRAR ESSA PAGE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-->  DEVE HAVER UMA MARCAÇÃO 
+,
+
+
+
+
+UM NEGÓCIO QUE MARCA 'THE RIGHT PLACE FOR IT TO LOAD THIS COMPONENT'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PROFESSOR DIZ QUE PARA ISSO _ DEVEMOS _ REMOVER TODOS OS 'ROWS'
+ 
+ desse código aí,
+
+
+ E AÍ _ 
+
+
+
+
+
+ APENAS _ DEIXAR 
+
+ 1 ÚNICO ROW,
+
+
+ QUE 
+
+ SERÁ O ROW 
+
+ EM QUE 
+
+
+  __ ACTUALLY_ VAMOS QUERER 
+
+  'RENDER OUR ROUTE'...
+
+
+
+
+
+
+
+
+
+  --> TIPO ASSIM:
+
+
+
+
+
+
+  
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="#">Home</a></li>
+        <li role="presentation" class="active"><a href="#">Servers</a></li>
+        <li role="presentation" class="active"><a href="#">Users</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <app-home></app-home>
+    </div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK..
+
+
+
+
+
+
+
+
+
+
+--> CERTO, ISSO FEITO,
+
+
+VOCê _ NÃO VAI 
+
+'COLOCAR SEU COMPONENT COM O SELECTOR DELE',
+
+
+
+
+
+
+
+
+E 
+
+SIM __ 
+
+
+
+ESCREVER UMA _ DIRECTIVE _ ESPECIAL QUE _ SHIPPA COM 
+
+
+O 
+
+ANGULAR,
+
+
+QUE 
+
+
+
+
+É 
+
+
+
+A DIRECTIVE DE 
+
+
+'<router-outlet></router-outlet>'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ESSE NEGÓCIO _ PARECE __ UM COMPONENT,
+
+MAS _ AINDA É SÓ UMA 'DIRECTIVE'....
+
+
+
+
+
+
+
+
+
+
+
+
+--> DIRECTIVES -----> VOCÊ DEVE TER EM MENTE QUE DIRECTIVES PODEM TER_ QUALQUER SELECTOR,
+
+inclusive esse 'component/element selector'...
+
+
+
+
+
+
+
+
+
+
+
+---> COM ISSO,
+
+ESSE NEGÓCIO _ VAI SIMPLESMENTE
+
+
+
+'MARK' O LUGAR 
+
+
+
+__ NO NOSSO DOCUMENT ATUAL 
+
+
+
+EM QEU 
+
+
+_ VAMOS QUERER _ QUE O ANGULAR ROUTEr 
+
+
+
+
+
+
+__ _ CARREGUE __ o 'component da ROUTE _ ATUALMENTE SELECIONADA'...
+
+
+
+
+
+
+
+--> OU SEJA,
+
+
+O CÓDIGO FICA ASSIm:
+
+
+
+
+
+
+
+
+
+
+  
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="#">Home</a></li>
+        <li role="presentation" class="active"><a href="#">Servers</a></li>
+        <li role="presentation" class="active"><a href="#">Users</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <router-outlet></router-outlet>
+    </div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK.... ISSO REALMENTE FUNCIONOU...
+
+
+
+
+
+
+
+
+AGORA TEMOS 3 'ROUTES' diferentes,
+
+
+acessadas 
+
+
+a partir 
+
+da URL...
+
+
+
+
+
+
+
+
+
+
+localhost:4200/       --> CARREGA O 'PAGE-COMPONENT' de 'HOME'...
+
+
+
+localhost:4200/users   --> carrega  o 'page-component' de 'users' 
+
+
+
+
+localhost:4200/servers   -->  carrega o 'page-component' de 'servers'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE __ NOSSOS _ LINKS _ AINDA NÃO ESTÃO FUNCIONANDO, 
+
+NESSA PAGE,
+
+
+
+E ISSO _É ALGO _ QUE VEREMOS __ 
+
+NA PRÓXIMA AULA... (provavelmente não serão anchor tags, pq isso implica em STATE LOSS)...
+
+

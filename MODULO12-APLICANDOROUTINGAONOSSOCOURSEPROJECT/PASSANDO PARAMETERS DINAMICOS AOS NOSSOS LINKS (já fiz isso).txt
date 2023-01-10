@@ -1,0 +1,683 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+COM NOSSAS CHILD ROUTES JÁ ADICIONADAS, NA ÚLTIMA LIÇÃO,
+
+
+
+
+
+AGORA DEVEMOS FAZER OS LINKS FUNCIONAREM..
+
+
+
+
+
+
+
+---> JÁ CONSEGUI FAZER ISSO, FICOU ASSIM (component de 'recipe-list'):
+
+
+
+
+
+
+
+
+  <div class="col-xs-12">
+    <app-recipe-item *ngFor="let recipe of recipes; let index=index" 
+    [routerLink]="['/recipe-book', index]"
+    [name]="recipe.name"
+    [description]="recipe.description"
+    [ngStyle]="{'cursor': 'pointer'}"
+    [imagePath]="recipe.imagePath"></app-recipe-item>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+-------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+--> EU SETTEI ISSO NA REPRESENTAÇÃO DE 'recipe-item'
+
+lá em 
+
+
+'recipe-list',
+
+
+
+
+
+
+MAS O PORFESSOR FEZ ISSO 
+
+
+
+
+
+
+
+
+
+DIRETAMENTE 
+
+LÁ EM 'recipe-item',
+
+
+mas dá na mesma..
+
+
+
+
+
+
+
+
+
+
+--> ele escreveu a mesma coisa,
+
+
+
+
+
+[routerLink]="[]"
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS O JEITO QUE EU USEI PARA 'PEGAR O ID '
+
+
+
+
+
+desse 
+
+
+
+'recipeItem' foi 
+
+
+POR MEIO 
+
+
+
+
+
+DO '*ngFor',
+
+e aí 
+
+
+DO _ INDEX__ desse 
+
+
+item na list..
+
+
+
+
+
+
+
+
+
+
+-> mas isso tvz não seja a melhor ideia...
+
+
+
+
+
+
+
+
+
+
+
+
+-> o professor, por sua vez,
+
+acha  melhor 
+
+
+PASSAR A INFO 
+
+
+
+
+
+acerca do 'item'
+
+
+
+AO COMPONENT DE 'recipe-item'...
+
+
+
+
+
+
+
+
+
+-----> é por isso 
+
+
+
+
+que ele escreve algo assim:
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+
+import { Input } from '@angular/core';
+import { RecipeBookService } from 'src/app/recipeBook.service';
+
+@Component({
+  selector: 'app-recipe-item',
+  templateUrl: './recipe-item.component.html',
+  styleUrls: ['./recipe-item.component.css'],
+})
+export class RecipeItemComponent implements OnInit {
+
+
+  @Input() name: string;
+  @Input() description: string;
+  @Input() imagePath: string;
+
+
+  @Input() index:  number;
+
+
+    constructor() {
+
+
+  }
+
+  ngOnInit(): void {
+     
+  }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, E O PROFESSOR DIZ QUE VAI PASSAR ESSA PROPERTY__ DO LADO _ DE 
+
+FORA 
+
+
+
+DO NOSSO COMPONENT 'app-recipe-item',
+
+
+
+
+ou seja,
+
+a partir 
+de 
+'recipe-list',
+
+
+
+com um código tipo assim:
+
+
+
+
+
+
+    <app-recipe-item *ngFor="let recipe of recipes; let index=index"  
+    [index]="index"
+    [name]="recipe.name"
+    [description]="recipe.description"
+    [ngStyle]="{'cursor': 'pointer'}"
+    [imagePath]="recipe.imagePath"></app-recipe-item>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -> mas isso é meio redundante,
+
+
+    já fiz isso, mas fiz desta forma:
+
+
+
+
+
+
+        <app-recipe-item *ngFor="let recipe of recipes; let index=index"  
+    [routerLink]="['/recipe-book', index]"
+    [name]="recipe.name"
+    [description]="recipe.description"
+    [ngStyle]="{'cursor': 'pointer'}"
+    [imagePath]="recipe.imagePath"></app-recipe-item>
+
+
+
+
+
+
+
+
+
+
+------------------
+
+
+
+
+
+
+
+
+
+a ÚNICA DIFERENÇA É QUE AQUI EU NÃO ARMAZENEI O 'id' 
+
+
+dessa recipe dentro do component 'recipe-item'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok, COM ESSA PROPRIEDADE DE 'index',
+
+
+
+
+O PROFESSOR ADICIONA UM 
+
+'[routerLink]="[index]" ' 
+
+
+
+
+DENTRO DA ANCHOR TAG DESSE 'SINGLE RECIPE ITEM',
+
+
+
+para que 
+
+
+NÓS SEJAMOS LEVADOS A 
+
+
+'localhost:4200/recipe-book/1' e etc...
+
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+  <a class="list-group-item clearfix" 
+  [routerLink]="[index]" //////EIS O CÓDIGO  EM QUESTÃO. 
+  
+  >
+    <div class="pull-left">
+      <h4 class="list-group-item-heading">{{ name }}</h4>
+      <p class="list-group-item-text">{{ description }}</p>
+    </div>
+    <span class="pull-right">
+      <!-- <img src="{{recipe.imagePath}}" alt="{{recipe.name}}" class="img-responsive" style="max-height: 50px" /> -->
+      <img
+        src="{{imagePath}}"
+        alt="{{ name }}"
+        class="img-responsive"
+        style="max-height: 50px;"
+      >
+    </span>
+  </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> certo, com isso,
+
+
+  ficamos com um PARAMS dinâmico 
+
+  na nossa url...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> MAS O PROFESSOR DIZ QUE 'TAMBÉM SERIA LEGAL SE NOSSO 
+
+  ITEM SELECIONADO _ FICASSE__ eSTILIZADO'...
+
+
+
+
+
+
+
+
+
+
+
+
+  -> isso é algo que faremos NA PRÓXIMA AULA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  hm... como poderia fazer isso?
+
+
+
+
+
+
+
+
+  --> tive de usar o approach do professor....
+
+
+
+
+
+
+
+
+
+
+
+  --> tive de colocar uma propriedade 
+
+
+
+  'index'
+
+
+  DENTRO DO 
+
+
+
+  COMPONENT DE 'recipe-item',
+
+
+  PARA AÍ 
+
+
+  adicioanr a directive de 
+
+
+  'routerLinkActive'
+
+
+  com um value de 'active',
+
+
+  para 
+  que 
+
+
+  fosse triggado esse style de 'active'
+
+
+
+dependendo 
+
+se 'estamos ou não na page desse recipe-item específico'...
+
+
+
+
+
+
+
+
+
+FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+    <app-recipe-item *ngFor="let recipe of recipes; let index=index"  
+    [routerLink]="['/recipe-book', index]"
+    routerLinkActive="active"
+    [index]="index"
+    [name]="recipe.name"
+    [description]="recipe.description"
+    [ngStyle]="{'cursor': 'pointer'}"
+    [imagePath]="recipe.imagePath"></app-recipe-item>
+
+
+
+
+
+
+
+
+
+
+RECIPE-ITEM:
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+
+import { Input } from '@angular/core';
+import { RecipeBookService } from 'src/app/recipeBook.service';
+
+@Component({
+  selector: 'app-recipe-item',
+  templateUrl: './recipe-item.component.html',
+  styleUrls: ['./recipe-item.component.css'],
+})
+export class RecipeItemComponent implements OnInit {
+  // @Input() recipeImagePath: string = '';
+  // @Input() recipeName: string = '';
+  // @Input() recipeDescription: string = '';
+
+  // @Output() recipeDetailEmitter = new EventEmitter<number>()
+
+  @Input() name: string;
+  @Input() description: string;
+  @Input() imagePath: string;
+
+  @Input() index: number;
+
+
+  // constructor(private recipeBookService: RecipeBookService) {
+    constructor() {
+
+
+  }
+
+  ngOnInit(): void {
+     
+  }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E O HTML DE RECIPE-ITEM:
+
+
+
+
+
+
+
+
+
+  <a class="list-group-item clearfix" routerLinkActive="active">
+    <div class="pull-left">
+      <h4 class="list-group-item-heading">{{ name }}</h4>
+      <p class="list-group-item-text">{{ description }}</p>
+    </div>
+    <span class="pull-right">
+      <!-- <img src="{{recipe.imagePath}}" alt="{{recipe.name}}" class="img-responsive" style="max-height: 50px" /> -->
+      <img
+        src="{{imagePath}}"
+        alt="{{ name }}"
+        class="img-responsive"
+        style="max-height: 50px;"
+      >
+    </span>
+  </a>

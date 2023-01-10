@@ -1,0 +1,71 @@
+
+
+
+
+
+
+
+
+ENTENDENDO OBSERVABLES...
+
+
+
+
+
+
+
+
+
+-> NO ÚLTIMO MÓDULO,
+
+
+SOBRE ROUTING,
+
+TIVEMOS NOSSO PRIMEIRO CONTATO COM 'OBSERVABLES'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> BEM, O PROFESSOR QUER VER OBSERVABLES MAIS DE PERTO NESSE MÓDULO..
+
+
+ 
+
+--> VOCê PODE TER 1 CURSO INTEIRO SOBRE OBSERVABLES..
+
+
+
+
+
+--> PROFESSOR QUER 
+
+
+
+
+QUE 
+
+
+
+COMPREENDAMOS 'OBSERVABLES',
+
+
+a
+ razõa de sua existência,
+
+
+ e o pq 
+
+ do 
+
+
+
+ angular os utilizar...

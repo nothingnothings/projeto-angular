@@ -1,0 +1,20 @@
+input {
+  width: 75vh;
+}
+
+.textBtn {
+  border: none;
+  background-color: inherit;
+  padding: 14px 28px;
+  font-size: 16px;
+  cursor: pointer;
+  display: inline-block;
+}
+
+input.ng-invalid.ng-touched {
+  border: 1px solid red;
+}
+
+span {
+  color: red;
+}

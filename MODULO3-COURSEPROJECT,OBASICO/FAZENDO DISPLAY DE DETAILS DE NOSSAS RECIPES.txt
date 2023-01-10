@@ -1,0 +1,983 @@
+
+
+
+
+
+
+
+
+
+
+--> NA ÚLTIMA LIÇÃO ,TERMINAMOS O  COMPONENT DE 'RECIPE LIST'...
+
+
+
+
+
+
+--> AGORA DEVEMOS VER O 'RECIPE DETAIL'... -> LA´,
+
+
+EU VOU QUERER 
+
+
+OUTPUTTAR 
+
+
+INFO 
+
+
+
+
+__SOBRE A RECIPE SELECIONADA..
+
+
+
+
+
+
+
+
+
+
+
+-->  é por isso que o professor vai atée 
+
+
+recipe-detail-ocmponent e FAZ A MSEMA COISA DE SEMPPRE,
+
+
+ELE ESCREVE CÓDIGO BOOSTRAP, TIPO ASSim:
+
+
+
+
+
+
+
+<div class="row">
+    <div class="col-xs-12">
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+-> E VOCê TEM QUE TER EM MENTE QUE ESSE COMPONENT 'DETAIL'
+
+
+VAIAI SER ADICIONAOD AO COMPONENT 
+
+DE 
+
+'recipeBook',
+
+
+
+AO LADO DO COMPONENT 'RECIPELIST.'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK... DENTRO 
+
+
+
+
+DESSE 'DETAILS',
+
+QUEREMOS 
+
+
+
+COMEÇAR PELO _ DISPLAY_ DA IMAGE...
+
+
+
+
+
+
+ POR ISSO VAMOS COLOCAR 
+
+
+ 'img src',
+
+
+
+ com uma class de 
+
+ 'img-responsive'..
+
+
+
+
+
+ ex:
+
+
+
+
+
+
+ <div class="row">
+    <div class="col-xs-12">
+    <img src="" alt="" class="img-responsive">
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+-> VAMOS PREENCHER ESSE 'DETAILS' com vida _MAIS TARDE...
+
+
+
+
+
+
+
+
+
+
+
+EMBAIXO DA 'IMAGE',
+
+TEREMOS OUTRA ROW...
+
+
+
+
+
+
+
+
+-> NESSA ROW TAMBÉM TEREMOS  UMA COLLUMN QUE 
+
+COBRE TODA A WIDTH... -> NESSA ROW SERIA LEGAL TER O NAME,
+
+
+por isso colocamos uma h1 com ele...
+
+
+
+
+
+
+
+
+
+
+---> DEPOIS DISSO COLOCAMOS OUTRA ROW,
+
+
+
+QUE OCUPA A 'WIDTH' inteira do surrouding element, mais uma vez....
+
+
+
+
+
+-> NESSE 'ROW', QUEREMOS TER ALGUNS BUTTONS QUE 
+
+NOS AJUDEM A 'MANAGE' ESSA RECIPE...
+
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <img src="" alt="" class="img-responsive" />
+  </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+     <h1>Recipe Name</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+        <button>
+            
+        </button>
+    </div>
+  </div>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------> 1 BOTÃO PARA 'ADD À SHOPPING LIST',...
+
+
+
+
+
+--> OUTRO BOTÃO PARA DEIXAR 'EDIT/DELETE' 
+
+
+essa recipe...
+
+
+
+
+
+
+
+
+
+
+---> PROFESSOR ACREDITA QUE O MELHOR SERIA _ UM DROPDOWN NESSE LOCAL,
+
+E NAÕ UM 
+
+
+
+BUTTON..
+
+
+
+
+
+-> por isso ele usa 
+
+
+
+'<select>',
+
+e aí 
+
+uma 
+
+
+'OPTION' nesse select...
+
+
+
+
+QUER DIZER, EU ACHAVA QUE ERA ASSIM:
+
+
+
+
+
+
+<select>
+<option/>
+</select>
+
+
+
+
+
+
+
+
+
+
+
+
+MAS O PROFESSOR NOS DIZ QUE DEVEMOS USAR A DIV com a class de 
+
+'btn-group',
+
+do bootstrap...  ----> ESSA É  APENAS A MANEIRA CORRETA PARA CRIAR UMA 
+
+'NICE DROPDOWN'
+
+
+usando o 
+
+
+FRAMEWORK BOOTSTRAP,
+
+
+que estmaos usando nesse projeto...
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+
+o professor escreve assim:
+
+
+
+
+
+<div class="btn-group">
+    <button type="button></button>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+-> ESSE BUTTON VAAI FAZER 'OPEN' do nosso dropdown:
+
+
+
+
+<div class="btn-group">
+    <button type="button" class="btn btn-primary"></button>
+</div>
+
+ 
+
+
+
+
+
+
+
+
+ -> MAS AÍ TAMBÉM ADICIONAMOS A CLASS DEFAULT DE 'dropdown-toggle',
+
+
+
+
+ PQ 
+
+ 
+
+ __ VAI FUNCIONAR COMO ISSO....
+
+
+
+
+
+
+
+ Ex:
+
+
+
+ <div class="btn-group">
+    <button type="button" class="btn btn-primary dropdown-toggle">Manage Recipe</button>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+-_> PROFESSOR ENTÃO ADICIONA UM 'SPAN' com uma class de 'caret',
+PARA TER AQUELA SETINHA...
+
+
+
+
+
+
+ex:
+
+
+
+ <div class="btn-group">
+    <button type="button" class="btn btn-primary dropdown-toggle">Manage Recipe<span class="caret"></span>
+    </button>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <img src="" alt="" class="img-responsive" />
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <h1>Recipe Name</h1>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <div class="btn-group"> <!--será tipo o nosso DROPDOWN de options..-->
+      <button type="button" class="btn btn-primary dropdown-toggle">
+        Manage Recipe <span class="caret"></span>
+      </button>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+----> ESSE SERÁ O BUTTON QUE VAI 'OPEN THE DROPDOWN'...
+
+
+
+
+
+
+
+
+--> EMBAIXO DISSO,
+
+
+TEREMOS UMA __ UL, unordered list,
+
+
+
+
+
+
+
+
+
+
+COM A CLASS DE 'DROPDOWN-menu',
+
+
+
+
+E SERÁ 
+
+O 
+
+
+ EXATO MESMO SETUP QUE USAMOS NO HEADER, EM QUE ESCREVEMOS ISTO:
+
+
+
+
+         <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" role="button">Manage<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Save Data</a></li>
+                    <li><a href="#">Fetch Data</a></li>
+                </ul>
+            </li>
+        </ul>
+
+
+
+
+
+
+
+--> aqui vamos fazer a mesma coisa,
+
+
+vamos CRIAR UM 
+
+'ul'
+
+
+E ENTAÕ COLOCAR LIST IETMS 
+
+
+
+com nossos links...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COISA BOA DO BOOTSTRAP:
+
+
+
+
+DROPDOWNS FUNCIONAM DA MESMA FORMA SEMPRE,
+
+
+NÃO INTERESSA SE VOCÊ OS COLOCA EM UM HEADER OU SE USA UM ''BUTTON'' SEPARADO para eles.....
+
+
+
+
+
+
+
+
+
+
+Ex:
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <img src="" alt="" class="img-responsive" />
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <h1>Recipe Name</h1>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <div class="btn-group"> <!--será tipo o nosso DROPDOWN de options..-->
+      <button type="button" class="btn btn-primary dropdown-toggle">
+        Manage Recipe <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu">
+          <li><a href="#">Add to Shopping List</a></li>
+          <li><a href="#">Edit Recipe</a></li>
+          <li><a href="#">Delete Recipe</a></li> 
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> COM ISSO,
+SERÁ UM 
+
+
+'DROPDOWN' 
+
+
+funcional,
+
+
+
+
+MAS ELE _ _ AINDA NÃO FUNCIONARÁ,
+
+SÓ FUNCIONARÁ
+
+
+
+DEPOIS QUE TERMINARMOS O MÓDULO DE 
+
+
+
+
+
+'directives'....
+
+
+
+
+
+
+
+
+
+
+-> EMBAIXO DO DROPDOWN,
+
+QUEREMOS ADICIOANR UM OUTRO ROW,
+
+
+
+EM QUE VAMOS QUERER OUTPUTTAR A 'DESCRIPTION' de nossa recipe..
+
+
+
+
+
+
+
+fica tipo assim:
+
+
+<div class="row">
+    <div class="col-xs-12">
+        Description
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+-> BEM AO FINAL, ADICIONAMOS O ÚLTIMO ROW,
+
+
+QUE SERÁ 
+
+
+
+
+UM LOCAL EM QUE OUTPUTTAREMOS OS INGREDIENTS...
+
+
+
+
+
+
+
+--> AINDA NÃO ESTAMOS ARMAZENANDO OS 'INGREDIENTS' de nossas recipes em lugar algum, mas logo faremos isso,
+
+
+e esse é um bom lugar para os outputtar..
+
+
+
+
+
+
+
+
+
+
+
+OK... ESSE É O COMPONENT DE 'RECIPE-DETAIL'...
+
+
+
+
+
+
+--> PRECISAMOS COLOCAR LÓGICA DENTRO DELE PARA:
+
+
+1) DISPLAYAR OS DETAILS 
+
+
+
+
+2) TER OPTIONS PARA 'IR EM LOCAIS DISTINTOS NO NOSSO APP',
+
+
+
+
+
+
+3) OPTIONS PARA TRIGGAR ALGO NO NOSSO APP (como o trigger de uma recipe)...
+
+
+
+
+
+
+
+
+
+
+
+
+-> COM TUDO ISSO ADICIONADO E SETTADO, TEMOS QUE VER COMO ISSO 
+
+SE PARECE...
+
+
+
+
+
+FUNCIONOU, DE CERTA FORMA...
+
+
+
+
+
+
+
+
+
+
+
+MAS AINDA NÃO VEMOS UMA IMAGE AO TOPO,
+
+
+pq 
+
+
+AINDA NÃO 
+
+
+
+COLOCAMOS UM SOURCE PARA A IMAGE...
+
+
+
+
+
+--> SERIA LEGAL SE PUDESSEMOS 
+
+CLICAR EM UMA DAS RECIPES E AÍ 
+
+
+
+
+
+FAZER O DISPLAY DESSA RECIPE ESPECÍFICA NO COMPONENT DE 'RECIPE-DETAIL,'
+
+
+
+MAS UM PROBLEMA QUE TEMOS COM ISSO É QUE 
+
+
+'''NÓS AINDA NÃO CONSEGUIMOS 
+
+
+___GET OUR __ SELECTED__ RECIPE __ INTO THE DETAIL COMPONENT''' ->  PQ 
+
+
+
+
+O DETAIL COMPONENT É ADICIONADO LÁ 
+
+NO NOSSO COMPONENT DE 
+
+'RECIPEBOOK' (em que também temos o component de 'recipe-list'),
+
+
+
+
+E O 
+
+
+COMMUNICATE ENTRE OS COMPONENTS DE 'RECIPELIST'
+
+
+e 
+
+'RECIPEDETAIL'
+
+
+
+É ALGO QUE 
+
+
+AINDA __ NÃO SABEMOS __ COMO FAZER, por enquanto...
+
+
+
+
+
+
+
+
+
+
+--> TEMOS O MESMO PROBLEMA NO COMPONENT DE 'RECIPELIST',
+
+
+
+EM QUE 
+
+''NÃO CONSEGUIMOS'' (eu consegui, acho, através da feature do '@Input')
+
+
+
+
+FAZER O OUTSOURCING DE NOSSA DATA EM 'recipes'
+
+
+AO COMPONENT DE 'recipe-item'...
+
+
+
+
+
+
+
+-> É POR ISSO QUE 
+
+ESSA COMMUNICATION 'CROSS-COMPONENT' AINDA É UM GRANDE PROBLEMA....
+
+
+
+
+
+MAS SEM 
+
+PROCUPAÇÃO,
+
+
+ISSO É ALGO QUE TEMOS QUE VER MAIS APROFUNDADAMENTE NA PRÓXIMA COURSE SECTION... -> 
+
+
+AÍ NO FUTURO VAMOS ENABLAR TODA ESSA COMMUNICATION QUE VAI NOS ALLOW 
+
+a outsourcear
+
+
+
+
+ESTE CÓDIGO AQUI:
+
+
+    <a href="#" class="list-group-item clearfix" 
+    *ngFor="let recipe of recipes">
+      <div class="pull-left">
+        <h4 class="list-group-item-heading">{{ recipe.name }}</h4>
+        <p class="list-group-item-text">{{ recipe.description }}</p>
+      </div>
+      <span class="pull-right">
+        <!-- <img src="{{recipe.imagePath}}" alt="{{recipe.name}}" class="img-responsive" style="max-height: 50px" /> -->
+        <img
+          [src]="recipe.imagePath"
+          alt="{{ recipe.name }}"
+          class="img-responsive"
+          style="max-height: 50px;"
+        >
+      </span>
+    </a>
+
+
+
+
+
+
+
+
+
+EM UM COMPONENT PRÓPRIO,
+
+
+
+
+E AÍ FAZER ESSES LINKS 
+
+
+
+
+DAS RECIPES 'CLICKABLE',
+
+para que 
+
+ENTÃO SEJA __ POSSÍVEL CARREGAR AS RECIPES NO COMPONENT DE 'RECIPE-DETAIL',
+
+à direita...
+
+
+
+
+
+
+
+
+
+--> ANTES DE FAZERMOS ISSO, DEVEMOS TERMINAR ESSE MÓDULO 
+
+
+
+COM 
+
+
+
+
+O WORK 
+
+
+
+
+NA PARTE DA 'SHOPLIST' de nosso projeto....

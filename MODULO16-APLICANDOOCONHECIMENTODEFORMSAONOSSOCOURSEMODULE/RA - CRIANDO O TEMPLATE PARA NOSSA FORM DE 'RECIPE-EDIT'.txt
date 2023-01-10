@@ -1,0 +1,1475 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+NOSSA FORM DE 'SHOPPING-LIST-EDIT' FOI CRIADA 
+
+USANDO 
+
+O 
+
+TEMPLATE-DRIVEN APPROACH (TD)...
+
+
+
+
+
+
+
+
+
+--> AGORA É HORA DE VER UM EXEMPLO DE REACTIVE APPROACH,
+
+
+
+
+COM O COMPONENT DE 
+
+'RECIPE-EDIT'...
+
+
+
+
+
+
+
+
+
+
+--> ATUALMENTE, ESTE COMPONENT ESTÁ ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <form>
+      <div class="row" *ngIf="editMode else newRecipe">
+        <div class="col-sm-5 form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" class="form-control" [(ngModel)]="editableRecipe.name" name="name"/>
+        </div>
+        <div class="col-sm-5 form-group">
+          <label for="description">Description</label>
+          <input type="text" id="description" class="form-control" [(ngModel)]="editableRecipe.description" name="description"/>
+        </div>
+        <div class="col-sm-2 form-group">
+            <label for="imagePath">Image</label>
+            <input type="text" id="imagePath" class="form-control"  [(ngModel)]="editableRecipe.imagePath" name="imagePath"/>
+          </div>
+          <div class="col-sm-2 form-group">
+            <label for="imagePath">Ingredients</label>
+            <input type="text" id="imagePath" class="form-control" [(ngModel)]="editableRecipe.ingredients" name="ingredients"/>
+          </div>
+      </div>
+      <ng-template #newRecipe>
+      <div class="col-sm-5 form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" class="form-control"/>
+      </div>
+      <div class="col-sm-5 form-group">
+        <label for="description">Description</label>
+        <input type="text" id="description" class="form-control"/>
+      </div>
+      <div class="col-sm-2 form-group">
+          <label for="imagePath">Image</label>
+          <input type="text" id="imagePath" class="form-control"/>
+        </div>
+        <div class="col-sm-2 form-group">
+          <label for="imagePath">Ingredients</label>
+          <input type="text" id="imagePath" class="form-control"/>
+        </div>
+</ng-template>
+        <div class="col-xs-12">
+          <button class="btn btn-success">Add</button>
+        </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> É __ CLARO__ QUE ISSO ESTÁ UMA PORCARIA...
+
+
+
+
+
+
+
+
+-> TEMOS QUE 
+
+
+
+
+ASSISTIR A AULA DO PROFESSOR,
+
+E AÍ 
+
+CRIAR UM 
+
+COMPONENT TEMPLATE MELHOR DO QUE ESSE...
+
+
+
+
+
+
+
+
+
+
+
+------> antes, vou corrigir um pequeno errinho:
+
+
+quando clico em 'Recipe Book' (no header),
+
+
+
+
+
+
+É _ ABERTO _ 
+
+
+NOSSO MENU SANDUÍCHE, POR ALGUMA RAZÃO....
+
+
+
+
+
+
+
+
+
+-> o problema provavelmente está no component de 'header';
+
+
+
+
+
+CONSERTEI O PROBLEMA, ERA ISTO:
+
+
+
+          <a routerLink="/" class="navbar-brand" (click)="collapsed = !collapsed">Recipe Book</a>
+
+
+
+
+
+
+
+
+
+          -> aquele '(click)'
+
+
+          PRECISAVA SER REMOVIDO, DEIXANDO APENAS AQUELE ROUTER LINK:
+
+
+
+                    <a routerLink="/" class="navbar-brand">Recipe Book</a>
+
+
+
+
+
+
+
+
+
+
+--> OK... AGORA VOLTANDO à QUESTÃO DA NOSSA FORM,
+
+
+
+
+QUE DEVERÁ SER _ REACTIVE....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+o código atualmente é este:
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+--> esse é o código esqueleto básico..
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> MAS AGORA O PROFESSOR VAI NOS PASSAR O HTML INICIAL...
+
+
+
+
+
+
+
+
+
+
+
+
+-> VAMOS USAR O MESMO COMPONENT PARA O ADD/EDIT..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+professor escreve assim:
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+        <form></form>
+  </div>
+</div>
+
+
+
+
+
+TEREMOS UMA FORM TAG, MAS UMA SEM ACTION ,PQ NÃO VAMOS QUERER ENVIAR UM REQUERT A UMA URL...
+
+
+
+
+
+
+
+
+
+
+LÁ EM 'ngOnInit()',
+
+ESCREVI ISTO:
+
+
+
+
+
+
+
+
+
+      this.recipeForm = new FormGroup({
+
+        'recipeName': new FormControl(
+          null,
+          [Validators.required, Validators.minLength(3)]
+        ),
+          'recipeDescription': new FormControl(
+            null,
+            [Validators.required ]
+          ), 
+          'imagePath': new FormControl(
+            null, [Validators.required]
+          ),
+          'ingredients': new FormArray([])
+
+      })
+
+
+
+
+
+
+
+
+
+
+
+certo... esse é o primeiro passo,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+o CREATE DA FORM LÁ NO CÓDIGO TYPESCRIPT..
+
+
+
+
+
+
+
+
+
+JÁ NO CÓDIGO DO TEMPLATE, TEMOS ISTO:
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <form (ngSubmit)="onSubmitForm()" [formGroup]="recipeForm">
+      <div class="form-group">
+        <label for="recipeName">Recipe Name</label>
+        <input
+          type="text"
+          id="recipeName"
+          class="form-control"
+          formControlName="recipeName"
+        />
+      </div>
+      <div class="form-group">
+        <label for="recipeDescription">Recipe Description</label>
+        <textarea
+          id="ingredientName"
+          class="form-control"
+          formControlName="recipeDescription"
+        >
+        </textarea>
+      </div>
+      <div class="form-group">
+        <label for="imagePath">Image Path</label>
+        <input
+          type="text"
+          id="imagePath"
+          class="form-control"
+          formControlName="imagePath"
+        />
+      </div>
+      <div formArrayName="ingredients">
+        <label for="ingredientName">Ingredients</label>
+        <button
+          class="btn btn-default"
+          type="button"
+          (click)="onAddIngredient()"
+        >
+          Add Ingredient
+        </button>
+        <div
+          class="form-group"
+          *ngFor="
+            let ingredientControl of getIngredientControls();
+            let i = index
+          "
+        >
+          <label>Ingredient nº {{ i }} &nbsp;</label>
+          <input type="text" class="form-control" [formControlName]="i" />
+        </div>
+      </div>
+
+      <button type="submit">{{ editMode ? "Edit" : "Add" }}</button>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+FICOU UMA GOROROBA ASSIm:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <form (ngSubmit)="onSubmitForm()" [formGroup]="recipeForm">
+      <div class="form-group">
+        <label for="recipeName">Recipe Name</label>
+        <input
+          type="text"
+          id="recipeName"
+          class="form-control"
+          formControlName="recipeName"
+        />
+      </div>
+      <div class="form-group">
+        <label for="recipeDescription">Recipe Description</label>
+        <textarea
+          id="ingredientName"
+          class="form-control"
+          formControlName="recipeDescription"
+        >
+        </textarea>
+      </div>
+      <div class="form-group">
+        <label for="imagePath">Image Path</label>
+        <input
+          type="text"
+          id="imagePath"
+          class="form-control"
+          formControlName="imagePath"
+        />
+      </div>
+      <div formArrayName="ingredients">
+        <label for="ingredientName">Ingredients</label>
+        <button
+          class="btn btn-default"
+          type="button"
+          (click)="onAddIngredient()"
+        >
+          Add Ingredient
+        </button>
+        <div
+          class="form-group"
+          *ngFor="
+            let ingredientControl of getIngredientControls();
+            let index=index
+          "
+        >
+          <label>Ingredient nº {{ index }} &nbsp;</label>
+          <input type="text" class="form-control" [formControlName]="index" />
+        </div>
+      </div>
+
+      <button type="submit">{{ editMode ? "Edit" : "Add" }}</button>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E OS METHODS DE NOSSO COMPONENT 'recipe-edit':
+
+
+
+
+
+
+  onSubmitForm() {
+
+  }
+
+
+  onAddIngredient() {
+
+  }
+
+
+
+  getIngredientControls() {
+    return (<FormArray>this.recipeForm.get('recipes')).controls;
+  }
+
+
+
+
+
+
+
+
+agora devo testar....
+
+
+
+
+
+
+
+
+
+--> é claro que preciso codar também a lógica de 'onSubmitForm()'
+
+
+e 
+de 
+
+'onAddIngredient()'...
+
+
+
+
+
+
+
+
+
+
+
+A LÓGICA FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+  onSubmitForm() {
+
+    console.log(this.recipeForm.value);
+  }
+
+
+  onAddIngredient() {
+        const newControl: FormControl = new FormControl(null, [Validators.required, Validators.minLength(4)]);
+
+
+        (<FormArray>this.recipeForm.get('ingredients')).push(newControl);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+---> mas o STYLE do meu button ainda está bugado..
+
+
+
+
+
+
+
+
+
+--> consertei... eram problemas com NAMING...
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <form (ngSubmit)="onSubmitForm()" [formGroup]="recipeForm">
+      <div class="form-group">
+        <label for="recipeName">Recipe Name</label>
+        <input
+          type="text"
+          id="recipeName"
+          class="form-control"
+          formControlName="recipeName"
+        />
+      </div>
+      <div class="form-group">
+        <label for="recipeDescription">Recipe Description</label>
+        <textarea
+          id="recipeName"
+          class="form-control"
+          formControlName="recipeDescription"
+        >
+        </textarea>
+      </div>
+      <div class="form-group">
+        <label for="imagePath">Image Path</label>
+        <input
+          type="text"
+          id="imagePath"
+          class="form-control"
+          formControlName="imagePath"
+        />
+      </div>
+      <div formArrayName="recipes">
+        <label for="ingredientName">Ingredients: &nbsp;</label>
+        <button
+          class="btn btn-default"
+          type="button"
+          (click)="onAddIngredient()"
+        >
+          Add Ingredient
+        </button>
+        <div
+          class="form-group"
+          *ngFor="
+            let ingredientControl of getIngredientControls();
+            let index = index
+          "
+        >
+          <div [ngStyle]="{'margin-top': '20px'}">
+            <label>Ingredient {{ index + 1 }} &nbsp;</label>
+            <input type="text" class="form-control" [formControlName]="index" />
+          </div>
+        </div>
+      </div>
+      <hr />
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="!recipeForm.valid"
+      >
+        {{ editMode ? "EDIT" : "ADD" }}
+      </button>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> adicionei um pouco de styling, e ficou normalzinho....
+
+
+
+
+
+
+
+
+-. o código ts ficou assim:
+
+
+
+
+
+  onSubmitForm() {
+
+    console.log(this.recipeForm.value);
+  }
+
+
+  onAddIngredient() {
+        const newControl: FormControl = new FormControl(null, [Validators.required, Validators.minLength(4)]);
+
+
+        (<FormArray>this.recipeForm.get('recipes')).push(newControl);
+  }
+
+
+
+  getIngredientControls() {
+    return (<FormArray>this.recipeForm.get('recipes')).controls;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> hora de ver a aula do professor...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  O PROFESSOR COMEÇA COM UM CÓDIGO ASSIm:
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <form>
+      <div class="row">
+        <div class="col-xs-12">
+           <button type="submit" class="btn btn-success">Save</button>
+           <button type="button" class="btn btn-danger">Cancel</button>
+        </div>
+        </div>
+        <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input 
+              type="text" 
+              id="name"
+              class="form-control">
+              </div>
+            </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+              <div class="form-group">
+                <label for="imagePath">Image URL</label>
+                <input 
+                type="text" 
+                id="imagePath"
+                class="form-control">
+                </div>
+              </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                  <label for="name">Name</label>
+                  <input 
+                  type="text" 
+                  id="name"
+                  class="form-control">
+                  </div>
+                </div>
+            </div>
+
+    </form>
+ </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS NESSA TERCEIRA ROW __ NÃO VAMOS QUERER _ ACTUALLY __ TER OUTRO FORM GROUP,
+
+
+
+E
+ SIM 
+
+
+ __ VAMOS QUERER _ 
+
+ COLOCAR UM 'PREVIEW'
+
+ DA IMAGE QUE 
+
+ O 
+
+ USER 
+
+
+
+
+
+
+
+ COLOCOU NO IMAGEPATH....
+
+
+
+
+
+
+
+
+
+ ----------> OK, MAS COMO FAZEMOS ISSO?
+
+
+
+
+
+
+
+
+
+ ------> BEM, ACHO QUE PARA ISSO SERÁ NECESSÁRIO FORWARDAR A PROPRIEDADE 
+
+
+
+ DE NOSSA FORM QUE SERÁ ESSE 'CONTROL' AÍ...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> PARA CONSEGUIR FAZER O PREVIEW DESSA IMAGE, MEU CÓDIGO FICOU ASSIM (usei property binding):
+
+
+
+
+
+
+
+
+
+
+            <div class="col-xs-12">
+              <img *ngIf="recipeForm.get('imagePath')?.value" 
+              [src]="recipeForm.get('imagePath')?.value" 
+              alt="image">
+                </div>
+
+
+
+
+
+
+
+
+
+
+-> AGORA ESSA IMAGE: 
+
+
+1) SÓ É/SERÁ CARREGADA QUANDO A CONDIÇÃO DE 'um value de imagePath existe' for cumprida....
+
+
+
+
+2) VAI TER A IMAGEURL nessa 'img', a propriedade 'src',
+
+EQUIVALENTE AO VALUE PASSADO NO NOSSO 
+
+
+input de 'imagePath', essencialmente...
+
+
+
+
+
+
+
+
+
+
+
+-----> CERTO... MAS AQUI 
+
+ESQUECI 
+
+DE COLOCAR A CLASS DE 'img-responsive'.. (bootstrap)....
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok... ficou assim:
+
+
+
+
+
+            <div class="col-xs-12">
+              <img *ngIf="recipeForm.get('imagePath')?.value" 
+              [src]="recipeForm.get('imagePath')?.value" 
+              class="img-responsive"
+              alt="image">
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            --> ISSO NOS DEIXA VER A IMAGE COMO UMA PREVIEW, QUANDO COLOCAMOS O LINK....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -> AGORA COLOCAMOS UM OUTRO ROW, QUE SERÁ UM TEXTAREA,
+
+
+    TIPO ASSIM:
+
+
+
+
+
+
+                <div class="row">
+              <div class="col-xs-12">
+                  <div class="form-group">
+                    <label for="description">Description</label>
+                    <input 
+                    type="text" 
+                    id="recipeDescription"
+                    formControlName="recipeDescription"
+                    class="form-control">
+                    </div>
+                  </div>
+              </div>
+
+
+
+
+
+              --> FALTA A TAG DE 'textarea'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              --> mas isso não está funcionando...
+
+
+
+
+
+
+
+
+
+
+            --> professor fala que no último row devemos colocar um ARRAY 
+
+
+            DE 
+
+
+            CONTROLS,
+
+
+
+          para que seja possível adicionar multiplos ingredients...
+
+
+
+
+
+
+        -> MAS É CLARO QUE CADA INGREDIENT NÃO É SÓ UM 'NAME',
+
+        pq devemos ter também o AMOUNT de cada 1 deles....
+
+
+
+
+
+
+
+
+
+
+          será tipo:
+
+
+
+
+
+
+          <div class="row">
+            <div class="col-xs-8">
+              <input
+                type="text"
+                class="form-control">
+            </div>
+
+
+
+
+
+
+
+
+
+
+            O CÓDIGO VAI FICANDO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <form (ngSubmit)="onSubmitForm()" [formGroup]="recipeForm">
+      <div class="row">
+        <div class="col-xs-12"></div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input
+              type="text"
+              id="name"
+              formControlName="recipeName"
+              class="form-control"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="imagePath">Image URL</label>
+            <input
+              type="text"
+              id="imagePath"
+              class="form-control"
+              formControlName="imagePath"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <img
+            *ngIf="recipeForm.get('imagePath')?.value"
+            [src]="recipeForm.get('imagePath')?.value"
+            class="img-responsive"
+            alt="image"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="desc">Description</label>
+            <texatrea
+              type="text"
+              formControlName="desc"
+              id="desc"
+              rows="6"
+      
+              class="form-control"
+            ></texatrea>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <label for="ingredients">Ingredients</label>
+          <div class="row">
+              <div class="col-xs-8">
+                <input 
+                type="text"
+                class="form-control">
+              </div>
+              <div class="col-xs-2">
+                <input 
+                type="number"
+                class="form-control">
+              </div>
+              <div class="col-xs-2">
+                <button class="btn btn-danger">X</button>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div [ngStyle]="{ 'margin-top': '20px' }">
+        <button type="submit" class="btn btn-success">Save</button>
+        <button type="button" class="btn btn-danger">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+-------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+--> HÁ ALGO QUE AINDA ESTÁ FALTANDO, MAS ANTES VAMOS FAZER ESSA BASIC FORM FUNCIONAR, SEM INGREDIENTS, NO INÍCIO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok, agora consegui consertar o erro, era um mistype:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <form (ngSubmit)="onSubmitForm()" [formGroup]="recipeForm">
+      <div class="row">
+        <div class="col-xs-12"></div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input
+              type="text"
+              id="name"
+              formControlName="recipeName"
+              class="form-control"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="imagePath">Image URL</label>
+            <input
+              type="text"
+              id="imagePath"
+              class="form-control"
+              formControlName="imagePath"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <img
+            *ngIf="recipeForm.get('imagePath')?.value"
+            [src]="recipeForm.get('imagePath')?.value"
+            class="img-responsive"
+            alt="image"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="desc">Description</label>
+            <textarea
+              type="text"
+              formControlName="recipeName"
+              id="desc"
+              rows="6"
+              class="form-control"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <label for="ingredients">Ingredients</label>
+          <div class="row">
+              <div class="col-xs-8">
+                <input 
+                type="text"
+                class="form-control">
+              </div>
+              <div class="col-xs-2">
+                <input 
+                type="number"
+                class="form-control">
+              </div>
+              <div class="col-xs-2">
+                <button class="btn btn-danger">X</button>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div [ngStyle]="{ 'margin-top': '20px' }">
+        <button type="submit" class="btn btn-success">Save</button>
+        <button type="button" class="btn btn-danger">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Agora temos que vincular os buttons, acho....

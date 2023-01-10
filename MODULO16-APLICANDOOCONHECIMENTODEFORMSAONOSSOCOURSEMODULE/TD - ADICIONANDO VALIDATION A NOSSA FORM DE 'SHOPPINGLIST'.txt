@@ -1,0 +1,584 @@
+ 
+
+
+
+
+
+
+
+
+
+
+ ----> NA ÚLTIMA LIÇÃO, FIZEMOS REGISTER DOS NOSSOS CONTROLS E AÍ 
+
+ DEIXAMOS NOSSA FORM 'SUBMITTABLE'...
+
+
+
+
+ FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+ <div class="row">
+  <div class="col-xs-12">
+    <form (ngSubmit)="onFormSubmit(localFormReference)"  #localFormReference="ngForm">
+      <div class="row">
+        <div class="col-sm-5 form-group">
+          <label for="name">Name</label>
+          <input type="text" 
+          id="name" 
+          class="form-control" 
+          name="name"
+          required
+          minlength="5"
+          ngModel
+          #nameReference="ngModel"
+          
+            />
+            <span  [ngStyle]="{ color: 'red' }"  *ngIf="nameReference.errors?.['required'] && nameReference.touched">Username is required
+            </span>
+            <span  [ngStyle]="{ color: 'red' }"  *ngIf="!nameReference.valid && nameReference.value && nameReference.touched ">Username must have at least 5 characters
+            </span>
+
+        </div>
+        <div class="col-sm-2 form-group">
+          <label for="amount">Amount</label>
+          <input type="number" 
+          id="amount" 
+          class="form-control"
+          name="amount"
+          ngModel
+          required
+          #amountReference="ngModel"
+
+          />
+          <span  [ngStyle]="{ color: 'red' }"  *ngIf="amountReference.errors?.['required'] && amountReference.touched">Please enter a ingredient amount
+          </span>
+          <span  [ngStyle]="{ color: 'red' }"  *ngIf="!amountReference.valid && amountReference.value && amountReference.touched ">Please enter a valid ingredient amount
+          </span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <button class="btn btn-success" type="submit" [disabled]="!localFormReference.valid" >Add</button>
+          <button class="btn btn-danger" type="button">Delete</button>
+          <button class="btn btn-primary" type="button" >Clear</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+---->  MAS AGORA QUEREMOS ADICIONAR VALIDATION,
+
+MENSAGENS DE ERROR (span) 
+
+
+
+
+A PARTIR 
+
+
+
+
+DO STATE DE NOSSA FORM...
+
+
+
+
+
+
+
+
+--> O 'name' deve ser 'required',
+
+
+E O NUMBER TAMBÉM..
+
+
+
+
+
+
+
+
+
+
+--> COMO NOSSO INPUT JÁ É DE TYPE 'number',
+
+
+JÁ SERÁ DIFÍCIL DE INPUTTAR QUALQUER OUTRA COISA....
+
+
+
+
+
+
+
+
+
+--> OK... ->  AÍ O PROFESSOR COLOCA UM PROPERTY BINDING DE 
+'[disabled]' 
+
+PARA DESABILITAR ESSE BUTTON SE NOSSA FORM ESTIVER COMO INVALID:
+
+
+
+
+      <button class="btn btn-success" type="submit" [disabled]="!localFormReference.valid" >Add</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> certo...
+
+
+
+
+
+
+  FIZ EXATAMENTE ISSO, ANTES DELE....
+
+
+
+
+
+
+
+
+
+
+
+
+  -> SALVAMOS TUDO ISSO, E ESSE TIPO DE VALIDATION FUNCIONOU...
+
+
+
+
+
+
+
+
+  --> OK... -> MAS AQUI FICAMOS COM UM PROBLEMA... -> VALORES__ NEGATIVOS_ TAMBÉM FUNCIONAM 
+
+
+
+  NO NOSSO 'amount'...
+   
+
+
+
+
+
+
+
+   -> UMA MANEIRA __ DE BARRAR ESSE COMPORTAMENTO É 
+
+
+   'SOMENTE PERMITIR QUE NÚMEROS MAIORES DE 0 SEJAM INPUTTADOS'..
+
+
+
+
+
+
+
+
+   -_> para isso, precisamos de outro 'VALIDATOR DIRECTIVE'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   --> será o validator/directive de 
+
+
+   'min'
+
+
+
+
+
+
+
+
+
+
+
+
+
+   FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <div class="row">
+  <div class="col-xs-12">
+    <form (ngSubmit)="onFormSubmit(localFormReference)"  #localFormReference="ngForm">
+      <div class="row">
+        <div class="col-sm-5 form-group">
+          <label for="name">Name</label>
+          <input type="text" 
+          id="name" 
+          class="form-control" 
+          name="name"
+          required
+          minlength="5"
+          ngModel
+          #nameReference="ngModel"
+          
+            />
+            <span  [ngStyle]="{ color: 'red' }"  *ngIf="nameReference.errors?.['required'] && nameReference.touched">Username is required
+            </span>
+            <span  [ngStyle]="{ color: 'red' }"  *ngIf="!nameReference.valid && nameReference.value && nameReference.touched ">Username must have at least 5 characters
+            </span>
+
+        </div>
+        <div class="col-sm-2 form-group">
+          <label for="amount">Amount</label>
+          <input type="number" 
+          id="amount" 
+          class="form-control"
+          name="amount"
+          min="1"
+          ngModel
+          required
+          #amountReference="ngModel"
+
+          />
+          <span  [ngStyle]="{ color: 'red' }"  *ngIf="amountReference.errors?.['required'] && amountReference.touched">Amount is required
+          </span>
+          <span  [ngStyle]="{ color: 'red' }"  *ngIf="amountReference.errors?.['min'] && amountReference.touched ">Please enter a value greater than 0!
+          </span>
+
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <button class="btn btn-success" type="submit" >Add</button>
+          <button class="btn btn-danger" type="button">Delete</button>
+          <button class="btn btn-primary" type="button" >Clear</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO....
+
+
+
+
+
+
+
+
+MAS EM VEZ DE USAR O VALIDATOR DE 'min',
+
+
+O PROFESSOR DECIDIU USAR UM VALIDATOR MALUCO, O VALIDATOR DE '[pattern]'
+
+
+
+
+
+
+
+
+
+------> COM ESSE VALIDATOR,
+
+
+VAMOS CHECAR O USER INPUT __ EM RELAÇAÕ A UMA REGULAR EXPRESSION QUALQUER...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS COMO ESSE VALIDATOR FUNCIONA?
+
+
+
+
+
+
+
+
+
+
+
+
+--> A REGULAR EXPRESSION É COLADA NO VALUE DO 
+
+
+
+
+[pattern]= "",
+
+
+
+
+
+
+
+E ELA PRECISA SER COLADA COMO UMA STRING   ( TIPO ASSIM: '')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> A STRING QUE ESTAMOS PROCURANDO, QUE VAI ACEITAR __ _SOMENTE__ NÚMEROS,
+
+
+
+
+é 
+
+
+esta:
+
+
+
+
+
+
+
+[pattern]="'^[1-9]+[0-9]*$'"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> quer dizer, você pode escrever ASSIM,
+
+ou então 
+
+
+USAR O SHORTCUT DE PROPERTY BINDING,
+
+EM QUE 
+
+OMITIMOS '[]' e também os '' no value..
+
+
+
+
+
+
+
+
+-> aí ficaria assim:
+
+
+pattern="^[1-9]+[0-9]*$"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+          <input type="number" 
+          id="amount" 
+          class="form-control"
+          name="amount"
+          min="1"
+          ngModel
+          pattern="^[1-9]+[0-9]*$"
+          required
+          #amountReference="ngModel"
+
+          />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> O QUE ISSO FARÁ, NO CASO ESSA REGULAR EXPRESSION,
+
+
+  É __ PERMITIR_ QUALQUER NÚMERO MAIOR DO QUE 0...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> PODEMOS VER ISSO EM AÇÃO SE SALVARMOS E RECARREGARMOS NOSSO APP...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> OK... FUNCIONOU...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> AGORA VAMOS ADICIONAR FUNCIONALIDADE PARA QUE __ QUANDO 1 ITEM 
+
+
+  __ 
+
+
+
+  FOR CLICADO__,
+
+
+  SEJA POSSÍVEL EDITAR 
+
+
+  ESSE ITEM....

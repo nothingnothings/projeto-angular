@@ -1,0 +1,757 @@
+QUASE ACABAMOS DE CONSERTAR BUGS NO NOSSO CÓDIGO...
+
+
+
+
+
+
+
+
+
+
+
+--> MAS AGORA, SE VOLTARMOS AO COMPONENT DE 'RECIPE-EDIT',
+
+
+
+VEREMOS QUE O BOTÃO DE 'x'
+
+
+NÃO ESTARÁ FUNCIONANDO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OPS.... ----> na verdade, é pior do que isso..
+
+
+
+
+---> quando tenho APENAS 1 INGREDIENT, SE EU PRESSIONO O 'x' DE REMOVER ESSE INGREDIENT,
+
+
+ELE BUGA COMPLETAMENTE O CÓDIGO.... -->  a tela de 'select a recipe' aparece,
+
+
+e
+ perco todo meu state.... --> tenho que consertar isso, por meio de algum código na UI..
+
+
+
+
+
+
+
+
+
+
+
+
+ --. CÓDIGO ATUAL:
+
+
+
+
+
+
+ <div class="row">
+  <div class="col-xs-12">
+    <form (ngSubmit)="onSubmitForm()" [formGroup]="recipeForm">
+      <div class="row">
+        <div class="col-xs-12"></div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="name">Recipe Name</label>
+            <input
+              type="text"
+              id="name"
+              formControlName="recipeName"
+              class="form-control"
+            />
+          </div>
+        </div>
+      </div>
+      <span
+        *ngIf="
+          !recipeForm.get('recipeName')?.value &&
+          recipeForm.get('recipeName')?.touched
+        "
+        [ngStyle]="{ color: 'red' }"
+        >Recipe Name is required!</span
+      >
+      <span
+        *ngIf="(recipeForm.get('recipeName')?.errors?.['minlength']) &&
+      recipeForm.get('recipeName')?.touched"
+        [ngStyle]="{ color: 'red' }"
+        >Recipe Name must have at least 3 characters!</span
+      >
+      <div class="row">
+        <div class="col-xs-12">
+          <img
+            *ngIf="recipeForm.get('imagePath')?.value"
+            [src]="recipeForm.get('imagePath')?.value"
+            class="img-responsive"
+            alt="image"
+          />
+        </div>
+      </div>
+      <div class="row" [ngStyle]="{ 'margin-top': '12px' }">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="imagePath">Image URL</label>
+            <input
+              type="text"
+              id="imagePath"
+              class="form-control"
+              formControlName="imagePath"
+            />
+          </div>
+        </div>
+      </div>
+      <span
+        *ngIf="
+          !recipeForm.get('imagePath')?.valid &&
+          recipeForm.get('imagePath')?.touched
+        "
+        [ngStyle]="{ color: 'red' }"
+        >Image URL is required!</span
+      >
+
+      <div class="row" [ngStyle]="{ 'margin-top': '12px' }">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="desc">Description</label>
+            <textarea
+              type="text"
+              formControlName="description"
+              id="description"
+              rows="6"
+              class="form-control"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+      <span
+        *ngIf="
+          !recipeForm.get('description')?.value &&
+          recipeForm.get('description')?.touched
+        "
+        [ngStyle]="{ color: 'red' }"
+        >Description is required!</span
+      >
+      <span
+        *ngIf="(recipeForm.get('description')?.errors?.['minlength']) &&
+      recipeForm.get('description')?.touched"
+        [ngStyle]="{ color: 'red' }"
+        >Your description must have at least 10 characters!</span
+      >
+
+      <div
+        class="row"
+        formArrayName="ingredients"
+        [ngStyle]="{ 'margin-top': '12px' }"
+      >
+        <div class="col-xs-12">
+          <label for="ingredients">Ingredients</label>
+          <!-- <div class="row" *ngFor="let recipeControl of getRecipeControls(); let index=index" > -->
+          <div
+            class="row"
+            *ngFor="
+              let recipeControl of getIngredientControls();
+              let index = index
+            "
+            [ngStyle]="{ 'margin-bottom': '12px' }"
+          >
+            <div formGroupName="{{ index }}">
+              <div class="col-xs-8">
+                <input
+                  type="text"
+                  formControlName="ingredient"
+                  class="form-control"
+                />
+              </div>
+              <div class="col-xs-2">
+                <input
+                  formControlName="amount"
+                  [min]="1"
+                  type="number"
+                  class="form-control"
+                />
+              </div>
+            </div>
+            <div
+              class="col-xs-2"
+              [ngStyle]="{ display: 'flex', 'margin-bottom': '10px' }"
+            >
+              <button
+                class="btn btn-primary"
+                [ngStyle]="{ 'flex-grow': '9', 'margin-right': '1rem' }"
+                (click)="onAddIngredient()"
+                *ngIf="index === 0"
+              >
+                Add
+              </button>
+              <button class="btn btn-danger" [ngStyle]="{ 'flex-grow': '1' }">
+                X
+              </button>
+            </div>
+            <!-- <span *ngIf="(recipeForm.get('ingredients.index')?.value?.ingredient.length > 3)"
+              [ngStyle]="{ color: 'red', 'margin-left': '14px' }"
+              
+              >Ingredients must have at least 3 characters!</span>  NÃO FUNCIONA -->
+          </div>
+          <!-- <span *ngIf="!recipeForm.get('ingredients')?.valid &&
+          recipeForm.get('ingredients')?.touched && !recipeForm.get('ingredients.index')?.controls?.amount?.errors?.['required']"
+          [ngStyle]="{ color: 'red' }"
+          
+          >Ingredient information is required!</span> -->
+        </div>
+      </div>
+      <div>
+        <span
+          *ngIf="!recipeForm.get('ingredients')?.valid && recipeForm.touched"
+          [ngStyle]="{ color: 'red' }"
+          >Ingredient and amount fields are
+          required!
+        </span>
+      </div>
+      <div [ngStyle]="{ 'margin-top': '20px', 'display': 'flex' }">
+        <button
+          type="submit"
+          class="btn btn-success"
+          [ngStyle]="{ 'margin-right': '1rem' }"
+        >
+          {{editMode ? 'Edit' : 'Add'}}
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          [disabled]="!recipeForm.valid"
+          [ngStyle]="{ 'margin-right': '1rem' }"
+          (click)="onCancel()"
+        >
+          Cancel
+        </button>
+
+        <span
+          *ngIf="!recipeForm.valid && recipeForm.touched"
+          [ngStyle]="{ 'color': 'white', 'display': 'inline-block', 'padding': '6px', 'border-radius': '4px', 'border': '1px solid rgb(180, 180, 180)', 'background-color': 'rgb(48,48,48)', 'cursor': 'default' }"
+          >Recipe data currently invalid!</span
+        >
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo... vou tentar alguma lógica de rendering...
+
+
+
+
+
+
+
+
+
+
+
+-> AAAAH, ACHO QUE É PQ O TYPE NÃO ESTÁ COMO 'button'....
+
+
+
+
+
+
+
+
+
+
+
+--> era isso mesmo... o código ficou assim:
+
+
+
+
+
+
+
+
+
+         <div
+              class="col-xs-2"
+              [ngStyle]="{ display: 'flex', 'margin-bottom': '10px' }"
+            >
+              <button
+                class="btn btn-primary"
+                [ngStyle]="{ 'flex-grow': '9', 'margin-right': '1rem' }"
+                (click)="onAddIngredient()"
+                *ngIf="index === 0"
+                type="button"
+              >
+                Add
+              </button>
+              <button class="btn btn-danger" [ngStyle]="{ 'flex-grow': '1' }" type="button" (click)="onRemoveIngredient()">
+                X
+              </button>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      -> mas é claro que ainda temos problemas:
+
+
+
+
+
+
+
+
+
+    1) O BUTTON DE 'REMOVE' não deve existir quando SÓ TIVERMOS 1 ÚNICO INGREDIENT 
+
+
+
+
+    2) OS BUTTONS DE REMOVE INFERIORES, nos ingredients subsequentes, seu styling está feio...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> CERTO, CONSERTEI O STYLING..
+
+
+
+    --> TAMBÉM CONSERTEI O 'BUTTON DE REMOVE NÃO DEVE EXISTIR'...
+    .
+
+
+
+
+
+
+
+
+    --> agora só falta consertar o 
+
+    'ACTUAL REMOVE' de nossos 
+
+
+    ingredient inputs,
+
+    a partir dos clicks em 'X'...
+
+
+
+
+
+
+
+
+
+
+
+
+    TENTEI ESCREVER ASSIM:
+
+
+
+
+
+
+
+
+
+
+    
+  onRemoveIngredient(index: number) {
+       console.log( this.recipeForm.get('ingredients')?.value[index]);
+
+       this.recipeForm.get('ingredients')?.value.splice(index, 1);
+
+       console.log(this.recipeForm.get('ingredients')?.value);
+
+
+       
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> isso realmente remove esse input, mas o resultado visual não é mostrado (aquele ingredient não some)....
+
+
+
+
+AAAH, ME LEMBREI... TENHO QUE CHAMAR 'patchValue'
+
+
+
+
+
+
+PARA _ _PATCHEAR__ 
+
+
+
+MINHA FORM, PARA 
+
+AÍ 
+
+
+
+DEIXAR ELA IGUAL, MAS COM A DIFERENÇA NESSE INPUT AÍ...
+
+
+
+
+
+O PROBLEMA É O INDEX, O INDEX NÃO FUNCIONA,.....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR USOU UM CÓDIGO ESPECÍFICO, PARA REMOVER UM FORMCONTROL ESPECÍFICO...
+
+
+
+
+
+
+
+
+
+
+--> FICOU TIPO ASSIM:
+
+
+
+
+
+onDeleteIngredient(index: number) {
+  (<FormArray>this.recipeForm.get('ingredients')).removeAt(index);
+}
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+  onRemoveIngredient(index: number) {
+      // console.log(index);
+      //  console.log( this.recipeForm.get('ingredients')?.value[index]);
+      //  console.log(this.recipeForm.get('ingredients')?.value);
+
+      // const patchedIngredients = this.recipeForm.get('ingredients')?.value.splice(index, 1);
+
+
+
+      // console.log(patchedIngredients)
+
+      // this.recipeForm.patchValue(
+      //   {
+      //   'ingredients': patchedIngredients
+      //   }
+      // )
+
+      (<FormArray>this.recipeForm.get('ingredients')).removeAt(index);
+       
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> ok... isso está funcionando...
+
+
+
+
+
+
+
+
+
+
+  -> isso vai realmente REMOVER O INGREDIENT E UPDATAR A RECIPE, ETC...
+
+
+
+
+
+--> UMA ÚLTIMA COISA:
+
+
+
+
+--> PRECISAMOS FAZER DESTROY DO SUBSCRIBE EM 'recipe-list'
+
+quando 
+
+TROCARMOS DE COMPONENT...
+
+
+
+
+
+
+
+MAS EU JÁ HAVIA FEITO ISSO, FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+import { Component, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { RecipeBookService } from 'src/app/recipeBook.service';
+
+import { Recipe } from '../recipe.model';
+
+@Component({
+  selector: 'app-recipe-list',
+  templateUrl: './recipe-list.component.html',
+  styleUrls: ['./recipe-list.component.css'],
+})
+export class RecipeListComponent implements OnInit, OnDestroy {
+
+
+  // @Output() listItemDetail = new EventEmitter<Recipe>();
+
+  // recipes: Recipe[] = [
+  //   new Recipe(
+  //     'Chicken Wings',
+  //     'Delicious chicken wings',
+  //     'https://www.farmfor.com.br/wp-content/uploads/2022/02/coxinha-da-asa-superbowl.jpg'
+  //   ),
+  //   new Recipe(
+  //     'Pork Chops',
+  //     'Tasty pork chops, check them out',
+  //     'http://t2.gstatic.com/licensed-image?q=tbn:ANd9GcQsRbNYL4S-Noacb27Vi-sbWzURFRjW9YN8VOScbiJ0DxTAiGxTyqlNdG1TWHKN1xWqOV4UhHaFef-fBD8-PGo'
+  //   ),
+  //   new Recipe(
+  //     'Caesar Salad',
+  //     'Fresh and healthy salad',
+  //     'https://www.confeiteiradesucesso.com/wp-content/uploads/2019/06/ceasarsalad-fb.jpg'
+  //   ),
+  // ];]
+
+  recipesChangedSubscription: Subscription;
+
+
+
+  recipes: Recipe[] = [];
+
+  constructor(private recipeBookService: RecipeBookService, private router: Router) {
+
+
+
+  }
+
+  ngOnInit(): void {
+    // this.recipes = this.recipeBookService.recipes;
+    this.recipes = this.recipeBookService.getRecipes();
+
+
+
+
+
+   this.recipesChangedSubscription = this.recipeBookService.recipeItemsChanged.subscribe(
+      (recipes) => {
+          this.recipes = recipes;
+      }
+    )
+  }
+
+  // onRecipeItemClick(index: number) {
+  //   console.log('TEST');
+  //   // console.log(index)
+
+
+  //   this.recipeBookService.recipeItemClicked(index);
+
+        
+  //   // this.listItemDetail.emit(selectedRecipe);
+  // }
+
+
+
+
+
+
+
+
+
+
+  onNewRecipe() {
+      this.router.navigate(['/recipe-book', 'new']);
+
+
+      ///sintaxe alternativa: this.router.navigate(['new'], {relativeTo: this.route})  ///usa um 'relative path' em vez de um absolute.... 
+  }
+
+
+  ngOnDestroy(): void {
+    
+
+    this.recipesChangedSubscription.unsubscribe();
+  }
+
+}
+
+
+
+
+
+
+------------------
+
+
+
+
+
+
+
+
+
+
+com todos esses bug fixes adicionados, nosso app deve funcionar de forma melhorada..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS ADICIONAR NOVOS INGREDIENTS,
+
+
+
+
+NOVOS INPUT FIELDS,
+
+
+etc etc...
+
+
+
+
+
+
+
+--> já usamos um monte de ferramentas que podemos usar nos nossos próprios apps,
+
+para oferecer uma ótima USER EXPERIENCE...
+
+
+
+
+
+
+
+
+
+---> devemos avançar À próxima course section...

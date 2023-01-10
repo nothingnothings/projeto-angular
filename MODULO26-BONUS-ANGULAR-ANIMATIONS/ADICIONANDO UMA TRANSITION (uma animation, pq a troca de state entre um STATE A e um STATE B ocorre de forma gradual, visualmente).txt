@@ -1,0 +1,952 @@
+
+
+
+
+
+
+
+
+
+CERTO, JÁ SOMOS CAPAZES DE FAZER 'HARD SWITCH'
+
+
+ENTRE 2 
+STATES,
+
+
+
+
+
+por meio destes códigos aqui:
+
+
+
+
+
+
+
+
+
+
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  animations: [
+    trigger('divStateExample', [
+      state('normal', style({ /////queremos que o value desse 'starting state' SEJA IGUAL ao value do state ('normal', nesse caso) que temos ali embaixo, o starting state...
+
+        'background-color': 'red',
+        'transform': 'translateX(0px) '
+
+      })), 
+      state('highlighted', style({
+
+        'background-color': 'blue',
+        'transform': 'translateX(200px)'
+
+
+
+      })),
+    ]),
+  ],
+})
+export class AppComponent {
+  animationState = 'normal'; ////vamos USAR ESSA PROPRIEDADE COMO 'CONDITION' para dar PLAY EM DIFERENTES ANIMATIONS, por meio do bind do nosso trigger de 'divStateExample' a essa propriedade....
+
+  items: string[] = ['Milk', 'Sugar', 'Bread'];
+
+  constructor() {}
+
+  onDeleteItem(item: string) {
+    console.log(item);
+  }
+
+  onAddItem(item: string) {
+    this.items.push(item);
+  }
+
+
+  
+
+
+  animateBox() {
+
+
+
+    switch(this.animationState) {
+
+      case 'normal':
+        this.animationState = 'highlighted';
+        break;
+      case 'highlighted':
+        this.animationState = 'normal';
+        break;
+
+    }
+
+
+}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+E 
+
+
+
+
+ESTE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <h1>Animations</h1>
+      <button class="btn btn-primary" (click)="animateBox()">Animate!</button>
+      <button class="btn btn-primary">Shrink!</button>
+      <hr />
+
+
+
+       <!-- ESSE É O ELEMENTO QUE SOFRERÁ AS 'ANIMATIONS'. OBS: o trigger sempre é colocado/posicionado em algum elemento, usando essa notation de [@nomeDoTrigger]   -->
+      <!-- QUEREMOS QUE ESSE TRIGGER DE 'divStateExample' FIQUE _ VINCULADO_  à PROPRIEDADE DE 'state' DE NOSSO COMPONENT.....--> 
+      <div [@divStateExample]="animationState"
+        style="width: 100px; height: 100px"
+      
+      
+      
+      ></div> 
+    </div>
+  </div>
+<hr />
+<div class="row">
+  <div class="col-xs-12">
+    <input type="text" #input >
+    <button class="btn btn-primary" (click)="onAddItem(input.value)">
+      Add Item!
+    </button>
+    <hr />
+    <ul class="list-group">
+      <li
+        class="list-group-item"
+        (click)="onDeleteItem(item)"
+        *ngFor="let item of items"
+      >
+        {{ item }}
+      </li>
+    </ul>
+  </div>
+</div>
+<hr />
+<div class="row">
+  <div class="col-xs-12">
+    <ul class="list-group">
+      <li
+        class="list-group-item"
+        (click)="onDeleteItem(item)"
+        *ngFor="let item of items"
+      >
+        {{ item }}
+      </li>
+    </ul>
+  </div>
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO, CONSEGUIMOS FAZER ESSE 'HARD SWITCH' 
+
+ENTRE OS 2
+,
+
+
+
+
+MAS 
+
+__ AINDA__ NÃO 
+
+
+
+
+TEMOS UM CÓDIGO/SINTAXE QUE 
+
+IMPLEMENTE UM 
+
+
+'SWITCH GRADUAL',
+
+
+
+
+QUE IMPLEMENTE UMA ANIMAÇÃO DE 'FADE-IN/FADE-OUT' OU ALGO ASSIM,
+
+
+
+
+
+que é JUSTAMENTE O PROPÓSITO DO PACKAGE DE 'angular/animations'...
+
+
+
+
+
+
+
+
+
+
+
+
+----> PARA ANIMAR ALGUMA COISA, UMA TROCA DE 'STYLES' NO ANGULAR,  FEITA __SOMENTE___ 
+
+
+
+
+ATRAVÉS _ DE 
+
+CÓDIGOS COMO 
+
+
+'''
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  animations: [
+    trigger('divStateExample', [
+      state('normal', style({ /////queremos que o value desse 'starting state' SEJA IGUAL ao value do state ('normal', nesse caso) que temos ali embaixo, o starting state...
+
+        'background-color': 'red',
+        'transform': 'translateX(0px) '
+
+      })), 
+      state('highlighted', style({
+
+        'background-color': 'blue',
+        'transform': 'translateX(200px)'
+
+
+
+      })),
+    ]),
+  ],
+})
+
+
+
+'''',
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PARA _ CONSEGUIR __ ANIMAR __ ESSE 'SWITCH DE STYLES' definido nesse 'trigger',
+
+
+
+
+DEVEMOS __ ESCREVER __ 
+
+COISAS DENTRO DESSE 
+
+
+
+
+'animation trigger'..
+
+
+
+
+
+
+----> DENTRO DESSE TRIGGER,
+
+NO MESMO NÍVEL 
+
+
+
+DO method de 'state()',
+
+
+
+
+O PROFESSOR QUER 
+
+
+QUE 
+
+
+ESCREVAMOS 
+
+
+
+um method chamado de 'transition()'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ESSE METHOD __ TAMBÉM PRECISA SER IMPORTADO LÁ 
+
+
+DO ANGULAR/CORE....
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  animations: [
+    trigger('divStateExample', [
+      state('normal', style({ /////queremos que o value desse 'starting state' SEJA IGUAL ao value do state ('normal', nesse caso) que temos ali embaixo, o starting state...
+
+        'background-color': 'red',
+        'transform': 'translateX(0px) '
+
+      })), 
+      state('highlighted', style({
+
+        'background-color': 'blue',
+        'transform': 'translateX(200px)'
+      })),
+
+      transition()
+    ]),
+  ],
+})
+
+
+
+
+
+
+
+------------------------------
+
+
+
+
+
+
+
+
+OK.... MAS A QUESTÃO É QUE 
+
+
+'transition' é um METHOD _ SUPER INTUITIVO...
+
+
+
+
+
+
+
+
+
+
+
+--> ELE NOS DEIXA 'DESCREVER COMO A TRANSITION DE UM STATE PARA OUTRO DEVE SE PARECER''...
+
+
+
+
+
+
+
+
+
+
+
+
+------> OU SEJA,
+
+
+DESCREVE-SE 'COMO DEVE SER ANIMADA ESSA TRANSITION'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> COMO PRIMEIRO PARÂMETRO, 
+
+
+o 
+
+'transition()'
+
+
+vai 
+
+EXPECT 
+
+
+
+
+
+O STARTING VALUE do state do seu component...
+
+
+
+
+
+
+
+
+
+
+
+
+--> no caso, escrevemos 'normal'... 
+
+
+
+
+
+
+
+
+--> depois de escrever 'normal',
+
+o professor escreve uma 
+
+
+SETA (=>),
+
+
+
+
+E DEPOIS 
+
+
+
+COLOCA 'highlighted'...
+
+
+
+
+
+
+
+
+
+
+--> isso quer dizer que o código vai ficando assim:
+
+
+
+
+
+
+
+
+transition('normal => highlighted')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, MAS É CLARO QUE _ SÓ ISSO NÃO BASTA...
+
+
+
+
+
+
+
+
+
+
+--> NO SEGUNDO ARGUMENTO DE 'transition()',
+
+
+NÓS ESPECIFICAMOS 
+
+
+''''' O QUE DEVE SER FEITO''''...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------> PARA ESPECIFICAR ' O QUE DEVE SER FEITO',
+
+
+
+
+O PROFESSOR APONTA QUE É NECESSÁRIO IMPORTAR O METHOD DE 
+
+
+'animate()',
+
+
+QUE É OUTRO METHOD QUE DEVE SER IMPORTADO LÁ DE ANGULAR/ANIMATIONS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      transition( ///////É UM METHOD SUPER INTUITIVO --> --> ELE NOS DEIXA 'DESCREVER COMO A TRANSITION DE UM STATE PARA OUTRO DEVE SE PARECER/acontecer''...
+      
+      'normal => highlighted',  ////com isso, especificamos que 'A TROCA DE VALUE DE NORMAL PARA HIGHLIGHTED DEVE....'
+
+     
+      animate(
+        
+      )
+      )  
+    ]),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COM ISSO, PARA A TRANSIÇÃO ENTRE ESSES 2 'STATES',
+
+
+definimos que é esse estilo de animation que deve 
+
+ser seguido...
+
+
+
+
+
+
+
+
+
+------> A COISA MAIS SIMPLES QUE VOCÊ PODE ESPECIFICAR NESSE 'animate()'
+
+
+
+É _ UM NÚMERO EM MILISSEGUNDOS, QUE VAI ESPECIFICAR 'QUANTO TEMPO 
+
+
+ESSA TRANSITION DEVERÁ LEVAR PARA CONCLUIR'...
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  animations: [
+    trigger('divStateExample', [
+      state('normal', style({ /////queremos que o value desse 'starting state' SEJA IGUAL ao value do state ('normal', nesse caso) que temos ali embaixo, o starting state...
+
+        'background-color': 'red',
+        'transform': 'translateX(0px) '
+
+      })), 
+      state('highlighted', style({
+
+        'background-color': 'blue',
+        'transform': 'translateX(200px)'
+      })),
+
+      transition( ///////É UM METHOD SUPER INTUITIVO --> --> ELE NOS DEIXA 'DESCREVER COMO A TRANSITION DE UM STATE PARA OUTRO DEVE SE PARECER/acontecer''...
+      
+      'normal => highlighted',  ////com isso, especificamos que 'A TROCA DE VALUE DE NORMAL PARA HIGHLIGHTED DEVE....'
+
+     
+      animate( /////a coisa mais simples que você pode fazer é passar um NÚMERO, que será o NÚMERO DE ms até que essa transition ACABE..
+
+      300
+      )
+      )  
+    ]),
+  ],
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------> 
+
+
+
+
+MAS O PROFESSOR ADMITE QUE TAMBÉM EXISTEM ALGUNS USE-CASES MAIS AVANÇADOS,
+
+
+
+COMO POR EXEMPLO 
+
+
+UNS CASES EM QUE TAMBÉM PODEMOS TER 
+
+ALGUNS 
+
+'IN-BETWEEN STYLES'
+
+
+
+DURANTE A ANIMATION EM QUESTÃO..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... MAS A TRANSITION ENTRE ESSES STATES __ JÁ FUNCIONOU...
+
+
+
+
+
+
+
+
+
+o nosso cubo muda de vermelho para azul, também se move para a direita,
+
+
+tudo gradualmente...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O PROFESSOR QUER FAZER A MESMA COISA 
+
+COM O SENTIDO INVERSO, POR ISSO ELE COPIA O CÓDIGO 
+
+
+
+E INVERTE O SENTIDO, TAMBÉM MUDA A VELOCIDADE..
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  animations: [
+    trigger('divStateExample', [
+      state('normal', style({ /////queremos que o value desse 'starting state' SEJA IGUAL ao value do state ('normal', nesse caso) que temos ali embaixo, o starting state...
+
+        'background-color': 'red',
+        'transform': 'translateX(0px) '
+
+      })), 
+      state('highlighted', style({
+
+        'background-color': 'blue',
+        'transform': 'translateX(200px)'
+      })),
+
+      transition( ///////É UM METHOD SUPER INTUITIVO --> --> ELE NOS DEIXA 'DESCREVER COMO A TRANSITION DE UM STATE PARA OUTRO DEVE SE PARECER/acontecer''...
+      
+      'normal => highlighted',  ////com isso, especificamos que 'A TROCA DE VALUE DE NORMAL PARA HIGHLIGHTED DEVE....'
+
+     
+      animate( /////a coisa mais simples que você pode fazer é passar um NÚMERO, que será o NÚMERO DE ms até que essa transition ACABE..
+
+      300
+      )
+      ),
+
+      transition(
+      'highlighted => normal',
+      animate(
+      100
+      )
+      ) 
+    ]),
+  ],
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, ASSIM VIMOS NOSSA PRIMEIRA ANIMATION, TUDO USANDO O ANGULAR2 ANIMATION FRAMEWORK/HELPER,
+
+
+
+
+
+
+
+
+E NO FINAL USAMOS:
+
+
+
+
+
+
+
+1) TRIGGER 
+
+
+
+2) STATE 
+
+
+
+
+3) STYLE 
+
+
+
+4) TRANSITION 
+
+
+
+5) ANIMATE 
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA DEVEMOS ESTUDAR ISSO UM POUCO MAIS A FUNDO,
+
+
+
+ENTENDER 'COMO PODEMOS FAZER FINETUNE DESSE CÓDIGO, PARA SATISFAZER NOSSAS NECESSIDADES'....
+
+
+
+
+
+
+

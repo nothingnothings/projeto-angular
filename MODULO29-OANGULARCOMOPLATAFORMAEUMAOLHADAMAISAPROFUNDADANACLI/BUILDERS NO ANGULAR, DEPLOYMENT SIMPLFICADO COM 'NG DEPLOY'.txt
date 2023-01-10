@@ -1,0 +1,856 @@
+
+
+
+
+
+
+NÓS EXPLORAMOS SCHEMATICS,
+
+
+
+
+QUE SÃO MT IMPORTANTES (usamos para criar COMPONENTS A PARTIR DE TPPs e etc),
+
+
+
+
+
+
+e vimos 
+
+
+
+as 3 schematics ESSENCIAIS DO ANGULAR,
+
+as built-in,
+
+que são:
+
+
+
+
+
+
+
+
+
+
+1) ADD 
+
+
+
+2) GENERATE (pode ser modificado por packages adicionadas por add, que adicionam NOVOS SCHEMATICS) 
+
+
+ex:
+
+ng generate @angular/material:nav 
+
+
+
+
+
+3) UPDATE 
+
+
+
+(updata seu project)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS AGORA VEREMOS 'BUILDERS'..
+
+
+
+
+
+
+
+
+----> o que são 'builders?'' 
+
+
+
+
+
+
+
+
+
+
+---> SCHEMATICS ---> SÃO AS COISAS QUE VOCÊ RODA PARA _ 
+
+
+ADICIONAR ALGO AO SEU PROJECT,
+
+
+SEJA ISSO UMA THIRD PARTY LIBRARY (com 'add'),
+
+
+
+
+
+
+ou UM NOVO COMPONENT (com generate),
+
+
+
+
+
+
+
+
+ou até mesmo com 'update'... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, MAS 
+
+
+COM 'BUILDERS'
+
+
+VOCÊ PODE BUILD O SEU APP __ PARA DIFERENTES ENVIRONMENTS...
+
+
+
+
+
+
+
+
+
+
+
+
+--> HÁ ALGUNS BUILT-IN BUILDERS,
+
+
+COMO 
+
+
+
+'ng build'
+ 
+
+
+ 'ng test' 
+
+
+ 'ng lint'...
+
+
+
+
+
+
+
+
+
+
+
+
+---> ESSES 3 ACABAM:
+
+
+
+
+1) EXECUTANDO SEU CÓDIGO 
+
+
+
+
+2) COMPILANDO 
+
+
+
+3) TESTANDO SEU CÓDIGO..
+
+
+
+
+
+
+
+
+
+
+
+
+eles OPTIMIZAM SEU CÓDIGO PARA PRODUCTION, RODAM TESTS NELE,
+
+
+
+OU ENTÃO 
+
+SIMPLESMENTE TE DIZEM 
+QUÃO 
+BOA É SUA BUILD QUALITY...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-->  HÁ MAIS UM BUILDER, NO CASO,
+
+QUE É 
+
+
+
+
+
+'ng deploy'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+NG DEPLOY -----> ESSE CÓDIGO VAI:
+
+
+
+1) BUILD SEU CÓDIGO PARA PRODUCTION 
+
+
+
+
+
+
+
+
+2) MAS TAMBÉM VAI 'GO AHEAD' E DEPLOY SEU 
+
+
+APP _ EM __ 1 CERTO HOST... --> É CLARO QUE, NO CASO,
+
+
+APENAS ALGUNS 
+
+
+
+HOSTS SÃO SUPORTADOS (suporte limitado, similar À situação de 'ng add')...
+
+
+
+
+
+
+
+
+--> PARA CONSEGUIR DEPLOYAR DE VERDADE SEU APP COm 'deploy',
+
+
+
+É NECESSÁRIO TER UMA __ THIRD PARTY PACAKGE OU TOOL 
+
+
+
+QUE SUPORTE 'NG DEPLOY',
+
+  
+
+
+
+
+
+
+  PARA QUE VOCÊ CONSIGA DEPLOYAR A ALGUM HOST...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> certo, esses são os 
+
+
+
+
+
+
+  'AUTOMATION COMMANDS'
+
+
+  que ficam disponíveis a nós...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> VOCÊ PODE __ CUSTOMIZAR__ 
+
+
+  esses commands,
+
+
+
+  tanto por meio DO WRITE __ DE SEU PRÓPRIO BUILDER /deployment builder (algo berm avançado),
+
+
+
+
+
+
+
+
+
+
+  ou ENTAÕ 
+
+
+
+
+  POR MEIO 
+
+  DO ADJUST DA CONFIGURATION DESSES BUILDERS,
+
+
+
+  AJUSTE DE CADA UM DELES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> temos os docs do angular...
+
+
+
+
+
+
+
+  --> lá 
+  vemos que em 'deployment' 
+
+  APRENDEMOS MAIS SOBRE DEPLOYMENT E 'ng deploy'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OS DOCS NOS MOSTRAM OS DEPLOYMENT SERVICES/PACKAGES QUE 
+
+
+
+
+SUPORTAM O DEPLOY DIRETO,
+
+
+
+que são:
+
+
+
+
+
+
+1) firebase hosting 
+
+
+
+
+
+
+2) azure 
+
+
+
+3) now 
+
+
+
+4) netlify 
+
+
+
+
+5) github pages 
+
+
+
+
+
+
+6) npm ....
+
+
+
+
+
+
+
+
+
+
+
+
+ISTO É INTERESSANTE:
+
+
+
+
+
+
+
+https://github.com/angular-schule/angular-cli-ghpages
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE ALGUNS DESSES BUILDERS PODEM SER CUSTOMIZADOS,
+
+
+
+ATRAVÉS DO ARQUIVO DE 'angular.json'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AO LONGO DO CURSO JÁ 
+
+
+
+
+
+demos uma olhada em 'ng build' e 'ng test',
+
+
+
+
+
+'ng lint'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E O PROFESSOR JÁ FALOU SOBRE ESSE CONFIG,
+
+
+
+POR ISSO VAMOS FALAR SOBRE O NG DEPLOY AGORA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SE VOCÊ PLANEJA USAR ALGUM DAQUELES SERVICES CITADOS ACIMA PARA DEPLOYMENT,
+
+
+
+VOCÊ SIMPLESMENTE USA O 'ng deploy',
+
+
+
+ajustado adequadamente...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-. AQUI, NESSE EXEMPLO,
+
+
+
+
+o professor vai querer usar 
+
+
+
+'@angular/fire',
+
+
+
+
+
+
+
+
+que no final das contas 
+
+
+
+USA __ O FIREBASE, UNDER THE HOOD...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+já o github pages é acessado com 
+
+
+
+
+'angular-cli-ghpages'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ANGULAR FIRE É UM PACKAGE QUE DEIXA O TRABALHO COM FIREBASE BEM MAIS FÁCIL,
+
+
+
+NÃO SÓ QUANTO AO DEPLOYMENT,
+
+
+
+MAS TAMBÉM QUANDO 
+
+
+
+
+
+O ASSUNTO É 'INTERACT COM DATABASES' E ASSIM POR DIANTE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... MAS NÃO USAMOS ISSO AO LONGO DO CURSO,
+
+
+
+
+SÓ USAMOS O FIREBASE COMO UM DUMMY BACKEND...
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... --> PARA CONSEGUIRMOS FAZER DEPLOY NO 'ANGULAR FIRE',
+
+
+
+PRECISAMOS 
+
+
+RODAR 
+
+
+
+
+'ng add @angular/fire'...,
+
+
+
+
+
+PARA ADICIONAR 
+
+
+
+ESSA 'PACKAGE' AO NOSSO 
+
+
+
+
+
+
+
+
+PROJECT... --> APENAS DEPOIS DISSO 
+
+
+
+
+O COMANDO DE 'DEPLOY'
+
+VAI SUPORTAR O ANGULAR FIRE..
+
+
+
+
+
+
+
+
+
+
+
+--> ok, vamos rodar o add do angular fire...- ----> ISSO FARÁ 
+
+
+
+
+MAIS DO QUE O SIMPLES INSTALL DO PACKAGE,
+
+
+PQ 
+
+
+SERÃO 
+
+FEITOS QUAISQUER 
+
+
+AJUSTES NECESSÁRIOS (nos arquivos de nosso project),
+
+
+
+
+e também serão instaladas todas as dependencies necessárias...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> QUANDO VOCÊ INSTALA essa package, ele te pede pelo CHOOSE DE UM FIREBASE PROJECT..
+
+
+
+
+
+
+
+
+
+
+
+
+--> NÓS PROVAVELMENTE JÁ TEREMOS UM PROJECT PRONTo...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... AGORA BASTA RODAR 'ng deploy' 
+
+
+
+
+
+PARA QUE 
+
+
+
+O ANGULAR FIRE SEJA SELECIONADO COMO DEPLOYMENT OPTION...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> é realmente MUITO SIMPLES...
+
+
+
+
+
+
+
+
+
+
+
+--> VOCÊ SEMPRE PODE REDEPLOYAR, com 'ng deploy'... (com novos arquivos, build diferente, etc)...

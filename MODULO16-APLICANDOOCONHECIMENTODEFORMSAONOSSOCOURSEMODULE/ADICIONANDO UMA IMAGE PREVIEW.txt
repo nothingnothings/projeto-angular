@@ -1,0 +1,203 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> NA ÚLTIMA AULA,
+
+
+ADICIOANMOS NOSSA PRÓPRIA RECIPE,
+
+E AÍ 
+
+
+
+
+RECONHECMEOS QUE O IAMGE PREVIEW
+
+NÃO ESTÁ FUNCIONANDO,...
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO DO PROFESSOR ESTÁ/ESTAVA ASSIM:
+
+
+
+
+
+
+<input 
+    type="text"
+    id="imagePath"
+    formControlName="imagePath"
+    class="form-control"
+    #imagePath>
+
+
+
+
+<div class="row">
+    <div class="col-xs-12">
+        <img [src]="imagePath.value" class="img-responsive">
+
+
+
+
+
+
+
+
+
+
+
+
+        --> O PROFESSOR USOU UMA LOCAL REFERENCE...
+
+
+
+
+
+
+
+
+
+        EU NÃO USEI UMA LOCAL REFERENCE,
+
+
+        USEI 
+
+
+
+
+
+
+
+
+        O VALUE DE MINHA FORM, DIRETAMENTE:
+
+
+
+
+
+
+
+
+
+
+
+
+            <div class="col-xs-12">
+          <img
+            *ngIf="recipeForm.get('imagePath')?.value"
+            [src]="recipeForm.get('imagePath')?.value"
+            class="img-responsive"
+            alt="image"
+          />
+        </div>
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      OS 2 APPROACHES FUNCIONAM,
+
+
+
+
+      o meu tira vantagem do 
+
+
+      REACTIVE APPROACH,
+
+      e o do professor 
+
+
+
+      usa um pouco do TEMPLATE-DRIVEN...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      --> O PROFESSOR NOS REVELA UM BUG:
+
+
+
+
+
+
+
+
+      O NOSSO RECIPE QUE FOI ADICIONADO, SE SEGUIRMOS ATÉ A PAGE DE 'shop-list
+      e entaõ 
+
+      VOLTARMOS,
+
+
+      TEREMOS O PERDIDO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+      --> entretanto, no meu código, não estou com esse problema, é algo só do código do professor mesmo...
+
+
+
+
+
+
+
+
+
+
+      --> AINDA ASSIM, VAMOS RESOLVER ESSE BUG NA PRÓXIMA AULA...

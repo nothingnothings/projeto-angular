@@ -1,0 +1,1039 @@
+
+
+
+
+
+
+
+
+
+
+
+
+FALAMOS MT SOBRE SERVICES NESSE MÓDULO..
+
+
+
+
+
+
+
+
+
+--> SERVICES PODEM LIMPAR NOSSO APP,
+
+
+DEIXAR O CÓDIGO MAIS LEAN, 
+
+FÁCIL DE MANTER...
+
+
+
+
+
+
+
+
+
+--> COM SERVICES, VOCÊ EVITA AQUELES CHAINS DE 
+
+'output' e 'input' 
+
+ 
+
+ EM QUE 
+
+
+ VOCÊ 
+
+ FAZ PASS DE 
+
+ EVENTS E PROPERTIES PARA 
+
+
+
+ CONSEGUIR DATA DE 1 COMPONENT 'A' PARA UM COMPONENT 'B'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> O PROFESSOR QUER NOS MOSTRAR QUANTO NÓS 
+ 'ACTUALLY SAVED'..
+
+
+
+
+
+
+
+
+
+ --> digamos que 
+
+
+
+
+
+ QUANDO CLICAMOS 
+
+
+ NO BUTTON,
+
+
+ EM 
+
+
+ 'account.component.ts',
+
+
+
+
+ AQUELE 
+
+ BUTTON DE 
+
+
+ 'onSetTo'... ---> DIGAMOS QUE, NESSE CASE AÍ,
+
+
+
+ VAMOS QUERER 
+
+
+
+
+ 'OUTPUTTAR ALGO LÁ 
+
+ NO COMPONENT 
+
+ DE 
+
+
+
+
+ ___ NewAccountComponent___ '''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ----------->>>>> NORMALMENTE,
+
+ SE QUISÉSSEMOS FAZER ISSO
+
+
+
+
+
+
+ SEM A AJUDA DE SERVICES,
+
+
+ SERÍAMOS FORÇADOS A
+ :
+
+
+
+
+
+
+
+
+ 1) EMIT UM EVENT, LÁ NO COMPONENT DE 'account.component.ts'. --> vincular a um evento de click,
+
+
+que dispararia um CUSTOM EVENT....
+
+
+
+
+
+
+
+ 2) TERÍAMOS DE FAZER 'CATCH' 
+
+ desse 
+
+
+ event, lá em 'app.component.ts'... -> E AÍ EXECUTAR UM METHOD A PARTIR DISSO,
+
+
+ PARa _ ALTERAR _A DATA LÁ EM 'app.component.ts'
+
+
+
+
+
+
+
+
+
+
+
+ 3) POR FIM, TERÍAMOS DE 'PASS THAT DATA DOWN' ,
+
+
+
+ ESSA NOVA DATA,
+
+
+ _ POR MEIO DE PROPERTY BINDING,
+
+
+
+ AO _ COMPONENT _ EM QUE QUEREMOS HANDLAR ESSA DATA (NewAccountComponent,
+  no caso)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> BEM COMPLICADO,
+
+
+  E O BUILD DESSAS CHAINS COMPLICADAS 
+
+  DE 
+
+  PROPERTY E EVENT BINDNIG 
+
+
+
+
+  __ NÃO É A MANEIRA MAIS CONVENIENTE DE ESCREVER CÓDIGO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> TUDO FICA BEM MAIS FÁCIL COM SERVICES...
+
+
+
+
+
+
+
+
+
+
+--> DIGAMOS QUE LÁ EM 
+
+'accounts.services.ts'
+
+
+
+QUEREMOS 
+
+
+
+
+
+1) PROVIDENCIAR UM  __ EVENT__ 
+
+
+
+
+2) UM EVENT __ QUE PODEREMOS __ TRIGGAR EM 1 COMPONENT,
+
+
+
+
+PARA AÍ FAZER 'LISTEN' EM 1 OUTRO... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OU SEJA,
+
+AQUI 
+
+NESSE SERVICE 
+
+
+ADICIONAREMOS UM 
+
+
+
+
+EVENTEMITTER,
+
+
+para 
+
+emitir um event de 
+
+
+'
+''
+
+
+
+  statusUpdated = new EventEmitter<>();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  '''
+
+
+
+
+
+
+
+
+  ----> SERÁ UMA PROPRIEDADE DE '
+
+  statusUpdated',
+
+
+
+
+
+  que será um EVENT EMITTER 
+
+
+
+  QUE VAI 
+
+  EMITIR UM NOVO 
+  STATUS,
+
+
+  QUE SERÁ UMA STRING...
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+
+  
+import { LoggingService } from './logging.service';
+
+
+import { Injectable } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+@Injectable()   ////VOCÊ DEVE DECLARAR 'injectable' no service se vocÊ DESEJA INJETAR OUTRO SERVICE DENTRO DELE (nesse caso, 'logging.service.ts')...
+export class AccountsService {
+  accounts = [
+    //tirados lá de 'app.component.html'...
+    {
+      name: 'Master Account',
+      status: 'active',
+    },
+
+    {
+      name: 'Test Account',
+      status: 'inactive',
+    },
+
+    {
+      name: 'Hidden Account',
+      status: 'unknown',
+    },
+  ];
+
+  addAccount(name: string, status: string) {
+    this.accounts.push({
+      name: name,
+      status: status,
+    });
+    this.loggingService.logStatusChange(status);
+    
+  }
+
+  updateStatus(updateInfo: { id: number; status: string }) {
+    this.accounts[updateInfo.id].status = updateInfo.status;
+    this.loggingService.logStatusChange(updateInfo.status)
+  }
+
+  constructor(private loggingService: LoggingService) {
+    ///é assim que fazemos _ INJECT__ DE UM SERVICE DENTRO DE OUTRO (inject de 'LoggingService' dentro de 'AccountsService')...
+  }
+
+
+  statusUpdated = new EventEmitter<string>();     ////emits the NEW STATUS, as a string...
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> O PROFESSOR EXPLICA QUE PODERÍAMOS JÁ TRIGGAR O FIRE DESSE EVENT 
+
+
+
+
+
+lá no method de 'onSetTo()',
+
+
+
+
+
+no component 'account.component.ts'..
+
+
+
+
+
+
+
+
+
+-> tipo assim:
+
+
+
+
+
+
+
+
+
+  onSetTo(status: string) {
+    this.accountsService.statusUpdated.emit(status);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OK, COM ISSO ESTAMOS FAZENDO 'EMIT' DE UM NOVO EVENT,
+
+
+
+
+  __ A PARTIR 
+
+  DE UM 
+  EVENTEMITTER QUE SETTAMOS LÁ NO 'SERVICE'...
+
+
+
+
+
+
+
+
+
+
+
+  -----> OBS::: MAIS TARDE, LÁ NA SECTION DE 'OBSERVABLES',
+
+
+APRENDEREMOS SOBRE _ OUTRO CONSTRUCT_ QUE 
+
+
+
+
+
+PODEMOS USAR __ PARA FAZER 'EMIT' DE EVENTS E 'SUBSCRIBE'... (isso em vez de usar o EVENT EMITTER)....
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS AQUI ESTAMOS EMITINDO UM EVENT,
+
+
+EMITINDO UM EVENT A PARTIR DO CÓDIGO DE 'EventEmitter'
+
+que temos lá 
+
+
+
+no service....
+
+
+
+
+
+
+
+
+
+
+--> OK, AGORA LÁ EM 
+
+'new-account.component'
+
+
+VAMOS QUERER __ FAZER_ LISTEN __ TO 
+
+A 
+
+ESSE 
+
+
+EVENT...
+
+
+
+
+
+
+
+
+
+-----> PROFESSOR DIZ QUE, COMO EXEMPLO, ELE VAI QUERER __ DISPARAR UM ALERT...
+
+
+
+
+
+
+
+
+
+
+
+
+-> VAI QUERER FAZER SHOW DE UM ALERT A PARTIR DO COMPONENT DE 'new-account.component.ts'...
+
+
+
+
+
+
+
+
+
+-> PARA ISSO, POR ENQUANTO, ELE VAI EDITAR O CONSTRUCTOR DESSE COMPONENT....
+
+
+
+
+
+
+
+
+-> DENTRO DO CONSTRUCTOR,
+
+
+o professor 
+
+acessa o service 
+de 
+
+
+'accountsService'
+
+
+
+e aí 
+
+
+
+ACESSA A PROPRIEDADE DE 'STATUSUPDATED' (que contém o EMITTER)...
+
+
+
+
+
+
+
+
+
+
+-> AO ACESSAR ESSA PROPRIEDADE, ELE TAMBÉM USA O METHOD DE 'subscribe()',
+
+
+
+
+PARA _ FAZER_ SUBSCRIBE ao eventEmitter 
+
+
+
+(
+
+
+PQ O EVENTEMITTER,
+
+NO FINAL DAS CONTAS,
+
+'KIND OF WRAPS AN OBSERVABLE'....
+
+)
+
+
+
+
+
+
+
+
+
+
+------>  PARECE QUE 
+
+
+ESSE METHOD DE SUBSCRIBE É ASSÍNCRONO,
+
+pq 
+
+
+ELE TEM UMA ARROW FUNCTION INTERNA como parâmetro... --> e essa function vai RECEBER O STATUS, COMO UMA STRING, vinda daqeule eventEmitter lá no service de 'accountsService'...
+
+
+
+
+
+
+
+
+
+Ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@Component({    /////////////COM USO DE 'SERVICES' para o transfer de data das accounts...
+  selector: 'app-new-account',
+  templateUrl: './new-account.component.html',
+  styleUrls: ['./new-account.component.css'],
+  // providers: [LoggingService]   //// 1 NECESSÁRIO PARA IMPORTAR SERVICES NO SEU COMPONENT (component de 'NewAccountComponent')....
+})
+export class NewAccountComponent implements OnInit {
+
+  @Output() accountAdded = new EventEmitter<{name: string, status: string}>();
+
+  onCreateAccount(accountName: string, accountStatus: string) {
+    this.accountsService.addAccount(accountName, accountStatus)  ////outro uso de SERVICE no nosso código...
+    
+  }
+
+
+
+  constructor(
+    private accountsService: AccountsService) {   /// 2 É ASSIM _ QUE__ USAMOS O 'dependency  injector' do ANGULAR --> é assim que usamos SERVICES, nós os INCORPORAMOS COMO PROPRIEDADES DE NOSSOS COMPONENTS...
+
+        this.accountsService.statusUpdated.subscribe(
+            (status: string) => {
+                return alert('New status:' + status)
+            }
+        )
+
+   }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OU SEJA, O CÓDIGO FICOU BEM MAIS SIMPLES, FICOU SÓ COMO ISTO:
+
+
+
+
+
+
+
+
+  constructor(
+    private accountsService: AccountsService) {   /// 2 É ASSIM _ QUE__ USAMOS O 'dependency  injector' do ANGULAR --> é assim que usamos SERVICES, nós os INCORPORAMOS COMO PROPRIEDADES DE NOSSOS COMPONENTS...
+
+        this.accountsService.statusUpdated.subscribe(
+            (status: string) => {
+                return alert('New status:' + status)
+            }
+        )
+
+   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   @Component({
+  /////////////COM USO DE 'SERVICES' para o transfer de data das accounts...
+  selector: 'app-new-account',
+  templateUrl: './new-account.component.html',
+  styleUrls: ['./new-account.component.css'],
+  // providers: [LoggingService]   //// 1 NECESSÁRIO PARA IMPORTAR SERVICES NO SEU COMPONENT (component de 'NewAccountComponent')....
+})
+export class NewAccountComponent implements OnInit {
+  @Output() accountAdded = new EventEmitter<{ name: string; status: string }>();
+
+  onCreateAccount(accountName: string, accountStatus: string) {
+    // this.accountAdded.emit(
+    //   {
+    //     name: accountName,
+    //     status: accountStatus
+    //   }
+    // );
+    // console.log('A server status changed, new status: ' + accountStatus);
+
+    // const service = new LoggingService();  /////MANEIRA ERRADA DE USAR UM 'SERVICE'... -> você NÃO DEVE CRIAR AS INSTANCES MANNUALMENTE, DIZ O PROFESSOR..
+    // service.logStatusChange(accountStatus);
+    // this.loggingService.logStatusChange(accountStatus);  ///// 3 uso de SERVICE NO NOSSO CÓDIGO... ('LoggingService')..
+    this.accountsService.addAccount(accountName, accountStatus); ////outro uso de SERVICE no nosso código...
+  }
+
+  constructor(
+    // private loggingService: LoggingService,
+    private accountsService: AccountsService  /// 2 É ASSIM _ QUE__ USAMOS O 'dependency  injector' do ANGULAR --> é assim que usamos SERVICES, nós os INCORPORAMOS COMO PROPRIEDADES DE NOSSOS COMPONENTS...
+
+  ) {
+   
+    this.accountsService.statusUpdated.subscribe((status: string) => {
+      //usado a partir do 'EventEmitter' que criamos e armazenamos na variable de 'statusUpdated', lá no service de 'accounts.service.ts' (que também é responsável pelo fire de nosso event, através desse mesmo eventEmitter)..
+      return alert('New status: ' + status);
+    });
+  }
+
+  ngOnInit(): void {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E ISSO REALMENTE FUNCIONOU:
+
+
+
+
+
+
+AGORA NÃO ESTAMOS MAIS BUILDANDO NENHUMA CHAIN DE 'PROPERTY' E 'EVENT' BINDING,
+
+
+
+
+
+
+__ FICAMOS COM 'CROSS-COMPONENT COMMUNICATION',
+
+
+mas isso 
+
+
+ATRAVÉS 
+
+DE 
+
+UM SERVICE,
+
+
+
+
+tudo por meio do EVENT EMITTER..
+
+
+
+
+
+
+
+
+
+
+
+
+--> E PODEMOS VER ISSO,
+
+
+
+
+QUE ISSO ESTÁ FUNCIONANDO,
+
+basta 
+
+
+criar QUALQUER 
+
+
+
+
+
+
+component 'account',
+
+através 
+
+
+dos button -->  ISSO NOS MOSTRA QUE 
+
+ESTAMOS FAZENDO 
+
+
+COMMUNICATION ENTRE 
+
+
+
+COMPONENTS,
+
+
+TUDO ATRAVÉS DE UM SERVICE,
+
+QUE 
+
+É 
+
+ ALGO QUE 
+
+ PODE 
+
+ TE 
+
+ SALVAR MT TEMPO.... -> 
+
+
+
+
+
+ ESSAS SÃO AS RAZÕES 
+
+
+ DE INSTANCES 
+
+
+ SEREM 
+
+ TÃO ÚTEIS,
+
+
+ E COMO PODEMOS AS UTILIZAR 
+
+
+ PARA NOSSA
+
+
+ VANTAGEM... -> ASSEGURE-SE 
+
+ DE USAR 
+
+
+ A 
+
+
+ QUANTIDADE CORRETA DE INSTASNCES...
+
+
+
+
+
+
+
+ --> E SE VOCê FIZER INJECT DE SERVICES DENTRO DE OUTROS SERVICES,
+
+
+ ASSEGURE-SE 
+
+ DE QUE 
+
+ VOCÊ 
+
+
+ ESTÁ ADICIONANDO 
+
+
+ SEUS SERVCIES 
+
+
+ NO 
+
+
+
+ LEVEL DE 'app.module.ts',
+
+
+
+ E QUE VOCÊ ESTÁ 
+
+
+
+ COLOCANDo 
+ @Injectable() 
+
+
+
+
+ nos 
+
+ services que são injetados/recebem injections..
+
+
+
+
+
+
+
+ --> AGORA TEMOS QUE VER OS ASSIGNMENTS...

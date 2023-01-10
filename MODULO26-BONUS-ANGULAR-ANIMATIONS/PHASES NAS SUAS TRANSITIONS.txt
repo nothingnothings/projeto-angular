@@ -1,0 +1,1452 @@
+
+
+
+
+
+
+NOSSO CÓDIGO, ATÉ AGORA, FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+import { style, trigger } from '@angular/animations';
+
+import { state } from '@angular/animations';
+
+import { transition } from '@angular/animations';
+
+import { animate } from '@angular/animations';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  animations: [
+    trigger('divStateExample', [
+      state(
+        'normal',
+        style({
+          'background-color': 'red',
+          transform: 'translateX(0px) ',
+        })
+      ),
+      state(
+        'highlighted',
+        style({
+          'background-color': 'blue',
+          transform: 'translateX(200px)',
+        })
+      ),
+
+      transition(
+        'normal => highlighted',
+
+        animate(300)
+      ),
+
+      transition('highlighted => normal', animate(100)),
+    ]),
+
+    trigger(
+      'wildStateExample',
+
+      [
+        state(
+          'normal',
+          style({
+            'background-color': 'green',
+            transform: 'translateX(0) scale(1)',
+          })
+        ),
+        state(
+          'highlighted',
+          style({
+            'background-color': 'blue',
+            transform: 'translateX(100px) scale(1)',
+          })
+        ),
+
+        state(
+          'shrunken',
+          style({
+            'background-color': 'red',
+
+            transform: 'translateX(0) scale(0.5)',
+          })
+        ),
+
+        transition('normal <=> highlighted', animate(300)),
+        transition('shrunken <=> *', animate(300)),
+      ]
+    ),
+  ],
+})
+export class AppComponent {
+  animationState = 'normal';
+
+  wildAnimationState = 'normal';
+
+  items: string[] = ['Milk', 'Sugar', 'Bread'];
+
+  constructor() {}
+
+  onDeleteItem(item: string) {
+    console.log(item);
+  }
+
+  onAddItem(item: string) {
+    this.items.push(item);
+  }
+
+  animateBox() {
+    switch (this.animationState) {
+      case 'normal':
+        this.animationState = 'highlighted';
+        break;
+      case 'highlighted':
+        this.animationState = 'normal';
+        break;
+    }
+
+    switch (this.wildAnimationState) {
+      case 'normal':
+        this.wildAnimationState = 'highlighted';
+        break;
+      case 'highlighted':
+        this.wildAnimationState = 'normal';
+        break;
+      case 'shrunken':
+        this.wildAnimationState = 'normal';
+    }
+  }
+
+  onShrink() {
+    this.wildAnimationState !== 'shrunken'
+      ? (this.wildAnimationState = 'shrunken')
+      : (this.wildAnimationState = 'normal');
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> se examinarmos esse código, constataremos que 
+
+
+
+até agora 
+
+
+SÓ TIVEMOS 
+
+
+
+
+
+
+
+UM 'STARTING' E 'ENDING' STATE ( 
+
+
+
+
+
+    como, por exemplo, 
+
+    'normal => highlighted' 
+    ou 
+
+    'shrunken => normal'..
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS AGORA VAMOS MEXER UM POUCO COM O METHOD DE 'animate()',
+
+
+que faz mais do que 
+
+
+'SIMPLESMENTE ESPECIFICAR A QUANTIDADE DE TEMPO QUE ESSA TRANSITION/ANIMATION DEVE TOMAR'...
+
+
+
+
+
+
+
+
+
+
+
+-----> PODEMOS FAZER MAIS DO QUE APENAS PASSAR O 'TIMING' 
+
+
+DE NOSSA ANIMATION... --> PODEMOS 
+
+
+
+CONTROLAR __ A ANIMATION TODA,
+
+
+
+E PODEMOS 
+
+
+DEFINIR STYLES
+
+
+
+
+
+QUE A ANIMATION DEVE ASSUMIR __________dURANTE__ A ANIMATION...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> PARA ISSO, 
+
+
+
+VAMOS UTILIZAR O SEGUNDO PARÂMETRO DE 
+
+
+
+'animate()',
+
+
+
+
+
+
+
+
+
+QUE NOVAMENTE SERÁ O 'style()',
+
+
+mas agora 
+
+utilizado de forma mais LOCAL..
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+VERSÃO 'SIMPLES' do animate:
+
+
+     transition('shrunken <=> *', animate(300)),
+
+
+
+
+
+
+
+VERSÃO 'COMPLEXA' do animate:
+
+
+
+
+
+
+
+
+     transition('shrunken <=> *', animate(300, style({}))),
+
+
+
+
+
+
+
+
+
+
+
+
+     EX:
+
+
+
+
+
+
+
+
+
+
+
+  transition('shrunken', animate(300, style({
+
+
+    
+  })) )
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> ESSE STYLE DEVERÁ SER APLICADO_ _ DURANTE_ _A ANIMATION...
+
+
+
+
+
+
+
+
+
+
+
+
+  --> COMO EXEMPLO, O PROFESSOR DEFINE UMA BORDERRADIUS DE 50px...
+
+
+
+
+
+
+  ex:
+
+
+
+    transition('shrunken <=> *', animate(300, style({
+
+    'border-radius': '50px'
+
+
+  })) )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ---> wow... o negócio ficou BEM BUGADO, mas legal..
+
+
+
+
+
+
+
+
+
+
+
+  -->  AS BORDAS FICARAM REDONDAS POR 1 SEGUNDO, E AÍ 
+
+
+
+
+  pulamos diretamente para o 'end state',
+  com 
+
+  o 
+
+
+  elemento já reduzido/expandido....
+
+
+
+
+
+
+
+
+
+
+  --> MAS NÃO É ISSO QUE QUEREMOS...
+
+
+
+
+
+
+
+
+
+
+
+  -> QUEREMOS:
+
+
+
+
+  1) QUE essa in-between animation toque de forma 'SMOOTH',
+
+
+
+
+
+  e que 
+
+  NÃO SEJA ANIMADO O CHANGE DO BORDER-RADIUS PARA ENTÃO PULAR DIRETAMENTE AO END STATE..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> para conseguirmos esse efeito,
+
+
+
+
+ 
+
+
+
+
+
+SOMOS FORÇADOS A __ SUBSTITUIR__ 
+
+
+
+
+ESSE METHOD DE 'animate()'
+
+
+INTEIRO....
+
+
+
+
+
+
+
+
+--> VAMOS SUBSTITUIR TODO ESSE 'animate()"
+
+
+
+
+
+
+POR UM __ ARRAY....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS PQ ESSE ARRAY?
+
+
+
+
+
+
+
+
+
+É PQ DENTRO DELE PODEREMOS __ TAMBÉM__ DEFINIR 
+
+'STARTING' 
+
+
+
+e 
+'
+IN-BETWEEN' 
+
+states 
+
+
+
+
+
+__ QUE DEVEM SER TOCADOS/EXISTIREM
+
+
+
+DURANTE ESSA TRANSITION ESPECÍFICA....
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO INTEIRO VAI FICANDO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  animations: [
+    trigger('divStateExample', [
+      state(
+        'normal',
+        style({
+          'background-color': 'red',
+          transform: 'translateX(0px) ',
+        })
+      ),
+      state(
+        'highlighted',
+        style({
+          'background-color': 'blue',
+          transform: 'translateX(200px)',
+        })
+      ),
+
+      transition(
+        'normal => highlighted',
+
+        animate(300)
+      ),
+
+      transition('highlighted => normal', animate(100)),
+    ]),
+
+    trigger(
+      'wildStateExample',
+
+      [
+        state(
+          'normal',
+          style({
+            'background-color': 'green',
+            transform: 'translateX(0) scale(1)',
+          })
+        ),
+        state(
+          'highlighted',
+          style({
+            'background-color': 'blue',
+            transform: 'translateX(100px) scale(1)',
+          })
+        ),
+
+        state(
+          'shrunken',
+          style({
+            'background-color': 'red',
+
+            transform: 'translateX(0) scale(0.5)',
+          })
+        ),
+
+        transition('normal <=> highlighted', animate(300)),
+
+        transition(
+          'shrunken <=> *',
+
+          [] ////////////EIS O CÓDIGO EM QUESTÃO.
+        ),
+      ]
+    ),
+  ],
+})
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... A PRIMEIRA COISA QUE devemos passar 
+
+
+
+é um call de 'style({})',
+
+
+
+
+
+
+EM QUE VAMOS ESPECIFICAR BEM COMO DEVERÁ SER O 'starting state'
+
+DESSA ANIMATION..
+
+
+
+
+
+
+
+
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+        transition(
+          'shrunken <=> *',
+
+          [
+
+            style({
+                'background-color': 'orange'
+            })
+
+          ] 
+        ),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    OK... O CÓDIGO FINAL FICOU BEM CONFUSO,
+
+
+
+    MAS É POSSÍVEL O COMPREENDER, COM CALMA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> primeiramente, devemos ter em mente o código relacionado ao state/value de 'shrunk', que é ESTE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+        state('shrunken', style( ///STATE C
+    {
+      'background-color': 'red',
+
+      'transform': 'translateX(0) scale(0.5)'  ///transformation mais complexazinha, queremos que o cubo diminua pela METADE..
+    }
+  )),
+
+
+
+
+
+
+
+
+
+
+
+
+
+--->COMO VOCÊ PODE VER,
+
+
+
+
+esse código dita que 
+
+
+
+
+
+QUANDO O STATE DO ELEMENTO ESTIVER COMO 'shrunken',
+
+
+
+
+a cor do elemento deve FICAR COMO VERMELHO...
+
+
+
+
+
+
+
+
+
+
+--> sim, mas esse é o INITIAL STATE...
+
+
+
+
+
+
+
+---> de acordo com a TRANSITION QUE TOCAREMOS NESSA ANIMATION, TEMOS:
+
+
+
+
+
+
+        transition(
+          'shrunken <=> *',
+
+          [
+            style({ 'background-color': 'orange' }),
+
+            animate(1000, style({ 'border-radius': '50px' })),
+
+            animate(500),
+          ]
+        ),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+        state('shrunken', style( 
+    {
+      'background-color': 'red',
+
+      'transform': 'translateX(0) scale(0.5)'  ///transformation mais complexazinha, queremos que o cubo diminua pela METADE..
+    }
+  )),
+
+
+
+
+------------------
+
+
+
+       transition(
+          'shrunken <=> *',
+
+          [
+            style({ 'background-color': 'purple' }),
+
+            animate(1000, style({ 'border-radius': '50px', 'background-color': 'orange' })),
+
+            animate(500),
+          ]
+        ),
+
+
+
+
+
+
+
+
+
+-> explicação:
+
+
+
+
+
+
+
+A) QUANDO TIVERMOS UMA MUDANÇA DO VALUE DO STATE, DE 'shrunken' PARA QUALQUER OUTRO VALUE/STRING,
+
+
+
+será TRIGGADA  ___ESSA TRANSITION...
+
+
+
+
+
+
+
+
+B) a transition é assim:
+
+
+
+
+1) O ELEMENTO DEVERÁ FICAR COMO 'PURPLE' quando começar sua animation (quando o 'shrunken' tiver sido settado/alterado)....
+
+
+
+
+
+2) se colocamos '1000' no primiero 'animate', 
+
+
+
+
+ele vai DEMORAR EXATAMENTE 1 SEGUNDO PARA __ COMPLETAR __ SUA TRANSFORMAÇÃO 
+
+DO ELEMENTO, transformar o BORDER-RADIUS DO ELEMENTO EM '50px'
+
+
+E __, AO MESMO TEMPO, CONVERTER GRADUALMENTE A COR DE 'PURPLE' EM 'ORANGE'..
+
+
+
+
+3) POR FIM, A TAREFA DE 'animate(500)'
+
+
+
+
+
+É JUSTAMENTE FAZER O QUE O 'animate(number)' normal faz, que é 
+
+'DEIXAR MAIS LENTA UMA HARD SWITCH ENTRE STATES,
+
+
+dando a impressão de animation gradual',
+
+
+
+
+por meio do número de ms que você passou a ele..
+
+
+
+
+
+-> no caso, 
+
+passamos '500ms',
+
+
+por isso 
+
+
+ele vai demorar '0.5s' para __ CONCLUIR_ A TROCA DE STATE A E STATE B de sua animation (
+
+  ou seja,
+
+  vai reduzir/expandir seu elemento gradualmente, 
+
+  AO LONGO DE '0.5s',
+
+
+  ATÉ QUE ELE FIQUE EXPANDIDO/ENCOLHIDO TOTALMENTE...
+)
+
+
+
+
+
+
+ok...
+
+
+
+
+
+
+acho que entendi... é tudo em etapas, mesmo...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  transition('shrunken <=> *', 
+
+  [ ///o array notation delimita essa 'ANIMATION INTEIRA'... (que tem 3 'PASSOS' nesse exemplo, por assim dizer; são: 1) o starting state... (é instantaneo). 2) o primeiro animate, que vai: A) por alguma razão, deixar o border-radius INSTANTANEAMENTE '50px'..., B) CONVERTER, AO LONGO DE '5s', a cor do elemento em LARANJA...
+
+    style({'background-color': 'purple'}),  ///o nosso 'starting state' na animation, dentro dessa animation, vai ter essa característica (esses styles)...
+
+
+
+    animate(5000, style({'background-color': 'orange', 'border-radius': '50px'})), 
+
+    animate(10000) /// esse código aí vai REMOVER o BORDER-RADIUS ao final da animation, pq é esse o 'END STATE' que definimos lá no 'state' de shrunken, como vocÊ pode ver mais acima...
+   
+    //o animate(500) vai REDUZIR O OBJECT (por conta do código do state de 'END' 'shrunken', mais acima) E AÍ VAI TRANSFORMAR A COR, VAI TRANSFORMAR DE 'ORANGE 'PARA 'RED' (end state)...
+      ///ver aula 'phases em suas transtions'..
+  ]
+  
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> a única coisa curiosa é que aquele 'border-radius' no PRIMEIRO 'animate' FOI IMPLEMENTADO INSTANTANEAMENTE,
+
+
+
+  ao contrário da 'color', que foi implementada aos poucos (gradualmente, respeitando a animation)...
+
+
+
+
+
+  -_> acho que isso aconteceu pq NÃO DEFINI NENHNUMA 'BORDER-RADIUS'
+
+
+
+
+  NO _ PRIMEIRO CALL DE 'style({})'...
+
+
+
+
+
+
+
+
+  _> TENTAR DAR UMA ALTERADA....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OK, 
+
+COM ISSO 
+FICAMOS COM UMA 
+
+
+ANIMATION MAIS COMPLEXA,
+
+
+
+EM QUE 
+
+
+
+CHAINAMOS MÚLTIPLOS STYLES...
+
+
+
+
+
+
+
+
+
+
+--> EMBORA TODO ESSE NESTING __ PAREÇA DIFÍCIL,,
+
+
+
+ELE REALMENTE NÃO É...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É APENAS UM 'ARRAY' ADICIOANDO A UMA 'TRANSITION',
+
+ARRAY QUE __ NOS __ PERMITE _ 
+
+
+
+
+
+
+
+DEFINIR_ DIFERENTES 'PHASES' 
+
+
+
+
+
+
+
+
+NAQUELA 'TRANSITION' ESPECÍFICA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+DETALHES:
+
+
+1) 'style({})' --> É NOSSA 'STARTING PHASE'..... SE NÃO TEMOS NENHUM METHOD DE 'animate' sendo utilizado, 
+
+
+
+
+
+O STYLE DEFINIDO DENTRO DELE __ ACABA__ APLICADO INSTANTANEAMENTE (como vimos com 'purple')...
+
+
+
+
+
+
+
+
+
+
+2) SE USAMOS 'animate(tempo, style({}))',
+
+
+
+NÓS ACABAMOS APLICANDO UM 
+
+
+STYLE AO NOSSO ELEMENTO, SIM, 
+
+
+
+MAS__ AO LONGO _DE UM CERTO TEMPO.... (que definimos)...
+
+
+
+
+
+
+
+3) E SE TEMOS 
+
+
+
+
+'animate(tempo)',
+
+
+
+
+SEM NENHUM STYLE SENDO PASSADO,
+
+
+
+
+ISSO _ ESSENCIALMENTE_ 
+
+SIGNIFICA QUE 
+
+
+ESSE 'animate()'
+
+
+
+
+VAI _ _CONSIDERAR QUE VOCÊ QUER 'COMPRAR TEMPO' 
+
+
+
+
+até que ocorra o 'END STATE' definido lá no seu 'state',
+
+
+
+no seu TRIGGER ESPECÍFICO.... (
+
+
+
+vai basicamente comunicar 'POR FAVOR, TRANSICIONE PARA O END STATE,
+
+AO LONGO DE X MILISSEGUNDOS'...
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, É ASSIM QUE PODEMOS SETTAR NOSSA ANIMATION...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E É CLARO QUE PODEMOS ADICIONAR MÚLTIPLOS 'IN-BETWEEN STYLES' na sua transition..
+
+
+
+
+
+
+
+
+
+
+-> A COISA IMPORTANTE, AQUI, 
+
+É QUE 
+
+VOCê _ TEM QUE _ ACABAR 
+
+com 
+
+'animate(500)' 
+
+
+
+
+
+
+ou qualquer outro timing que vocÊ quiser,
+
+
+PARA _ AÍ 
+
+VOCÊ 
+
+CONSEGUIR UM 
+
+'SMOOTH END STATE'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, ESSA É UMA TRANSITION MAIS COMPLEXA,
+
+COM ALGUMAS STEPS MÚLTIPLAS...
+
+
+
+
+
+
+
+
+
+-> MAS É FÁCIL, BASTA PENSAR NO QUE ESTÁ ACONTECENDO AQUI, COM ESSAS DIFERENTES 'PHASES'..

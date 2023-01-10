@@ -1,0 +1,991 @@
+
+  -> COMO DIABOS PASSO A PROPRIEDADE DE 'recipe'
+
+
+
+
+  para dentro de cada component?
+
+
+
+
+
+
+
+-> preciso de algo parecido com 'passar props'...
+
+
+
+
+
+https://medium.com/@benhickson/how-to-pass-down-props-in-angular-9-and-10-546879e68ae1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CONSEGUI FAZER FUNCIONAR... MAS O CÓDIGO É BEM ESTRANHO...
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+ISTO É 
+
+
+'recipelist':
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { Recipe } from '../recipe.model';
+
+@Component({
+  selector: 'app-recipe-list',
+  templateUrl: './recipe-list.component.html',
+  styleUrls: ['./recipe-list.component.css']
+})
+export class RecipeListComponent implements OnInit {
+
+  recipes: Recipe[] = [
+
+    new Recipe('CHICKEN WINGS', 'DUMMY', 'google.com' )
+  ];
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+E ISTO:
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <button class="btn btn-success">New Recipe</button>
+  </div>
+</div>
+  <div *ngFor="let recipe of recipes">
+    <app-recipe-item 
+    [recipeName]="recipe.name"
+    [recipeDescription]="recipe.description"
+    [recipeImagePath]="recipe.imagePath"
+    >
+    </app-recipe-item>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+JÁ EM 'recipeItem'
+
+fiquei com ISTO:
+
+
+
+
+
+<div class="row">
+    <div class="col-xs-12">
+      <a href="#" class="list-group-item" clearfix>
+        <div class="pull-left">
+          <h4 class="list-group-item-heading">{{recipeName}}</h4>
+          <p class="list-group-item-text">{{recipeDescription}}</p>
+        </div>
+        <span class="pull-right">
+          <img src="{{recipeImagePath}" alt="" class="img-responsive" style="max-height: 50px" />
+        </span>
+      </a>
+    </div>
+  </div>
+  
+
+
+
+
+
+
+
+
+
+  E ISTO:
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+
+import { Input } from '@angular/core';
+
+@Component({
+  selector: 'app-recipe-item',
+  templateUrl: './recipe-item.component.html',
+  styleUrls: ['./recipe-item.component.css']
+})
+export class RecipeItemComponent implements OnInit {
+
+
+  @Input() recipeImagePath: string = '';
+  @Input() recipeName: string = '';
+  @Input() recipeDescription: string = '';
+
+
+
+  constructor() { }
+
+
+
+
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OU SEJA, FUI OBRIGADO A USAR ESSE 
+
+
+
+IMPORT DE 
+
+'@Input()'..
+
+
+
+
+
+
+-> É ESSE INPUT AÍ,
+
+
+E ESSA SINTAXE BIZARRA, QUE FEZ O CÓDIGO FUNCIONAR....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> mas agora devo ver a aula do professor, ver qual solução ele implementou...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK...
+
+
+
+
+
+
+
+
+
+COMO ELE ESCREVE ISSO?
+
+
+
+
+
+
+
+
+
+
+
+---> ELE EXPLICOU QUE PRECISAMOS 
+
+
+
+DE 'ngFor'
+
+para 
+
+essa tarefa...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR ADICIONA 'ngFor'
+
+
+
+EM UM LOCAL MEIO BIZARRO DE NOSSO CÓDIGO, TIPO aqui:
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <button class="btn btn-success">New Recipe</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <a href="#" class="list-group-item" clearfix>
+      <div class="pull-left">
+        <h4 class="list-group-item-heading">Recipe Name</h4>
+        <p class="list-group-item-text">Description</p>
+      </div>
+      <span class="pull-right">
+          <img src="" alt="" class="img-responsive" style="max-height: 50px">
+      </span>
+    </a>
+    <app-recipe-item *ngFor="let recipe of recipes"></app-recipe-item>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OU SEJA, O CÓDIGO DELE FICOU BEM DIFERENTE DO MEU...
+
+
+
+
+eX:
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <button class="btn btn-success">New Recipe</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <a href="#" class="list-group-item"  clearfix *ngFor="recipe of recipes">
+      <div class="pull-left">
+        <h4 class="list-group-item-heading">Recipe Name</h4>
+        <p class="list-group-item-text">Description</p>
+      </div>
+      <span class="pull-right">
+          <img src="" alt="" class="img-responsive" style="max-height: 50px">
+      </span>
+    </a>
+    <app-recipe-item *ngFor="let recipe of recipes"></app-recipe-item>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+-> OU SEJA,
+
+
+ELE VAI QUERER 
+
+COLOCAR ESSE NEGÓCIO/ESSE OUTPUT DE MÚLTIPLOS 'RECIPE ITEMS'
+
+
+
+_ EM CIMA DAQUELE 'a',
+
+
+
+PQ 
+
+
+CADA 
+
+A SERÁ CONSIDERADO UMA RECIPE...
+
+
+
+
+
+
+
+
+-> OK... FAÇO UMA CÓPIA DO MEU CÓDIGO E DEIXO SEU NOME COMO 
+
+
+'recipe-list-2',
+
+
+
+
+
+
+
+PARA QUE EU POSSA USAR DE REFERÊNCIA...
+
+
+
+
+
+
+
+
+
+CERTO, FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <button class="btn btn-success">New Recipe</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <a href="#" class="list-group-item"  clearfix *ngFor="recipe of recipes">
+      <div class="pull-left">
+        <h4 class="list-group-item-heading">Recipe Name</h4>
+        <p class="list-group-item-text">Description</p>
+      </div>
+      <span class="pull-right">
+          <img src="" alt="" class="img-responsive" style="max-height: 50px">
+      </span>
+    </a>
+    <app-recipe-item *ngFor="let recipe of recipes"></app-recipe-item>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK... AÍ ESTAREMOS FAZENDO LOOP POR DENTRO DE TODAS ESSAS 'recipe'...
+
+
+
+
+
+
+
+
+
+
+
+--> OK... AGORA PODEMOS USAR 
+
+essa 
+'recipes',
+
+E USAMOS TIPO ASSIM:
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <button class="btn btn-success">New Recipe</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <a href="#" class="list-group-item"  clearfix *ngFor="recipe of recipes">
+      <div class="pull-left">
+        <h4 class="list-group-item-heading">{{recipe.name}}</h4>
+        <p class="list-group-item-text">{{recipe.description}}</p>
+      </div>
+      <span class="pull-right">
+          <img src="{{recipe.imagePath}}" alt="" class="img-responsive" style="max-height: 50px">
+      </span>
+    </a>
+    <app-recipe-item *ngFor="let recipe of recipes"></app-recipe-item>
+  </div>
+
+
+
+
+
+
+
+
+
+
+=------------------
+
+
+
+
+OK... ISSO PROVAVELMENTE FUNCIONARÁ...
+
+
+
+
+
+
+
+
+
+
+->  O CÓDIGO FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <button class="btn btn-success">New Recipe</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <a href="#" class="list-group-item" clearfix *ngFor="let recipe of recipes">
+      <div class="pull-left">
+        <h4 class="list-group-item-heading">{{recipe.name}}</h4>
+        <p class="list-group-item-text">{{recipe.description}}</p>
+      </div>
+      <span class="pull-right">
+        <img src="{{recipe.imagePath}}" alt="" class="img-responsive" style="max-height: 50px" />
+      </span>
+    </a>
+    <app-recipe-item *ngFor="let recipe of recipes"></app-recipe-item>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+OK, AÍ O PROFESSOR FALA DO ASSUNTO DA 'IMAGE'...
+
+
+
+
+
+
+
+
+--> ANTES DE MAIS NADA, PARA AQUELE 'alt' text,
+
+O PROFESSOR COLOCA UMA STRING INTERPOLATION PARA OUTPUTTAR O 'image name' dinamicamente...
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <button class="btn btn-success">New Recipe</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <a href="#" class="list-group-item" clearfix *ngFor="let recipe of recipes">
+      <div class="pull-left">
+        <h4 class="list-group-item-heading">{{recipe.name}}</h4>
+        <p class="list-group-item-text">{{recipe.description}}</p>
+      </div>
+      <span class="pull-right">
+        <img src="{{recipe.imagePath}}" alt="{{recipe.name}}" class="img-responsive" style="max-height: 50px" />
+      </span>
+    </a>
+    <app-recipe-item *ngFor="let recipe of recipes"></app-recipe-item>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> MAS QUANTO AO 'src',
+
+
+
+PODEMOS SEGUIR 2 APPROACHES DISTINTOS.. ---> PODEMOS OU:
+
+
+
+
+
+
+1) USAR STRING INTERPOLATION PARA 'OUTPUT RECIPE.IMAGEPATH'....
+
+
+
+
+
+
+
+--> E ISSO DEVERÁ FUNCIOANR FINE...
+
+
+
+
+2) COMO ALTERNATIVA,
+
+
+VOCÊ PODE SUBSTITUIR O USO DE 'ATTRIBUTE + STRING INTERPOLATION' 
+
+
+
+POR 
+
+
+
+
+
+_ UM BIND__ à PROPRIEDADE de '''src''' em si. --> SE VOCê FIZER ISSO,
+
+
+
+
+
+VOCê NÃO adiciona {{}} (CURLY BRACES),
+
+
+
+
+E SIM 
+
+
+SÓ ESCREVE 
+
+'recipe.imagePath'...
+
+(
+PQ AGORA ESTAREMOS USANDO PROPERTY BINDING,
+E NÃO STRING INTERPOLATION...
+
+
+)
+
+
+
+
+
+
+
+
+
+ESSE ITEM, PORTNATO, É UM EXEMPLO DE AMBOS:
+
+É UM EXEMPLO DE STRING INTERPOLATION 
+
+E AO MESMO TEMPO 
+
+
+'property binding'...
+
+ex:
+
+
+
+
+
+
+
+[src] = 'recipe.imagePath'....  
+
+
+
+
+
+
+
+
+-> ISSO VAI RETORNAR O QUE A PROPRIEDAD 'expects',
+
+que no caso é 
+
+UMA STRING ENTRE OS ""....
+
+
+
+
+
+
+
+EX:
+
+
+
+
+        <img [src]="recipe.imagePath" alt="{{recipe.name}}" class="img-responsive" style="max-height: 50px" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    AQUI É UM GRANDE EXEMPLO DE LOCAL EM QUE É POSSÍVEL USAR QUALQUER UMA DAS SINTAXES, OU:
+
+
+
+
+    1) STRING INTERPOLATION,
+     com o 'normal HTML ATTRIBUTE'...
+
+
+
+
+
+
+     OU 
+
+
+     2) NÃO USANDO ESSE ATTRIBUTE HTML NORMAL,
+
+     E SIM 'DIRECTLY BINDING' À SOURCE PROPERTY DA IMAGE (propriedade 'src')
+
+     e aí 
+
+     SÓ COLOCANDO UMA 'valid expression' 
+
+    como essa property 'source' espera, tudo dentro desse ""....
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ---> OK... -> O PROFESSOR VAI COM O APPROACH DO PROPERTY BINDING,
+
+
+
+  mas ele quer que tenhamos em mente que AMBOS OS APPROACHES FUNCIONARIAM...
+
+
+
+
+
+
+
+
+
+  -> AÍ DEVEMOS VER ISSO NO NOSSO CÓDIGO, VER SE ISSO REALMENTE FUNCIONOU....
+
+
+
+
+
+  --> mas a image que pickamos 'does not support deep linking'...
+
+
+
+
+
+
+
+
+
+  --> BEM, MEU CÓDIGO ESTÁ FUNCIONANDO, MAS OS STYLES ESTÃO BEM QUEBRADOS...
+
+
+
+
+
+
+
+
+  TENHHO QUE VER O QUE DEU ERRADO..
+
+
+
+
+
+
+
+  cnosertei um pouco do styling...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  O CÓDIGO FICOU TIPO ASSIM:
+
+
+
+
+  <div class="row">
+  <div class="col-xs-12">
+    <button class="btn btn-success">New Recipe</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <a href="#" 
+    class="list-group-item clearfix" 
+    *ngFor="let recipe of recipes">
+      <div class="pull-left">
+        <h4 class="list-group-item-heading">{{ recipe.name }}</h4>
+        <p class="list-group-item-text">{{ recipe.description }}</p>
+      </div>
+      <span class="pull-right">
+        <!-- <img src="{{recipe.imagePath}}" alt="{{recipe.name}}" class="img-responsive" style="max-height: 50px" /> -->
+        <img
+          [src]="recipe.imagePath"
+          alt="{{ recipe.name }}"
+          class="img-responsive"
+          style="max-height: 50px;"
+        >
+      </span>
+    </a>
+    <!-- <app-recipe-item *ngFor="let recipe of recipes"></app-recipe-item> -->´
+    <app-recipe-item></app-recipe-item>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> agora o component 'recipe List' ESTÁ MELHORANDO...
+
+
+
+
+
+
+
+
+
+
+
+
+MAS O PROFESSOR NÃO QUER QUE O BUTTON DE 'recipe' 
+
+
+
+
+FIQUE DIRETAMENTE ACIMA 
+
+
+DA NOSSA LIST,
+
+POR ISSO ELE ADICIONA UMA HR, para colocar um espaço..
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... CONSEGUI ESSA SEPARAÇÃO...
+
+
+
+
+
+
+
+
+ESSA É A LIST... --> E SE ADICIONARMOS MAIS 
+
+
+ITEMS NA NOSSA LIST,
+
+VEREMOS QUE 
+OS 
+
+
+RECIPES VÃO SENDO ADICIOANDOS.. -> ok, isso está funcionando.. --> AGORA DEVEMOS TRABALHAR NA ACTION DE 'DETAILS'...

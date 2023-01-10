@@ -1,0 +1,28 @@
+<div class="row">
+  <div class="col-xs-10">
+    <div  [@appEdit]>
+    <app-shop-list-edit 
+
+    
+    ></app-shop-list-edit>
+  </div>
+    <hr />
+    <ul class="list-group">
+
+      <!-- ESSE É O APPROACH QUE FUNCIONA, TEORICAMENTE.... e sim, precisamos dessa wrapping div.-->
+      <div  
+      [@shopListItem]
+      (@shopListItem.start)="animationStarted($event)"
+      (@shopListItem.done)="animationEnded($event)"
+      *ngFor="let ingredient of (ingredients | async)?.ingredients; let index=index"
+      >
+      <app-shopping-list-item  
+      [name]="ingredient.ingredient"
+      [amount]="ingredient.amount"
+      (click)="onShopListItemClick(index)"
+      ></app-shopping-list-item>
+    </div>
+
+    </ul>
+  </div>
+</div>

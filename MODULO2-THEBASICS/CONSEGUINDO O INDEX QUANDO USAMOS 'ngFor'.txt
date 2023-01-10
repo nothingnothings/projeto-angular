@@ -1,0 +1,622 @@
+
+
+
+
+
+
+
+
+
+
+--> NO ÚLTIMO ASSIGNMENT,
+
+
+
+CRIAMOS ESTA SOLUÇÃO AQUI:
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-training-component',
+  templateUrl: './training-component.component.html',
+  // styleUrls: ['./training-component.component.css'],
+  styles: [
+    `
+    .whiteColor {
+          color: white;
+    }
+    
+    `
+  ]
+})
+export class TrainingComponentComponent implements OnInit {
+  showParagraph = false;
+  buttonClicks: number[] = [];
+
+
+
+  constructor() {
+   
+  }
+
+  ngOnInit(): void {}
+
+  onButtonClick(event: Event) {
+    this.showParagraph = !this.showParagraph;
+    console.log(event);
+    this.buttonClicks.push(event.timeStamp);
+  }
+
+
+  getColor() {
+
+    console.log(this.buttonClicks)
+    return;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+E ESTA AQUI:
+
+
+
+
+
+
+<hr>
+
+    <button class="btn btn-primary" (click)="onButtonClick($event)">
+      {{ !showParagraph ? "Show" : "Hide" }} Details
+    </button>
+    <hr>
+    <p *ngIf="showParagraph === true">Secret Password: 'Busted'</p>
+    <ul
+      [ngStyle]="{
+        listStyle: 'none'
+      }"
+    >
+      <li
+        *ngFor="let timestamp of buttonClicks"
+        [ngStyle]="{
+          backgroundColor:
+            buttonClicks.indexOf(timestamp) >= 5 ? 'blue' : 'transparent'
+        }"
+        [ngClass]="{
+          whiteColor: buttonClicks.indexOf(timestamp) >= 5
+        }"
+      >
+        <p>Timestamp: {{ timestamp }}</p>
+      </li>
+    </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -----> ok...
+
+
+
+
+
+
+
+
+    --> ESSE BUTTON VAI ADICIONANDO NUMBERS 
+
+    E AÍ 
+
+
+
+    VAI 
+
+
+
+ACRESCENTAR O STYLE DE 'background blue, letter color white',
+
+
+
+
+QUANDO 
+
+
+
+TIVERMOS UM INDEX EM UM ELEMENTO QUE SEJA 
+IGUAL OU MAIOR DO QUE 
+
+
+
+5.... 
+
+
+
+
+
+
+
+
+
+
+
+
+--> NÓS USAMOS 
+
+UM 
+
+'timestamp'
+
+COMO CONTENT,
+
+
+
+MAS PODERIA SER QUALQUER OUTRO CONTEÚDo... (como ''NUMERADOR'' de nosso negócio)..
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, O PROFESSOR 
+
+
+
+
+
+
+EM VEZ DE USAR 
+
+
+'
+
+
+'event.timeStamp',
+
+
+
+
+DECIDIU 
+
+USAR 
+
+O
+ 
+
+
+
+
+
+
+ CONSTRUCTOR DE 'new Date()',
+
+ que 
+
+ VAI CONSTRUIR UM NOVO 
+
+ '
+ timestamp'...
+
+
+
+
+
+
+
+
+
+
+ -----> MAS É CLARO QUE 
+
+
+ ISSO VAI 
+
+
+
+ QUEBRAR A LÓGICA DO CÓDIGO DO PROFESSOR,
+
+ PQ UMA STRING 
+
+ SEMPRE SERÁ CONSIDERADA 'maior do que 5.'..
+
+
+
+
+
+
+
+ -> a minha solução foi usar 
+
+
+
+ 'indexOf'...
+
+
+
+
+
+
+
+
+
+ -> MAS AGORA O PROFESSOR NOS PROPÕE UMA SOLUÇÃO ALTERNATIVA..
+
+
+
+
+
+
+
+
+
+
+
+ ---> lá NO nosso  template (html),
+
+
+
+ LÁ EM 
+
+
+
+ 'ngFor',
+
+
+
+ se você escrever uma sintaxe ESPECIAL, vocÊ pode OBTER O 
+
+
+ 'CURRENT INDEX' 
+
+
+
+DA 'CURRENT ITERATION' desse array....
+
+
+
+
+
+
+
+
+
+--> a escrita originalmente estava assim:
+
+
+
+
+
+
+
+<div 
+
+*ngFor="let logItem of log;  "
+
+
+
+
+
+
+
+
+
+
+----> AGORA, O PROFESSOR DIZ QUE PODEMOS ADICIONAR um segundO 
+
+'let',
+
+
+
+
+E AÍ __ USAR_ QUALQUER VARIABLE NAME DE NOSSA ESCOLHA... --> 
+
+
+
+
+O PROFESSOR VAI USAR O VARIABLE NAME DE 
+
+'i' (para index),
+
+
+E AÍ 
+
+DEFINIR ISSO COMO SENDO EQUIVALENTE A 'index'...
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+<div 
+
+*ngFor="let logItem of log; let i = index "
+
+
+>
+
+
+
+
+
+
+
+
+
+
+
+
+-----> ''''' = index'''' 
+
+TAMBÉM É TIPO UMA 
+
+
+'''RESERVED EXPRESSION''' DO ANGULAR.... ----> ISSO TE 'DÁ ACESSO AO INDEX DA CURRENT ITERATION' (
+
+
+
+    no primeiro loop,
+
+    isso será 0,
+
+    no segundo será 1,
+
+    e  assim por diante...
+
+
+
+
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO INTEIRO FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<hr>
+
+    <button class="btn btn-primary" (click)="onButtonClick($event)">
+      {{ !showParagraph ? "Show" : "Hide" }} Details
+    </button>
+    <hr>
+    <p *ngIf="showParagraph === true">Secret Password: 'Busted'</p>
+    <ul
+      [ngStyle]="{
+        listStyle: 'none'
+      }"
+    >
+      <li
+        *ngFor="let timestamp of buttonClicks; let i = index"
+        [ngStyle]="{
+          backgroundColor:
+            buttonClicks.indexOf(timestamp) >= 5 ? 'blue' : 'transparent'
+        }"
+        [ngClass]="{
+          whiteColor: buttonClicks.indexOf(timestamp) >= 5
+        }"
+      >
+        <p>Timestamp: {{ timestamp }}</p>
+      </li>
+    </ul>
+
+
+
+
+
+
+
+
+
+
+
+---------------------------
+
+
+
+
+
+
+
+
+
+
+
+-----> ok... COM ESSA INFO,
+
+PODEMOS OBVIAMENTE UPDATAR_ NOSSA __ INFO, NESSE TEMPLATE MESMO,
+
+PARA 
+NÃO 
+
+
+
+MAIS 
+
+checar 
+
+
+algo idiota como 
+
+''
+
+backgroundColor:
+            buttonClicks.indexOf(timestamp) >= 5 ? 'blue' : 'transparent'
+
+
+        ''''
+
+
+
+        ou 
+
+
+
+
+
+
+        ngClass]="{
+          whiteColor: buttonClicks.indexOf(timestamp) >= 5
+        }"
+
+
+
+
+
+
+
+
+        ,
+         
+
+
+
+         E SIM 
+
+
+         SÓ CHECAR ALGO COMO:
+
+
+
+
+
+
+
+
+
+backgroundColor: i >= 5 ? 'blue' : 'transparent'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK... FUNCIONOU....
+
+
+
+
+
+
+
+
+
+
+
+--> A VANTAGEM É QUE ESSE APPROACH FUNCIONA COM QUALQUER CONTENT NO ARRAY,
+
+E NÃO SÓ COM NUMBERS....
+
+
+
+
+
+
+
+
+
+
+
+
+---> certo...
+
+
+
+
+
+
+
+--> ESSA É UMA PEQUENA ADIÇÃO, 
+
+EXTRACT DO 'index' 
+
+de 'ngFor'
+ 
+ a partir dessa sintaxe...
+
+
+
+
+
+
+
+
+
+ CHEGA DO BÁSICO, JÁ TEMOS BASTANTE SABEDORIA.... -> DEVEMOS A UTILIZAR PARA SETTAR NOSSO COURSE 
+
+ PROJECT 
+
+ ANTES 
+
+ DE 
+
+ EXAMINARMOS COMPONENTS E DATABINDING...

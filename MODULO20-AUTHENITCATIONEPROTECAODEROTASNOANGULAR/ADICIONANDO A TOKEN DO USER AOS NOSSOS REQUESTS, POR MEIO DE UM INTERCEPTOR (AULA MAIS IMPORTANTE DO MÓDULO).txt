@@ -1,0 +1,2962 @@
+
+
+
+
+
+
+
+
+NA ÚLTIMA AULA,
+
+
+
+VIMOS COMO 
+
+'ADICIONAR A USER TOKEN A 
+
+
+
+UM HTTP REQUEST',
+
+
+
+
+no angular.... ---> isso foi visto no 
+
+method de 'loadRecipes':
+
+
+
+
+
+  loadRecipes() {
+
+
+    // const requestHeaders = new HttpHeaders();
+
+
+
+
+
+   return this.authService.user.pipe(  ///pipeline --> 1) take  2) exhaustMap  3) map 4) tap
+      ///vamos pegar só 1 único user, 'on demand', e não vamos ficar pegando users constantemente...
+      take(1)  ////'''VOU QUERER PEGAR APENAS 1 VALUE DESSE OBSERVABLE AÍ, E AÍ VOU QUERER FAZER UNSUBSCRIBE IMEDIATAMENTE DEPOIS''''
+      ,
+      exhaustMap( ///o 'exhaustMap' vai nos deixar 'SUBSTITUIR ESSE OBSERVABLE DE "user"' por esse observable que fazemos return dentro de 'exhaustMap()'..  --> o observable de 'user', portanto, deixará de ser de 'user', e sim será um observable de HTTP REQUEST (pq estamos fazendo GET DE RECIPE DATA LÁ DO BACKEND, com essa lógica toda... só usamos o observable de 'user', aquele 'behavior Subject', pq PRECISÁVAMOS DA 'idToken' do user para authenticate o nosso http request......)
+        (userOnDemand) => {///vamos usar a data do primeiro observable nesse segundo observable...
+
+
+
+
+          
+          const authRequestParams = new HttpParams().set('auth', userOnDemand?.token!).set('recipeBy', userOnDemand?.id!);
+          console.log(authRequestParams);
+
+      // authRequestParams.append('auth', userOnDemand?.token!); //// ESSA SINTAXE NÃO FUNCIONA, SÓ FUNCIONA COM HEADERS...
+      // authRequestParams.append('recipeBy', userOnDemand?.id!);
+
+
+      // console.log(authRequestParams);
+
+
+          return this.http.get<Recipe[]>(
+            'https://recipebookdeployproject-default-rtdb.firebaseio.com/recipes.json',
+            {
+              params: authRequestParams
+            }
+          )
+
+        }
+
+
+      ),
+
+      map(
+        (data) => {
+          const transformedRecipesArray: Recipe[] = [];
+
+
+          for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+              transformedRecipesArray.push({ ...data[key] });
+            }
+          }
+
+          transformedRecipesArray.map((recipe) => {  
+            return {
+              ...recipe,
+              ingredients: recipe.ingredients ? recipe.ingredients : [],   ////////SE NOSSA PROPRIEDADE 'ingredients' dessa recipe específica NÃO EXISTIR (um bug possível), VAMOS QUERER QUE OS INGREDIENTS SEJAM SETTADOS COMO UM EMPTY ARRAY....
+            };
+          });
+          return transformedRecipesArray;
+        }
+      )
+      ,
+      tap(
+        (recipes) => {
+          this.recipes = recipes;
+          this.recipeItemsChanged.next([...recipes]);
+        }
+      )
+   )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ----> É _CLARO__ QUE VAMOS QUERER 
+
+
+
+
+   FAZER A MESMA COISA COM O METHOD DE 'saveRecipes',
+
+
+
+
+
+   que é este:
+
+
+
+     saveRecipes() {
+    console.log('SAVED');
+
+    return this.http
+      .put( //////a url de cima é a versão DE DUMMY DO NOSSO PROJETO, SEM AUTHENTICATION RULES NO FIREBASE API..
+        // 'https://recipebookdummyproject-default-rtdb.firebaseio.com/recipes.json', ////será um request de PUT, e não de 'POST'... --> ISSO PQ QUEREMOS SEMPRE OVERWRITTAR O VALUE ANTIGO DE 'recipes' com o nosso NOVO value...
+        'https://recipebookdeployproject-default-rtdb.firebaseio.com/recipes.json', //VERSÃO DEPLOY, com o uso de AUTHENTICATE RULES no firebase api (restrição de acesso a contas com email)...
+        this.recipes
+      )
+
+
+
+
+      .subscribe((response) => {
+        console.log(response);
+      });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+->> ENTRETANTO,
+
+
+
+O PROBLEMA É QUE 
+
+
+__ NÃO VAMOS _ PODER SIMPLESMENTE FAZER UM 'subscribe' 
+
+
+
+
+ao observable de 'user'
+
+
+nesse method aí,
+
+pq isso 
+
+
+significaria que 
+
+estaríamos 
+
+
+COM UM CONFLITO DE METHODS SENDO EXECUTADOS A PARTIR DE 1 MESMO SUBJECT/OBSERVABLE,
+
+
+o que seria inaceitável (observable de 'user', lá em 'auth.service.ts')...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS TAMBÉM VAMOS QUERER 
+
+
+
+ADICIONAR O TOKEN NO METHOD DE 'saveRecipes',
+
+
+e isso 
+
+
+nos traz esse problema supracitado....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> na verdade, usar um subscribe a esse MESMO OBSERVABLE de 'user'
+
+
+FUNCIONARIA, NESSE EXEMPLO,
+
+
+JUSTAMENTE 
+
+
+
+PQ 
+
+
+
+ESSE '.subscribe()' SÓ VAI PASSAR A EXISTIR QUANDO FOR DISPARADO 
+
+
+
+ALGUM DOS METHODS 'saveRecipes' OU 'loadRecipes',
+
+
+
+
+e isso só acontecerá qunado o button do method respectivo for pressionado (ou seja, não existiram conflitos)...
+
+
+
+
+
+
+
+
+
+
+
+--> a mesma lógica funcionaria, sim,
+
+
+
+
+e ficaria tipo ASSIm:
+
+
+
+
+
+
+  saveRecipes() {    ////versão com o add de nossa userToken necessária para o authentication, mas com repetição de código em relaçaõ ao 'fetchRecipes'...
+    return this.authService.user.pipe(
+      take(1),
+      exhaustMap(
+        (userOnDemand) => {
+          return this.http
+          .put( //////a url de cima é a versão DE DUMMY DO NOSSO PROJETO, SEM AUTHENTICATION RULES NO FIREBASE API..
+            // 'https://recipebookdummyproject-default-rtdb.firebaseio.com/recipes.json', ////será um request de PUT, e não de 'POST'... --> ISSO PQ QUEREMOS SEMPRE OVERWRITTAR O VALUE ANTIGO DE 'recipes' com o nosso NOVO value...
+            'https://recipebookdeployproject-default-rtdb.firebaseio.com/recipes.json', //VERSÃO DEPLOY, com o uso de AUTHENTICATE RULES no firebase api (restrição de acesso a contas com email)...
+            this.recipes,
+
+            {
+              params: new HttpParams().set('auth', userOnDemand?.token!).set('recipeBy', userOnDemand?.id!)
+            }
+          )})
+    ).subscribe(
+      (response) => {
+        console.log(response);
+
+      }
+    )
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+mas O PROFESSOR NOS EXPLICA QUE PODERÍAMOS USAR 
+
+
+AINDA OUTRA 
+
+
+FEATURE OFERECIDA PELO 
+
+
+
+'ANGULAR HTTP CLIENT',
+
+
+
+
+
+
+
+
+
+pq o que fazemos aqui,
+
+NO FINAL DAS CONTAS,
+
+
+
+
+
+
+
+
+
+
+
+
+__ É _ _SEMPRE 'MANIPULAR NOSSOS HTTP REQUESTS' 
+
+
+
+
+DA EXATA MESMA MANEIRA (introduçaõ de 'idToken' dentro dos request params, toda santa vez, essencialmente)...
+
+
+
+
+
+
+
+
+
+
+
+--> para evitar essa repetição enfadonha de código,
+
+
+
+
+
+o que podemos fazer, aqui,
+
+
+É USAR _ UM 
+
+
+
+
+
+
+__ INTERCEPTOR_,
+
+
+COMO APRENDEMOS NAS AULAS ANTERIORES...
+
+
+
+
+
+
+------> PARA ADICIONAR UM INTERCEPTOR,
+
+
+
+
+
+BASTA ESCREVER 
+
+
+
+
+
+httpInterceptor.service.ts... --> novo arquivo no root de nosso projeto..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COMEÇAMOS COM ALGO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
+import { Observable } from "rxjs";
+
+
+export class HttpInterceptorService implements HttpInterceptor {
+
+    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> nesse interceptor,
+
+
+O QUE FAREMOS É PROVAVELMENTE 
+
+
+'ADD O USER TOKEN A TODO E QUALQUER REQUEST QUE SAI DE SEU APP'...
+
+
+
+
+
+
+
+
+
+--> para isso, vamos precisar usar o object de 'req',
+
+
+
+e depois 
+
+
+
+FORWARDAR ISSO COM AQUELE 'next()',
+
+
+se bem me lembro...
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> CHUTEI UM CÓDIGO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import {
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpParams,
+  HttpRequest,
+} from '@angular/common/http';
+import { exhaustMap, Observable, take } from 'rxjs';
+import { AuthService } from 'src/app/auth.service';
+
+export class HttpInterceptorService implements HttpInterceptor {
+  constructor(private authService: AuthService) {}
+
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+    ///method bem complicado, mas útil, pq pode fazer coisas como 'add o user token aos QUERYPARAMS  DE todos OS requests que saem de seu app'...
+
+    return this.authService.user
+      .pipe(
+        take(1),
+
+        exhaustMap((userOnDemand) => {
+          const queryParams = new HttpParams()
+            .set('auth', userOnDemand?.token!)
+            .set('recipeBy', userOnDemand?.id!);
+
+          const requestClone = req.clone({
+            params: queryParams,
+          });
+
+          return next.handle(requestClone);
+        })
+      )
+
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O QUE FIZ NESSE CÓDIGO:
+
+
+
+
+1) esse código vai INTERCEPTAR TODO E QUALQUER HTTP REQUEST QUE SAIR DO MEU APP,....
+
+
+
+2) antes de deixar meu http request SAIR PARA FORA,
+ele vai:
+
+
+
+
+
+3) com um OBSERVE do observable/subject/behavior subject de 'user',
+
+
+ele vai FAZER 'take' DO ÚLTIMO USER QUE FOI 'EMITIDO' por meu app... (tanto no passado, como no presente)....
+
+
+
+
+3) DEPOIS DISSO, USAMOS 'exhaustMap' 
+
+PQ 
+
+VAMOS QUERER CHAINAR/SUBSTITUIR ESSE 'observable' de 'user' (que nos retorna 1 'object user' que foi retornado pelo nosso server)
+
+COM O OBSERVABLE DE 
+
+
+
+'next.handle()' (que também é um observable)...
+
+
+
+
+
+4) ok, dentro de 'exhaustMap'
+
+
+RECEBEMOS A DATA DE NOSSO USER,
+
+
+
+CLONAMOS O REQUEST (pq é impossível colocar params diretamente no request original que chega ao interceptor)
+
+
+
+
+
+E AÍ 
+
+INSERIMOS OS 'PARAMS ALTERADOS' (com a adição do 'userToken' nos params) ,
+
+
+
+
+PARA AÍ 
+
+
+
+5) FORWARDAR ESSE REQUEST PARA O RESTO DE NOSSO APP,
+
+
+
+
+por meio de 
+
+'return next.handle(requestAlterado)'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> AGORA SÓ NOS RESTA _ ADICIONAR ESSE INTERCEPTOR AO NOSSO APP,
+
+PARA QUE 
+
+
+
+SEJA ADICIONADO ESSE TOKEN AO REQUEST DO USER, SEMPRE...
+
+
+
+
+
+
+
+
+
+
+--> PARA INSTALARMOS UM INTERCEPTOR, É ESTA A SINTAXE:
+
+
+
+
+
+
+
+
+
+
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    HttpClientModule
+  ],
+  providers: [
+    PostsHttpService,
+
+
+    //A __ ORDEM_ DOS INTERCEPTORS IMPORTA... 
+      ////é assim que PROVIDENCIAMOS MÚLTIPLOS INTERCEPTORS...
+
+      //interceptor NÚMERO 1
+    {   ///é assim que instalamos um 'INTERCEPTOR' no nosso app... --> precisamos dessas 3 keys, para conseguir fazê-lo funcionar...
+      provide: HTTP_INTERCEPTORS,  ///sempre você fornecerá esse value....
+      useClass: AuthInterceptorService, ///aponte ao seu ACTUAL INTERCEPTOR --> essa class desse arquivo será adicionada como um INTERCEPTOR..
+      multi: true  //isso comunica ao angular se no seu app EXISTEM/EXISTIRÃO  MÚLTIPLOS INTERCEPTORS, e que você quer que sejam todos executados (e que não ocorra 'overwrite' de 1 em cima do outro)....
+    },
+
+    {  ////INTERCEPTOR NÚMERO 2
+      provide: HTTP_INTERCEPTORS,  
+      useClass: LoggingInterceptor, 
+      multi: true  
+    }
+
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PRECISAMOS DA SINTAXE DA 'SINTAXE DE DEPENDENCIES' do angular...
+
+
+
+
+{
+    provide: xxxx,
+    useClass: HttpInterceptorService,
+    multi: true
+}
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok.. no nosso código, fica assim:
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
+
+import { AppComponent } from './app.component';
+
+import { HeaderComponent } from './headerComponent/headerComponent.app';
+
+import { RecipeBookComponent } from './recipeBook/recipe-book.component';
+import { RecipeItemComponent } from './recipeBook/recipe-list/recipe-item/recipe-item.component';
+import { RecipeListComponent } from './recipeBook/recipe-list/recipe-list.component';
+import { RecipeDetailComponent } from './recipeBook/recipe-detail/recipe-detail.component';
+import { ShoppingListComponent } from './ShoppingList/shoppingList.component';
+import { ShopListEditComponent } from './ShoppingList/shop-list-edit/shop-list-edit.component';
+import { ShoppingListItemComponent } from './ShoppingList/shopping-list-item/shopping-list-item.component';
+
+import { DropdownDirective } from './dropdownDirective/dropdown.directive';
+import { RecipeBookService } from './recipeBook.service';
+import { ShoppingListService } from './shoppingList.service';
+import { GenericErrorPageComponent } from './generic-error-page/generic-error-page.component';
+import { AppRoutingModule } from './app-routing.module';
+import { HomePageComponent } from './home-page/home-page.component';
+import { SelectARecipeComponent } from './recipeBook/select-a-recipe/select-a-recipe.component';
+import { RecipeEditComponent } from './recipeBook/recipe-edit/recipe-edit.component';
+import { AuthPageComponent } from './auth-page/auth-page.component';
+import { SpinnerComponent } from './auth-page/spinner/spinner.component';
+import { HttpInterceptorService } from 'src/app/httpInterceptor.service';
+
+
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+    RecipeBookComponent,
+    RecipeItemComponent,
+    RecipeListComponent,
+    RecipeDetailComponent,
+    ShoppingListComponent,
+    ShopListEditComponent,
+    ShoppingListItemComponent,
+    DropdownDirective,
+    GenericErrorPageComponent,
+    HomePageComponent,
+    SelectARecipeComponent,
+    RecipeEditComponent,
+    AuthPageComponent,
+    SpinnerComponent,
+  ],
+  imports: [
+    BrowserModule,
+    ReactiveFormsModule,
+    FormsModule, //lembre-se de adicionar isso se for usar 'ngModel()'..
+    AppRoutingModule,  //módulo de routing, customizado por nós...
+    HttpClientModule
+  ],
+  providers: [RecipeBookService, ShoppingListService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpInterceptorService,
+      multi: true
+    }
+  
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> lembrando o código do interceptor:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import {
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpParams,
+  HttpRequest,
+} from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { exhaustMap, Observable, take } from 'rxjs';
+import { AuthService } from 'src/app/auth.service';
+
+
+
+
+
+@Injectable({providedIn: 'root'})
+export class HttpInterceptorService implements HttpInterceptor {
+  constructor(private authService: AuthService) {}
+
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+    ///method bem complicado, mas útil, pq pode fazer coisas como 'add o user token aos QUERYPARAMS  DE todos OS requests que saem de seu app'...
+
+    return this.authService.user
+      .pipe(
+        take(1),
+
+        exhaustMap((userOnDemand) => {
+          const queryParams = new HttpParams()
+            .set('auth', userOnDemand?.token!)
+            .set('recipeBy', userOnDemand?.id!);
+
+          const requestClone = req.clone({
+            params: queryParams,
+          });
+
+          console.log(requestClone);
+
+          return next.handle(requestClone);
+        })
+      )
+
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> agora vou testar no meu app...
+
+
+
+
+
+
+
+
+
+
+--> teoricamente, com o uso desse inteceptor,
+
+
+
+não seria mais necessário 
+
+
+
+
+
+
+usar aquela longa 
+
+escrita  de 
+
+
+
+
+
+
+'''
+
+
+
+
+
+
+
+  saveRecipes() {    ////versão com o add de nossa userToken necessária para o authentication, mas com repetição de código em relaçaõ ao 'fetchRecipes'...
+    return this.authService.user.pipe(
+      take(1),
+      exhaustMap(
+        (userOnDemand) => {
+          return this.http
+          .put( //////a url de cima é a versão DE DUMMY DO NOSSO PROJETO, SEM AUTHENTICATION RULES NO FIREBASE API..
+            // 'https://recipebookdummyproject-default-rtdb.firebaseio.com/recipes.json', ////será um request de PUT, e não de 'POST'... --> ISSO PQ QUEREMOS SEMPRE OVERWRITTAR O VALUE ANTIGO DE 'recipes' com o nosso NOVO value...
+            'https://recipebookdeployproject-default-rtdb.firebaseio.com/recipes.json', //VERSÃO DEPLOY, com o uso de AUTHENTICATE RULES no firebase api (restrição de acesso a contas com email)...
+            this.recipes,
+
+            {
+              params: new HttpParams().set('auth', userOnDemand?.token!).set('recipeBy', userOnDemand?.id!)
+            }
+          )})
+    ).subscribe(
+      (response) => {
+        console.log(response);
+
+      }
+    )
+
+  }
+
+
+
+
+
+
+''
+
+
+
+
+
+
+
+
+OU SEJA,
+
+AQUI PODERÍAMOS SIMPLESMENTE SÓ ESCREVER, novamente, ISTO:
+
+
+
+
+
+
+
+
+
+
+saveRecipes() {
+
+
+
+    
+  return this.http
+          .put(
+            'https://recipebookdeployproject-default-rtdb.firebaseio.com/recipes.json', 
+            this.recipes,
+
+}.subscribe(
+    (response) => {
+        console.log(response);
+    }
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok.... posso testar isso..
+
+
+
+
+
+
+
+
+
+
+
+
+--> testar com os 2 methods, que ficariam assim:
+
+
+
+
+
+
+
+
+
+
+
+  loadRecipes() {
+
+
+    const requestHeaders = new HttpHeaders();
+
+
+
+return this.http   ///este código NÃO PODE SER colocado dentro daquele '.subscribe()' do call de this.authService.user... (o nesting de observables é IMPOSSÍVEL)...
+      .get<{ [name: string]: Recipe }>(
+        // 'https://recipebookdummyproject-default-rtdb.firebaseio.com/recipes.json' ///VERSÃO DUMMY, SEM AUTHENTICATE RULES NO FIREBASE API
+        'https://recipebookdeployproject-default-rtdb.firebaseio.com/recipes.json', //VERSÃO DEPLOY, com o uso de AUTHENTICATE RULES no firebase api (restrição de acesso a contas com email)...
+      
+        {
+          headers: requestHeaders
+        }
+
+      ).pipe(
+        map(
+          (data) => {
+            const transformedRecipesArray: Recipe[] = [];
+  
+  
+            for (const key in data) {
+              if (data.hasOwnProperty(key)) {
+                transformedRecipesArray.push({ ...data[key] });
+              }
+            }
+  
+            transformedRecipesArray.map((recipe) => {  
+              return {
+                ...recipe,
+                ingredients: recipe.ingredients ? recipe.ingredients : [],   ////////SE NOSSA PROPRIEDADE 'ingredients' dessa recipe específica NÃO EXISTIR (um bug possível), VAMOS QUERER QUE OS INGREDIENTS SEJAM SETTADOS COMO UM EMPTY ARRAY....
+              };
+            });
+            return transformedRecipesArray;
+          }
+        ),
+        tap(
+          (recipes) => {
+            this.recipes = recipes;
+            this.recipeItemsChanged.next([...recipes]);
+          }
+        )
+        )
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  E 
+
+
+
+  'saveRecipes':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  saveRecipes() {
+    console.log('SAVED');
+
+    return this.http
+      .put( //////a url de cima é a versão DE DUMMY DO NOSSO PROJETO, SEM AUTHENTICATION RULES NO FIREBASE API..
+        // 'https://recipebookdummyproject-default-rtdb.firebaseio.com/recipes.json', ////será um request de PUT, e não de 'POST'... --> ISSO PQ QUEREMOS SEMPRE OVERWRITTAR O VALUE ANTIGO DE 'recipes' com o nosso NOVO value...
+        'https://recipebookdeployproject-default-rtdb.firebaseio.com/recipes.json', //VERSÃO DEPLOY, com o uso de AUTHENTICATE RULES no firebase api (restrição de acesso a contas com email)...
+        this.recipes
+      )
+
+
+
+
+      .subscribe((response) => {
+        console.log(response);
+      });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK, ISSO FUNCIONOU...
+
+
+
+
+
+
+
+
+
+
+
+
+agora 
+
+
+
+nosso 
+
+
+'userToken'
+
+(ou 'idToken')
+
+
+
+ESTÁ SENDO ANEXADO AOS 'params' DE TODO E QUALQUER REQUEST QUE DEIXA O NOSSO APP....
+
+
+
+
+
+
+
+
+
+
+
+-> e isso é ótimo, pq é usado no authentication, e funciona muito bem...
+
+
+
+
+
+
+
+
+
+
+
+---> só há UM PROBLEMA... --> SE NÓS RECARREGAMOS NOSSA PÁGINA,
+
+
+
+ESSE 
+
+
+AUTHENTICATE,
+
+
+ESSE 
+
+
+
+'user token',
+
+é PERDIDo...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA CONSEGUIR __ EVITAR_ 
+
+O LOSS DA USER TOKEN,
+
+
+
+
+
+
+
+
+
+provavelmente uma maneira é fazer o STORE DESSA TOKEN NA 
+
+'LOCAL STORAGE'
+
+
+do browser do user,
+
+
+lá naquele momento de 'tap',
+
+
+lá no INTERCEPTOR,
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+import {
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpParams,
+  HttpRequest,
+} from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { exhaustMap, Observable, take } from 'rxjs';
+import { AuthService } from 'src/app/auth.service';
+
+
+
+
+
+@Injectable({providedIn: 'root'})
+export class HttpInterceptorService implements HttpInterceptor {
+  constructor(private authService: AuthService) {}
+
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+    ///method bem complicado, mas útil, pq pode fazer coisas como 'add o user token aos QUERYPARAMS  DE todos OS requests que saem de seu app'...
+
+    return this.authService.user
+      .pipe(
+        take(1),
+
+        tap() --------> ADICIONAR UM TAP AQUI... 
+
+        exhaustMap((userOnDemand) => {
+          const queryParams = new HttpParams()
+            .set('auth', userOnDemand?.token!)
+            .set('recipeBy', userOnDemand?.id!);
+
+          const requestClone = req.clone({
+            params: queryParams,
+          });
+
+          console.log(requestClone);
+
+          return next.handle(requestClone);
+        })
+      )
+
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------
+
+
+
+
+
+
+
+
+
+
+
+ok... devo experimentar esse código, ver como fica...
+
+
+
+
+
+
+
+--> na verdade, o ideal seria fazer o STORE DESSE NEGÓCIO NO LOCAL STORAGE __ LÁÁÁÁ NO METHOD__ 
+
+
+DE 'loginUser'/'signupUser' ...
+
+
+
+
+--> no 'tap' do interceptor,
+
+
+a única coisa que seria boa de ser feita 
+
+
+
+SERIA _ CHECAR_ O NOSSO LOCALSTORAGE,
+
+EXAMINAR 
+
+
+SE JÁ EXISTE UMA TOKEN ARMAZEANDA LÁ,
+
+
+TOKEN QUE PODERÁ 
+
+
+
+SER USADA 
+
+
+NO NOSSO REQUEST,
+
+
+
+
+PARA AS HIPÓTESES EM QUE O '''USER RECARREGOU A PÁGINA''' ( com isso, perdemos o lose de state, essencialmente)...
+
+
+
+
+
+
+
+
+--> para conseguir fazer o STORE DESSE NEGÓCIO LÁ NO NOSSO LOCAL STORAGE,
+
+
+
+
+PODEMOS FAZER ALGO ASSIM:
+
+
+
+
+
+
+  onLogin(authData: {
+    email: string;
+    password: string;
+    returnSecureToken: boolean;
+  }) {
+    const requestHeaders = new HttpHeaders();
+
+    requestHeaders.append('Content-Type', 'application/json');
+
+    return this.http
+      .post<AuthResponseData>(
+        // <{expiresIn: number, idToken: string, expirationDate: string, localId: string, email: string}>
+
+        // 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg', //VERSÃO DUMMY (sem authentication rules no firebase)
+        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBK3AXsu9Gn0fqLmA0zOdUAknDM48Nwk_o', ////VERSÃO COM AUTHENTICATE, DEPLOY
+        authData,
+
+        {
+          headers: requestHeaders,
+        }
+      )
+      .pipe(
+        catchError((errorRes) => {
+          console.log(errorRes);
+
+          let errorMessage = 'An unknown error has occured.';
+
+          switch (errorRes.error.error.message) {
+            case 'EMAIL_NOT_FOUND':
+              errorMessage = 'No user found for the entered email!';
+              break;
+            case 'INVALID_PASSWORD':
+              errorMessage = 'Invalid password, please try again.';
+          }
+
+          return throwError(() => errorMessage);
+        }),
+
+        tap(
+          (responseData) => {
+
+
+            console.log(responseData);
+            const expirationDate = new Date(new Date().getTime() + +responseData.expiresIn * 1000); ////lembre-se de adicionar '* 1000', pois o JAVASCRIPT SEMPRE CONSIDERA 'TEMPO' EM MILISSEGUNDOS, E NÃO EM SEGUNDOS.... (só o 'expiresIn' que é mostrado em segundos....)
+            localStorage.setItem('token', responseData.idToken);
+            localStorage.setItem('expirationDate', expirationDate.toString());
+            localStorage.setItem('userId', responseData.localId);
+            localStorage.setItem('email', responseData.email );
+
+            console.log(localStorage.getItem('token'), 'LINE');
+            this.emitUser(responseData);
+          }
+        )
+      );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      --> ok... isso funcionou... isso realmente armazena essa data lá no 'localstorage' do nosso app...
+
+
+
+
+
+
+
+
+
+      --> quanto ao outro negócio,
+
+
+
+
+
+      ao 'CHECK DA LOCAL STORAGE'
+
+      lá 
+
+      no interceptor,
+
+      USEI O 'map' em vez de 'tap',
+
+
+      PQ 
+
+
+      REALMENTE EU VOU ALTERAR O VALUE DO RETURN (ele não ficará sempre intacto, vai ser o VALUE EXTRAÍDO DO LOCAL STORAGE,
+      
+      SE NADA TIVER SIDO EMITIDO PELO OBSERVABLE DE 'user'):
+
+
+
+
+
+
+
+
+
+
+      import {
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpParams,
+  HttpRequest,
+} from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { exhaustMap, map, Observable, take, tap } from 'rxjs';
+import { AuthService } from 'src/app/auth.service';
+import { User } from './auth-page/user.model';
+
+@Injectable({ providedIn: 'root' })
+export class HttpInterceptorService implements HttpInterceptor {
+  constructor(private authService: AuthService) {}
+
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+    ///method bem complicado, mas útil, pq pode fazer coisas como 'add o user token aos QUERYPARAMS  DE todos OS requests que saem de seu app'...
+
+    return this.authService.user.pipe(
+      take(1),
+
+      map((userOnDemand) => {
+        let user = userOnDemand;
+
+        console.log(userOnDemand);
+        if (userOnDemand === null) { // se nosso user não tiver sido 'EMITIDO' pelo subject em 'authService' (subject de 'user'), vamos querer PEGAR ESSA INFO LÁ DE NOSOS 'LOCAL STORAGE'....
+          user = new User(
+            localStorage.getItem('email')!,
+            localStorage.getItem('userId')!,
+            localStorage.getItem('token')!,
+            new Date(localStorage.getItem('expirationDate')!)
+          );
+
+          console.log('ENTERED', user);
+        }
+          console.log(user);
+        return user;
+
+      }),
+
+      exhaustMap((userOnDemand) => {
+        console.log(userOnDemand);
+        const queryParams = new HttpParams()
+          .set('auth', userOnDemand?.token!)
+          .set('recipeBy', userOnDemand?.id!);
+
+        const requestClone = req.clone({
+          params: queryParams,
+        });
+
+        console.log(requestClone);
+
+        return next.handle(requestClone);
+      })
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O  QUE INTERESSA É ESTE CÓDIGO:
+
+
+
+
+
+
+      map((userOnDemand) => {
+        let user = userOnDemand;
+
+        console.log(userOnDemand);
+        if (userOnDemand === null) { // se nosso user não tiver sido 'EMITIDO' pelo subject em 'authService' (subject de 'user'), vamos querer PEGAR ESSA INFO LÁ DE NOSOS 'LOCAL STORAGE'....
+          user = new User(
+            localStorage.getItem('email')!,
+            localStorage.getItem('userId')!,
+            localStorage.getItem('token')!,
+            new Date(localStorage.getItem('expirationDate')!)
+          );
+
+          console.log('ENTERED', user);
+        }
+          console.log(user);
+        return user;
+
+      }),
+
+
+
+
+
+
+
+
+
+
+
+
+      --> ou seja, se o 'userOnDemand'
+
+      ficar como null (não recebemos nenhum user emitido pelo observable de 'user', que é disparado quando fazemos login/signup),
+
+
+
+
+      VAMOS QUERER CHECAR LÁ NO LOCAL STORAGE DO USER,
+
+      VER SE ELE REALMENTE POSSUI 
+
+      ESSA TOKEN ARMAZENADA... (
+
+          se tiver, o value da token será puxado e inserido 
+
+
+          como 
+
+          o 
+
+          VALUE 
+
+          DO TOKEN NOS NOSSOS HTTP REQUESST,
+
+
+          CONFORME ENTENDEMOS DESTE CÓDIGO AQUI^:
+
+      ):
+
+
+
+
+
+
+
+
+
+
+
+       return user;
+
+      }),
+
+      exhaustMap((userOnDemand) => {
+        console.log(userOnDemand);
+        const queryParams = new HttpParams()
+          .set('auth', userOnDemand?.token!)
+          .set('recipeBy', userOnDemand?.id!);
+
+        const requestClone = req.clone({
+          params: queryParams,
+        });
+
+        console.log(requestClone);
+
+        return next.handle(requestClone);
+      })
+
+
+
+
+
+
+      certo... agora devo testar...
+
+
+
+
+
+
+
+
+
+      -> ok... realmente funcionou...
+
+
+
+
+
+
+
+      --> agora NÃO PERDEMOS O STATE DE NOSSA PÁGINA QUANDO 
+
+
+      CLICAMOS 
+
+    NO BUTTON DE RELOAD PAGE... (por causa desse check aí)...
+
+
+
+
+
+
+
+
+
+    -> bem, só tenho UM PROBLEMA,.....
+
+
+
+
+
+
+
+
+
+
+
+    --> QUANDO ISSO ACONTECE,
+
+
+
+    nosso 
+
+
+
+
+
+    EMIT DE 'this.authService.user'
+
+
+
+    _ NÃO VAI MAIS ACONTECER, O QUE QUER DIZER QUE 
+
+    NOSSA 
+
+
+
+
+    TOOLBAR/HEADER NUNCA MAIS VAI TER AQUELE DE STATE DE 'isAuth = true'...
+
+
+
+
+
+
+
+
+
+
+
+    --> e eu não sei como consertar isso... 
+
+
+
+
+
+
+    -> talvez pelo call do emit do 'user' lá no interecptor?
+
+
+
+
+
+    mas isso seria ruim....
+
+
+
+
+
+
+
+
+
+
+
+    --> para isso, PROVAVELMENTE EU PRECISARIA DE  algo que rodasse ANTES DO HEADER...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -> OU ENTÃO QUE RODE BEM NO 'INIT' DE MEU HEADER,
+
+
+
+    QUE TEM ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+      ngOnInit(): void {
+    this.userEmitted = this.authService.user.subscribe(
+      (user) => {
+        if (user) {
+            this.isAuth = true;
+        } else {
+          this.isAuth = false;
+        }
+
+      }
+    )
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> ADICIONEI UMA LÓGICA LÁ NO COMPONENT DE 'HEADER',
+
+
+  que 
+
+
+  CHECA PELA EXISTÊNCIA do token no nosso localStorage,
+
+
+  e aí 
+
+
+
+
+
+  define 'isAuth = true'
+
+
+
+  se 
+
+  esse negócio é encontrado:
+
+
+
+
+
+
+    // }
+
+  ngOnInit(): void {
+
+
+
+
+    this.userEmitted = this.authService.user.subscribe(
+      (user) => {
+        if (user) {
+            this.isAuth = true;
+        } else {
+
+
+          const loadedUser = localStorage.getItem('token');
+
+          if (loadedUser) {
+            this.isAuth = true;
+          } else {
+
+            this.isAuth = false;
+          }
+        }
+
+      }
+    )
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> isso '''consertou'''' o problema da perda do auth ao recarregar a página...
+   
+
+
+   (
+     mas o problema é que 
+      
+
+      esse 
+
+      negócio 
+
+      SEMPRE VAI FICAR COMO 'auth' 
+
+      QUANDO TIVERMOS UMA 
+
+
+      TOKEN NO NOSSO BROWSER, MESMO QUANDO A TOKEN JÁ ESTIVER EXPIRADA....
+   )
+
+
+
+
+
+
+
+
+
+
+
+
+
+   --> DEVO ASSISTIR A AULA DO PROFESSOR...
+
+
+
+
+
+
+
+
+
+
+   O PROFESSOR COMENTA QUE VAMOS QUERER 
+
+
+
+   EDITAR O REQUEST E ADICIONAR A TOKEN, SEMPRE...
+
+
+
+
+
+
+   (
+
+     por meio do interceptor....
+   )
+
+
+
+
+
+
+
+
+
+
+
+   -> aí ele importa o authService,
+
+
+   tudo normal... 
+
+
+
+
+
+
+
+   -> ELE COMEÇA ASSIM:
+
+
+
+
+
+   intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+
+    return this.authService.user
+
+
+
+
+
+
+
+
+
+
+
+
+
+-->  o único detalhe é que DEVEMOS RETORNAR UM OBSERVABLE ('next.handle(req)') OBRIGATORIAMENTE,
+
+
+AO FINAL DESSE 
+
+
+
+
+METHOD DE 'intercept'..
+
+
+
+
+
+
+
+
+
+
+
+
+-----> O PROFESSOR EXPLICA QUE USARÁ A MESMA LÓGICA DO 'pipe' com 'take',
+
+
+'map/tap',
+
+
+etc etc..
+
+
+
+
+
+
+
+
+também o 'exhaustMap'....
+
+
+
+
+
+
+OK, O CÓDIGO DELE TAMBÉM FICOU COMO:
+
+
+
+
+    return this.authService.user.pipe(
+      take(1),
+
+      map((userOnDemand) => {
+    
+        return user;
+
+      }),
+
+      exhaustMap((userOnDemand) => {
+
+      })
+    );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -> TAMBÉM VAMOS SWAPPAR O OBSERVABLE DE 'user'
+
+
+    COM UM OUTRO OBSERVABLEE,
+
+
+
+    O OBSERVABLE 
+
+  
+
+DE 
+
+'next.handle(novoRequest)'
+
+
+
+
+QUE 
+ 
+
+COLOCAMOS DENTRO DO 'exhaustMap'...
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO FINAL FICOU + OU - ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import {
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpParams,
+  HttpRequest,
+} from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { exhaustMap, map, Observable, take, tap } from 'rxjs';
+import { AuthService } from 'src/app/auth.service';
+import { User } from './auth-page/user.model';
+
+@Injectable({ providedIn: 'root' })
+export class HttpInterceptorService implements HttpInterceptor {
+  constructor(private authService: AuthService) {}
+
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+    ///method bem complicado, mas útil, pq pode fazer coisas como 'add o user token aos QUERYPARAMS  DE todos OS requests que saem de seu app'...
+
+    return this.authService.user.pipe(
+      take(1),
+
+      map((userOnDemand) => {
+        let user = userOnDemand;
+
+        console.log(userOnDemand);
+        if (userOnDemand === null) { // se nosso user não tiver sido 'EMITIDO' pelo subject em 'authService' (subject de 'user'), vamos querer PEGAR ESSA INFO LÁ DE NOSOS 'LOCAL STORAGE'....
+          user = new User(
+            localStorage.getItem('email')!,
+            localStorage.getItem('userId')!,
+            localStorage.getItem('token')!,
+            new Date(localStorage.getItem('expirationDate')!)
+          );
+
+          console.log('ENTERED', user);
+        }
+          console.log(user);
+        return user;
+
+      }),
+
+      exhaustMap((userOnDemand) => {
+        console.log(userOnDemand);
+        const queryParams = new HttpParams()
+          .set('auth', userOnDemand?.token!)
+          .set('recipeBy', userOnDemand?.id!);
+
+        const requestClone = req.clone({
+          params: queryParams,
+        });
+
+        console.log(requestClone);
+
+        return next.handle(requestClone);
+      })
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok.... ficou + ou - igual ao meu...
+
+
+
+
+
+
+
+
+--> com isso, o interceptor foi adicionado....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA O PROFESSOR ALTERA O CÓDIGO DOS METHODS DE 'saveRecipes' e 'loadRecipes',
+
+tira a lógica do exhaustMap
+
+
+de lá,
+pq agora essa lógica é 
+
+adicionada 
+
+
+NO NOSSO INTERCEPTOR,
+SEMPRE...
+
+
+
+
+
+
+
+
+
+------> ok... MAS AINDA GANHAMOS UM ERROR,
+
+
+ISSO PQ 
+
+
+
+___ESTAMOS _ 
+
+
+
+
+
+USANDO ESSA LÓGICA DE 'INTERECPT' PARA TODOS NOSSOS OUTGOING REQUESTS,
+
+
+até mesmo nos http requests de `login` e 'signup' ( o que está incorreto)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> problema de 'style' no button de 'logout'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> CONSERTEI.... APARENTEMENTE, É POSSÍVEL ADICIONAR MÚLITPLOS '(click)'
+
+
+a um MESMO ELEMENTO, NO ANGULAR,
+
+
+e isso te deixa 
+
+
+RODAR MÚLTIPLOS CÓDIGOS AO MESMO TEMPO (
+
+  consegui rodar a function de 'onLogout()'
+
+
+
+  e 
+
+  TAMBÉM UM CÓDIGO QUE ALTERA O STATE de 'collapsed' PARA AÍ 
+
+
+  ALTERAR O STYLE DO MEU DROPDOWN,
+
+  FAZER COM QUE ELE FECHE A PARTIR DE QUAISQUER BUTTON CLICKS...
+)
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+ <a style="cursor: pointer;" class="dropdown-toggle" 
+ role="button" *ngIf="isAuth" 
+ (click)="collapsed = !collapsed" 
+ (click)="onLogout()"
+ >
+ Logout
+ 
+ </a>
+
+
+
+
+
+
+
+
+
+
+CERTO... isso realmente funcionou... agora esse button de logout está funcionando, aparentemente...
+
+
+
+
+
+
+LÓGICA DE 'onLogout':
+
+
+
+
+
+  onLogout() {
+    this.authService.logoutUser();
+  }
+
+
+
+
+
+
+
+
+
+
+  E 
+
+
+  LÁ NO SERVICE:
+
+
+
+
+
+
+
+    logoutUser() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('expirationDate');
+    localStorage.removeItem('email');
+
+    this.emitUser(null)
+
+    this.router.navigate(['/auth']);
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> method de 'emitUser',
+
+  que 
+
+
+  repaginei (coloquei a option de 'null'):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private emitUser(responseData: AuthResponseData | null) {
+
+
+
+    if (responseData === null)  {
+
+     return  this.user.next(null);
+    }
+
+
+
+    const { email, localId, expiresIn, idToken } = responseData;
+
+          const expirationDate = new Date( /// vai nos dar um object 'Date'...
+            new Date().getTime() + +expiresIn * 1000
+          );
+
+          const newUser = new User(email, localId, idToken, expirationDate);
+
+          this.user.next(newUser); 
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  OK, AGORA DEVO CONTINUAR COM A AULA DO PROFESSOR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -----> ok.. quanto ao uso do 'interceptor' EM TODOS OS NOSSOS HTTP REQUESTS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> estamos usando essa lógica para todos nossos requests.. --> 
+
+
+
+  e quando fazemos 
+
+
+
+
+
+  LOGIN/SIGNUP,
+
+
+
+  É _ ÓBVIO__ que 
+
+
+
+
+  o 
+
+
+
+  'USER'
+
+
+
+
+
+
+  ESTARÁ COMO 'null'...
+
+
+
+
+
+  (
+
+    pq nosso user é inicializado como 'NULL' NO INÍCIO DE NOSSO APP,
+
+
+
+
+    COMO PODEMOS PERCEBER POR ESTE CÓDIGO AQUI:
+
+
+
+
+
+  user = new BehaviorSubject<User | null>(null);
+
+  )
+
+
+
+
+
+
+
+
+
+  ------> ISSO QUER DIZER QUE O USER INICIALMENTE ESTÁ COMO 'null',
+
+
+
+
+
+  E ISSO QUER DIZER QUE 
+
+
+  __ QUANDO 
+
+
+  TENTAMOS 
+
+  ACESSAR O 
+
+
+
+  TOKEN PARA O COLOCAR NO NOSSO REQUEST,
+
+
+  por meio deste código aqui:
+
+
+
+
+        exhaustMap((userOnDemand) => {
+        console.log(userOnDemand);
+        const queryParams = new HttpParams()
+          .set('auth', userOnDemand?.token!)
+          .set('recipeBy', userOnDemand?.id!);
+
+        const requestClone = req.clone({
+          params: queryParams,
+        });
+
+
+
+
+
+
+
+
+
+
+
+        ----> ISSO FALHA,
+
+        PQ 
+
+        não vamos ter nenhuma 'token' dentro de 'userOnDemand'... (token está como NULL),
+
+
+        E ISSO 
+
+
+
+        VAI NOS DAR THROW DE UM ERROR,
+
+        E AÍ 
+
+        O 
+
+        REQUEST NEM MESMO SERÁ ENVIADO...
+
+
+
+
+
+
+
+        -> ok, mas como fazemos 'WORK AROUNd' a esse problema?
+
+
+
+
+
+
+
+
+        -> bem, no meu código, o que estou fazendo quando 
+
+
+        '''NÃO CONSIGO ENCONTRAR UM TOKEN'''
+
+
+
+
+        é 
+
+
+        '''PROCURAR NO LOCAL STORAGE DO USER''''...
+
+
+        --> e se nada é encontrado no local storage do user... -->  bem, aí 
+
+
+
+        mesmo assim não recebo um erro, por alguma razão, mesmo sem o fetch no local storage....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        ------> OU SEJA,
+
+        SÓ TENTAMOS ADICIONAR O TOKEN AO REQUEST __ SE TIVERMOS O TOKEN/USER....
+
+
+
+
+
+
+
+
+        ---> alternativamente,
+
+
+        você poderia CHECAR _ O URL _ DO OUTGOING REQUEST,
+
+
+        E
+         AÍ 
+
+
+
+         SÓ ADICIONAR O TOKEN PARA 'ESPECÍFICAS URLS', e 
+
+
+         aí excluir outras urls específicas (como as routes de 'login' e 'signup')..
+
+
+
+
+
+
+
+
+
+
+
+      --> OK...
+
+
+
+
+      SALVAMOS TUDO ISSO,
+
+
+      e aí funciona,
+
+
+
+
+
+
+
+      mas agora tenha em mente que 
+
+
+
+      nosso app está usando o interceptor... -> 
+
+
+
+
+
+      A BOA NOTÍCIA É QUE 
+
+
+      ESSE INTERCEPTOR TAMBÉM FUNCIONA AUTOMATICAMENTE PARA O 'FETCH' E 'SAVE' DE RECIPES,
+
+
+
+
+
+      pq 
+
+
+
+
+      essas routes vao usar o MESMO INTERCEPTOR, AUTOMATICAMNETE...
+
+
+
+
+
+
+
+      -> isso quer dizer que se editarmos nosso array de recipes, adicionarmos uma nova recipe 
+
+      e então 
+
+      salvarmos,
+
+
+
+      VEREMOS QUE 
+
+      ISSO DARÁ CERTO,
+
+
+
+      O QUE MOSTRA O NOSSO INTERCEPTOR EM AÇÃO...
+
+
+
+
+
+
+
+
+
+
+
+      ok, realmente funcionou...
+
+
+
+
+
+
+
+
+
+
+      --> NA PRÓXIMA AULA, VEREMOS O APPROACH DO PROFESSOR PARA ADICIONAR 'LOGOUT'..
+
+      

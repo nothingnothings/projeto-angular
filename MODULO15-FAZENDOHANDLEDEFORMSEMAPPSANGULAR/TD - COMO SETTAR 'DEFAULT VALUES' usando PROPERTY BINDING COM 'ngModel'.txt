@@ -1,0 +1,745 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ATÉ AGORA,
+
+APRENDEMOS MUITO SOBRE O 'TEMPLATE-DRIVEN APPROACH',
+
+
+
+e como 
+
+
+
+PODEMOS 
+
+CRIAR INCRÍVEIS FORMS COM ELE..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA DEVEMOS SEGUIR EM FRENTE,
+
+
+
+DEVEMOS 
+
+
+
+SAIR DO 
+
+
+
+MUNDO DE 'VALIDATE DO USER INPUT' 
+
+
+
+
+
+E ENTÃO 
+
+
+
+
+ADENTRAMOS O MUNDO 
+
+
+
+
+DOS 'DEFAULTS'...
+
+
+
+
+
+
+
+
+
+
+--> QUEREMOS DEFINIR ALGUNS 'DEFAULT VALUES'
+
+que deverão ser displayados 
+
+
+
+NOS NOSSOS INPUT FIELDS.... ---->  TAMBÉM
+
+
+
+
+
+NO DROPDOWN...
+
+
+
+
+
+
+
+
+
+
+
+
+----> POR EXEMPLO, O DROPDOWN.... --> 
+
+
+
+
+
+
+
+
+
+POR DEFAULT, NO MOMENTO,
+
+
+ELE ESTÁ COMO 'EMPTY' inicialmente -------> SERIA NICE SE _ ALGUMA 
+
+
+
+DAS OPTIONS ESTIVESSE 
+
+
+
+SELECIONADA LOGO DE INÍCIO,
+
+
+
+
+
+
+
+
+se o user já encontrasse alguma option já marcada quando carrega a page...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+
+
+PODEMOS/DEVEMOS _ MUDAR__ A MANEIRA __ PELA QUAL 
+
+
+ESCREVEMOS A DIRECTIVE 'ngModel'
+
+
+
+LÁ NO 
+
+
+
+
+NOSSO ELEMENT DE 'select':
+
+
+
+
+
+
+
+
+           <select id="secret" 
+            
+            class="form-control" 
+            name="secret" 
+            ngModel
+            
+            >
+              <option value="pet">Your first Pet?</option>
+              <option value="teacher">Your first teacher?</option>
+            </select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --------> ISSO QUER DIZER QUE ATÉ AGORA,
+
+
+
+
+ATÉ ESTE MOMENTO,
+
+
+sempre 
+
+
+
+
+
+
+
+
+adicionamos nosso NGMODEL
+
+
+ASSIM,
+
+
+
+
+SEM PROPERTY BINDING,
+
+
+SEM TWO-WAY DATABINDING,
+
+
+sem nada...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> MAS PODEMOS, SIM,
+
+
+USAR _ ISSO __ JUNTO DE 'PROPERTY BINDING'...
+
+
+
+
+
+
+
+
+
+
+----> É POR ISSO QUE DEVEMOS ADICIONAR ALGUNS '[]'
+
+
+
+
+EM VOLTA DE 'ngModel',
+
+
+isso aí 
+
+
+
+
+sem '()'....
+
+(SEM TWO-WAY BINDING, POR ENQUANTO)....
+
+
+
+
+
+
+
+
+
+
+------->  ok..
+
+
+
+
+
+
+e quando escrevemos '[ngModel]=' ,
+
+
+
+PODEMOS BINDAR 'IT' A ALGUM VALUE....
+
+
+
+
+
+
+
+
+--> POR 'it',
+
+
+ O PROFESSOR QUER DIZER __ O PRÓPRIO CONTROL,
+
+ O 
+
+
+ 'input/select field,'
+
+
+ que 
+
+
+
+
+ É TRANSFORMADO EM UM CONTROL JUSTAMENTE PELO ANGULAR EM SI...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> ISSO SIGNIFICA QUE 
+
+ ESSE SELECT AÍ 
+
+ AGORA PODE SER 'BOUND'
+
+ A UM _ DEFAULT VALUE_...
+
+
+
+
+
+
+
+
+ -> O PROFESSOR DIZ QUE PODEMOS 
+
+
+ ESCREVER VÁRIAS COISAS AQUI,
+
+ COMO UMA STRING..
+
+
+
+
+
+
+
+
+
+ -----> TAMBÉM PODEMOS REFERENCIAR UMA PROPRIEDADE QUE TEMOS LÁ NOS ARQUIVOS '.ts',
+
+
+
+ NOS NOSSOS COMPONENTS,
+
+
+
+
+ tipo isto aqui:
+
+
+
+
+
+
+
+             <select id="secret" 
+            
+            class="form-control" 
+            name="secret" 
+            [ngModel]="defaultQuestion"
+            
+            >
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+E ISSO, É CLARO,
+
+
+
+usa a propriedade de 
+
+
+
+
+'defaultQuestion'
+,
+
+
+
+
+que definimos lá em 'app.component.ts':
+
+
+
+
+
+export class AppComponent {
+
+  defaultQuestion: string = 'pet'; /////////EIS O CÓDIGO EM QUESTÃO.
+
+
+  suggestedUserName() {
+    const suggestedName = 'Superuser';
+  }
+
+
+  onSubmitForm(formReference: NgForm) { ///aqui será passado o ACTUAL FORM element, com todos seus input fields e <selects> (os controls de sua form, essencialmente)..
+    console.log(formReference);
+    console.log('submitted!');
+
+    console.log('ISDIRTY?', formReference.dirty);
+
+    console.log(formReference.value);
+    console.log('ISVALID?', formReference.valid);
+    console.log('ISTOUCHED?', formReference.touched);
+  }
+}
+
+
+
+
+
+
+
+
+------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+se colocássemos 'teacher', por exemplo,
+
+seria selecionada a option número 2,
+
+aquela 
+
+
+
+que é 
+
+''
+
+              <option value="teacher">Your first teacher?</option>
+
+
+
+              '''
+
+
+
+
+
+
+------> CERTO...
+
+
+
+SE SALVARMOS TUDO ISSO E VISUALIZARMOS NOSSA PAGE,
+
+
+
+VEREMOS QUE O DROPDOWN já iniciará com o value de 'pet',
+
+
+a OPTION DE 'PET',
+
+marcada no dropdown...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK,
+
+
+
+ISSO QUER DIZER QUE 
+
+
+
+
+
+AGORA 
+
+
+CONSEGUIMOS DEFINIR UM 'DEFAULT VALUE' para nossos DROPDOWNS (selects) E INPUT FIELDS EM GERAL...
+
+
+
+
+
+
+
+
+
+--> e esse truque FUNCIONA TAMBÉM PARA
+
+
+
+outras
+
+coisas, como textfields e etc....
+
+
+
+
+
+
+
+
+
+
+-> vou testar com 1, agora...
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+
+  defaultQuestion: string = 'pet';  ////'pet' para a 'option' número 1, 'teacher' para a option número 2 (propriedade 'value' em cada 'option' é o que conta)...
+
+  defaultTextValue: string = `There was one occasion in which I wrote a very long text, it was very long and had multiple lines and...`
+
+  suggestedUserName() {
+    const suggestedName = 'Superuser';
+  }
+
+
+  onSubmitForm(formReference: NgForm) { ///aqui será passado o ACTUAL FORM element, com todos seus input fields e <selects> (os controls de sua form, essencialmente)..
+    console.log(formReference);
+    console.log('submitted!');
+
+    console.log('ISDIRTY?', formReference.dirty);
+
+    console.log(formReference.value);
+    console.log('ISVALID?', formReference.valid);
+    console.log('ISTOUCHED?', formReference.touched);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+          <div class="form-group">
+            <textarea
+            class="form-control" id="exampleFormControlTextarea1" rows="3"
+            [ngModel]="defaultTextValue"
+            required
+            type="text"
+            name="textValue"
+            >
+
+            </textarea>
+          </div>
+
+
+
+
+
+
+
+
+-> certo, isso funcionou,
+
+
+o texto ficou displayado no startup da página....
+
+
+
+
+
+
+
+
+
+
+-> OU SEJA,
+
+PODEMOS 'PRE-POPULATE'
+
+
+nossos input fields e selects e textareas com 
+
+
+values default...  
+
+
+(
+
+    essa é uma ALTERNATIVA QUE VOCê PODE USAR NO LUGAR DE 'placeholder's...
+
+
+
+)
+
+
+
+
+
+
+
+
+
+-> ISSO É ALGO QUE DEVEMOS TER EM MENTE:
+
+
+
+
+VOCë NÁO FICA LIMITADO A AUSAR 
+
+'Ngmodel'
+
+
+
+
+SEM NENHUMA BINDNIG,
+
+
+
+PQ VOCÊ PODE USAR 
+
+
+ONE-WAYT BINDING,
+
+
+
+
+PROPERTY BINDING,
+
+
+etc,
+
+
+
+TUDO ISSO,
+
+
+PARA SETTAR 
+
+
+
+VALUES DEFAULT..
+
+
+
+
+
+
+
+--> é claro que esses values ainda podem ser 'overwritten',
+
+vocÊ pode colocar values diferentes dentro dessas caixas e então submittar...

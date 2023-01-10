@@ -1,0 +1,983 @@
+
+
+
+
+
+
+
+
+
+
+
+
+NA ÚLTIMA LIÇÃO,
+
+
+APRENDEMOS UM MONTE SOBRE COMO 
+
+
+PODEMOS USAR 
+
+STRING INTERPOLATION 
+ 
+
+
+ E 
+
+
+ PROPERTY BINDING PARA OUTPUTTAR 
+
+
+
+ COISAS 
+
+
+
+
+ NO TEMPLATE E PARA 
+
+ ALTERAR 
+
+ ELEMENTOS DO DOM.... (disabled property, etc etc)...
+
+
+
+
+
+
+
+ EX:
+
+
+
+
+ <button class="btn btn-primary" [disabled]="!allowNewServer">Add Server</button>
+<button class="btn btn-primary" disabled={{!allowNewServer}}>Add Server</button>
+<p [innerText]="allowNewServer"></p>
+<p>User can edit: {{ allowNewServer ? "Yes" : "No" }}</p>
+<app-server></app-server>
+<app-server></app-server>
+<app-server></app-server>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> mas agora é hora 
+
+
+
+
+DE REAGIRMOS A EVENTS,
+
+
+POR MEIO DO EVENT BINDING...
+
+
+
+
+
+
+
+
+
+
+
+--> NO PRESENTE,
+
+TEMOS UM BUTTON,
+
+E DEPOIS DE 2 SEGUNDOS, ESSE BUTTON É 'ENABLED'...
+
+
+
+
+
+
+
+
+--> seria bem nice SE NÓS CONSEGUISSEMOS  FAZER ALGO, DISPARAR UM METHOD,
+
+
+QUANDO 
+
+ESSE BUTTON FOSSE CLICADO...
+
+
+
+
+
+
+
+--> O PROFESSOR LOGO NOS MOSTRARÁ COMO PODEMOS 
+
+
+
+ACTUALLY ADICIONAR/REPLICAR O 
+
+
+
+COMPONENT 
+
+'Server'
+
+ATRAVÉS 
+
+
+DE 
+
+
+UMA FUNCTION NO ANGULAR,
+
+
+
+
+
+
+
+REPLICAÇÃO DO 'app-server' component/selector...
+
+
+
+
+
+
+
+
+
+-> MAS POR ENQUANTO, O PROFESSOR FARÁ UMA COISINHA....
+
+
+
+
+
+
+
+
+
+
+
+--> ELE REMOVE ALGUMAS LINHAS,
+
+
+E AÍ ELE DIZ QUE 
+
+
+VAI QUERER OUTPUTTAR 
+
+
+
+O VALUE DE UMA PROPERTY...
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR PEDE QUE IGNOREMOS 
+
+'ngOnInit() {
+
+}'
+
+
+
+POR ENQUANTO,
+
+
+
+
+
+pq voltaremos a isso mais tarde...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+QUANTO à PROPRIEDADE,
+
+
+O PROFESSOR CHAMA-A 
+
+DE 
+
+
+
+
+serverCreationStatus,
+
+
+
+e inicialmente 
+
+
+
+ELA TERÁ O VALUE DE UMA STRING 
+
+'No server was created.'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E O PROFESSOR INICIALMENTE VAI QUERER OUTPUTTAR 
+
+ESSA STRING POR MEIO DE STRING INTERPOLATION..
+
+
+
+
+
+
+EX:
+
+
+
+
+<button class="btn btn-primary" [disabled]="!allowNewServer">Add Server</button>
+<button class="btn btn-primary" disabled="{{ !allowNewServer }}">
+  Add Server
+</button>
+<p [innerText]="allowNewServer"></p>
+<p>User can edit: {{ allowNewServer ? "Yes" : "No" }}</p>
+<app-server></app-server>
+<app-server></app-server>
+<app-server></app-server>
+<p>{{ serverCreationStatus }}</p>
+
+
+
+
+
+
+
+
+
+
+----> O PROFESSOR DIZ QUE AGORA 
+
+
+VAMOS REAGIR àLGUMA COISA,
+
+
+
+
+portanto codamos...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ADICIONAREMOS OUTRO METHOD EM 
+
+
+'servers.component.ts',
+
+
+DENTRO DO COMPONENT,
+
+
+QUE SERÁ O METHOD DE 
+
+
+
+'onCreateServer()',
+
+
+PARA DEIXAR 
+
+
+BEM CLARO QUE 
+
+
+
+ESSE METHOD DEVERÁ SER DISPARADO 
+
+
+DE DENTRO DE NOSSO TEMPLATE,
+
+
+
+
+
+A PARTIR DO BUTTON DE 'create server'...
+
+
+
+
+
+
+
+
+
+
+--> UM EVENTO VAI DISPARAR ESSE METHOD..
+
+
+
+
+ 
+
+
+
+ --> EM 'onCreateServer',
+
+
+
+ DEFINIMOS QUE 
+
+
+ 'SERVER WAS CREATED' passará a ser o value de 'serverCreationStatus'...
+
+
+ 
+
+
+
+
+
+
+
+ ex:
+
+
+
+
+
+
+
+})
+export class ServersComponent implements OnInit {
+  allowNewServer = false;
+  serverCreationStatus = 'No server was created.'
+
+  constructor() {
+    setTimeout(
+      () => {
+        this.allowNewServer = true;
+      },
+
+      2000
+    );
+  }
+
+
+
+
+  onCreateServer() {
+      this.serverCreationStatus = 'SERVER WAS CREATED.'
+  }
+
+  ngOnInit(): void {}
+}
+
+
+
+
+
+
+
+
+
+
+-------------------
+
+
+
+
+
+
+
+
+
+OK, AGORA SÓ ESTÁ FALTANDO O ÚLTIMO PEDAÇO,
+
+QUE É O ACTUAL  CALL 
+
+DESSE 
+
+METHOD, ATRAVÉS DO EVENT BINDING...
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA ISSO, VOLTAMOS AO 'servers.component.html'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> PROFESSOR EXPLICA QUE  TIPICAMENTE__ EM ELEMENTOS HTML TEMOS 
+
+O 
+
+ATTRIBUTE DE 
+
+'onClick',
+
+
+ 
+ QUE É USADO PARA EXECUTAR CÓDIGO JAVASCRIPT a partir de um clique --> MAS NÃO USAREMOS ISSO COM O ANGULAR...
+
+
+
+
+
+
+
+ --> COM O ANGULAR,
+
+
+ TEMOS 
+
+
+
+
+ A SINTAXE QUE ELE NOS OFERECE...  ----> TEMOS O __EVENT_ BINDING,
+
+
+
+ QUE É UMA 
+
+
+ SINTAXE 
+
+
+ QUE 
+
+ SE 
+ UTILIZA  DE 
+
+
+
+ PARENTESES ( '()' ) 
+
+
+
+
+
+
+
+
+
+
+
+
+ olhe que interessante:
+
+
+
+
+
+
+ 1) PROPERTY BINDING --> USA SQUARE BRACKETS []
+
+
+
+
+
+
+
+
+
+ 2) EVENT BINDING --> USA PARENTESES ()
+
+
+
+
+
+
+
+
+
+ ------> OK... 
+
+
+
+
+
+
+
+ QUANTO AO EVENT BINDING,
+
+
+
+ escrevemos assim:
+
+
+
+
+
+ (click)
+
+
+
+
+
+
+
+
+
+
+
+
+ --> DENTRO DA MARCAÇÃO DE 'EVENT BINDING',
+
+
+ PORTANTO,
+
+ DEVEMOS 
+
+ ESCREVER 
+ O _ TIPO _ DE EVENT_ QUE DEVERÁ TRIGGAR 
+
+
+
+
+ SEU CÓDIGO EM 'xxx.component.ts.'.. ----> 
+
+
+
+
+
+ NO CASO,
+
+ O PROFESSOR 
+
+ ESCREVE 
+
+ 'click'...
+
+
+
+
+
+
+
+
+ (click) 
+
+
+
+
+
+
+
+
+
+
+ -_> E AÍ, NO VALUE DO 'click',
+
+
+
+
+ VOCÊ COLOCA O METHOD LÁ DE 
+
+ 'xxx.component.ts'
+
+ que vocÊ pretende usar...
+
+
+
+
+
+
+
+
+
+
+
+
+ ----> E VOCÊ PODE BINDAR A QUALQEUR UM DOS EVENTOS 
+
+ __ DISPONÍVEIS NO ELEMENTO HTML EM QUE VOCê ESTÁ ESCREVENDO '()'... (coisas como 'mouseenter', 'mouseexit', etc etc)...
+
+
+
+
+
+
+
+
+
+
+ --> BINDAMOS AO CLICK EVENT,
+ TUDO CERTO....
+
+
+
+
+
+
+
+
+
+
+
+ E AÍ DENTRO DAS ""  COLOCAMOS O CÓDIGO QUE QUEREMOS EXECUTAR QUANDO ESSE EVENT ACONTECER...
+
+
+
+
+
+--> A COISA MAIS FREQUENTE, AQUI, É O CALL DE UM _ METHOD...
+
+
+
+
+
+
+
+
+
+
+
+
+ ex:
+
+
+
+
+
+
+
+
+
+
+
+<button class="btn btn-primary" [disabled]="!allowNewServer">Add Server</button>
+>
+  Add Server
+</button>
+<p [innerText]="allowNewServer"></p>
+<p>User can edit: {{ allowNewServer ? "Yes" : "No" }}</p>
+<app-server></app-server>
+<app-server></app-server>
+<app-server></app-server>
+<p>{{ serverCreationStatus }}</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+FUNCIONOU, O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  // selector: 'app-servers', /// QUANDO VOCÊ ESCREVE ASSIM, ESTÁ SELECIONANDO O ELEMENTO NO 'servers.component.html' A PARTIR DA SUA TAG/ELEMENT...
+  selector: '[app-servers]', ////o selector do angular TEM COMPORTAMENTO SIMILAR A SELECTORS CSS... -> e nos selectors css, se você escreve '[attributeName] {}', você ACABA EDITANDO TODOS OS ELEMENTOS QUE POSSUEM ESSE ATTRIBUTE ATIVADO/ESCRITo...
+
+  // selector: '.app-servers' ////use essa sintaxe se vocÊ quer SELECIONAR UM ELEMENTO NO seu 'servers.component.html' POR MEIO DE _ CLASSES__...
+
+  ///ou seja, 3 approaches para SELECIONAR ELEMENTOS NO NOSSO CÓDIGO HTML ANGULAR, com o 'selector':
+
+  //  1) por ELEMENTo... -> selector: 'app-servers'
+  //  2) por ATTRIBUTE.... -> selector: '[app-servers]'
+  //  3) por CLASS --> selector: '.app-servers'
+
+  templateUrl: './servers.component.html',
+  styleUrls: ['./servers.component.css'],
+})
+export class ServersComponent implements OnInit {
+  allowNewServer = false;
+  serverCreationStatus = 'No server was created.'
+
+  constructor() {
+    setTimeout(
+      () => {
+        this.allowNewServer = true;
+      },
+
+      2000
+    );
+  }
+
+
+
+  onCreateServer() {
+    this.serverCreationStatus = 'SERVER CREATED'
+  }
+
+  ngOnInit(): void {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+<button class="btn btn-primary" [disabled]="!allowNewServer" 
+
+(click)="onCreateServer()"
+>Add Server</button>
+<p [innerText]="allowNewServer"></p>
+<p>User can edit: {{ allowNewServer ? "Yes" : "No" }}</p>
+<app-server></app-server>
+<app-server></app-server>
+<app-server></app-server>
+<p>{{ serverCreationStatus }}</p>
+
+
+
+
+
+
+
+-------------------------------
+
+
+
+
+
+
+
+
+
+
+
+--> PROVAVELMENTE PODEMOS RODAR 'toggle' nesse negócio, também...
+
+
+
+
+
+
+
+
+
+
+--> SIDENOTE: VOCÊ NÃO PRECISA OBRIGATORIAMENTE 
+
+
+RODAR UM METHOD ALI,
+
+
+
+VOCê 
+
+PODE SÓ 
+
+COLOCAR UM CÓDIGO 
+
+DIRETAMENTE NO MEIO DOS "", 
+
+um anon function,
+
+
+QUE SERÁ EXECUTADA QUANDO ESSE EVENT OCORRER NESSE 
+
+
+
+ELEMENTO HTML do seu template....
+
+
+
+(
+
+    MAS ISSO É POUCO USADO,
+    PQ FREQUENTEMENTE VOCÊ VAI QUERER 
+
+    EXECUTAR UM POUCO MAIS DE CÓDIGO  
+
+    SE 
+
+    DETERMINADO EVENT ACONTECE... ---> mas se vocÊ 
+
+    só 
+
+    pretende definir alguma 
+
+    propriedade BOOLEAN COMO TRUE,
+
+
+    isso é fine..
+
+
+
+
+
+)
+
+
+
+
+
+
+
+
+certo... e se eu quisesse deixar como 'toggle',
+
+
+
+
+como ficaria?
+
+
+
+
+
+
+
+EX:
+
+
+
+<button class="btn btn-primary" [disabled]="!allowNewServer" 
+
+(click)="toggleServer()"
+>Add Server</button>
+<!-- <button class="btn btn-primary" disabled="{{ !allowNewServer }}"> não funciona -->
+  <!-- Add Server -->
+<!-- </button> -->
+<p [innerText]="allowNewServer"></p>
+<p>User can edit: {{ allowNewServer ? "Yes" : "No" }}</p>
+<app-server></app-server>
+<app-server></app-server>
+<app-server></app-server>
+<p>{{ serverCreationStatus ? 'SERVER WAS CREATED' : 'Server still not created.'  }}</p>
+
+
+
+
+
+
+
+
+
+
+E:
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: '[app-servers]', 
+  templateUrl: './servers.component.html',
+  styleUrls: ['./servers.component.css'],
+})
+export class ServersComponent implements OnInit {
+  allowNewServer = false;
+  serverCreationStatus = false
+
+  constructor() {
+    setTimeout(
+      () => {
+        this.allowNewServer = true;
+      },
+
+      2000
+    );
+  }
+
+
+
+  toggleServer() {
+    this.serverCreationStatus =  !this.serverCreationStatus
+  }
+
+  ngOnInit(): void {}
+}

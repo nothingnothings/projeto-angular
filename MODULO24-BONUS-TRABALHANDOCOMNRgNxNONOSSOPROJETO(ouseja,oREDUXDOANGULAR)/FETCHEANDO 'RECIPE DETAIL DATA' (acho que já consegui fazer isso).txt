@@ -1,0 +1,2159 @@
+
+
+
+
+
+
+
+
+
+
+
+PROFESSOR EXPLICA QUE NO NOSSO APP, ESTAMOS CONSEGUINDO FETCHEAR AS RECIPES,
+
+MAS NO EXATO MOMENTO EM QUE TENTAMOS CARREGAR UMA DELAS (clicamos em 1 de seus ícones/recipe list items),
+
+
+
+
+o recipe-detail  
+
+
+
+
+DESSA RECIPE ESPECÍFICA VAI FALHAR... ------> 
+
+
+
+
+
+
+
+
+
+
+O 'OVERALL RECIPE DETAILS' ESTÁ FALHANDO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MEU CÓDIGO ATUAL DE 'recipe-detail', que está TENDO êXITO NO CARREGAMENTO,
+
+
+É ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { RecipeBookService } from 'src/app/recipeBook.service';
+
+import { Recipe } from '../recipe.model';
+
+import { ActivatedRoute, Params, Router } from '@angular/router';
+
+import { Store } from '@ngrx/store';
+import { Ingredient } from 'src/app/shared/ingredient.model';
+
+import * as fromRecipeBook from '../store/recipeBookActions';
+import { AppState } from 'src/app';
+import { findIndex, map, Subscription } from 'rxjs';
+
+@Component({
+  selector: 'app-recipe-detail',
+  templateUrl: './recipe-detail.component.html',
+  styleUrls: ['./recipe-detail.component.css'],
+})
+export class RecipeDetailComponent implements OnInit, OnDestroy {
+  loadedRecipe: Recipe;
+  id: number;
+
+  loadedRecipeSubscription: Subscription;
+
+  constructor(
+    private recipeBookService: RecipeBookService,
+    private route: ActivatedRoute,
+    private router: Router,
+
+    private store: Store<AppState>
+  ) {}
+
+  ngOnInit(): void {
+    this.route.params.subscribe((params: Params) => {
+      console.log('TEST');
+
+      this.id = +params['id'];
+      console.log(+params['id']);
+
+      this.loadedRecipeSubscription = this.store
+        .select('recipeBook')
+        .pipe(
+          map((recipeBookData) => {
+            const recipeIndex = recipeBookData.recipes.findIndex((recipe) => {
+              return recipe.id === this.id;
+            });
+
+            return recipeBookData.recipes[recipeIndex];
+          })
+        )
+        .subscribe((recipe: Recipe) => {
+          console.log('HAPPENED', recipe);
+
+          this.loadedRecipe = recipe;
+          console.log(this.loadedRecipe);
+        });
+    });
+  }
+
+  sendToShoppingList() {
+    console.log('CLICKED');
+
+    this.store.dispatch(
+      new fromRecipeBook.SendIngredientsToShopList(
+        this.loadedRecipe.ingredients
+      )
+    );
+
+    this.router.navigate(['/shop-list']);
+  }
+
+  onEditRecipe() {
+    this.router.navigate(['/recipe-book', this.id, 'edit']);
+  }
+
+  onDeleteRecipe() {
+    this.store.dispatch(new fromRecipeBook.DeleteRecipe(this.id));
+
+    this.router.navigate(['/recipe-book']);
+  }
+
+  ngOnDestroy(): void {
+    this.loadedRecipeSubscription.unsubscribe();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+--> A VERSÃO DO PROFESSOR, QUE NÃO ESTÁ FUNCIONANDO, ESTÁ COM ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+ngOnInit() {
+
+    this.route.params
+    .subscribe(
+        (params: Params) => {
+            this.id = +params['id'];
+            this.recipe = this.recipeBookService.getRecipe(this.id);
+        }
+    )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSA VERSÃO DELE AINDA FAZIA FETCH DA RECIPE POR MEIO DO METHOD DE 'getRecipe',
+
+
+lá no service de recipeBook:
+
+
+
+
+
+
+  getRecipe(id: number): Recipe {
+
+    const selectedRecipe = this.recipes.find((recipe) => {
+      return recipe.id === id;
+    })!;
+    return selectedRecipe;
+  }
+
+
+
+
+
+
+
+
+
+
+
+  --> e esse method funcionava, sim, mas DEPENDIA DO 'STATE' de recipes próprio do 
+
+
+
+  service, que agora, NA MINHA VERSÃO DO CÓDIGO, NÃO É MAIS UTILIZADO:
+
+
+
+
+
+
+
+
+
+
+ESTE É O MEU CÓDIGO:
+
+
+
+
+
+
+
+    ngOnInit(): void {
+    this.route.params.subscribe((params: Params) => {
+      console.log('TEST');
+
+      this.id = +params['id'];
+      console.log(+params['id']);
+
+      this.loadedRecipeSubscription = this.store
+        .select('recipeBook')
+        .pipe(
+          map((recipeBookData) => {
+            const recipeIndex = recipeBookData.recipes.findIndex((recipe) => {
+              return recipe.id === this.id;
+            });
+
+            return recipeBookData.recipes[recipeIndex];
+          })
+        )
+        .subscribe((recipe: Recipe) => {
+          console.log('HAPPENED', recipe);
+
+          this.loadedRecipe = recipe;
+          console.log(this.loadedRecipe);
+        });
+    });
+  }
+
+
+
+
+
+
+
+
+
+-----> EU FIZ UMA SUBSCRIPTION AO STATE,
+
+
+
+
+
+E AÍ ESSA SUBSCRIPTION 
+
+
+
+
+faz com que a recipe peritnente seja carregada no meu component...
+
+ 
+
+
+
+
+
+
+
+ -----> EU FIZ A MESMA COISA LÁ NO 'recipe-edit',
+
+
+ FIZ O FETCH DA RECIPE DATA LÁ 
+
+ NO MEU COMPONENT, FETCH LÁ DO GLOBAL STORE DO NGRX...
+
+
+
+
+
+
+
+
+
+
+CÓDIGO DE 'RECIPE-EDIT':
+
+
+
+
+ ex:
+
+
+
+
+
+
+
+
+  ngOnInit(): void {
+    this.route.params.subscribe((params: Params) => {
+      this.recipeId = +params['id'];
+
+      this.editMode = params['id'] != null;
+
+      this.initForm();
+    });
+
+    this.editableRecipeSubscription = this.store
+      .select('recipeBook')
+      .pipe(
+        map((recipeBookData) => {
+          const recipeIndex = recipeBookData.recipes.findIndex((recipe) => {
+            return recipe.id === this.recipeId;
+          });
+
+          return recipeBookData.recipes[recipeIndex];
+        })
+      )
+      .subscribe((recipe: Recipe) => {
+
+        this.editableRecipe = recipe;
+      });
+  }
+
+
+
+
+
+
+
+
+
+
+  ------------------------------------
+
+
+
+
+
+
+
+
+A LÓGICA ANTIGA ERA QUE _ CARREGÁVAMOS AS RECIPES NO SERVICE,
+
+
+LÁ NO ARRAY DE RECIPES DO SERVICE,
+
+
+E AÍ 
+
+OS METHODS 
+
+
+'
+GETRECIPE'
+
+
+E 
+
+
+
+'GETRECIPES'
+
+
+
+RETRIEVAVAM A DATA APROPRIADA/NECESSÁRIA...  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK.... MAS NÃO É ASSIM QUE AS COISAS FUNCIONAM COM O NGRX --> COM O NGRX, 
+
+
+SEMPRE ACESSAMOS 
+
+
+A STORE E A DATA ARMAZENADA NA STORE __ POR _ MEIO DO METHOD DE 'SELECT',
+
+
+E AÍ 
+
+
+SEMPRE OBTEMOS, A PARTIR DISSO,
+
+UM 
+
+OBSERVABLE,
+
+NOS É RETORNADO UM OBSERVABLE,
+
+
+
+
+O QUE __ QUER DIZER QUE 
+
+
+
+NÃO NOS VALEMOS DE NENHUMA 'SYNCHRONOUS CALL'
+
+
+COMO FAZEMOS 
+
+
+COM O SERVICE e seus methods...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO QEUR DIZER QUE SEMPRE VAMOS FICAR COM UM OBSERVABLE,
+
+QUE __ AÍ _ PODE, EVENTUALMENTE, DAR UMA RECIPE, DEPENDENDO DO QUE SELECIONAMOS (
+
+
+esse processo é QUASE INSTANTÂNEO, MAS AINDA É, TECNICAMENTE, UM OBSERVABLE...
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK, É POR ISSO QUE O PROFESSOR INJETOU A STORE EM TANTO O COMPONENT 'RECIPE DETAIL' COMO 
+
+
+'RECIPE-EDIT'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO DELE FICOU BEM SIMILAR AO MEU, TIPO ASSIM:
+
+
+
+
+
+
+
+
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { RecipeBookService } from 'src/app/recipeBook.service';
+
+import { Recipe } from '../recipe.model';
+
+import { ActivatedRoute, Params, Router } from '@angular/router';
+
+import { Store } from '@ngrx/store';
+import { Ingredient } from 'src/app/shared/ingredient.model';
+
+import * as fromRecipeBook from '../store/recipeBookActions';
+import { AppState } from 'src/app';
+import { findIndex, map, Subscription } from 'rxjs';
+
+@Component({
+  selector: 'app-recipe-detail',
+  templateUrl: './recipe-detail.component.html',
+  styleUrls: ['./recipe-detail.component.css'],
+})
+export class RecipeDetailComponent implements OnInit, OnDestroy {
+  loadedRecipe: Recipe;
+  id: number;
+
+  loadedRecipeSubscription: Subscription;
+
+  constructor(
+    private recipeBookService: RecipeBookService,
+    private route: ActivatedRoute,
+    private router: Router,
+
+    private store: Store<AppState>
+  ) {}
+
+  ngOnInit(): void {
+    this.route.params.subscribe((params: Params) => {
+      console.log('TEST');
+
+      this.id = +params['id'];
+      console.log(+params['id']);
+
+      this.loadedRecipeSubscription = this.store
+        .select('recipeBook')
+        .pipe(
+          map((recipeBookData) => {
+            const recipeIndex = recipeBookData.recipes.findIndex((recipe) => {
+              return recipe.id === this.id;
+            });
+
+            return recipeBookData.recipes[recipeIndex];
+          })
+        )
+        .subscribe((recipe: Recipe) => {
+          console.log('HAPPENED', recipe);
+
+          this.loadedRecipe = recipe;
+          console.log(this.loadedRecipe);
+        });
+    });
+  }
+
+  sendToShoppingList() {
+    console.log('CLICKED');
+
+    this.store.dispatch(
+      new fromRecipeBook.SendIngredientsToShopList(
+        this.loadedRecipe.ingredients
+      )
+    );
+
+    this.router.navigate(['/shop-list']);
+  }
+
+  onEditRecipe() {
+    this.router.navigate(['/recipe-book', this.id, 'edit']);
+  }
+
+  onDeleteRecipe() {
+    this.store.dispatch(new fromRecipeBook.DeleteRecipe(this.id));
+
+    this.router.navigate(['/recipe-book']);
+  }
+
+  ngOnDestroy(): void {
+    this.loadedRecipeSubscription.unsubscribe();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> OK, MAS AGORA O PROFESSOR DIZ QUE ENCONTRAMOS UM PROBLEMA...
+
+
+
+
+
+
+
+
+É A RELAÇÃO ENTRE O SUBSCRIBE NO OBSERVABLE DE 'this.route.params'
+
+
+
+
+e O SUBSCRIBE AO OBSERVABLE DE 'this.store.select('suaSliceDoState')''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, O PROBLEMA É QUE AGORA VAMOS QUERER 'USAR AINDA OUTRO OBSERVABLE,
+
+
+O DA STORE,
+
+
+
+PARA _ AÍ _ SE APROVEITAR DESSES ROUTE PARAMS E ENTÃO FAZER GET DE NOSSA RECIPE'...
+
+
+
+
+
+
+
+
+
+
+-----> HÁ MÚLTIPLOS APPROACHES PARA CONSEGUIR A DATA DOS 'this.route.params' ANTES DE RODAR A LÓGICA DO OBSERVABLE DA STORE...
+
+
+
+
+
+
+
+
+
+1a maneira)
+
+
+
+
+NÓS CRIAMOS UMA NOVA 'OBSERVABLE CHAIN' _______DENTRO __ DA OUTER CHAIN de 'this.route.params',
+
+
+
+E DENTRO DESSA OBSERVABLE CHAIN 
+
+
+
+ESCREVEMOS ASSIM:
+
+
+
+
+
+this.store.select('recipeBook').pipe(
+    map((recipesState) => 
+    
+    
+
+        return recipesState.recipes.find(
+            (recipe, index) => {
+
+
+
+                return index === this.id
+            }
+        )
+    
+    
+    
+    )
+)
+
+
+
+
+
+
+
+
+
+
+
+ 
+ O CÓDIGO COMPLETO FICARIA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+this.route.params.subscribe( //OUTER CHAIN
+    (params: Params) => {
+
+
+
+
+
+
+this.id = +params['id']:
+
+this.store.select('recipeBook').pipe( ////////INNER CHAIN
+    map((recipesState) => 
+    
+    
+
+        return recipesState.recipes.find(
+            (recipe, index) => {
+
+
+
+                return index === this.id
+            }
+        )
+    
+    
+    
+    )
+)
+
+
+
+
+    }
+)
+
+
+
+
+
+
+
+
+
+
+
+-----> CERTO, POR FIM FARÍAMOS UM SUBSCRIBE AO INNER OBSERVABLE.. --> 
+
+
+
+
+
+this.route.params.subscribe( //OUTER CHAIN
+    (params: Params) => {
+
+
+
+
+
+
+this.id = +params['id']:
+
+this.store.select('recipeBook').pipe( ////////INNER CHAIN
+    map((recipesState) => 
+    
+    
+
+        return recipesState.recipes.find(
+            (recipe, index) => {
+
+
+
+                return index === this.id
+            }
+        )
+    
+    
+    
+    ).subscribe(
+        (recipe) => {
+            this.recipe = recipe; //////EIS O CÓDIGO EM QUESTÃO...
+        }
+    )
+)
+
+
+
+
+    }
+)
+
+
+
+
+
+
+
+
+
+
+
+
+OK, ESSE É O APPROACH 1.... ELE FUNCIONA, SIM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+O APPROACH 2, BEM MAIS PORCO, FOI O QUE EU UTILIZEI, E É ERRADO/RUIM:
+
+
+
+
+
+
+
+
+
+
+
+  ngOnInit(): void {
+    this.route.params.subscribe((params: Params) => {
+      console.log('TEST');
+
+      this.id = +params['id'];
+      console.log(+params['id']);
+
+      this.loadedRecipeSubscription = this.store
+        .select('recipeBook')
+        .pipe(
+          map((recipeBookData) => {
+            const recipeIndex = recipeBookData.recipes.findIndex((recipe) => {
+              return recipe.id === this.id;
+            });
+
+            return recipeBookData.recipes[recipeIndex];
+          })
+        )
+        .subscribe((recipe: Recipe) => {
+          console.log('HAPPENED', recipe);
+
+          this.loadedRecipe = recipe;
+          console.log(this.loadedRecipe);
+        });
+    });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  não, espere... esqueça o que eu disse, parece que eu havia feito EXATAMENTE A MESMA COISA QUE O PROFESSOR FEZ AGORA...
+
+
+
+
+
+
+
+
+
+
+--> só no component de 'recipe-edit' as coisas estão ERRADAS... (os 2 subscriptions/observables estão realmente SEPARADOS)...
+
+
+
+(e isso realmente bugou meu código, não funciona definir 2 subscriptions separadamente)...
+
+
+
+
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+
+
+  
+    this.route.params.subscribe((params: Params) => {
+
+
+      this.id = +params['id'];
+
+      this.loadedRecipeSubscription = this.store
+        .select('recipeBook')
+        .pipe(
+          map((recipeBookData) => {
+            const recipeIndex = recipeBookData.recipes.findIndex((recipe) => {
+              return recipe.id === this.id;
+            });
+
+            return recipeBookData.recipes[recipeIndex];
+          })
+        )
+        .subscribe((recipe: Recipe) => {
+       
+
+          this.loadedRecipe = recipe;
+  
+        });
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK... JÁ A SEGUNDA MANEIRA DE CHAINAR ESSES 2 OBSERVABLES É:
+
+
+
+
+
+
+
+
+
+
+
+
+2A MANEIRA)  _ FUNDIR ESSES 2 OBSERVABLES EM UM 'GRANDE OBSERVABLE', um 'jumbo observable'...
+
+
+
+
+
+
+
+--> o professor havia dado uma aula de como fazer isso, vou buscar as anotações:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ngOnInit(): void {
+    const customIntervalObservable = new Observable((observer) => {
+      let count = 0;
+      setInterval(() => {
+        observer.next(count);
+
+        if (count == 2) {
+          observer.complete();
+        }
+
+        if (count > 3) {
+          observer.error(new Error('Count is greater than 3!'));
+        }
+      }, 1000);
+
+      count++;
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> com a notação 'new Observable()',
+
+
+podemos CRIAR UM NOVO 'GRANDE OBSERVABLE',
+
+
+
+isso se colocarmos outros observables no seu interior....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> COMO CONVERTER ISSO EM UMA 'LARGER OBSERVABLE CHAIN'?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> BEM, PRIMEIRAMENTE COMEÇAMOS COM ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+  
+    this.route.params.subscribe((params: Params) => {
+
+
+      this.id = +params['id'];
+
+      this.loadedRecipeSubscription = this.store
+        .select('recipeBook')
+        .pipe(
+          map((recipeBookData) => {
+            const recipeIndex = recipeBookData.recipes.findIndex((recipe) => {
+              return recipe.id === this.id;
+            });
+
+            return recipeBookData.recipes[recipeIndex];
+          })
+        )
+        .subscribe((recipe: Recipe) => {
+       
+
+          this.loadedRecipe = recipe;
+  
+        });
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> a primeira coisa que faremos é chamar '.pipe()'
+
+
+
+NAQUELE OBSERVABLE DE PARAMS INICIAL:
+
+
+
+
+
+
+
+
+  
+    this.route.params.pipe().subscribe((params: Params) => {
+
+
+      this.id = +params['id'];
+
+      this.loadedRecipeSubscription = this.store
+        .select('recipeBook')
+        .pipe(
+          map((recipeBookData) => {
+            const recipeIndex = recipeBookData.recipes.findIndex((recipe) => {
+              return recipe.id === this.id;
+            });
+
+            return recipeBookData.recipes[recipeIndex];
+          })
+        )
+        .subscribe((recipe: Recipe) => {
+       
+
+          this.loadedRecipe = recipe;
+  
+        });
+    });
+
+
+
+
+
+
+
+
+
+--> ISSO FEITO, VAMOS ADICIONAR UM OPERATOR DE 'map()'
+
+DENTRO DELE:
+
+
+
+
+
+  
+    this.route.params.pipe(
+
+        map(
+            (params: Params) => {
+
+            }
+        )
+
+
+    ).subscribe((params: Params) => {
+
+
+      this.id = +params['id'];
+
+      this.loadedRecipeSubscription = this.store
+        .select('recipeBook')
+        .pipe(
+          map((recipeBookData) => {
+            const recipeIndex = recipeBookData.recipes.findIndex((recipe) => {
+              return recipe.id === this.id;
+            });
+
+            return recipeBookData.recipes[recipeIndex];
+          })
+        )
+        .subscribe((recipe: Recipe) => {
+       
+
+          this.loadedRecipe = recipe;
+  
+        });
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ISSO FEITO, O PROFESSOR FAZ UM RETURN DE '+params['id']',
+
+
+
+
+
+
+
+PARA CONSEGUIR O VALUE DESSE ID...
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+    this.route.params.pipe(
+
+        map(
+            (params: Params) => {
+
+                return +params['id'];
+            }
+        )
+
+
+    ).subscribe((params: Params) => {
+
+
+      this.id = +params['id'];
+
+      this.loadedRecipeSubscription = this.store
+        .select('recipeBook')
+        .pipe(
+          map((recipeBookData) => {
+            const recipeIndex = recipeBookData.recipes.findIndex((recipe) => {
+              return recipe.id === this.id;
+            });
+
+            return recipeBookData.recipes[recipeIndex];
+          })
+        )
+        .subscribe((recipe: Recipe) => {
+       
+
+          this.loadedRecipe = recipe;
+  
+        });
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> DEPOIS DISSO, O PROFESSOR ADICIONOU/ADICIONA O 
+
+
+
+OPERATOR DE 'switchMap()' (Que serve justamnete para isso, para 'CRIARMOS UM GRANDE OBSERVABLE', pq vai SUBSTITUIR UM OBSERVABLE PELO OUTRO)....
+
+
+
+
+
+
+
+
+
+
+
+
+-> VAMOS USAR ESSE 'switchMap()' PARA _ TROCAR__ NOSSO OBSERVABLE DE 'params' PELO OBSERVABLE DE 'store', que o SUBSTITUIRÁ....
+
+
+
+
+
+
+
+
+
+----> em 'switchMap'
+
+
+vamos receber O 'RESULTADO' de map,
+
+QUE SERÁ AQUELE 'id', no nosso caso...
+
+
+
+
+OK, ISSO QUER DIZER QUE O CÓDIGO VAI FICANDO ASSIM:
+
+
+
+
+
+
+
+
+
+    this.route.params.pipe(
+
+        map(
+            (params: Params) => {
+
+                return +params['id'];
+            }
+        ),
+
+        switchMap(
+            (id) => {
+
+            }
+        )
+
+
+    ).subscribe((params: Params) => {
+
+
+      this.id = +params['id'];
+
+      this.loadedRecipeSubscription = this.store
+        .select('recipeBook')
+        .pipe(
+          map((recipeBookData) => {
+            const recipeIndex = recipeBookData.recipes.findIndex((recipe) => {
+              return recipe.id === this.id;
+            });
+
+            return recipeBookData.recipes[recipeIndex];
+          })
+        )
+        .subscribe((recipe: Recipe) => {
+       
+
+          this.loadedRecipe = recipe;
+  
+        });
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> POR FIM, DENTRO DO SWITCHMAP VAMOS RETORNAR A LÓGICA/OBSERVABLE DE 'this.store.select('recipeBook')...
+
+
+
+
+
+
+
+
+eX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    this.route.params.pipe(
+
+        map(
+            (params: Params) => {
+
+                return +params['id'];
+            }
+        ),
+
+        switchMap(
+            (id) => {
+        return this.loadedRecipeSubscription = this.store /////EIS O CÓDIGO EM QUESTÃO.
+                .select('recipeBook')
+            }
+        )
+
+
+    ).subscribe((params: Params) => {
+
+
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK... MAS O QUE O PROFESSOR FAZ, AQUI, É 
+
+
+ADICIONAR _ AINDA OUTRA ETAPA 'map()'
+
+
+no MAIN PIPE de 'this.route.params',
+
+
+
+
+
+PQ _ ELE VAI QUERER MAPPEAR VALUES ___ MAIS UMA VEZ...
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+    this.route.params.pipe(
+
+        map(
+            (params: Params) => {
+
+                return +params['id'];
+            }
+        ),
+
+        switchMap(
+            (id) => {
+        return this.loadedRecipeSubscription = this.store.select('recipeBook') /////EIS O CÓDIGO EM QUESTÃO.
+               
+            }
+        ),
+
+        map(
+    
+    (recipeBookData) => {
+            const recipeIndex = recipeBookData.recipes.findIndex((recipe) => {
+              return recipe.id === this.id;
+            });
+
+            return recipeBookData.recipes[recipeIndex];
+                    }
+                    )
+
+
+    )
+
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+------> ok, mas aqui FICAMOS COM UM PROBLEMA... --> aquele 'this.id' dentro do METHOD DE 'findIndex'
+
+
+
+
+
+
+AINDA NÃO TERÁ SIDO SETTADO, PQ É JUSTAMENTE ESSE OBSERVABLE DE 'this.route.params' que faz esse set...
+
+
+
+
+
+
+
+--> PARA CONSERTAR ESSE PROBLEMA, O PROFESSOR 
+
+
+
+
+é obrigado a settar essa PROPRIEDADE DO COMPONENT lá em 'switchMap',
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+    this.route.params.pipe(
+
+        map(
+            (params: Params) => {
+
+                return +params['id'];
+            }
+        ),
+
+        switchMap(
+            (id) => { 
+                this.id = id;  /////EIS O CÓDIGO EM QUESTÃO.
+        return this.loadedRecipeSubscription = this.store.select('recipeBook') 
+               
+            }
+        ),
+
+        map(
+    
+    (recipeBookData) => {
+            const recipeIndex = recipeBookData.recipes.findIndex((recipe) => {
+              return recipe.id === this.id;
+            });
+
+            return recipeBookData.recipes[recipeIndex];
+                    }
+                    )
+
+
+    )
+
+    });
+
+
+
+
+
+
+
+
+
+--> POR FIM, PRECISAMOS DA SUBSCRIBE FUNCTION 
+
+
+
+EM CIMA DESSE 'OBSERVABLE GERAL',
+
+
+e nessa subscribe function VAMOS ACTUALLY CONSEGUIR NOSSA 'RECIPE' E AÍ VAMOS ACTUALLY CONSEGUIR DEFINIR 
+
+
+A 'recipe' do component como sendo a 'recipe' obtida por esse observable,
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+    this.route.params.pipe(
+
+        map(
+            (params: Params) => {
+
+                return +params['id'];
+            }
+        ),
+
+        switchMap(
+            (id) => { 
+                this.id = id;  /////EIS O CÓDIGO EM QUESTÃO.
+        return this.loadedRecipeSubscription = this.store.select('recipeBook') 
+               
+            }
+        ),
+
+        map(
+    
+    (recipeBookData) => {
+            const recipeIndex = recipeBookData.recipes.findIndex((recipe) => {
+              return recipe.id === this.id;
+            });
+
+            return recipeBookData.recipes[recipeIndex];
+                    }
+                    )
+
+
+    )
+
+    })
+    .subscribe(
+        (recipe) => {
+            this.recipe = recipe;
+        }
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok... vou tentar deixar meu código assim.....
+
+
+
+
+
+
+
+
+
+FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+ this.route.params.pipe(
+
+      map(
+        (params: Params) => {
+
+          return +params['id'];
+        }
+      ),
+
+      switchMap(
+        (id) => {
+            this.id = id;
+            return this.store.select('recipeBook'); ///faz com que o observable agora seja ESTE AQUI... (e não mais o 'params')...
+        }
+      ),
+
+      map(
+        (recipesState) => {
+
+          const recipeIndex = recipesState.recipes.findIndex(
+            (recipe) => {
+              return recipe.id === this.id;
+            }
+          )
+
+          return recipesState.recipes[recipeIndex];
+        }
+      )
+
+    ).subscribe((recipe) => {
+          this.loadedRecipe = recipe;
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK, AGORA VOU TENTAR REPLICAR O MESMO FUNCIONAMENTO LÁ EM 'recipe-edit.component.ts'...
+
+
+
+
+
+
+
+
+FICOU TIPO ASSIm:
+
+
+
+
+
+
+
+
+
+
+
+
+
+    this.route.params.pipe(
+      map(
+        (params: Params) => {
+          this.recipeId = +params['id'];
+          this.editMode = params['id'] != null;
+          return +params['id'];
+        }
+      ),
+
+      switchMap(
+        (id: number) => { 
+          return this.store.select('recipeBook');
+        }
+      ),
+
+      map(
+        (recipeBookState) => {
+          const recipeIndex = recipeBookState.recipes.findIndex((recipe) => {return recipe.id === this.recipeId})
+  
+          return recipeBookState.recipes[recipeIndex];
+
+        }
+      )
+    ).subscribe(
+      (recipe) => {
+
+        this.editableRecipe = recipe;
+      }
+    )
+
+
+
+
+    this.initForm();
+
+
+
+
+
+
+
+
+
+
+---> ganhei um error, por conta do 'unsubscribe'
+
+lá em 'ngOnDestroy'..
+
+
+
+
+
+
+
+
+ok, CONSERTEI...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> agora as coisas estão funcionando...
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+  ngOnInit(): void {
+    this.route.params
+      .pipe(
+        map((params: Params) => {
+          this.recipeId = +params['id'];
+          this.editMode = params['id'] != null;
+          return +params['id'];
+        }),
+
+        switchMap((id: number) => {
+          return this.store.select('recipeBook');
+        }),
+
+        map((recipeBookState) => {
+          const recipeIndex = recipeBookState.recipes.findIndex((recipe) => {
+            return recipe.id === this.recipeId;
+          });
+
+          return recipeBookState.recipes[recipeIndex];
+        })
+      )
+      .subscribe((recipe) => {
+        this.editableRecipe = recipe;
+      });
+
+    this.initForm();
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> mas meu código AINDA FICOU DIFERENTE DAQUELE DO PROFESSOR....
+
+
+
+
+
+
+
+
+
+  --> isso pq O METHOD DE 'initForm'
+
+  DELE __ ESTÁ DIFERENTE DO NOSSO....
+
+
+
+
+
+
+
+
+
+
+
+  MAS MEU CÓDIGO ESTÁ FUNCIONANDO, POR ALGUMA RAZÕA (ele pega o state LOCAL, e não GLOBAL), POR ISSO NÃO 
+
+
+
+
+  ALTERAREI SUAS LINHAS:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private initForm() {
+
+
+    if (this.editMode) {
+
+
+      // this.editableRecipe = this.recipeBookService.getRecipe(this.recipeId); substituído pelo NGRX STORE.... 
+
+
+
+      let recipeIngredients = new UntypedFormArray([]);
+
+      if (this.editableRecipe['ingredients']) {///entra-se nesse block SE TIVERMOS UMA RECIPE, E SE ELA TIVER INGREDIENTS NO SEU INTERIOR (interior não é EMPTY)....
+       recipeIngredients = new UntypedFormArray(this.editableRecipe.ingredients.map(
+          (ingredient) => {
+            return new UntypedFormGroup({
+              'ingredient': new UntypedFormControl(ingredient.ingredient, [Validators.required]),
+              // 'amount': new FormControl(ingredient.amount, [Validators.required, Validators.min(1)] )
+              'amount': new UntypedFormControl(ingredient.amount, [Validators.required, 
+                Validators.pattern(/^[1-9]+[0-9]*$/)] ) ////só vai deixar que números POSITIVOS (que não sejam 0 ou inferiores) possam ser inputtados....
+            })
+          }
+        ))
+      } else {
+        recipeIngredients = new UntypedFormArray([
+          new UntypedFormGroup({
+            'ingredient': new UntypedFormControl(null, [Validators.required]),
+            'amount': new UntypedFormControl(null, [
+              Validators.required,
+              // Validators.min(1), ////só vai deixar que números POSITIVOS (que não sejam 0 ou inferiores) possam ser inputtados...
+              Validators.pattern(/^[1-9]+[0-9]*$/)
+            ]),
+          }),
+        ])
+      }
+
+
+
+
+      this.recipeForm = new UntypedFormGroup({
+        'recipeName': new UntypedFormControl(this.editableRecipe.name, [
+          Validators.required,
+          Validators.minLength(3),
+        ]),
+        'imagePath': new UntypedFormControl(this.editableRecipe.imagePath, [Validators.required]),
+        'description': new UntypedFormControl(this.editableRecipe.description, [
+          Validators.required,
+          Validators.minLength(10),
+        ]),
+        'ingredients': recipeIngredients
+
+     
+      });
+    }   else  {
+
+      this.recipeForm = new UntypedFormGroup({
+        'recipeName': new UntypedFormControl(null, [
+          Validators.required,
+          Validators.minLength(3),
+        ]),
+        'imagePath': new UntypedFormControl(null, [Validators.required]),
+        'description': new UntypedFormControl(null, [
+          Validators.required,
+          Validators.minLength(10),
+        ]),
+  
+        'ingredients': new UntypedFormArray([
+          new UntypedFormGroup({
+            'ingredient': new UntypedFormControl(null, [Validators.required]),
+            'amount': new UntypedFormControl(null, [
+              Validators.required,
+              // Validators.min(1),
+              Validators.pattern(/^[1-9]+[0-9]*$/)
+            ]),
+          }),
+        ]),
+      });
+
+
+
+    }
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --------> OK.... O ÚNICO PROBLEMA, AGORA, É QUE 
+
+
+
+
+  _ SE RECARREGAMOS ENQUANTO ESTAMOS EM UMA DAS NOSSAS PAGES DE 'RECIPE-DETAIL',
+
+
+
+  O _ CONTEÚDO _ DA PÁGINA __
+
+
+
+
+
+
+
+  NÃO É RECARREGADO, OU SEJA,
+
+  PERDEMOS TODA A DATA QUE EXISTIA NA PÁGINA...
+
+
+
+
+
+
+
+
+
+
+  --> como podemos consertar esse problema?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -----> PROBLEMA DE 'LOSS OF DATA WHEN RELOADING THE PAGE' 
+
+
+
+
+
+
+
+
+
+  --> ISSO SERÁ VISTO NA PRÓXIMA AULA,
+
+
+  E ESTÁ 
+
+
+
+  INTRINSECAMENTE RELACIONADO AO NOSSO RESOLVER... (resolver não está funcionando corretamente...)

@@ -1,0 +1,1690 @@
+
+
+
+
+
+
+
+
+
+--> DE VOLTA AO COMPONENT de 'app-recipe-list',
+
+
+
+
+
+
+
+ESTAMOS COM ESTE CÓDIGO:
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-recipe-list',
+  templateUrl: './recipe-list.component.html',
+  styleUrls: ['./recipe-list.component.css']
+})
+export class RecipeListComponent implements OnInit {
+
+  recipes = [];
+
+
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> AGORA QUE TEMOS O MODEL DE 
+
+
+'Recipe',
+
+que tem este código:
+
+
+
+
+
+export class Recipe {
+    // public name: string = '';   ////sem shorthand
+    // public description: string = '';
+    // public imagePath : string = '';
+
+
+
+    // constructor(name: string, desc: string, imagePath: string) { ///sem shorthand
+
+
+    //     this.name = name;
+    //     this.description = desc;
+    //     this.imagePath = imagePath
+
+    // }
+
+    constructor(public name: string, public desc: string, public imagePath: string) {  ///sem shorthand....
+
+
+        
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+
+,
+
+
+
+
+
+
+
+
+
+
+VAMOS QUERER  
+
+O IMPORTAR LÁ EM 
+
+
+'recipe-list',
+
+
+
+
+PARA QUE 
+
+
+
+DEFINAMOS 
+
+
+O  TYPE DAQUELE ARRAY ALI COMO 
+
+
+
+sendo um array de objects 
+
+
+
+'Recipe'...
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { Recipe } from '../recipe.model';
+
+@Component({
+  selector: 'app-recipe-list',
+  templateUrl: './recipe-list.component.html',
+  styleUrls: ['./recipe-list.component.css']
+})
+export class RecipeListComponent implements OnInit {
+
+  recipes: Recipe[] = [];
+
+
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo... 
+
+
+
+definimos o type para essa property..
+
+
+
+
+
+
+
+
+
+-> UM ARRAY DE RECIPES,
+
+
+tudo certinho...
+
+
+
+
+
+AGORA O TYPESCRIPT SABE QUE TUDO QUE SERÁ ARMAZENADO 
+
+NESSA PROPRIEDADE SERÁ UM 
+
+ARRAY 
+
+DE 
+OBJECTS 
+'Recipe'...
+
+
+
+
+
+
+
+
+
+--> SÓ TIVE QUE IMPORTAR ESSE NEGÓCIO, NADA DE MAIS..
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> DENTRO DESSE ARAY,
+
+O PROFESSOR VAI QUERER CRIAR UMA NOVA RECIPE (por alguma razão, talvez para ver como isso 
+
+aparece no nosso layout)
+
+
+
+
+
+
+
+
+
+
+
+
+ELE FAZ ISSO TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { Recipe } from '../recipe.model';
+
+@Component({
+  selector: 'app-recipe-list',
+  templateUrl: './recipe-list.component.html',
+  styleUrls: ['./recipe-list.component.css']
+})
+export class RecipeListComponent implements OnInit {
+
+  recipes: Recipe[] = [
+
+      new Recipe('EXAMPLE', 'DUMMY', 'google.com' )
+
+
+  ];
+
+
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { Recipe } from '../recipe.model';
+
+@Component({
+  selector: 'app-recipe-list',
+  templateUrl: './recipe-list.component.html',
+  styleUrls: ['./recipe-list.component.css']
+})
+export class RecipeListComponent implements OnInit {
+
+  recipes: Recipe[] = [
+
+    new Recipe('EXAMPLE RECIPE', 'DUMMY', 'google.com' )
+  ];
+
+
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> professor coloca uma url da web....
+
+
+
+
+
+
+
+
+
+
+
+
+-> AGORA SEREMOS CAPAZES DE USAR ESSA 'RECIPE' mais tarde, quando formos a outputtar...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO, ESTAMOS USANDO NOSSO PRÓPRIO 'model'
+
+
+
+NO COMPONENT DE 'RECIPE LIST'...
+
+
+
+
+
+
+
+
+--> É CLARO QUE AINDA NÃO ESTAMOS VENDO NADA NOS NOSSOS COMPONENTS..
+
+
+
+
+
+
+
+
+
+
+
+--> PARA QUE CONSIGAMOS __ VER_ ALGO __ NA NOSSA PÁGINA,
+
+
+
+PRECISAMOS DO COMPORTAMENTO DE 
+
+
+'ngFor',
+
+
+
+PROVAVELMENTE 
+
+
+
+NO  __ TEMPLATE__ DA RECIPE-LIST...
+
+
+
+
+
+
+
+
+
+
+
+--> lá,
+
+
+
+
+nós por enquanto estamos 
+SO OUTPUTTANDO 
+
+
+
+auqele 
+
+
+
+
+
+<app-recipe-item>
+
+
+
+
+
+
+
+
+
+
+
+-> MAS QUEREMOS LOOPAR POR DENTRO DE TODOS OS ITEMS RECIPE NO 
+ARRAY 
+
+
+ED 
+
+'recipe',
+
+
+E AÍ 
+
+OS UTILIZAR PARA DISPLAYAR NOSSAS RECIPES...
+
+
+
+
+
+
+
+
+
+---> 
+
+
+
+
+
+
+
+---> PARA FAZER ISSO, A PRIMEIRA COISA QUE O PROFESSOR QUER FAZER 
+É 
+
+ADICIONAR UMA DIV de 'row' 
+
+com uma div de 'collumn' 
+
+logo abaixo'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ESCREVEMOS TIPO ASSIM:
+
+
+
+
+
+
+
+
+<div class="row">
+    <div class="col-xs-12">
+
+    </div>
+<app-recipe-item></app-recipe-item>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR QUER ADICIONAR ENTRE AQUELA 'DIV'
+
+
+
+UM BUTTON _ QUE FAÇA O ADD DE UMA NOVA RECIPE...
+
+
+
+
+
+
+
+
+
+-> POR ISSO ELE ESCREVE:
+
+
+
+<button class="btn btn-success">New Recipe</button>
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <button class="btn btn-success">New Recipe</button>
+  </div>
+</div>
+
+<app-recipe-item></app-recipe-item>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> AÍ VAMOS ADICIONAR OUTRO 'row'
+
+
+
+ABAIXO DESSE,
+
+
+
+QUE VAI ACTUALLY SEGURAR NOSSA 'LIST OF RECIPES'...
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR VAI NOVAMENTE USAR col-xs-12
+ 
+
+ PARA SPANNAR A 'FULL WIDTH' 
+
+ dA 'SURROUNDING DIV' (que é aquela 'col' em 'recipeBook'...)
+
+
+
+
+
+
+
+ EX:
+
+
+
+
+
+
+ <div class="row">
+  <div class="col-xs-12">
+    <button class="btn btn-success">New Recipe</button>
+  </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        
+    </div>
+</div>
+
+<app-recipe-item></app-recipe-item>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK...  VOCÊ DEVE TER EM MENTE QUE ESSE CÓDIGO TODO JÁ VAI ESTAR NESTEADO DENTRO DAQUELA COLUMN 
+
+de 
+
+
+
+'recipeBook', aquela de 'col-md-5'....
+
+
+
+
+
+
+
+
+
+
+NO SEGUNDO ROW VAMOS OUTPUTTAR NOSSOS 'RECIPE ITEMS'...:
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <button class="btn btn-success">New Recipe</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <app-recipe-item></app-recipe-item>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+--> MAIS TARDE,
+
+VAMOS OUTPUTTAR OS RECIEP ITEMS 
+
+AI´...
+
+
+
+
+
+
+
+
+
+
+MAS POR ENQUANTO VAMOS COLOCAR O CÓDIGO QUE 
+
+
+
+MAIS TARDE COLOCAREMOS MEM 'app-recipe-item' 
+
+
+
+
+
+DIRETAMENTE NESSE COMPONENT DE 
+
+
+'app-recipe-item'.. ->  ISSO 
+
+
+PQ 
+
+
+
+__ POR ENQUNATO 
+
+
+
+NÃO TEMOS NENHUMA FORMA 
+
+DE 
+
+'GETTING OUR RECIPE DATA DOWN TO THE RECIPE-ITEM'...
+
+
+(
+
+
+    SÓ VAMOS APRENDER ISSO NA _PRÓXIMA SECTION,
+
+    QUANDO APRENDERMOS A FAZER ISSO...
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+-> MAS O PROFESSOR COLOCA O CÓDIGO DE UM 'SINGLE RECIPE ITEM' aqui 
+
+na recipe list,
+
+
+diretamente,
+
+
+
+
+
+
+SÓ PARA VISUALIZAÇÃO...
+
+
+
+-->
+
+
+
+1 ÚNICO 'RECIPE ITEM'
+
+
+deve sempre 
+
+ser CLICKABLE,
+
+por isso escrevemos 
+
+
+
+
+<a href="#" class="list-group-item"></a>
+
+
+
+
+
+
+
+
+
+--> RECEBE O STYLE DE 'list-group-item' para que 
+
+
+ELE 
+
+SE PAREÇA COMO UM LIST-GROUP-ITEM NO BOOTSTRAP...
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <button class="btn btn-success">New Recipe</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+      <a href="#" class="list-group-item"></a>
+    <app-recipe-item></app-recipe-item>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR TAMBÉM ADICIONA 'CLEARFIX',
+
+
+
+
+
+
+PQ CASO CONTRÁRIO ISSO VAI PARECER 'WRONG'...
+
+
+
+
+
+
+
+
+
+'clearfix':
+
+https://www.origamid.com/codex/para-que-serve-o-clearfix/
+
+
+
+
+
+
+---------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+-> PROFESSOR nesteia uma div 
+
+
+com class de 
+
+
+
+'pull-left,'
+
+pq 
+
+ELE VAI QUERER 
+
+ESSA 
+
+CLASS 
+
+À ESQUERDA 
+
+
+ 
+ DO LIST ITEM.. --> dentro dali,
+
+ vamos querer uma h4 TAG COM A RECIPE NAME....
+
+
+
+
+
+
+
+ -> queremos que receba a class de 'list-group-item-heading'...
+
+
+
+
+
+
+VAI FICANDO TIPO ASSIM:
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <button class="btn btn-success">New Recipe</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <a href="#" class="list-group-item" clearfix>
+      <div class="pull-left">
+        <h4 class="list-group-item-heading"> Recipe Name</h4>
+      </div>
+    </a>
+    <app-recipe-item></app-recipe-item>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> ok... 
+
+
+
+
+
+--> EMBAIXO ELE VAI QUERER  UM '<p>'
+
+
+
+COM CLASS 
+
+de 
+
+
+list-group-item-text...
+
+
+
+
+
+
+
+
+--> TEREMOS A DESCRIPTION DA RECIPE..
+
+
+
+
+
+
+
+-> 
+
+
+EX:
+
+
+
+
+
+
+<!-- <ul>
+    <app-recipe-item></app-recipe-item>
+</ul> -->
+
+<div class="row">
+  <div class="col-xs-12">
+    <button class="btn btn-success">New Recipe</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <a href="#" class="list-group-item" clearfix>
+      <div class="pull-left">
+        <h4 class="list-group-item-heading">Recipe Name</h4>
+        <p class="list-group-item-text">Description</p>
+      </div>
+    </a>
+    <app-recipe-item></app-recipe-item>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+-> DEPOIS DISSO O PROFESSOR ADICIONA UM 'span',
+
+
+E DENTRO DELE VAMOSQ QUERER OUTPUTTAR NOSSA IMAGE....
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+<span class="pull-right">
+    <img src="" alt=""  class="img-responsive">
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -> PROFESSOR COLOCA UMA CLASS DE 'img-responsive' para que 
+    O 
+
+    BOOTSTRAP FAÇA O RESIZE DESSE CONTEÚDO __ PARA NÓS_...
+
+
+
+
+
+
+    --> ESSE CONTEÚDO TODO 
+
+    ENTRARÁ 
+
+    NO COMPONENT 
+
+
+    DE
+
+    'app-recipe-item'
+
+    ,
+
+
+
+    NA PRÓXIMA COURSE SECTION...
+
+
+
+
+    ex:
+
+
+
+
+
+    <div class="row">
+  <div class="col-xs-12">
+    <button class="btn btn-success">New Recipe</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <a href="#" class="list-group-item" clearfix>
+      <div class="pull-left">
+        <h4 class="list-group-item-heading">Recipe Name</h4>
+        <p class="list-group-item-text">Description</p>
+      </div>
+    
+
+    </a>
+    <app-recipe-item></app-recipe-item>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <button class="btn btn-success">New Recipe</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <a href="#" class="list-group-item" clearfix>
+      <div class="pull-left">
+        <h4 class="list-group-item-heading">Recipe Name</h4>
+        <p class="list-group-item-text">Description</p>
+      </div>
+      <span class="pull-right">
+          <img src="" alt="" class="img-responsive">
+      </span>
+    </a>
+    <app-recipe-item></app-recipe-item>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+-> MAS UMA ÚLTIMA COISA QUE QUEREMOS FAZER É 
+
+COLOCAR UM INLINE STYLE 
+
+
+NA IMAGEM, UM INLINE STYLE DE 'max-height: 50px',
+
+
+
+PARA QUE NÃO CONSIGAMOS EXCEDER O LIMITE DA IMAGE,
+
+
+E OBRIGUEMOS O BOOTSTRAP A FAZER O RESIZE APROPRIADAMENTE....
+
+
+
+
+
+
+
+
+-. SINTA-SE À vontade para 
+
+melhorar esse código...
+
+
+
+
+
+
+
+
+
+--> O OBJETIVO É REPLICAR 
+
+ESSE COMPONENT E 
+
+PASSAR A DATA DINÂMICA 
+
+
+NOS SLOTS DE 
+
+
+'Recipe Name' 
+
+'Description'
+
+
+' 
+'img src="" '
+
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <button class="btn btn-success">New Recipe</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <a href="#" class="list-group-item" clearfix>
+      <div class="pull-left">
+        <h4 class="list-group-item-heading">Recipe Name</h4>
+        <p class="list-group-item-text">Description</p>
+      </div>
+      <span class="pull-right">
+          <img src="" alt="" class="img-responsive" style="max-height: 50px">
+      </span>
+    </a>
+    <app-recipe-item></app-recipe-item>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ESSA É A NOSSA CHALLENGE:
+
+
+
+TEMOS UM COMPONET 'RECIPE-LIST',
+
+
+COM ESSE ARRAY DE 
+
+
+'recipes'...
+
+
+
+
+
+
+-> O ARRAY SÓ SEGURA 1 ÚNICO ITEM ATÉ AGORA,
+
+
+
+
+MAS AINDA ASSIM COM ESSE ÚNICO ITEM,
+
+
+
+
+
+
+
+VOCê DEVE SER CAPAZ DE 
+
+REPLICAR ESSA PARTE DE 
+
+
+
+''
+
+<div class="row">
+  <div class="col-xs-12">
+    <button class="btn btn-success">New Recipe</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <a href="#" class="list-group-item" clearfix>
+      <div class="pull-left">
+        <h4 class="list-group-item-heading">Recipe Name</h4>
+        <p class="list-group-item-text">Description</p>
+      </div>
+      <span class="pull-right">
+          <img src="" alt="" class="img-responsive" style="max-height: 50px">
+      </span>
+    </a>
+    <app-recipe-item></app-recipe-item>
+  </div>
+</div>
+
+
+
+
+''
+
+
+
+QUANTAS VEZES VOCê QUISER,
+
+POR MEIO DE 
+
+'ngFor'...,
+
+
+
+
+
+
+
+
+E AÍ __ 
+
+
+PREENCHER_ 
+
+
+'name' 
+
+'description' 
+
+e 
+
+
+'img src' 
+
+
+
+COM OS CORRETOS VALUES PARA ESSA RECIPE...
+
+
+
+
+
+
+
+
+
+-> DEVEMOS TENTAR FAZER ISSO POR CONTA PRÓPRIA....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TENTEI ESCREVER ASSIm:
+
+
+
+
+
+
+
+<div class="row">
+    <div class="col-xs-12">
+      <a href="#" class="list-group-item" clearfix>
+        <div class="pull-left">
+          <h4 class="list-group-item-heading">{{recipe.name}}</h4>
+          <p class="list-group-item-text">{{recipe.description}}</p>
+        </div>
+        <span class="pull-right">
+          <img src="{{recipe.imagePath}}" alt="" class="img-responsive" style="max-height: 50px" />
+        </span>
+      </a>
+    </div>
+  </div>
+  
+
+
+
+
+
+  --> MAS GANHEI ERRORS...
+
+
+
+
+
+
+
+
+
+
+
+
+  -> COMO DIABOS PASSO A PROPRIEDADE DE 'recipe'
+
+
+
+
+  para dentro de cada component?
+
+
+
+
+
+
+
+-> preciso de algo parecido com 'passar props'...
+
+
+
+
+
+https://medium.com/@benhickson/how-to-pass-down-props-in-angular-9-and-10-546879e68ae1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CONSEGUI FAZER FUNCIONAR... MAS O CÓDIGO É BEM ESTRANHO...
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+ISTO É 
+
+
+'recipelist':
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { Recipe } from '../recipe.model';
+
+@Component({
+  selector: 'app-recipe-list',
+  templateUrl: './recipe-list.component.html',
+  styleUrls: ['./recipe-list.component.css']
+})
+export class RecipeListComponent implements OnInit {
+
+  recipes: Recipe[] = [
+
+    new Recipe('CHICKEN WINGS', 'DUMMY', 'google.com' )
+  ];
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+E ISTO:
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <button class="btn btn-success">New Recipe</button>
+  </div>
+</div>
+  <div *ngFor="let recipe of recipes">
+    <app-recipe-item 
+    [recipeName]="recipe.name"
+    [recipeDescription]="recipe.description"
+    [recipeImagePath]="recipe.imagePath"
+    >
+    </app-recipe-item>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+JÁ EM 'recipeItem'
+
+fiquei com ISTO:
+
+
+
+
+
+<div class="row">
+    <div class="col-xs-12">
+      <a href="#" class="list-group-item" clearfix>
+        <div class="pull-left">
+          <h4 class="list-group-item-heading">{{recipeName}}</h4>
+          <p class="list-group-item-text">{{recipeDescription}}</p>
+        </div>
+        <span class="pull-right">
+          <img src="{{recipeImagePath}" alt="" class="img-responsive" style="max-height: 50px" />
+        </span>
+      </a>
+    </div>
+  </div>
+  
+
+
+
+
+
+
+
+
+
+  E ISTO:
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+
+import { Input } from '@angular/core';
+
+@Component({
+  selector: 'app-recipe-item',
+  templateUrl: './recipe-item.component.html',
+  styleUrls: ['./recipe-item.component.css']
+})
+export class RecipeItemComponent implements OnInit {
+
+
+  @Input() recipeImagePath: string = '';
+  @Input() recipeName: string = '';
+  @Input() recipeDescription: string = '';
+
+
+
+  constructor() { }
+
+
+
+
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OU SEJA, FUI OBRIGADO A USAR ESSE 
+
+
+
+IMPORT DE 
+
+'@Input()'..
+
+
+
+
+
+
+-> É ESSE INPUT AÍ,
+
+
+E ESSA SINTAXE BIZARRA, QUE FEZ O CÓDIGO FUNCIONAR....
+

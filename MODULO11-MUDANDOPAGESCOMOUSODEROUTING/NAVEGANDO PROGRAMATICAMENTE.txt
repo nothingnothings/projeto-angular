@@ -1,0 +1,894 @@
+
+
+
+
+
+
+
+
+
+
+
+-> ESSA AULA PROVAVELMENTE SERÁ 
+
+
+SOBRE O USO DE 
+
+arquivos ts 
+
+
+PARA _ REDIRECIONAR NOSSO USER...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> JÁ VIMOS UM MONTE DE COISAS:
+
+
+
+
+1) COMO ADICIONAR 
+
+ROUTES 
+
+
+
+
+
+
+2) COMO CARREGAR ROUTES....  (
+
+    tanto por 
+    meio do TYPE MANUAL DE ROUTES NA URLBAR,
+
+
+    como por meio de LINKS...
+)
+
+
+
+
+3) APRENDEMOS A ESTILIZAR ESSES LINKS COM A DIRECTIVE DE 
+
+'routerLinkActive'
+
+e 
+
+'routerLinkActiveOptions' (consertou o problema do 'home sempre está selecionado/iluminado')..
+
+
+
+
+
+
+
+
+
+
+---> OK,
+
+
+
+MAS E SE AGORA 
+
+NÓS QUISESSEMOS FAZER 'LOAD' 
+
+DE UMA ROUTE PROGRAMATICAMENTE? 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> OU SEJA,
+
+NESSE CASE NÃO TEREMOS UM LINK EM QUE O USER PODERÁ CLICAR,
+
+
+
+
+
+
+
+e sim 
+
+
+'uMA OPERAÇÃO ACABOU',
+
+
+OU O USER _ CLICOU ALGUM BUTTON,
+
+
+
+
+
+
+
+
+
+algo que _ AÍ _ FAZ NÓS QUERERMOS __ TRIGGAR A NAVIGATION __ LÁ DE NOSSO CÓDIGO TYPESCRIPT...
+
+
+
+
+
+
+
+
+
+
+
+
+----> podemos fazer isso, sim...
+
+
+
+
+
+
+
+
+
+
+
+
+-> DIGAMOS QUE NO NOSSO COMPONENT DE 'home.component.html'
+
+
+UM _ NOVO BUTTON SEJA ADICIONADO,..
+
+
+
+
+
+
+
+
+eX:
+
+
+
+
+
+<h4>Welcome to Server Manager 4.0</h4>
+<p>Manage your Serve rs and Users.</p>
+<button>Load Servers</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK, SE ESSE BUTTON FOSSE CLICADO,
+
+
+
+
+O PROFESSOR DIZ QUE PROVAVELMENTE 
+
+
+
+
+
+USARÍAMOS O 'routerLink' 
+
+
+e 
+
+
+o 
+
+'routerLinkActive',
+
+
+
+
+MAS QUE 
+
+
+AQUI 
+
+
+
+
+ELE __ VAI QUERER FAZER UM APPROACH DIFERENTE,
+
+
+
+
+NAVIGATE PROGRAMATICO,
+
+
+
+
+POR ISSO 
+
+
+ELE DECIDE VINCULAR NOSSO BUTTON A UM 'CLICK'....
+
+
+
+
+
+
+
+
+
+
+------> O PROFESSOR DIZ QUE VAI QUERER NAVIGATE PROGRAMATICALLY com esse exemplo 
+
+TAMBÉM 
+
+
+PQ 
+
+FAREMOS' ALGUMAS COISAS EXTRS' além do 'navigate' dentro de nosso component 'servers'...
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGo
+
+
+
+
+
+
+
+VAI FICANDO ASSIM:
+
+
+
+
+
+
+
+
+
+<h4>Welcome to Server Manager 4.0</h4>
+<p>Manage your Servers and Users.</p>
+<button class="btn btn-primary" (click)="onLoadServers()">Load Servers</button>
+
+
+
+
+
+
+
+
+
+
+
+----> OK.... VAMOS QUERER RODAR ESSE 
+
+
+METHOD DE 
+
+
+'onLoadServers()'..
+
+
+
+
+
+
+
+
+
+
+
+
+-> O METHOD DE 'onLoadServers() {
+
+}
+,
+
+
+
+
+
+
+O __ PROFESSOR TAMBÉM VAI QUERER 'NAVIGATE'
+ 
+
+
+
+
+
+ __ AO COMPONENT DE 'SERVERS'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ---> ISSO QUER DIZER QUE NESSE EXEMPLO 
+
+
+
+
+
+
+ _TAMBÉM PODERÍAMOS USAR UM 'routerLiNK'... ---. MAS O PROFESSOR DECIDE NÃO FAZER ISSO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ tem o 'onLoadServers() {}' 
+
+
+
+
+
+
+
+
+
+
+
+
+--> vamos querer fazer 'navigate' 
+
+
+de 
+
+
+
+'home' ----> 'servers component'
+ 
+
+
+
+
+
+
+
+ -> É CLARO QUE, PARA ISSO,
+
+ SERIA POSSÍVEL USAR UM 'routerLink' 
+
+
+ em uma anchor tag,
+
+
+
+
+ MAS _O  PROFESSOR_ diz que devemos IMAGINAR que 
+
+ aqui 
+
+ vamos ter alguma 'complex calculation' enquanto o user é redirecionado,
+
+
+
+
+ ou então fazemos 'reach out' ao backend para 
+
+
+
+ armazenar algo no server.... ------> e aí, quando isso estiver 
+
+
+ acabado,
+
+
+ vamos querer 'navigate away'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> PORTANTO, ESSE NAVIGATE AWAY SERÁ FEITO LÁ DE DENTRO DO METHOD 'onLoadServers'
+
+
+ em 'home.component.ts'...
+
+
+
+
+
+
+
+
+
+ o código inicial fica assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> a primeira coisa que precisamos fazer, aqui,
+
+é 
+
+
+
+'''CONSEGUIR ACESSO AO NOSSO ROUTER, DE DENTRO DESSE COMPONENT.TS'''...
+
+ 
+
+
+
+
+
+ -> pq vamos querer dizer ao 
+
+
+ router,
+
+
+
+ '''HEY, POR FAVOR,
+
+ FAÇA __ NAVIGATE__ AROUND __ ATÉ ESSA OUTRA PAGE ALI'...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> AS BOAS NOTÍCIAS É QUE PODEMOS __ SIMPLESMENTE_ INJETAR_ _ESSE ROUTER...
+
+
+
+
+
+
+
+
+
+ ----> PARA INJETAR UM ROUTER EM 1 COMPONENT ALEATÓRIO,
+
+
+
+
+VOCê _ SEGUE UM APPROACH SIMILAR AO 
+
+DO IMPLEMENT DE SERVICES,
+
+
+
+
+que é justamente 
+
+
+
+
+COLOCAR O ROUTER COMO PROPRIEDADE/inicializar COMO PROPRIEDADE 
+
+
+
+PRIVATE _ NO CONSTRUCTOR DE SEU COMPONENT, TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+contructor(private router: Router) {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> DE NOVO, ISSO SERÁ IMPORTADO LÁ DE '@angular/router'...
+
+
+
+
+
+
+
+
+
+
+-> O CÓDIGO FICA ASSIM:
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { Router } from '@angular/router';   //quando usamos nosso router dentro de component.ts, vamos fazer o NAVIGATE PROGRAMÁTICO DO USUÁRIO, através de METHODS... (E não através de links e 'routerLink', como é o comum)...
+
+
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent implements OnInit {
+
+  constructor(private router: Router) { }
+
+  ngOnInit(): void {
+  }
+
+
+
+
+  onLoadServers() {
+    
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> CERTO.... AÍ AGORA TEMOS 
+
+'this.router',
+
+
+
+QUE SERÁ USADO DENTRO DE 
+
+
+
+
+'onLoadServers'
+
+
+PARA _ CARREGAR/REDIRECIONAR NOSSO USER À PAGE DE 'Servers'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, MAS QUAL É O METHOD  QUE VAMOS QUERER EXECUTAR? 
+
+
+
+
+
+
+
+
+
+
+
+
+--> O METHOD MAIS IMPORTANTE É O '.navigate'...
+
+
+
+
+
+
+
+
+----> O NAVIGATE _ EXIGE_ UM ARGUMENT EM QUE ESPECIFICAMOS 
+
+
+
+
+'A QUE ROUTE DEVEMOS NAVIGATE'...
+
+
+
+
+
+
+
+
+
+---> E UMA __ ROUTE__ É UM 
+
+
+'ARRAY' 
+
+
+DOS SINGLE/MÚLTIPLOS ELEMENTS DO PATH A QUE VOCÊ QUER NAVIGATE...
+
+
+
+
+
+
+
+
+
+
+
+
+---> ou seja,
+
+
+
+
+é exatamente a mesma coisa que fizmos em '[routerLink]'=['/users', 'user', 'name', '1']'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ISSO QUER DIZER QUE SE NÓS QUEREMOS 'NAVIGATE' ATÉ A URL DE 
+
+
+
+
+
+'localhost:4200/servers',
+
+
+
+
+
+BASTA ESCREVER ASSIM:
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { Router } from '@angular/router';   //quando usamos nosso router dentro de component.ts, vamos fazer o NAVIGATE PROGRAMÁTICO DO USUÁRIO, através de METHODS... (E não através de links e 'routerLink', como é o comum)...
+
+
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent implements OnInit {
+
+  constructor(private router: Router) { }
+
+  ngOnInit(): void {
+  }
+
+
+
+
+  onLoadServers() {
+    this.router.navigate(['/servers']);
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+-_> O PROFESSOR COLOCOU UM ABSOLUTE PATH...
+
+
+
+
+
+
+-->  O PROFESSOR DIZ QUE PODERÍAMOS COLOCAR um 'relative path'  auqi,
+
+
+
+
+
+MAS QUE __ ISSO É PROBLEMÁTICO,
+
+
+PQ TEMOS QUE 
+
+'CUIDAR COM WHAT THIS IS RELATIVE TO'.... ---> MAIS TARDE VEREMOS O QUE ELE QUER DIZER POR ISSO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok, fazemos tudo isso,
+
+
+checamos nossa page,
+
+e vemos que isso está funcionando... (e  mesmo assim, não acabamos 'reloading' a nossa page)... --> 
+
+
+
+
+
+MAS A VANTAGEM DE 
+
+'this.router.navigate()'
+
+
+
+É QUE ISSO TRIGGA O NAVIGATE PROGRAMATICAMENTE, DENTRO DE NOSSO CÓDIGO...

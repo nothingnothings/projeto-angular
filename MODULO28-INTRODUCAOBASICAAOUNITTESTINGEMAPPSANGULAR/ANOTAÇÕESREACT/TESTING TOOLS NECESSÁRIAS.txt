@@ -1,0 +1,246 @@
+
+
+
+
+
+
+--> OK, TESTING É BOM... MAS COMO ___TESTAMOS ALGUMA COISA___?
+
+
+
+
+
+
+
+
+
+
+
+
+---> PRECISAMOS DE 
+
+2 FERRAMENTAS PARA ESCREVER BONS TESTES E PARA 
+
+TESTAR NOSSO APLICATIVO...
+
+
+
+
+
+
+
+
+
+
+
+1A FERRAMENTA --> o 'TEST RUNNER' ----> é uma ferramenta que É BASICAMENTE RESPONSÁVEL 
+
+POR 
+
+___EXECUTAR___ NOSSOS TESTS___...  ('Executes tests and provides validation library')...
+
+ 
+ ---> FAZ O RUN DO CODE E NOS PROVIDENCIA UMA 'VALIDATION LIBRARY'... --> essa validation library NOS 
+ DEIXA RODAR ALGUMAS 'COMPARATIONS', e potencialmente faz THROW DE alguns erros...
+
+
+
+
+
+
+
+ --> a ideia por TRÁS DOS UNIT TESTS É QUE __eLES NÃO RODAM NO BROWSER__,
+
+
+ E SIM RODAM NO NODE.JS... -------> ENTRETANTO, ESSES 
+
+ TEST RUNNERS 
+
+
+ FREQUENTEMENTE __eMULAM__/SIMULAM QUE ESTÃO 
+
+ EM UM BROWSER, EM UM BROWSER ENVIRONMENT,
+
+
+ TUDO 
+
+ COM A AJUDA 
+
+ DE 
+
+ PACKAGES ESPECÍFICAS DE JAVASCRIPT....
+
+
+
+
+
+
+
+
+
+ -----> O TEST RUNNER, ENTÃO, É A 'CORE TOOL'  QUE 
+
+ __SIMPLESMENTE ___ EXECUTA __ NOSSO CÓDIGO usando esse environment simulado....
+
+
+
+
+
+
+
+ ----> E A BOA NOTÍCIA É QUE 
+
+ O 
+
+ 'CREATE-REACT-APP' já vem 
+
+
+ com um 
+
+ TESTING ENVIRONMENT PRÉ-CONFIGURADO.... ------> QUE É O _JEST__... --------> 
+
+
+
+ E O JEST JÁ É INSTALADO/FICA INSTALADO QUANDO CRIAMOS UM APLICATIVO COM 
+
+ 'CREATE-REACT-APP'... ------> E É UMA FERRAMENTA 
+
+ POPULAR 
+
+ JAVASCRIPT... ---> ela não é exclusiva do react, 
+
+ mas 
+
+ é 
+
+ frequentemente 
+
+ usada 
+
+ com 
+ 
+ react...
+
+ ----------------------------
+
+
+
+
+ MAS QUANDO 
+
+ TRABALHAMOS 
+
+
+COM REACT e components, PRECISAMOS 
+
+DE UMA 
+
+MANEIRA DE EMULAR 
+
+ESSES COMPONENTS,
+
+
+DE BASICAMENTE OS MONTAR A UM DOM NÃO EXISTENTE,
+
+ E ENTÃO FAZER 'traverse' deles.... ------> e nós certamente 
+
+ queremos 
+
+ FAZER ISSO 
+
+ DE UMA 
+
+ MANEIRA 
+ EFICIENTE,
+
+ UMA 
+
+ MANEIRA 
+ QUE 
+
+ NÃO ENVOLVA O 'CREATE' DE UMA 'ACTUAL COMPONENT TREE'... --> 
+
+
+ é 
+
+ aí que 
+
+
+ entra em ação o 'puppeteer',
+
+
+ que 
+
+ é uma 
+
+ PACKAGE 
+
+ QUE 
+
+
+ NOS DEIXA 
+
+ TESTAR 
+
+
+
+ COISAS 
+
+
+ DE BROWSER __SEM ABRIR O BROWSER/BROWSER INVISÍVEL (sem o dom)....
+
+
+ -----------------------------------------------
+
+
+
+
+
+ ----> PRECISAMOS DE 'TESTING UTILITIES'... --> NOS AJUDAM COM O TESTNIG... --> especificamente precisamos 
+
+
+
+ de 
+
+ 'react test utils'............ --- >mas 
+
+
+ dizem que 
+
+ UMA FERRAMENTA MELHOR DO QUE ESSA É __ A 
+ 'ENZYME'... (sugerida pela REACT TEAM...) 
+
+
+
+
+
+ ENZYME --> é uma ferramenta DESENVOLVIDA PELA ___AIR BNB___... ---> ESSA FERRAMENTA DEIXA FÁCIL O TRABALHO DE 'MOUNT COMPONENTS' e então o 'traverse' por eles...
+
+
+
+
+
+
+
+ --> PROFESSOR VAI NOS MOSTRAR 
+
+
+ COMO USAR 
+
+ 'react test utils' 
+
+ e 
+ 'enzyme' 
+
+ durante este curso...
+
+
+
+
+
+
+
+
+ --> A PERGUNTA FINAL É: 
+
+ MAS O QUE DEVEMOS TESTAR?

@@ -1,0 +1,1534 @@
+
+
+
+
+
+
+
+
+
+
+
+NOSSO CÓDIGO QUE FAZ 'PROGRAMMATIC NAVIGATION' FICOU ASSIM:
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { Router } from '@angular/router';   //quando usamos nosso router dentro de component.ts, vamos fazer o NAVIGATE PROGRAMÁTICO DO USUÁRIO, através de METHODS... (E não através de links e 'routerLink', como é o comum)...
+
+
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent implements OnInit {
+
+  constructor(private router: Router) { }
+
+  ngOnInit(): void {
+  }
+
+  onLoadServers() {
+    this.router.navigate(['/servers']); /////É ASSIM QUE FAZEMOS 'NAVIGATE' programaticamente.... --> o argumento é o 'absolute path' (ou relative, se não tiver '/') a que VAMOS QUERER NAVIGATE O USER....
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+<h4>Welcome to Server Manager 4.0</h4>
+<p>Manage your Servers and Users.</p>
+<button class="btn btn-primary" (click)="onLoadServers()">Load Servers - Programmatic navigation</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok... 
+
+
+
+
+
+
+MAS NESSE EXEMPLO NÓS ESCREVEMOS O 'NAVIGATE PROGRAMATICALLY'
+
+por meio 
+
+
+do pass de um 
+
+ABSOLUTE PATH, 
+
+
+
+
+que foi aquele 
+
+
+
+'/servers'...
+
+
+
+
+
+
+
+que aí ficou localhost:4200/servers...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS AGORA VAMOS VER _ COMO _ PODEMOS__ 
+
+USAR _ RELATIVE __ PATHS__ 
+
+
+
+
+
+COM NOSSA PROGRAMMATICAL NAVIGATION..
+
+
+
+
+
+
+
+
+
+
+
+-> VAMOS USAR O COMPONENT DE 
+
+'servers.component.html'
+
+
+de exemplo...
+
+
+
+
+
+
+
+
+--> ELE TERÁ UM BUTTON ASSIM:
+
+
+
+<button class="btn btn-primary" (click)="onReload()"> Reload Page</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok,
+
+
+AÍ CODAMOS O 
+
+
+'onReload'
+
+
+
+no method de 
+
+
+'servers.component.html',
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+
+import { ServersService } from './servers.service';
+
+
+@Component({
+  selector: 'app-servers',
+  templateUrl: './servers.component.html',
+  styleUrls: ['./servers.component.css']
+})
+export class ServersComponent implements OnInit {
+
+
+
+  public servers: {id: number, name: string, status: string}[] = [];
+
+  constructor(private serversService: ServersService) { }
+
+  ngOnInit(): void {
+    this.servers = this.serversService.getServers();
+  }
+
+
+  onReload() {
+    
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12 col-sm-4">
+    <div class="list-group">
+      <a href="#" class="list-group-item" *ngFor="let server of servers">
+        {{ server.name }}
+      </a>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4">
+    <!-- <a routerLink="servers">Reload Page</a> EIS O CÓDIGO EM QUESTÃO... relative path, string é adicionada como segment AO LADO DE TODOS OS ANTECEDENTES, no final... -->
+    <a routerLink="/servers">Reload Page</a> <!-- ABSOLUTE PATH, substitui o PATH INTEIRO -->
+    <button class="btn btn-primary" (click)="onReload()">Reload Page - programmatic navigation, with relative paths</button> 
+    <app-edit-server></app-edit-server>
+    <hr />
+    <app-server></app-server>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK...
+
+
+
+
+
+
+
+ESSE 'onReload'
+
+
+vai simplesmente 
+
+
+
+
+
+
+
+SER __ UM METHOD __ 
+
+
+
+
+
+QUE _ VAI QUERER USAR AQUELE 
+
+
+
+
+
+NEGÓCIO DO ROUTER,
+
+o router que é injetado 
+
+
+
+nesse component,
+
+
+através do código de 
+
+
+
+'private router:Router'
+
+no constructor....
+
+
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+
+
+import { ServersService } from './servers.service';
+
+
+@Component({
+  selector: 'app-servers',
+  templateUrl: './servers.component.html',
+  styleUrls: ['./servers.component.css']
+})
+export class ServersComponent implements OnInit {
+
+
+
+  public servers: {id: number, name: string, status: string}[] = [];
+
+  constructor(private serversService: ServersService, private router: Router) { }   ///vamos usar o PACOTE de 'router' _ PARA CONSEGUIR 'NAVIGATE PROGRAMMATICALLY'...
+
+  ngOnInit(): void {
+    this.servers = this.serversService.getServers();
+  }
+
+
+  onReload() {
+      
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> ok.... 
+
+
+
+
+
+
+
+AGORA DIGAMOS QUE ESCREVEMOS 
+
+
+'this.router.navigate(['/navigate'])' 
+
+
+
+
+
+
+
+
+
+
+
+
+-> SE RECARREGARMOS A PAGE E CLICARMOS NESSE BUTTON,
+
+NADA ACONTECERÁ,
+
+
+
+
+PQ __ CONTINUAREMOS NESSA PAGE DEW 
+
+
+
+'servers'... -----> TECNICAMENTE 
+
+
+
+ISSO __ CONTINUA NA MESMA PAGE,
+
+
+
+
+
+O ANGULAR 
+
+
+
+
+
+
+SIMPLESMENTE DETERMINA QUE 'ESTAMOS NESSA MESMA PAGE AÍ,
+
+POR ISSO NENHUMA AÇÃO ADICIONAL É NECESSÁRIA'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> MAS DIGAMOS QUE 
+
+
+
+__ TIRAMOS O '/'
+
+
+no início desse path,
+
+
+transformando-o em 
+
+
+
+
+um __
+RELATIVE PATH....
+
+
+
+
+
+
+
+
+
+
+
+----> COMO AINDA 'ESTAMOS NO COMPONENT DE SERVERS',
+
+
+
+
+isso é levado em consideração no código de 
+
+
+'''this.router.navigate(['navigate'])' '''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... -> 
+
+
+
+SE RECARREGARMOS A PAGE E CLICARMOS NO BUTTON,
+
+
+
+__ AINDA NÃO VAMOS RECEBER UM ERROR,
+
+POR ALGUMA RAZÃO....
+
+
+
+
+
+
+
+
+
+
+--> ISSO PODE PARECER ESTRANHO,
+ 
+
+ PQ ANTES, 
+
+
+
+
+ QUANDO __ USAMOS _ O ROUTERLINK,
+
+
+
+
+ _ NÓS VIMOS QUE 
+
+
+ _- NÓS CONSEGUIMOS UM ERROR,
+
+
+ PQ 
+
+
+ ELE 
+
+ TENTOU 
+
+ ACESSAR UM 
+
+ LINK DE 
+
+
+ localhost:4200/servers/servers,
+
+
+
+
+
+ E ESSA ROUTE __ NÃO EXISTIA (tentava acrescentar '/servers' ao final do path),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+_ É POR ISSO QUE 
+
+A PERGUNTA É 
+
+
+
+
+''''PQ ISSO __ FUNCIONA FINE (sem error mostrado, mas sem conteúdo acontecendo/página carregando),
+
+quando usamos o PACOTE ROUTER, com esse navigate programático, por meio de '.navigate()'?''''
+
+
+
+
+
+
+
+
+--> ISSO ACONTECE PQ __, AO CONTRÁRIO DE 
+
+
+'routerLink',
+
+
+O 
+
+
+METHOD DE '.navigate()'
+
+
+
+__ NÃO __ SABE_  ''''EM QUE ROUTE VOCÊ ESTÁ _ CURRENTLY ON''',
+
+por assim dizer... -------> 
+
+
+
+
+
+
+
+ISSO QUER DIZER QUE 
+
+
+O 
+
+'routerLink'
+
+
+
+_sEMPRE__ SABE '''EM QUE COMPONENT ELE ESTÁ RESIDINDO'',
+
+
+EM QUE 
+
+_'TEMPLATE' do seu component..... --> E É EXATAMENTE POR ISSO QUE O 
+
+'routerLiNK'
+
+
+
+_ SABE __ 
+
+EM QUE __ 
+
+'ROUTE' ELE ESTÁ....
+
+
+
+
+
+
+
+
+
+---------> AQUI VOCÊ PODERIA ARGUMENTAR QUE 
+
+o 
+
+
+'this.router.navigate('xx')"
+
+
+
+DEVERIA 
+
+
+SABER QUE 
+
+
+ESTAMOS 
+
+O CHAMANDO DENTRO DO CÓDIGO TYPESCRIPT DESSE GIVEN COMPONENT,
+
+
+
+
+O QUE FARIA COM QUE ELE CONSEGUISSE 'TELL ON WHICH COMPONENT IT RESIDES'...
+
+
+
+
+
+
+
+
+
+
+-----> É POR ISSO QUE, PARA _ DIZER_ AO 
+
+
+
+
+
+
+METHOD DE 'navigate',
+
+
+
+PARA COMUNICAR A ELE __ 
+
+
+
+__ QUAL_ ROUTE NÓS ESTAMOS 'CURRENTLY IN',
+
+
+
+
+
+NÓS __ TEMOS QUE PASSAR UM SEGUNDO PARÂMETRO A ELE,
+
+
+QUE É UM OBJECT JAVASCRIPT... -->
+
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER QUE O CÓDGO VAI FICANDO ASSIM:
+
+
+
+
+
+
+
+
+  onReload() {  //aqui mostramos como é o pass de um RELATIVE PATH a esse method de 'navigate', que faz o navigate programático...
+      this.router.navigate(['servers'], {})  // o segundo parâmetro é o CONFIG OBJECT desse method, que vai ALTERAR A MANEIRA PELA QUAL OCORRE O 'navigate'...
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ------> ok,
+
+
+
+
+
+
+  PODEMOS CONFIGURAR ESSA ACTION DE NAVIGATE...
+
+
+
+
+
+
+
+
+
+  --> O PROFESSOR VOLTARÁ A ISSO, OBJECT CONFIG,
+
+  PQ __ 
+
+
+
+
+  TEREMOS MAIS COISAS SOBRE ISSO NO FUTURO.l..
+
+
+
+
+
+
+
+
+  -> MAS UMA DAS COISAS QUE PODEMSO CONFIGURAR É A 
+
+  KEY DE 
+
+  'relativeTo'....
+
+
+
+
+
+
+
+
+
+
+
+  ------> NESSA PROPRIEDADE NÓS DEFINIMOS 
+
+
+
+  '' RELATIVO A QUAL ROUTE ESSE LINK DEVE SER CARREGADO''' ------> __ e o default _ É SEMPRE 
+  O 
+
+
+  'ROOT DOMAIN',
+
+
+
+
+  e essa é a razão de NÃO TERMOS OBTIDO AQUELE ERRO COM o write de 'servers',
+
+
+
+
+  pq 'srvers' 
+
+
+
+  foi adicionado 
+
+
+
+
+  AO LINK DE 'localhost:4200'...
+
+
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+  
+  onReload() {  //aqui mostramos como é o pass de um RELATIVE PATH a esse method de 'navigate', que faz o navigate programático...
+      this.router.navigate(['servers'], {
+          relativeTo:   ///o default é o 'ROOT DOMAIN' de nosso app, que nesse caso é 'localhost:4200'...
+
+      })  // o segundo parâmetro é o CONFIG OBJECT desse method, que vai ALTERAR A MANEIRA PELA QUAL OCORRE O 'navigate'...
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ----> MAS QUANDO PASSAMOS 'relativeTo',
+
+
+  PRECISAMOS _ ENTREGAR __ UMA 'ROUTE' COMO VALUE...
+
+
+
+
+
+
+
+
+
+  --> PARA _ CONSEGUIR __ ESCREVER A ROUTE AQUI,
+
+
+
+
+
+
+  PRECISAMOS _ IMPORTAR UM PACOTE ESPECIAL,
+
+  PQ A 
+
+  'ROUTE' É _ ALGO QUE _ 
+
+
+
+  PODEMOS/DEVEMOS _ INJETAR _ 
+
+
+
+  NESSE SLOT AÍ...
+
+
+
+
+
+
+
+
+
+
+
+
+  --> PARA CONSEGUIR A '''ROUTE ATUALMENTE ATIVA''',
+
+
+
+  devemos manipular o CONSTRUCTOR DE 'servers.component.ts',
+
+
+
+
+
+
+EM QUE 
+
+
+VAMOS COLOCAR OUTRA PROPRIEDADE 'private' (assim como 'ServersService' e 'router'),
+
+
+
+
+que 
+
+
+será 
+
+
+
+a propriedade de 
+
+
+
+'route'...
+
+
+
+
+
+
+
+
+
+
+
+--> assim, nosso constructor, altamente injetado, fica assim:
+
+
+
+
+
+
+
+constructor(
+    private serversService,
+    private router: Router,
+    private route: ActivatedRoute
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E ESSE TYPE DE 'ActivatedRoute'
+
+
+
+é  __ essencial,
+
+VOCÊ PRECISA O IMPORTAR LÁ DO PACKAGE DE 
+
+
+
+'@angular/router'..
+
+
+
+
+
+
+
+
+
+
+-> PORTANTO, O CÓDIGO VAI FICANDO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+
+
+import { ServersService } from './servers.service';
+
+
+@Component({
+  selector: 'app-servers',
+  templateUrl: './servers.component.html',
+  styleUrls: ['./servers.component.css']
+})
+export class ServersComponent implements OnInit {
+
+
+
+  public servers: {id: number, name: string, status: string}[] = [];
+
+  constructor(private serversService: ServersService, 
+    private router: Router, ///vamos usar o PACOTE de 'router' _ PARA CONSEGUIR 'NAVIGATE PROGRAMMATICALLY'...
+    private route: ActivatedRoute  ///você deve usar esse pacote de 'ActivatedRoute' __ SE VOCê ACHA _ QUE VAI PASSAR UM 'RELATIVE PATH' ao 'this.router.navigate()'...
+    
+    
+    ) { }   
+
+  ngOnInit(): void {
+    this.servers = this.serversService.getServers();
+  }
+
+
+  onReload() {  //aqui mostramos como é o pass de um RELATIVE PATH a esse method de 'navigate', que faz o navigate programático...
+      this.router.navigate(['servers'], {
+          relativeTo:   ///o default é o 'ROOT DOMAIN' de nosso app, que nesse caso é 'localhost:4200'...
+
+      })  // o segundo parâmetro é o CONFIG OBJECT desse method, que vai ALTERAR A MANEIRA PELA QUAL OCORRE O 'navigate'...
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> esse 'ActivatedRoute'
+
+
+ 
+ vai simplesmente 
+
+
+ _ INJETAR 
+
+
+ 
+
+
+ '''THE CURRENTLY ACTIVE ROUTE''' -----> 
+
+
+
+
+
+
+
+
+ ESSA É A ROUTE QUE CARREGOU/CARREGA ESSE COMPONENT ATUAL,
+
+ esse 
+
+
+ 'servers.component.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> ESSE TYPE 'ActivatedRoute'
+
+
+ É NA VERDADE UM   __ OBJECT__ JAVASCRIPT COMPLEXO,
+
+
+
+ QUE 
+
+ MANTÉM UM MONTE DE __ META INFORMATION ACERCA 
+
+
+ DA 
+
+ 'CURRENTLY ACTIVE ROUTE'...
+
+
+
+
+
+
+
+
+
+ --> OK... ----. AÍ PASSAMOS ESSA ROUTE COMO VALUE 
+
+
+
+ DE 
+
+ 'relativeTo',
+
+ tipo assim:
+
+
+
+
+
+
+
+
+
+ import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+
+
+import { ServersService } from './servers.service';
+
+
+@Component({
+  selector: 'app-servers',
+  templateUrl: './servers.component.html',
+  styleUrls: ['./servers.component.css']
+})
+export class ServersComponent implements OnInit {
+
+
+
+  public servers: {id: number, name: string, status: string}[] = [];
+
+  constructor(private serversService: ServersService, 
+    private router: Router, ///vamos usar o PACOTE de 'router' _ PARA CONSEGUIR 'NAVIGATE PROGRAMMATICALLY'...
+    private route: ActivatedRoute  ///você deve usar esse pacote de 'ActivatedRoute' __ SE VOCê ACHA _ QUE VAI PASSAR UM 'RELATIVE PATH' ao 'this.router.navigate()'...
+    ///'route: ActivatedRoute' representa a ROUTE em que o PAGE-CCOMPONENT 'servers' EXISTE, ou seja, a 'currently activated route', que é representada dentro desse nosso próprio código de 'servers.component.ts'....
+    
+    ) { }   
+
+  ngOnInit(): void {
+    this.servers = this.serversService.getServers();
+  }
+
+
+  onReload() {  //aqui mostramos como é o pass de um RELATIVE PATH a esse method de 'navigate', que faz o navigate programático...
+      this.router.navigate(['servers'], {
+          relativeTo: this.route   ///o default é o 'ROOT DOMAIN' de nosso app, que nesse caso é 'localhost:4200'...
+
+      })  // o segundo parâmetro é o CONFIG OBJECT desse method, que vai ALTERAR A MANEIRA PELA QUAL OCORRE O 'navigate'...
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok... COM ESSE PEDAÇO EXTRA DE INFO, NOSSO METHOD FICOU ASSIM:
+
+
+
+
+ onReload() { 
+      this.router.navigate(['servers'], {
+          relativeTo: this.route   
+
+      })  
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  -> COM ESSE PEDAÇO DE INFO,
+
+
+
+  O ANGULAR SABE:
+
+
+
+
+  1) QUAL __ É NOSSA 'CURRENTLY ACTIVE ROUTE' ( e teoricamente você poderia settar esse 'route' COMO _ ALGUMA _ OUTRA _ ROUTE _, QUE VOCÊ PODERIA PEGAR DE ALGUMA OUTRA FORMA...)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ---> ok.. 
+
+
+  estamos dizendo que nossa 'currently active route'
+
+  É 
+
+  essa route de 'this.route'.... -> e, mais do que isso,
+
+
+
+
+  por meio do method de '.navigate()"
+
+
+  estamos dizendo ao angular que devemos NAVIGATE ATÉ 
+
+
+
+  O PATH DE 
+
+
+
+  '/servers/servers',
+
+
+
+
+  pq 
+
+
+  QUEREMOS QUE '/servers' seja adicionado 
+
+
+  À 
+
+
+
+  route/path currently active de 
+
+
+
+
+  'localhost:4200/servers/servers'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ---->  ok.... --> ISSO SIGNIFICA QUE TODOS OS PATHS QUE VOCÊ TEM NO PRIMEIRO PArÂMETRO 
+
+
+  de 
+
+  'this.router.navigate()'
+
+
+
+  SERÃO _ RESOLVED__ com base 
+
+
+  no 
+
+  'ActivatedRoute'
+
+
+
+  que escrevemos/referenciamos em 
+
+
+
+
+  'relativeTo: this.route'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ---> AGORA, SE CLICARMOS NAQUELE BUTTON + UMA VEZ,
+
+
+  nosso app vai quebrar dessa vez,
+
+
+  PQ REALMENTE NAÕ TEMOS UMA 
+
+  ROUTE DE 
+
+
+  'localhost:4200/servers/servers',
+
+
+
+
+  não a adicionamos...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  OK, QUEBRAMOS O APP,
+
+
+  MAS AGORA ENTENDEMOS COMO PODEMOS 
+
+  TRABALHAR COM 'RELATIVE PATHS
+
+
+
+
+  NO METHOD DE 'navigate' que podemos escrever dentro dos nossos PAGE COMPONENTS...
+
+
+
+
+
+
+
+
+  -----------------
+
+
+
+
+
+
+
+
+
+
+
+
+  --->  A ROUTE REFERENCIAL DEFAULT DE 'this.router.navigate()'
+
+
+
+
+é o 'root url',
+
+
+
+
+
+
+
+E ESSE PODE SER O COMPORTAMENTO PELO QUAL PROCURAMOS...( 90% dos casos)...
+
+
+
+
+
+
+
+-> MAS VOCÊ PODE MUDAR ESSE COMPORTAMENTO POR MEIO DO SEGUNDO PARÂMETRO DE 
+'.navigate()'
+
+e 
+
+a
+ propriedade de 
+
+ 'relativeTo',
+
+ que 
+
+
+
+ usamos há pouco tempo...

@@ -1,0 +1,29 @@
+
+
+
+
+
+div {
+    margin-top: 5px;
+}
+
+
+
+/* 
+
+.ng-invalid { ////NÃO ESCREVA ASSIM, SEUS STYLES ANGULAR DAS FORMS...
+    border: 1px solid red;
+}
+ */
+
+
+
+/* bem melhor, pq evitamos o apply desse style na nossa form..  E TAMBÉM EVITAMOS O APPLY DESSE STYLE no 'startup' da página, por conta de 'touched'...*/
+ input.ng-invalid.ng-touched {  
+    border: 1px solid red;
+}
+
+
+
+
+/* outros styles adicioandos pelos angular: 'dirty', 'invalid/valid' e 'touched/untouched'.. */

@@ -1,0 +1,616 @@
+
+
+
+
+
+
+
+
+
+
+
+
+-> NA ÚLTIMA LIÇÃO,
+
+TENTAMOS MELHORAR NOSSO APP,
+
+ 
+
+ MAS O PROBLEMA É QUE 
+
+
+ NOSSOS 'queryParams'
+
+ A
+ CABAM _ SUMINDO_ sempre 
+ 
+
+
+
+ QUE TENTAMOS 
+
+
+
+
+
+
+
+ fazer 'navigate away',
+
+
+
+
+ para longe 
+
+ de nosso 
+
+ 'single server component'
+
+
+ que é selecionado... (
+
+
+     ao trocar dessa page PARA A PAGE DE 'edit-server',
+
+
+
+     nossos query params que AUTORIZAM O _ EDIT_ 
+
+     são perdidos...
+ )
+
+
+
+
+
+
+
+
+
+-> queremos PRESERVAR A INFO 
+
+
+
+
+de 
+
+
+
+'localhost:4200/servers/3?allowEdit=1#loading'
+
+
+
+,
+
+
+
+
+
+
+
+essa info de 'allowEdit=1',
+
+
+
+
+
+__ 
+
+
+QUANDO NAVEGAMOS ATÉ A 
+
+
+
+ROUTE 
+
+
+DE 
+
+
+
+''''localhost:4200/servers/3/edit''''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> PARA PRESERVAR ESSA INFO,
+
+
+temos uma 
+
+
+
+maneira bem simples...
+
+
+
+
+
+
+
+
+
+
+
+
+--> NO component de 'server.component.ts',
+
+
+
+
+NO LOCAL EM QUE FAZEMOS 'NAVIGATE',
+
+que é no ts mesmo,
+
+
+
+
+TEMOS ISTO:
+
+
+
+
+
+
+
+
+
+
+onEdit() {
+    this.router.navigate(
+        ['edit'],
+
+        {
+            relativeTo: this.route
+        }
+    )
+}
+
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS PASSAR OUTRA PROPRIEDADE 
+
+
+A ESSE __ OBJECT _ JAVASCRIPT QUE 
+
+É USADO PARA CONFIGURAR ESSE NAVIGATE...
+
+
+
+
+
+
+
+
+--> ESSA PROPRIEDADE É 
+
+a de 'queryParamsHandling'...
+
+
+
+
+
+
+-> É UMA PROPRIEDADE ESPECIAL...  ---> ELA ACEITA/EXIGE UMA _ STRING __ 
+
+
+
+
+COMO VALUE...
+
+
+
+
+
+
+
+
+
+E AS OPÇÕES SÃO:
+
+
+
+
+1) 'merge' ------> ESSA OPÇÃO VAI 'MERGE' os nossos VELHOS QUERY PARAMS com quaisquer 
+
+params NOVOS que 
+
+
+
+vamos adicionar agora,
+
+nesse navigate (
+
+
+    ou seja,
+
+
+
+    o
+     user chega 
+
+     com o 
+
+     queryParam de 
+
+     'X' 
+     nessa 
+
+     route do component 
+
+
+     'server.component.ts'... --> 
+
+
+     quando ele 
+
+     sair 
+
+     desse component, se 'merge' estiver marcado,
+
+     ele  vai receber O _ QUERY PARAM QUE VOCê DEFINIR AGORA,
+
+     e 
+
+     a url dele vai basicamente ficar com um 
+
+     formato de queryParam 
+
+     assim: 
+     'XY'...
+)
+
+
+
+
+
+
+
+
+-> COMO NÃO TEMOS UM 'OLD query param' 
+
+
+quando o user chega nessa nossa route,
+
+
+
+
+e como não queremos ADICIONAR UM NOVO QUERY PARAM 
+
+
+a um velho,
+
+
+
+
+
+colocamos 
+
+
+'preserve'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2) 'preserve' -----> esse é o value que definimos agora....
+
+
+
+--> o que o 'preserve' faz é _ 
+
+MANTER OS QUERY PARAMS que 
+obteremos 
+
+a partir desse 'navigate away',
+
+
+preservá-los 
+
+
+NO PRÓXIMO COMPONENT em 
+
+que chegarmos...
+
+
+
+
+
+3) 'default' --> o comportamento default é o de DROPPAR _ TODOS 
+
+OS QUERY PARAMS 
+
+
+ao trocar de url/navegar AWAY em relaçaõ a  esse nosso component....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> É POR ISSO QUE NOSSO CÓDIGO FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+onEdit() {
+    this.router.navigate(['edit'], {relativeTo: this.route, queryParamsHandling: 'preserve'})
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+onEdit() {
+
+  this.router.navigate(
+    ['edit'], {
+      relativeTo: this.route,
+      queryParamsHandling: 'preserve' ///outros valores possíveis: 'merge' e o 'default' (que é de simplesmente DROPPAR TODOS OS QUERY PARAMS QUANDO OCORRER O NAVIGATE ATÉ OUTRA PAGE, por meio desse 'this.router.navigate()')...
+      // queryParams: {allowEdit: 1 }
+    }
+  )
+}
+
+
+
+
+---------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, ISSO _ CONSERTOU __ O NOSSO PROBLEMA,
+
+AGORA A PAGE DE 
+
+
+'edit 
+
+server'
+
+
+
+
+É REALMENTE CARREGADA 
+
+QUANDO 
+
+TENTAMOS EDITAR O SERVER 
+
+de número '3'.... (id = 3)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PRESERVE --> 
+
+VAI _ ASSEGURAR_ QUE 
+
+OS 
+
+'OLD QUERY PARAMS'
+
+
+vão SER MANTIDOS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK, COM ISSO,
+
+CONSEGUIMOS ACESSAR O MENU DE 'edit'...
+
+
+
+
+
+
+
+
+
+
+
+
+SIDENOTE: NÓS AINDA ESTAMOS CARREGANDO O 'SERVER ERRADO' aqui,
+
+pq 
+
+NÓS _ AINDA NÃO PASSAMOS 
+
+O ID _ 
+
+
+POSICIONADO NA URL,
+
+para 
+
+
+
+esse component de 'edit'... --> consertaremos isso na PRÓXIMA AULA..
+
+
+
+
+
+(
+
+    mas vou tentar consertar agora...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+JÁ CONSEGUI, O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+  ngOnInit(): void {
+
+   this.route.queryParams.subscribe(
+     (queryParams: Params) => {
+       console.log(queryParams['allowEdit']);
+          this.allowEdit = queryParams['allowEdit'] === '1' ? true : false ;
+          this.server = this.serversService.getServer(3)!;
+          this.serverName = this.server.name;
+          this.serverStatus = this.server.status;
+     }
+   )
+
+
+
+
+
+
+
+-------------------
+
+
+
+
+
+
+
+
+
+
+
+-----> OK, VIMOS O 'QUERY PARAMS HANDLING' 
+
+
+no angular,
+
+
+
+uma feature SUPER IMPORTANTE,
+
+
+SUPER ÚTIL,
+
+
+
+tudo 
+
+para que 
+
+
+
+
+
+vocÊ 
+
+
+não 
+
+PERCA A INFO QUE VOCÊ TINHA ANTERIORMENTE (o 'queryParams')...

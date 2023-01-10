@@ -1,0 +1,1414 @@
+
+
+
+
+
+
+
+
+
+
+O PROFESSOR DESENHA UM APP-EXEMPLOO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ELE TEM ESTA ESTRUTURA:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+UserComponent  --------------
+                            |
+                            |
+                            |
+                            |
+                            |
+ReversePipe -----------------
+      |
+                            |
+                            |
+                            |
+                            |
+UserService -----------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+COM VOCë VË.
+
+
+
+temos 
+
+
+1 COMPONENT DE 'user'
+ 
+
+ E 1 
+
+ SERVICE 
+
+ DE USER,
+
+
+ E OS 
+
+ 2 ESTÃO CONECTADOS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> INJETAMOS O USER SERVICE NO USER COMPONENT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> OK, MAS AGORA DIGAMOS QUE TEMOS UMA 'REVERSE PIPE',
+
+
+ QUE 
+
+ VAI 
+
+
+
+ __INVERTER_ 
+
+
+
+
+ AS STRINGS QUE 
+
+
+ COLOCAMOS 
+
+
+ NO NOSSO DOM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> É CLARO QUE ESSA 'REVERSE PIPE'
+  
+
+  PODE SER __ TESTADA ISOLADAMENTE..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> TEMOS AQUELAS UTILITIES QUE VIMOS ANTERIORMENTE,
+
+
+
+  'TestBed',
+
+
+  'Async',
+
+  'tick' 
+
+
+
+
+  e etc...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> HÁ UM PUNHADO DE UTILITIES NESSE PACKAGE,
+
+
+  E VOCÊ 
+
+  JÁ VIU A MAIOR PARTE DELAS...
+
+
+
+
+
+
+
+
+
+
+
+
+  --> UM PIPE PODE SER _ TESTADO__ dE MODO TOTALMENTE __INDEPENDENTE _ DO ANGULAR 2,
+
+
+
+
+isso 
+
+pq 
+
+
+
+O FUNCIONAMENTO 
+
+
+DO PIPE 
+
+
+
+
+
+
+
+
+É:
+
+
+
+
+
+
+
+
+
+
+1) TEMOS ESSA FUNCTION DE 'transform',
+
+
+
+em que VOCÊ PASSA UMA STRING ,
+
+
+
+E AÍ RECEBER UMA STRING... (string in, STRING OUT)...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ou seja,
+
+
+NÃO HÁ NENHUMA NECESSIDADE DE ENVOLVER O ANGULAR2 em 1 test para testar 
+
+
+
+
+1 PIPE SIMPLES DESSA....
+
+
+ 
+
+
+
+
+
+
+
+
+
+-> E VOCê PODE TER OUTROS LUGARES NO SEU APP EM QUE O MESMO PRINCÍPIO PODE SE APLICAR:
+
+
+
+
+
+
+
+se você tem 1 service e DENTRO DO SERVICE VOCÊ TEM UM METHOD QUE 
+
+
+
+
+apenas 'transforms some data'
+
+
+ou 'duplica um number',
+
+
+
+AÍ VOCÊ PODE 
+
+
+
+TESTAR ESSE METHOD DE FORMA ISOLADA;
+
+NÃO PRECISARÁ 
+
+
+USAR O ANGULAR 2 TESTING PACKAGE PARA REALIZAR ESSE TEST...
+
+
+
+
+
+
+(
+
+    você 
+
+    pode escrever um 
+
+    UNIT TEST __ COMUM...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+VEREMOS COMO ESCREVER UM __ UNIT TEST__ COMUM AGORA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ESSE EXEMPLO, USAREMOS 
+
+UM ARQUIVO 
+
+
+
+'reverse.pipe.ts',
+
+
+
+
+
+
+
+
+
+em que teremos nossa pipe, que será definida em uma class, como sempre...
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+import { Pipe } from "@angular/core";
+
+@Pipe()
+export class ReversePipe {
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--_> certo....
+
+
+
+
+
+
+
+
+
+DENTRO DESSE PIPE DECORATOR, 
+
+
+
+
+O PROFESSOR COLOCA UM NAME  de 
+'reverse'...
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+import { Pipe } from '@angular/core';
+
+@Pipe({
+  name: 'reverse',
+})
+export class ReversePipe {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> OK... DENTRO DO PIPE, SEMPRE VAMOS QUERER TER AQUELA FUNCTION  DE 'transform()',
+
+
+
+e essa function vai EXPECT 
+
+receber uma STRING...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok, aí simplesmetne vamos querer retornar esse valor 
+
+
+SPLITTADO,
+
+
+
+splittado por "" (por nada, basicamente),
+
+
+
+
+E AÍ 
+
+
+
+
+CHAMAMOS '.reverse()'
+
+PARA REVERTER UM ARRAY (E strings são basicamente 'ARRAYS DE CARACTERES'),
+
+
+
+
+
+
+
+
+
+por fim, chamamos '.join()' PARA JUNTAR TODOS ESSES CARACTERES EM 1 ÚNICA STRING, MAIS UMA VEZ...
+
+
+
+
+
+
+
+
+
+o que quer dizer que o código fica assim:
+
+
+
+
+
+
+
+
+import { Pipe } from '@angular/core';
+
+@Pipe({
+  name: 'reverse',
+})
+export class ReversePipe {
+
+
+    transform(value: string) {
+        return value.split("").reverse().join();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+import { Pipe } from '@angular/core';
+
+@Pipe({
+  name: 'reverse',
+})
+export class ReversePipe {
+  transform(value: string) {
+    return value.split('').reverse().join(""); ////usamos isso para REVERTER a nossa string (colocá-la de trás para frente)....
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------> CERTO...
+
+
+
+
+
+
+
+
+
+E AGORA, PARA TESTAR __ ESSE 
+
+PIPE,
+
+
+O PROFESSOR ESCREVE SEU PRÓPRIO ARQUIVO 
+
+
+'reverse.pipe.spec.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS OBSERVAR NOSSO CÓDIGO DE TESTING ORIGINAL, LÁ DO COMPONENT:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import {
+  async,
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick,
+} from '@angular/core/testing';
+import { ExemploService } from '../exemplo.service';
+import { DataService } from '../shared/data.service';
+import { ExemploComponent } from './exemplo.component';
+
+describe('ExemploComponent', () => {
+  let component: ExemploComponent;
+  let fixture: ComponentFixture<ExemploComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ExemploComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(ExemploComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should be defined', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should have "example" property', () => {
+    expect(component.example).toBeDefined();
+  });
+
+  it('should use the user name from the service "exemploService"', () => {
+    const exemploService = fixture.debugElement.injector.get(ExemploService);
+
+    fixture.detectChanges();
+    expect(exemploService.user.name).toEqual(component.example.name);
+  });
+
+  it('should display user.name in a string interpolation, if user is logged in', () => {
+    component.isLoggedIn = true;
+
+    fixture.detectChanges();
+
+    const compiledTemplate = fixture.debugElement.nativeElement as HTMLElement;
+
+    expect(compiledTemplate.querySelector('p')?.textContent).toContain(
+      component.example.name
+    );
+  });
+
+  it('should not display user.name in a string interpolation, if user is not logged in', () => {
+    fixture.detectChanges();
+
+    const compiledTemplate = fixture.debugElement.nativeElement as HTMLElement;
+
+    expect(compiledTemplate.querySelector('p')?.textContent).not.toContain(
+      component.example.name
+    );
+  });
+
+  it("shouldn't fetch data successfully if not called asynchronously.", () => {
+    let dataService = fixture.debugElement.injector.get(DataService);
+
+    let spy = spyOn(dataService, 'getDetails').and.returnValue(
+      Promise.resolve('Data')
+    );
+
+    fixture.detectChanges();
+
+    expect(component.data).toBe(undefined);
+  });
+
+  it('SHOULD fetch data successfully if called asynchronously.', async(() => {
+    let dataService = fixture.debugElement.injector.get(DataService);
+
+    let spy = spyOn(dataService, 'getDetails').and.returnValue(
+      Promise.resolve('Data')
+    );
+
+    fixture.detectChanges();
+
+    fixture.whenStable().then(() => {
+      expect(component.data).toBe('Data');
+    });
+  }));
+
+  it('SHOULD fetch data successfully if called asynchronously. (2, using fakeAsync)', fakeAsync(() => {
+    let dataService = fixture.debugElement.injector.get(DataService);
+
+    let spy = spyOn(dataService, 'getDetails').and.returnValue(
+      Promise.resolve('Data')
+    );
+
+    fixture.detectChanges();
+
+    tick();
+
+    expect(component.data).toBe('Data');
+  }));
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> a primeira coisa que faremos, aqui,
+ 
+
+
+
+
+É REMOVER VÁRIAS COISAS...
+
+
+
+
+
+
+
+
+
+
+--> VAMOS REMOVER TODOS OS IT STATEMENTS,
+
+
+
+E AÍ REMOVER OS IMPORTS TAMBÉM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> TODOS OS ANGULAR 2 TESTING UTILITIES..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO DE TESTING 
+
+
+INICIAL FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+describe('ExemploComponent', () => {
+
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK...
+
+
+
+
+
+
+
+
+
+
+
+E É CLARO QUE TENHO QUE EDITAR UM POUCO,
+
+
+pq não é mais um 'component',
+
+e sim uma PIPE...
+
+
+
+
+
+
+
+
+--. PARA __ CRIAR__ ESSA REVERSE PIPE,
+
+
+
+terei de a importar lá de 'reverse.pipe.ts',
+
+PROVAVELMENTE...
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+import { ReversePipe } from './reverse.pipe';
+
+describe('ExemploComponent', () => {
+  let reversePipe = new ReversePipe();
+
+  it('should create', () => {
+    expect(reversePipe).toBeTruthy();
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+ACHO QUE SERÁ ASSIM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> aqui chamamos isso de 'ISOLATED TEST'
+
+
+
+JUSTAMENTE PQ ESSE TEST NÃO DEPENDE DE NENHUM OUTRO PEDAÇO DE MEU APP ANGULAR 2... 
+(
+
+
+    nem mesmo depende de angular 2....
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok...
+
+
+
+
+
+
+
+
+
+AÍ, NO CASO,
+
+
+VAMOS QUERER TESTAR o METHOD de transform,
+
+pq é isso que interessa..
+
+
+
+
+
+
+
+
+-> VAMOS TESTAR se 
+
+
+'reversePipe.transform('hello')
+
+
+'
+
+É IGUAL A 
+
+
+
+olleh
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+import { ReversePipe } from './reverse.pipe';
+
+describe('ExemploComponent', () => {
+  let reversePipe = new ReversePipe();
+
+  it('should create', () => {
+    expect(reversePipe.transform('hello')).toEqual('olleh');
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK..
+
+
+
+
+
+E AÍ, TIVEMOS SUCESSO...
+
+
+
+
+
+
+
+
+
+
+
+--> O TEST DEU CERTO.... 
+
+
+
+
+
+
+
+
+
+
+
+
+--> ou seja, podemos instanciar os nossos pipes,
+
+e aí 
+
+
+podemos rodar TESTS neles, pq são classes...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE FOI UM EXEMPLO DE 'ISOLATED TEST'..
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE 
+
+
+
+HÁ ALGUNS PIPES QUE DEPENDEM DE ANGULAR2... --. VOCÊ SEMPRE DEVE 
+
+
+PERGUNTAR ISTO:
+
+
+
+''''POR ACASO SUA COISA/PIPE DEPENDE DE 2 OU MAIS COISAS DO ANGULAR APP?''' 
+
+
+
+
+
+
+
+
+--> SE SIM,
+
+AÍ 
+
+VOCÊ 
+
+
+VAI PRECISAR USAR 
+
+AQUELAS TESTING UTILITIES COMO 
+
+'TESTBED ' -->  
+
+
+
+
+
+
+
+
+
+
+
+TESTBED TE DEIXA CRIAR COMPONENTS, 
+
+
+
+ACESSAR O INJECTOR,
+
+
+SETUPPAR O MODULO PARA TESTING,
+ ETC...
+
+
+
+
+
+
+
+
+
+
+ -----> VOCÊ TAMBÉM TEM 'async, fakeSync e tick' 
+ QUE SÃO USADOS PARA FAKAR/REALIZAR 
+
+ TESTS 
+
+
+
+ ASSÍNCRONOS...
+
+
+
+
+
+
+
+ NA ÚLTIMA LIÇÃO DESSE MÓDULO,
+
+
+
+
+
+ ENCONTRAREMOS MAIS RESOURCES SOBRE OUTRAS COISAS QUE PODEMOS TESTAR...
+
+
+
+
+
+
+
+
+
+
+
+ --> SE VOCÊ NÃO TEM 
+
+ UMA DEPENDENCY DE 'ANGULAR2' NESSE PIPE,
+
+
+ 1 ISOLATED TEST 
+
+
+ BEM PROVAVELMENTE SERÁ A COISA 
+
+
+ PERFEITA PARA VOCÊ...
+
+
+
+
+
+
+
+
+
+
+ --> OK,
+
+
+
+
+ AGORA VIMOS TODAS AS TOOLS DO ANGULAR 
+
+
+
+
+ PARA 
+
+ REALIZAR TESTS...
+
+
+
+
+
+
+
+
+
+
+
+ --> FOI BEM SIMPLES, MAS FOI UMA BOA INTRODUÇÃO..
+
+
+
+
+
+
+
+
+
+ -_> COM O ARTIGO DA PRÓXIMA LIÇÃO,
+
+
+ VOCÊ 
+
+ PODE USAR 
+
+
+ SEU CONHECIMENTO GERAL DE TESTING PARA 
+
+
+ CRIAR COMPONENTS, ACESSAR,
+
+ TESTAR, ETC...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> OK.... AGORA SABEMOS PQ UNIT TESTS SÃO ÚTEIS,
+
+ como começar com as tools do angular testing, etc...
+
+
+
+
+
+
+
+
+
+
+
+ This Module only provides a brief and basic Introduction to Angular Unit Tests and the Angular Testing Suite. This Course isn't focused on Testing.
+
+If you want to dive deeper, the official Docs actually are a great place to start. There you'll also find a Non-CLI Setup!
+
+Official Docs: https://angular.io/docs/ts/latest/guide/testing.html
+
+I can also recommend the following Article: https://semaphoreci.com/community/tutorials/testing-components-in-angular-2-with-jasmine
+
+For more Information on how to run Tests with the CLI have a look at their official Docs:
+
+=> Unit Tests: https://github.com/angular/angular-cli/wiki/test
+
+=> E2E Tests: https://github.com/angular/angular-cli/wiki/e2e
+
+
+
+
+
+
+
+
+
+
+
+
+
+END TO END TESTING --> 
+
+testando DO PONTO DE VISTA DO USUÁRIo...
+
+
+
+
+
+
+The main purpose of End-to-end (E2E) testing is to test from the end user’s experience by simulating the real user scenario and validating the system under test and its components for integration and data integrity.
+
+
+
+
+
+
+
+
+
+
+

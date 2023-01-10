@@ -1,0 +1,1820 @@
+
+
+
+
+
+
+
+--> NÓS JÁ VIMOS COMO TESTAR 'DUMB COMPONENTS'...
+
+
+
+
+
+---> AGORA DEVEMOS 
+
+VER COMO TESTAR 
+
+CONTAINERS,
+
+COMO 
+
+O 
+
+'BURGER BUILDER'...
+
+
+
+
+
+
+--> A PARTE 'TRICKY' 
+
+SOBRE OS CONTAINERS 
+É 
+
+QUE 
+
+
+ELES 
+
+GERALMENTE 
+
+FICAM 
+
+CONECTADOS 
+
+AO 
+
+
+'REDUX STORE'..... -----------> 
+
+O 
+
+REDUX 
+
+STORE 
+
+É, 
+por sua vez, 
+
+UMA 
+
+
+
+'EXTERNAL INFLUENCE' 
+
+
+NOS CONTAINERS... ----------> 
+
+
+
+SE 
+
+
+
+OS CONTAINERS NÃO ESTIVEREM CONECTADOS (mas sempre estão, basicamente),
+
+
+
+TESTING 
+
+
+
+
+SERIA EXATAMENTE IGUAL A DE OUTROS 
+
+COMPONENTS DUMB.... -----> '''ué, mas não existe o state e tals?'''' -------> 
+
+
+
+SIM, EXISTE O STATE EM CONTAINERS,
+
+mas 
+
+
+
+O ENZYME 
+
+TAMBÉM 
+
+__TEM __ MÉTODOS __ PARA 
+
+FAZER 
+
+'HANDLE' 
+
+de essa peculiaridade,
+
+
+métodos 
+
+
+PARECIDOS COM 
+
+o '.setProps()' 
+
+usado 
+
+para 
+
+TESTAR 
+
+DUMB COMPONENTS com o enzyme.... ------>  O MÉTODO 
+
+
+PARECIDO DE QUE 
+
+ESTAMOS 
+
+FALANDO 
+
+É 
+
+
+'setState(nextState( , callBack))',
+
+
+
+
+
+QUE 
+
+É USADO PARA SIMULAR 
+
+DIFERENTES __sTATES__ EM 1 COMPONENT...
+
+
+
+
+----------------------------------
+
+
+
+E É EXATAMENTE POR ISSO QUE 
+
+
+A 
+PARTE 
+
+'TRICKY' 
+É 
+
+O 
+
+
+TAL 
+
+DO TEST COM __ O REDUX STORE___, o fator 
+
+'redux store' nos nossos 
+
+tests.... ------> A BOA 
+
+NOTÍCIA 
+
+É QUE 
+
+
+
+
+NÓS __ REALMENTE___ NÃO PRECISAMOS (é desnecessário)
+
+
+TESTAR 
+A CONEXÃO 
+
+
+
+DO CONTAINER 
+
+AO 
+REDUX STORE,
+
+
+
+PQ 
+
+NÓS PODEMOS __ CONFIAR (rely) 
+
+NO 
+
+
+FATO 
+
+DE 
+QUE 
+
+
+O REDUX STORE FUNCIONA/FUNCIONARÁ 
+
+CORRETAMNETE,
+
+
+
+e aí,
+ no final das contas,
+
+
+
+NÓS 
+
+__SÓ RECEBEMOS __ DATA ___ DA STORE como 
+
+'props' 
+
+
+
+AO 
+
+
+CONTAINER  que queremos testar....
+
+
+
+ex:
+
+
+
+const mapStateToProps = state => {
+        return {
+            ingr: state.burger.burger.ingredients,
+            price: state.burger.burger.totalPrice,
+            purchasable: state.burger.burger.purchasable,
+            error: state.burger.error,
+            token: state.auth.token !== null
+        }
+
+}
+
+
+
+----------------------------------------
+
+
+
+
+
+
+---> OU SEJA,
+
+ESTAMOS 
+
+
+'DE VOLTA AO MUNDO DO TEST DE DUMB COMPONENTS'... --> isso pq 
+
+NÓS PODEMOS __SIMPLESMENTE __ SIMULAR 
+
+__PROPS__ NOS NOSSOS TESTS COM O JEST..., isso pq 
+
+
+QUEREMOS 
+
+_SIMULAR __ DIFERENTES 
+
+'OUTCOMES' EM DIFERENTES
+
+
+'STATES' de 'props' DE QUALQUER FORMA... ---> justamente pq 
+
+
+NÃO 
+
+QUEREMOS 
+
+CONECTAR 
+A UM REDUX STORE 
+
+REAL, não queremos 
+
+ter que 
+
+fazer isso 
+
+para rodar nossos tests.... ------> ISSO PQ __NÓS NÃO QUEREMOS TESTAR SE A 'STORE' EM SI __ PASSA 
+
+OS PROPS DELA CORRETAMENTE A ESSE CONTAINER,
+
+isso já é 'taken for granted'... (isso é o JOB DO MÉTODO 'connect', que vem de uma THIRD PARTY LIBRARY QUE JÁ FUNCIONA.)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... ISSO SIGNIFICA QUE 
+
+
+A COISA QUE 
+
+_NÓS REALMENTE __ PRECISAMOS 
+
+FAZER 
+É 
+
+
+
+'GET ACCESS TO THE COMPONENT BEHIND THIS CONTAINER', por assim dizer... ---------> 
+
+
+
+
+
+e, para isso,
+
+um 
+
+truque 
+
+MUITO CONVENIENTE
+ 
+ É 
+
+
+
+ ___SIMPLESMENTE__ EXPORTAR __ NOSSO 
+
+
+
+ CONTAINER (no caso, burger builder)
+
+ POR 
+
+
+
+ MEIO ___ DE UM 
+
+ SIMPLES EXPORT STATEMENT 
+
+
+ NELE...
+
+
+
+ ex:
+
+
+
+
+ class BurgerBuilder extends Component {
+
+ }
+
+
+
+
+
+
+ VIRA:
+
+
+
+ export class BurgerBuilder extends Component {
+     ...
+ }
+
+
+
+
+ -----------------------------------------
+
+
+
+
+
+
+
+ CERTO.... --> ISSO 
+
+ NOS 
+
+ DÁ, ESSENCIALMENTE,
+
+ UM 
+
+ 'NAMED EXPORT' 
+
+
+ nesse 
+
+ nosso arquivo 
+
+
+ 'BurgerBuilder',
+
+ que será 
+
+ chamado 
+
+
+ de 
+
+ 'BurgerBuilder' msm...
+
+
+
+
+
+
+
+
+ ---> e esse NAMED EXPORT VAI TER ACESSO 
+ A 
+
+ ESSA 
+
+ CLASSE 
+
+ 'BurgerBuilder' msm... -------> essa classe é um REACT COMPONENT/CONTAINER...
+
+
+
+
+
+
+
+
+ --> MESMO TENDO ESSE 'NAMED EXPORT',
+
+ NÓS 
+
+ AINDA 
+
+ TEREMOS 
+
+ NOSSO 
+
+ 'DEFAULT EXPORT',
+
+
+ o export que já havíamos escrito no nosso app, que 
+
+ estava/está assim:
+
+
+
+
+
+
+
+
+----------------------------------------------------------
+
+
+
+
+
+const BurgerBuilderWithHocs = withErrorHandler(BurgerBuilder, axiosOrder);
+
+
+
+ export default connect(mapStateToProps, mapDispatchToProps)(BurgerBuilderWithHocs);
+
+
+
+
+ ----------------------------------------------
+
+
+
+
+MAS AGORA, COM ISSO,
+ PODEMOS 
+
+ CRIAR UM ARQUIVO DE TESTING,
+ um 
+
+
+ 'BurgerBuilder.test.js',
+
+
+
+ E AÍ 
+
+
+ DENTRO 
+
+ DESSE NEGÓCIO SIMPLESMENTE 
+
+ IMPORTAR 
+
+
+
+
+
+ 'import { BurgerBuilder } from './BurgerBuilder';
+
+
+
+
+
+
+
+ -----------------------------------------
+
+
+
+ com isso,
+
+ PODEREMOS 
+
+
+ RENDERIZAR ESSE CONTAINER DE FORMA 'SHALLOW', do mesmo jeito 
+
+ utilizado 
+
+
+
+
+ COM OS 'DUMB COMPONENTS' nas aulas anteriores....
+
+
+
+
+
+
+
+ --> COM ISSO,
+
+ COM 
+
+ ESSE 
+ 'SIMPLES IMPORT',
+
+
+ NÓS 
+
+
+ __eFETIVAMENTE ___ ROMPEREMOS 
+
+
+
+ A 
+
+ CONEXÃO DE 'BURGERBUILDER' COM O REDUX que fora OBTIDA POR MEIo do wrap do hoc/função 'connect' especial....
+
+
+
+ --> OU SEJA,
+
+O CONTAINER 'BURGERBUILDER'
+
+ESTARÁ
+
+
+__DESVINCULADO __ DO REDUX, JUSTAMENTE 
+PARA QUE 
+
+OS TESTS NÃO SOFRAM SUA INTERFERÊNCIA (é exatamente o que desejamos)...
+
+
+ 
+ ---------> COM ISSO,
+
+ PODEMOS 
+
+
+ SIMPLESMENTE COPIAR 
+
+ O CÓDIGO 
+
+
+
+ DE IMPORTS no arquivo de testes de 'NavigationItems',
+
+ justamente 
+ PQ 
+
+
+ VAI SER MEIO PARECIDO, nesse arquivo 'BurgerBuilder.test.js'....
+
+
+ TIPO ASSIM:
+
+
+
+
+
+
+
+import React from "react";
+
+
+import { configure } from 'enzyme';
+
+import { shallow } from 'enzyme';
+
+
+import { BurgerBuilder } from "./BurgerBuilder";
+
+
+
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+
+
+configure(
+    {
+        adapter: new Adapter()
+    }
+);
+
+
+
+
+-----------------------------------------
+
+
+
+
+OK...
+
+
+AÍ VAMOS ESCREVER 'describe()', 
+provavelmente...
+
+
+
+EX:
+
+
+
+import React from 'react';
+
+import { configure } from 'enzyme';
+
+import { shallow } from 'enzyme';
+
+import { BurgerBuilder } from './BurgerBuilder';
+
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+
+configure({
+  adapter: new Adapter(),
+});
+
+describe('<BurgerBuilder />',  );
+
+
+
+-----------------
+
+
+OK, MAS DEPOIS DISSO PRECISAMOS 
+
+DO 
+
+
+
+NOSSO PARÂMETRO/LÓGICA DE TESTS...
+
+
+
+
+
+
+
+--> EXAMINAMOS O CÓDIGO DE 'BurgerBuilder'... ---> seria interessante
+ 
+  
+
+  VER 
+
+  SE NÓS __REALMENTE___ 
+
+  TEMOS 
+
+
+  '<BuildControls />' 
+
+  RENDERIZADOS 
+
+
+  NO NOSSO 
+
+  DOM 
+
+
+  ___ QUANDO OCORRE A HIPÓTESE 
+
+  DE NOSSOS INGREDIENTS (representados por 'this.props.ingr', aquele STATE DO STORE DO REDUX)
+
+
+  não estarem presentes... (ou seja, na HIPÓTESE DE O FETCH DE 
+INGREDIENTS LÁ DO SERVIDOR/BACKEND __FALHAR__, E APARECER AQUELA MENSAGEM extraída 
+
+de 
+
+'error' no seu lugar...)
+
+
+
+
+-------------> ISSO 
+PQ 
+
+A VARIÁVEL
+ 
+
+ 'burger', 
+
+ representada 
+
+ pelo código 
+
+
+ de 
+
+
+
+
+ if (this.props.ingr){
+      //1
+      burger = (
+        <Aux>
+          {/* <Burger ingredients={this.state.ingredients} /> */}
+          <Burger ingredients={this.props.ingr} />
+          <BuildControls
+            token={this.props.token} ///equivalente a 'isAuthenticated', na aula do professor..
+            disabled={disabledInfo} //'disabledInfo' será uma constante que terá aquele objeto com a 'CÓPIA DO STATE DE INGREDIENTS', mas aquela cópia tem uma alteração no INGREDIENT que será/não será removido, que estará tipo assim: 'cheese: false', ou 'bacon: true', etc.....
+            price={this.props.price}
+            // ingredientAdded={this.addIngredientHandler}
+            ingredientAdded={(ingredientId) => {this.props.onIngredientAdd(ingredientId)}}
+            // ingredientRemoved={this.removeIngredientHandler}
+            ingredientRemoved={(ingredientId) => {this.props.onIngredientRemove(ingredientId)}}
+            // purchasable={!this.state.purchasable}
+            // purchasable={this.props.purchasable}
+            purchasable={this.updatePurchaseState(this.props.ingr)} //código alterado, agora funciona com REDUX...
+            ordered={this.purchaseHandler}
+          />
+        </Aux>
+      );
+
+
+---------------
+
+
+
+SÓ 
+
+DEVERÁ 
+
+
+SER 
+
+RENDERIZADA NO DOM SE A PROPRIEDADE/PROPS 
+
+'ings' 
+
+REALMENTE 
+
+FOR 
+
+'PASSED ALONG'...
+
+
+
+
+
+
+COMEÇAMOS COM ALGO ASSIM:
+
+
+
+import React from 'react';
+
+import { configure } from 'enzyme';
+
+import { shallow } from 'enzyme';
+
+import { BurgerBuilder } from './BurgerBuilder';
+
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+
+configure({
+  adapter: new Adapter(),
+});
+
+describe('<BurgerBuilder />',  
+
+
+() => {
+        let wrapper;
+
+        wrapper = shallow(<BurgerBuilder />);
+
+
+        it('should render <BuildControls/>, inside 'burger', if props.ingr is present...',
+        
+            () => {
+                expect(wrapper.find)
+            }
+        )
+
+
+
+});
+
+
+
+
+---------------------------
+
+
+
+PROFESSOR 
+
+
+NOS 
+
+EXPLICA QUE 
+
+
+
+
+
+
+PARA TESTAR 
+
+SE 
+
+BUILDCONTROLS 
+
+REALMENTE 
+
+SERÁ 
+
+RENDERIZADO 
+
+EM 
+
+CASO 
+
+DE PRESENÇA 
+
+DE 
+
+
+'this.props.ingr',
+
+
+
+DEVEMOS ___iMPORTAR ____ 
+
+O 
+
+COMPONENT 
+
+'BuildControls' em si,
+
+nesse 
+arquivo de tests...
+
+
+
+
+ex:
+
+
+
+
+
+import React from 'react';
+
+import { configure } from 'enzyme';
+
+import { shallow } from 'enzyme';
+
+import { BurgerBuilder } from './BurgerBuilder';
+
+import { BuildControls } from '../../components/Burger/BuildControls/BuildControls';
+
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+
+configure({
+  adapter: new Adapter(),
+});
+
+describe('<BurgerBuilder />',  
+
+
+() => {
+        let wrapper;
+
+        wrapper = shallow(<BurgerBuilder />);
+
+
+        it('should render burger if props.ingr is present...',
+        
+            () => {
+                wrapper.setProps(
+                    {
+                        ingr: true
+                    }
+                )
+                expect(wrapper.find(BuildControls)).toHaveLength(1);
+            }
+        )
+
+
+
+});
+
+
+
+
+------------------------
+
+
+OBS:: NÓS ESCREVEMOS ISSO DAÍ 
+
+
+ANTES,
+
+MAS NÃO DEU CERTO... --> devemos ver como 
+
+o professor 
+
+escreve 
+
+esse código de tests aí, com o container...
+
+
+
+
+-----> a primeira diferença no código do professor 
+é que 
+
+ELE 
+
+USA 
+
+
+'beforeEach()'
+
+
+para 
+
+SETTAR INICIALMENTE O SEU 'WRAPPER' (o component 'BurgerBuilder', que será testado, será o wrapper)...
+
+
+
+
+
+---> é evidente que 'beforeEach()' será 
+
+usado 
+
+PARA 
+
+__iNSERIR _ O PROP __ de 
+
+'ingr: true', por meio 
+
+de 
+
+
+'wrapper.setProps()'...
+
+
+ex:
+
+
+
+
+
+import React from 'react';
+
+import { configure } from 'enzyme';
+
+import { shallow } from 'enzyme';
+
+import { BurgerBuilder } from './BurgerBuilder';
+
+import { BuildControls } from '../../components/Burger/BuildControls/BuildControls';
+
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+
+configure({
+  adapter: new Adapter(),
+});
+
+describe('<BurgerBuilder />',  
+
+
+() => {
+        
+        let wrapper;
+        beforeEach(
+            () => {   wrapper = shallow(<BurgerBuilder />) }
+        )
+
+       
+
+
+        it('should render <BuildControls />  if props.ingr is present...',
+        
+            () => {
+                wrapper.setProps(
+                    {
+                        ingr: true
+                    }
+                )
+                expect(wrapper.find(BuildControls)).toHaveLength(1);
+            }
+        )
+
+
+
+});
+
+
+
+
+
+
+--------------------------------
+
+
+
+OK.. E O PROFESSOR NOS MOSTROU A RAZÃO 
+
+
+DE NOSSO 
+
+TEST 
+NÃO ESTAR FUNCIONANDO/ESTAR DANDO FAIL... --> naquele 
+
+call de 
+
+
+'wrapper.setProps()',
+
+NÓS 
+
+PASSAMOS 
+
+DENTRO 
+
+DAQUELE OBJETO uma 
+
+
+propriedade 
+
+'ingr' (mesmo nome de nosso prop de verdade, no dom de verdade, sem ser de tests)
+
+
+
+COMO 
+EQUIVALENTE 
+
+
+à 'true'.... -----> e isso obviamente 
+
+vai 
+
+
+fazer com que o TEST NÃO FUNCIONE DIREITO,
+
+ISSO 
+
+PQ __ O PROP DE 
+'ingr' 
+
+
+É ___lITERALMENTE __ UM OBJETO 
+
+
+com 
+
+
+'{
+    salad: 0,
+    meat:0,
+    cheese: 0,
+    bacon: 0
+}',
+
+etc etc,
+
+esse é o seu MODELO,
+
+seu modelo não é 
+
+
+'true/false'..
+
+
+
+
+
+ex:
+
+
+
+
+
+
+        it('should render <BuildControls />  if props.ingr is present...',
+        
+            () => {
+                wrapper.setProps(
+                    {
+                        ingr: {
+                            salad: 0,
+                            meat: 0,
+                            cheese: 0,
+                            bacon: 0
+                        }
+                    }
+                )
+                expect(wrapper.find(BuildControls)).toHaveLength(1);
+            }
+        )
+
+
+
+});
+
+
+
+
+
+
+
+---------------------------
+
+
+ISSO FEITO,
+
+PROFESSOR 
+
+NOS DIZ QUE 
+
+ELE 
+
+PODE 
+
+'EXPECT' (expect())
+
+
+
+e 
+
+
+'.find()'
+
+
+
+__PARA ENCONTRAR ___ O NOSSO 
+
+
+'BuildControls'
+
+
+
+DENTRO 
+DO 
+
+
+CONTAINER
+
+
+'<BurgerBuilder />'
+
+
+
+-----------------------
+
+
+
+
+
+--> certo, isso feito,
+
+ele 
+
+escreve 
+que 
+
+
+esse 
+
+
+'BuildControls' DEVERÁ __ TER UMA LENGTH __dE 
+
+1 ('toHaveLength(1)')....
+
+
+
+----------------------------------
+
+
+
+
+--> CERTO,
+
+NÓS RODAMOS 
+
+
+NOSSOS 
+
+TESTS,
+ 
+ MAS 
+
+ RECEBEMOS 
+
+ 1 
+
+
+ ERRO 
+
+ NESSE 'BURGERBUILDER'..... ------>
+
+
+
+ ex:
+
+
+     TypeError: this.props.onIngredientGet is not a function
+
+      104 |     //     });
+      105 |     //   });
+    > 106 |       this.props.onIngredientGet();
+
+
+
+
+
+
+
+
+
+
+    OBS: ERRO CHATO DE 'erro no test do App.js '--> isso acontece pq 
+
+    o JEST MONTA TODO NOSSO APP E ENTÃO TENTA O TESTAR POR CAUSA DE 'App.test.js'... --> 
+    esse test sempre acaba em FAIL __DEVIDO __ AO RECURSO DE ROUTING__ QUE 
+    IMPLEMENTAMOS EM NOSSO APP...
+
+
+
+
+
+
+
+
+
+
+    TypeError: this.props.onIngredientGet is not a function ------> 
+
+
+    professor 
+
+
+    NOS 
+
+    EXPLICA QUE 
+
+    _-ESSE CÓDIGO __ fAZ SENTIDO__... ---> FAZ SENTIDO 
+
+    PQ 
+
+
+    'shallow()' 
+
+    VAI 
+
+    RENDERIZAR NOSSO COMPONENT 'VERDADEIRO',
+
+    AINDA QUE 
+
+    ELE 
+    NÃO 
+    FAÇA
+     
+
+     ESSE PROCESSO DE FORMA 'DEEP'.... ----------> E AÍ,
+
+
+     LÁ 
+
+
+     EM 
+
+
+
+     'BurgerBuilder',
+
+
+
+     NÓS 
+     PERCEBEMOS 
+
+
+     QUE 
+
+
+     EM 
+
+     'componentDidMount()'
+
+
+     NÓS 
+
+
+     SEMPRE 
+
+     CHAMAMOS 
+
+
+
+     'this.props.onInitIngredients()'... ---------> E ESSA FUNÇÃO,
+      
+
+      É CLARO,
+       
+       NÃO FICA DISPONÍVEL NO NOSSO TEST,
+
+
+
+POIS __NÃO ESTAMOS__ CONECTADOS AO REDUX 
+
+
+nos nossos tests...    --------> também 
+
+pq 
+
+O 
+
+ÚNICO PROP 
+
+
+QUE 
+
+
+SETTAMOS,
+
+
+LÁ 
+
+
+
+
+em 
+
+'wrapper.setProps()',
+
+sobre o CONTAINER 
+
+'BurgerBuilder',
+
+
+FOI ___ AQUELE PROP 
+
+
+DE 
+
+
+'ings: {
+    salad: 0,
+    etc etc...
+}
+' 
+
+
+
+
+
+
+
+
+------> E PARA CONSERTAR ESSE PROBLEMA NO NOSSO TESTING,
+ É 
+ EVIDENTE QUE 
+
+ É 
+
+ NECESSÁRIO 
+
+
+ ADICIONAR 
+
+ ESSE 
+
+ 'this.props.onIngredientGet' NO ARQUIVO/container 'BURGERBUILDER' DE NOSSO TEST...
+
+
+
+
+
+
+
+
+ -------> O 'setProps()'
+
+
+ NÃO 
+
+ FUNCIONA PARA 
+
+ ESSE USE 
+
+
+ CASE AÍ,
+ USE 
+
+ CASE 
+
+ EM QUE 
+
+
+
+ QUEREMOS 
+
+
+ ADICIONAR ESSE PROP ESPECÍFICO AO NOSSO COMPONENT... --> mas pq nõa funciona? --> 
+
+ não 
+
+ funciona 
+
+
+
+
+ PQ 
+
+ O 
+
+
+ 'setProps()' ADICIONA OS PROPS __DEPOIS ___ 
+
+ DO 
+
+
+
+COMPONENT EM SI TER SIDO INSTANCIADO,
+
+e isso 
+é 
+
+tarde demais.... (lá no component BurgerBuilder de verdade, 
+esse 
+
+prop é adicionado POR MEIO DE 'componentDidMount()',
+
+
+como 
+
+visto 
+
+
+neste código aqui:
+
+
+
+  componentDidMount() {
+      this.props.onIngredientGet();
+      this.props.onRedirectToHomeReset();
+
+
+
+
+
+
+
+
+
+
+  }
+
+
+
+
+
+)
+
+
+
+
+
+-------> É 
+
+POR ISSO 
+
+QUE 
+
+PRECISAMOS 
+
+
+ADICIONAR 
+
+ESSE 
+
+NEGÓCIO 
+
+LÁ 
+
+
+NO 
+
+
+'NASCIMENTO' 
+
+
+DE 
+NOSSO 
+
+COMPONENT 
+
+'SHALLOW',
+
+
+
+
+
+diretamente no código do shallow,
+por meio 
+
+
+de uma 
+
+escrita 
+
+
+rústica 
+
+
+de 
+
+
+
+'onIngredientGet= {
+    () => {
+
+    }
+}'
+
+
+
+
+
+
+
+(SIM, NÓS VAMOS PASSAR UMA ARROW FUNCTION EM BRANCO COMO 
+
+VALOR 
+
+DESSE PROP,
+APENAS PARA QUE 
+
+ELE 
+
+CONTE 
+
+
+COMO 
+
+'VÁLIDO'/PRESENTE 
+
+para o nosso test)....
+
+
+
+
+
+ex:
+
+
+
+
+
+() => {
+        
+        let wrapper;
+        beforeEach(
+            () => {   wrapper = shallow(<BurgerBuilder onIngredientGet={() => {}} />) } ///////EIS O CÓDIGO EM QUESTÃO.
+        )
+
+       
+
+
+        it('should render <BuildControls />  if props.ingr is present...',
+        
+            () => {
+                wrapper.setProps(
+                    {
+                        // ingr: true // isso NÃO FUNCIONARÁ PQ o nosso 'prop de verdade' é UM OBJETO com estrutura '{salad: 0, meat: 0, cheese: 0, bacon: 0}', E NÃO UM SIMPLES BOOLEAN DE TRUE/FALSE...
+                        ingr: {
+                            salad: 0,  //código CERTO. --> test vai funcionar, pq essa era a estrutura de nosso prop, no final das contas...
+                            bacon: 0,
+                            meat: 0,
+                            cheese: 0
+                        }
+                    }
+                )
+                expect(wrapper.find(BuildControls)).toHaveLength(1);
+            }
+        )
+
+
+
+});
+
+
+
+--------------------
+
+
+CERTO... MAS NOSSO TEST AINDA ESTAVA DANDO 'FAIL', supostamente pq 
+
+
+'.find(xxxxx)' ----> aquele 
+
+'xxxx' deveria ser ou uma string, um objeto ou COmponent Constructor.... --> 
+
+(
+
+    ex:
+    
+    '    TypeError: Enzyme::Selector expects a string, object, or Component Constructor
+    ''
+
+
+)
+
+
+
+
+
+------------------------
+
+
+PARA 
+
+
+CONSERTAR ESSE ERRO,
+
+EU SIMPLESMENTE CONSERTEI 
+
+
+A SINTAXE 
+
+DO 
+IMPORT 
+
+
+D
+E 
+
+'BuildControls',
+
+QUE
+
+ESTAVA ERRADO,
+
+ESTAVA ASSIm:
+
+
+
+
+import  { BuildControls } from '../../components/Burger/BuildControls/BuildControls';
+
+
+
+QUANDO 
+
+
+DEVIA 
+
+ESTAR ASSIM:
+
+
+
+import  { BuildControls } from '../../components/Burger/BuildControls/BuildControls'
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+
+CERTO, NOSSOS TESTS  
+
+DERAM CERTO....
+
+
+
+
+
+
+
+
+
+--> E SE AGORA FIZERMOS O OPÓSITO,
+
+COLOCARMOS 
+
+
+'ings' naquele 'setState'
+
+
+como 
+
+sendo 
+
+__NULL__, 
+
+vamos 
+
+receber 
+
+UM 
+
+'FAIL' 
+
+
+
+NO NOSSO TEST....
+
+
+
+
+
+
+
+
+
+
+
+--> E ISTO FOI UM EXEMPLO QUE O PROFESSOR NOS MOSTROU... --> podemos 
+
+fazer 
+
+FINETUNE DESSE EXEMPLO,
+
+
+para 
+
+que 
+seja 
+
+possível 
+
+
+TESTAR 
+
+CONTAINERS,
+
+DE ACORDO COM NOSSAS NECESSIDADES...
+
+
+
+
+
+
+---> VOCÊ ESSENCIALMENTE 'STRIP OUT' A PARTE 'COMPONENT' DO 'CONTAINER',
+
+e aí 
+
+
+
+SE LIVRA DA CONEXÃO COM O 
+
+
+'REDUX', para poder então testar 
+
+o container 
+
+''''sem interferência externa''''....
+
+
+
+
+
+
+
+
+
+
+
+--> FALANDO DE REDUX,
+
+COMO 
+
+PODEMOS 
+
+TESTAR O REDUX? COMO TESTAR COMPONENTS COM O REDUX? 

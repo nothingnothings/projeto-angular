@@ -1,0 +1,640 @@
+
+
+
+
+
+
+
+NESSE MÓDULO, VEREMOS 'ANGULAR UNIVERSAL'...
+
+
+
+
+
+
+
+
+
+
+
+--> ESSA É UMA ADIÇÃO AO ANGULAR...
+
+
+
+
+
+
+
+
+
+
+
+--> COMO VOCÊ SABE, O ANGULAR TE PERMITE CONSTRUIR FRONTENDS...
+
+
+
+
+
+
+
+
+-> USER INTERFACES... --> QUE RODAM NO BROWSER---> SEU APP ANGULAR INTEIRO RODA NO BROWSER...
+
+
+
+
+
+
+
+
+
+
+
+
+---> A MORAL DO 'ANGULAR UNIVERSAL' É QUE 
+
+
+
+
+ELE __ TE __ DEIXA __ 
+
+
+FAZER 'PRE-RENDER'
+
+
+DO SEU ANGULAR APP,
+
+PRE-RENDER 
+
+
+
+__ LÁ  
+
+
+NO SERVER...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER QUE ISSO NÃO É UMA 'SERVERSIDE FRAMEWORK',
+
+
+
+
+COMO O EXPRESSJS...
+
+
+
+
+
+
+
+--> OU SEJA,
+
+NÃO VAMOS USAR O ANGULAR UNIVERSAL PARA ESCREVER SERVERSIDE CODE...
+
+
+
+
+
+
+
+
+
+
+--> ENTRETANTO,
+
+
+
+ELE TE PERMITE FAZER 'PRE-RENDER'
+
+
+
+'''on THE FLY''
+
+
+
+
+DAS __ PAGES_ QUE OS USERS VISITAM,
+
+ 
+ TUDO PARA QUE 
+
+ QUANDO OS USERS 
+
+ VISITEM 
+
+ A PAGE/CARREGUEM A PAGE,
+
+
+
+
+
+
+ELES 
+
+
+
+FIQUEM COM AQUELA  '''FINISHED PAGE''' 
+
+
+servida a si,
+
+
+
+
+
+
+
+
+O QUE 
+
+
+
+FARÁ COM QUE AQUELE 'INITIAL RENDERING' NÃO 
+
+
+
+PRECISE ACONTECER 
+
+
+
+NO BROWSER DELES... -------> ENTÃO,
+
+
+
+
+APENAS __ ACTIONS SUBSEQUENTES FEITAS PELO USER _ 
+
+
+SÃO 
+
+
+
+
+HANDLADAS  
+
+
+
+
+,
+
+COMO SEMPRE,
+
+
+
+
+'IN THE BROWSER ONLY'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR DEMONSTRA TUDO ISSO POR MEIO DE UM EXEMPLO:
+
+
+
+
+
+
+
+
+
+
+ele clica com o botão direito na nossa page,
+
+
+e aí coloca na page source...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O QUE VEREMOS É POUCA COISA,
+
+
+
+UM ESQUELETO... -> TEREMOS 
+
+SÓ UM '<app-root>'
+
+
+
+E AÍ UM MONTE DE SCRIPT IMPORTS ---> ANGULAR APPS 
+
+
+
+
+
+COMUNS POSSUEM ESSA APARÊNCIA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+AQUELES SCRIPT IMPORTS SÃO 
+
+
+
+
+O NOSSO APP,
+
+
+
+
+
+SÃO O ANGULAR FRAMEWORK E O CÓDIGO QUE ESCREVEMOS,
+
+TUDO 
+OPTIMIZADO,
+
+BUNDLADO E ENVIADO EM 1 ÚNICO ARQUIVO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> <app-root>
+
+
+SIMPLESMENTE MARCA O LOCAL EM QUE 
+
+
+
+
+
+
+NOSSO CÓDIGO VAI COMEÇAR, NO FFINAL DAS CONTAS,
+
+A RENDERIZAR NOSSO APP..
+
+
+
+
+
+
+
+
+
+
+
+
+--> VEMOS NOSSA PÁGINA NO LUGAR DEVIDO 
+
+
+AO 
+
+'ANGULAR APP' (todos aqueles scripts),
+
+
+
+
+QUE 
+
+
+
+'TRABALHA' PARA __ MUDAR__ A PAGe_ _QUE OBSERVAMOS/ENXERGAMOS __ __ DEPOIS_ 
+
+
+
+
+
+
+
+
+__ DE ELA TER SIDO __ CARREGADA PELO BROWSER... --> É CLARO QEU 
+
+
+ISSO ACONTECE DE FORMA TÃO VELOZ 
+
+
+
+QUE NEM PERCEBEMOS,
+
+
+
+
+MAS EM SUMA,
+
+É ISSO QUE ESTÁ ACONTECENDO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE ESSE APPROACH É GERALMENTE FINE,
+
+
+MAS 
+
+
+EXISTEM ALGUMAS SITUAÇÕES EM QUE 
+
+
+
+OBSERVAREMOS ALGUMAS DESVANTAGENS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> IMAGINE QUE SEUS USUÁRIOS ESTÃO EM REDES MAIS LENTAS... --> NESSES CASOS,
+
+
+
+
+O CÓDIGO JAVASCRIPT PODE DEMORAR UM POUCO MAIS,
+
+E ATÉ 
+
+O CÓDIGO JAVASCIRPT TER SIDO CARREGADO,
+
+
+SEUS USERS NÃO VÃO ENXERGAR COISA ALGUMA..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OUTRO EXEMPLO,
+
+
+
+SEARCH ENGINES... --> SEARCH ENGINES,
+
+
+
+O CRAWLER DELAS,
+
+
+
+
+
+
+
+
+__ VASCULHA DIFERENTES SITES,
+
+
+
+PARA OS INDEXAR... -> E A SEARCH ENGINE APENAS Vê O QUE 
+
+
+
+
+
+É 'BAIXADO INICIALMENTE PELO SERVER' --> o que quer dizer que uma 
+
+
+SEARCH ENGINE NÃO VAI NECESSARIAMENTE ESPERAR PELO LOAD DE TODOS OS SCRIPTS 
+
+
+
+
+
+QUE EFETIVAEMNTE RENDERIZAM SUA PAGE (mesmo problema com o react)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ELE VAI VER SÓ O ESQUELETO, E ISSO É RUIM,
+
+
+
+PQ 
+O 
+
+'INDEX SCORE'
+
+VAI FICAR PREJUDICIADO..
+
+
+
+
+
+
+
+
+
+
+--> O IDEAL SERIA QUE 
+
+
+O 'INITIAL, FIRST REQUEST,
+
+
+
+
+'
+
+
+FOSSE PRE-RENDERIZADO NO SERVER,
+
+
+
+
+
+
+TUDO PARA QUE CONSEGUÍSSEMOS UMA 'REAL HTML PAGE'
+
+servida de volta... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ESSA PAGE INICIAL AINDA VAI CONTER TODOS OS 'SCRIPT IMPORTS' de verdade,
+
+
+
+
+PQ EVENTUALMENTE ELA SERÁ CONVERTIDA EM UM 'ANGULAR APP'
+
+
+de verdade,
+
+APÓS TER CARREGADO
+
+
+
+
+
+
+
+
+TUDO CERTINHO,
+
+PARA 
+
+
+QUE 
+SUBSEQUENTES 
+
+
+
+CLICKS 
+
+
+
+
+SEJAM REALMENTE 
+
+
+
+
+HANDLADOS APENAS PELO BROWSER (para serem fast, reactive ),
+
+
+
+
+E SIM APENAS O 
+
+FIRST LOAD 
+
+
+
+QEU 
+S
+ERÁ HANDLADO PELO SERVER E ENVIADO COMO 'PROTÓTIPO'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> ISSO CONSERTA O PROBLEMA DAS 'SEARCH ENGINES',
+
+
+e também o problema de CONEXÕES MAIS LENTAS...
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+A quick note: In the next lecture, I mention that it's important to add ModuleMapLoader to your app.server.ts file - if you're using Angular 9, this is NOT required anymore!

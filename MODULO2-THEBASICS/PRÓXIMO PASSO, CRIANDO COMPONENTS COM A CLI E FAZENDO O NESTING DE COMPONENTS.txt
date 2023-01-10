@@ -1,0 +1,686 @@
+
+
+
+
+
+
+
+
+
+
+---> NAS ÚLTIMAS LIÇÕES,
+
+APRENDEMOS UM MONTE,
+
+
+
+
+COMO POR EXEMPLO 
+
+
+
+
+A 
+
+CRIAÇÃO 
+DE 
+
+
+'ANGULAR COMPONENTS'
+
+
+
+
+
+manualmente, com nossas próprias mãos (e código)....
+
+
+
+
+
+
+
+
+
+--> MAS EXISTE UMA ALTERNATIVA AO CREATE DE ANGULAR COMPONENTS MANUALMENTE..
+
+
+
+
+
+
+
+
+--> QUANDO VOCÊ USA O CLI,
+
+VOCÊ PODE ABRIR UMA NOVA TERMINAL WINDOW 
+
+E ENTÃO 
+
+
+
+PODEMOS 
+
+USAR 
+
+
+
+UM 'CLI COMMAND'
+
+PARA 
+
+ENTÃO 
+
+
+CRIAR UM NOVO COMPONENT...
+
+
+
+
+
+
+--> OK.. DIGAMOS QUE QUEREMOS 
+
+
+TER UM COMPONENT DE NOME 'servers',
+
+E QUE 
+
+ELE DEVE SER NESTEADO EM OUTRO COMPONENT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> para criar esse component manualmente,
+
+teríamos de criar uma pasta de nome 'servers',
+
+aí criar 3 arquivos,
+
+
+
+1) exemplo.component.html
+2) exemplo.component.css 
+3) exemplo.component.ts
+
+
+
+
+
+
+
+
+
+
+
+E AÍ 
+
+
+ESCREVER TODA A LÓGICA...
+
+
+
+
+
+
+
+
+-> SE QUISERMOS FAZER ISSO COM A CLI,
+
+QUE  É UM PROCESSO BEM MAIS RÁPIDO,
+
+
+
+
+devemos 
+
+
+escrever 
+
+
+
+'ng generate',
+
+
+
+
+
+
+QUE É UM _ COMANDO QUE NOS PERMITE GERAR ALGUNS ELEMENTS/COISAS 
+
+
+SUPORTADAS 
+
+PELO ANGULAR...
+
+
+
+
+
+
+
+
+--> UMA DAS COISAS QUE PODEMOS GENERATE É UM 'component'...
+
+
+
+
+
+
+
+
+
+
+
+--> PARA GERAR UM COMPONENT ATRAVÉS DA CLI,
+
+você deve escrever 
+
+
+
+
+
+
+
+
+
+
+ng generate component COMPONENTNAME...
+
+
+
+
+
+
+
+
+
+
+no caso, escrevemos:
+
+
+
+
+
+
+
+
+ng generate component servers
+
+
+
+
+
+
+
+
+
+
+
+-----> E ISSO __ REALMENTE FUNCIONOU.... 
+
+
+
+
+
+
+
+
+
+
+-> UM SHORTCUT PARA ISSO É 
+
+
+
+
+ng g c 
+
+(
+    ng generate components...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> A VANTAGEM DE CRIAR 1 COMPONENT ASSIM É QUE 
+
+__ ELE __ VAI SER AUTOMATICAMENTE 
+
+
+ADIICONADO 
+
+
+
+NO ARRAY DE 'declarations' lá em 
+
+
+'app.module.ts'...
+
+(
+    mão na roda...
+)
+
+
+
+
+
+
+
+
+
+
+-> ISSO CRIOU UM NOVO FOLDER de 'servers' (o component)
+DENTRO 
+
+
+
+DO FOLDER 'app'...
+
+
+
+
+
+
+
+
+
+--> ISSO TAMBÉM TE DÁ UM ARQUIVO 
+
+'.spec',
+
+QUE É USADO PARA 
+
+TESTING...
+
+
+
+
+
+
+
+
+------> OK... COMO PRÓXIMA ETAPA,
+
+QUEREMOS DIZER QUE 
+
+
+
+
+__ QUEREMOS__ NESTEAR__ ESSE COMPONENT 'Server'
+
+DENTRO 
+
+
+DESSE 
+
+
+
+COMPONENT 'Servers'...
+
+
+
+
+
+
+
+
+
+LÁ EM 'app.component.html', que representa nosso app no DOM,
+
+
+temos este código:
+
+
+
+
+
+<h3>I'm in the AppComponent!</h3>
+<hr>
+<app-server></app-server>
+<exemplo></exemplo>
+
+
+
+
+
+
+
+
+
+
+
+------> NO ARQUIVO/COMPONENT GERADO AUTOMATICAMENTE 
+
+PELO ANGULAR,
+
+TEMOS ESTE CÓDIGO HTML:
+
+
+
+<p>servers works!</p>
+
+
+
+
+
+
+
+
+
+
+-----> O PROFESSOR ENTÃO SIMPLESMENTE__ SUBSTITUI ESSE 
+
+
+
+'<p>'
+
+
+POR VÁRIAS CÓPIAS 
+
+
+
+DA TAG 
+
+
+
+'<app-server>',
+
+
+
+REFERENCIANDO O COMPONENT 'ServerComponent'
+
+QUE HAVÍAMOS CRIADO ANTERIORMENTE...
+
+
+
+
+
+
+
+
+FICOU TIPO ASSIM:
+
+
+
+
+
+
+<app-server></app-server>
+<app-server></app-server>
+<app-server></app-server>
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+]
+
+
+
+
+<h3>I'm in the AppComponent!</h3>
+<hr>
+<!-- <app-server></app-server> -->
+<app-servers></app-servers>
+<exemplo></exemplo>
+
+
+
+
+
+
+
+
+------
+
+
+
+
+
+
+
+
+
+
+
+O CLI É REALMENTE CONVENIENTE,
+
+PQ 
+
+ESSA CRIAÇÃO 
+
+
+DE 
+
+
+
+COMPONENTS NO CLI JÁ ADICIONA OS IMPORTS E 
+
+
+
+'declarations'
+
+
+
+
+no 'app.module.ts'
+
+
+
+AUTOMATICAMENTE....
+
+
+
+
+
+
+
+
+
+
+
+--> com isso, podemos ir até 
+
+
+
+servers.component.ts 
+
+
+e checar o 
+
+'selector',
+
+que deverá ser 
+
+
+'app-servers'....
+
+
+
+
+
+
+
+
+
+
+--> OK, TUDO ESTÁ FUNCIONANDO E 'WIRED UP'...
+
+
+
+
+
+
+
+
+--> É BEM PARECIDO COM O REACT, NESSE QUESITO DO 'MOUNT' DO DOM.... (organização)...
+
+
+
+
+
+
+
+
+
+---. SE VOCÊ CHECAR O CHROME DEV TOOLS,
+
+VERÁ 
+
+
+
+
+
+ESTA DISPOSIÇÃO DE ELEEMNTOS:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ou seja,
+
+teremos 
+
+
+o COMPONENTE OUTER 'servers',
+
+
+e os components INNEr 'server',
+
+que foram 
+
+
+ 
+ COLOCADOS COMO CONTEÚDO DO TEMPLATE DO COMPONENT 'servers'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -_> COM ISSO,
+
+
+
+ VIMOS QUE:
+
+
+
+
+0) QUE PODEMOS CRIAR COMPONENTS ATRAVÉS DO CLI...
+
+
+
+ 1) PODEMOS NESTEAR COMPONENTS, 1 DENTRO DO OUTRO...
+
+
+
+
+
+
+ 2) COMO PODEMOS REPLICAR COMPONENTS, BASTA USAR SEUS SELECTOR MÚLTIPLAS VEZES (
+
+
+
+     como 
+
+
+     em 'servers.component.html',
+
+     que temos este código:
+
+     <app-server></app-server>
+<app-server></app-server>
+<app-server></app-server>
+
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+ -> O PRÓXIMO PASSO É ESTUDAR O STYLING DE COMPONENTS,
+
+
+ VER O QUE PODEMOS FAZER QUANTO AO STYLING 
+
+
+
+ 
+
+ E TEMPLATE 
+ 
+ DOS COMPONENTS...
+
+
+
+ import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-servers',
+  template './servers.component.html', //////eis o código em questaõ.
+  styleUrls: ['./servers.component.css']
+})
+export class ServersComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+

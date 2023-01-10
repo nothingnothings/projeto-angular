@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "recipebookdummyproject": {
+      "hosting": {
+        "exemploAngularMaterial": [
+          "exemploexemplodummysite"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "recipebookdummyproject"
+  }
+}

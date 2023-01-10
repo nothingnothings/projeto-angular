@@ -1,0 +1,286 @@
+
+
+
+
+
+
+
+
+
+-----> OK... COM TODAS AS 4 FORMAS DE DATABINDING COBERTAS,
+
+
+
+DEVEMOS COMPLETAR NOSSO PEQUENO DEMO APP..
+
+
+
+
+
+
+
+
+-> TEMOS UM CÓDIGO, É CLARO,
+
+
+
+
+QUE 
+
+
+FAZ 
+
+
+COM QUE 
+
+
+
+
+
+
+O NOSSO 'serverName'
+
+
+SEJA UPDATADO QUANDO DIGITAMOS...
+
+
+
+
+
+
+
+
+
+
+
+--> o professor quer algo diferente, agora ele quer 
+
+
+QUE 
+
+SEJA 
+
+DISPLAYADO O 'servername'
+
+
+de nosso component _ APENAS_ QUANDO FOR CLICADO  O BUTTON DE 
+
+'Add server'....
+
+
+
+
+
+-> vou fazer isso no component 'servers'....
+
+
+
+
+
+
+
+
+
+
+
+COMEÇO ASSIM:
+
+
+
+
+
+(click)="showServerName()"
+>Toggle Server</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIMM:
+
+
+
+
+
+
+
+  showServerName() {
+    
+  }
+
+
+
+
+
+
+
+
+
+
+
+  OK, MAS COMO VOU COMBINAR TODAS ESSAS FORMAS DE DATABINDING?
+
+
+
+
+
+
+
+
+
+
+
+  -> PARA INÍCIO DE CONVERSA,
+
+
+
+  o professor 
+
+
+
+
+
+  EDITA O 
+
+
+  method de 'createServer',
+
+
+
+
+
+  cuja lógica fica assim:
+
+
+
+
+
+
+  onCreateServer() {
+      this.serverCreationStatus = 'Server was created! Name is ' + this.serverName;
+  }
+
+
+
+
+
+
+
+
+
+
+  OK, CONSEGUI... ACHO QUE ESTOU ENTTENDENDO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> ESTAMOS USANDO AS 4 FORMAS DE DATABINDing:
+
+
+
+
+
+
+  1) EVENT BINDING PARA FAZER LISTEN TO AO CLICK
+
+
+  2) STRING INTERPOLATION PARA FAZER OUTPUT DE DATA (STRING)
+
+
+  3) PROPERTY BINDING PARA _ ENABLAR__ ESSE BUTTON PARA INÍCIO DE CONVERSA (após 2 segundos)
+
+
+  4) TWO-WAY BINDING _ PARA _ FETCHEAR _ NOSSA INPUT DATA..
+
+
+
+
+
+
+
+
+
+
+  com isso,
+
+  já avançamos bastante no básico do angular...
+
+
+
+
+
+
+
+
+
+  --> JÁ USAMOS COMPONENTS, SABEMOS COMO ELES FUNCIONAM EM GERAL...
+
+
+
+
+
+
+
+
+
+  --> NÓS SABEMOS COMO NOS COMUNICAR COM OS TEMPLATES,
+
+
+
+  (
+
+      sentido typescript -> template 
+
+      e 
+
+
+      template -> javascript...
+  )
+
+
+
+
+
+
+
+
+  -> MAS HÁ MAIS UMA FEATURE BÁSICA QUE TEMOS QUE COBRIR,
+
+
+  PARA 
+
+
+  AÍ CONSEGUIRMOS CRIAR UM APP BÁSICO...
+
+
+
+
+
+
+
+
+  -_> DEVEMOS VER AS DIRECTIVES 
+
+
+
+,
+
+MAS ANTES DISSO DEVEMOS PRATICAR DATABINDING...

@@ -1,0 +1,29 @@
+<div class="row">
+  <div class="col-xs-12 col-sm-4">
+    <div class="list-group">
+      <div *ngFor="let server of servers; let index=index">
+      <a
+      
+      class="list-group-item" 
+      [routerLink]="['/servers', server.id]"
+      [queryParams]="{allowEdit: server.id === 3 ? '1' : '0' }"
+      [fragment]="'loading'"
+      
+      > <!-- [queryParams] É UMA _ PROPRIEDADE __ DE 'routerLink', e não uma NOVA DIRECTIVE... queryparams são ?allowEdit=1, na sua URL...-->
+      <!-- FRAGMENT É O '#' que Às vezes pode aparecer/ser parseado nas suas urls.... OBS: só é possível ter 1 ÚNICO FRAGMENT por 'link'/route.... -->
+        {{ server.name }} 
+      </a>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4">
+    <!-- <a routerLink="servers">Reload Page</a> EIS O CÓDIGO EM QUESTÃO... relative path, string é adicionada como segment AO LADO DE TODOS OS ANTECEDENTES, no final... -->
+    <!-- <a routerLink="/servers">Reload Page</a>  ABSOLUTE PATH, substitui o PATH INTEIRO -->
+    <!-- <button class="btn btn-primary" (click)="onReload()">Reload Page - programmatic navigation, with relative paths (will error out, intended behavior)</button>  --> 
+    <!-- <app-edit-server></app-edit-server>
+    <hr /> -->
+    <!-- <app-server></app-server> -->
+    <router-outlet></router-outlet> <!-- ESSE OUTLET é o segundo outlet de nosso projeto, e é um NESTED OUTLET, pq existe outro (o 'global', 'topmost level'); É CLARO QUE USAREMOS ESSE 'NESTED OUTLET' para fazer o render de nossas NESTED ROUTES, as nested routes do component 'servers'... -->
+  </div>
+</div>
+

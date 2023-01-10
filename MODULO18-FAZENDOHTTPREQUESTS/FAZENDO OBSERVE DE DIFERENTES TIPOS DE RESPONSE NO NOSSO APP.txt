@@ -1,0 +1,2185 @@
+
+
+
+
+
+
+
+
+
+
+--> até agora,
+
+NÓS SEMPRE 
+
+
+
+ESTIVEMOS SÓ INTERESSADOS NA 'RESPONSE DATA'
+
+DE NOSSO REQUEST...
+
+
+
+
+
+
+
+
+
+O CÓDIGO ATUAL É ESTE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs';
+
+import { Post } from './post.model';
+
+import { catchError } from 'rxjs';///É USADO PARA TASKS COMO 'LOG ERROR MESSAGES TO ANALYTICS SERVER'... é usado em conjunto com 'THROW ERROR' (para que a ERROR DATA consiga ATINGIR/REACH OS NOSSOS COMPONENTS, PARA QUE AÍ O ACTUAL ERROR HANDLING AO USUÁRIO CONSIGA OCORRER)...
+import { throwError } from 'rxjs'; ////é usado para WRAPPAR NOSSA DATA DE ERROR e então __cRIAR_ UM OBSERVABLE  (pq queremos que o '.subscribe()' nos nossos components CONSIGA 'ENCAIXAr' nesse observable)...
+
+
+import { HttpHeaders } from '@angular/common/http';  ////usamos isso para definir nossos HEADERS nos http requests..
+import { HttpParams } from '@angular/common/http'; // usamos isso para definir nossos QUERY PARAMS nos http requests..
+
+@Injectable()
+export class PostsHttpService {
+  constructor(private http: HttpClient) {}
+
+  private fetchPosts() {
+    ///outsourcing.
+
+
+    let searchParams = new HttpParams();
+    searchParams = searchParams.append('print', 'pretty');
+    searchParams = searchParams.append('custom', 'key');
+    searchParams = searchParams.append('page' , '1');
+
+    return this.http
+      .get<{ [name: string]: Post }>(
+        'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json', ///1o argumento, é a url/route/api endpoint que você quer targettar...
+        
+        {  //2o e ÚLTIMO argumento: é o 'HTTP REQUEST CONFIG' object... --> define várias coisas sobre nosso http request, como OS HEADERS..
+
+          headers: new HttpHeaders(
+            {
+              "Custom-Header": "Hello-Example"
+            }
+          ),
+
+          params: searchParams //////// é assim que anexamos múltiplos query params a nosso http request...
+
+          // params: new HttpParams().set( ///usado para definir QUERY PARAMs.... --> mas esse approach só nos deixa DEFINIR 1 ÚNICO QUERY PARAM, por isso é inferior... (devemos usar aquele código de 'let searchParams', visto logo acima, que nos deixa COLOCAR MÚLTIPLOS QUERY PARAMS NO NOSSO HTTP REQUEST)...
+
+          //   'print', ///'NOME DO PARAM'  --> 'print' é um queryParam suportado pelo firebase, que vai retornar nossa data em um formato 'pretty'...
+          //   'pretty' ///'VALUE DO PARAM' (print -> pretty)
+          // )
+        }
+      
+      
+        )
+      .pipe(
+        map((responseData) => {
+          const transformedPostsArray: Post[] = [];
+
+          for (const key in responseData) {
+            if (responseData.hasOwnProperty(key)) {
+              ///VAI CHECAR SE ISSO NÃO É UM 'PROTOTYPE' dentro da 'responseData'...
+              transformedPostsArray.push({ ...responseData[key], id: key });
+            }
+          }
+
+          return transformedPostsArray; ///return de 'observable' (Faça SUBSCRIPTION lá nos seus COMPONENTS, para pegar o resultado da subscription)...
+        }),
+        catchError(  ///usado para ERROR HANDLING TASKS GENÉRICAS, COMO 'SAVE DE ERRORS EM LOGS, EM UM ANALYTICS SERVER'....
+          (errorRes) => {
+
+            return throwError(() => errorRes); ///vai passar nossa ERROR DATA ADIANTE, PARA SER USADA/HANDLADA LÁ NOS NOSSOS '.subscribe()'..
+          }
+        )
+      );
+  }
+
+  onCreatePost(postData: Post) {
+    return this.http.post<{ name: string }>( ///return de 'observable' (Faça SUBSCRIPTION lá nos seus COMPONENTS, para pegar o resultado da subscription)...
+      'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json',
+
+      postData ///nossa ACTUAL DATA.
+    );
+  }
+
+  onDeletePosts() {
+
+    return this.http.delete(
+        'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json'
+    );
+
+
+
+  }
+
+  onFetchPosts() {
+    return this.fetchPosts();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> POR EXEMPLO,
+
+
+
+QUANDO FETCHEAMOS OS POSTS:
+
+
+
+
+
+
+
+
+
+
+  private fetchPosts() {
+    ///outsourcing.
+
+
+    let searchParams = new HttpParams();
+    searchParams = searchParams.append('print', 'pretty');
+    searchParams = searchParams.append('custom', 'key');
+    searchParams = searchParams.append('page' , '1');
+
+    return this.http
+      .get<{ [name: string]: Post }>(
+        'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json', ///1o argumento, é a url/route/api endpoint que você quer targettar...
+        
+        {  //2o e ÚLTIMO argumento: é o 'HTTP REQUEST CONFIG' object... --> define várias coisas sobre nosso http request, como OS HEADERS..
+
+          headers: new HttpHeaders(
+            {
+              "Custom-Header": "Hello-Example"
+            }
+          ),
+
+          params: searchParams //////// é assim que anexamos múltiplos query params a nosso http request...
+
+          // params: new HttpParams().set( ///usado para definir QUERY PARAMs.... --> mas esse approach só nos deixa DEFINIR 1 ÚNICO QUERY PARAM, por isso é inferior... (devemos usar aquele código de 'let searchParams', visto logo acima, que nos deixa COLOCAR MÚLTIPLOS QUERY PARAMS NO NOSSO HTTP REQUEST)...
+
+          //   'print', ///'NOME DO PARAM'  --> 'print' é um queryParam suportado pelo firebase, que vai retornar nossa data em um formato 'pretty'...
+          //   'pretty' ///'VALUE DO PARAM' (print -> pretty)
+          // )
+        }
+      
+      
+        )
+      .pipe(
+        map((responseData) => {
+          const transformedPostsArray: Post[] = [];
+
+          for (const key in responseData) {
+            if (responseData.hasOwnProperty(key)) {
+              ///VAI CHECAR SE ISSO NÃO É UM 'PROTOTYPE' dentro da 'responseData'...
+              transformedPostsArray.push({ ...responseData[key], id: key });
+            }
+          }
+
+          return transformedPostsArray; ///return de 'observable' (Faça SUBSCRIPTION lá nos seus COMPONENTS, para pegar o resultado da subscription)...
+        }),
+        catchError(  ///usado para ERROR HANDLING TASKS GENÉRICAS, COMO 'SAVE DE ERRORS EM LOGS, EM UM ANALYTICS SERVER'....
+          (errorRes) => {
+
+            return throwError(() => errorRes); ///vai passar nossa ERROR DATA ADIANTE, PARA SER USADA/HANDLADA LÁ NOS NOSSOS '.subscribe()'..
+          }
+        )
+      );
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> NESSE METHOD, NÓS:
+
+
+
+
+
+  1) CONSEGUIMOS A RESPONSE DATA 
+
+
+
+
+
+
+  2) MAPPEAMOS ESSA DATA COm 'map', o OPERATOR de 'map', para 
+
+
+
+  QUE O CÓDIGO SE 'ENCAIXASSE' 
+
+
+
+
+  3) POR FIM,
+
+  NÓS USAMOS ESSA DATA NO COMPONENT... (output)...
+
+
+
+
+
+
+
+
+
+
+
+  ----> NÃO HÁ NADA 
+
+  DE ERRADO
+
+
+
+
+
+  COM ISSO,
+
+
+  E ERA PRECISAMENTE O QUE QUERÍAMOS,
+
+
+
+  MAS AS VEZES VOCë VAI PRECISAR 
+
+
+
+  DE ACESSO 
+
+
+
+
+
+
+
+
+
+  AO 'RESPONSE OBJECT' inteiro,
+
+
+
+  E NÃO SÓ  
+
+
+
+
+
+  à 'extracted body data '----------> ISSO PQ àS VEZES VAMOS PRECSIAR 
+
+
+
+
+  SABER 
+
+  _ QUAL_ 
+
+
+  'STATUS CODE'
+
+  FOI ANEXADO AO HTTP REQUEST,
+
+
+
+
+  OU ENTÃO 
+
+
+
+  VAMOS PRECISAR IDENTIFICAR ALGUNS RESPONSE HEADER ESPECÍFICOS...
+
+
+
+
+
+
+
+
+
+
+
+
+  -----> EM CASOS COMO ESSES, VOCÊ PODE __MUDAR __ A MANEIRA__ PELA QUAL 
+
+
+
+
+
+
+
+
+
+  O ANGULAR HTTP CLIENT PARSEIA 
+
+
+
+
+
+
+  ESSA RESPONSE,
+
+
+
+
+  E AÍ _ 
+
+
+
+
+  BASICAMENTE DIZER AO ANGULAR 
+
+
+
+
+
+  '''' HEY, POR FAVOR NÃO ME DÊ APENAS THE UNPACKED, EXTRACTED DATA 
+
+  QUE VOCÊ ENCONTROU NO BODY''',
+
+
+
+
+'''ME DÊ A RESPONSE COMPLETA,
+
+EM VEZ DISSO'''...
+
+
+
+
+
+
+
+
+
+
+
+----> VAMOS 
+
+
+
+
+USAR DE EXEMPLO O REQUEST DE TIPO 'POST'..
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+  onCreatePost(postData: Post) {
+    return this.http.post<{ name: string }>( ///return de 'observable' (Faça SUBSCRIPTION lá nos seus COMPONENTS, para pegar o resultado da subscription)...
+      'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json',
+
+      postData ///nossa ACTUAL DATA.
+    );
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ---------> OK.... 
+
+
+
+
+
+
+  PARA CONSEGUIR O 'FULL RESPONSE OBJECT',
+
+
+
+
+  DEVEMOS __ ADICIONAR_ AQUELE _ SEGUNDO PARÂMETRO-CONFIG   ( {headers: xx, params: yyy })
+
+
+
+
+
+
+
+,
+
+
+MAS AÍ NESSE OBJECT 
+
+
+NÃO VAMOS DEFINIR HEADERS OU PARAMS,
+
+
+
+E SIM 
+
+
+
+
+__ DEFINIREMOS 
+
+'observe'...
+
+
+
+
+
+
+
+
+'observe: '' -------> ESSA É UMA _ KEY __ ESPECIAL... -->
+
+
+
+
+
+
+
+
+
+ELA ACEITA/EXIGE UM PUNHADO DE VALUES,
+
+
+
+E UM DELES 
+
+
+
+É 'body' (
+
+
+    ESSE É O __DEFAULT__...
+)
+
+
+
+
+
+
+
+
+
+O CÓDIGO FICARÁ ASSIM:
+
+
+
+
+
+  onCreatePost(postData: Post) {
+    return this.http.post<{ name: string }>( ///return de 'observable' (Faça SUBSCRIPTION lá nos seus COMPONENTS, para pegar o resultado da subscription)...
+      'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json',
+
+      postData,
+
+
+
+      {
+          //headers,
+          //params,
+
+          observe: 'body'
+      }
+
+
+
+    );
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> 'BODY' É _ O DEFAULT_, E SIGNIFICA QUE 
+
+
+
+VOCÊ 
+VAI 
+
+'GET THAT RESPONSE DATA EXTRACTED'
+
+
+e então 
+
+
+
+_ CONVERTIDa__ EM UM JAVASCRIPT OBJECT... (Tudo automaticamente)...
+
+
+
+
+
+
+
+
+
+
+
+--> MAS VOCê TEM OUTROS VALUES/OPTIONS ALÉM DE 'body' ... -----> 
+
+
+
+
+
+
+VOCê PODE TROCAR ESSE value de 'observe' para 'response'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+''body'' --> te dá apenas o BODY, a data no BODY da response.
+
+
+
+
+
+''' response '''' --> te dá TODA A RESPONSE...
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  onCreatePost(postData: Post) {
+    return this.http.post<{ name: string }>( ///return de 'observable' (Faça SUBSCRIPTION lá nos seus COMPONENTS, para pegar o resultado da subscription)...
+      'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json',
+
+      postData, ///nossa ACTUAL DATA.
+
+
+
+      {
+        //headers,
+        //params,
+        // observe: 'body' ////NOS DEIXA _ DEFINIR __ 'O QUE VOCê VAI QUERER_ OBSERVE/RETORNAR COMO DATA, a partir dessa response' --> 'body' é o default, e nos retorna APENAS A DATA DO BODY DA RESPONSE..
+        observe: 'response'  ///'RESPONSE' nos dá o _ RESPONSE OBJECT INTEIRO..
+      }
+    );
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> como, lá no component, TEMOS UM __ CONSOLE.LOG DESSA 'responseData',
+
+
+  PODEREMOS VER EXATAMENTE O FORMATO DE UM 'OBJECT DE TIPO RESPONSE' no angular...
+
+
+
+
+
+
+
+
+
+
+  --> GANHAMOS DE VOLTA O RESPONSE OBJECT INTEIRO, com todas suas propreidades....
+
+
+
+
+
+
+
+  seu formato É:
+
+
+
+
+
+
+
+
+
+
+  body: {name: '-asnnadsiknk1'},
+
+  headers: {
+      HttpHeaders {
+          lazyInit: () => {...}
+          lazyUpdate: null
+      }
+  },
+
+  ok: true,
+  status: 200,
+  statusText: "OK",
+  type: 4,
+  url: "https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json"
+
+
+
+
+
+
+
+
+
+
+
+---> certo... ESSE É O OBJECT 'RESPONSe' completo...
+
+
+
+
+
+
+
+
+
+
+
+--> nós ainda teremos o 'body' dentro 
+
+
+desse object 'response',
+
+
+
+e esse body AINDA ESTARÁ 'PARSEADO E CONVERTIDO EM UM JAVASCRIPT OBJECT'... ---> 
+
+
+
+
+
+
+
+
+A ÚNICA DIFERENÇA,
+
+
+NO NOSSO CÓDIGO, AGORA,
+
+
+É QUE 
+
+
+SE QUISÉSSEMOS 
+
+ACESSAR ESSE 'body' 
+
+
+e TAMBÉM AS OUTRAS PROPRIEDADES DA RESPONSE, AO MESMO TEMPO,
+
+
+teríamos de 
+
+
+chamar 
+
+
+'responseData.body' 
+
+
+'responseData.status',
+
+
+'
+responseData.ok'... 
+
+
+
+
+
+
+
+
+
+(
+
+    OU SEJA,
+
+    ESSA É A VERSÃO ''''NORMAL''''
+
+
+    DE NOSSA RESPONSE DATA,
+
+
+
+    a versão que não vai estar com as propriedades OCULTAS PELO ANGULAr...
+
+
+)
+
+
+
+
+
+
+
+
+
+--> O IDE ATÉ MESMO NOS DÁ AUTO-COMPLETE,
+
+
+MOSTRANDO QUE É NECESSÁRIO chamar 
+
+
+
+'responseData.body'
+
+PARA CONSEGUIR REFERENCIAR ESSE BODY, AGORA, COM esse 'observe: 'response' ' 
+
+
+...
+
+
+
+
+
+
+
+Ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  onCreatePost(postData: Post) {
+    return this.http.post<{ name: string }>( 
+      'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json',
+
+      postData, 
+
+
+
+      {
+     
+        observe: 'response' 
+      }
+    )
+    .subscribe(
+        (responseData) => {
+            console.log(responseData.body) ////EXEMPLO
+        }
+    )
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  onCreatePost(postData: Post) {
+    return this.http.post<{ name: string }>( 
+      'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json',
+
+      postData, 
+
+
+
+      {
+     
+        observe: 'response' 
+      }
+    )
+    .subscribe(
+        (responseData) => {
+            console.log(responseData.body) ////EXEMPLO
+        }
+    )
+  }
+
+
+
+
+
+
+
+
+
+  onCreatePost(formReference: NgForm) {
+
+    console.log(formReference.value);
+
+    const postData = formReference.value;
+
+    this.httpPosts.onCreatePost(postData).subscribe(
+      (responseData) => {
+
+        console.log(responseData);
+        console.log(responseData.body); //agora isso pode ser acessado, graças a 'observe: 'response' ' lá nos parâmetros de '.post()'...
+        formReference.reset(); //resetta os values de todos os fields a partir de um submit bem sucedido...
+
+        this.loadedPosts.push(
+        postData
+        )
+      }
+    )
+
+    
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> ISSO SIGNIFICA QUE AGORA TEREMOS ACESSO AOS HEADERS DA RESPOSNE,
+
+  AO STATUS,
+  
+
+
+
+  STATUSTEXT,
+
+
+
+
+
+
+  ao 'ok' (que só fica ok se vocÊ tiver UM CÓDIGO DE ERRO 200, e não 300 ou 400)...
+
+
+
+
+
+
+
+
+
+
+
+  E ISSO PODE SER ESPECIALMENTE ÚTIL EM CENÁRIOS EM QUE 
+
+  VOCe^
+  NÃO SE IMPORTA SOMENTE COM O BODY,
+
+  E SIM 
+
+
+
+  COM 
+
+  OUTRAS COISAS, COMO STATUS CODES,
+
+  o 'ok',
+
+
+  etc...
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OK, É ASSIM QUE VOCê FAZ OBSERVE DA 'RESPONSe'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> MAS EXISTEM OUTRAS COISAS QUE VOCÊ PODE COLOCAR COMO VALUES DE 'observe'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  'body' --> é o DEFAULT 
+
+
+
+  'response' -> é o FULL RESPONSE OBJECT...
+
+
+
+
+
+
+
+
+
+
+
+-> AGORA, POR FIM,
+
+TEMOS 'events'...
+
+
+
+
+
+
+
+
+--> MAS O QUE É 'EVENTS'?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DEVEMOS VER O QUE SÃO ESSES 'events'
+
+
+
+
+POR 
+
+MEIO 
+
+
+DE _ UM OUTRO __ OPERATOR_ _ ,
+
+
+que 
+
+
+
+PODEMOS CHAINAR 
+
+
+
+AQUI NO NOSSO CALL DE '.post()'..
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+
+IMPORTAMOS O OPERATOR DE 
+
+
+
+
+
+'tap'...
+
+
+
+
+
+
+
+
+------> ESSE OPERATOR _ NOS DEIXA _ 
+
+
+
+''''EXECUTE SOME CODE''''
+
+
+
+__ SEM ALTERAR_ A RESPONSE_.... -------> ISSO QUER DIZER, EM OUTRAS PALAVRAS,
+
+
+
+QUE ISSO 
+
+
+
+NOS DEIXA 
+
+
+'DO SOMETHING WITH THE RESPONSE'
+
+
+
+MAS ___ SEM _ PERTURBAR__ NOSSA 'SUBSCRIBE FUNCTION' 
+
+
+e as functions que passamos como argumentos à subscribe function...
+
+
+
+
+
+
+
+
+
+
+
+
+
+importe assim:
+
+
+
+
+
+
+import { tap } from 'rxjs' 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK.... O PROFESSOR VAI USAR ESSE OPERATOR DE 'tap' 
+
+
+LÁ 
+
+
+NO METHOD DE '.pipe()'
+
+
+
+
+
+DE 'deletePosts',
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  onDeletePosts() {
+
+    return this.http.delete(
+        'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json'
+    ).pipe(
+      tap(
+        () => {
+          
+        }
+      )
+    )
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  -------> certo.... e AÍ, DENTRO DESSE '() => {}'
+
+
+
+  de 
+
+  'tap()',
+
+
+
+  O PROFESSOR 
+
+
+
+  APONTA QUE __ 
+
+  VAMOS PROVAVELMENTE RECEBER 'events', aquele object lá , 
+
+
+
+
+ISSO SE EDITARMOS 
+
+
+O 
+
+
+
+'observe' desse 'deletePosts'
+
+
+
+COMO SENDO 'events'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+  onDeletePosts() {
+
+    return this.http.delete(
+        'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json',
+
+
+        {
+          //params: xxxx,
+          //headers: yyyy,
+          //observe: body(default)/response/events...
+
+
+          observe: 'events'///exemplo do uso do value 'events' como DATA A SER OBSERVADA por nossos operators... (operator de 'tap', mais precisamente).... 
+        }
+    ).pipe(
+      tap(
+        (event) => {
+
+          console.log(event); ///isso vai receber a data do 'EVENT'... (por conta de 'observe: events' )
+        }
+      )
+    )
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> VOCÊ NAÕ PRECISA FAZER 'RETURN' AQUI,
+
+
+
+PQ 
+
+
+'tap()'
+
+
+
+NÃO VAI INTERROMPER O DATAFLOW COMUM 
+
+
+
+
+
+DE SEU APP,
+
+de 'data source -> subscription()',
+
+
+
+
+
+PQ A ÚNICA COISA QUE 
+
+
+ELE 
+
+
+VAI 
+
+
+FAZER É 
+
+''DEIXAR VOCÊ FAZER ALGUMA COISA/EXECUTAR ALGUMA LÓGICA,
+
+MAS VAI AUTOMATICAMENTE DEIXAR A DATA DA RESPONSE "pASS THROUGH" ''
+
+
+
+
+
+
+
+
+
+----> SE SALVARMOS TUDO ISSO 
+
+
+E RECARREGARMOS A PÁGINA, APERTARMOS EM 'clear posts',
+
+
+VEMOS ESTE OUTPUT:
+
+
+
+
+
+
+{type: 0}
+{type: 0}
+
+
+
+ 
+
+ HttpResponse {headers: HttpHeaders, status: 200, statusText: 'OK', url: 'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json', ok: true, …}
+body: null
+headers: HttpHeaders {normalizedNames: Map(0), lazyUpdate: null, lazyInit: ƒ}
+ok: true
+status: 200
+statusText: "OK"
+type: 4
+url: "https://angularconnectiondummy-default-rtdb.fireb
+
+
+
+
+
+
+ HttpResponse {headers: HttpHeaders, status: 200, statusText: 'OK', url: 'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json', ok: true, …}
+body: null
+headers: HttpHeaders {normalizedNames: Map(0), lazyUpdate: null, lazyInit: ƒ}
+ok: true
+status: 200
+statusText: "OK"
+type: 4
+url: "https://angularconnectiondummy-default-rtdb.fireb
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSAS RESPONSES AÍP CLARAMENTE 
+
+
+
+FORAM DERIVADAS LÁ 
+
+
+
+DAQUELE 'console.log(event)'
+
+
+
+
+
+
+
+
+
+
+
+
+--------> ISSO QUER DIZER QUE FICAMOS, EM OUTRAS PALAVRAS, COM 2 EVENTS, AQUi..
+
+
+
+
+
+
+
+
+-> o primeiro event loggado foi  UM OBJECT QUASE 
+
+
+VAZIO,
+
+
+
+
+com a propriedade de 'type: 0'..
+
+
+
+
+
+
+--> JÁ O SEGUNDO OBJECT É O 
+
+'HTTP RESPONSE OBJECT'...
+
+
+
+
+
+
+
+
+
+-------> NO FINAL DAS CONTAS, NO ANGULAR,
+
+NÓS TEMOS _ DIFERENTES TIPOS DE EVENTS,
+
+E ELES SÃO ENCODADOS 
+
+
+__ COM NÚMEROS, SEMPRE... 
+
+
+
+
+
+
+
+
+
+--> ENTRETANTO, AQUI, NO CÓDIGO,
+
+
+
+VOCÊ 
+
+
+
+__ NÃO PRECISA _ USAR _ ESSES NUMBERS,
+
+
+
+
+PQ VOCÊ TEM UMA MANEIRA MAIS CONVENIENTE... --> 
+
+
+
+
+
+
+
+
+
+
+
+
+O LUGAR DE QUE O PROFESSOR FALA É ESTE:
+
+
+
+
+
+
+.pipe(
+      tap(
+        (event) => {
+
+          console.log(event);
+
+
+
+
+        }
+      )
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --> DENTRO DESSE OPERATOR,
+
+
+
+PODEMOS ESCREVER UM IF CHECK... -> 
+
+
+
+
+
+
+
+
+NELE PODEMOS checar se 
+
+
+'event.type'  É __ IGUAL_ A 
+
+
+'HttpEventType'    (é um ENUM QUE PODE SER IMPORTADO lá de angular/common/http)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ENUMS, É CLARO, CONFORME APRENDI,
+
+
+SÃO UMA FEATURE _ SUPORTADA _ APENAS NO TYPESCRIPT,
+
+
+E SÃO BASICAMENTE UM 'MAPA DE NÚMEROS',
+
+
+
+
+
+DE '0, 1, 2, 3',
+
+
+
+
+
+
+
+
+
+
+
+QUE 
+
+
+ENTÕA 
+
+
+NOS ESCLARECE 
+
+
+
+
+
+QUAL _ TIPO _ DE EVENT__ 
+
+
+
+ESTAMOS FALANDO... 
+
+
+(
+
+    ou seja,
+
+    vamos querer checar 
+
+    ''''por acaso esse number de event aqui é 
+
+    EQUIVALENTE AO 
+
+    EVENT QUE TEM UM TYPE DE XXXX????'''
+)
+
+
+
+
+-> fazemos isso pq esse ENUM vai nos dar esses values escritos de uma maneira 
+
+'human-readable',
+
+o que é bom, pq aí não precisamos DECORAR o que 
+
+cada number 
+
+significa, em termos de event...
+
+
+
+
+
+
+
+
+
+
+
+tipo assim:
+
+
+
+
+if (event.type === HttpEventType.xxxxx)
+
+
+
+
+
+
+
+
+
+
+--> OS EVENT TYPES DIFERENTES SÃO:
+
+
+
+DownloadProgress 
+Response 
+
+ResponseHeader 
+
+Sent 
+
+UploadProgress 
+User
+
+
+
+
+ex:
+
+
+
+if (event.type === HttpEventType.Response)
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> VOCÊ PODE VER, NO PREVIEW DO ID,
+
+
+que 
+
+
+'HttpEventType.Response'
+
+
+POSSUI UM NÚMERO CORRESPONDENTE DE '4'.... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SE VOCÊ INSPECIONAR O RESTO DOS HttpEventType,
+
+
+
+
+verá que 
+
+
+
+'Sent' tem um value de '0',
+
+
+
+e que 
+
+
+'Response' tem um value de '4' 
+
+
+
+
+
+(
+
+    E ESSES 2 EVENTS FORAM CONSOLE.LOGGADOS ANTERIORMENTE,
+
+
+    tanto o 
+
+    'Sent' 
+
+
+    como o 
+
+    'Response'...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E É CLARO QUE HÁ OUTROS EVENTS QUE NÃO FIZERAM 'KICK IN' aqui,
+
+
+
+
+como 
+
+
+
+
+'UploadProgress'
+
+
+
+e 
+'DownloadProgress'....
+
+
+
+
+
+
+
+
+
+
+
+UploadProgress ----> ISSO ACONTECE QUANDO ESTAMOS UPLOADANDO ARQUIVOS,.. --> ESSE EVENT TE DÁ 
+
+
+UM POUCO DE INFO ACERCA DO PROGRESSO,
+ 
+ de como esse processo está indo (porcentagem e tals)...
+
+
+
+
+
+
+
+
+
+ -------> AQUI, POR EXEMPLO,
+
+
+
+
+ PODEMOS CHECAR 
+
+ ''''POR ACASO ALGUMA HORA EU RECEBI A RESPONSE???'''' --> 
+
+
+
+
+
+ se vocÊ quiser checar isso,
+
+
+
+
+ basta 
+
+ checar se 
+
+
+''''''
+ if (event.type === HttpEventType.Response) {
+
+
+
+ }
+
+
+
+ '''''
+
+
+
+
+
+
+
+
+
+
+
+ -->    if (event.type === HttpEventType.Response) {
+
+
+
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+ -> SE ISSO ACONTECER, TVZ SEJA BOM CONSOLE.LOGGAR O 'event.body',
+
+
+
+
+
+ PQ _ SE ISSO AÍ FOR TRUTHY,
+
+ ISSO SIGNIFICARÁ QUE AQUI TEREMOS O 'RESPONSE OBJECT', e dentro dele  CERTAMENTE TEREMOS ESSA PROPRIEDADE 
+
+ 'body'...
+
+
+
+
+
+
+
+
+
+
+ EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+ pipe(
+      tap(
+        (event) => {
+
+          console.log(event); ///isso vai receber a data do 'EVENT'... (por conta de 'observe: events' )
+        
+            ///HttpEventType é apenas um 'helper' para nós, humanos, pq vai nos dizer O QUE CADA UM DOS valores NUMERAIS em 'type' correspondem, em termos de EVENTos... ex: ''4 é o código de uma RESPONSE, 3 é o código de um event de DownloadProgress, etc etc''...
+          if (event.type === HttpEventType.Response) {
+
+            console.log(event.body, 'I GOT A RESPONSE');
+          }
+        
+          if (event.type === HttpEventType.Sent) {  ////sent = '0'...
+
+            console.log(event.type, 'MY REQUEST GOT SENT');
+          }
+
+        
+        
+        
+        
+        
+        }
+      )
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    -> SE ENTRAMOS NO CASE DE 'HttpEventType.Sent',
+
+
+
+              if (event.type === HttpEventType.Sent) {  ////sent = '0'...
+
+            console.log(event.type, 'MY REQUEST GOT SENT');
+          }
+
+
+
+
+
+
+
+          ,
+
+
+
+
+          PODERÍAMOS FAZER SHOW DE ALGUMA COISA NA UI,
+
+
+
+          ALGUMA COISA DIZENDO 
+
+
+          ''NOSSO REQUEST FOI SENT, E AGORA ESTAMOS ESPERANDO PELA RESPONSE'''..
+
+
+
+
+
+
+
+
+
+
+--> PORTANTO, É ASSIM QEU USAMOS ESSES 'event',
+
+
+E COMO 
+
+
+
+__ ENTÃO É POSSÍVEL CONSEGUIR 
+
+
+
+'VERY GRANULAR CONTROL'
+
+SOBRE 
+
+
+OS UPDATES DE NOSSA UI,
+
+
+
+
+
+E 
+
+
+
+SOBRE 
+
+
+'QUAL PHASE NOSSO REQUEST ATUALMENTE ESTÁ'...
+
+
+
+
+
+
+
+
+
+--> podemos ver tudo isso no console,
+o andamento dessas fases todas...
+
+
+
+
+
+
+
+
+
+--> ESSES SÃO OS 'observe: events',
+
+
+
+
+
+
+OBVIAMENTE ALGO QUE NÃO USAREMOS TODA HORA,
+
+
+
+MAS QUE SÃO 
+
+BONS SE VOCÊ QUER 'REALLY FINE-GRAINED CONTROL'
+
+sobre seu 
+
+request status...

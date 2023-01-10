@@ -1,0 +1,773 @@
+
+
+  -> APARENTEMENTE O PROFESSOR VAI QUERER NAVEGAR ATÉ 'EDIT' E 'NEW' 
+
+
+
+
+
+  de maneira PROGRAMÁTICA,
+
+  e não por meio de '[routerLink]' 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ----> O PROFESSOR FALA DO BUTTON DE 'NEW RECIPE'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> VAMOS TENTAR 
+
+
+  ADICIONAR O BUTTON DE 'NEW RECIPE'...
+
+
+
+
+
+
+
+
+
+
+  --> ADICIONEI UMA VERSÃO DE MEU CÓDIGO, COM 'ngIf',
+
+  que 
+
+
+
+
+
+  coloca uma versão 
+  DIFERENTE 
+
+
+
+
+  da form 
+
+
+  quando 
+
+
+
+  percebe que o 'editMode'
+
+  ESTÁ COMO FALSE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="row">
+  <div class="col-xs-12">
+    <form>
+      <div class="row" *ngIf="editMode else newRecipe">
+        <div class="col-sm-5 form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" class="form-control" [(ngModel)]="editableRecipe.name" name="name"/>
+        </div>
+        <div class="col-sm-5 form-group">
+          <label for="description">Description</label>
+          <input type="text" id="description" class="form-control" [(ngModel)]="editableRecipe.description" name="description"/>
+        </div>
+        <div class="col-sm-2 form-group">
+            <label for="imagePath">Image</label>
+            <input type="text" id="imagePath" class="form-control"  [(ngModel)]="editableRecipe.imagePath" name="imagePath"/>
+          </div>
+          <div class="col-sm-2 form-group">
+            <label for="imagePath">Ingredients</label>
+            <input type="text" id="imagePath" class="form-control" [(ngModel)]="editableRecipe.ingredients" name="ingredients"/>
+          </div>
+      </div>
+      <ng-template #newRecipe>
+      <div class="col-sm-5 form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" class="form-control"/>
+      </div>
+      <div class="col-sm-5 form-group">
+        <label for="description">Description</label>
+        <input type="text" id="description" class="form-control"/>
+      </div>
+      <div class="col-sm-2 form-group">
+          <label for="imagePath">Image</label>
+          <input type="text" id="imagePath" class="form-control"/>
+        </div>
+        <div class="col-sm-2 form-group">
+          <label for="imagePath">Ingredients</label>
+          <input type="text" id="imagePath" class="form-control"/>
+        </div>
+</ng-template>
+      <div class="row">
+        <div class="col-xs-12">
+          <button class="btn btn-success">Add</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+ok, hora de ver o vídeo do professor...
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS A VERSÃO DO PROFESSOR USA UM _ CLICK__ LISTENER 
+
+
+em 
+
+'new recipe',
+
+
+em vez 
+
+
+
+de um ROUTER LINK...
+
+
+
+
+
+
+
+
+-> a versão dele começa assim:
+
+
+
+
+
+
+
+
+<button class="btn btn-success" (click)="onNewRecipe()">New Recipe</button>
+
+
+
+
+
+ 
+ -----------------------------
+
+
+
+
+
+
+
+
+
+ -> OK, AÍ EM 'recipe-list'
+
+ TEREMOS ESSE ACTUAL METHOD....
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> CERTO, AÍ VAMOS PRECISAR DO ROUTER NAQUEEL METHOD, OBVIAMENTE...
+
+ -> por isso injetamos o router lá em 
+
+ 'RECIPE-LIST'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ import { Component, Input, OnInit, Output } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+import { Router } from '@angular/router';
+import { RecipeBookService } from 'src/app/recipeBook.service';
+
+import { Recipe } from '../recipe.model';
+
+@Component({
+  selector: 'app-recipe-list',
+  templateUrl: './recipe-list.component.html',
+  styleUrls: ['./recipe-list.component.css'],
+})
+export class RecipeListComponent implements OnInit {
+
+
+
+  recipes: Recipe[] = [];
+
+  constructor(private recipeBookService: RecipeBookService, private router: Router) {
+
+
+
+  }
+
+  ngOnInit(): void {
+    // this.recipes = this.recipeBookService.recipes;
+    this.recipes = this.recipeBookService.getRecipes();
+
+  }
+
+  onRecipeItemClick(index: number) {
+    console.log('TEST');
+
+
+    this.recipeBookService.recipeItemClicked(index);
+
+  }
+
+
+
+
+
+
+
+
+
+
+  onNewRecipe() {
+      this.router.navigate(['/recipe-book', 'new']);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+--------------------------------
+
+
+
+
+
+
+
+
+
+
+--> o professor usa uma sintaxe alternativa,
+
+
+
+aquela de 
+
+
+
+
+this.router.navigate(['new'], {relativeTo: this.route});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo...
+
+
+
+
+
+
+
+
+
+
+
+
+isso está funcionando, essa page de 
+
+'new recipe'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA PRECISAMOS FAZER A MESMA COISA COM O 
+'recipe-edit'...
+
+
+
+
+
+
+
+
+
+
+
+
+-> O RECIPE-DETAIL É O LOCAL EM QUE 
+
+TEMOS O 
+
+
+LINK PARA O 
+
+'edit recipe'..
+
+
+
+
+
+
+
+
+--> 
+
+
+LÁ EU HAVIA COLOCADO UM ROUTERLINK, TIPO ASSIM:
+
+
+
+
+
+
+
+          <li><a [routerLink]="['/recipe-book', id, 'edit']"
+            [queryParams]="{allowEdit: 1}"
+             
+            
+            >Edit Recipe</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O PROFESSOR NÃO SEGUIU ESSE APPROACH,
+
+E SIM 
+
+
+
+
+ DECIDIU USAR NAVIGATION PROGRAMÁTICA...
+
+
+
+
+
+
+
+
+
+ -> tipo assim:
+
+ 
+          <li><a
+           (click)="onEditRecipe()"
+             
+            
+            >Edit Recipe</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DENTRO DESSE 
+
+
+
+
+METHOD TAMBÉM VAMOS PRECISAR DO ANGULAR ROUTER,
+
+
+
+PARA QUE CONSIGAMOS 'NAVIGATE'
+
+
+até a route que desejamos...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR EXPLICA QUE 
+
+
+
+_ ESSA É A RAZÃO DE ELE TER ARMAZENADO o id da recipe em 
+'recipeId',
+
+
+em 'recipe-detail' component...
+
+
+
+
+
+
+
+-> É PQ ELE PLANEJA 
+
+USAR ESSE NEGÓCIO PARA __ CARREGAR __ NOSSA PAGE DE 
+
+
+'recipe-edit', 
+
+
+para carregar a info de nosasa recipe dentro 
+
+das forms...
+
+
+
+
+
+
+
+O CÓDIGO FICA ASSIM:
+
+
+
+
+
+
+
+
+  onEditRecipe() {
+
+    this.router.navigate(['/recipe-book', this.id, edit]);
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit, Input } from '@angular/core';
+import { RecipeBookService } from 'src/app/recipeBook.service';
+
+import { Recipe } from '../recipe.model';
+
+import { ActivatedRoute, Params, Router } from '@angular/router';
+
+@Component({
+  selector: 'app-recipe-detail',
+  templateUrl: './recipe-detail.component.html',
+  styleUrls: ['./recipe-detail.component.css']
+})
+export class RecipeDetailComponent implements OnInit {
+
+
+  // loadedRecipe: Recipe;
+
+  // loadedRecipes: Recipe[] = this.recipeBookService.getRecipes();
+
+
+
+  loadedRecipe: Recipe;
+  id: number;
+
+  constructor(private recipeBookService: RecipeBookService, private route: ActivatedRoute, private router: Router) { 
+
+    // this.recipeBookService.recipeItemClickedEmitter.subscribe(
+    //   (data: Recipe) => {
+    //       console.log(data);
+    //   }
+    // )
+
+    // this.recipeBookService.recipeItemClickedEmitter.subscribe( ////SEM O USO DE ROUTING....
+    //   (data) => {
+    //       this.loadedRecipe = data;
+
+    //   }
+    // )
+
+
+
+
+    
+
+
+
+  }
+
+
+
+  ngOnInit(): void {
+
+
+
+    //     const recipeId = this.route.snapshot.params['id'];
+    //     console.log(recipeId);
+
+    ////approach ALTERNATIVA...
+    // const recipeId = +this.route.snapshot.params['id'];
+    // this.loadedRecipe = this.serviceBookService.getRecipes()[recipeId]
+    //this.loadedRecipe = this.serviceBookService.getRecipe(recipeId)
+
+
+    this.route.params.subscribe(
+      (params: Params) => {
+        console.log('TEST');
+        // this.loadedRecipe = this.loadedRecipes[+params['id']];
+
+        // this.loadedRecipe = this.recipeBookService.getRecipes()[+params['id']]
+        this.id = +params['id'];
+        this.loadedRecipe = this.recipeBookService.getRecipe(+params['id']);
+  
+      }
+    )
+
+
+
+  }
+
+
+  sendToShoppingList() {
+    console.log('CLICKED');
+    this.recipeBookService.sendToShopList(this.loadedRecipe.ingredients);
+  }
+
+
+
+
+  onEditRecipe() {
+
+    this.router.navigate(['/recipe-book', this.id, 'edit']);
+
+
+  }
+}
+
+
+
+
+
+
+
+
+
+-----------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+--> ISSO VAI 
+
+FAZER COM QUE 
+
+
+
+
+
+seja feita A NAVIGATION ATÉ O COMPONENT DE 'recipe-edit'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK....
+
+
+
+
+
+

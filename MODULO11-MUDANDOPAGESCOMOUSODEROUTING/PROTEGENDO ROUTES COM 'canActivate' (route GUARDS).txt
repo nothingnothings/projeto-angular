@@ -1,0 +1,3377 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> COMO MENCIONADO NA ÚLTIMA LIÇÃO,
+
+
+QUEREMOS __PROTEGER_ ALGUMAS DE NOSSAS ROUTES ..
+
+
+
+(
+
+    checar pelo 'USER AUTH', por sua presença,
+
+
+    para então 
+
+
+
+    conceder acesso aos components/page-components 
+
+    de 
+
+
+    'single server' 
+
+
+    e 
+
+
+    'edit server'...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+
+
+
+DEVEMOS USAR UMA FEATURE OFERECIDA PELO ANGULAR,
+
+
+QUE NOS DEIXA 
+
+
+RODAR 
+
+
+
+CÓDIGOS __ EM UM MOMENTO NO TEMPO,
+
+
+definido por NÓS..
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+
+O PROFESSOR CRIA UM NOVO ARQUIVO NO ROOT DE NOSSO PROJEOT,
+
+QUE SERÁ 
+
+CHAMADO DE 
+
+'auth-guard.service.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO É PQ __ 
+
+
+
+
+
+ESSE CÓDIGO DE 'ROUTE GUARD'
+
+
+
+vai ser um service ,
+
+
+um service que será usado ao longo do nosso app,
+
+
+
+
+
+e esse service será realmente acessado/disponibilizado nesse ARQUIVO AUTÔNOMO....
+
+
+
+
+
+
+
+
+
+'auth-guard' ----. ESSE É O NOME 
+
+pq 
+
+
+
+
+A 'FEATURE'
+
+do ANGULAR ROUTER 
+
+
+
+É CHAMADA DE 
+
+'guards',
+
+
+PQ 
+
+
+
+ELE 
+
+'GUARDS'
+
+
+algumas actions,
+
+como 
+
+
+
+
+O __ NAVIGATE_ ATÉ UMA ROUTE,
+
+OU O NAVIGATE _ AWAY__ EM RELAÇAÕ A ESSA ROUTE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------> ok.... -> mas, no final das contas,
+
+
+ISSO É UM SERVICE COMUM,
+
+por isso 
+
+
+escrevemos assim:
+
+
+
+
+
+
+
+
+
+
+
+export class AuthGuard {
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(arquivo de 'auth-guard.service.ts')...
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> CERTO... DENTRO DISSO,
+
+
+
+O PROFESSOR FAZ 'IMPLEMENT'
+
+
+
+
+da interface de 'CanActivate',
+
+QUE 
+
+É UMA __ INTERFACE QUE É 
+
+PROVIDENCIADA POR '@angular/router'...
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+import { CanActivate } from "@angular/router";
+
+export class AuthGuard implements CanActivate {
+
+
+}
+
+
+
+
+
+
+-------------------------------
+
+
+
+
+
+---------> ESSA INTERFACE __ TE FORÇA__ 
+
+A TER UM METHOD DE 
+
+'canActivate() {
+
+}',
+
+
+
+
+
+
+
+DENTRO DA CLASS... -> e esse method 
+
+VAI _ RECEBER __ OBRIGATORIAMENTE 
+
+2 
+
+ARGUMENTS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> 
+
+
+
+
+PRIMEIRO ARGUMENT) é o 'ActivatedRouteSnapshot' 
+
+
+
+
+
+
+
+SEGUNDO ARGUMENT) é o 'state'  DO ROUTER, o que quer dizer que 
+será 
+
+
+
+'RouterStateSnapshot',
+
+
+
+
+
+
+
+
+
+O QUE QUER DIZER QUE NOSSO CÓDIGO FICA ASSIM:
+
+
+
+
+
+
+import { CanActivate } from "@angular/router";
+
+export class AuthGuard implements CanActivate {
+
+
+
+
+            canActivate(route: ActivatedRouteSnapshot,
+            state: RouterStateSnapshot
+            
+            )
+
+}
+
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+import {
+  ActivatedRouteSnapshot,
+  CanActivate,
+  RouterStateSnapshot,
+} from '@angular/router'; //precisamos de 'CanActivate' PARA __ DEFINIR ROUTE GUARDS NO NOSSO PROJECT...
+
+export class AuthGuard implements CanActivate {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {}
+}
+
+
+
+
+
+
+
+-------------------------------------
+
+
+
+
+
+
+
+
+OK.... MAS A PERGUNTA AQUI É:
+
+
+
+'
+DE QUE LUGAR VAMOS OBTER TODOS ESSES PARAMETERS,
+
+
+dentro 
+
+
+
+desse method/coisa chamada de 'canActivate()' ? 
+
+
+
+
+
+
+
+
+
+
+----> BEM.... 
+
+
+
+
+
+
+DEVEMOS TER EM MENTE QUE 
+
+
+
+
+_ VAMOS  DEFINIR QUE 
+
+'''O ANGULAR DEVE EXECUTAR ESSE CÓDIGO INTEIRO __ ANTES_ DE 
+
+
+
+UMA ROUTE SER CARREGADA''' (route em geral)
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> ISSO SIGNIFICA QUE 
+
+O ANGULAR CERTAMENTE NOS FORNECERÁ ESSA DATA 
+
+de 
+'route' 
+
+
+e 
+'state',
+
+
+com esses types aí,
+
+
+
+
+CABENDO A NÓS _ 
+
+
+
+
+
+SOMENTE O 'HANDLE' dessa data...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK, ESSE ERA O 'canActivate'...
+
+
+
+
+
+
+
+----> MAS O CanActivate
+
+ 
+
+
+
+ _também _ RETORNA ALGO CONCRETO.... --> 
+
+
+
+
+ OU ELE 
+
+ RETORNA UM 
+
+ 'observable'  
+
+
+
+
+
+ (
+
+
+     você tem que importar 'Observable' lá do pacote 'rxjs'....
+ )
+
+
+
+
+
+
+
+
+ EX:
+
+
+
+
+
+
+
+
+
+
+ import {
+  ActivatedRouteSnapshot,
+  CanActivate,
+  RouterStateSnapshot,
+} from '@angular/router'; //precisamos de 'CanActivate' PARA __ DEFINIR ROUTE GUARDS NO NOSSO PROJECT...
+import { Observable } from 'rxjs';
+
+export class AuthGuard implements CanActivate {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable {}   ////esse method vai RETORNAR UMA OBSERVABLE....
+
+
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... aí,
+
+ISSO FEITO,
+
+
+
+ESSE 'OBSERVABLE' 
+
+
+
+
+VAII __WRAPPAR _ UMA BOOLEAN...
+
+
+
+
+
+
+
+
+
+
+
+
+--> é por isso que escreve-se assim:
+
+
+
+
+
+
+
+
+export class AuthGuard implements CanActivate {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {}   ////esse method vai RETORNAR UMA OBSERVABLE....
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {}   ////esse method vai RETORNAR UMA OBSERVABLE....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS COMO RETURN TYPE ALTERNATIVO,
+
+
+esse method RETORNA UMA PROMISE,
+
+UMA PROMISE __ QUE _ TAMBÉM VAI RETORNAR AQUELE BOOLEAN, 
+
+
+
+
+POR ISSO O 
+
+
+profesor 
+
+
+
+
+
+
+escreve assim:
+
+
+
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> {}   ////esse method vai RETORNAR UMA OBSERVABLE....
+
+
+
+
+
+
+
+
+
+
+
+POR FIM, 
+
+O PROFESSOR TAMBÉM DEFINE O RETURN TYPE COMO 'boolean',
+
+tipo assim:
+
+
+
+
+
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {}   ////esse method vai RETORNAR UMA OBSERVABLE....
+
+
+
+
+
+
+
+----------------------------------------
+
+
+
+
+
+
+
+
+
+OK... ELE VAI PODER RETORANR, EM OUTRAS PALAVRA:
+
+
+
+
+
+
+
+
+1) PODE RODAR DE FORMA ASSÍNCRONA,
+RETORNADO UM 'Observable' OU UMA  PROMISE..
+
+
+
+
+
+
+
+
+
+2) OU, ENTAÕ,
+
+
+
+_ PODE RETORNAR UM VALOR BÁSICO (como 'boolean'),
+
+DE MANEIRA 'SÍNCRONA'... -----> ISSO 
+
+
+PQ 
+
+VOCÊ 
+TALVEZ 
+
+VENHA A TER ALGUNS GUARDS 
+
+
+
+_ QUE _ EXECUTEM _ 
+
+
+
+
+'''ALGUM CÓDIGO QUE RODA COMPLETO NO BROWSWER'... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+canActivate --> recebe 2 arguments...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> vamos definir em ALGUM LUGAR QUE 
+
+
+O `ANGULAR DEVE EXECUTAR ESSE CÓDIGO DE 
+
+
+'canActivate'
+
+
+
+___ ANTES_ 
+
+
+DE UMA ROUTE SER CARREGADA...
+
+
+
+
+
+
+
+
+
+
+-> OU SEJA,
+
+O 
+
+
+ANGULAR CERTAMENTE NOS DARÁ 
+
+ESSA DATA....  ----> E SÓ PRECISAMOS SER CAPAZES DE 
+
+
+'HANDLE'
+
+ESSA DATA....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> O 'canActivate'
+
+
+vai retornar ou 
+
+
+UM OBSERVABLE (código async)
+
+
+
+
+
+,
+
+UM 
+
+
+OBSERVABLE QUE EVENTUALMENTE 
+
+
+RESOLVERÁ COMO UM 
+
+'BOOLEAN'...
+
+
+
+
+
+
+
+----> 
+
+
+
+
+A OUTRA POSSIBILIDADE É QUE 
+
+ELE VAI RETORNAR UMA PROMISE (também código ASYNC),
+
+
+
+que resolverá como uma 
+
+BOOLEAN, também..
+
+
+
+
+
+
+
+
+
+
+
+
+-> POR FIM,
+
+ A ÚLTIMA POSSIBILIDADE 
+
+
+ É O 
+
+ RETURN DE UMA SIMPLES BOOLEAN (código sync)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ OK...  ISSO QUER DIZER QUE 
+
+
+ 'canActivate'
+
+
+ PODE RODAR _ TANTO DE FORMA SÍNCRONA (return de boolean simples)
+
+
+
+ COMO ASSÍNCRONA (return de uma promise ou observable).. -->  
+
+
+
+
+
+
+
+
+
+
+ ISSO ACONTECE,
+
+
+ ESSA DISTINÇÃO entre 
+
+ 'run async' 
+ e 
+
+
+ 'run sync'
+
+
+ para 
+
+ 'canActivate'
+
+
+
+ EXISTE _ PQ 
+
+
+ VOCÊ 
+
+ PODERÁ/PODE 
+
+
+
+ TER ALGUMAS GUARDS __ 
+
+
+
+
+
+
+ QUE _ EXECUTAM _ CERTOS _ CÓDIGOS _ QUE 
+
+
+
+ RODAM __ 
+
+
+ EXCLUSIVAMENTE NO CLIENT,
+
+ DE FORMA 
+
+
+ SÍNCRONA,
+
+
+
+
+
+QUE CONCLUI EM SEGUNDOS,
+
+
+
+
+
+
+OU ENTÃO VOCê TERÁ 
+
+UNS CODES 
+
+QUE _ 
+
+
+VÃO 
+
+
+TOMAR ALGUNS SEGUNDOS PARA ACABAREM,
+
+
+
+
+
+
+
+OU PQ 
+
+VOCÊ 
+
+
+
+1) USA UM TIMEOUT 
+
+
+dentro do seu código 
+
+
+
+
+2) ou pq 
+
+
+VOCÊ FAZ 'REACH OUT' a um SERVER...------> ISSO FAZ COM QUE 
+
+
+ESSE NEGÓCIO ('canActivate')
+
+
+
+
+
+
+SEJA RODADO DE FORMA ASSÍNCRONA,
+
+
+ 
+
+
+ E AMBOS 
+
+
+
+ 'RUNS'
+
+
+ SÃO 
+ POSSÍVEIS 
+
+
+ COM 
+
+
+ o 
+
+ 'canActivate'...
+
+
+
+
+
+
+
+
+
+ --> logo veremos um exemplo disso....
+
+
+
+
+
+
+
+
+
+
+
+ --> OK... isso significa que 
+
+
+
+ DENTRO DE 
+
+
+ 'canActivate'
+
+
+
+
+
+
+ _ VAMOS QUERER 
+
+
+ SER 
+
+ CAPAZES 
+
+
+ DE 
+
+ FAZER 
+
+
+ 'LOGIN' OU 
+
+ 'LOGOUT'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> PARA ISSO,
+
+
+
+ DIGAMOS QUE _ TEMOS OUTRO SERVICE,
+
+
+
+
+
+
+
+
+ O SERVICE 
+
+
+
+
+
+ DE 
+
+ 'auth.service.ts',
+
+
+
+ QUE 
+
+
+
+
+
+SERÁ UM SIMPLES 
+
+
+
+'FAKE SERVICE'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR NOMEIA ESSE NEGÓCIO Como 'AuthService'...
+
+
+
+
+
+
+
+
+
+
+--> EM UM APP DE VERDADE,
+
+
+
+
+PROVAVELMENTE USARÍAMOS ESSE 'SERVICE' PARA FAZER LOGIN/LOGOUT e etc, 
+
+
+
+faríamos a communication com um server/backend,
+
+
+PARA AÍ 
+
+'CHECAR A CURRENT AUTHENTICATION STATE 
+DO USEr'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> é por isso que o professor escreve:
+
+
+
+
+
+
+
+
+
+export class AuthService {
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO.... DENTRO 
+
+DESSE SERVICE,
+
+
+O PROFESSOR 
+
+
+
+__TAMBÉM __ 
+
+
+VAI 
+FAZER 
+
+'track'
+
+
+  
+  DO STATE DO USER...
+
+
+
+
+  --> fará isso por meio da propriedade 
+
+
+  'loggedIn',
+
+
+  que 
+
+  será definida 
+
+  INICIALMENTE COMO 'false'..
+
+
+
+
+
+
+  ex:
+
+
+
+
+
+
+  
+export class AuthService {
+
+    loggedIn: false;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> depois disso,
+
+ELE 
+
+SETTA UM METHOD DE 'login()',
+
+QUE 
+
+
+
+
+VAI __ DEFINIR _ 
+
+ESSE 
+
+
+value de 
+
+'loggedIn'
+
+
+COMO SENDO 'true'..
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+  
+export class AuthService {
+
+    loggedIn: false;
+
+
+
+    login() {
+        this.loggedIn = true;
+    }
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ELE TAMBÉM DEFINE UM METHOD DE 'LOGOUT',
+
+que vai fazer o CONTRÁRIO, VAI REDEFINIR ISSO COMO SENDO 'FALSE'..
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+  
+export class AuthService {
+
+    loggedIn: false;
+
+
+
+    login() {
+        this.loggedIn = true;
+    }
+
+
+    logout() {
+        this.loggedIn = false;
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> POR FIM, O PROFESSOR ADICIONA UM METHOD PARA _ CHECAR _ O STATE 
+
+
+
+DE NOSSO USER,
+
+
+
+QUE SERÁ 
+
+
+
+'isAuthenticated'..
+
+
+
+
+
+
+
+--> NESSE METHOD,
+
+
+O PROFESSOR QUER 
+
+
+
+_SIMULAR_ QUE 
+
+
+O 
+
+'AUTHENTICATE'
+
+
+
+VAI DEMORAR UM POUQUINHO ATÉ 
+
+
+
+_ ACABAR... (
+
+
+    simular o 'reach out' a um server... 
+)
+
+
+
+
+
+
+
+
+
+--> ESSE 'isAuthenticated'
+
+
+
+SERÁ _ UM METHOD TAMBÉM.. -> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+o código vai ficando assim:
+
+
+
+
+
+
+
+  
+export class AuthService {
+
+    loggedIn: false;
+
+
+
+    isAuthenticated() {
+
+    }
+
+
+    login() {
+        this.loggedIn = true;
+    }
+
+
+    logout() {
+        this.loggedIn = false;
+    }
+
+
+}
+
+
+
+
+
+------------------------------
+
+
+
+
+
+
+
+DENTRO DO METHOD DE 'isAuthenticated',
+
+
+
+
+O PROFESSOR VAI FAZER O _ RETURN DE UMA PROMISE...
+
+
+
+
+
+
+
+
+
+por isso ele escreve 
+
+
+
+
+
+
+
+
+
+
+const promise = new Promise();
+
+
+
+
+
+
+
+
+
+
+
+
+-> ESSA PROMISE,
+
+COMO SEMPRE,
+
+
+
+VAI __ RECEBER 
+
+
+UMA FUNCTION COMO ARGUMENTO...
+
+
+
+
+
+
+
+uma arrow function de ''''(resolve, reject) => {
+
+}''''
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+export class AuthService {
+
+    loggedIn: false;
+
+
+
+    isAuthenticated() {
+        const promise = new Promise(
+            (resolve, reject) => {
+
+            }
+        )
+    }
+
+
+    login() {
+        this.loggedIn = true;
+    }
+
+
+    logout() {
+        this.loggedIn = false;
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------------
+
+
+
+
+
+
+
+
+
+
+OK.... DENTRO DESSA PROMISE,
+
+O PROFESSOR VAI EXECUTAR 
+
+
+
+'setTimeout()',
+
+
+
+
+
+
+
+E AÍ VAI DEFINIR '800ms',
+
+
+
+PARA 
+
+
+
+AÍ 
+
+
+
+__ 
+
+
+
+EXECUTAR 
+
+'resolve()',
+
+
+
+
+EM QUE 
+
+
+ 
+ VAI 
+
+ RETORNAR O 
+
+ VALUE 
+
+ DE 
+
+ 'this.loggedIn'...
+
+
+
+
+
+
+
+
+
+ --> DE NOVO,
+
+ ISSO SERÁ FEITO __ APENAS _ 
+
+ PARA __ FAKAR_ ESSA OPERAÇÃO 
+
+ DE 
+
+ 'AUTHENTICATE',
+
+ que no mundo real SEMPRE 
+
+ VAI DEMORAR ALGUNS SEGUNDOS..
+
+
+
+
+
+
+ -> O CÓDIGO INTEIRO FICA ASSIM:
+
+
+
+
+
+
+ 
+export class AuthService {
+
+    loggedIn: false;
+
+
+
+    isAuthenticated() {
+        const promise = new Promise(
+            (resolve, reject) => {
+                setTimeout(
+                    () => {
+                        resolve(this.loggedIn)
+                    }
+                )
+            }
+        )
+    }
+
+
+    login() {
+        this.loggedIn = true;
+    }
+
+
+    logout() {
+        this.loggedIn = false;
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... COM ESSE SERVICE DE 'authService'
+
+
+
+
+ADICIONADO/ESCRITo,
+
+
+
+
+
+
+
+
+
+
+devemos o adicionar/incorporar/injetar 
+
+
+LÁ 
+
+
+NO SERVICE de 'authGuard,
+'
+
+
+POR MEIO DO CÓDIGO DE 
+
+'@Injectable()',
+
+
+bem clássico...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> É CLARO QUE TAMBÉM PRECISAMOS ADICIOANR ESSES SERVICES LÁ em 
+
+'app.module.ts',
+
+
+em 'providers',
+
+PARA QUE 
+
+ELES 
+
+FIQUEM DISPONÍVEIS A NOSSO 
+
+PROJETO INTEIRO (
+
+    e para que possam ser injetados esses services 1 dentro do outro;
+
+    o service de 'auth.service.ts'
+
+
+    DENTRO DO 
+
+
+
+    SERVICE DE 'auth-guard.service.ts'...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA IMPLEMENTAR ESSE SERVICE DENTRO DE 'auth-guard.service.ts',,
+
+
+
+
+PRECISAMOS ALTERAR O COSNTRUCTOR DESSE SERVICE 'auth-guard',
+
+
+
+
+
+
+QUE FICARÁ TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+import {
+  ActivatedRouteSnapshot,
+  CanActivate,
+  RouterStateSnapshot,
+} from '@angular/router'; //precisamos de 'CanActivate' PARA __ DEFINIR ROUTE GUARDS NO NOSSO PROJECT...
+
+
+
+import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
+
+
+
+
+@Injectable()
+export class AuthGuard implements CanActivate {
+
+
+
+    constructor(private authService: AuthService) {
+
+    }
+    
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {   ////esse method vai RETORNAR UMA OBSERVABLE (ASYNC CODE).... OU UMA PROMISE (ASYNC CODE), OU UM BOOLEAN SIMPLES (código SYNC)
+
+
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CONSEGUI INCORPORAR ESSE SERVICE 
+
+
+
+DENTRO DESSE OUTRO SERVICE...
+
+
+
+
+
+
+
+
+
+
+
+
+-> CERTO.... AÍ,
+
+DENTRO 
+
+DAQUELE 
+
+
+
+'canActivate()'
+
+METHOD,
+
+
+
+
+O PROFESSOR 
+
+
+SIMPLESMENTE 
+
+VAI QUERER __ CHECAR_ 
+
+
+
+SE O USER ESTÁ AUTH OU NAÕ....
+
+
+
+
+
+
+
+
+
+
+
+----> PARA ISSO,
+ ELE PROVAVELMENTE ESCREVERÁ UM CÓDIGO ASSIM:
+
+
+
+
+
+
+
+
+ @Injectable()
+export class AuthGuard implements CanActivate {
+
+
+
+    constructor(private authService: AuthService) {
+
+    }
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {   ////esse method vai RETORNAR UMA OBSERVABLE (ASYNC CODE).... OU UMA PROMISE (ASYNC CODE), OU UM BOOLEAN SIMPLES (código SYNC)
+
+
+    const isAuthenticated = this.authService.isAuthenticated();
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE ESSA 'const'
+
+aí 
+
+
+vai ESPERAR UMA PROMISE, 
+que é um código assíncrono...
+
+
+
+
+
+
+
+
+
+
+É POR ISSO QUE NÃO VAMOS USAR UMA 'CONST',
+
+e sim vamos usar um THEN E CATCH BLOCK,
+
+tipo assim:
+
+
+
+
+ @Injectable()
+export class AuthGuard implements CanActivate {
+
+
+
+    constructor(private authService: AuthService) {
+
+    }
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {   ////esse method vai RETORNAR UMA OBSERVABLE (ASYNC CODE).... OU UMA PROMISE (ASYNC CODE), OU UM BOOLEAN SIMPLES (código SYNC)
+
+
+    this.authService.isAuthenticated()
+    .then(
+        () => {}
+    )
+    .catch(
+        () => {}
+    )
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK... VAMOS RECEBER UM __ BOOLEAN__ naquele then block..
+
+
+
+
+
+
+
+
+-> por isso escrevemos assim:
+
+
+
+
+
+
+
+ @Injectable()
+export class AuthGuard implements CanActivate {
+
+
+
+    constructor(private authService: AuthService) {
+
+    }
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {   ////esse method vai RETORNAR UMA OBSERVABLE (ASYNC CODE).... OU UMA PROMISE (ASYNC CODE), OU UM BOOLEAN SIMPLES (código SYNC)
+
+
+    this.authService.isAuthenticated()
+    .then(
+        (authStatus: boolean) => {
+
+
+        }
+    )
+    .catch(
+        () => {}
+    )
+  }
+
+}
+
+
+
+
+
+
+
+-----------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+OK... ISSO FEITO,
+
+SE FOR CONSTATADO QUE 
+
+
+ESSE VALUE do 'authStatus'
+
+É TRUE,
+
+
+
+
+vou querer prosseguir..
+
+
+
+
+-> MAS SE EU ENCONTRAR 'false',
+
+
+VOU QUERER 
+
+
+
+
+'NAVIGATE AWAY',
+
+
+
+PQ 
+
+AÍ 
+_ EU 
+
+NÃO VOU QUERER 
+QUE 
+
+O 
+
+USER 
+
+
+
+GANHE ACESSO A ROUTE QUE 
+
+ELE QUERIA ALCANÇAR ORIGINALMENTE (falta de authentication para ele)...
+
+
+
+
+
+
+
+
+
+
+É POR ISSO QUE VAMOS ESCREVER ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ @Injectable()
+export class AuthGuard implements CanActivate {
+
+
+
+    constructor(private authService: AuthService) {
+
+    }
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {   ////esse method vai RETORNAR UMA OBSERVABLE (ASYNC CODE).... OU UMA PROMISE (ASYNC CODE), OU UM BOOLEAN SIMPLES (código SYNC)
+
+
+    this.authService.isAuthenticated()
+    .then(
+        (authenticated: boolean) => {
+                if (authenticated) {
+                    return true;
+                } else {
+                    ...
+                }
+
+        }
+    )
+    .catch(
+        () => {}
+    )
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA CONSEGUIRMOS FAZER 'NAVIGATE AWAY' do user,
+
+
+para conseguir FORÇÁ-LO 
+
+
+a ir a outro path em nosso app,
+
+
+DEVEMOS 
+
+
+
+
+INCORPORAR 
+
+a propriedade de 
+
+
+'private router: Router'
+
+
+
+AO 
+
+
+
+
+
+
+CONSTRUCTOR DESSE SERVICE AÍ,
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+import {
+  ActivatedRouteSnapshot,
+  CanActivate,
+  Router,
+  RouterStateSnapshot,
+} from '@angular/router'; //precisamos de 'CanActivate' PARA __ DEFINIR ROUTE GUARDS NO NOSSO PROJECT...
+
+
+
+import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
+
+
+
+
+@Injectable()
+export class AuthGuard implements CanActivate {
+
+
+
+    constructor(private authService: AuthService, private router: Router) {
+
+    }
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {   ////esse method vai RETORNAR UMA OBSERVABLE (ASYNC CODE).... OU UMA PROMISE (ASYNC CODE), OU UM BOOLEAN SIMPLES (código SYNC)
+
+
+    this.authService.isAuthenticated()
+    .then(
+        (autenticated: boolean) => {  //vamos receber de volta um BOOLEAN, que pode ser ou TRUE OU FALSE...
+
+            if (authenticated) {
+                return true;   ///nesse case, o authenticate do user foi constatado (está authenticated), razão pela qual vamos querer garantir acesso a ele, a essa route, seja qual for....
+            } else {
+                
+            }
+        }
+    )
+    .catch(
+        () => {
+
+        }
+    )
+  }
+
+}
+
+
+
+
+
+
+
+---------------------------
+
+
+
+
+
+
+
+
+
+CERTO... AGORA 
+
+
+BASTA 
+
+ESCREVER O NAVIGATE 
+
+
+de nosso user a home page,
+
+talvez...
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO INTEIRO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+import {
+  ActivatedRouteSnapshot,
+  CanActivate,
+  Router,
+  RouterStateSnapshot,
+} from '@angular/router'; //precisamos de 'CanActivate' PARA __ DEFINIR ROUTE GUARDS NO NOSSO PROJECT...
+
+import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
+
+
+
+
+@Injectable()
+export class AuthGuard implements CanActivate {
+
+
+
+    constructor(private authService: AuthService, private router: Router) {
+
+    }
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {   ////esse method vai RETORNAR UMA OBSERVABLE (ASYNC CODE).... OU UMA PROMISE (ASYNC CODE), OU UM BOOLEAN SIMPLES (código SYNC)
+
+
+    this.authService.isAuthenticated()   ////com isso simulamos o 'authentication proccess' de nosso user (processo assíncrono)...
+    .then(
+        (autenticated: boolean) => {  //vamos receber de volta um BOOLEAN, que pode ser ou TRUE OU FALSE...
+
+            if (authenticated) {
+                return true;   ///nesse case, o authenticate do user foi constatado (está authenticated), razão pela qual vamos querer garantir acesso a ele, a essa route, seja qual for....
+            } else { ///case em que o AUTHENTICATE _ FALHOU__...
+                this.router.navigate(
+                    ['/']
+                )
+            }
+        }
+    )
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER QUE 
+
+
+NOSSA PAGE VAI SIMPLESMENTE FORÇAR O USER A 'NAVIGATE AWAY'... 
+
+
+
+
+
+
+
+
+
+
+-> OK, MAS FALTOU O _ RETURN _DESSA PROMISE INTEIRA DE 
+
+'this.authService.isAuthenticated()',
+
+
+
+
+
+
+pq esse é o RETURN TYPE DE 
+
+
+'canActivate',
+
+NO FINAL DAS CONTAS...
+
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+import {
+  ActivatedRouteSnapshot,
+  CanActivate,
+  Router,
+  RouterStateSnapshot,
+} from '@angular/router'; //precisamos de 'CanActivate' PARA __ DEFINIR ROUTE GUARDS NO NOSSO PROJECT...
+
+import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
+
+
+
+
+@Injectable()
+export class AuthGuard implements CanActivate {
+
+
+
+    constructor(private authService: AuthService, private router: Router) {
+
+    }
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {   ////esse method vai RETORNAR UMA OBSERVABLE (ASYNC CODE).... OU UMA PROMISE (ASYNC CODE), OU UM BOOLEAN SIMPLES (código SYNC)
+
+
+    return this.authService.isAuthenticated()   ////com isso simulamos o 'authentication proccess' de nosso user (processo assíncrono)...
+    .then(
+        (autenticated: boolean) => {  //vamos receber de volta um BOOLEAN, que pode ser ou TRUE OU FALSE...
+
+            if (authenticated) {
+                return true;   ///nesse case, o authenticate do user foi constatado (está authenticated), razão pela qual vamos querer garantir acesso a ele, a essa route, seja qual for....
+            } else { ///case em que o AUTHENTICATE _ FALHOU__...
+                this.router.navigate(
+                    ['/']
+                )
+            }
+        }
+    )
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+PARA CALAR A BOCA DO TYPESCRIPT,
+
+ESCREVI ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Injectable } from '@angular/core';
+import {
+  ActivatedRouteSnapshot,
+  CanActivate,
+  Router,
+  RouterStateSnapshot,
+} from '@angular/router'; //precisamos de 'CanActivate' PARA __ DEFINIR ROUTE GUARDS NO NOSSO PROJECT...
+
+import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
+
+
+
+
+@Injectable()
+export class AuthGuard implements CanActivate {
+
+
+
+    constructor(private authService: AuthService, private router: Router) {
+
+    }
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {   ////esse method vai RETORNAR UMA OBSERVABLE (ASYNC CODE).... OU UMA PROMISE (ASYNC CODE), OU UM BOOLEAN SIMPLES (código SYNC)
+
+
+    return this.authService.isAuthenticated()   ////com isso simulamos o 'authentication proccess' de nosso user (processo assíncrono)...
+    .then(
+        (authenticated: boolean | unknown) => {  //vamos receber de volta um BOOLEAN, que pode ser ou TRUE OU FALSE...
+            if (authenticated) {
+                return true;   ///nesse case, o authenticate do user foi constatado (está authenticated), razão pela qual vamos querer garantir acesso a ele, a essa route, seja qual for....
+            } else { ///case em que o AUTHENTICATE _ FALHOU__...
+                this.router.navigate(['/']);
+                return false; //só para calar a boca do typescript.
+            }
+        }
+    )
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, ISSO NOS DEIXA __ CONTROLAR _ ACESSO 
+
+
+A _ QUALQUER COISA 
+
+QUE 
+É 
+
+
+
+CONTROLADA 
+
+POR 
+
+ESSE 
+GUARD DE 
+
+'canActivate'...
+
+
+
+
+
+
+
+
+
+---> MAS É __ CLARO _ QUE AINDA NÃO ESTAMOS USANDO ESSA 'guard'...
+
+
+
+
+
+
+
+
+-> PARA USARMOS __ ESSA GUARD,
+
+
+PRECISAMOS 
+
+IR 
+
+ATÉ 
+
+O 
+
+ARQUIVO 
+
+
+'app-routing.module',
+
+
+PQ 
+É 
+
+LÁ QUE 
+TEMOS 
+
+
+TODAS AS ROUTEs,
+
+
+
+
+e é nelas que 
+
+
+essa 'route guard'
+
+
+deverá ser posicionada,
+
+nas routes que você quiser... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK..
+
+
+
+
+
+
+
+
+
+PRECISAMSO _ DEFINIR 'QUAIS ROUTES DEVERÃO SER PROTEGIDAS POR ESSA GUARD'...
+
+
+
+
+
+
+
+
+
+
+
+--> FAZEMOS ISSO 
+
+
+
+
+
+
+
+
+DE FORMA SIMPLES:
+
+
+
+
+devemos ir até 
+o 
+
+'OBJECT ROUTE'
+
+de cada 
+route,
+
+
+E aí
+
+
+
+
+PROVAVELMENTE ADICIONAR UMA KEY específica...
+
+
+
+
+
+
+
+
+-> COMO QUEREMOS ADICIONAR ISSO 
+
+À route de 'servers'
+
+E TODAS SUAS CHILD ROUTES,
+
+
+
+
+
+O PROFESSOR 
+
+DIZ QUE 
+
+
+
+
+
+DEVEMOS 
+
+
+
+
+IR ATÉ ELA,
+ QUE TEM ESTE CÓDIGo:
+
+
+
+
+
+
+
+
+
+
+
+
+  {.
+    path: 'servers', //localhost:4200/servers
+    component: ServersComponent, //servers.component.html
+    children: [
+      ///child routes...
+      {
+        path: ':id',
+        component: ServerComponent,
+      },
+
+      {
+        path: ':id/edit',
+        component: EditServerComponent,
+      },
+    ],
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.. VAMOS ADICIONAR MAIS UMA KEY AQUI,
+
+que 
+
+
+será JUSTAMENTE A KEY DE 
+
+'canActivate: []'
+
+
+
+
+
+
+
+
+
+
+--> essa key _ EXIGE UM _ ARRAY_...
+
+
+
+
+
+
+
+
+NESSE ARRAY VOCÊ COLOCA 'TODO SEU CÓDIGO, BASICAMENTE',
+
+ 
+
+ todo o código 
+
+ das GUARDS QUE VOCÊ QUER APLICAR A ESSA ROUTE,
+
+
+
+
+
+
+
+
+
+
+
+
+ ---> OK,
+
+
+
+ BASTA 
+
+
+ ADICIONARMOS
+  
+
+  'AuthGuard'
+
+
+  COMO A GUARD DESSA ROUTE,
+
+  tipo assim:
+
+
+
+
+
+
+  import { NgModule } from '@angular/core'; ///esse será um MODULE SECUNDÁRIO ADICIONADO AO SEU PROJETO, para managear melhor suas routes...
+import { HomeComponent } from './home/home.component';
+
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { Router, Routes } from '@angular/router';
+
+import { RouterModule } from '@angular/router';
+
+import { ServerComponent } from './servers/server/server.component';
+import { UsersComponent } from './users/users.component';
+import { ServersComponent } from './servers/servers.component';
+import { EditServerComponent } from './servers/edit-server/edit-server.component';
+import { UserComponent } from './users/user/user.component';
+import { AuthGuard } from './auth-guard.service';
+
+
+
+
+
+
+
+
+const appRoutes: Routes = [
+  {
+    path: '', ////localhost:4200/   (É O _ DEFAULT, A HOME PAGE, PQ É o domain.com SEM O PATH depois)...
+    component: HomeComponent,
+  },
+
+  // {  ////inválido... --> se quiser redirecionar a partir de '', adicione 'pathMatch: full'...
+  //   path: '',
+  //   redirectTo: '/server'
+  // },
+
+  // {
+  //   /////é a nossa primeira route... cada object nesse array é uma ROUTE, que é governada por um 'PAGE-COMPONENT' (o page-component é a ROUTE/page, no caso)...
+  //   path: 'users', ///   localhost:4200/users
+  //   component: UsersComponent, ///users.component.html
+  // },
+  // {
+  //   path: 'users/:userId', ////exemplo de DYNAMIC SEGMENTS (carregar user específico, dentro de list de users.... mesma coisa vista no NODEJS)...
+  //   component: UserComponent,
+  // },
+
+  {
+    /////é a nossa primeira route... cada object nesse array é uma ROUTE, que é governada por um 'PAGE-COMPONENT' (o page-component é a ROUTE/page, no caso)...
+    path: 'users', ///   localhost:4200/users
+    component: UsersComponent, ///users.component.html
+    children: [
+      {
+        path: ':userId', //localhost:4200/users/:userId
+        component: UserComponent,
+      },
+    ],
+  },
+
+  // {
+  //   path: 'users/:userId/:name',   ////PODEMOS TER MÚLTIPLOS SEGMENTOS DINÂMICOS NAS NOSSAS URLS...
+  //   component: UserComponent
+  // },
+
+  // { /////SEM _ NESTED_ ROUTES_....
+  //   path: 'servers', //localhost:4200/servers
+  //   component: ServersComponent, //servers.component.html
+  // },
+
+  {
+    ///COM NESTED ROUTES...
+    path: 'servers', //localhost:4200/servers
+    component: ServersComponent, //servers.component.html
+    canActivate: [AuthGuard], ////PROPRIEDADE_ USADA _ PARA DEFINIR 'GUARD' ( ou guards) PARA ESSA SUA ROUTE específica... --> e essas guards serão aplicadas a TODAS AS CHILD ROUTES DESSA ROUTE, também....
+    children: [
+      ///child routes...
+      {
+        path: ':id',
+        component: ServerComponent,
+      },
+
+      {
+        path: ':id/edit',
+        component: EditServerComponent,
+      },
+    ],
+  },
+
+  {
+    path: 'not-found',
+    component: PageNotFoundComponent,
+  },
+
+  {
+    ////////////ESSA ROUTE DEVE SER SEMPRE ___ ABSOLUTAMENTE A ÚLTIMA ROUTE DE NOSSO ARRAY DE ROUTES, para ser 'catch-all' de todas as routes que não encaixarem naquelas definidas logo acima....
+    path: '**', ///o double asterisk significa 'CATCH ALL THE ROUTES THAT ARE NOT DEFINED ABOVE' (ou seja, é usado com pages de erro 404)...
+    redirectTo: 'not-found', ///USADO _ PARA _ REDIRECIONAR nosso user quando ele digita paths que não existem na url bar... --> vamos redirecionar à page de 'PageNotFoundComponent', que é nossa page de 'erro 404, not found'...
+  },
+
+  // {
+  //   path: 'servers/:id',
+  //   component: ServerComponent,
+  // },
+
+  // {
+  //   path: 'servers/:id/edit',
+  //   component: EditServerComponent,
+  // },
+];
+
+@NgModule({
+
+imports: [
+    RouterModule.forRoot(appRoutes) ///ISSO É NECESSÁRIO. É isso que vai REGISTRAR NOSSAS ROUTES...
+],
+
+exports: [
+    RouterModule  ///TAMBÉM É NECESSÁRIO. PRECISAMOS DISSO PARA__ ACTUALLY __ CONSEGUIR USAR ESSE NOSSO 'MODULE' de routing lá em 'app.module.ts', no array de 'imports:[]' dele...
+]
+
+})
+export class AppRoutingModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> E ISSO __ 
+
+VAI ASSEGURAR QUE 'servers'
+
+AGORA SÓ SERÁ ACESSÍVEL 
+
+SE 
+
+O 
+
+
+
+METHOD DE 
+
+'canActivate'
+
+
+
+em 
+
+'authGuard
+'
+
+
+
+
+
+CONSEGUIR RETORNAR 'TRUE',
+
+
+
+ QUE É ALGO QUE SÓ ACONTECERÁ 
+
+
+
+
+ se 
+
+ lá 
+
+ em 
+
+ 'authService'
+
+
+
+ TIVERMOS A PROPREIDADE 
+
+
+
+ 'loggedIn'
+
+ DEFINIDA COMO TRUE:
+
+
+
+
+
+
+
+
+ import { Injectable } from "@angular/core";
+
+
+
+@Injectable()
+export class AuthService {
+
+
+
+    loggedIn = false;
+    
+    isAuthenticated() {  ///esse method vai SIMULAR O PROCESSO DE 'CHECK DE AUTHENTICATION' de nosso user, lá em um server/backend... (pq demora alguns segundos, é async)...
+        const promise = new Promise(
+            (resolve, reject) => {
+                setTimeout(
+                    () => {
+                        resolve(this.loggedIn)
+                    }, 800
+                )
+            }
+        )
+
+        return promise;
+    }
+
+
+    
+    login() {
+        this.loggedIn = true;
+    }
+
+
+    logout() {
+        this.loggedIn = false;
+    }
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> COMO ISSO ESTÁ SETTADO COMO 'FALSE' agora,
+
+
+
+
+E NÓS NUNCA CHAMAMOS 'this.logIn',
+
+
+
+
+
+NOSSO ACESSO __ SEMPRE SERÁ NEGADO_...
+
+
+
+
+
+
+
+
+
+
+
+-> BASTA RECARREGAR NOSSO APP 
+
+e testar isso..--> 
+
+
+agora não vamos mais conseguir 'servers',
+
+
+pq 
+
+
+
+
+_ ELE 
+
+SEMPRE VAI NOS REDIRECIONAR AO 'home', depois de 0.8 segundos (timeout que definimos, antes)...
+
+
+
+
+
+
+
+
+
+
+-> OK... NOSSA GUARD ESTÁ FUNCIONANDO...
+
+
+
+
+
+
+---> MAS O PROFESSOR DIZ QUE 
+ELA ESTÁ FUNCIONANDO 
+
+'na nossa tab de SERVERS __ INTEIRA'... -> 
+
+
+O PRÓXIMO PASSO 
+
+
+É 
+
+'PROTEGER APENAS UMA PARTE DESSA ROUTE',
+
+
+
+
+PROTEGER _ APENAS _ 
+
+OS 
+
+'INDIVIDUAL SERVER ITEMS',
+
+
+
+E AÍ 
+
+DEIXAR 
+
+
+A 'LIST OF SERVERS'
+
+
+
+desprotegida (
+
+
+    OU SEJA,
+
+    APENAS PROTEGER AS _ CHILD ROUTES DE 
+
+    'servers'...
+)

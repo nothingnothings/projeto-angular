@@ -1,0 +1,1522 @@
+
+
+
+
+
+
+
+
+
+
+
+
+ESSE APPROACH DOS  SUBJECTS,
+
+DO 
+
+
+RXJS,
+
+
+
+
+
+
+TEM ALGUNS PROBLEMAS PONTUAIS,
+
+
+
+COMO O PROFESSOR MENCIONOU NA ÚLTIMA AULA:
+
+
+
+
+
+
+
+
+
+
+
+VOCÊ PRECISA TER UM APP COM ''UMA ESTRUTURA MT BOA'',
+
+
+
+e isso 
+
+é 
+
+dificultado  COM 
+
+O USO 
+
+
+DE APENAS 
+
+
+O RXJS E SUBJECTS..
+
+
+
+
+
+
+
+
+
+
+
+
+1a razão)
+
+
+-------> ISSO QUER DIZER QUE VOCê 
+
+
+
+PODE FICAR COM UM APP BEM BUGADO, EM QUE O STATE 
+
+
+'''PODE SER ATUALIZADO DE QUALQUER LUGAR DO APP',
+
+
+
+
+isso pq 
+
+
+VOCÊ FALHOU EM PROVIDENCIAR UM 
+
+
+FLOW CLARO DE DATA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2a razão) --> 'STATE IS POSSIBLY MUTABLE'
+
+
+-------> OK... --> SEU STATE TAMBÉM PODE ACABAR SENDO 'MUTABLE',
+
+
+
+
+O QUE QUER DIZER QUE:
+
+
+
+''''EMBORA VOCê TENHA UNS POUCOS  LUGARES EM QUE 
+
+
+VOCÊ EXPECT QUE SEU STATE VAI MUDAR,
+
+
+O CÓDIGO DESSES LUGARES 
+
+pode não acabar O FORÇANDO A 'STATE THE OLD DATA' 
+
+
+
+por meio do overwrite dessa data com NEW DATA''' (não entendi o que ele quis dizer por isso)...
+
+
+
+
+
+
+
+
+
+
+
+
+----> MAS O PROFESSOR RECOMENDA QUE FAÇAMOS ISSO:
+
+
+QUE FAÇAMOS O 'STATE' DA OLD DATA,
+
+PARA AÍ A OVERWITTAR COM 
+
+
+
+
+NOVA DATA.... (
+
+
+PQ CASO CONTRÁRIO 
+
+O 
+
+
+
+ANGULAR ÀS VEZES NÃO PEGA 
+
+
+ALGUMAS MUDANÇAS FEITAS AO SEU STATE,
+
+
+POR CONTA DA NATURE DE 'REFERENCE TYPE' 
+
+
+DE OBJECTS E ARRAYS 
+
+
+
+EM JAVASCRIPT -------> em que,
+
+
+SE VOCÊ 
+
+SÓ MUDA UMA PROPRIEDADE 
+
+DE 1 OBJECT 
+
+NO JAVASCRIPT,
+
+
+O 
+
+
+OBJECT EM SI 
+
+
+___ NÃO __ É ALTERADO, CONTINUA SENDO O MESMO OBJECT... --> CUIDAR COM ISSO.. --> PODE LEVAR 
+
+
+
+A STATE CHANGES 'NOT GETTING PICKED UP'...
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+POR FIM, O TERCEIRO PROBLEMA É:
+
+
+
+
+
+
+
+
+3o problema) HANDLE DE SIDE EFFECTS -->  OU SEJA, COISAS COMO HTTP REQUESTS... --> NÃO FICA CLARO O 
+
+
+'LOCAL' EM QUE 
+
+ESSES PROCESSOS DEVEM OCORRER:
+
+
+
+A) O CÓDIGO DE 'SEND' DE UM HTTP REQUEST DEVE SER ESCRITO EM 1 COMPONENT?
+
+OU DEVE SER ESCRITO EM UM SERVICE? 
+
+
+
+
+
+--> e, sim, todos esses problemas podem ser solucionados,
+
+
+VOCê PODE TER UMA CLEAR 'ROUTE' E 'APPROACH' quanto a todas essas coisas..
+
+
+
+
+
+
+
+--> MAS SE VOCê ESTÁ TRABALHANDO EM UM PROJETO MAIOR,
+
+
+COM UMA EQUIPE MAIOR,
+
+
+
+PODE SER 
+
+BEM DIFÍCIL ACABAR FAZENDO 'ENFORCE'
+
+DAS MELHORES PRÁTICAS 
+
+
+A TODOS TEAM MEMBERS..
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE O ENFORCE DE UM PADRÃO ESPECÍFICO PODE SER DIFÍCIL,
+
+PQ O ANGULAR, POR DEFAULT,
+
+NÃO FAZ 
+
+
+ENFORCE DE UM APPROACH/PATTERN ESPECÍFICO..
+
+
+
+
+
+
+
+
+
+
+-----> É AÍ QUE O 'NGRX'
+
+
+
+PDOE NOS AJUDAR...
+
+
+
+
+
+
+
+
+
+
+--> O 'NGRX' 
+
+é, na verdade,
+
+
+
+'ANGULAR REDUX'...
+
+
+
+
+
+
+
+
+
+
+----------> REDUX --> ANGULAR REDUX.... --> 
+
+
+
+
+
+
+
+BEM, SE VOCê 
+
+TEM UM BACKGROUND DE REACT REDUX,
+
+VOCÊ JÁ SABE ISSO...
+
+
+
+
+
+
+
+
+
+-------> REDUX --> É UM STATE MANAGEMENT PATTERN.... -> 
+
+
+
+
+
+
+
+TAMBÉM É UMA __ LIBRARY__ QUE TE AJUDA _ A IMPLEMENTAR ESSE PATTERN....,
+
+
+
+
+
+
+TE DEIXA IMPLEMENTAR ESSE PATTERN EM __ QUALQUER APP_....
+
+
+
+
+
+
+
+
+
+
+------>  A IDEIA POR TRÁS DO 'REDUX',
+
+
+
+
+por trás desse APPROACH 
+
+
+PARA O 'MANAGE DE STATE'
+
+
+
+(
+
+    E, SEMPRE TENHA EM MENTE,
+
+     
+     STATE É 
+
+     APENAS 'DATA' ou 'INFO' NO SEU APP...
+)
+
+
+
+
+
+
+
+
+_ _É QUE _ VOCÊ TEM 
+
+
+
+
+
+
+
+
+
+
+1 CENTRAL 'STORE' NO SEU APP,
+
+
+
+PARA SEU APP INTEIRO,
+
+
+
+
+
+
+
+
+
+E QUE 
+
+AÍ VAI 
+
+'HOLD'
+
+
+O 
+
+
+
+STATE DE SEU APLICATIVO..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OU SEJA,
+
+VOCÊ 
+
+
+DEVE PENSAR NO 'STORE' 
+
+
+COMO 
+
+UM 
+
+LARGO OBJECT JAVASCRIPT QUE 
+
+CONTERÁ 
+
+
+
+
+__TODA A DATA,
+
+
+
+
+TODAS AS DIFERENTES PARTES 
+
+
+
+
+
+NECESSÁRIAS A SEU APP... ---------> É CLARO QUE 
+
+
+
+AS DIFERENTES 'PARTES'
+
+
+necessárias a seu app 
+
+
+SÃO 
+
+
+CATEGORIZADAS EM DIFERENTES 'PROPRIEDADES',
+
+
+
+
+
+PROPRIEDADES QUE 
+
+ENTÃO PODEM ACABAR 
+
+SEGURANDO 
+
+
+'NESTED OBJECTS',
+
+
+
+
+
+
+
+
+
+
+
+MAS 
+
+NO FINAL DAS CONTAS ESSA É A IDEIA:
+
+
+TER UM 'LARGE DATA STORE'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> JÁ AS DIFERENTES PARTES DE SEU APP,
+
+
+
+
+
+
+
+
+COMO OS 'SERVICES' E 'COMPONENTS',
+
+
+
+
+
+
+
+
+
+
+
+__ ELES__ PODEM _ CONTINUAR INTERAGINDO 1 COM OS OUTROS,
+
+
+exatamente como antes,
+
+
+
+
+
+
+MAS __ 
+
+
+
+
+
+COM O NGRX,
+
+
+
+
+ELES FAZEM 'RECEIVE'
+
+
+DO __ STATE__ DELES_ 
+
+
+LÁ 
+
+
+
+
+__ DO 'CENTRAL STORE'
+
+
+do 
+
+
+'NGRX'....
+
+
+
+
+
+
+,
+
+
+
+LÁ DESSE STORE AÍ.... -----> ISSO SIGNIFICA QUE 
+
+
+
+
+
+ESSE STORE É 
+O
+ 
+
+ 'SINGLE SOURCE OF TRUTH'
+
+
+ QUE 
+
+
+ FAZ 
+
+ MANAGE 
+
+
+ DO 
+
+
+ __APPLICATION _ STATE _ INTEIRO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> MAS É __ ÓBVIO_ QUE 
+
+
+
+ O STATE NÃO SERÁ APENAS 'RECEBIDO' POR SEUS SERVICES E COMPONENTS,
+
+ PQ 
+
+
+ àS 
+ VEZES 
+
+ ELE 
+ TERÁ 
+
+ DE 
+ SER 
+
+ __ALTERADO__,
+
+
+ VOCê 
+ TERÁ 
+
+ DE 'CHANGE' O SEU STATE....
+
+
+
+
+
+
+
+
+
+ --> EXEMPLO DISSO É QUANDO VOCÊ 
+
+
+ FAZ O _ ADD_ _DE UMA NOVA RECIPE.... --> QUANDO ISSO ACONTECE,
+
+
+
+
+
+ NO 'REDUX WORLD',
+
+
+
+
+ VOCÊ FAZ 
+
+
+ ______dISPATCH__ 
+
+
+
+
+ DAQUILO QUE CHAMAM DE 'ACTIONS' .... ------> 
+
+
+
+
+
+
+
+
+
+
+
+ UMA ACTION, NO FINAL DAS CONTAS, É UM __ OBJECT__ JAVASCRIPT 
+
+
+
+
+ COM:
+
+
+
+ 1) UM IDENTIFIER ('AUTH_ATTEMPT_SUCCESS')
+
+,
+
+
+que identifica O TIPO DE ACTION QUE VOCê QUER REALIZAR 
+
+
+
+
+
+
+2) UM __ PAYLOAD, QUE É OPCIONAL (pode ser a 'authData' de um request, por exemplo, a ser enviado em 'AUTH_ATTEMPT_START')...
+
+
+
+
+--> o payload é usado QUANDO VOCÊ PRECISA DE ALGUMA DATA EXTRA PARA COMPLETAR AQUELA ACTION,
+
+
+como por exemplo 'recipeData' em uma action de 'ADD_RECIPE'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS É CLARO QUE ESSA ACTION _ NÃO VAI _ ATINGIR _ DIRETAMENTE O 'STORE'... -> 
+
+
+
+
+
+
+
+em vez disso, ela vai atingir aquilo que chamamos de 'REDUCER'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> UM REDUCER,
+
+NO FINAL DAS CONTAS,
+
+
+É APENAS UMA 
+
+
+
+JAVASCRIPT FUNCTION COM UM 'switch-case' statement,
+
+
+
+
+que 
+
+
+__ vai 'GET' O CURRENT STATE, ARMAZENADO NO STORE,
+
+
+E AÍ 
+
+
+
+
+
+TAMBÉM A 'CURRENT ACTION', como um INPUT...
+
+
+
+
+
+
+
+
+
+-_> AÍ, A PARTIR DA __ ACTION,
+
+
+O REDUCER 
+
+
+
+VAI MEXER DIRETAMENTE 
+
+
+NO STATE DO NOSSO APP... (que fica no STORE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> SE VOCÊ USA A REDUX LIBRARY,
+
+
+AS 'DISPATCHED ACTIONS'
+
+
+vão diretamente para o reducer/reducers...
+
+
+
+
+
+
+
+
+
+
+
+
+-_> DENTRO DO REDUCER,
+
+
+
+
+O ACTION IDENTIFIER É EXAMINADO,
+
+
+
+
+EXAMINA-SE 'QUAL É A ACTION',
+
+
+
+
+COMO POR EXEMPLO 'ADD A RECIPE/DELETE A RECIPE',
+
+
+
+
+
+
+E AÍ 
+
+
+
+
+
+___ PERFORM CÓDIGO __ 
+
+
+NO STATE (que também foi passado como argumento, ao reducer),
+
+
+
+
+PARA __ 
+
+
+AÍ 
+
+
+__ UPDATAR__ O STATE 
+
+
+
+NO STORE DO SEU APP,
+
+
+
+
+
+
+
+
+
+
+MAS DE MANEIRA '''IMMUTABLE''..
+
+
+
+
+
+(
+
+    OU SEJA,
+
+
+
+    SERÁ FEITA UMA __ CÓPIA __ DO STATE ANTIGO,
+
+    E AÍ 
+
+
+    __ A CÓPIA __ SERÁ ALTERADA,
+    E AÍ 
+    SOBREPOSTA 
+
+
+    AO STATE ANTIGO....
+)
+
+
+
+
+
+
+
+
+
+
+-> isso pq, NO FINAL DAS CONTAS,
+
+
+
+O REDUCER VAI 'RETURN A NEW STATE',
+
+
+O QUE QUER DIZER QUE 
+
+
+
+ELE 
+
+
+VAI 
+
+
+RETORNAR UMA  ____CÓPIA__ DO STATE ANTIGO,
+
+
+MAS QUE 
+
+TERÁ 
+
+SIDO 
+
+ALTERADA POR SUA ACTION..
+
+
+
+
+
+
+--> E ESSE STATE QUE É RETORNADO PELO REDUCER ___ SÓ _ ENTÃO 
+
+
+É FORWARDADO AO 'STORE',
+
+
+
+
+EM QUE __ ESSE 'REDUCED STATE' (editado de FORMA IMMUTABLE, SEM TOCAR NO VELHO STATE, EM OUTRAS PALAVRAS)
+
+
+
+
+ENTÃO OVERWRITA O OLD STATE DO APP...
+
+
+
+
+
+
+
+
+
+
+--> ESSE É O 'REDUX PATTERN',
+
+E 
+
+
+
+COMO VOCÊ PODE OBSERVAR,
+
+
+
+ELE 
+
+'ENFORCES'
+
+
+
+
+UM PADRÃO BEM CLARO E ABSOLUTO DE DATA...
+
+
+
+
+
+
+
+
+
+------> OU SEJA,
+
+FICAMOS 
+
+
+COM APENAS 1  LOCAL NO NOSSO APP EM QUE 
+
+
+
+
+ARMAZENAMOS NOSSA DATA,
+
+
+
+E SÓ SOMOS CAPAZES DE A ACESSAR 
+
+POR MEIO 
+
+
+
+
+
+
+DE 
+
+'ACTIONS E REDUCERS'....
+
+
+
+
+
+
+
+
+
+QUANTO AO 'RECEIVE' DO STATE __ MANAGEADO_  POR NOSSOS REDUCERS 
+
+
+
+E 
+
+
+
+
+
+ARMAZENADO NA 'STORE' DO NOSSO APP,
+
+
+
+
+
+
+
+__ ISSO __ É FEITO ATRAVÉS DE 
+
+'SUBSCRIPTIONS' (exatamente como fazíamos com OS SUBJECTS),
+
+
+
+
+
+que 
+
+
+vamos 
+
+
+distribuir ao longo do nosso app,
+
+
+nas partes do app que 'se importam com o APPLICATION STATE, state vindo da store do nosso app'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> BEM.... ------> E SE VOCê 
+
+
+
+
+
+ESTÁ USANDO O ANGULAR,
+
+VOCê __ PODE__ USAR __ 
+
+
+A LIBRARY DO 'REDUX'... ------> ESSA LIBRARY NÃO É RESTRITA APENAS 
+
+
+
+AO REACTJS,
+
+
+
+
+
+
+MAS 
+
+O 
+
+'NGRX',
+
+
+NO FINAL DAS CONTAS,
+
+
+
+
+
+
+
+
+
+É SIMPLESMENTE A 
+
+
+
+'''IMPLEMENTAÇÃO ANGULAR DO REDUX''...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+AH.... ESPERE.... 
+
+
+
+
+
+
+
+
+
+
+
+ENTÃO EXISTEM:
+
+
+
+
+
+
+
+
+ANGULAR + REDUX 
+
+
+
+
+
+
+E 
+
+
+
+NGRX (versão ANGULAR do redux)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O 'NGRX'
+
+
+
+
+TEM ALGUMAS DIFERENÇAS EM RELAÇÃO 
+
+
+
+
+AO REDUX NORMAL,
+
+
+
+
+algumas 
+
+
+'ANGULAR-SPECIFIC THINGS'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> POR EXEMPLO,
+
+
+
+ 
+ ALGUMAS DAS DIFERENÇAS:
+
+
+
+
+
+
+
+
+ 1) O NGRX É __ DEEPLY__ INTEGRATED AO ANGULAR.... 
+
+ (
+    ISSO QUER DIZER QUE ELE JÁ VEM COM 'INJECTABLE SERVICES',
+
+    tudo para que vocÊ possa FACILMENTE ACESSAR SUA APPLICATION STORE 
+
+
+    EM QUALQUER PARTE DO SEU APP,
+
+    POR MEIO DO SIMPLES 'INJECT' DAQUELA PARTE DO APP COM O STATE....
+ )
+
+
+
+
+
+
+
+
+
+ 2) o 'NGRX' TAMBÉM ABRAÇA TOTALMENTE O CONCEITO DE 'RXJS' e observables =====
+
+
+
+ O QUE QUER DIZER QUE 
+
+
+
+ TODO O STATE É MANAGEADO 'COMO UM GRANDE OBSERVABLE'....
+
+
+ (
+
+    E ISSO TE DÁ CERTAS VANTAGENS... ----> UMA DAS VANTAGENS -->  VOCê 
+
+
+    PODE USAR TODOS OS 'OBSERVABLE OPERATORS'
+
+
+
+    PARA __ ENTÃO __ EDITAR_ _O STATE_ 
+
+
+    _ QUE VOCê ESTÁ FETCHEANDO __ LÁ NO COMPONENT EM QUE 
+
+    VOCÊ 
+    PRECISA DESSE STATE, PQ ESSE COMPONENT TVZ PRECISE DESSE STATE EM UM FORMATO ALTERADO... e isso não altera o store state, o que é uma vantagem....
+ )
+
+
+
+
+
+
+
+ 3) POR FIM, O 
+
+ 'NGRX'
+
+ TAMBÉM SUPORTA _ O TYPESCRIPT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> ALÉM DISSO,
+
+
+HÁ UMA PARTE EXTRA SOBRE ESSE 'STATE MANAGEMENT LIBRARY',
+
+
+
+
+
+QUE 
+
+TEM A VER COM 'SIDE EFFECTS'...
+
+
+
+
+
+
+4) ISSO QUER DIZER QUE 
+
+O 
+
+
+'NgRx'
+
+
+TAMBÉM TE DÁ UMA FERRAMENTA QUE 
+
+FACILITA 
+
+O TRABALHO COM 'SIDE EFFECTS',
+
+
+
+FICA MAIS FÁCIL 
+
+DE VER 
+
+
+
+
+OS SIDE EFFECTS NO SEU CÓDIGO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> SIDE-EFFECTS ----> SÃO COISAS COMO 'SEND DE HTTP REQUESTS'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NGRX TAMBÉM NOS AJUDA COM ISSO AÍ... --> PQ COM O REDUX TRADICIONAL,
+
+
+
+
+NORMALMENTE NÃO FICAVA CLARO '''EM QUE LUGAR DEVEMOS SEND _ ESSES SIDE EFFECTS,
+
+
+
+EM QUE LUGAR DEVEMOS ENVIAR ESSES HTTP REQUESTS'''  ---->  ISSO QUER DIZER QUE 
+
+
+
+COM O 
+
+
+REDUX TRADICIONAL,
+
+CÓDIGO ASSÍNCRONO __ SEMPRE__ FOI UM PROBLEMA/É UM PROBLEMA (basta ver o código do burgerbuilder),
+
+
+
+
+
+
+
+
+ISSO PQ _ REDUCERS__ __ SÓ __ EXECUTAM 
+_ CÓDIGO SÍNCRONO,
+
+
+
+O QUE QUER DIZER QUE __ REDUCERS_ _SÃO INCAPAZES DE ENVIAR CÓDIGOS 
+
+HTTP.... --> É IMPOSSÍVEL ENVIAR HTTP REQUESTS 
+
+
+
+DE DENTRO DE UMA REDUCER FUNCTION...
+
+
+
+
+
+
+
+(
+    É POR ISSO QUE ISSO SEMPRE ERA UMA OPEN QUESTION NO REDUX:
+
+    ''EM QUE LUGAR DEVEMOS FAZER TAREFAS COMO ESSAS, COMO HTTP REQUESTS E TIMERS,
+
+    ETC''..
+)
+
+
+
+
+
+
+--> BEM,
+
+
+
+O 'NGRX'
+
+
+JÁ SHIPPA COM UMA SOLUÇÃO PRÓPRIA,
+
+
+E VAMOS APRENDER SOBRE ISSO LOGO LOGO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ISSO FOI MT TEORIA, HORA DE VOLTAR AO CÓDIGO E VER COMO TUDO ISSO FUNCIONA...

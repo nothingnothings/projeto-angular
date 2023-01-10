@@ -1,0 +1,446 @@
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE EXISTEM 
+
+
+
+MUITOS 'ATTRIBUTE DIRECTIVES',
+
+e ao longo do curso 
+
+
+VEREMOS VÁRIOS DELES...
+
+
+
+
+
+
+
+
+
+
+--> 2 QUE JÁ APRENDEMOS SÃO 
+
+
+'ngClass'
+ 
+ e 
+
+ 'ngStyle'..
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+-----> PARA REFRESHAR COMO ELES FUNCIONAM,
+
+
+
+O PROFESSOR ADICIONA UMA CLASS AO css de 
+
+'app.component.css'...
+
+
+
+
+
+
+
+
+
+
+--> tipo assim:
+
+
+
+
+
+
+.odd {
+
+color: red;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+--> QUEREMOS ASSIGNAR ESSA CLASS 
+
+
+
+
+AOS NOSSOS LIST ELEMENTS QUE REALMENTE SÃO 
+'odd',
+
+
+
+e como 
+
+os list item de 'odd'
+
+SÓ SÃO MOSTRADOS QUANDO O 'onlyOdd'
+
+está como TRUE,
+
+BASTARIA 
+
+
+SÓ 
+
+ESCREVER O STYLE COMO 
+
+'class=odd',
+
+
+
+
+
+
+
+ISSO É VERDADE, SIM,
+
+
+
+MAS _ O PROFESSOR DIZ QUE 
+AINDA PODEMOS 
+USAr 
+
+'ngClass'
+
+PARA _ ASSEGURAR 100%
+ 
+ que 
+
+
+ o style de 
+
+ 'odd'
+
+ SÓ SERÁ 
+
+ APLICADO 
+
+ QUANDO 
+
+
+ 'onlyOdd'
+
+ ESTIVER COMO TRUE..
+
+
+
+
+
+ -> tipo assim:
+
+
+
+         [ngClass]="{odd: odd % 2 !== 0}"
+
+
+
+
+
+
+
+
+
+
+         --> AGORA ESSA CLASS DE 
+
+         'odd'
+
+         SÓ SERÁ DEFINIDA COMO 'true' ( ou seja ,será adicionada)
+
+
+
+         SE 
+
+         ESSA OPERAÇÃO REALMENTE ESTIVER COMO TRUE (assegurado que é um ODD NUMBER)..
+
+
+
+
+
+
+
+
+
+
+
+
+    --> certo... fazemos isso para a outra list, também...
+
+
+
+
+
+
+
+
+
+
+    -----> fica tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <button class="btn btn-primary" (click)="onlyOdd = !onlyOdd">
+        Only show odd numbers
+      </button>
+      <br /><br />
+      <ul class="list-group">
+        <div *ngIf="onlyOdd">
+        <li class="list-group-item" *ngFor="let odd of oddNumbers"
+        
+        [ngClass]="{odd: odd % 2 !== 0}"
+        >
+          {{ odd }}
+        </li>
+      </div>
+      <div *ngIf="!onlyOdd">
+        <li class="list-group-item" *ngFor="let even of evenNumbers"
+        
+        [ngClass]="{odd: even % 2 !== 0}"
+        
+        >
+          {{ even }}
+        </li>
+      </div>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+-> os '[] ' sinalizam que estamos bindando a alguma 
+
+
+_propriedade 
+
+
+
+__ NA NOSSA DIRECTIVE DE 'ngClass'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> NGSTYLE É A OUTRA ATTRIBUTE DIRECTIVE QUE UTILIZAMOS AO LONGO DO CURSO..
+
+
+
+
+
+
+
+
+
+
+
+-> NGSTYLE NOS DEIXA __ TAMBÉM_ _ A PASSAR UM OBJECT 
+
+A ALGUMA PROPRIEDAde (que é chamada de 'ngStyle'),
+
+
+
+
+E AÍ _ _ PODEMOS _ SIMPLESMENTE SETTAR ALGO COMO 
+
+
+
+'backgroundColor:red',
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+[ngStyle]= {backgroundColor: 'red'}
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS PODEMOS REPETIR NOSSO CHECK DINÂMICO, PARA TER OU 'true' ou 'false'
+
+dependendo do number ser 'odd' ou 'even'...
+
+
+
+
+
+
+ex:
+
+
+[ngStyle]= "{backgroundColor: odd % 2 !== 0 ? 'yellow' : 'transparent'}"
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <button class="btn btn-primary" (click)="onlyOdd = !onlyOdd">
+        Only show odd numbers
+      </button>
+      <br /><br />
+      <ul class="list-group">
+        <div *ngIf="onlyOdd">
+          <li
+            class="list-group-item"
+            *ngFor="let odd of oddNumbers"
+            [ngStyle]="{
+              backgroundColor: odds % 2 !== 0 ? 'yellow' : 'transparent'
+            }"
+            [ngClass]="{ odd: odd % 2 !== 0 }"
+          >
+            {{ odd }}
+          </li>
+        </div>
+        <div *ngIf="!onlyOdd">
+          <li
+            class="list-group-item"
+            *ngFor="let even of evenNumbers"
+            [ngStyle]="{
+              backgroundColor: even % 2 !== 0 ? 'yellow' : 'transparent'
+            }"
+            [ngClass]="{ odd: even % 2 !== 0 }"
+          >
+            {{ even }}
+          </li>
+        </div>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, ISSO SIGNIFICA QUE AGORA ESSAS DIRECTIVES ESTÃO FUNCIOONANDO..
+
+
+
+
+
+
+
+
+
+
+-> O PRÓXIMO PASSO É 'CRIAR NOSSAS PRÓPRIAS DIRECTIVES',
+
+pq isso 
+
+É ALGO QUE TAMBÉM PODEMOS FAZER,
+
+
+e que faremos a seguir,
+
+
+COMEÇANDO PELO MAKE DE UMA ATTRIBUTE DIRECTIVE...

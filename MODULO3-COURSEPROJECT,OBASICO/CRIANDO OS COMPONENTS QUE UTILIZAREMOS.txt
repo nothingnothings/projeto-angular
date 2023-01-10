@@ -1,0 +1,1267 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> NA ÚLTIMA LIÇÃO,
+
+
+SETTAMOS NOSSO PROJETO E ADICIONAMOS BOOTSTRAP A ELE...
+
+
+
+
+
+
+
+
+
+--> AGORA QUEREMOS COMEÇAR A ADDAR OS COMPONENTS  
+
+
+QUE 
+
+
+PLANEJAMOS....
+
+
+
+
+
+
+
+
+---> O PROFESSOR QUER QUE FAÇAMOS O INÍCIO DISSO AÍ _ POR CONTA PRÓPRIA...
+
+
+
+
+
+
+
+-> ele não quer que 
+
+
+ 
+PREENCHAMOS TODOS OS COMPONENTS,
+
+
+CADA COMPONENT PODE SIMPLESMENTE SEGURAR UM POUCO DE 'dummy text',
+
+
+
+
+
+
+
+
+
+MAS ELE _ QUER _ QUE CRIEMOS OS COMPONENTS,
+
+E TALVEZ 
+
+
+CRIAR UMA 'CLEVER FOLDER STRUCTURE' 
+
+
+no nosso APP FOLDER...
+
+
+
+
+
+
+
+
+
+-> NEM TODO COMPONENT DEVE TER UM FOLDER NO 'ROOT LEVEL' 
+
+
+(
+
+    e sim 
+
+    apenas 
+
+
+
+    'HEADER',
+
+    'SHOPPINGList' 
+
+
+    E 
+
+    'RECIPEBOOK'.
+)
+
+
+
+
+
+
+
+
+
+--> VOCê TEM QUE NESTEAR OS COMPONENTS POR FEATURE....
+
+
+
+
+
+
+
+
+
+-> E TENTE CRIAR PELO MENOS 1 COMPONENT MANUALMENTE, SEM USAR O CLI...
+
+
+
+
+
+
+
+
+
+
+
+certo....
+
+
+
+
+
+
+-> PAUSAMOS O VÍDEO E TENTAMOS POR CONTA PRÓPRIA, DEPOIS ASSISTIMOS O VIDEO DO PROFESSOR...
+
+
+
+
+
+
+
+
+
+
+
+
+CRIEI UM MANUALMENTE... FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  template: './headerComponent.app.html',
+  styleUrls: ['./headerComponent.app.css'],
+  selector: 'app-header-component',
+})
+export class HeaderComponent {
+  constructor() {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> agora tenho que ADICIONAR ESSE COMPONENT LÁ NO 'app.module.ts',
+
+
+EM 
+
+
+'declarations'....
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo ..... o próximo passo é criar 'Shopping List' 
+
+e 
+
+'Recipe Book'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok.... editei algumas das coisas.... 
+
+
+
+
+
+
+
+
+
+
+
+---> COMO O PROFESSOR RESOLVE ISSO?
+
+
+
+
+
+
+
+
+
+
+
+-_> TEMOS 2 
+
+
+COMPONENTS,
+
+
+
+
+
+O SHOPLIST E O RECIPEBOOK,
+
+E AÍ 
+
+O 
+
+
+HEADER...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> HEADER-> será que  DEVEMOS CRIAR UM 'FOLDER' DE HEADER,
+
+
+
+DENTRO DO FOLDER DE 'app',
+
+OU DEVEMOS 
+
+
+CRIAR UM COMPONENT 
+
+
+
+NO FOLDER DE APP EM SI? 
+
+
+
+
+
+
+
+
+----> como é só usado por nosso component 'app',
+
+não seria errado 
+
+
+ESCREVÊ-LO DIRETAMENTE NO APP..
+
+
+
+
+
+
+
+
+
+
+
+--> professor escreve mais ou menos isto:
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  templateUrl: './headerComponent.app.html',
+  styleUrls: ['./headerComponent.app.css'],
+  selector: 'app-header-component',
+})
+export class HeaderComponent {
+  constructor() {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> 'app-header'
+
+É UM COMPONENTE HTML QUE NÃO EXISTE NATIVAMENTE,
+
+
+POR ISSO O PROFESSOR ESCOLHEU ESSE NOME...
+
+
+
+
+
+
+
+
+
+-> ELE CRIA UM ARQUIVO 'header.component.html'...
+
+
+
+
+
+
+
+
+
+
+
+--> ok, ele criou um header,
+
+
+
+
+tipo assim>:
+
+
+
+
+
+
+
+
+
+
+
+<h1>The Header</h1>
+
+
+
+
+
+
+
+
+
+
+--> POR ENQUANTO, ISSO NÃO TERÁ CONTEÚDO...
+
+
+
+
+
+
+
+--> O PROFESSOR ADICIONA ISSO NO COMPONENT DE 'app.component.html'....
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+
+
+<app-header-component>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <app-shop-list></app-shop-list>
+        <app-recipe-list></app-recipe-list>
+      </div>
+    </div></div
+></app-header-component>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... COM TUDO ISSO AÍ,
+
+
+
+recebemos 
+
+'loading...' na página...
+
+
+
+
+
+
+
+
+-> ISSO É UM INDICADOR DE QUE 
+HOUVE UM ERRO.... -> O  ERRO É BEM CLARO:
+
+
+
+'app-header'
+
+
+
+IS 
+
+NOT A KNWON HEADER... ---> É PQ DEVEMOS ADICIONAR ESSE 
+
+
+
+'component' 
+
+
+lá 
+
+em 
+
+
+'app.component.ts',
+
+
+nos 
+
+'declarations'...
+
+
+
+
+
+
+
+
+
+
+
+
+VOCÊ TEM QUE REGISTRAR TODAS AS FEATURES QUE 
+
+
+VAMOS USAR __ LÁ _ 
+
+NO COMPONENT DE 'app.module.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-->  FICA TIPO ASSIM:
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppComponent } from './app.component';
+
+import { HeaderComponent } from './headerComponent/headerComponent.app';
+
+import { RecipeItemComponent } from './recipeBook/recipe-item/recipe-item.component';
+import { RecipeListComponent } from './recipeBook/recipe-list/recipe-list.component';
+import { RecipeDetailComponent } from './recipeBook/recipe-detail/recipe-detail.component';
+import { ShopListComponent } from './ShoppingList/shop-list/shop-list.component';
+import { ShopListEditComponent } from './ShoppingList/shop-list-edit/shop-list-edit.component';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+
+    RecipeItemComponent,
+    RecipeListComponent,
+    RecipeDetailComponent,
+    ShopListComponent,
+    ShopListEditComponent
+  ],
+  imports: [
+    BrowserModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> certo...
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> O HEADER AINDA NÃO ESTÁ BONITO,
+
+MAS PERCEBEMOS QUE ESTÁ FUNCIONANDO..
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> AGORA DEVEMOS ADICIONAR TODOS OS OUTROS COMPONENTS...
+
+
+
+
+
+
+ng g c 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> ng g c RecipeList
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------->
+
+
+
+
+O PROFESSOR USA UM COMANDO DE 
+
+
+
+'--skipTests true'
+
+
+
+PARA 
+
+
+_-EVITAR/PREVENIR __ 
+
+
+
+A CRIAÇAÕ 
+
+DE UMA 
+
+TESTING FILE,
+QUE 
+
+NÃO SERÁ NECESSÁRIA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+------->com isso, ficamos com um 
+
+
+
+
+
+
+NOVO FOLDER  NO NOSSO APP,
+
+
+component de 'recipes'...  ----> ESSE SERÁ NOSSO COMPONENT
+
+
+
+
+'OVERALL' DA FEATURE DE 'RECIPE BOOK'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+PQ TEMOS ISTO:
+
+
+
+
+
+
+
+          ----> RECIPE ITEM 
+RECIPE BOOK --> RECIPE LIST
+   (overall)  ---> RECIPE DETAIL 
+
+
+
+
+
+
+
+
+
+
+
+
+    --------> PROFESSOR QUER CRIAR 
+
+
+
+    UM SETUP EM QUE 
+
+
+    __TEMOS _:
+
+
+
+
+    1) A LIST NA ESQUERDA,
+
+    E AÍ SE CLICAMOS EM 1 
+
+
+
+
+    ITEM,
+
+
+    O DETAIL DESSE ITEM, o 'detail component',
+
+
+
+    É EXIBIDO NA DIREITA.... -------> É POR ISSO QUE 
+
+    VAMOS PRECISAR DE UM 
+
+
+
+    'OVERALL COMPONENT' 
+
+
+    que segure esses 2 components ao mesmo tempo...
+
+
+
+
+
+
+
+
+    COMO UM SETUP OPCIONAL,
+
+
+
+    vocÊ poderia
+
+
+
+    ESCOLHER UM SETUP 
+
+
+    EM QUE 
+
+    O 
+
+    recipe 
+    DETAIL É DE ALGUMA FORMA 
+
+
+    'embedded' no component de 'list.'...
+
+
+
+
+
+
+
+
+
+    -> MAS O PROFESSOR PREFERE CRIAR ESSE 'OVERALL COMPONENt'....
+
+
+
+
+
+
+
+
+
+
+    OK, CRIAMOS ESSE COMPONENT E COLOCAMOS
+     
+
+
+
+     NO 
+
+
+
+     NOME DE 'recipeBook'....
+
+
+
+
+
+
+
+
+
+
+
+     -> DEPOIS DISSO, O PROFESSOR VAI EM FRENTE E CRIA O RESTO DOS COMPONENTS..
+
+
+
+
+
+
+
+
+
+
+
+  --> ele cria 
+
+
+
+  'recipeList',
+
+
+  que será a LIST DE COMPONENTS 'Recipe'...
+
+
+
+
+
+
+
+
+
+
+  --> MAS AQUI O PROFESSOR __ NÃO VAI _ QUERER__ CRIAR 
+
+
+  A 
+
+  'recipeList'
+
+
+
+
+
+  diretamente no interior do 
+
+
+
+  folder de 'app'....  (apesar de esse ser o comportamento PADRÃO DO CLI)...
+
+
+
+
+
+
+
+
+  --> em vez disso,
+
+
+  ELE DECCIDE CRIAR ESSE COMPONENT DENTRO DO 
+
+
+
+  FOLDER DE 'recipes'/'recipeBook',
+
+
+  PQ TODOS OS COMPONENTS RELACIONADOS AO 'recipeBook'
+
+
+
+  DEVEM FICAR LÁ DENTRO...
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ESPECIFICAR QUE VOCÊ QUER CRIAR O COMPONENT EM UM LOCAL DIFERENTE DO 'ROOT' DO SEU ARQUIVO,
+
+ 
+ VOCê PODE:
+
+
+ 1) OU _ NAVEGAR ATÉ O FOLDER QUE VOCÊ QUER CRIAR ESSE COMPONENT, COM O TERMIANL
+
+
+
+ 2) OU __ PASSAR UM PATH 
+
+
+ como parâmetro 
+
+ COMBINADO AO NOME DO COMPONENT QUE VOCê QUER CRIAR,
+ TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+ ng g c recipes/recipe-list
+
+
+
+
+
+
+
+
+
+
+
+
+ --> ISSO VAI CRIAR O FOLDER DE 'recipe-list'
+
+
+ DENTRO 
+
+ DO 
+
+ FOLDER de 
+
+
+
+
+ 'recipes'...
+
+
+
+
+
+
+
+
+ --> É ISSO QUE 
+
+
+ O 
+
+
+ PROFESSOR QUER DIZER COM 
+
+
+
+ 'STRUCTURING THE FOLDERS BY FEATURE'....
+
+
+
+
+
+
+
+
+
+
+ OK, COM O RECIPE LIST ADICIONADO,
+
+
+ ELE TAMBÉM QUER ADICIONAR  
+
+ O
+
+
+ 'RECIPE DETAIL'...
+
+
+
+
+
+
+
+
+
+
+
+ ---> PQ O RECIPE DETAIL DEVERÁ SER  DISPLAYADO _ AO LADO__ DA LIST,
+
+ no nosso setup...
+
+
+
+
+
+
+
+
+
+ A DISPOSIÇAÕ FICA TIPO ASSIM:
+
+
+
+ <app-recipe-list>
+    <app-recipe-item></app-recipe-item>
+    <app-recipe-detail></app-recipe-detail>
+</app-recipe-list>
+
+
+
+
+
+
+
+
+
+
+
+
+----> MAS HÁ UM PROBLEMA, AQUI.. -> o professor quer colocar esse 
+
+'recipe-item'
+
+
+dentro da 'recipe-list',
+
+
+pq É NA RECIPE-LIST QUE VAMOS QUERER USAR ESSE COMPONENt...
+
+
+
+
+
+
+
+
+
+ok, ajustei esse código...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> essa é só uma disposição possível, 
+
+
+
+há outras viáveis...
+
+
+
+
+
+
+
+
+
+->_ PROFESSOR FAZ A MESMA COISA COM O COMPONENT DE 'Shopping'...
+
+
+
+
+
+
+
+
+
+
+--> EU CRIEI 
+
+esse 
+
+
+
+'ShoppingList'..
+
+
+
+
+
+
+
+
+
+
+-----> dentro do 'ShoppingList',
+
+HÁ 
+
+APENAS 
+
+
+
+1 outro component que 
+vamos 
+
+
+
+
+QUERER ADICIONAR, QUE SERÁ O 'shop-list-edit',
+
+
+QUER SERÁ 
+
+
+USADO PARA ADICIONAR NOVOS INGREDIENTS OU EDITAR EXSITING ONES....
+
+
+
+
+
+
+
+
+
+
+
+PRONTO..... A DISPOSIÇÃO FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppComponent } from './app.component';
+
+import { HeaderComponent } from './headerComponent/headerComponent.app';
+
+import { RecipeBookComponent } from './recipeBook/recipe-book.component';
+import { RecipeItemComponent } from './recipeBook/recipe-list/recipe-item/recipe-item.component';
+import { RecipeListComponent } from './recipeBook/recipe-list/recipe-list.component';
+import { RecipeDetailComponent } from './recipeBook/recipe-detail/recipe-detail.component';
+import { ShoppingListComponent } from './ShoppingList/shoppingList.component';
+import { ShopListEditComponent } from './ShoppingList/shop-list-edit/shop-list-edit.component';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+    RecipeBookComponent,
+    RecipeItemComponent,
+    RecipeListComponent,
+    RecipeDetailComponent,
+    ShoppingListComponent,
+    ShopListEditComponent
+  ],
+  imports: [
+    BrowserModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COM TODOS ESSES COMPONENTS ADICIONADOS,
+
+E COMO 
+
+USAMOS 
+O 
+
+'cli',
+
+
+
+ELES FORAM ADICIONADOS 
+
+AUTOMATICAMENTE AO 'app.module.ts',
+
+
+
+
+NÓS PODEMOS FINALMENTE OS UTILIZAR, QUE É O QUE FAREMOS NA PRÓXIMA AULA...

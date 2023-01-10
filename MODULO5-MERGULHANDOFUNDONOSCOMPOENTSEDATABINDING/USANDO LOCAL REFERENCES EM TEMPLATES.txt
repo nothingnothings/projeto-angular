@@ -1,0 +1,1567 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> DE VOLTA AO APP DE 'cockpit' com os servers....
+
+
+
+
+
+
+
+
+
+
+
+--> ESTAMOS USANDO 'OUTPUT' E 'INPUT' 
+
+
+ 
+ PARA 'PASS DATA AROUND',
+
+
+POR MEIO 
+
+
+DE NOSSO PRÓPRIO 
+
+'CUSTOM PROPERTY AND EVENT BINDING'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> BEM... NO COCKPIT,
+
+
+O  PROFESSOR ATUALMENTE ESTÁ USANDO 
+
+
+'two-way data binding'  
+
+
+
+PARA __ CONSEGUIR __ 
+O 
+'serverName' 
+
+e 
+
+
+'serverContent':
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <p>Add new Servers or Blueprints!</p>
+    <label>Server Name</label>
+    <input type="text" class="form-control" [(ngModel)]="newServerName" />
+    <label>Server Content</label>
+    <input type="text" class="form-control" [(ngModel)]="newServerContent" />
+    <br />
+    <button class="btn btn-primary" (click)="onAddServer()">Add Server</button>
+    <button class="btn btn-primary" (click)="onAddBlueprint()">
+      Add Server Blueprint
+    </button>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> PROFESSOR DIZ QUE 'NÃO HÁ NADA DE ERRADO COM ISSO',
+
+mas que 
+
+TALVEZ __ NAÕ SEJA NECESSÁRIO USAR 
+
+'TWO WAY DATA-BINDING'
+
+
+para conseguir essa data... 
+
+
+
+
+
+
+
+
+
+--> COMO NÓS __ SÓ QEUREMOS 'SAVE' 
+
+OU 
+
+'USE THE DATA' NO MOMENTO/PONTO NO TEMPO 
+
+
+EM QUE CLICO NAQUELES BUTTON,
+
+
+os button de add server/blueprint,
+
+
+
+
+
+
+
+
+
+__ SERIA _ __ SUFICIENTE FAZER 'GET' DO VALOR DO 'INPUT' (input field)
+
+
+
+
+
+
+
+
+
+
+NESSE EXATO MOMENTO NO TEMPO.. ... -----> E HÁ UMA MANEIRA BEM NICE DE CONSEGUIRMOS ISSO...
+
+
+
+
+
+
+
+
+
+
+---> O PROFESSOR DUPLICA O CÓDIGO DE 
+
+
+
+''    <input type="text" class="form-control" [(ngModel)]="newServerName" />'''
+
+
+para o COMENTAR PARA FORA,
+
+
+PARA AÍ NOS MOSTRAR UMA SOLUÇÃO ALTERNATIVA....
+
+
+
+
+
+
+
+
+
+OK.... ELE DUPLICA ESSE NEGÓCIO AÍ,
+
+
+
+
+
+
+
+
+
+e aí 
+
+
+estrutura 
+
+
+nosso código melhor...
+
+
+
+
+
+fica tipo assim:
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <p>Add new Servers or Blueprints!</p>
+    <label>Server Name</label>
+    <!-- <input type="text" class="form-control" [(ngModel)]="newServerName" /> CÓDIGO COM TWOWAYBINDING em 'newServerName' -->
+    <input type="text" 
+    class="form-control"
+    
+    /> <!-- versão do mesmo CÓDIGO, mas SEM TWO WAY BINDING, pq é desnecessário nesse caso específico (não queremos/precisamos displayar a coisa que estamos escrevendo na tela, diretamente enquanto escrevemos)-->
+    <label>Server Content</label>
+    <input type="text" class="form-control" [(ngModel)]="newServerContent" />
+    <br />
+    <button class="btn btn-primary" (click)="onAddServer()">Add Server</button>
+    <button class="btn btn-primary" (click)="onAddBlueprint()">
+      Add Server Blueprint
+    </button>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... MAS NESSA 'VERSÃO 2' DO CÓDIGO DE 'input',
+
+
+VAMOS QUERER _ POSICIONAR __UMA 'LOCAL REFERENCE'
+
+no código html...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR NOS EXPLICA QUE UMA 'LOCAL REFERENCE'
+
+
+
+PODE __ SER POSICIONADA _ EM QUALQUER _ HTML ELEMENT... ---------> OU SEJA,
+
+
+
+
+
+
+
+
+
+
+_ PODE _ SER POSICIONADA EM COISAS DIFERENTES/QUE NÃO SÃO 
+
+
+
+'INPUT ELEMENTS'.... --------->  pode ser qualquer coisa, mesmo....
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA ADICIONAR UMA _ LOCAL REFERENCE,
+
+VOCÊÊ 
+
+
+ESCREVE 
+'#' 
+
+
+e aí ALGUM NOME DE SUA ESCOLHA, COMO 'serverName',
+
+
+
+
+
+nesse caso:
+
+
+
+
+
+    <input type="text" 
+    class="form-control" 
+    #serverNameInput
+     />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------> O PROFESSOR COLOCOU 
+
+'#serverNameInput'
+
+
+PQ _ VAI QUERER __ 
+
+
+QUE 
+
+
+
+ essa referência 
+
+
+ SEGURE UMA _ REFERENCE A ESSE ELEMENTO ESPECÍFICO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ----> OK.... ESSA REFERENCE _ VAI __ SEGURAR__ UMA _ REFERENCE _A ESSE ELEMENTO DE 
+
+
+
+ 'input' 
+
+ específico, em outras palavras....
+
+
+
+
+
+
+
+
+
+ ----> ISSO SIGNIFICA QUE 
+
+
+ _ ELA__ NÃO VAI SEGURAR UMA REFERENCE AO 'VALUE' que inputtamos 
+
+ dentro do input,
+
+
+
+ e sim __ AO __ 
+
+
+
+ HTML ELEMENT DE 'INPUT' 
+
+ inteiro que temos aqui...
+
+
+
+
+ (
+
+     com todas as properties e etc....
+ )
+
+
+
+
+
+
+
+ E ESSE OBJETO/ELEMENTO 'input'
+
+
+
+
+ PROVAVELMENTE PODERÁ SER __ ANÁLISADO/FUTRICADO LÁ 
+
+
+ NO 'server-cockpit.element.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ------> BEM.... MAS O QUE O PROFESSOR VAI QUERER FAZER, 
+
+ AGORA,
+ É 
+
+
+
+ _ PASSAR__ ESSE 
+
+
+ '#serverNameInput'
+
+
+
+
+ __ COMO __ PARÂMETRO 
+
+
+
+
+ do method 'onAddServer()' 
+
+
+
+
+
+
+
+ QUE CHAMAMOS LOGO ABAIXO, no button:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ <div class="row">
+  <div class="col-xs-12">
+    <p>Add new Servers or Blueprints!</p>
+    <label>Server Name</label>
+
+    <input type="text" 
+    class="form-control"
+    #serverNameInput
+    /> 
+    <label>Server Content</label>
+    <input type="text" 
+    class="form-control" 
+    
+     />  <!-- versão do mesmo CÓDIGO, mas SEM TWO WAY BINDING, pq é desnecessário nesse caso específico (não queremos/precisamos displayar a coisa que estamos escrevendo na tela, diretamente enquanto escrevemos)-->
+    <br />
+    <button class="btn btn-primary" (click)="onAddServer(serverNameInput)">Add Server</button>
+    <button class="btn btn-primary" (click)="onAddBlueprint()">
+      Add Server Blueprint
+    </button>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+    <button class="btn btn-primary" (click)="onAddServer(serverNameInput)">Add Server</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ---> ok, pudemos executar 
+
+
+
+    onAddServer(serverNameInput) -------> ISSO É POSSÍVEL, ESSA ESCRITA AÍ 
+
+
+
+    PQ 
+
+
+
+
+
+    A OUTRA COISA QUE DEVEMOS SABER, ALÉM DA MANEIRA DE 'CREATE AS REFERENCES',
+
+
+    É QUE 
+
+
+
+    _ VOCê __ 
+
+    PODE _ AS UTILIZAR_ _ EM QUALQUER LUGAR DO TEMPLATE EM QUE VOCÊ AS CRIOU...
+
+
+
+
+
+
+
+    EX:
+
+
+
+
+
+
+
+
+
+
+
+    <div class="row">
+  <div class="col-xs-12">
+    <p>Add new Servers or Blueprints!</p>
+    <label>Server Name</label>
+    <!-- <input type="text" class="form-control" [(ngModel)]="newServerName" /> CÓDIGO COM TWOWAYBINDING em 'newServerName' -->
+    
+    
+    <!-- esta versão do código usa __ LOCAL REFERENCES (#serverNameInput), que são referenciadas mais abaixo, no call de 'onAddServer()' e afins....  (pq local references só podem ser chamadas no próprio TEMPLATE em que são criadas) -->
+    <input type="text" 
+    class="form-control"
+    #serverNameInput
+    /> <!-- versão do mesmo CÓDIGO, mas SEM TWO WAY BINDING, pq é desnecessário nesse caso específico (não queremos/precisamos displayar a coisa que estamos escrevendo na tela, diretamente enquanto escrevemos)-->
+    
+    
+    
+    <label>Server Content</label>
+    <!-- <input type="text" class="form-control" [(ngModel)]="newServerContent" /> CÓDIGO COM TWOWAYBINDING em 'newServerContent' -->
+
+
+
+    
+    <input type="text" 
+    class="form-control" 
+
+     />  <!-- versão do mesmo CÓDIGO, mas SEM TWO WAY BINDING, pq é desnecessário nesse caso específico (não queremos/precisamos displayar a coisa que estamos escrevendo na tela, diretamente enquanto escrevemos)-->
+    <br />
+    <button class="btn btn-primary" (click)="onAddServer(serverNameInput)">Add Server</button>
+    <button class="btn btn-primary" (click)="onAddBlueprint()">
+      Add Server Blueprint
+    </button>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> mas o detalhe crucial é que _ AS 'LOCAL REFERENCES' __SÓ PODEM __ SER USADAS DE DENTRO DE SEU 
+
+
+TEMPLATE,
+
+E NUNCA 
+
+_ LÁ DE DENTRO DO SEU 'app.component.ts'....
+
+
+
+
+
+
+
+
+
+
+
+
+----------->>>>>>>>> OK.... É SÓ NECESSÁRIO ESCREVER 
+
+
+
+
+ESSAS REFERENCES _ DE DENTRO __ DE NOSSOS TEMPLATES....
+
+
+
+
+
+
+
+
+--> é claro que temos aquele method de 'onAddServer()"
+
+SENDO CHAMADO AQUI,
+
+
+
+
+
+
+e isso é TECNICAMENTE UMA 'INFRAÇÃO' das regras (pq 
+
+
+
+estamos usando UMA LOCAL REFERENCE COM UM _ CÓDIGO TYPESCRIPT) ---> mas como 
+
+
+
+esse código está sendo executado 
+
+
+DENTRO DE NOSSO TEMPLAET,
+
+
+ISSO É ACEITO/FUNCIONA....
+
+
+
+
+
+
+
+
+
+---> E ESSA É UMA __ MANEIRA_ VÁLIDA __ DE COMO PODEMOS _ PASSAR 
+
+O 
+
+VALUE 
+
+
+DE ALGUM ELEMENTO/DENTRO DE ALGUM ELEMENTO 
+
+
+
+
+
+
+AO __ NOSSO CÓDIGO TYPESCRIPT....
+
+
+
+
+
+
+
+
+
+
+
+
+-> ISSO PQ AGORA, A PARTIR DESSE SEND DE 'serverCreated',
+
+
+dessa data aí,
+
+
+
+
+AO METHOD DE 
+
+
+'onAddServer()',
+
+que ficou tipo assim:
+
+
+
+
+
+
+    <button class="btn btn-primary" (click)="onAddServer(serverNameInput)">Add Server</button>,
+
+
+
+
+
+
+
+
+    precisamos 
+
+
+
+
+
+    DEIXAR O METHOD DE 'onAddServer'
+
+
+    COMO 'EXPECTING' 
+
+
+que 
+
+SERÁ ENVIADO UM PARâMETRO DE 'serverCreated',
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+  onAddServer(nameInput: Event) {
+    // this.serverElements.push({ ///este código não funcionará, pois esse array ficou lá em 'app.element.ts'...
+    //   type: 'server',
+    //   name: this.newServerName,
+    //   content: this.newServerContent,
+    // });
+
+    this.serverCreated.emit(
+      ///usamos esse method que existe DENTRO DE CADA 'eventEmitter'.. --> esse method faz o 'emit' de um NOVO EVENT do type que vocÊ definiu em '<>'....
+
+      {
+        serverName: this.newServerName,
+        serverContent: this.newServerContent,
+      }
+    );
+  }
+
+
+
+----------------------------
+
+
+
+
+
+
+
+
+
+-->  o proefssor faz um CONSOLE.LOG DE 
+
+
+
+'nameInput'
+ 
+
+
+
+
+
+ para entendermos o que recebemos a partir 
+
+
+ dessa 'local reference' 
+
+
+
+
+
+
+
+ ,
+
+ e para ver o que 'onAddServer'
+
+ ESTÁ RECEBENOD...
+
+
+
+
+
+
+
+
+
+
+ -> isso aqui aparce no console.log:
+
+
+
+
+
+
+<input _ngcontent-did-c43 type='text' class='form-control'
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK, ISSO QUER DIZER QUE ACABAMOS FAZENDO 'GET' DO ELEMENTO INPUT EM SI...
+
+
+
+
+
+
+
+
+
+
+
+
+------- ok, temos esse eleemnt,
+
+
+E É ISSO QUE A LOCAL REFERENCE NOS DÁ,
+O 
+
+
+ELEMENTO COM TODAS AS SUAS PROPRIEDADES...
+
+
+
+
+
+
+
+
+
+-------> É POR ISSO QUE ESCREVEMOS 
+
+'nameInput.value',
+
+para ver se conseguimos pegar o VALUE DESSE INPUT, que deve ter sido submittado...
+
+
+
+
+
+
+
+
+
+
+FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+import { Output } from '@angular/core';
+
+@Component({
+  selector: 'app-server-cockpit',
+  templateUrl: './server-cockpit.component.html',
+  styleUrls: ['./server-cockpit.component.css'],
+})
+export class ServerCockpitComponent implements OnInit {
+  newServerContent: string = '';  ///usado com TWOWAYBINDING em 'server-cockpit.element.html', naquele trecho de [(ngModel)]="newServerName", no input field...
+  newServerName: string = '';
+
+  // @Output() serverCreated = new EventEmitter<{ ///sem o uso de ALIAS para o nosso custom event.... (apelido)
+    @Output('serverCreated2') serverCreated = new EventEmitter<{  ////__ COM___ O USO DE ALIAS PARA NOSSO CUSTOM EVENT que definimos aqui (apelido, será de 'serverCreated2')
+    serverName: string;
+    serverContent: string;
+  }>(); ///é o completo inverso de '@Input', pq é usado para TRANSMITIR NOSSA DATA obtida em 1 CHILD COMPONENT ("cockpit") PARA__ OS NOSSOS PARENT COMPONENTS (o component 'app', nesse caso, que precisa da DATA obtida nos inputs de 'cockpit' para CONSEGUIR ADICIONAR UM NOVO SERVER no array de 'servers' que possui)....
+
+  // @Output() blueprintCreated = new EventEmitter<{ ///código SEM O ASSIGN DE ALIAS AO NOSSO 'CUSTOM EVENT'
+  @Output('blueprintCreated2') blueprintCreated = new EventEmitter<{ ////código COM O ASSIGN DE ALIAS (apelido, aquele 'blueprintCreated2') ao nosso CUSTOM EVENT....
+    blueprintName: string;
+    blueprintContent: string;
+  }>(); ///DENTRO DOS '<>' (PQ EVENTEMITTER É UM GENERIC TYPE) você simplesmente define o TIPO DE DATA QUE VOCÊ VAI EMTITR POR MEIO DESSA PROPRIEDADE...
+  ///vamos querer emitir o event type CUSTOM de {}, um objeto contendo a DATA QUE DESEJAMOS USAR lá em 'onServerAdded()'...
+  ////vocÊ deve acrescentar '()' ao final, para _ CHAMAR O CONSTRUCTOR DE 'EventEmitter', que agora ficará armazenado nessa property...
+
+  ///o '@Output()' também é necessário, pois é ele que vai nos deixar 'EMIT' esses events (emittados por meio desses eventEmitters) para FORA_ DE NOSSO COMPONENT 'server-cockpit'...
+
+  constructor() {}
+
+  ngOnInit(): void {}
+
+  onAddServer(serverCreated: any) {
+    // this.serverElements.push({ ///este código não funcionará, pois esse array ficou lá em 'app.element.ts'...
+    //   type: 'server',
+    //   name: this.newServerName,
+    //   content: this.newServerContent,
+    // });
+
+    console.log(serverCreated)
+    console.log(serverCreated.value)
+
+    this.serverCreated.emit(
+      ///usamos esse method que existe DENTRO DE CADA 'eventEmitter'.. --> esse method faz o 'emit' de um NOVO EVENT do type que vocÊ definiu em '<>'....
+
+      {
+        serverName: this.newServerName,
+        serverContent: this.newServerContent,
+      }
+    );
+  }
+
+  onAddBlueprint(serverCreated: any) {
+    // this.serverElements.push({
+    //   type: 'blueprint',
+    //   name: this.newServerName,
+    //   content: this.newServerContent,
+    // });
+
+    console.log(serverCreated.value)
+
+    this.blueprintCreated.emit({
+      blueprintName: this.newServerName,
+      blueprintContent: this.newServerContent,
+    });
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> isso deu certo, na verdaed.....
+
+
+
+
+
+
+
+
+
+
+-------> SABEMOS QUE UM INPUT ELEMENT TEM UM 'VALUE',
+
+
+e é por isso que isso funciona... -------> É POR ISSO QUE 
+
+
+
+
+
+ACESSAMOS 
+
+
+
+'nameInput.value'... --> é claro que ISSO, A EXISTÊNCIA DE UM 'VALUE',
+
+
+
+
+
+DEPENDE _ DE EM QUE 
+
+
+
+ELEMENT VOCê COLOCOU SUA 'LOCAL REFERENCE' (pq exsitem mtos e mtos tipos diferentes de property)....
+
+
+
+
+
+
+
+
+
+--> OK... MAS AGORA JÁ ESTAMOS CONSEGUINDO _ ACESSAR __ ESSE  VALOR LA´EM 
+'cockpit',
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+import { Output } from '@angular/core';
+
+@Component({
+  selector: 'app-server-cockpit',
+  templateUrl: './server-cockpit.component.html',
+  styleUrls: ['./server-cockpit.component.css'],
+})
+export class ServerCockpitComponent implements OnInit {
+  newServerContent: string = '';  ///usado com TWOWAYBINDING em 'server-cockpit.element.html', naquele trecho de [(ngModel)]="newServerName", no input field...
+  newServerName: string = '';
+
+  // @Output() serverCreated = new EventEmitter<{ ///sem o uso de ALIAS para o nosso custom event.... (apelido)
+    @Output('serverCreated2') serverCreated = new EventEmitter<{  ////__ COM___ O USO DE ALIAS PARA NOSSO CUSTOM EVENT que definimos aqui (apelido, será de 'serverCreated2')
+    serverName: string;
+    serverContent: string;
+  }>(); ///é o completo inverso de '@Input', pq é usado para TRANSMITIR NOSSA DATA obtida em 1 CHILD COMPONENT ("cockpit") PARA__ OS NOSSOS PARENT COMPONENTS (o component 'app', nesse caso, que precisa da DATA obtida nos inputs de 'cockpit' para CONSEGUIR ADICIONAR UM NOVO SERVER no array de 'servers' que possui)....
+
+  // @Output() blueprintCreated = new EventEmitter<{ ///código SEM O ASSIGN DE ALIAS AO NOSSO 'CUSTOM EVENT'
+  @Output('blueprintCreated2') blueprintCreated = new EventEmitter<{ ////código COM O ASSIGN DE ALIAS (apelido, aquele 'blueprintCreated2') ao nosso CUSTOM EVENT....
+    blueprintName: string;
+    blueprintContent: string;
+  }>(); ///DENTRO DOS '<>' (PQ EVENTEMITTER É UM GENERIC TYPE) você simplesmente define o TIPO DE DATA QUE VOCÊ VAI EMTITR POR MEIO DESSA PROPRIEDADE...
+  ///vamos querer emitir o event type CUSTOM de {}, um objeto contendo a DATA QUE DESEJAMOS USAR lá em 'onServerAdded()'...
+  ////vocÊ deve acrescentar '()' ao final, para _ CHAMAR O CONSTRUCTOR DE 'EventEmitter', que agora ficará armazenado nessa property...
+
+  ///o '@Output()' também é necessário, pois é ele que vai nos deixar 'EMIT' esses events (emittados por meio desses eventEmitters) para FORA_ DE NOSSO COMPONENT 'server-cockpit'...
+
+  constructor() {}
+
+  ngOnInit(): void {}
+
+  onAddServer(serverCreated: any) {
+    // this.serverElements.push({ ///este código não funcionará, pois esse array ficou lá em 'app.element.ts'...
+    //   type: 'server',
+    //   name: this.newServerName,
+    //   content: this.newServerContent,
+    // });
+
+    console.log(serverCreated)
+    console.log(serverCreated.value)
+
+    this.serverCreated.emit(
+      ///usamos esse method que existe DENTRO DE CADA 'eventEmitter'.. --> esse method faz o 'emit' de um NOVO EVENT do type que vocÊ definiu em '<>'....
+
+      {
+        serverName: this.newServerName,
+        serverContent: this.newServerContent,
+      }
+    );
+  }
+
+  onAddBlueprint(serverCreated: any) {
+    // this.serverElements.push({
+    //   type: 'blueprint',
+    //   name: this.newServerName,
+    //   content: this.newServerContent,
+    // });
+
+    console.log(serverCreated.value)
+
+    this.blueprintCreated.emit({
+      blueprintName: this.newServerName,
+      blueprintContent: this.newServerContent,
+    });
+  }
+}
+
+
+
+
+
+
+
+
+---> ESSAS SÃO AS LOCAL REFERENCES... -> É UMA FEATURE MT BOA PARA 
+
+
+__ CONSEGUIR ACCESS A ALGUNS ELEMENTS NO SEU TEMPLATE E AÍ OU:
+
+
+1) USAR ESSA REFERENCE DIRETAMENTE NO TEMPLATE  
+
+(
+    escrever algo como  {{serverNameInput.value}}
+)
+
+
+
+
+
+
+2) OU, ENTÃO, FAZER COMO FIZEMOS, 
+
+
+'PASS YOUR ELEMENT ALONG', 
+
+passar ele como parâmetro de ALGUM METHOD de nosso arquivo '.ts',
+
+como 
+
+fizemos com 
+
+
+'onAddServer(serverNameInput)'...  -> aí usamos o VALUE que acabou 
+
+sendo inputtado/colocado dentro desse element...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> COM ESSA DATA 'BEING PASSED',
+
+
+
+NÓS PODEMOS 
+
+
+
+
+
+
+
+EDITAR O CÓDIGO DE 'onAddServer'
+
+PARA que funcione com 
+
+
+esse input 
+
+
+
+
+especial de 'local reference':
+
+
+
+
+
+
+
+
+
+
+
+onAddServer(nameInput: HTMLInputElement) {
+    this.serverCreated.emit(
+        {
+            serverName: nameInput.value,
+            serverContent: this.newServerContent 
+        }
+    )
+}
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+  onAddServer(nameInput: any) {
+    // this.serverElements.push({ ///este código não funcionará, pois esse array ficou lá em 'app.element.ts'...
+    //   type: 'server',
+    //   name: this.newServerName,
+    //   content: this.newServerContent,
+    // });
+
+    console.log(nameInput)
+    console.log(nameInput.value)
+
+    this.serverCreated.emit(
+      ///usamos esse method que existe DENTRO DE CADA 'eventEmitter'.. --> esse method faz o 'emit' de um NOVO EVENT do type que vocÊ definiu em '<>'....
+
+      {
+        // serverName: this.newServerName,
+        serverName: nameInput.value,
+        serverContent: this.newServerContent,
+      }
+    );
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+--> O profesor tem certezaa de que 
+
+o 
+
+
+type será um 'HTMLInputElement',
+
+por isso ele escreve assim:
+
+
+
+
+
+
+onAddServer(nameInput: HTMLInputElement) {
+    this.serverCreated.emit(
+        {
+            serverName: nameInput.value,
+            serverContent: this.newServerContent 
+        }
+    )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK... SABEMOS QUE ESSA PROPRIEDADE DE 'value' existe dentro desse object..
+
+
+
+
+
+
+
+
+----> O MESMO OCORRE COM 'addBlueprint' .. ---> 
+
+
+
+
+
+
+
+
+
+
+
+
+PROFESSOR COLOCA UM NOME BEM PARECIDO COM O NOSSO...
+
+
+
+
+
+
+eX:
+
+
+
+
+
+
+
+
+
+
+
+
+onAddBlueprint(nameInput: HTMLInputElement) {
+    this.blueprintCreated.emit(
+        {
+            serverName: nameInput.value, 
+            serverContent: this.newServerContent
+
+        }
+    )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO COMPLETO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+import { Output } from '@angular/core';
+
+@Component({
+  selector: 'app-server-cockpit',
+  templateUrl: './server-cockpit.component.html',
+  styleUrls: ['./server-cockpit.component.css'],
+})
+export class ServerCockpitComponent implements OnInit {
+  newServerContent: string = '';  ///usado com TWOWAYBINDING em 'server-cockpit.element.html', naquele trecho de [(ngModel)]="newServerName", no input field...
+  // newServerName: string = '';  ////trocamos isso por 'LOCAL REFERENCES' lá no template (mas esse approach de twoway databinding também funcionaria..)
+
+  // @Output() serverCreated = new EventEmitter<{ ///sem o uso de ALIAS para o nosso custom event.... (apelido)
+    @Output('serverCreated2') serverCreated = new EventEmitter<{  ////__ COM___ O USO DE ALIAS PARA NOSSO CUSTOM EVENT que definimos aqui (apelido, será de 'serverCreated2')
+    serverName: string;
+    serverContent: string;
+  }>(); ///é o completo inverso de '@Input', pq é usado para TRANSMITIR NOSSA DATA obtida em 1 CHILD COMPONENT ("cockpit") PARA__ OS NOSSOS PARENT COMPONENTS (o component 'app', nesse caso, que precisa da DATA obtida nos inputs de 'cockpit' para CONSEGUIR ADICIONAR UM NOVO SERVER no array de 'servers' que possui)....
+
+  // @Output() blueprintCreated = new EventEmitter<{ ///código SEM O ASSIGN DE ALIAS AO NOSSO 'CUSTOM EVENT'
+  @Output('blueprintCreated2') blueprintCreated = new EventEmitter<{ ////código COM O ASSIGN DE ALIAS (apelido, aquele 'blueprintCreated2') ao nosso CUSTOM EVENT....
+    blueprintName: string;
+    blueprintContent: string;
+  }>(); ///DENTRO DOS '<>' (PQ EVENTEMITTER É UM GENERIC TYPE) você simplesmente define o TIPO DE DATA QUE VOCÊ VAI EMTITR POR MEIO DESSA PROPRIEDADE...
+  ///vamos querer emitir o event type CUSTOM de {}, um objeto contendo a DATA QUE DESEJAMOS USAR lá em 'onServerAdded()'...
+  ////vocÊ deve acrescentar '()' ao final, para _ CHAMAR O CONSTRUCTOR DE 'EventEmitter', que agora ficará armazenado nessa property...
+
+  ///o '@Output()' também é necessário, pois é ele que vai nos deixar 'EMIT' esses events (emittados por meio desses eventEmitters) para FORA_ DE NOSSO COMPONENT 'server-cockpit'...
+
+  constructor() {}
+
+  ngOnInit(): void {}
+
+  onAddServer(nameInput: any) {
+    // this.serverElements.push({ ///este código não funcionará, pois esse array ficou lá em 'app.element.ts'...
+    //   type: 'server',
+    //   name: this.newServerName,
+    //   content: this.newServerContent,
+    // });
+
+    console.log(nameInput)
+    console.log(nameInput.value)
+
+    this.serverCreated.emit(
+      ///usamos esse method que existe DENTRO DE CADA 'eventEmitter'.. --> esse method faz o 'emit' de um NOVO EVENT do type que vocÊ definiu em '<>'....
+
+      {
+        // serverName: this.newServerName,
+        serverName: nameInput.value,
+        serverContent: this.newServerContent,
+      }
+    );
+  }
+
+  onAddBlueprint(nameInput: HTMLInputElement) {
+    // this.serverElements.push({
+    //   type: 'blueprint',
+    //   name: this.newServerName,
+    //   content: this.newServerContent,
+    // });
+
+    console.log(nameInput.value)
+
+    this.blueprintCreated.emit({
+      blueprintName: nameInput.value,
+      blueprintContent: this.newServerContent,
+    });
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <p>Add new Servers or Blueprints!</p>
+    <label>Server Name</label>
+    <!-- <input type="text" class="form-control" [(ngModel)]="newServerName" /> CÓDIGO COM TWOWAYBINDING em 'newServerName' -->
+    
+    
+    <!-- esta versão do código usa __ LOCAL REFERENCES (#serverNameInput), que são referenciadas mais abaixo, no call de 'onAddServer()' e afins....  (pq local references só podem ser chamadas no próprio TEMPLATE em que são criadas) -->
+    <input type="text" 
+    class="form-control"
+    #serverNameInput
+    /> <!-- versão do mesmo CÓDIGO, mas SEM TWO WAY BINDING, pq é desnecessário nesse caso específico (não queremos/precisamos displayar a coisa que estamos escrevendo na tela, diretamente enquanto escrevemos)-->
+    
+    <label>Server Content</label>
+    <!-- <input type="text" class="form-control" [(ngModel)]="newServerContent" /> CÓDIGO COM TWOWAYBINDING em 'newServerContent' -->
+
+
+    <p>{{serverNameInput.value}}</p>
+    
+    <input type="text" 
+    class="form-control" 
+    [(ngModel)]="newServerContent"
+     /> 
+    <br />
+    <button class="btn btn-primary" (click)="onAddServer(serverNameInput)">Add Server</button>
+    <button class="btn btn-primary" (click)="onAddBlueprint(serverNameInput)">
+      Add Server Blueprint
+    </button>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> OK, ESSAS FORAM AS 'LOCAL REFERENCES'....
+
+
+

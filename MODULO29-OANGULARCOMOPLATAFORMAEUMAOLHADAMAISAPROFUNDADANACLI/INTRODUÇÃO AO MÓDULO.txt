@@ -1,0 +1,252 @@
+
+
+
+
+
+
+
+
+
+
+
+
+OK... AO LONGO DESSE CURSO,
+
+
+APRENDEMOS UM MONTE SOBRE ANGULAR;
+
+
+
+SOBRE A FRAMEWORK,
+
+
+SOBRE COMO CRIAR APPS COM ELE,
+
+
+E QUE FEATURES INCRÍVEIS ELE INCLUI...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O QUE É PARTE DO ANGULAR, (e você poderia chamar o angular de PLATAFORMA, E NÃO SÓ DE FRAMEWORK)
+
+
+
+
+
+
+É 
+
+
+
+A 
+
+CLI E TODA A INFRAESTRUTURA 
+
+QUE 
+
+ELE 
+TE DÁ 
+
+
+EM VOLTA DO 
+
+
+SEU PROJETO, DO SEU CÓDIGO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO PQ O CÓDIGO É O 'HEART',
+
+E O FRAMEWORK 
+
+
+NOS DEIXA 
+
+
+CONSTRUIR APPS incríveis,
+
+
+
+
+
+MAS 
+
+
+
+
+COM O CLI E O PROJECT QUE É CONFIGURADO,
+
+
+
+
+E UM MONTE DE 
+
+
+FERRAMENTAS ÚTEIS 
+
+
+
+AO REDOR DO CLI E DO PROJECT,
+
+
+
+VOCÊ 
+
+ACTUALLY 
+
+
+
+PODE TER TAMBÉM UM 'GREAT TIME'
+
+
+
+BUILDANDO,
+
+PUBLISHING E DEPLOYING 
+
+
+SEUS
+ 
+
+
+ ANGULAR PROJECTS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> É ISSO QUE VEREMOS NESSE MÓDULO...
+
+
+
+
+
+
+
+
+
+
+ --> VEREMOS, EM DETALHES:
+
+
+
+
+
+ 1) OS ANGULAR PROJECTS E OS DIFERENTES PROJECT CONFIGS possíveis (aí podemos entender o que REALMENTE PODEMOS FAZER nos projects, e qual o seu papel )
+
+
+
+
+
+
+
+
+
+
+
+ 2) VEREMOS COMO PODEMOS 'CREATE' E 'MANAGE' PROJECTS,
+
+
+
+ E TAMBÉM VÁRIAS COISAS __ DENTRO _DESSES PROJECTS..
+
+
+
+
+
+
+
+
+
+
+
+ 3) VEREMOS ALGO QUE É CHAMADO DE 'SCHEMATICS' E 'BUILDERS' --> É UM SET DE FEATURES 
+
+
+
+ QUE 
+
+ VEM JUNTO COM OS ANGULAR PROJECTS E COM O ANGULAR CLI..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 4) VEREMOS 'PROJECTS', 'APPS' E 'LIBRARIES' --> 
+
+
+
+
+
+
+
+
+ VEREMOS COMO CONSTRUIR LIBRARIES ANGULAR ... (
+
+
+    pq podemos 
+
+    CONSTRUIR LIBRARIES PARA SEREM USADAS EM MÚLTIPLOS 
+
+    ANGULAR APPS..
+ )
+
+
+
+
+
+
+
+ 5) TAMBÉM VEREMOS DEPLOYMENT,
+  
+  BROWSER SUPPORT,
+
+
+  E MAIS...

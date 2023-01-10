@@ -1,0 +1,969 @@
+
+
+
+
+
+
+
+
+
+
+nossas error messages, até agora,
+
+estão bem GENÉRICAS:
+
+
+
+
+
+    if (this.isSignup) {
+      this.authService.onCreateAccount(userData).subscribe(
+        (responseData) => {
+          this.isLoading = false;
+          // form.reset();
+          this.router.navigate(['/auth']);
+        },
+
+        (errorData) => {
+          this.isLoading = false;
+
+          if (errorData.error.error.message === 'EMAIL_EXISTS') {
+            // confirm(
+            //   'Entered email already exists, please create an account with a different email.'
+            // );
+
+            this.error = 'Entered email already exists, please create an account with a different email.'
+          } else {
+
+            this.error = errorData.error.error.message
+          }
+          // console.log(errorData);
+        }
+      );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ---> SE INSPECIONARMOS 
+
+
+
+
+
+      O OBJECT 'HTTPErrorResponse',
+
+
+
+
+      veremos que 
+
+
+      TEMOS UM FIELD DE 'ERROR'
+
+
+      ,
+
+
+      E DENTRO DELE OUTRO FIELD 'error'. --> 
+
+
+
+      DENTOR DESSE FIELD 
+
+
+
+      TEMOS 'errors',
+
+
+
+
+     
+     
+     E FINALMENTE, 
+
+     DENTRO DESSA PROPRIEDAED,
+
+
+
+
+     TEREMOS 'message'..
+
+
+
+
+
+
+
+     --> SE CHECARMOS OS DOCS DA API DE AUTHENTICATION DO FIREBSAE,
+
+
+
+
+
+
+     VEREMOS QUE EXISTEM ALGUMAS MESSAGES DE ERROR,
+
+     COMO 
+
+
+
+     'EMAIL_EXISTS'
+
+
+
+
+     'OPERATION_NOT_ALLOWED' 
+
+
+
+
+
+
+
+
+
+     e 
+
+
+     'TOO_MANY_ATTEMPTS_TRY_LATER'
+
+
+
+
+
+
+
+
+     -> NO FINAL DAS CONTAS,
+
+
+     PRECISAMOS _ FAZER 'CHECK' POR ESSES CODES PARA ENTÃO FAZER _ OUTPUT _ 
+
+
+     DE 
+
+
+     MENSAGENS DE ERROR MAIS ÚTEIS...
+
+
+
+
+
+
+
+
+
+     -> FOI EXATAMENTE ISSO QUE EU HAVIA FEITO ANTERIORMENTE:
+
+
+
+
+
+
+
+
+            if (errorData.error.error.message === 'EMAIL_EXISTS') {
+            // confirm(
+            //   'Entered email already exists, please create an account with a different email.'
+            // );
+
+            this.error = 'Entered email already exists, please create an account with a different email.'
+          }
+
+
+
+
+
+
+
+
+
+
+          ----------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+          ---> MAS A VERSAÕ DO PROFESSOR DO CÓDIGO USOU 
+
+
+
+
+
+          UM SWTICH-CASE 
+
+          STATEMENT,
+
+
+          tipo 
+
+
+
+
+
+
+
+
+          switch(errorRes.error.error.message) {
+
+              case: 'EMAIL_EXISTS':
+                this.error = 'This email exists already.';
+
+          }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          ----> ok...
+
+
+
+
+          SE SALVARMOS ISSO, VEREMOS QUE O CÓDIGO FUNCIONARÁ..
+
+
+
+
+
+
+
+
+
+
+          ---> E ISSO FUNCIONARIA, SIM,
+
+
+
+          MAS _ FAZER_ HANDLe_ DE TODOS OS CASES 
+
+
+
+          NESSE COMPONET AÍ 
+
+
+
+
+          NÃO É NECESSARIAMENTE A MELHOR FORMA 
+
+          DE 
+          FAZER ESSE VALIDATION ----> 
+
+
+
+
+
+
+
+
+
+
+          ISSO PQ _ ACABAMOS _ MOVENDO _ LÓGICA DEMAIS PARA DENTRO 
+
+
+
+            DO COMPONENT,
+
+
+            COMPONENT QUE DEVE __ se concentRAR_ PRIMARIAMENTE 
+
+            NO UPDATE DA UI,
+
+
+
+
+
+
+
+
+
+E NAÕ SOBRE O 'HANDLE DA RESPONSE CORRETAMENTE '------>  É POR ISSO QUE 
+
+ESSE 
+
+
+
+
+USE-CASE
+
+
+
+
+QUASE QUE IMPLORA PELO USO DE UM 'rxjs operator',
+
+
+
+
+
+UM OPERATOR_ QUE 
+
+NOS 
+
+PERMITA 
+FAZER 
+O 
+
+'HANDLE'
+
+
+
+
+de errors aqui...
+
+
+
+
+
+
+
+----> PARA ISSO,
+ 
+
+ O 
+
+
+ OPERATOR QUE 
+
+ UTILIZAREMOS __ PROVAVELMENTE __ 
+
+
+
+
+
+ SERÁ 
+ 'catchError()'...
+
+
+
+
+
+
+
+
+
+
+
+
+ -> O QUE ESSE  OPERATOR FARÁ, NO CASO,
+
+
+
+
+
+
+
+
+
+ É _ ALTERAR_ A CHAIN DE NOSSO OBSERVABLE  HTTP DE 'signup',
+
+
+
+
+
+
+
+ TUDO POR MEIO DE 'PIPE'....
+
+
+
+
+
+
+
+
+
+
+
+ ---> PARA ISSO,
+
+ BASTA FAZERMOS 'pipe()" 
+
+
+ NOS 
+
+
+ OBSERVABLES 
+
+
+
+ de 
+
+ 'return this.http.post<AuthResponseData>('''código de signup''')
+
+
+
+
+
+ e 
+
+
+
+
+
+
+ return this.http.post<AuthResponseData>('''código de login'')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> OK..
+
+
+
+
+
+ E O OPERATOR QUE USAREMOS REALMENTE SERÁ O 'CATCHeRROR',..,
+
+
+
+
+
+
+
+
+
+
+
+
+ que é uma package que 
+
+
+ PRECISA SER IMPORTADA LÁ DE 
+
+ 'rxjs'..
+
+
+
+
+
+
+
+
+
+
+ -----> CERTO....
+
+
+
+
+
+
+
+
+ ---> MAS VAMOS PRECISAR DE MAIS UMA COISINHA PARA FAZER O ERROR HANDLING ADEQUADAMENTE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PARA ISSO,
+
+ESCREVEMOS ASSIM, LÁ EM 'auth.service.ts':
+
+
+
+
+
+
+
+
+
+
+
+import { catchError  } from 'rxjs'; //ESSE OPERATOR É MELHOR, FAZ O HANDLE DE OBJECTS DE 'ERROR' (error responses dos nossos http requests) mais adequadamente..
+import { throwError } from 'rxjs';    ////esse operator funciona conjuntamente com 'catchError'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR EXPLICA QUE VAMOS QUERER 
+
+
+
+USAR ESSE 'catchError',
+
+
+
+MAS ELE PREICSA DO 'throwError'
+
+
+
+também,
+
+
+
+
+
+
+
+QUE É 
+
+UMA FUNCTION QUE CRIA UM 'NOVO OBSERVABLE, QUE WRAPPA UM ERROR' --> 
+
+
+
+
+ISSO PQ 
+
+
+
+
+O 
+
+RXJS SEMPRE PRECISA RETORNAR UM OBSERVABLE EM 'pipe',
+
+
+
+
+e 
+VAMOS CONSEGUIR ESSE 
+
+OBSERVABLE 
+
+
+POR MEIO 
+
+
+DE 
+
+
+'throwError'
+
+
+...
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR/NÓS VAMOS USAR ESSE 'catchError'
+
+
+
+APENAS PARA 
+
+_ 
+
+
+FICAR COM MENOS LÓGICA 
+
+ESCRITA DIRETAMENTE NOS NOSSOS COMPONENTS,
+
+
+
+
+NAQUELE SEGUNDO CASE DO SUBSCRIBE (de '(error) => {this.error = error} ' )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> É EXATAMENTE POR ISSO QUE ESCREVEMOS ALGO COMO ISTO, INICIALMENTE:
+
+
+
+
+
+
+   return this.http
+      .post<AuthResponseData>(
+        // 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDJgmB6dgifUuTeYPm1MLeJ7Jh93spUKtg',  ///VERSÃO _ DUMMY__ (sem authentication rules no firebase)
+        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBK3AXsu9Gn0fqLmA0zOdUAknDM48Nwk_o',  ////VERSÃO COM AUTHENTICATE, DEPLOY
+
+        authData,
+        {
+          headers: requestHeaders,
+        }
+      )
+      .pipe( 
+        catchError( //vamos usar esse operator para MANIPULAR NOSSAS 'ERROR RESPONSES', QUANDO OCORREREM..
+          (error) => {
+
+
+            return throwError(() => error)
+          }
+        )
+      )
+
+
+
+
+
+
+
+
+
+
+
+      -> mas é claro que nosso código vai ficar diferente disso, pq esse é só o return normal do 
+
+
+      object de erro 
+
+
+    .
+
+
+
+
+
+
+
+    -> o professor diz que devemos escrever algo assim:
+
+
+
+
+
+
+
+
+
+    .pipe(
+        catchError(
+            (errorRes) => {
+
+                let errorMessage = 'An unknown error occurred!';
+
+
+                switch(errorRes.error.error.message) {
+                    case 'EMAIL_EXISTS':
+                        errorMessage = 'This email already exists.';
+                }
+
+                    return throwError(() => errorMessage)
+            }
+        )
+    )
+
+
+
+
+
+
+
+
+
+    ---> certo... mas isso faz o typescript apitar,
+
+    reclamar..
+
+
+
+
+
+
+    ---> isso pq 'não há garantia de que 
+
+
+    temos essa error key,
+
+    nem essa nested error key'',
+
+
+    POR ISSO O PROFESSOR ADICIONA UM IF CHECK DE 
+
+
+
+
+
+
+
+
+
+    if (!errorRes.error || !errorRes.error.error) {
+
+
+          return throwError(() => errorMessage); /////vai dar throw da message de 'An unknown error occurred!'
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    O CÓDIGO COMPLETO VAI FICANDO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+          .pipe(
+        catchError(
+          //vamos usar esse operator para MANIPULAR NOSSAS 'ERROR RESPONSES', QUANDO OCORREREM..
+          (errorRes) => {
+            let errorMessage = 'An unknown error has occured.';
+
+            if (!errorRes.error || !errorRes.error.error) {
+              return throwError(() => errorMessage); /////vai dar throw da message de 'An unknown error occurred!'
+            }
+
+            switch (errorRes.error.error.message) {
+              case 'EMAIL_EXISTS':
+                errorMessage = 'This email already exists.';
+            }
+
+            return throwError(() => errorMessage);
+          }
+        )
+      );
+
+
+
+
+
+
+
+--------------------------------
+
+
+
+
+
+
+
+
+
+
+
+OK... SÓ TEMOS 1 ÚNICO CASE NESSE SWITCH STATEMENT,
+
+MAS 
+
+VAMOS 
+
+
+ADICIONAR MAIS, AO LONGO DO TEMPO..
+
+
+
+
+
+
+
+
+-> ok, agora daremos throw dessa 
+
+mensagem de erro específica..
+
+
+
+
+
+
+
+
+
+
+--->  A DIRETA CONSEQUÊNCIA DO THROW DESSA MENSAGEM DE ERRO É QUE 
+
+
+
+lá em 
+'auth.component.ts'
+
+
+VAMOS RETORNAR APENAS A 'errorMessage'
+
+
+SEM PRECISAR FAZER TODA AQUELA LENGA LENGA DO CÓDIGO DE ACCESS DE 
+
+'error.error.errors.message'...
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+    if (this.isSignup) {
+      this.authService.onCreateAccount(userData).subscribe(
+        (responseData) => {
+          this.isLoading = false;
+          // form.reset();
+          this.router.navigate(['/auth']);
+        },
+
+        (errorMessage) => { ////ver código dos OPERATORS de nosso methods de auth... ( em que temos o throw de 'errorMessage' custom, com o uso de 'catchError' e 'throwError')...
+          this.isLoading = false;
+
+          this.error = errorMessage;   ///EIS O CÓDIGO EM QUESTÃO.
+
+
+
+
+
+
+
+
+          // if (errorData.error.error.message === 'EMAIL_EXISTS') { ///lógica similar foi outsourceada lá em 'auth.service.ts', para LIBERAR ESPAÇO NESSE COMPONNNET DE 'auth.component.ts'...
+          //   // confirm(
+          //   //   'Entered email already exists, please create an account with a different email.'
+          //   // );
+
+            // this.error = 'Entered email already exists, please create an account with a different email.'
+          // } else {
+
+            // this.error = errorData.error.error.message
+          // }
+          // console.log(errorData);
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TEREMOS O MESMO COMPORTAMNETO DE ANTES,
+
+MAS AGORA COM A LÓGICA POSICIONADA NO SERVICE DE 
+
+'auth.service.ts',
+
+
+
+
+
+
+
+
+
+QUE É O SERVICE EM QUE ESSA LÓGICA DEVE FICAR,
+
+
+TUDO 
+
+PARA QUE NOSSO COMPONENT FIQUE BEM MAIS 'LEAN'.

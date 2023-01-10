@@ -1,0 +1,46 @@
+
+
+
+
+
+
+
+
+
+
+-> AGORA QUE APRENDEMOS MAIS SOBRE COMPONENTS E DATABINDINGS,
+
+MAIS SOBRE A COMUNICAÇAÕ ENTRE COMPONENTS E 
+
+
+
+
+LIFECYCLES,
+
+
+
+PODEMOS APLICAR TUDO ISSO AO NOSSO PROJETO (fine-tune de nosso projeto)...
+
+
+
+
+
+OBJETIVOS:
+
+
+
+
+1) CONSEGUIR NAVEGAR ENTRE RECIPES E SHOPPING LIST (mas nossa solução de agora não será a final, ainda)...
+
+
+
+
+
+
+2) vamos poder selecionar recipes e as displayar na section de 'recipe details'....
+
+
+
+
+
+

@@ -1,0 +1,39 @@
+
+
+<!-- 
+
+
+<p
+
+[ngStyle]="{
+    
+    backgroundColor: 'red'
+}"
+
+
+>The Server Component with id {{serverId}} is {{serverStatus}}
+</p> -->
+
+
+
+
+
+
+
+
+<p
+
+[ngStyle]="{
+    
+    backgroundColor: getColor()
+}"
+
+
+[ngClass]="
+{
+    online: serverStatus === 'online'
+}
+"
+>The Server Component with id {{serverId}} is {{serverStatus}}
+</p>
+

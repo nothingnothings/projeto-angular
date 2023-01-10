@@ -1,0 +1,1427 @@
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK.. DEVEMOS VER O ASSIGNMENT DO PROFESSOR...
+
+
+
+
+
+
+
+
+
+
+--> no vídeo,
+
+temos:
+
+
+
+
+
+
+
+
+''optimize this app by adding a UsersService which manages the active and inactive users...
+
+
+Also add a CounterService which counts the number of active-> inactive 
+
+
+and 
+
+
+inactive-> active actions'''
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK...
+
+
+
+COMEÇO COM NG NEW,
+
+
+
+
+coloco o nome do PROJEto,
+
+tudo certinho....
+
+
+
+
+
+
+
+instalo o 
+
+
+
+bootstrap@3,
+
+
+
+tudo normal....
+
+
+
+
+
+
+
+preciso adicionar o bootstrap como 
+
+
+
+STYLE lá em 'angular.json',
+
+
+
+
+e também 
+
+
+
+preciso 
+
+
+
+
+
+
+colocar o 'strict' como false, lá em 'tsconfig.json'...
+
+
+
+
+
+
+
+
+
+
+--> além disso,
+
+preciso criar components de 
+
+
+
+
+'active-users.component.ts'
+
+
+
+
+e 
+
+
+'inactive-users.component.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+O COMPONENT 'APP' FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-md-8 col-md-offset-2">
+      <app-active-users
+        [users]="activeUsers"
+        (usersSetToInactive)="onSetToInactive($event)"
+      ></app-active-users>
+      <app-inactive-users
+        [users]="inactiveUsers"
+        (usersSetToActive)="onSetToActive($event)"
+      ></app-inactive-users>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> ok.... 
+
+
+
+
+
+precisamos OPTIMIZAR TODO CÓDIGO...
+
+
+
+
+
+
+
+
+--> falta o código 
+
+.ts 
+
+desse component,
+
+e também 
+
+dos outros 2 components (inactive e active users)....
+
+
+
+
+
+
+
+
+
+
+
+--> o código de 'inactive' e 'active':
+
+
+
+
+
+<h3>Active Users</h3>
+<ul class="list-group">
+  <li class="list-group-item" *ngFor="let user of users; let i = index">
+    {{ user }} | <a href="#" (click)="onSetToInactive(i)">Set to Inactive</a>
+  </li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> o código do professor é algo que só tenho o 'final',
+
+por isso tenho que consultar o vídeo....
+
+
+
+
+
+
+
+
+
+
+
+
+-> O CÓDIGO DE 'app.component.ts' é o seguinte:
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  activeUsers = ['Max', 'Anna'];
+  inactiveUsers = ['Chris', 'Manu'];
+
+  onSetToInactive(id: number) {
+    this.inactiveUsers.push(this.activeUsers[id]);
+    this.activeUsers.splice(id, 1);
+  }
+
+  onSetToActive(id: number) {
+    this.activeUsers.push(this.inactiveUsers[id]);
+    this.inactiveUsers.splice(id, 1);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK, E O CÓDIGO DO RESTO DOS COMPONENTS É:
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-inactive-users',
+  templateUrl: './inactive-users.component.html',
+  styleUrls: ['./inactive-users.component.css']
+})
+export class InactiveUsersComponent implements OnInit {
+
+
+    @Input() users: string[];
+    @Output() userSetToActive = new EventEmitter<number>();
+
+
+
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+
+  onSetToActive(id: number) {
+    this.userSetToActive.emit(id)
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+--> estou recebendo um error de pass de event...
+
+
+
+
+
+
+
+
+
+
+--> consertei, era um mistype...
+
+
+
+
+
+
+
+
+
+
+ok... --> agora vou fazer uma cópia desse projeto, para ter 'uma versão com uso de services',
+
+
+e 
+
+
+'uma versão sem uso de services'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok, mas o código é bem simples, não há mt o que pensar...
+
+
+
+
+
+
+
+--> tenho que criar aqueles 2 services lá,
+
+e então 
+
+
+
+ADICIONAR SUA INSTANCE AO 'app.component.ts'...
+
+
+
+
+
+
+
+
+
+''optimize this app by adding a UsersService which manages the active and inactive users...
+
+
+Also add a CounterService which counts the number of active-> inactive 
+
+
+and 
+
+
+inactive-> active actions'''
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> talvez seja necessário adicionar esses 2 
+
+
+services como providers de 'app.module.ts',
+
+
+
+pq 
+
+
+talvez aquele 'CounterService'
+
+
+
+__ VÁ __ DEPENDER__ DE 
+
+'UsersService'...
+ 
+
+ (ou vice-versa injetar o 'CounterService' lá no 'UsersService', para incrementar esse 'counter'...)
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+ CONSEGUI.... ACHO QUE 
+
+ AGORA SÓ FALTA COLOCAR UM DISPLAY DE 'counter' no meu código, para aí 
+
+ VER 
+
+
+
+ SE O COUNTER ESTA´FUNCIONANDO/FUNCIONA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ----> ok, mas isso é mais complicado do que o que vimos até agora....
+
+
+
+
+
+
+
+
+
+ -> o resto das funcionalidades está de acordo, só isso que está errado...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> CONSEGUI FAZER O COUNTER FUNCIONAR....
+
+
+
+
+
+
+
+
+ --> ERA UM PROBLEMA COM 'PRIMITIVE TYPES VS REFERENCE TYPES' (
+
+
+
+   eu estava acessando o __ VALOR_ de '0',
+
+   e não 
+
+   UM __ OBJETO _ QUE CONTINHA UMA PROPRIEDADE COM VALOR DE 0...
+
+
+
+ )
+
+
+
+
+
+
+
+
+
+
+ --> PARA CONSERTAR ESSE CÓDIGO,
+
+
+
+
+
+ 
+ TIVE DE CRIAR UM OBJETO 'counter'
+
+ lá em 'counter.service.ts',
+
+
+
+
+ um OBJETO QUE ENTÃO PASSOU A TER UMA PROPRIEDADE DE 'number',
+
+ que começava como '0'...
+
+
+
+
+
+ EX
+
+
+
+
+
+
+ export class CounterService {
+  // counter: number = 0;
+
+  counter: { value: number } = { value: 0 };
+}
+
+
+
+
+
+
+
+
+
+
+
+------> isso resolveu meu problema, pq aí os components de meu código passaram a referenciar 
+
+
+
+esse object aí,
+
+que sempre 
+é 
+O __ MESMO __ AO LONGO DO MEU APP...
+
+
+
+
+
+
+
+
+
+--> OK, AGORA DEVO ASSISTIR A AULA DO PROFESSOR, VER SE ELE FEZ A MESMA COISA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> o professor começa com um código exatamente igual ao meu...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ele escreve assim:
+
+
+
+
+
+
+
+
+
+
+
+export class UserService {
+
+
+
+  ativeUsers = ['Max', 'Anna'];
+    inactiveUsers = ['Chris', 'Manu'];
+
+
+
+
+  setToActive(id: number) {
+      this.activeUsers.push(this.inactiveUsers[id]);
+      this.inactiveUsers.splice(id, 1);
+  }
+
+
+
+  setToActive(id: number) {
+          this.inactiveUsers.push(this.activeUsers[id]);
+      this.activeUsers.splice(id, 1);
+  }
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+----------------
+
+
+
+
+
+
+
+
+
+
+
+OK.... ATÉ AGORA,
+
+
+
+
+
+
+
+
+
+
+TUDO CERTO...
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR FALA QUE 
+
+
+
+AGORA TEREMOS LIMPADO O COMPONENT DE 'app.component.html',
+
+
+
+PQ 
+
+
+AQUELES COMPONENTS de 'app-active-users' 
+
+
+
+e 
+
+'app-inactive-users'
+
+
+
+SERÃO CAPAZES DE 'CONNECT TO THE SERVICE' por conta própria...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR DIZ QUE DEVEMOS ESTABELECER ESSE SERVICE COMO UM 'PROVIDER'
+
+lá 
+
+
+
+
+
+no component de 'app.module.ts',
+
+PQ 
+
+VAMOS QUERER 
+
+
+
+INJETAR 1 
+
+
+
+DE NOSSOS 
+
+SERVICES DENTRO DO OUTRO....
+ 
+
+
+
+
+
+
+
+ (
+
+   MAS A VERSÃO DO PROFESSOR NÃO FAZ INJECT DE 1 SERVICE 
+
+
+   EM OUTRO SERVICE,
+
+
+
+   por isso ele não usa 
+
+
+   esse import e provide lá em 'app.module.ts'...
+
+
+
+
+
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> OK, LÁ EM 'inactiveUsers',
+
+
+ O PROFESSOR ESCREVE ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ constructor(private usersService: UserService) {}
+
+
+
+
+
+
+
+
+
+ --> OK, AÍ _ O PROFESSOR REMOVE, DE 'inactive-users',
+
+
+
+
+
+
+
+
+
+
+ TODO O CÓDIGO  DE 
+
+ '@Input'
+  
+
+
+  e 
+
+  'Output',
+
+
+  PQ 
+
+
+  NÃO VAMOS MAIS RECEBER NOSSOS USERS 'de fora' (ou seja,
+  
+  lá 
+  
+  
+  DO COMPONENT DE 'app.component.ts'),
+
+
+
+
+
+
+
+  POR ISSO REMOVEMOS TUDO ISSO..
+
+
+
+
+
+
+
+
+
+
+  FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+  import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { UsersService } from '../users.service';
+
+@Component({
+  selector: 'app-active-users',
+  templateUrl: './active-users.component.html',
+  styleUrls: ['./active-users.component.css'],
+})
+export class ActiveUsersComponent implements OnInit {
+  // @Output() userSetToInactive = new EventEmitter<number>();  //não precisamos disso, pq agora estamos dependendo dos SERVICEs para conseguir acesso ao array de 'users'...
+
+  // @Input() users: string[]; //não precisamos mais disso, pq agora receberemos esses 'users' LÁ DO SERVICE DE 'usersService'....
+
+  users: string[];
+
+  constructor(private usersService: UsersService) {}
+
+  ngOnInit(): void {
+    this.users = this.usersService.activeUsers;
+  }
+
+  onSetToInactive(id: number) {
+    // this.userSetToInactive.emit(id)
+    this.usersService.onSetToInactive(id);
+  }
+}
+
+
+
+
+
+
+
+
+
+E ASSIm:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { UsersService } from '../users.service';
+
+@Component({
+  selector: 'app-inactive-users',
+  templateUrl: './inactive-users.component.html',
+  styleUrls: ['./inactive-users.component.css'],
+})
+export class InactiveUsersComponent implements OnInit {
+  // @Input() users: string[]; //não precisamos mais disso, pq agora receberemos esses 'users' LÁ DO SERVICE DE 'usersService'....
+
+  users: string[];
+
+  // @Output() userSetToActive = new EventEmitter<number>(); ///não é necessário, com o uso de services...
+
+  constructor(private usersService: UsersService) {
+
+    this.users = usersService.inactiveUsers
+  }
+
+  ngOnInit(): void {}
+
+  onSetToActive(id: number) {
+    // console.log(id)
+    // this.userSetToActive.emit(id)
+    this.usersService.onSetToActive(id);
+    console.log(this.usersService.counter)
+  }
+}
+
+
+
+
+
+
+
+
+OK, MAS O NEGÓCIO ESTÁ FUNCIONANDO....
+
+
+
+
+
+
+(fizemos initialization work em 'ngOnInit',
+ 
+ que é o correto....)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ OK, O PROFESSOR SALVA TUDO E TESTA ISSO...
+
+
+
+
+
+
+
+
+
+
+ --> O NEGÓCIO FUNCIONA,
+
+
+ E TUDO ISSO É MT BOM ,
+ PQ AGORA FICAMOS COM UM CENTRAL SERVICE MAIS CLEAN...
+
+
+
+
+
+
+
+
+
+
+
+ --> a segunda tarefa é implementar o 'counter.service.ts'...
+
+
+
+
+
+
+
+
+
+
+
+ ----. DENTRO DESSA CLASS,
+
+
+
+
+
+ VAMOS QUERER SIMPLESMENTE 
+
+
+ escrever 
+
+
+ 'activeToInactiveCounter = 0;' 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> ok.... MAS AGORA O PROFESSOR FEZ ALGO DIFERENTE...
+
+
+
+
+
+
+
+
+
+
+ --> ELE COLOCOU UNS METHODS DE 'incrementActiveToInactive'
+
+
+ lá em 
+
+ 'counter.service.ts',
+
+
+
+
+
+
+
+
+
+
+
+
+ PARA QUE O CÓDIGO FIQUE ASSIM:
+
+
+
+
+
+
+
+ export class CounterService {
+
+
+   activeToInactiveCounter = 0;
+   inactiveToActiveCounter = 0;
+
+
+
+
+   incrementActiveToInactive() {
+     this.activeToInactiveCounter++;
+   }
+
+
+      incrementInactiveToActive() {
+     this.inactiveToActiveCounter++;
+   }
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ----> ok... aí o professor DECIDE __ USAR ESSES METHODS LÁ 
+
+
+ em 
+
+
+
+
+ 'usersService.ts'...
+
+
+
+
+
+
+
+
+
+
+ -> aí ele 
+
+
+
+
+
+ ADICIONA '@Injectable()'
+
+
+
+ aos 2 
+
+
+
+ services, para evitar problemas...
+
+
+
+
+
+
+
+ --> ele também coloca os 2 services lá em 
+
+ 'app.module.ts',
+
+ nos providers,
+
+ para que 
+
+ seja possível inject 1 service dentro de outro service..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> por fim,
+
+
+ PARA USAR _ O SERVICE DE 'CounterService'
+
+
+ dentro de 'usersService',
+
+
+ O PROFESSOR 
+
+
+
+
+
+
+
+
+ OBRIGATORIAMENTE 
+
+
+
+
+
+
+ escreve 
+
+
+
+
+ 'constructor(private counterService: CounterService)' 
+
+
+
+
+
+
+
+
+
+
+
+ ---> OK....
+
+
+
+
+
+
+
+
+
+ --> EU FIZ TUDO ISSO, E DEU CERTO,
+
+
+ O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+ import { Injectable } from "@angular/core";
+import { CounterService } from "./counter.service";
+
+// @Injectable({providedIn: "root"})
+@Injectable()
+export class UsersService {
+
+
+    activeUsers = ['Max', 'Anna'];
+    inactiveUsers = ['Chris', 'Manu'];
+
+    counter: {value: number}
+
+
+constructor(private counterService: CounterService) { ///inject de um service dentro de outro service...
+    this.counter = this.counterService.counter;
+}
+
+
+
+
+
+onSetToInactive(id: number) {
+    this.counter.value = this.counter.value + 1;
+    console.log(this.counterService.counter);
+    this.inactiveUsers.push(this.activeUsers[id]);
+    this.activeUsers.splice(id, 1);
+
+  }
+
+  onSetToActive(id: number) {
+    this.counter.value = this.counter.value + 1;
+    this.activeUsers.push(this.inactiveUsers[id]);
+    this.inactiveUsers.splice(id, 1);
+  }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok... 
+
+
+
+
+
+
+
+
+-> isso tudo está funcionando, as coisas estão funcionando como queríamos...
+
+
+
+
+
+
+
+
+
+-> AGORA TEMOS MAIOR CONFIANÇA ACERCA DO USO DE SERVICEs...
+
+
+
+
+
+
+
+--> devemos passar ao próximo module....

@@ -1,0 +1,1060 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> AGORA QUE ESTUDAMOS 'FEATUER MODULES'
+
+
+
+
+
+
+E 'SHARED MODULES',
+
+
+
+
+
+
+
+
+
+
+
+DEVEMOS __ 
+
+
+
+INVESTIGAR_ 
+
+
+O TERCEIRO TIPO DE 
+
+'MODULE',
+
+
+
+
+
+
+
+QUE SÃO OS 
+
+
+'CORE MODULES'...
+
+
+
+
+
+
+
+
+
+
+
+--> os 3 tipos de modules, FEATURE MODULES, SHARED MODULES 
+
+
+E 
+
+'CORE MODULES'
+
+
+
+
+SÃO _ CRIADOS DA MESMA MANEIRA,
+
+
+
+POR MEIO DE 
+
+
+'@NgModule()'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> SÃO SÓ AS COISAS QUE VOCÊ COLOCA DENTRO DOS MODULES QUE DIFEREM,
+
+DE 1 PARA OUTRO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK, MAS O QUE É O 'CORE MODULE'?
+
+
+
+
+
+
+
+
+
+--> O CORE MODULE EXISTE BASICAMENTE PARA FAZER O 'APP MODULE' 
+
+
+
+FICAR UM POUCO MAIS 'LEAN'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> DIGAMOS QUE TEMOS UM APPMODULE ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+AppModule
+
+
+
+
+1) AppComponent 
+
+
+
+2) ProductsService 
+
+
+3) AnalyticsService
+
+
+
+
+
+
+
+
+--> OU SEJA,
+
+AQUI TEMOS 1 COMPONENT,
+
+
+
+E AÍ 
+
+2 SERVICES, QUE SÃO PROVIDED...
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR ENTÃO NOS EXPLICA QUE O 
+
+
+CORE MODULE NOS DEIXA FAZER ALGO ASSIM:
+
+
+
+
+
+
+
+
+AppModule                   CoreModule
+
+                    I
+
+                    I 
+1) AppComponent 
+                    I 
+                            A) ProductsService 
+                            B) AnalyticsService
+
+
+
+
+
+
+--> ou seja,
+
+
+
+
+
+ELE NOS _ _DEIXA _ 'MOVER'
+
+
+ESSES 
+
+
+SERVICES 'PARA FORA DO APPMODULE',
+
+
+
+
+
+o que 
+
+então faz/fará com que 
+
+
+o module de 'AppModule'
+
+
+
+
+_ FIQUE __ BEM MAIS 'LEAN',
+
+
+
+pq não vai ter aquela linha de 
+
+
+'''
+
+
+
+
+
+  providers: [
+    RecipeBookService,
+    ShoppingListService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpInterceptorService,
+      multi: true,
+    },
+  ],
+
+
+
+
+
+
+''''
+
+
+
+
+
+
+
+
+----> depois que é feito esse 'OUTSOURCING',
+
+
+
+o 
+
+
+
+module de 'CoreModule'
+
+
+
+é então 
+
+
+
+ENFIADO DENTRO DO 'AppModule' mais uma vez,
+
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+AppModule
+
+
+--------------------------
+
+1) AppComponent          I 
+
+
+--------------------------I 
+
+A) ProductsService 
+                          I 
+
+B) AnalyticsService       I 
+
+                          I
+
+-------------------------I
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+A ALTERNATIVA A ESSE OUTSOURCING ABSURDO SERIA 
+
+
+
+usar aquele código de '{providedIn: 'root'}' 
+
+
+lá 
+
+
+nos seus services...
+
+
+
+
+(
+
+
+    OU SEJA,
+
+    SE USAMOS ESSA SINTAXE,
+
+    EVITAMOS COMPLETAMENTE DE 
+
+    TER 
+
+    DE 
+    ESCREVER O ARRAY DE 'providers'....
+)
+
+
+
+
+
+
+
+
+
+
+--> MAS SE VOCÊ FOR ____OTÁRIO___ e seguir escrevendo 'providers' no 
+
+
+
+app.module.ts,
+
+
+
+AÍ 
+
+
+TALVEZ SEJA UMA BOA IDEIA 
+
+
+
+USAR 
+
+UM 
+
+'CORE MODULE',
+
+
+TUDO PARA 
+
+
+
+
+DEIXAR SEU app.module.ts 
+
+
+
+EXTREMAMENTE LEAN...
+
+
+
+
+
+
+
+
+
+-. é um pattern que você observa Às vezse,
+
+
+
+MAS NÃO É UM PATTERN OBRIGATÓRIO.. (
+
+
+    e se você 
+
+    está usando '{providedIn: 'root'}',
+
+
+É __ IMPOSSÍVEL__ USAR ESSE PATTERN..
+
+)
+
+
+
+
+
+
+
+
+
+
+
+ok, MAS COMO É ESSE PATTERN?
+
+
+
+
+
+
+
+
+
+
+--> PARA DEMONSTRÁ-LO, CRIAREI UM TERCEIRO FOLDER DE 'app',
+
+o 
+
+'app3',
+
+
+
+
+
+que tem o nosso código bem limpo....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> DENTRO DO NOSSO 'app.module.ts',
+
+
+TEMOS ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+
+import { AppComponent } from './app.component';
+
+import { HeaderComponent } from './headerComponent/headerComponent.app';
+
+import { RecipeBookService } from './recipeBook.service';
+import { ShoppingListService } from './shoppingList.service';
+import { GenericErrorPageComponent } from './generic-error-page/generic-error-page.component';
+import { AppRoutingModule } from './app-routing.module';
+import { HomePageComponent } from './home-page/home-page.component';
+
+import { AuthPageComponent } from './auth-page/auth-page.component';
+
+import { HttpInterceptorService } from 'src/app/httpInterceptor.service';
+
+import { RecipeBookModule } from './recipeBook/recipe-book.module';
+import { ShoppingListModule } from './ShoppingList/shoppingList.module';
+import { SharedModule } from './shared/shared.module';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+
+    GenericErrorPageComponent,
+    HomePageComponent,
+
+    AuthPageComponent,
+  ],
+  imports: [
+    BrowserModule,
+    ReactiveFormsModule,
+    FormsModule,
+    AppRoutingModule,
+    HttpClientModule,
+    RecipeBookModule,
+    ShoppingListModule,
+    SharedModule,
+  ],
+
+  providers: [
+    RecipeBookService,
+    ShoppingListService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpInterceptorService,
+      multi: true,
+    },
+  ],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OU SEJA,
+
+
+TEMOS 
+
+
+ESSES 
+
+2 
+
+SERVICES E AQUELE INTERCEPTOR...
+
+
+
+
+
+
+
+--> A IDEIA POR TRÁS DO 'CORE MODULE'
+
+
+
+
+É _ PROVIDENCIAR _ 
+
+
+
+
+
+
+
+TODOS ESSES 'APPLICATION-WIDE SERVICES',
+
+
+
+que são importantes 
+
+
+
+LOGO NO INÍCIO DO SEU APP,
+
+
+
+POR MEIO DE UM 
+
+__ ARQUIVO/MODULE SEPARADO,
+
+
+
+
+
+
+
+
+__ MODULE QUE ENTÃO SIMPLESMENTE IMPORTAMOS PARA DENTRO DO 'app.module.ts',
+
+
+
+
+
+NOS 'imports',
+
+
+SÓ PARA 
+
+
+
+
+
+QUE ENTÃO 
+
+
+
+CONSIGAMOS DEIXAR O 'app.module.ts'
+
+
+
+MAIS LEAN,
+
+E PARA 
+
+TERMOS 
+
+UM LOCAL EM QUE 
+
+
+CONSIGAMOS VER TODOS OS 
+
+
+
+SERVICES/INTERCEPTORS USADOS NO NOSSO APP...
+
+
+
+
+
+
+
+
+--> ISSO SÓ FUNCIONA SE VOCê NÃO ESTIVER USANDo 
+
+'{providedIn: 'root'}'
+
+
+
+
+
+
+
+
+
+
+-> o professor recomenda o providedIn: root...
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR DIZ QUE 
+
+
+
+
+O APP MODULE FICA AUTOMATICMANETE 
+
+
+MAIS LIMPO SE VOCÊ USAR 
+
+ESSA 
+
+
+
+
+COISA DO '{providedIn: 'root'}' 
+
+
+
+
+
+
+
+
+
+
+
+mas o padrão dos CORE MODULES É ASSIM:
+
+
+
+
+
+
+
+
+
+CRIE UM NOVO ARQUIVO,
+
+de nome 
+
+'core.module.ts':
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+aí escreva assim:
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+
+
+
+
+@NgModule({
+
+
+    providers: [
+         RecipeBookService,
+    ShoppingListService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpInterceptorService,
+      multi: true,
+    },
+    ]
+
+})
+
+
+
+
+
+
+export class CoreModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { HttpInterceptorService } from 'src/app/httpInterceptor.service';
+import { RecipeBookService } from 'src/app/recipeBook.service';
+import { ShoppingListService } from 'src/app/shoppingList.service';
+
+@NgModule({
+  providers: [
+    RecipeBookService,
+    ShoppingListService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpInterceptorService,
+      multi: true,
+    },
+  ],
+})
+export class CoreModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+
+
+
+AÍ, SE QUEREMOS USAR 
+
+
+
+ESSES SERVICES LÁ NO 'app.module.ts',
+
+
+ESCRVEMOS  ASSIM:
+
+
+
+
+
+
+
+
+(não precisamos EXPORTAR OS SERVICES, PQ OS SERVICES FUNCIONAM DE MANEIRA DISTINTA DE 'DECLARATIONS',
+
+
+pq 
+
+
+
+APENAS DECLARATIONS E OUTROS MODULES PRECISAM SER EXPORTADOS EXPLICITAMENTE;
+
+
+
+
+OS SERVICES SÃO AUTOAMTICAMENTE INJETADOS EM UM 'ROOT LEVEL'...
+)
+
+
+
+
+
+
+
+
+
+
+-> É POR ISSO QUE EM 'app.module.ts'
+
+
+BASTA IMPORTAR NOSSO COREMODULE,
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+
+import { AppComponent } from './app.component';
+
+import { HeaderComponent } from './headerComponent/headerComponent.app';
+
+import { RecipeBookService } from './recipeBook.service';
+import { ShoppingListService } from './shoppingList.service';
+import { GenericErrorPageComponent } from './generic-error-page/generic-error-page.component';
+import { AppRoutingModule } from './app-routing.module';
+import { HomePageComponent } from './home-page/home-page.component';
+
+import { AuthPageComponent } from './auth-page/auth-page.component';
+
+import { HttpInterceptorService } from 'src/app/httpInterceptor.service';
+
+import { RecipeBookModule } from './recipeBook/recipe-book.module';
+import { ShoppingListModule } from './ShoppingList/shoppingList.module';
+import { SharedModule } from './shared/shared.module';
+import { CoreModule } from './core.module';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+
+    GenericErrorPageComponent,
+    HomePageComponent,
+
+    AuthPageComponent,
+  ],
+  imports: [
+    BrowserModule,
+    ReactiveFormsModule,
+    FormsModule,
+    AppRoutingModule,
+    HttpClientModule,
+    RecipeBookModule,
+    ShoppingListModule,
+    SharedModule,
+    CoreModule /////EIS O CÓDIGO EM QUESTÃO (outsourcing de services).
+  ],
+
+  // providers: [ ///OUTSOURCING
+  //   RecipeBookService,
+  //   ShoppingListService,
+  //   {
+  //     provide: HTTP_INTERCEPTORS,
+  //     useClass: HttpInterceptorService,
+  //     multi: true,
+  //   },
+  // ],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, TEMOS A EXATA MESMA FUNCIONALIDADE DE ANTES,
+
+
+MAS AGORA COM O OUTSOURCING DE NOSSOS SERVICES 
+
+
+
+(negócio meio sem propósito)...
+
+
+
+
+
+
+
+
+
+--> ISSO É OPCIONAL...
+
+
+
+
+
+
+--. E ISSO SÓ É NECESSÁRIO SE VOCÊ NÃO ESTIVER ESPECIFICANDO '{providedIn: 'root'}' 
+
+
+nos seus services....

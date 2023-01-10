@@ -1,0 +1,1049 @@
+
+
+
+
+
+
+
+
+
+o código de 'recipe-detail' é assim:
+
+
+
+
+
+
+
+
+
+
+
+<div *ngIf="loadedRecipe; else noRecipeLoaded">
+<div class="row">
+  <div class="col-xs-12">
+    <img src="{{loadedRecipe.imagePath}}" alt="" class="img-responsive" style="max-height: 300px; max-width: 400px;" />
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <h1>{{ loadedRecipe.name }}</h1>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+      <h2>{{loadedRecipe.description}}</h2>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <div class="btn-group" appDropdown>
+      <button type="button" class="btn btn-primary dropdown-toggle">
+        Manage Recipe <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu">
+          <li><a href="#">Add to Shopping List</a></li>
+          <li><a href="#">Edit Recipe</a></li>
+          <li><a href="#">Delete Recipe</a></li> 
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <ul class="list-group">
+          <li class="list-group-item" *ngFor="let ingredient of loadedRecipe.ingredients" [ngStyle]="
+          {
+          'margin-top': '12px'}"
+          >{{ingredient.name}} - {{ingredient.amount}}</li>
+        </ul>
+    </div>
+</div>
+
+</div>
+<ng-template #noRecipeLoaded>
+<p>Please select a Recipe!</p>
+</ng-template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> preciso de um '(click)'
+ 
+
+ no button de 'send to shopping list'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ OK, FUNCIONOU..
+
+
+
+
+
+
+
+
+ --> O CÓDIGO DE 'recipeBookService',
+
+ em que 
+
+ eu 
+
+ faço 
+
+
+ SEND 
+
+
+
+
+ de meus ingredients a outra  'página', página de 'shoppingList',
+
+
+
+
+
+
+
+
+
+ fica ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ import { EventEmitter, Injectable, Output } from '@angular/core';
+import { Recipe } from './recipeBook/recipe.model';
+import { Ingredient } from './shared/ingredient.model';
+import { ShoppingListService } from './shoppingList.service';
+
+
+@Injectable()
+export class RecipeBookService {
+  private recipes: Recipe[] = [
+    //professor colocou como PRIVATE....
+    new Recipe(
+      'Chicken Wings',
+      'Delicious chicken wings',
+      'https://www.farmfor.com.br/wp-content/uploads/2022/02/coxinha-da-asa-superbowl.jpg',
+      [
+        new Ingredient('Potato', 1),
+        new Ingredient('Tomato', 3),
+        new Ingredient('Banana', 5),
+      ]
+    ),
+    new Recipe(
+      'Pork Chops',
+      'Tasty pork chops, check them out',
+      'http://t2.gstatic.com/licensed-image?q=tbn:ANd9GcQsRbNYL4S-Noacb27Vi-sbWzURFRjW9YN8VOScbiJ0DxTAiGxTyqlNdG1TWHKN1xWqOV4UhHaFef-fBD8-PGo',
+      [
+        new Ingredient('Potato', 1),
+        new Ingredient('Tomato', 3),
+        new Ingredient('Banana', 5),
+      ]
+    ),
+    new Recipe(
+      'Caesar Salad',
+      'Fresh and healthy salad',
+      'https://www.confeiteiradesucesso.com/wp-content/uploads/2019/06/ceasarsalad-fb.jpg',
+      [
+        new Ingredient('Potato', 1),
+        new Ingredient('Tomato', 3),
+        new Ingredient('Banana', 5),
+      ]
+    ),
+  ];
+
+  getRecipes() {
+    return [...this.recipes]; //mesma coisa que 'this.recipes.slice();'
+  }
+
+  @Output() recipeItemClickedEmitter = new EventEmitter<Recipe>();
+
+
+
+  recipeItemClicked(index: number) {
+
+    const recipe = this.recipes[index];
+    this.recipeItemClickedEmitter.emit(recipe);
+  }
+
+
+
+  constructor(private shoppingListService: ShoppingListService) {
+
+  }
+
+  sendToShopList(ingredients: Ingredient[]) {
+    for (let ingredient of ingredients) {
+        this.shoppingListService.onIngredientAdd(ingredient);
+        console.log('SENT');
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O QUE INTERESSOU, NO CASO,
+
+FOI ESSE 
+
+CONSTRUCTOR:
+
+
+
+  constructor(private shoppingListService: ShoppingListService) {
+
+  }
+
+
+
+
+
+
+
+
+--> esse constructor vinculou o service de 'shoppingList'
+
+
+
+ao 'recipeBookService'...
+
+
+
+
+
+---> 
+
+
+
+
+e aí,
+
+
+
+a partir 
+
+desse constructor,
+
+
+pude chamar o method de 
+
+
+
+''
+  sendToShopList(ingredients: Ingredient[]) {
+    for (let ingredient of ingredients) {
+        this.shoppingListService.onIngredientAdd(ingredient);
+        console.log('SENT');
+    }
+''',
+
+
+
+
+
+
+
+
+QUE CHAMOU UMA VEZ O METHOD DE 'onIngredientAdd'
+
+
+para CADA INGREDIENT QUE TINHA NO ARRAY DE INGREDIENTS...
+
+
+
+
+
+
+
+--> agora só falta colocar um 
+
+
+dispositivo de routing para REDIRECIONAR O 
+
+USER 
+
+à PAGE DE '
+
+shoppingList'
+
+quando for clicado esse 'link/button'....
+
+
+-> tentar fazer isso....
+
+
+
+
+
+
+
+
+-> lembrei... --> lembrei de como posso fazer isso...
+
+
+
+
+
+
+
+
+
+
+--> meu app, atualmente,
+
+
+
+depende da propriedade de '''
+
+
+
+
+  selectedPage: string = 'recipeBook';
+
+
+
+  ''',
+
+
+
+
+  lá em 'app.component.ts',
+
+
+  para 
+
+
+
+  __ 
+
+  ALTERNAR ENTRE A PAGE 
+
+
+
+  DO 
+
+  recipebook e a page 
+
+
+  da 
+
+
+  shoppingList... --> se eu conseguir ALTErar 
+
+  o 
+
+  valor disso,
+
+  conseguirei trocar de página...
+
+
+
+
+
+
+  ok, mas como fazer isso?
+
+
+
+
+
+
+
+
+
+
+
+
+  --> É IMPOSSÍVEL,
+
+  sem 
+
+
+
+  o routing....
+
+
+
+
+
+
+
+  --> pq o value em 'app.component.ts'
+
+  é um REFERENCE VALUE,
+
+
+  e eu teria de fazer um property e event binding absurdo 
+
+
+
+  para 
+
+
+  conseguir esse efeito...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OK, MAS COMO O PROFESSOR FEZ O ADD DOS SHOPPING LISTS?
+
+
+
+
+
+
+
+
+
+
+
+
+  --> bem,
+
+
+
+  a primeira coisa que ele fez foi isto:
+
+
+
+
+
+
+            <li (click)="sendToShoppingList()"><a href="#">Add to Shopping List</a></li>
+
+
+
+
+
+
+
+
+
+
+
+            -> AÍ ELE TIROU 
+
+            AQUELE 
+
+            href que não faz nada,
+
+
+            mas deixou 
+
+            'style="cursor: pointer;" ',
+
+
+
+            PARA QUE 
+
+
+            AINDA FIQUEMOS COM AUQELE STYLE DE 'pointer'
+
+
+
+
+
+
+
+            EX:
+
+
+
+
+
+
+
+
+
+
+            <div *ngIf="loadedRecipe; else noRecipeLoaded">
+<div class="row">
+  <div class="col-xs-12">
+    <img src="{{loadedRecipe.imagePath}}" alt="" class="img-responsive" style="max-height: 300px; max-width: 400px;" />
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <h1>{{ loadedRecipe.name }}</h1>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+      <h2>{{loadedRecipe.description}}</h2>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <div class="btn-group" appDropdown>
+      <button type="button" class="btn btn-primary dropdown-toggle">
+        Manage Recipe <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu">
+          <li (click)="sendToShoppingList()"><a style="cursor: pointer;">Add to Shopping List</a></li>
+          <li><a href="#">Edit Recipe</a></li>
+          <li><a href="#">Delete Recipe</a></li> 
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <ul class="list-group">
+          <li class="list-group-item" *ngFor="let ingredient of loadedRecipe.ingredients" [ngStyle]="
+          {
+          'margin-top': '12px'}"
+          >{{ingredient.name}} - {{ingredient.amount}}</li>
+        </ul>
+    </div>
+</div>
+
+</div>
+<ng-template #noRecipeLoaded>
+<p>Please select a Recipe!</p>
+</ng-template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO...
+
+
+
+
+
+
+
+
+
+-> eu fiz acesso ao service de 'recipeBook',
+
+que 
+
+
+acessou 
+
+
+
+o service de 'shoppingList'...
+
+
+
+
+
+
+
+
+
+
+
+--> professor escolheu a route do 'recipeService'..
+
+
+
+
+
+
+
+
+
+
+--> ele colocou o recipeService no component de 'recipe-detail',
+
+tudo certinho...
+
+
+
+
+
+
+
+
+
+-> aí ele escreveu algo parecido com o que escrevi,
+
+lá em 
+
+
+'recipeBook.service.ts':
+
+
+
+
+
+  sendToShopList(ingredients: Ingredient[]) {
+    for (let ingredient of ingredients) {
+        this.shoppingListService.onIngredientAdd(ingredient);
+        console.log('SENT');
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+------->  o código 
+
+
+
+foi ficando assim:
+
+
+
+
+
+
+
+
+import { Component, OnInit, Input } from '@angular/core';
+import { RecipeBookService } from 'src/app/recipeBook.service';
+
+import { Recipe } from '../recipe.model';
+
+import { Ingredient } from 'src/app/shared/ingredient.model';
+
+@Component({
+  selector: 'app-recipe-detail',
+  templateUrl: './recipe-detail.component.html',
+  styleUrls: ['./recipe-detail.component.css']
+})
+export class RecipeDetailComponent implements OnInit {
+
+
+  loadedRecipe: Recipe;
+
+
+
+  constructor(private recipeBookService: RecipeBookService) { 
+
+    // this.recipeBookService.recipeItemClickedEmitter.subscribe(
+    //   (data: Recipe) => {
+    //       console.log(data);
+    //   }
+    // )
+
+    this.recipeBookService.recipeItemClickedEmitter.subscribe(
+      (data) => {
+          this.loadedRecipe = data;
+
+      }
+    )
+
+
+  }
+
+
+
+  ngOnInit(): void {
+
+  }
+
+
+  sendToShoppingList() {
+    console.log('CLICKED');
+    this.recipeBookService.sendToShopList(this.loadedRecipe.ingredients);
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+e assim:
+
+
+
+
+
+
+
+
+
+
+
+import { EventEmitter, Injectable, Output } from '@angular/core';
+import { Recipe } from './recipeBook/recipe.model';
+import { Ingredient } from './shared/ingredient.model';
+import { ShoppingListService } from './shoppingList.service';
+
+
+@Injectable()
+export class RecipeBookService {
+  private recipes: Recipe[] = [
+    //professor colocou como PRIVATE....
+    new Recipe(
+      'Chicken Wings',
+      'Delicious chicken wings',
+      'https://www.farmfor.com.br/wp-content/uploads/2022/02/coxinha-da-asa-superbowl.jpg',
+      [
+        new Ingredient('Potato', 1),
+        new Ingredient('Tomato', 3),
+        new Ingredient('Banana', 5),
+      ]
+    ),
+    new Recipe(
+      'Pork Chops',
+      'Tasty pork chops, check them out',
+      'http://t2.gstatic.com/licensed-image?q=tbn:ANd9GcQsRbNYL4S-Noacb27Vi-sbWzURFRjW9YN8VOScbiJ0DxTAiGxTyqlNdG1TWHKN1xWqOV4UhHaFef-fBD8-PGo',
+      [
+        new Ingredient('Potato', 1),
+        new Ingredient('Tomato', 3),
+        new Ingredient('Banana', 5),
+      ]
+    ),
+    new Recipe(
+      'Caesar Salad',
+      'Fresh and healthy salad',
+      'https://www.confeiteiradesucesso.com/wp-content/uploads/2019/06/ceasarsalad-fb.jpg',
+      [
+        new Ingredient('Potato', 1),
+        new Ingredient('Tomato', 3),
+        new Ingredient('Banana', 5),
+      ]
+    ),
+  ];
+
+  getRecipes() {
+    ///consequência direta de termos definido o array de 'recipes' como PRIVATE....
+    return [...this.recipes]; //mesma coisa que 'this.recipes.slice();'
+  }
+
+  @Output() recipeItemClickedEmitter = new EventEmitter<Recipe>();
+
+  // loadedRecipe: Recipe;
+
+  recipeItemClicked(index: number) {
+    // this.loadedRecipe = this.recipes[index];
+    // console.log(this.loadedRecipe);
+    // this.recipeItemClickedEmitter.emit(this.loadedRecipe);
+
+    const recipe = this.recipes[index];
+    this.recipeItemClickedEmitter.emit(recipe);
+  }
+
+
+
+  constructor(private shoppingListService: ShoppingListService) {
+
+  }
+
+  sendToShopList(ingredients: Ingredient[]) {
+    for (let ingredient of ingredients) {
+        this.shoppingListService.onIngredientAdd(ingredient);
+        console.log('SENT');
+    }
+
+    ////after that, sends the user to the 'shoppingList' page...
+
+    
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+o professor adicionou um novo method,
+
+de 
+
+'addIngredientS' (no plural),
+
+
+
+
+mas é essencialmente a mesma coisa que eu fiz...
+
+
+
+
+
+
+
+
+
+
+
+--> professor diz que poderíamos simplesmente fazer um loop.... --> (é o que fiz).... --> O ÚNICO 
+
+
+
+DOWNSIDE SERIA 
+
+QUE 
+
+
+UM MONTE DE EVENTS SERIAM EMITIDOS... ---> um monte de unecessary event emissions (é uma opção viável,
+
+mas não tão boa..
+
+
+)
+
+
+
+
+
+
+
+
+
+
+--> UMA ALTERNATIVA VIÁVEL SERIA 
+
+
+
+'''DIRECTLY ADD ALL EVENTS IN ONE GO,
+
+
+e aí _ SÓ ENTÃO EMITIR NOSSO EVENT'''  (
+
+
+    mas o problema é que 
+
+    a
+     prorpiedade 
+
+     está como 'private'...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR USA 
+
+
+
+A FEATURE DO SPREAD OPERATOR, PARA FAZER PUSH DE VÁRIOS ELEMENTOS NA NOSSA LIST de 
+
+
+
+
+
+
+
+
+'this.ingredients'...
+
+
+
+
+
+
+
+
+
+
+
+ok...
+
+
+
+
+
+
+
+
+-> podemos seguir o approach do professor, se quisermos..
+
+
+
+
+
+
+
+
+
+----> O NEGÓCIO ESTÁ FUNCIONANDO:
+
+
+PODEMOS ENVIAR DATA POR NOSSO APP,
+
+
+
+
+através do uso de services...
+
+
+
+
+
+
+
+
+
+
+NO PRÓXIMO MÓDULO VEREMOS ROUTING,
+
+E DEPOIS ADICIONAREMOS ROUTING AO NOSSO APP,
+
+para 
+
+que 
+
+consigamos 
+navigation funcionando,
+
+
+
+e para conseguir 
+
+
+
+
+
+fazer funcionar o button de 'New Recipe'...

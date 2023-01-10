@@ -1,0 +1,670 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+--->  OK.. NOSSO SETUP ANTERIOR, PARA TESTAR CÓDIGOS ASYNC, ERA ESTE:
+
+
+
+
+
+
+
+
+
+
+
+  it("SHOULD fetch data successfully if called asynchronously.", 
+  
+  
+  async (() => { ///EIS AQUI A GRANDE DIFERENÇA, ESSa inserção do termo 'async', que vai denotar o caráter ASYNC DE NOSSO TEST... --> ELE VAI 'CRIAR A SORT OF ASYNC TESTING ENVIRONMENT for angular 2'...
+   //// --> É CLARO QUE ESSE AMBIENTE  _ NÃO É __ REALMENTE_ ASYNC, MAS O QUE IMPORTA É QUE '''ELE NOS DEIXA RODAR TAREFAS ASYNC NO SEU INTERIOR'''..
+
+    let dataService = fixture.debugElement.injector.get(DataService); 
+
+
+    let spy = spyOn(dataService, 'getDetails')
+    .and.returnValue(Promise.resolve('Data'));
+
+    fixture.detectChanges();
+
+    fixture.whenStable() ///'whenStable' É APLICADO somente quando todos os 'async' já tiverem acabado sua seleção...
+    .then(
+      () => {
+        expect(component.data).toBe('Data'); 
+      }
+    )
+  }));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS é claro que TEMOS UMA ALTERNATIVA A ESSE SETUP AÍ...
+
+
+
+
+
+
+
+
+--> O CÓDIGO ESCRITO ACIMA É 
+
+__ APENAS 'TEORICAMENTE ASYNC',
+
+
+
+pq 
+
+não é async de verdade (não esperamos os 1.5 segundos que definimos no nosso method, por exemplo),
+
+
+
+
+
+
+
+
+
+
+
+por isso 
+
+
+
+
+
+
+há 
+
+
+CASES EM QUE VOCê VAI QUERER USAR 
+
+
+
+
+O method  de 
+
+
+
+
+'fakeAsync'..
+
+
+
+
+
+
+
+
+
+
+O FAKEASYNC É POSICIONADO BEM NO LUGAR DE 'async',
+
+
+E SEU CÓDIGO FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+  it("SHOULD fetch data successfully if called asynchronously.", 
+  
+  
+  fakeAsync (() => { ///EIS AQUI A GRANDE DIFERENÇA, ESSa inserção do termo 'async', que vai denotar o caráter ASYNC DE NOSSO TEST... --> ELE VAI 'CRIAR A SORT OF ASYNC TESTING ENVIRONMENT for angular 2'...
+   //// --> É CLARO QUE ESSE AMBIENTE  _ NÃO É __ REALMENTE_ ASYNC, MAS O QUE IMPORTA É QUE '''ELE NOS DEIXA RODAR TAREFAS ASYNC NO SEU INTERIOR'''..
+
+    let dataService = fixture.debugElement.injector.get(DataService); 
+
+
+    let spy = spyOn(dataService, 'getDetails')
+    .and.returnValue(Promise.resolve('Data'));
+
+    fixture.detectChanges();
+
+    fixture.whenStable() ///'whenStable' É APLICADO somente quando todos os 'async' já tiverem acabado sua seleção...
+    .then(
+      () => {
+        expect(component.data).toBe('Data'); 
+      }
+    )
+  }));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O QUE ISSO ME PERMITE FAZER, NO CASO,
+
+
+É 
+
+
+
+__JOGAR FORA O METHOD DE 'whenStable()',
+
+
+
+
+
+
+
+
+
+
+
+PARA ENTÃO SÓ EXECUTARMOS 
+
+
+'expect(app.data).toBe('Data');'
+
+
+
+
+
+
+
+
+
+
+--> ENTRETANTO,
+
+O QUE DEVEREMOS FAZER, ANTES DE CHAMAR ESSE 'expect()",
+
+
+
+
+
+É 
+
+
+CHAMAR a function de 
+
+
+
+
+
+
+
+'tick()', 
+
+
+
+
+
+
+
+
+
+
+
+E ESSAS 2 COISAS DEVEM SER IMPORTADAS DO PACKAGE DE 'ANGULAR/TESTING'..
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok, mas o que faz esse 'tick()',
+
+dentro 
+
+
+da function de 'async()'?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> bem, 'tick()' 
+
+,
+
+
+
+dentro dessa function,
+
+
+
+simplesmente significa 
+
+
+
+
+
+
+''EM UM FAKE ASYNC ENVIRONMENT, 
+
+
+POR FAVOR, ACABE COM TODAS AS ASYNC TASKS''' ---->  Quando tick é executado,
+
+
+async tasks são finalizadas (E podemos as finalizar imediatamente, não precisamos esperar aqueles 1.5 segundos ),
+
+
+
+
+
+
+
+
+
+
+
+
+
+ou seja,
+
+
+
+esse combo de 'fakeAsync' + 'tick' 
+
+
+
+
+FAZ ESSENCIALMENTE A MESMA COISA QUE O COMBO DE 
+
+
+
+'async' + 'whenStable()',
+
+
+
+
+
+
+
+
+mas com uma escrita um pouco diferente...
+
+
+
+
+
+
+
+a versão com fakeAsync e tick fica assim:
+
+
+
+
+
+
+
+
+  it("SHOULD fetch data successfully if called asynchronously. (2, using fakeAsync)", 
+  
+  
+  fakeAsync (() => {  ////CÓDIGO EM QUESTÃO.
+
+    let dataService = fixture.debugElement.injector.get(DataService); 
+
+
+    let spy = spyOn(dataService, 'getDetails')
+    .and.returnValue(Promise.resolve('Data'));
+
+    fixture.detectChanges();
+
+
+    tick(); ///CÓDIGO EM QUESTÃO.
+
+    expect(component.data).toBe('Data'); ////CÓDIGO EM QUESTÃO.
+  }));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+
+
+
+
+
+PODEMOS VER OS, LADO A LADO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  it("SHOULD fetch data successfully if called asynchronously.", 
+  
+  
+  fakeAsync (() => { ///EIS AQUI A GRANDE DIFERENÇA, ESSa inserção do termo 'async', que vai denotar o caráter ASYNC DE NOSSO TEST... --> ELE VAI 'CRIAR A SORT OF ASYNC TESTING ENVIRONMENT for angular 2'...
+   //// --> É CLARO QUE ESSE AMBIENTE  _ NÃO É __ REALMENTE_ ASYNC, MAS O QUE IMPORTA É QUE '''ELE NOS DEIXA RODAR TAREFAS ASYNC NO SEU INTERIOR'''..
+
+    let dataService = fixture.debugElement.injector.get(DataService); 
+
+
+    let spy = spyOn(dataService, 'getDetails')
+    .and.returnValue(Promise.resolve('Data'));
+
+    fixture.detectChanges();
+
+    fixture.whenStable() ///'whenStable' É APLICADO somente quando todos os 'async' já tiverem acabado sua seleção...
+    .then(
+      () => {
+        expect(component.data).toBe('Data'); 
+      }
+    )
+  }));
+
+
+
+
+
+
+
+
+
+
+
+
+  it("SHOULD fetch data successfully if called asynchronously. (2, using fakeAsync)", 
+  
+  
+  fakeAsync (() => {  ////CÓDIGO EM QUESTÃO.
+
+    let dataService = fixture.debugElement.injector.get(DataService); 
+
+
+    let spy = spyOn(dataService, 'getDetails')
+    .and.returnValue(Promise.resolve('Data'));
+
+    fixture.detectChanges();
+
+
+    tick(); ///CÓDIGO EM QUESTÃO.
+
+    expect(component.data).toBe('Data'); ////CÓDIGO EM QUESTÃO.
+  }));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> QUANDO O TICK É 
+
+
+EXECUTADO,
+
+
+ASYNC TASKS SÃO 
+
+IMEDIATAMENTE RESOLVIDAS,
+
+
+
+
+UTILIZAMOS ELE E O 'fakeAsync' (assim como async e whenStable) 
+
+
+
+
+JUSTAMENTE PARA NÃO TERMOS QUE ESPERAR ESSE TEMPO DURANTE O TESTING...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--. OK... TERMINAMOS ESSA PROMISE IMEDIATAMENTE,
+
+E POR ISSO PODEMOS PEGAR 
+
+
+A DATA IMEDIATAMETNE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok, podemos usar async com qualquer UMA DAS SINTAXES...
+
+
+
+
+
+
+
+
+
+--> os funcionamentos são levemente diferentes, mas o resumo é:
+
+
+
+
+
+
+
+
+
+
+
+1) com 'async' e 'whenStable', você 'FAKA' ou 'SE COMPORTA' como se tivesse uma operação realmente async, execuçaõ async,
+
+
+
+
+
+
+
+
+
+2) com 'fakeAsync' o comportametno é mais ''YEAH, LETS GO ON''.....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> é assim que podemos usar 
+
+
+components e services 
+
+
+em testing...
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR PEGOU COMPONENTS E SERVICES 
+
+PQ 
+
+
+SÃO TRI IMPORTANTES,
+
+E PQ 
+
+
+SÃO MAIS COMPLEXOS,
+
+
+
+DEVIDO 
+
+A SEU 
+FUNCIONAMENTO COM INJECTIONS E ASYNC TASKS...
+
+
+
+
+
+
+
+
+
+
+
+--> o professor tem um documento em que podemos ler bem mais sobre isso..
+
+
+
+
+
+
+
+
+
+
+
+
+-_> O PROFESSOR QUER ACABAR O MÓDULO NOS MOSTRANDO (novamente) A DIFERENÇA ENTRE TESTES ISOLADOS E CONJUNTSO...

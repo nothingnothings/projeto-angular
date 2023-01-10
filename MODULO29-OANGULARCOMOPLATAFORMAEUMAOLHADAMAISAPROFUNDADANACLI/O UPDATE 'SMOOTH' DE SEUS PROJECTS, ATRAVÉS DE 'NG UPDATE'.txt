@@ -1,0 +1,386 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> depois de 'ng generate',
+
+
+
+temos 'ng update' 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NG UPDATE É UM DOS 
+
+MELHORES COMANDOS ---> É CLARO QUE 
+
+
+VOCê 
+QUER 
+
+MANTER SEU APP 
+
+'up to date' ..
+
+
+
+
+
+
+
+
+
+
+--> é bom que sempre que o angular 
+
+
+LANÇA 
+
+UMA NOVA VERSION,
+
+
+
+TIPICAMENTE NEM TUDO MUDA... (updates são bem triviais, geralmente)...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ENTRETANTO,
+
+
+GERALMENTE EXISTIRÃO ALGUMAS PACKAGES NO PACKAGE.JSON a serem updatadas,
+
+
+
+E 1 OU 2 
+
+
+AJUSTES MENORES QUE DEVEM SER FEITOS NO CÓDIGO (coisas simples, mas repetitivas, como AJUSTAR UM CERTO IMPORT, OU DEFINIR UM NOVO SETTING EM UM DECORATOR, ETC )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ng update- ->  VOCÊ RODA ISSO EM UM DE SEUS PROJECTS,
+
+E AÍ 
+
+ELE 
+
+
+
+VAI TE INFORMAR _ SE ALGO __ PRECISA _ SER UPDATADO OU NÃO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+ELE BASICAMENTE CHECA 
+
+
+'TODAS AS PACKAGES QUE SUPORTAM ESSE SCHEMATIC (de 'ng update' ) '...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE 
+
+
+TODOS OS ANGULAR PACKAGES SÃO SUPORTADOS....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O ANGULAR CLI EM SI SUPORTA ESSE SCHEMATIC,
+
+E ALGUNS THIRD PARTY PACKAGES,
+
+
+COMO O ANGULAR MATERIAL,
+
+SÃO 
+
+TODOS SUPORTADOS...
+
+
+
+
+
+
+
+
+
+
+
+--> SE ALGO NÃO ESTIVESSE 'UP TO DATE',
+
+
+
+
+o angular cli
+
+
+
+TE MOSTRARIA UMA TABLE,
+
+
+
+E AÍ TE INFORMARIA 
+
+'COMO VOCÊ PODE UPDATAR AGORA'...
+
+
+
+
+
+
+
+
+
+
+
+
+-> POR EXEMPLO, 
+
+
+
+
+
+vocÊ pode rodar 
+
+
+esse comando em coisas específicas,
+
+
+como 
+
+
+
+'ng update @angular/core',
+
+
+
+
+
+
+
+
+para 
+
+
+UPDATAR 
+
+
+ANGULAR FRAMEWORK PACKAGES ESPECÍFICAS...
+
+
+
+
+
+
+
+
+
+
+-> rode o comando ]
+
+
+
+
+
+
+
+
+
+ng update @angular/core @angular/cli 
+
+
+
+
+
+
+
+
+
+PARA __UPDATAR_ TODO SEU PROJETO...
+
+
+
+
+
+
+
+
+
+
+
+
+--> E, DE NOVO, VOCÊ PODE RODAR 'ng update' para 
+
+VER UMA 
+
+TABLE 
+
+DE COMANDOS 
+
+
+QUE __ VOCê DEVE RODAR__ SE SEU 
+
+
+PROJECT NÃO 
+ESTIVER 
+
+ATUALIZADO...
+
+
+
+
+
+
+
+
+
+
+NG UPDATE --> É UM COMANDO QUE DEVE SER RODADO SEMPRE QUE 
+UMA 
+
+
+NOVA VERSION DO ANGULAR É LANÇADA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok, esses são os 3 importantes SCHEMATICS QUE TEMOS NO ANGULAr:
+
+
+
+NG ADD
+
+
+NG GENERATE 
+
+
+
+NG UPDATE 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK...
+
+
+
+
+
+
+
+
+MAS TEMOS MAIS UMA COISINHA IMPORTANTE NO ANGULAR, QUE SÃO 'BUILDERS'...

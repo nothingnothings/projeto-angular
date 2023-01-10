@@ -1,0 +1,566 @@
+
+
+
+
+
+
+
+
+
+
+
+
+--> ATÉ AGORA,
+
+SEMPRE USAMOS 
+
+
+AS 
+
+
+
+TEMPLATE FILES __ EXTERNAS... (
+
+
+    como 
+
+
+    'server.component.html'
+
+
+    ou 
+
+    'servers.component.html' 
+
+
+    ou 
+
+
+        'exemplo.component.html'....
+)
+
+
+
+
+
+
+
+MAS QUANTO A ISSO,
+
+AINDA NÃO FIZEMOS NADA A RESPEITO DO STYLING DE NOSSOS COMPONENTS...
+
+
+
+
+
+
+
+
+
+
+
+
+-> É HORA DE MUDAR ISSO... --> EM VEZ DE USARMOS
+ 
+  
+
+  UMA 
+
+  'EXTERNAL TEMPLATE FILE' (como 'server.component.html'),
+
+
+
+
+
+  VOCÊ 
+
+
+
+  PODE TAMBÉM 
+
+
+  DEFINIR UM TEMPLATE 'inline'... -> O QUE SIGNIFICA QUE 
+
+
+
+__ VOCÊ __ DEFINE/DEFINIRÁ 
+
+O 
+
+
+
+
+__ CÓDIGO __ HTML__ DENTRO __ DO CÓDIGO TYPESCRIPT.. --> E ISSO PODE PARECER BEM ESTRANHO...
+
+
+
+
+
+
+
+
+
+
+---> MAS É POSSÍVEL FAZER ISSO,
+
+
+DEFINIR O CÓDIGO HTML DENTRO DO CÓDIGO TYPESCIRPT...
+
+
+
+
+
+
+
+
+
+
+--> COMO EXEMPLO DISSO,
+
+TEMOS O 
+
+
+COMPONENT DE 
+
+
+'servers.component.ts':
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-servers',
+  templateUrl: './servers.component.html',
+  styleUrls: ['./servers.component.css']
+})
+export class ServersComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------> POR ALGUMA RAZÃO,
+
+
+
+
+ESSE COMPONENT ESTÁ COM O INHERIT DAQUELA CLASS DE 'OnInit()' (Que NÃO FUI EU QUEM IMPORTOU)...
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK ... E, POR ENQAUNTO,
+
+
+ESSE NOSSO COMPONENT __ APONTA_ PARA O NOSSO ARQUIVO 
+
+
+'servers.component.html'... ------>   (basta ver aquela key de 'templateUrl', que está apontando para './servers.component.html')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS O QUE É POSSÍVEL FAZER, AQUI, É TROCAR 
+
+
+'templateurl' (localizaçaõ do template que será COLOCAOD NO LUGAR DO SELECTOR...)
+
+
+
+
+
+
+
+
+
+
+
+PELA KEY 'template'...
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-servers',
+  template: './servers.component.html',
+  styleUrls: ['./servers.component.css']
+})
+export class ServersComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS O QUE IMPORTA É QUE __ UMA DAS DUAS DEVE OBRIGATORIAMENTE ESTAR PRESENTE,
+
+OU 
+
+'templateUrl'
+
+
+
+ou 
+
+'template'... ------> 
+
+
+
+
+
+
+
+
+'template' É USADO PARA DEFINIR O HTML __ DENTRO _ DE ESSE 
+
+
+PRÓPRIO ARQUIVO 
+
+
+'componentName.component.ts'...
+
+
+
+
+
+
+
+
+
+
+
+-> O FATO É QUE __ _TODO COMPONENT__ PRECISA OBRIGATORIAMENTE TER UM 
+
+TEMPLATE... 
+
+(
+
+  É A ÚNICA PROPRIEDADE DOS COMPONENTS QUE É OBRIGATÓRIA,
+
+  VOCê DEVE TER 
+
+100% DAS VEZES...
+)
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-exemplo-component-com-inline-template',
+  template: '<p>exemplo</p>', ////ISSO MOSTRA QUE TAMBÉM É POSSÍVEL DEFINIR 'INLINE TEMPLATES' nos nossos arquivos 'ts' (em vez de usar um template EXTERNO...)
+  styleUrls: ['./exemplo-component-com-inline-template.component.css']
+})
+export class ExemploComponentComInlineTemplateComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ESSE É O EXEMPLO DE 'INLINE TEMPLATE'...
+
+
+
+
+
+
+COLOQUEI TIPO ASSIM:
+
+
+
+
+<h3>I'm in the AppComponent!</h3>
+<hr>
+<!-- <app-server></app-server> -->
+<app-servers></app-servers>
+<exemplo></exemplo>
+<app-exemplo-component-com-inline-template></app-exemplo-component-com-inline-template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> COM ISSO, ESTAMOS DEFININDO O CÓDIGO HTML NESSA MESMA FILE...
+
+
+
+
+
+
+
+
+
+--> E SE VOCÊ QUER ESCREVER MULTI-LINE STRINGS 
+
+NESSE LOCAL,
+
+VOCÊ 
+
+DEVE USAR BACKTICKS,
+
+
+para escrever um template literal 
+
+
+e escrever multi-line...
+
+
+
+
+
+
+
+
+
+-> QUAL APPROACH VOCÊ DEVE USAR?
+
+
+
+
+--> DEPENDE... .--> SE VOCÊ NÃO TEM MT CÓDIGO 
+
+
+HTML,
+
+
+
+
+USAR O FORMATO INLINE TEMPLATE É FINE,
+
+NÃO 
+
+
+
+HÁ NADA DE ERRADO EM SEGUIR ESSE APPROACH....
+
+
+
+
+
+
+
+
+-> MAS DIGAMOS QUE VOCÊ TEM MAIS DE 3 LINHAS DE CÓDIGO HTML... -> AÍ 
+
+
+
+FICA MELHOR USAR 
+
+UM ARQUIVO '.html'
+
+separado.. ----> BEM MAIS FÁCIL DE ACOMPANHAR E ENTENDER..
+
+
+
+
+
+
+-> MAS É BOM SABER QUE 
+
+EXISTE ESSE APPROACH,
+
+QUE VOCÊ PODE ESCREVER SEU CÓDIGO HTML/TEMPLATE DE FORMA INLINE,
+
+BASTA TROCAR 
+
+
+'templateUrl' 
+
+
+por 
+
+'template.'..
+
+
+
+
+
+
+
+
+
+
+
+---> MAS O MAIS IMPORTANTE É QUE VOCÊ __ SEMPRE DEVE TER _ UM 
+
+
+
+'TEMPLATE' file em 1 determinado component...
+
+
+
+
+
+
+
+
+-> QUANTO AO 'selector',
+
+VOCê PODE O OMITIR... ------> MAIS TARDE,
+
+
+
+NO MÓDULO DE 'ROUTING',
+
+vamos aprender uma MANEIRA ALTERNATIVA DE CARREGAR COMPONENTS,
+
+
+
+
+
+CARREGAR COMPONENTS SEM USAR O SELECTOR DE CADA COMPONENT,
+
+
+
+
+o que faria com que 
+
+
+seu component ficasse tipo assim:
+
+
+
+
+
+
+
+
+@Component(
+  {
+    templateUrl: './pasta/arquivo.html'
+  }
+)
+
+
+
+
+
+
+
+
+
+----> ISSO PQ VOCÊ PODE ATÉ MESMO OMITIR/NÃO ADICIONAR STYLES,
+
+
+
+MAS __OS _ TEMPLATES_ SEMPRE DEVEM ESTAR PRESENTES...
+
+
+
+
+
+
+
+
+
+
+--> ok... VIMOS OS TEMPLATES,
+
+AGORA É HORA DE VER OS STYLES...

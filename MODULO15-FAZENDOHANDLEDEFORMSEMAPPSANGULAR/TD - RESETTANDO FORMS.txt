@@ -1,0 +1,566 @@
+
+
+
+
+
+
+--> NA ÚLTIMA AULA VIMOS COMO PODEMOS ACESSAR A PROPRIEDADE 'value'
+
+
+
+em 
+
+'this.formReference'
+
+PARA ENTÃO PEGAR 
+
+TODOS OS VALUES DOS INPUT FIELDS NA NOSSA FORM (input fields em que colocamos 'ngModel', essa directive aí)...
+
+
+
+ 
+
+-----------------------------
+
+
+
+
+
+
+
+MAS AGORA, COMO 
+
+PEGAMOS A DATA, VAMOS QUERER RESETTAR A FORM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ESSA É UMA FEATURE COMUM DE FORMS,
+
+
+
+
+em projetos diversos.... -> 
+
+
+quando uma form é submittada,
+
+
+é 
+
+
+MT COMUM _ 
+
+
+
+
+
+
+
+IMEDIATAMENTE LIMPAR TODOS OS INPUT FIELDS 
+
+
+DELA..
+
+
+
+
+
+
+
+
+
+
+-> OK, MAS COMO FAZER ISSO?
+
+
+
+
+
+
+
+
+
+
+
+
+--> talvez exista algum method dentro 
+
+daquele 
+
+
+
+
+objeto de 
+
+
+'this.formReference.form',
+
+
+ou algo do gênero....
+
+
+
+
+
+
+
+
+
+
+-> sei que uma MANEIRA DE FAZER ISSO É SIMPLESMENTE CHAMAR 
+
+
+
+
+
+
+this.formReference.setValue(
+    {
+
+    }
+)
+
+
+
+
+
+
+
+
+
+
+E ENTÃO DEFINIR TODOS OS FIELDS COMO 
+
+(''),
+
+
+EMPTY STRINGS,
+
+
+
+
+e valores default...
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+-> MAS DEVE EXISTIR ALGUMA MANEIRA MAIS FÁCIL DE FAZER ISSO......
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> BEM,
+
+
+
+
+PARECE QUE EU ESTAVA CERTO...
+
+
+
+
+
+
+
+
+
+---> EXISTE O METHOD DE 
+
+
+
+
+
+'
+this.formReference.reset()'..
+
+
+
+
+
+
+
+
+
+------->  O METHOD DE '.reset()'
+
+
+
+SIGNIFICA QUE 
+
+ELE VAI MAIS DO QUE APENNAS 
+
+
+
+'EMPTY THE INPUTS'.... (você poderia fazer esse 'empty the inputs' com o SETVALUE, ele sozinho já faz isso)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+O BONUS DE 'reset()', a vantagem em seu uso,
+
+
+É QUE 
+
+
+
+
+ELE _ TAMBÉM _ VAI _ RESETTAR __ O 'STATE'
+
+
+
+
+das coisas como 
+
+
+
+'touched',
+
+
+'dirty',
+
+
+
+'valid'
+
+
+
+e tudo mais...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OBS::: --> 1 DETALHE ---> SE VOCÊ QUISER,
+
+VOCê 
+
+PODE __ PASSAr__ UM 'object javascript' COMO PARÂMETRO DE '.reset()' --> o que isso fará 
+
+
+É __ 
+
+
+RESETTAR __ 
+
+OS SEUS INPUT FIELDS,
+
+MAS RESETTAR 
+
+
+PARA OS VALORES QUE 
+
+VOCÊ 
+
+DEFINIU 
+
+
+
+NOS KEY-VALUE PAIRS 
+
+desse 
+
+
+parâmetro...
+
+
+
+ex:
+
+
+
+
+
+
+
+this.formReference.reset(
+    {
+        userData: {
+            username: 'xisburguer',
+            email: 'test@test.com'
+        },
+
+        secret: 'xxx',
+        textValue: 'xyyy',
+        answer: 'zzz',
+
+    }
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK...
+
+
+
+
+
+
+
+
+MAS PARA EXEMPLIFICAR ISSO AÍ,
+
+
+O PROFESSOR 
+
+
+ESCREVE NOSSO CÓDIGO ASSIM:
+
+
+
+
+
+
+
+  onSubmitForm(formReference: NgForm) { ///aqui será passado o ACTUAL FORM element, com todos seus input fields e <selects> (os controls de sua form, essencialmente)..
+    console.log(formReference);
+    console.log('submitted!');
+
+    console.log('ISDIRTY?', formReference.dirty);
+
+    console.log(formReference.value);
+    console.log('ISVALID?', formReference.valid);
+    console.log('ISTOUCHED?', formReference.touched);
+
+
+
+
+    ///parte importante:
+
+
+    this.user.username = formReference.value.userData.username;  ///ISSO TUDO VAI DEFINIR AQUELE STAET COMO SENDO OS VALUES que recebemos lá dos input fields...
+    this.user.email = formReference.value.userData.email;
+    this.user.secretQuestion = formReference.value.secret;
+    this.user.answer = formReference.value.answer;
+    this.user.gender = formReference.value.gender;
+    this.user.textValue = formReference.value.textValue;
+
+    this.submitted = true;
+
+
+    formReference.reset(); ///////EIS O CÓDIGO EM QUESTÃO.
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> OK... ISSO REALMENTE FUNCIONOU..
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> SE SUBMITTARMOS NOSSA FORM AGORA,
+
+  VEREMOS QUE 
+
+
+
+  A FORM SERÁ SUBMITTADA,
+
+  MAS QUE 
+  DEPOIS 
+
+
+  DISSO TUDO 
+
+
+  _ SERÁ _ RESETTADO,
+
+
+
+
+
+
+
+
+  ATÉ MESMO AQUELAS CLASSES DINÂMICAS QUE ERAM/SÃO ADICIONADAS 
+  AOS NOSSOS INPUTS,
+
+
+
+  como 
+
+  'untouched',
+
+
+  'invalid',
+
+
+  'pristine',
+
+
+  etc...
+
+
+
+
+
+
+
+
+
+
+  --> OK, AGORA TEMOS UMA BOA OVERVIEW __ DE COMO _ PODEMOS 
+  CRIAR 
+
+
+
+RAPIDAMENTE FORMS PODEROSAS NO ANGULAR,
+
+COM O TEMPLATE-DRIVEN APPROACH....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> A TEMPLATE-DRIVEN APPROACH VAI TE SERVIR EM 90% DOS CASOS...
+
+
+
+
+
+
+
+
+--> MAS NO RESTO DO MÓDULO,
+
+
+ DAREMOS UMA OLHADA NO OUTRO APPROACH,
+ REACTIVE 
+
+ APPROACH,
+
+
+
+
+
+
+
+ QUE _ TE _ DÁ 
+
+
+
+
+ AINDA MAIOR CONTROLE SOBRE SUAS FORMS,
+
+
+
+e que 
+
+
+
+
+
+
+TE _ 
+
+DEIXA CRIAR FORMS MAIS FORTES,
+
+
+
+VALIDATORS,
+
+E TUDO MAIS...
+
+
+
+
+
+
+
+
+
+-> VEREMOS TUDO ISSO NAS PRÓXIMAS LIÇÕES....

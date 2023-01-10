@@ -1,0 +1,53 @@
+<div class="row">
+  <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+    <form
+      #localFormReference="ngForm"
+      (submit)="onFormSubmit(localFormReference)"
+    >
+      <div class="form-group">
+        <label for="projectName">Project Name</label>
+        <input class="form-control" 
+        forbiddenUsernameValidator
+        placeholder="Your Project Name"
+        type="text"
+        ngModel 
+        name="projectName" 
+        id="projectName"
+        
+        required />
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input class="form-control" 
+        placeholder="example@test.com" 
+        ngModel 
+        type="email"
+        name="email" 
+        required 
+        id="email"
+        
+        email />
+      </div>
+      <div class="form-group">
+        <label for="projectStatus">Secret Questions</label>
+        <select class="form-control" 
+        name="projectStatus" 
+        id="pStatus"
+        [ngModel]="'projectStatus[0]'">
+          <option value="projectStatus[0]">Stable</option>
+          <option value="projectStatus[1]">Critical</option>
+          <option value="projectStatus[2]">Finished</option>
+        </select>
+      </div>
+      <hr>
+
+      <button
+        class="btn btn-primary"
+        [disabled]="!localFormReference.valid"
+        type="submit"
+      >
+        Submit
+      </button>
+    </form>
+  </div>
+</div>

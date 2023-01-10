@@ -1,0 +1,1180 @@
+
+
+
+
+
+
+
+
+
+
+
+-> CERTO....
+
+
+AGORA QUE SOMOS CAPAZES DE __ SUBMITTAR UMA FORM NO REACTIVE APPROACH,
+
+
+por meio deste código:
+
+
+
+
+
+
+
+
+
+
+    <form  [formGroup]="signupForm" (ngSubmit)="onSubmitForm()">
+    <input>
+    ....
+    <button class="btn btn-primary" type="submit">Submit</button>
+    </form>
+
+
+
+
+
+
+
+
+
+E ESTE CÓDIGO:
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { FormControl, FormGroup } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent implements OnInit {
+  genders = ['Male', 'Female'];
+
+  signupForm: FormGroup;
+
+  ngOnInit(): void {
+    this.signupForm = new FormGroup({
+      username: new FormControl(null),
+
+      email: new FormControl(null),
+
+      gender: new FormControl(this.genders[0]),
+    });
+  }
+
+  onSubmitForm() {
+    console.log(this.signupForm.value);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Ex:
+
+
+
+  onSubmitForm() {
+    console.log(this.signupForm.value);
+  }
+
+
+
+
+
+
+
+
+
+
+  --> AGORA QUE SOMOS CAPAZES DE SUBMITTAR 
+
+
+
+
+  UMA FORM,
+
+
+
+
+
+
+  __ VAMOS ACTUALLY ADICIONAR UM POUCO DE VALIDATION 
+
+
+
+
+
+  AOS NOSSOS 
+
+
+
+  INPUT FIELDS/controls...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------
+
+
+OK, QUAL É A DIFERENÇA
+
+EM RELAÇAÕ AO TEMPLATE-DRIVEN APPROACH?
+
+
+
+
+
+
+
+
+
+
+--> bem, no TD
+
+
+NÓS SEMPRE ADICIONAMOS OS '''VALIDATORS'''
+
+
+
+
+DIRETAMENTE NOS ELEMENTOS HTML,
+
+
+como podemos observar DESTE CÓDIGO AQUI, DO INPUT DE USERNAME:
+
+
+
+
+
+
+
+
+
+<div class="form-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              class="form-control"
+              ngModel
+              placeholder="Your name"
+              name="username"
+              required ////AQUI
+              #nameReference="ngModel"
+              minlength="5"   ////AQUI
+            />
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------
+
+
+
+
+ou seja,
+
+
+usávamos coisas como 'required' e 'mingLength'...
+
+
+
+
+
+
+
+
+
+----> O 'required' é bem COMUM,
+
+
+
+
+
+ADICIONAMO-NO 
+
+
+
+PARA DEIXAR NOSSOS FIELDS COMO INDISPENSÁVEIS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> mas  __ _ISSO __ _ NÃO FUNCIONA _ NO REACTIVE APPROACH....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NÃO FUNCIONA POR UMA SIMPLES RAZÃO, ALGO ESSENCIAL DE ENTENDER:
+
+
+
+
+
+
+
+*** AQUI VOCe^NÃO  ESTÁ _ CONFIGURANDO_ _ A FORM 
+
+__ NO TEMPLATE,
+
+
+E SIM _ 
+
+SÓ _ ESTÁ 
+
+
+
+'SYNCHRONIZING A FORM DO ARQUIVO TYPESCRIPT COM A FORM 
+
+DO TEMPLATE, ATRAVÉS DE DIRECTIVES NO TEMPLATE'.... (
+
+
+
+    por meio de directives como 'formControlName' e '[formGroup]'
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+----------> OU SEJA,
+
+VOCÊ __ NÃO VAI _ CONFIGURAR _ 
+
+
+SUA FORM 
+
+LÁ 
+
+
+NO ARQUIVO 
+
+
+html,
+
+E SIM 
+
+
+VAI FAZER ISSO 
+
+
+NO ARQUIVO TYPESCRIPT...
+
+
+
+
+
+
+
+
+
+
+--------> É _ _eXATAMENTE _ POR ISSO 
+
+
+QUE 
+
+
+
+'new FormControl()'
+
+
+
+
+
+
+
+ACEITA/EXIGE _ MAIS DE 1 ARGUMENTO... -----> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CÓDIGO DE 'new FormControl()':
+
+
+
+
+
+        'email': new FormControl( 
+          null,
+        ),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        -> É ÓBVIO _ QUE VOCÊ VAI SETTAR MAIS DO QUE 
+
+
+
+        APENAS O 
+
+
+        'DEFAULT VALUE' de seu input field (aquele 'null' ali)...
+
+
+
+
+
+
+
+--> ALÉM DESSE PRIMEIRO PARÂMETRO,
+
+
+TEMOS O SEGUNDO PARÂMETRO,
+
+QUE É USADO 
+
+
+
+__ PARA _ DEFINIR VALIDATOr( ou validators, se vocÊ escrever 1 array)...
+
+
+
+
+
+
+
+
+-> NO SEGUNDO PARÂMETRO, VOCê PODE:
+
+a) passar apenas 1 validator (como 'required')
+
+
+
+
+
+b) PASSAR UMA LISTA__ DE VALIDATORS (um array)...
+
+
+
+
+
+
+
+
+
+
+
+
+----> para _ _CONSEGUIR ESCREVER 
+
+
+ESSE SEGUNDO PARÂMETRO,
+
+
+VOCÊ 
+
+
+_DEVE OBRIGATORIAMENTE 
+
+IMPORTAR O OBJECT 'Validators'
+
+
+
+
+LÁ DE 
+
+'@angular/forms'...
+
+
+
+
+
+
+
+---> você escreve os validators tipo assim:
+
+
+
+Validators.required 
+
+
+
+Validators.xxxxx 
+
+
+Validators.minLength, 
+
+
+etc etc...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+     'email': new FormControl( 
+          null,
+
+          [Validators.required, Validators.email]
+        ),
+
+
+
+
+
+
+
+
+
+
+--------> EU ACHO_ QUE ESSA É A ESCRITA CORRETA, MAS VOU CHECAR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ISSO QUER DIZER QUE O CÓDIGO FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      this.signupForm = new FormGroup({ 
+
+        'username': new FormControl(  
+
+        null, 
+        
+        [ Validators.required, Validators.minLength(5)]
+
+        ),
+
+        'email': new FormControl( 
+          
+          null,
+      [   Validators.required, Validators.email ]    
+
+        ),
+
+
+
+
+
+
+
+
+
+
+
+
+        ou seja,
+
+        você escreve os 'FormControl'
+
+        com um formato assim:
+
+
+
+
+
+
+        new FormControl(
+            'valorInicial',
+            [
+                Validators.required, Validators.xxxx, Validators.minLength(5)
+            ]
+        )
+
+
+
+
+
+
+
+
+
+
+
+
+-------> OK... O PROFESSOR NOS EXPLICA QUE MUITOS DESSES VALIDATORS DEMANDAM QUE VOCÊ NAÕ OS EXECUTE (com 'Validators.xxxx()', não faça isso, só com coisas como '.minLength(5)'...)
+
+
+
+
+
+
+
+
+
+
+
+------> VOCÊ NÃO QUER QUE OS METHODS DE 'Validators'
+
+
+SEJAM EXECUTADOS,
+
+
+
+
+
+
+esses static methods fornecidos pelos 'Validators',
+
+
+
+
+
+
+__ EM VEZ DISSO VOCÊ SÓ VAI QUERER PASSAR _ UMA _ REFERENCE A ESSE METHOD,
+
+
+
+
+
+
+___ PQ __ É O ANGULAR_ QUE VAI EXECUTAR _ _ESSE METHOD,
+
+
+
+
+VAI EXECUTAR _ ESSE METHOD __ SEMPRE QUE 
+
+
+DETECTAR QUE __ 
+
+
+O INPUT 
+
+DESSE 
+'FormControl'
+
+
+ESPECÍFICO __ 
+
+
+TIVER SIDO ALTERADO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO SIGNIFICA QUE 
+
+
+A ÚNICA FUNÇAÕ DEsses validators é servir como 'REFERENCES'
+
+
+
+
+ACERCA _ 'OF WHAT __ IT SHOULD EXECUTE AT THIS POINT OF TIME'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO, ESSE É O VALIDATOR DE 'required',
+
+
+
+
+MAS É CLARO QUE ESSA É APENAS UMA DAS OPÇÕES...
+
+
+
+
+
+
+
+
+
+-> A OUTRA OPÇÃO É PASSAR 1 ARRAY DE VALIDATORS,
+
+
+que serão todos considerados 
+
+
+no validate do input..
+
+
+
+
+
+
+
+o professor escreve assim:
+
+
+
+
+[
+    Validators.required, Validators.email
+]
+
+
+
+
+
+
+
+
+
+
+--> CERTO...
+
+
+
+
+
+
+
+------> PASSAMOS ESSES VALIDATORS AÍ,
+
+
+
+
+
+E AGORA TEMOS VALIDATION POSICIONADA..
+
+
+
+
+
+
+
+
+
+--> SE VOLTAMOS A NOSSA FORM 
+
+
+e inspecionamos o field de 
+
+'email',
+
+
+VEREMOS QUE 
+
+
+
+ELE ESTARÁ INICIALMENTE COMO 'invalid'...
+
+
+
+
+
+
+
+-> mas isso NÃO ESTÁ FUNCIONANDO.... --> os inputs sempre está como 'valid'...
+
+
+
+
+
+
+
+
+
+
+
+-> mentira, está funcionando... --> os inputs estão ficando como 'valid/invalid',
+
+
+a depender de nossa validation.... --> 
+
+
+
+
+A ÚNICA COISA QUE 
+
+
+
+AINDA 
+
+NÃO ESTÁ CERTA É:
+
+
+
+
+1) o STYLE DE NOSSOS INPUTs (não está refletindo que esse negócio está INVALID)
+
+
+
+
+
+2) O __ BUTTON_, que não está ficando 'disabled' nunca....
+
+
+
+
+
+
+
+
+
+
+
+
+----> ok... --> TEMOS QUE FAZER OS STYLES REFLETIREM ESSE 'invalid'...
+
+
+
+
+
+
+
+--> basta colocar, eu acho, um 
+
+
+ESTILO LÁ EM 'app.component.css'
+
+DIZENDO 
+
+
+
+
+'input.ng-invalid {
+    color: 'red'
+}
+'
+
+
+
+
+
+
+
+
+
+
+
+
+
+ESCREVI ASSIM:
+
+
+
+
+input.ng-invalid {
+    border: 1px solid red;
+}
+
+
+
+
+
+
+
+
+
+
+
+---> e isso funcionou, mas agora preciso colocar também 
+
+'ng-touched' 
+
+
+
+para fazer com que isso só fique como invalid assim que o user efetivamente clicar nesse input...
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+input.ng-invalid.ng-touched {
+    border: 1px solid red;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> na real, o melhor seria se 
+
+
+
+
+esse style só fosse ativado se realmente tivesse sido enfiado algum value nesse input field....
+
+
+
+
+
+ok, mas como fazer isso?
+
+
+
+ex:
+
+
+
+ng-pristine: The ng-pristine class tells that the form has not been modified by the user. This returns true if the form has not been modified by the user.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> vou precisar de alguma outra solução....
+
+
+
+
+
+
+
+--> algo que use a propriedade de 'value', provavelmente...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CONSEGUI....
+
+
+
+
+
+
+FICOU UM CÓDIGO MEIO SCUFFED, MAS FUNCIONOU:
+
+
+
+
+
+
+
+
+CÓDIGO DO TEMPLATE:
+
+
+
+          <input
+
+          [ngClass]="{
+            'redBorder': (signupForm.value.username && !signupForm.controls['username'].valid) ? 1 : 0
+          }"
+            type="text"
+            id="username"
+            class="form-control"
+            formControlName="username"
+          />
+
+
+
+
+
+
+
+
+
+
+
+          CÓDIGO CSS:
+
+
+
+.redBorder {
+    border: 1px solid red;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OU SEJA,
+
+AGORA O ELEMENTO INPUT SÓ VAI FICAR VERMELHO SE:
+
+
+
+1) TIVERMOS UM VALUE INPUTTADO DENTRO DO INPUT FIELD ('signupForm.value.username' PRESENTE)
+
+
+
+E 
+
+
+
+2) Se o CONTROL DE 'username' ESTIVER COMO INVALID (ou seja, '!signupForm.controls['username'].valid')
+
+
+
+
+
+
+
+
+
+
+--> E TUDO ISSO FOI POSSIBILITADO GRAÇAS à 
+
+
+
+
+DIRECTIVE DE '[ngClass]'
+
+
+
+
+
+
+
+
+
+
+
+
+--> VOU FAZER A MESMA COISA COM O 'email'....
+
+
+
+
+
+
+
+EX:
+
+
+
+        <div class="form-group">
+          <label for="email">Mail</label>
+          <input
+            type="email"
+            [ngClass]="{
+              'redBorder': (signupForm.value.email && !signupForm.controls['email'].valid) ? 1 : 0
+  
+            }"
+            id="email"
+            class="form-control"
+            formControlName="email"
+          />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          -> ACHO QUE A PRÓXIMA AULA DO PROFESSOR FALARÁ ESPECIFICAMENTE DISSO,
+
+          DE COMO 'GANHAR ACESSO AOS CONTROLS'
+
+
+          de nossa form,
+
+
+          para aí 
+
+
+
+
+          FAZER O VALIDATE INDIVIDUAL,
+
+          de cada 1 dos input fields...
+
+
+
+
+
+
+
+
+          

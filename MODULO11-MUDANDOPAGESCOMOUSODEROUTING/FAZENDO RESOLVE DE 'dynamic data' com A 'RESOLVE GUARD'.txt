@@ -1,0 +1,3113 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> NA ÚLTIMA AULA,
+
+APRENDEMOS A 'FAZER PASS DE STATIC DATA',
+
+
+
+através de códigos como ESTE (app-routing.module.ts):
+
+
+
+
+
+  {
+    path: 'not-found', 
+    component: GenericErrorPageComponent, //2.0   --> essa page será usada para TODO TIPO DE ERRORS POSSÍVEIS..
+    data: { //pass de DATA ESTÁTICA a essa nossa route...  --> isso nos deixa usar aquele component de 'GenericErrorPageComponent' MUITAS E MUITAS VEZES, DE FORMA REUTILIZÁVEL...
+      message: 'Page not found!'
+    } 
+},
+
+  {
+    ////////////ESSA ROUTE DEVE SER SEMPRE ___ ABSOLUTAMENTE A ÚLTIMA ROUTE DE NOSSO ARRAY DE ROUTES, para ser 'catch-all' de todas as routes que não encaixarem naquelas definidas logo acima....
+    path: '**', ///o double asterisk significa 'CATCH ALL THE ROUTES THAT ARE NOT DEFINED ABOVE' (ou seja, é usado com pages de erro 404)...
+    redirectTo: 'not-found', ///USADO _ PARA _ REDIRECIONAR nosso user quando ele digita paths que não existem na url bar... --> vamos redirecionar à page de 'PageNotFoundComponent', que é nossa page de 'erro 404, not found'...
+   
+   
+
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+  E ESTE(GenericErrorPageComponent):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
+@Component({
+  selector: 'app-generic-error-page',
+  templateUrl: './generic-error-page.component.html',
+  styleUrls: ['./generic-error-page.component.css']
+})
+export class GenericErrorPageComponent implements OnInit {
+
+
+
+
+  errorMessage: string;
+
+  constructor(private route: ActivatedRoute) {
+
+
+   }
+
+  ngOnInit(): void {
+
+    this.errorMessage = this.route.snapshot.data['message']; //DEFINE _ INICIAL_ DE SUA DATA...
+
+
+   this.route.data.subscribe( ///DEFINE __'POSTERIOR' de sua data (pq se a DATA de sua route/passada a sua ROUTE VIR A MUDAR EVENTUALMENTE, será redefinido o value de 'this.errorMessage' como equivalente ao novo value de 'message' na data recebida....)
+      (data) => {
+            this.errorMessage = data['message'];
+
+      }
+    )
+  }
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+e o template:
+
+
+
+
+
+
+<h4>{{ errorMessage }}</h4>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK ,
+
+MAS DIGAMOS QUE 
+
+
+ 
+
+ AGORA TEMOS 
+
+
+ UMA 
+
+ 'DYNAMIC DATA' 
+
+ QUE 
+
+
+  __ QUEREMOS _ FETCHEAR__ 
+
+
+  ANTES 
+
+  QUE 
+
+  UMA GIVEN ROUTE,
+
+  ROUTE-EXEMPLO,
+
+  CONSIGA SER DISPLAYADA OU RENDERIZADA....
+
+
+
+
+
+
+
+
+
+
+
+
+  -----> POR EXEMPLO,
+
+  LÁ EM 'servers'...
+
+
+
+
+
+
+
+
+
+
+  --> O PROFESSOR QUER QUE QUANDO UM SERVER FOR CLICADO,
+
+
+
+
+
+
+
+
+
+
+  _ 
+
+  SEJA __ CARREGADO _ ESSE SERVERITEM 
+
+  ESPECÍFICO 
+
+
+
+
+  LÁ 
+
+
+  DE ALGUM BACKEND.... -> VAMOS _ SIMULAr__ A EXISTÊNCIA DE UM BACKEND,
+
+  POR MEIO DO 
+
+
+  SET 
+
+  DE UM 
+
+  'setTimeout()'
+
+
+  de alguns milissegundos...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ---------> PARA ISSO,
+
+
+
+
+
+
+
+  PARA UM USE-CASE 
+
+  DESSES,
+
+  PRECISAMOS _ 
+
+   
+
+
+
+   DE UM 'RESOLVER'... --> 
+
+
+
+
+   RESOLVERS SÃO _ CONSTRUCTS __ ESPECÍFICOS 
+
+
+   _ 
+
+   do angular...
+
+
+
+
+
+
+
+
+
+
+
+
+
+   '''RESOLVERS'''' -> TAMBÉM SÃO 
+
+   'SERVICES',
+
+
+   exatamente comoo 
+
+
+
+
+   'canActivate' 
+
+   ou 
+
+   'canDeactivate'...
+
+
+
+
+
+
+
+
+
+
+
+   -> RESOLVERS  SÃO SERVICES QUE _ _VÃO NOS DEIXAR __RODAR 
+
+   UM 
+
+
+   __CÓDIGO_ _ ANTES _ 
+
+
+
+
+
+
+
+
+   DE UMA ROUTE 
+
+
+
+   SER RENDERIZADA...
+
+
+
+
+
+
+
+
+
+
+
+
+   --> E A _ DIFERENÇA DE 
+
+
+   'resolvers'/RESOLVE 
+
+
+
+   para 
+
+
+   'canActivate'
+
+
+
+   É QUE 
+
+
+
+
+   _O  RESOLVEr__ NÃO 
+
+
+
+
+   TEM A _ OBRIGAÇÃO DE 
+
+   TER DE 
+
+   'DECIDIR 
+
+   SE _ ESSA _ ROUTE _ VAI 
+
+   SER CARREGADA OU NÃO ,
+
+   A DEPENDER DA AUTH DO USER'... -----> EM VEZ DISSO,
+
+
+   O 
+
+
+   RESOLVER __ VAI __ SEMPRE _ 
+
+
+
+
+
+
+   QUERER CARREGAR O COMPONENT,
+
+
+
+
+   VAI _ CARREGAR O COMPONENT NO FINAL DAS CONTSA,
+
+
+
+
+
+   _ MASS _ 
+
+   ANTES DISSO ELE _ VAI CERTAMENTE FAZER UM 'PRE-LOADING' .... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ---> ELE VAI 'PRE-LOAD',
+
+
+   vai FETCHEAR 
+   DATA QUE 
+
+
+SERÁ NECESSÁRIA 
+
+PARA 
+
+
+o 
+
+
+component/route 
+
+MAIS TARDE...
+
+
+
+
+
+
+
+
+
+
+
+-------> É CLARO QUE _ A ALTERNATIVA A USAR 
+
+
+'RESOLVERS'
+
+
+
+
+
+É 
+
+
+
+SIMPLESMENTE 
+
+RENDERIZAR 
+
+
+
+
+
+
+-__ O COMPONENT/TARGET _ PAGE_ 
+
+DE FORMA INSTANTÂNEA... -->  AÍ,
+
+
+
+LÁ
+
+
+
+NO METHOD DE 'ngOnInit'
+
+
+DESSA PAGE,
+
+
+
+vocÊ poderia 
+
+
+
+
+
+etnão 'FETCH THE DATA AND DISPLAY SOME SPINNER WHILE IT LOADS'. ..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> E ISSO QUE EXPLICAMOS LOGO ACIMA,
+
+MEIO 'BRUTO',
+
+
+
+É ALGO QUE 
+
+
+CERTAMENTE FUNCIONA.... ---------> mas 
+
+
+
+SE VOCê QUER CARREGAR SUA DATA 
+
+''' ANTES DE FAZER O ACTUAL DISPLAY DE SUA ROUTE/PAGE''',
+
+
+
+
+
+
+
+
+VOCê 
+
+
+
+__PRECISA _ ADICIONAR UM RESOLVER..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK... 
+
+
+DIGAMOS QUE PARA O 'SINGLE SERVER COMPONENT'
+
+
+O PROFESSOR QUER 
+
+INCORPORAR UM 
+
+
+RESOLVEr...
+
+
+
+
+
+
+
+
+
+
+
+O COMPONENT de 'server.component.ts'
+
+
+
+ESTÁ ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ServersService } from '../servers.service';
+import { Params } from '@angular/router';
+
+@Component({
+  selector: 'app-server',
+  templateUrl: './server.component.html',
+  styleUrls: ['./server.component.css']
+})
+export class ServerComponent implements OnInit {
+
+  server: {id: number, name: string, status: string};
+
+  constructor(private serversService: ServersService, private route: ActivatedRoute, private router: Router ) { }
+
+  ngOnInit(): void {
+    // this.server = this.serversService.getServer(1)!;
+
+    const serverId = +this.route.snapshot.params['id'];
+
+    this.server = this.serversService.getServer(serverId)!;
+
+
+    this.route.params.subscribe( ///versão/modalidade usada para quando 'SEUS PARAMS FOREM ALTERADOS DURANTE A VIDA DE SEU COMPONENT/PAGE  de server'.... --> aí isso vai ALTERAR O CONTENT DA PÁGINA, sem reloads, intuitivamente (pq é um observable, async code, roda no background e detecta CHANGES NOS SEUS 'params' na url, durante o runtime/vida desse component/page de 'server')...
+      (params: Params) => {
+        this.server = this.serversService.getServer(+params['id'])!;
+      }
+    )
+      
+    
+
+
+  
+
+}
+
+
+onEdit() {
+
+  this.router.navigate(
+    ['edit'], {
+      relativeTo: this.route,
+      queryParamsHandling: 'preserve' ///outros valores possíveis: 'merge' e o 'default' (que é de simplesmente DROPPAR TODOS OS QUERY PARAMS QUANDO OCORRER O NAVIGATE ATÉ OUTRA PAGE, por meio desse 'this.router.navigate()')...
+      // queryParams: {allowEdit: 1 }
+    }
+  )
+}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK...
+
+
+
+
+
+
+
+
+
+
+
+
+DENTRO DO FOLDER DE 'server',
+
+
+
+O PROFESSOR ADICIONA UM ARquivo de 
+
+
+
+
+
+
+
+
+
+
+
+
+
+'server-resolver.service.ts'...
+
+
+
+
+
+
+
+
+--> TECNICAMENTE,
+
+O 
+
+
+'resolver'
+
+NAÕ DEIXA DE SER UM SERVICE COMO QUALQUER OUTRO...
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+export class ServerResolver {
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok.. .mas o primeiro passo de nosso 'RESOLVEr'
+
+
+SERÁ 
+
+
+_IMPORTAR E IMPLEMENTAR A 
+
+
+
+INTERFACE 
+
+
+de 
+'
+Resolve'
+
+
+
+LA
+
+
+
+DE 
+
+'@angular/router',
+
+
+TIPO ASSim:
+
+
+
+
+
+
+import { Resolve } from '@angular/router';
+
+
+
+export class ServerResolver implements Resolve {
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O 'Resolve' É UM  __ GENERIC _ TYPE,
+
+
+
+
+O QUE QUER DIZER QUE ELE 
+DEVE 'WRAPPAR'
+
+ 
+
+
+
+
+O _ ITEM, SEJA QUAL FOR,
+
+
+
+
+
+
+O ITEM OU DATA FIELD QUE 
+
+VOCCê 
+
+
+
+
+
+_ VAI CERTAMENTE RECEBER NESSE 'server-resolver.service.ts',
+
+
+
+
+
+
+NO FINAL DAS CONTAS....
+
+
+
+
+
+
+
+
+
+
+
+
+-> COMO AQUI VAMOS QUERER 'FETCHEAR UM SERVER',
+
+
+
+
+_ O PROFESSOR DIZ QUE DEVEMOS 
+
+
+
+
+
+
+
+
+DEFINIR O 'TYPE' desse RESOLVER aogra,
+
+dentro 
+
+desse 'resolver'... 
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+import { Resolve } from '@angular/router';
+
+
+
+export class ServerResolver implements Resolve<{}> {
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+-----> OK... DEFINIMOS O TYPE COMO '{}' 
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR NOS EXPLICOU QUE _ É BEM COMUM 
+
+
+
+OUTSOURCEAR ESSES 'types' EM INTERFACES, OU EM MÓDULOS EM GERAL..
+
+
+
+
+
+
+
+
+
+
+
+
+-> mas ainda assim ele escreve o type AQUI MESMo:
+
+
+
+
+
+
+import { Resolve } from '@angular/router';
+
+
+
+export class ServerResolver implements Resolve<{id: number, name: string, status: string}> {
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK, FIZEMOS UM DEFINE DA TYPE DEFINITION DESSA COISA,
+
+
+que é aquilo que o 
+
+RESOLVER VAI TER QUE NOS DAR,
+
+NO FINAL DAS CONTAS. (vai resolver  COMO UM 'server', com ID, NAME E STATUS....)
+
+
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+import { Resolve } from '@angular/router';
+
+export class ServerResolver implements Resolve<{id: number, name: string, status: string}> { 
+    //esse implement é necessário para TRANSFORMAR ESSA CLASS/SERVICE EM um 'resolver', que é tipo um SERVIÇO ESPECIAL....
+
+
+
+
+
+
+
+
+
+
+
+////RESOLVERS -> FAZEM O 'RESOLVE' da DATA de seu component/route _ ANTES _ DE ELE SER CARREGADO... (antes de 'ngOnInit()', e antes do constructor do component)...
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK...
+
+
+
+
+
+
+
+
+
+e essa interface de 'Resolve'
+
+
+
+
+_ VAI SEMPRE _ NOS __OBRIGAR _ A DEFINIR UM METHOD DE 
+
+
+'resolve()',
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ESSE METHOD de 'resolve()' SEMPRE EXIGE
+
+
+
+
+2 PARÂMETROS DIFERENTES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+1o parametro -----> é a 'route', representada por 'ActivatedRouteSnapshot'...
+
+
+
+
+
+
+
+
+
+
+2o PARAMETRO --> é o 'state',
+
+
+    representado por 'RouterStateSnapshot'...
+
+
+
+
+
+
+
+
+
+
+    -> O CÓDIGO FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+
+
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK....
+
+
+
+
+
+
+
+
+
+ESSAS SÃO AS 2 'INFORMATION PIECES'
+
+
+
+QUE O 
+
+
+
+RESOLVE METHOD VAI CONSEGUIR ATRAVÉS DO 'ANGULAR'...
+
+
+
+
+
+
+
+
+
+
+
+
+-----> E, NO FINAL DAS CONTAS,
+
+
+
+ESSE 
+
+
+METHOD DE 'resolve'
+
+
+
+
+_tAMBÉM_ TEM QUE 
+
+RETORNAR
+
+
+
+OU:
+
+
+
+
+
+
+
+
+
+1) UM OBSERVABLE ... --> UM OBSERVABLE _ QUE VAI 
+
+
+RETORNAR O __ TYPE__ QUE DEFINIMOS __ 
+
+
+COMO O  TYPE DE NOSSA INTERFACE de 
+
+'Resolve',
+que no 
+
+caso é 
+
+
+'{id: number, name: string, status: string}'
+
+
+
+
+
+
+
+
+
+
+fica tipo 
+
+
+Observable<{...}>
+
+
+
+
+2) UMA PROMISE  -----> 
+
+
+
+UMA PROMISE QUE, NO FINAL DAS CONTAS, TAMBÉM RETORNARÁ ESSE '<{...}>' (como '<Server>')...
+
+
+
+
+
+
+
+
+
+
+3) SÓ O 'TYPE' que vocÊ 
+
+definiu 
+
+em 
+
+'Resolve<xxxxx>',
+
+
+
+que pode ser 
+
+
+
+'Server',
+
+nesse nosso case... ----------> 
+
+
+
+SE SEU 'TYPE' 
+
+do 'Resolve<>' 
+
+for 
+
+retornado 
+
+dessa forma,
+
+ele 
+
+será retornado de forma SÍNCRONA,
+
+essencialmente..
+
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM O CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
+import { Observable } from 'rxjs';
+
+
+
+interface Server {
+    id: number;
+    name: string;
+    status: string;
+}
+
+
+
+export class ServerResolver implements Resolve<Server> { 
+
+resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Server> | Promise<Server> | Server {
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... ESSES SÃO OS 
+
+'return types'
+
+lá de 
+'resolve()'...
+
+
+
+
+
+
+
+
+
+
+-. AGORA SÓ PRECISAMOS IMPLEMENTAR A LÓGICA 
+
+
+PARA ACTUALLY CONSEUGIR 
+
+
+ 
+
+
+ ESSA DATA DE VOLTA...
+
+
+
+
+
+
+
+
+
+
+
+ -----> COMO NÓS TEMOS O NOSSO SERVICE DE 
+
+
+ 'servers.service.ts',
+
+
+
+
+
+
+
+
+
+
+
+
+POEDMOS USAR ALGUNS METHODS DE  LÁ...
+
+
+
+
+
+
+
+----> O METHOD QUE PODEMOS USAR É O METHOD 
+
+
+
+
+'getServer()',
+
+
+
+
+
+
+
+QUE TEM ESTA LÓGICA:
+
+
+
+
+
+
+
+  getServer(id: number) {
+    const server = this.servers.find((server) => {
+      return server.id === id;
+    })
+
+    return server;
+  }
+
+
+
+
+
+-> ESSA LÓGICA AÍ NOS DÁ DE VOLTA UM SERVER... (
+
+
+    mas o problema é que isso aí é um CÓDIGO SYNC...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+-----> PODEMOS RODAR ESSA LÓGICA LÁ DENTRO de 
+
+
+'server-resolver.service.ts',
+
+
+dentro do 
+
+method de 
+
+
+'resolve()'..
+
+
+
+
+
+
+
+-----------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS COMO 'getServer'
+
+
+É UM CÓDIGO __ SYNC,
+
+
+ 
+
+
+
+
+ ELE VAI RODAR INSTANTANEAMENTE.... ----> 
+
+
+
+
+
+
+
+e isso quer dizer que 
+ 
+
+
+esse código vai 'RESOLVE INSTANTLY.'..
+
+
+
+
+
+
+
+
+
+
+--> E, COMO OBSERVADO LÁ NO SEU 'resolver',
+
+
+NO METHOD DE 
+
+
+'resolve()',
+
+
+É 
+
+
+__FINE_ QUE 
+
+
+
+
+
+
+
+a lógica que você executa lá 
+
+
+
+
+retorne ALGO QUE __ É RESOLVIDO ''INSTANTLY'',
+
+
+
+
+
+
+justamente 
+
+por causa 
+
+
+do return type de 
+
+
+'Server',
+
+
+
+
+
+QUE É UMA DAS RETURN POSSIBILITIES DEFINIDAS POR NÓS (return de algo que é resolvido SÍNCRONAMENTE, sem return de código async/promises/observables).... ------> 'INSTANTLY RETURN THE DATA'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> SE QUEREMOS REALMENTE 
+
+
+
+
+
+RETRIEVAR ESSA DATA, ESSA DATA QUE É 'RESOLVED INSTANTLY',
+
+
+
+
+
+__devemos 
+
+ACESSAR O SERVICE  DE 
+
+
+'serversService'
+
+
+
+
+DE DENTRO 
+
+
+
+
+DESSE 
+
+'server-resolver.service.ts',
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+constructor(private serversService: ServersService) {
+
+}
+
+
+
+
+
+resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Server> | Promise<Server> | Server {
+
+
+
+    return this.serversService.getServer()
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK,
+ 
+
+ MAS O QUE PASSO COMO 
+
+
+ O PARÂMETRO DE 'getServer()'?
+
+
+
+
+
+
+--> É CLARO QUE AQUI FIZ UM ERRO,
+PQ 
+
+
+ESQUECI DE 
+
+escrever 
+
+'@Injectable()' (para conseguir INJETAR UM SERVICE DENTRO DESSE NOSSO SERVICE, O SERVICE DE 'serversService' dentro de 'ServerResolver', que é OUTRO SERVICE)...
+
+
+
+
+
+-> TAMBÉM PRECISO ADICIONAR 'ServerResolver' como um dos 'providers' lá em 'app.module.ts', para conseguir INJETAR ESSE SERVICE DENTRO DE OUTROS SERVICES....
+
+
+
+
+ ---> 
+
+
+
+ EX:
+
+
+
+
+
+
+
+   providers: [ServersService, UsersService, AuthService, AuthGuard, CanDeactivateGuard, ServerResolver],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   -------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+   OK.. MAS AGORA 
+
+    
+    PRECISAMOS 
+
+
+    ''SABER O ID DO 
+
+    SERVER QUE VAMOS QUERER __ FETCH'''...
+
+
+
+
+
+
+
+
+
+
+    --> MAS COMO PODEMOS OBTER ISSo?
+
+
+
+
+
+    -> TALVEZ POR MEIO DO 
+
+
+    'data'
+
+
+    DENTRO 
+
+    DE NOSSA ROUTE... 
+
+
+
+
+
+
+
+
+
+
+
+    -----> ISSO PQ CADA UMA DE NOSSAS ROUTES PODE 
+
+
+    _ RECEBER_ O PASS _ DE DATA DINÂMICO/ESTÁTICO,
+
+    como vimos com este código aqui:
+
+
+
+
+
+
+
+
+      {
+    path: 'not-found', 
+    component: GenericErrorPageComponent, //2.0   --> essa page será usada para TODO TIPO DE ERRORS POSSÍVEIS..
+    data: { //pass de DATA ESTÁTICA a essa nossa route...  --> isso nos deixa usar aquele component de 'GenericErrorPageComponent' MUITAS E MUITAS VEZES, DE FORMA REUTILIZÁVEL...
+      message: 'Page not found!'
+    } 
+},
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ENTRETANTO, NESSE CASE AQUI,
+
+
+
+
+teríamos de 
+COLOCAR 
+
+
+
+
+uma data como 
+
+
+'data: {
+    id: serverId
+}
+',
+
+
+
+
+
+
+
+
+
+
+PROVAVELMENTE PEGAR ESSA DATA DE ALGUM LUGAR... (mas não sei como)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+BEM, O NOSSO PATH DE 'servers'
+
+
+
+ESTÁ ASSIM:
+
+
+
+
+
+
+
+
+
+
+  {
+    ///COM NESTED ROUTES...
+    path: 'servers', //localhost:4200/servers
+    component: ServersComponent, //servers.component.html
+    canActivateChild: [AuthGuard], ///propriedade usada para DEFINIR 'guard' EM TODAS AS CHILD ROUTES, MAS NÃO NA ROUTE inicial/parent... (deixa essa route 'desprotegida' em relaçaõ ao acesso do user)... 
+    
+    children: [
+      ///child routes...
+      {
+        path: ':id',
+        component: ServerComponent,
+      },
+
+      {
+        path: ':id/edit',
+        canDeactivate: [CanDeactivateGuard],   ///GUARD meio complicada de definir... ver estrutura em 'can-deactivate-guard.service.ts'... ----> O COMPORTAMENTO DE 'leave' dessa página de 'edit-component' SERÁ DEFINIDO NA PRÓPRIA PAGE, em 'edit-component.ts' mesmo.... (e não no service de 'can-deactivate-guard.service.ts')..
+        component: EditServerComponent,
+      },
+    ],
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> seria feliz se 
+
+PUDÉSSEMOS 
+
+
+
+pegar o 'ID' em ':id'
+
+
+
+inputtado pelo user 
+
+E ENTÃO PASSAR COMO 'data'
+
+
+
+À NOSSA ROUTE..
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> bem.... a boa notícia,
+
+aqui,
+
+é que 
+
+ACTUALLY 
+
+JÁ CONSEGUIMOS A 'ROUTE'
+
+
+
+
+de 
+
+
+'server'
+DENTRO 
+
+
+
+DE 
+
+
+'server-resolver.service.ts'...
+
+
+
+
+
+
+
+->  ESSA ROUTE QUE VAMOS 'get' 
+
+AQUI É 
+
+
+APENAS A SNAPSHOT DA ROUTE, SIM,
+
+ 
+ pq é 
+
+
+ 'ActivatedRouteSnapshot'... 
+
+
+
+
+
+ -> contudo,
+
+
+
+ ISSO NÃO É RUIM,
+
+ PQ 
+
+ ESSA SNAPSHOT É TUDO DE QUE PRECSIAMOS,
+
+
+
+ PQ 
+
+
+ ESSE SERVICE DE 
+
+
+
+
+ 'server-resolver.service.ts'
+
+
+
+
+__ VAI REALMENTE 'RUN '
+
+
+
+SEMPRE QUE 
+
+RE-RENDERIZARMOS ESSA ROUTE.... ----> ISSO SIGNIFICA QUE 
+
+
+O 
+
+
+SERVICE DE 
+
+
+
+'server-resolver.service.ts'
+
+
+É EXECUTADO _ TODAS AS VEZES 
+
+
+
+QUE REINICIAMOS A PAGE,
+
+
+ao contrário do COMPONENT,
+
+que não é 
+
+
+RE-EXECUTADO/RE-RENDERIZADO...
+
+
+
+
+
+
+
+(
+
+    é por isso que não precisamos settar 1 observable ou qualquer outra coisa...
+
+)
+
+
+
+
+
+
+
+---> E É POR ISSO QUE PODEMOS CONSEGUIR OS 'params' 
+
+
+DE NOSSA ROUTE,
+
+
+
+por meio do código de 
+
+
+
+
+
+const params = +route.params['id'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+FICA TIPO ASSIm:
+
+
+
+
+
+
+
+
+
+
+
+resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Server> | Promise<Server> | Server {
+
+    const params = +route.params['id']; ///podemos acessar os PARAMS de nossa url assim, através DA SNAPSHOT de nossa route...
+
+
+    return this.serversService.getServer(params);
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> E ESSA É A MANEIRA MAIS FÁCIL DE USAR ESSE RESOLVER...
+
+
+
+
+
+
+
+
+
+
+
+-> E ESSE RESOLVER VAI REALMENTE FAZER O 'LOAD' DE NOSSA DATA_  
+
+
+'IN ADVANCE',
+
+antecipdamente....
+
+
+
+
+
+
+
+
+-> E ESSE CÓDIGO DE 
+
+'resolver'
+
+
+TAMBÉM FUNCIONA/FUNCIONARIA 
+
+
+
+SE VOCÊ 
+
+USAR/USASSE 
+
+
+
+
+
+UM METHOD ASYNC,
+
+
+
+COMO UM METHOD QUE FAZ UM HTTP REQUEST..
+
+
+
+
+
+
+
+
+
+
+
+-> OK, MAS COM ESSE RESOLVER COLOCADO NO LUGAR,
+
+
+
+É ÓBVIO QUE 
+
+AGORA PRECISAMOS __ O ADICIOANR _ EM ALGUM LUGAR DE NOSSO CÓDIGO...
+
+
+
+
+
+
+
+
+
+-> ESSE LUGAR __ PROVAVELMENTE SERÁ 
+
+'app-routing.module.ts',
+
+
+
+
+
+
+
+NA NOSSA ROUTE DE 
+'server',
+
+
+
+
+
+como uma das KEYS dos objects 'route'...
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  {
+    ///COM NESTED ROUTES...
+    path: 'servers', //localhost:4200/servers
+    component: ServersComponent, //servers.component.html
+    // canActivate: [AuthGuard], ////PROPRIEDADE_ USADA _ PARA DEFINIR 'GUARD' ( ou guards) PARA ESSA SUA ROUTE específica... --> e essas guards serão aplicadas a TODAS AS CHILD ROUTES DESSA ROUTE, também....
+    canActivateChild: [AuthGuard], ///propriedade usada para DEFINIR 'guard' EM TODAS AS CHILD ROUTES, MAS NÃO NA ROUTE inicial/parent... (deixa essa route 'desprotegida' em relaçaõ ao acesso do user)... 
+    
+    children: [
+      ///child routes...
+      {
+        path: ':id',
+        component: ServerComponent,
+        resolve: 
+      },
+
+      {
+        path: ':id/edit',
+        canDeactivate: [CanDeactivateGuard],   ///GUARD meio complicada de definir... ver estrutura em 'can-deactivate-guard.service.ts'... ----> O COMPORTAMENTO DE 'leave' dessa página de 'edit-component' SERÁ DEFINIDO NA PRÓPRIA PAGE, em 'edit-component.ts' mesmo.... (e não no service de 'can-deactivate-guard.service.ts')..
+        component: EditServerComponent,
+      },
+    ],
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -------> OK... 
+
+
+
+
+
+
+  É REALMENTE ISSO QUE VAMOS FAZER... -> 
+
+
+  É A PROPRIEDADE DE 
+
+  'resolve'....
+
+
+
+
+
+
+  -> ESSA PROPRIEDADE EXIGE UM __ OBJECT JAVASCRIPT COMO VALUE,
+
+
+  E NELE __ NÓS MAPPEAMOS 
+
+  TODOS OS RESOLVERS...
+
+
+
+
+
+
+
+
+  ----> OS 'RESOLVER' são diferentes DAS OUTRAS 
+
+  GUARDS,
+
+
+  PQ LÁ NÓS USÁVAMOS ARRAYS..
+
+
+
+
+
+
+
+
+  --> COM OS RESOLVERS,
+
+
+  UM APPROACH DIFERENTE É 
+
+
+  TOMADO,
+
+
+
+  e logo veremos a razão disso..
+
+
+
+
+
+
+
+  --> OK, COLOCAMOS KEY-VALUE PAIRS 
+
+
+
+  DOS 
+
+
+
+
+
+  RESOLVERS QUE 
+
+  QUEREMOS USAR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> O NOME DA PROPERTY CABE A NÓS,
+
+
+  MAS COLOCAMOS O NOME DA PROPERTY COMo 'server'...
+
+
+
+
+
+
+  FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+  resolve: {
+      server: ServerResolver
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  EX:
+
+
+
+
+
+
+
+
+
+
+
+    {
+    ///COM NESTED ROUTES...
+    path: 'servers', //localhost:4200/servers
+    component: ServersComponent, //servers.component.html
+    // canActivate: [AuthGuard], ////PROPRIEDADE_ USADA _ PARA DEFINIR 'GUARD' ( ou guards) PARA ESSA SUA ROUTE específica... --> e essas guards serão aplicadas a TODAS AS CHILD ROUTES DESSA ROUTE, também....
+    canActivateChild: [AuthGuard], ///propriedade usada para DEFINIR 'guard' EM TODAS AS CHILD ROUTES, MAS NÃO NA ROUTE inicial/parent... (deixa essa route 'desprotegida' em relaçaõ ao acesso do user)... 
+    
+    children: [
+      ///child routes...
+      {
+        path: ':id',
+        component: ServerComponent,
+        resolve: {server: ServerResolver}
+      },
+
+      {
+        path: ':id/edit',
+        canDeactivate: [CanDeactivateGuard],   ///GUARD meio complicada de definir... ver estrutura em 'can-deactivate-guard.service.ts'... ----> O COMPORTAMENTO DE 'leave' dessa página de 'edit-component' SERÁ DEFINIDO NA PRÓPRIA PAGE, em 'edit-component.ts' mesmo.... (e não no service de 'can-deactivate-guard.service.ts')..
+        component: EditServerComponent,
+      },
+    ],
+  },
+
+
+
+
+  -------------------------------
+
+
+
+
+
+
+  CERTO....
+
+
+
+
+
+
+
+
+
+ISSO AGORA VAI 'MAP THE DATA'
+
+
+
+QUE O RESOLVER 'GIVES US BACK'  (Que, no caso, é aquele type de 'Server', data de 'Server' obtida por meio de 'getServer()')...
+
+
+
+
+
+
+
+
+
+
+
+-> OK... -> ELE NOS DÁ 
+
+
+
+ ESSA DATA ATRAVÉS DAQUELE METHOD DE 'resolve()"
+ que 
+
+ fomos forçados a codar...
+
+
+
+
+
+
+
+
+
+
+ -> POR FIM,
+
+
+
+ ESSA DATA DE 'server',
+
+ nesse nosso exemplo,
+
+
+
+ SERÁ 
+
+
+
+ __ARMAZENADA_ DENTRO 
+
+ DESSA PROPRIEDADE 
+
+ 'server'
+
+
+ que agora FICARÁ DISPONÍVEL...
+
+
+
+
+
+
+
+
+
+
+
+ -> ficará _ disponível 
+
+
+
+
+
+
+ __ DENTRO _ DESSE 'to-be loaded' 
+
+ COMPONENT DE 
+
+
+
+ ':id', que é 'ServerComponent'..
+
+
+
+
+
+
+
+
+ ------> CERTO... NESSE 'TO-BE LOADED COMPONENT',
+
+
+
+ TEMOS ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+ import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ServersService } from '../servers.service';
+import { Params } from '@angular/router';
+
+@Component({
+  selector: 'app-server',
+  templateUrl: './server.component.html',
+  styleUrls: ['./server.component.css']
+})
+export class ServerComponent implements OnInit {
+
+  server: {id: number, name: string, status: string};
+
+  constructor(private serversService: ServersService, private route: ActivatedRoute, private router: Router ) { }
+
+  ngOnInit(): void {
+    // this.server = this.serversService.getServer(1)!;
+
+    const serverId = +this.route.snapshot.params['id'];
+
+    this.server = this.serversService.getServer(serverId)!;
+
+
+    this.route.params.subscribe( ///versão/modalidade usada para quando 'SEUS PARAMS FOREM ALTERADOS DURANTE A VIDA DE SEU COMPONENT/PAGE  de server'.... --> aí isso vai ALTERAR O CONTENT DA PÁGINA, sem reloads, intuitivamente (pq é um observable, async code, roda no background e detecta CHANGES NOS SEUS 'params' na url, durante o runtime/vida desse component/page de 'server')...
+      (params: Params) => {
+        this.server = this.serversService.getServer(+params['id'])!;
+      }
+    )
+      
+    
+
+
+  
+
+}
+
+
+onEdit() {
+
+  this.router.navigate(
+    ['edit'], {
+      relativeTo: this.route,
+      queryParamsHandling: 'preserve' ///outros valores possíveis: 'merge' e o 'default' (que é de simplesmente DROPPAR TODOS OS QUERY PARAMS QUANDO OCORRER O NAVIGATE ATÉ OUTRA PAGE, por meio desse 'this.router.navigate()')...
+      // queryParams: {allowEdit: 1 }
+    }
+  )
+}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> POR ENQUANTO,
+
+
+NESSE CÓDIGO AÍ,
+
+
+
+ESTIVEMOS CONSEGUINDO 
+
+
+
+NOSSO SERVER 
+
+POR MEIO DAQUELAS LINHAS DE 
+
+
+
+
+'''
+
+
+
+
+
+    const serverId = +this.route.snapshot.params['id'];
+
+    this.server = this.serversService.getServer(serverId)!;
+
+    this.route.params.subscribe( ///versão/modalidade usada para quando 'SEUS PARAMS FOREM ALTERADOS DURANTE A VIDA DE SEU COMPONENT/PAGE  de server'.... --> aí isso vai ALTERAR O CONTENT DA PÁGINA, sem reloads, intuitivamente (pq é um observable, async code, roda no background e detecta CHANGES NOS SEUS 'params' na url, durante o runtime/vida desse component/page de 'server')...
+      (params: Params) => {
+        this.server = this.serversService.getServer(+params['id'])!;
+      }
+    )
+
+
+
+
+
+'''
+
+
+
+
+
+
+
+
+
+
+
+------> essas linhas e essa data ERA OBTIDA LÁ EM 
+
+'ngOnInit'.... ------> BEM,
+
+AGORA 
+
+
+
+VAMOS COMENTAR _ TUDO ISSO PARA FORA DO CÓDIGO,
+
+
+
+
+
+
+
+
+
+
+
+
+
+PQ _ AGORA_ VAMOS USAR 
+
+
+
+
+1 RESOLVER PARA _ ESSA FUNÇÃO AÍ...
+
+
+
+
+
+
+
+
+-> E ESSE É O OBJETIVO DE 'RESOLVERS',
+
+
+
+FAZER _ O 'PRE-LOAD' 
+
+de data,
+
+
+ATÉ MESMO _ ANTES _ 
+DE COISAS/PROCEDIMENTOS DE 'FETCH DATA'
+
+
+
+QUE VOCê RODA 
+
+
+
+NO SEU 'ngOnInit' hook....
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OS RESOLVERS FAZEM 'MAIS SENTIDO' QUANDO SÃO USADOS COM 
+
+
+async tasks...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O CÓDIGO VAI FICANDO ASSIM:
+
+
+
+
+
+  ngOnInit(): void {
+
+
+    
+
+    ///////////// ESSE CÓDIGO TODO FUNCIONA, SIM, mas AQUI DECIDIMOS USAR RESOLVERS PARA FAZER 'PRE-LOAD' de nossa data; é um load tão anterior que é ANTERIOR AO 'ngOnInit()' e ao 'constructor' de nosso component...
+
+    // const serverId = +this.route.snapshot.params['id'];
+
+    // this.server = this.serversService.getServer(serverId)!;
+
+    // this.route.params.subscribe( ///versão/modalidade usada para quando 'SEUS PARAMS FOREM ALTERADOS DURANTE A VIDA DE SEU COMPONENT/PAGE  de server'.... --> aí isso vai ALTERAR O CONTENT DA PÁGINA, sem reloads, intuitivamente (pq é um observable, async code, roda no background e detecta CHANGES NOS SEUS 'params' na url, durante o runtime/vida desse component/page de 'server')...
+    //   (params: Params) => {
+    //     this.server = this.serversService.getServer(+params['id'])!;
+    //   }
+    // )
+      
+    
+
+
+  
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> DENTRO DESSE 'ngOnInit',
+
+
+
+O PROFESSOR COMENTA QUE PODEMOS 
+
+'''FACILMENTE CONSEGUIR NOSSO SERVER'''' 
+
+
+
+
+
+
+
+
+POR MEIO 
+
+
+DO _ _BIND__ 
+
+
+
+
+
+
+
+DE 'DATA' 
+
+
+DO 
+
+
+observable de 
+
+'data'... (
+
+
+    funcionamento SIMILAR ao 'this.route.data.subscribe(()=>{})' usado com O PASS DE DATA _ESTÁTICA, lá com 'data: {key: value}' nas nossas routes, diretamente',
+
+
+
+    MAS _ AQUI 
+
+
+    FAREMOS 
+
+    ISSO 
+
+
+    __ COM A AJUDA DO NOSSO RESOLVER.....
+)
+
+
+
+
+
+
+
+---->  ISSO PQ 
+
+A 
+
+DATA 
+
+CARREGADA/RETRIEVADA PELO 
+
+'resolver'
+
+TAMBÉM 
+
+VAI IR 
+
+NESSA 'bag' 
+
+DE DATA 
+
+
+
+_ QUE _ SERÁ RETRIEVADA _POR SEU COMPONENT...
+
+
+
+
+
+
+
+
+
+
+
+vai ficando tipo assim:
+
+
+
+
+
+  ngOnInit(): void {
+
+
+      this.route.data.subscribe(
+          (data) => {
+              this.server = data['server'];
+          }
+      )
+    
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AQUI O PROFESSOR VAI USAR UM OBSERVABLE 
+
+
+_ PQ __ O SERVER (o object 'server', de nosso app)
+
+
+
+
+
+_______ PODE _ __ MUDAr_ ENQUANTO _ JÁ 
+
+
+ESTIVERMOS NA NOSSA PAGE (e é por isso que temos aquele 'SIDE MENU'),
+
+
+E É POR ISSO  
+
+QUE TAMBÉM 
+
+SETTAMOS NOSSOS 
+
+ROUTE PARAMS 
+
+DINAMICAMENTE...
+
+
+
+
+
+
+
+
+
+--> OK,
+
+
+é por isso 
+
+que escrevemos esse 
+
+'data['server']' 
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA, SE RECARREGARMOS NOSSO APP,
+
+
+
+veremos que ELE TERÁ O MESMO COMPORTAMENTO DE ANMTES,
+
+
+
+
+
+MAS AGORA 
+
+
+
+
+NÃO VAI MAIS USAR OS 'PARAMS' RETRIEVADOS DIRETAMENT DO 'serverComponent',
+
+
+
+E SIM 
+
+
+
+
+_ 
+
+
+
+VAI OS RETRIEVAR POR MEIO DO USO 
+
+
+DE _ UM RESOLVER_ ANTES DO LOAD DESSE COMPONENT.. ------->
+
+
+
+
+E ISSO 
+
+
+SE TORNA ESPECIALMENTE ÚTIL QUANDO 
+
+
+TRABALHAMOS COM ASYNC DATA,
+
+COM NOSSOS COMPONENTS...

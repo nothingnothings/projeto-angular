@@ -1,0 +1,154 @@
+
+
+
+
+
+
+
+
+
+
+
+NESSE MÓDULO,
+
+
+APRENDEMOS AS DUAS MANEIRAS DE CRIAR 1 COMPONENT DINAMICAMENTE:
+
+
+
+
+
+
+
+
+1) USAR NGIF --> O PROFESSOR RECOMENDA O USO DESSE APPROACH COM A MAIOR FREQUÊNCIA POSSÍVEL ...
+
+
+
+
+
+
+
+
+
+
+
+2) USAR component factory e CRIAR O COMPONENT DENTRO DE NOSSO CÓDIGO TS -->
+
+
+
+se vocÊ 
+
+
+
+
+estiver fazendo algo como uma TPL ,
+
+
+e aí 
+
+quer 
+
+dar uma 
+maneira de seus users 
+
+
+criar 
+
+
+1 alert de DENTRO DO SEU CÓDIGO, essa seria uma razão 
+
+
+
+para fazer isso....
+
+
+
+
+
+
+
+-> MAS É MELHOR USAR O NGIF,
+
+
+
+
+
+QUE FAZ TODO O HEAVY LIFTING PARA NÓS... --> pq o ngIF 
+
+
+
+realmente 
+
+
+NÃO RENDERIZA/ADICIONA CONTEÚDO
+
+
+
+DESNECESSÁRIO NO SEU DOM...
+
+
+
+
+
+
+
+
+
+
+
+----> MAS SE VOCÊ QUER RENDERIZAR SEU COMPONENT PROGRAMATICAMENTE,
+
+
+VOCÊ FAZ ASSIM:
+
+
+
+
+
+1) VOCÊ CRIA SUA PRÓPRIA COMPONENT FACTORY 
+
+
+
+
+
+
+
+
+2) USA UMA HELPER DIRECTIVE (como 'placeholder') 
+
+
+
+
+
+
+3) USA UMA VIEWCONTAINER REFERENCE (que obtém com a ajuda da directiive)..
+
+
+
+
+
+
+
+4) AÍ VOCÊ USA 
+
+
+
+ESSAS COISAS PARA DINAMICAMENTE CRIAR E RENDERIZAR SEU COMPONENT, COM A AJUDA DO ANGULAR...
+
+
+
+
+
+
+
+
+
+--> É IMPORTANTE QUE TODOS OS COMPONENTS RENDERIZADOS DINAMICAMENTE SEJAM ADICIONADOS AO ARRAY
+
+
+DE 'entryComponents',
+
+
+
+lá em 'app.module.ts'...

@@ -1,0 +1,1323 @@
+
+
+
+
+
+
+
+
+NA ÚLTIMA AULA,
+
+
+
+
+O PROFESSOR TENTOU 
+
+
+
+
+EDITAR 1 INGREDIENT DA SHOPPING LIST,
+
+
+MAS ISSO NÃO FUNCIONOU... (a mudança n foi refletida na ui)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> parece que meu código estava funcionando APENAS PQ EU AINDA ESTAVA USANDO O SERVICE DE 
+
+
+'shoppingListService'... --->  tenho que REMOVER O USO DESSE SERVICE,
+
+em 'onFormSubmit' do 'shop-edit component',
+
+
+e aí 
+
+ver se consigo fazer funcionar apenas com 
+
+o 
+
+state do ngrx..
+
+
+
+
+
+
+
+
+
+
+CÓDIGO ATUAL:
+
+
+
+
+
+
+
+
+
+
+
+
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
+
+import { NgForm } from '@angular/forms';
+import { Store } from '@ngrx/store';
+import { map, Observable, Subscription } from 'rxjs';
+
+import { Ingredient } from 'src/app/shared/ingredient.model';
+
+import { ShoppingListService } from 'src/app/shoppingList.service';
+
+import * as fromShoppingList from '../store/shoppingList.reducer';
+
+import * as ShoppingListActions from '../store/shoppingListActions';
+
+@Component({
+  selector: 'app-shop-list-edit',
+  templateUrl: './shop-list-edit.component.html',
+  styleUrls: ['./shop-list-edit.component.css'],
+})
+export class ShopListEditComponent implements OnInit, OnDestroy {
+  editMode = false;
+  editedItemIndex: number;
+
+  editedItem: Ingredient;
+
+  @ViewChild('localFormReference') formReference: NgForm;
+
+  subscription: Subscription;
+
+  constructor(
+    private shoppingListService: ShoppingListService,
+
+    private store: Store<fromShoppingList.AppState>
+  ) {}
+
+  ngOnInit(): void {
+    this.subscription = this.store
+      .select('shoppingList')
+      .subscribe((shoppingListState) => {
+        if (shoppingListState.selectedIngredientIndex > -1) {
+          this.editMode = true;
+          this.editedItem = shoppingListState.selectedIngredient!;
+          this.editedItemIndex = shoppingListState.selectedIngredientIndex!;
+          this.formReference.form.setValue({
+            name: this.editedItem.ingredient,
+            amount: this.editedItem.amount,
+          });
+        } else {
+          this.editMode = false;
+        }
+      });
+  }
+
+  onFormSubmit(form: NgForm) {
+    const yourIngredient = new Ingredient(
+      form.value['name'],
+      form.value['amount'],
+      this.editedItemIndex
+    );
+
+    if (this.editMode) {
+      console.log(form);
+
+      this.shoppingListService.editIngredient(
+        this.editedItemIndex,
+        yourIngredient
+      );
+
+      this.editMode = false;
+    } else {
+      this.shoppingListService.onIngredientAdd(yourIngredient);
+    }
+
+    this.formReference.form.reset();
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+    this.store.dispatch(new ShoppingListActions.StopEdit());
+  }
+
+  onClearRecipe() {
+    this.formReference.form.reset();
+    this.editMode = false;
+    this.store.dispatch(new ShoppingListActions.StopEdit());
+  }
+
+  onDeleteRecipe() {
+    this.onClearRecipe();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E:
+
+
+
+
+
+
+
+
+
+
+
+import { Injectable, Output } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { map, Subject } from 'rxjs';
+import { Ingredient } from './shared/ingredient.model';
+
+import * as ShoppingListActions from '../app/ShoppingList/store/shoppingListActions';
+
+import * as fromShoppingList from '../app/ShoppingList/store/shoppingList.reducer';
+
+@Injectable()
+export class ShoppingListService {
+  ingredientsChanged = new Subject<Ingredient[]>();
+
+  ingredientSelected = new Subject<number>();
+
+  private ingredients: Ingredient[] = [];
+
+  constructor(private store: Store<fromShoppingList.AppState>) {}
+
+  getIngredients() {
+    return [...this.ingredients];
+  }
+
+  onIngredientAdd(ingredient: Ingredient) {
+    console.log('RECEIVED');
+
+    this.store.dispatch(new ShoppingListActions.AddIngredient(ingredient));
+    this.ingredients.push(ingredient);
+    this.ingredientsChanged.next([...this.ingredients]);
+  }
+
+  loadShopListItem(index: number) {
+    this.ingredientSelected.next(index);
+  }
+
+  getIngredient(index: number) {
+    console.log('TEST', 'LINE2');
+    console.log(this.ingredients);
+    return this.ingredients[index];
+  }
+
+  editIngredient(index: number, ingredient: Ingredient) {
+    this.ingredients[index] = ingredient;
+
+    this.ingredientsChanged.next([...this.ingredients]);
+    this.store.dispatch(
+      new ShoppingListActions.EditIngredient({
+        index: index,
+        ingredient: ingredient,
+      })
+    );
+  }
+
+  deleteIngredient(index: number) {
+    this.store.dispatch(new ShoppingListActions.RemoveIngredient(index));
+  }
+
+  cleanupDeleteIngredients(recipeId: number) {
+    this.ingredients = this.ingredients.filter((ingredient) => {
+      return ingredient.recipeIndex !== recipeId;
+    });
+  }
+}
+
+
+
+
+
+
+CONSERTEI TUDo:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { ThisReceiver } from '@angular/compiler';
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
+
+import { NgForm } from '@angular/forms';
+import { Store } from '@ngrx/store';
+import { map, Observable, Subscription } from 'rxjs';
+
+import { Ingredient } from 'src/app/shared/ingredient.model';
+
+import { ShoppingListService } from 'src/app/shoppingList.service';
+
+import * as fromShoppingList from '../store/shoppingList.reducer';
+
+import * as ShoppingListActions from '../store/shoppingListActions';
+
+@Component({
+  selector: 'app-shop-list-edit',
+  templateUrl: './shop-list-edit.component.html',
+  styleUrls: ['./shop-list-edit.component.css'],
+})
+export class ShopListEditComponent implements OnInit, OnDestroy {
+  editMode = false;
+  editedItemIndex: number;
+
+  editedItem: Ingredient;
+
+  @ViewChild('localFormReference') formReference: NgForm;
+
+  subscription: Subscription;
+
+  constructor(
+    private shoppingListService: ShoppingListService,
+
+    private store: Store<fromShoppingList.AppState>
+  ) {}
+
+  ngOnInit(): void {
+    this.subscription = this.store
+      .select('shoppingList')
+      .subscribe((shoppingListState) => {
+        if (shoppingListState.selectedIngredientIndex > -1) {
+          this.editMode = true;
+          this.editedItem = shoppingListState.selectedIngredient!;
+          this.editedItemIndex = shoppingListState.selectedIngredientIndex!;
+          this.formReference.form.setValue({
+            name: this.editedItem.ingredient,
+            amount: this.editedItem.amount,
+          });
+        } else {
+          this.editMode = false;
+        }
+      });
+  }
+
+  onFormSubmit(form: NgForm) {
+    const yourIngredient = new Ingredient(
+      form.value['name'],
+      form.value['amount'],
+      this.editedItemIndex
+    );
+
+    if (this.editMode) {
+      console.log(form);
+
+      this.store.dispatch(
+        new ShoppingListActions.EditIngredient({
+          ingredient: yourIngredient,
+          index: this.editedItemIndex,
+        })
+      );
+
+      this.editMode = false;
+    } else {
+      this.store.dispatch(
+        new ShoppingListActions.AddIngredient(yourIngredient)
+      );
+    }
+
+    this.formReference.form.reset();
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+
+    this.onClearRecipe();
+  }
+
+  onClearRecipe() {
+    this.formReference.form.reset();
+    this.editMode = false;
+    this.store.dispatch(new ShoppingListActions.StopEdit());
+  }
+
+  onDeleteRecipe() {
+    this.store.dispatch(
+      new ShoppingListActions.RemoveIngredient(this.editedItemIndex)
+    );
+    this.onClearRecipe();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> bem, a verdade é que meu service de 'shoppingListService'
+
+agora está BEM ESVAZIADO...
+
+
+
+
+
+
+
+
+
+código do service agora:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Injectable, Output } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { map, Subject } from 'rxjs';
+import { Ingredient } from './shared/ingredient.model';
+
+import * as ShoppingListActions from '../app/ShoppingList/store/shoppingListActions';
+
+import * as fromShoppingList from '../app/ShoppingList/store/shoppingList.reducer';
+
+@Injectable()
+export class ShoppingListService {
+  ingredientsChanged = new Subject<Ingredient[]>();
+
+  ingredientSelected = new Subject<number>();
+
+  private ingredients: Ingredient[] = [];
+
+  constructor(private store: Store<fromShoppingList.AppState>) {}
+
+  getIngredients() {
+    return [...this.ingredients];
+  }
+
+  getIngredient(index: number) {
+    console.log('TEST', 'LINE2');
+    console.log(this.ingredients);
+    return this.ingredients[index];
+  }
+
+  cleanupDeleteIngredients(recipeId: number) {
+    this.ingredients = this.ingredients.filter((ingredient) => {
+      return ingredient.recipeIndex !== recipeId;
+    });
+  }
+}
+
+
+
+
+
+
+
+
+esse array de ingredients parece meio inútil...
+
+
+
+mesma coisa com o resto dos methods...
+
+
+
+
+
+
+
+
+
+
+--> pq não funcionou no código do professor?
+
+
+
+
+
+
+
+ELE CITA QUE A CAUSA FOI ESTE CÓDIGO:
+
+
+
+
+
+FOI A FALTA DO CÓDIGO DE 
+
+
+
+
+
+
+
+
+
+
+
+
+
+this.editedItemIndex = shoppingListState.editedIngredientIndex,
+
+
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+  ngOnInit(): void {
+    this.subscription = this.store
+      .select('shoppingList')
+      .subscribe((shoppingListState) => {
+        if (shoppingListState.selectedIngredientIndex > -1) {
+          this.editMode = true;
+          this.editedItem = shoppingListState.selectedIngredient!;
+          this.editedItemIndex = shoppingListState.selectedIngredientIndex!; ///AQUI....
+          this.formReference.form.setValue({
+            name: this.editedItem.ingredient,
+            amount: this.editedItem.amount,
+          });
+        } else {
+          this.editMode = false;
+        }
+      });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> SE FAZEMOS ISSO,
+
+  O DELETE E O UPDATE COMEÇAM A FUNCIONAR..
+
+
+
+
+
+
+
+
+
+
+----> mas o professor aponta que isso é um pouco REDUNDANTE,
+
+
+
+pq estamos, com esse código,
+
+extraindo 
+
+
+
+dados da store,
+
+ 
+
+
+
+
+
+
+ dados que ENTÃO _ _PRECISAMOS__ PARA ENTÃO USAR NA STORE,
+
+ PARA ENTÃO ATUALIZAR NOSSA DATA,
+
+
+ tudo isso 
+
+ apenas
+
+ para fazer 'manage' desse 'selectedIngredientIndex',
+
+
+
+nesse nosso component pequeno de 'shop-edit component'...
+
+
+
+
+
+
+
+---> PARA '''RESOLVER''
+
+
+ESSE PROBLEMA,
+
+
+
+O PROFESSOR DIZ QUE A SOLUÇÃO É 
+
+
+NOS LIVRARMOS 
+
+
+
+
+DA PROPRIEDADE 
+
+
+de 
+
+
+'editedIngredientIndex'
+
+
+
+dentro 
+
+
+
+do component 'shopping-edit component'...
+
+
+
+
+
+
+TAMBÉM VAMOS REMOVER O PASS DESSE INDEX 
+
+
+em 
+
+
+
+
+todos os lugares em que fazemos dispatch de actions, nesse component:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export class ShopListEditComponent implements OnInit, OnDestroy {
+  editMode = false;
+  editedItemIndex: number;   ///isto aqui
+
+  editedItem: Ingredient;
+
+  @ViewChild('localFormReference') formReference: NgForm;
+
+  subscription: Subscription;
+
+  constructor(
+    private shoppingListService: ShoppingListService,
+
+    private store: Store<fromShoppingList.AppState>
+  ) {}
+
+  ngOnInit(): void {
+    this.subscription = this.store
+      .select('shoppingList')
+      .subscribe((shoppingListState) => {
+        if (shoppingListState.selectedIngredientIndex > -1) {
+          this.editMode = true;
+          this.editedItem = shoppingListState.selectedIngredient!;
+          this.editedItemIndex = shoppingListState.selectedIngredientIndex!;  ///isto aqui
+          this.formReference.form.setValue({
+            name: this.editedItem.ingredient,
+            amount: this.editedItem.amount,
+          });
+        } else {
+          this.editMode = false;
+        }
+      });
+  }
+
+  onFormSubmit(form: NgForm) {
+    const yourIngredient = new Ingredient(
+      form.value['name'],
+      form.value['amount'],
+      this.editedItemIndex 
+    );
+
+    if (this.editMode) {
+      console.log(form);
+
+      this.store.dispatch(
+        new ShoppingListActions.EditIngredient({
+          ingredient: yourIngredient,
+          index: this.editedItemIndex,   //isto aqui 
+        })
+      );
+
+      this.editMode = false;
+    } else {
+      this.store.dispatch(
+        new ShoppingListActions.AddIngredient(yourIngredient)
+      );
+    }
+
+    this.formReference.form.reset();
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+
+    this.onClearRecipe();
+  }
+
+  onClearRecipe() {
+    this.formReference.form.reset();
+    this.editMode = false;
+    this.store.dispatch(new ShoppingListActions.StopEdit());
+  }
+
+  onDeleteRecipe() {
+    this.store.dispatch(
+      new ShoppingListActions.RemoveIngredient(this.editedItemIndex)   //isto aqui 
+    );
+    this.onClearRecipe();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SE VOCê PENSAR BEM,
+
+
+
+
+NÓS JÁ SABEMOS 'QUAL DATA ESTAMOS ATUALMENTE MANAGEANDO NO STORE'...
+
+
+
+
+
+
+
+
+-> OU SEJA,
+
+
+JÁ ESTAMOS MANAGEANDO ISSO NO NOSSO STATE NO 'ngrx' store...
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+export interface ShoppingListState {
+  ingredients: Ingredient[],
+  selectedIngredient: Ingredient | null,
+  selectedIngredientIndex: number
+}
+
+
+
+
+
+
+
+
+
+
+--------> ISSO QUER DIZER, EM OUTRAS PALAVRAS, 
+QUE NÃO PRECISAMOS 
+
+
+RECEBER 
+
+
+
+
+ESSES INDEXES COMO ARGUMENTS,, O QUE QUER DIZER UQE 
+
+
+PODEMOS 
+
+ALTERAR UM POUCO NOSSAS ACTIONS..
+
+
+
+
+
+
+
+
+
+
+
+- para o update e o delete,
+
+
+
+
+
+
+
+não precisamos mesmo do 'index',
+
+podemos o omitir...  (podemos só usar o 'selectedIngredientIndex', bem mais fácil)...
+
+
+
+
+
+
+
+--> assim, o method de 'startEdit' se torna extremamente importante, pq 
+
+
+'SELECIONA', no nosso 'state',
+
+qual 
+
+
+
+SERÁ O ITEM/SHOPPINGLIST INGREDIENT 
+
+QUE SERÁ REMOVIDO...
+
+
+
+
+
+
+
+-> ok, removi as redundâncias...
+
+
+
+
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+
+import * as ShoppingListActions from './shoppingListActions';
+
+import { Ingredient } from '../../shared/ingredient.model';
+
+import { updateObject } from '../../utility/updateObject';
+
+export interface ShoppingListState {
+  ingredients: Ingredient[];
+  selectedIngredient: Ingredient | null;
+  selectedIngredientIndex: number;
+}
+
+export interface AppState {
+  shoppingList: ShoppingListState;
+}
+
+const initialState: ShoppingListState = {
+  ingredients: [new Ingredient('Lettuce', 5, 0.1221412452154)],
+  selectedIngredient: null,
+  selectedIngredientIndex: -1,
+};
+
+export function shoppingListReducer(
+  state: ShoppingListState = initialState,
+
+  action: ShoppingListActions.ShoppingListActionTypes
+): ShoppingListState {
+  switch (action.type) {
+    case ShoppingListActions.ADD_INGREDIENT:
+      return addIngredient(state, action as ShoppingListActions.AddIngredient);
+      break;
+    case ShoppingListActions.ADD_INGREDIENTS:
+      return addIngredients(
+        state,
+        action as ShoppingListActions.AddIngredients
+      );
+      break;
+    case ShoppingListActions.DELETE_INGREDIENT:
+      return removeIngredient(
+        state,
+        action as ShoppingListActions.RemoveIngredient
+      );
+      break;
+    case ShoppingListActions.EDIT_INGREDIENT:
+      return editIngredient(
+        state,
+        action as ShoppingListActions.EditIngredient
+      );
+      break;
+    case ShoppingListActions.START_EDIT:
+      return startEdit(state, action as ShoppingListActions.StartEdit);
+      break;
+    case ShoppingListActions.STOP_EDIT:
+      return stopEdit(state, action as ShoppingListActions.StopEdit);
+      break;
+    default:
+      return state;
+  }
+}
+
+const addIngredient = (
+  state: ShoppingListState,
+
+  action: ShoppingListActions.AddIngredient
+): ShoppingListState => {
+  const updatedIngredients = [...state.ingredients];
+
+  updatedIngredients.push(action.payload);
+
+  return updateObject(state, { ingredients: updatedIngredients });
+};
+
+const addIngredients = (
+  state: ShoppingListState,
+  action: ShoppingListActions.AddIngredients
+): ShoppingListState => {
+  const updatedIngredients = [...state.ingredients];
+
+  updatedIngredients.push(...action.payload);
+
+  return updateObject(state, { ingredients: updatedIngredients });
+};
+
+const removeIngredient = (
+  state: ShoppingListState,
+  action: ShoppingListActions.RemoveIngredient
+): ShoppingListState => {
+  const updatedIngredients = [...state.ingredients];
+
+  updatedIngredients.splice(state.selectedIngredientIndex, 1);
+
+  return updateObject(state, { ingredients: updatedIngredients });
+};
+
+const editIngredient = (
+  state: ShoppingListState,
+  action: ShoppingListActions.EditIngredient
+): ShoppingListState => {
+  const updatedIngredients = [...state.ingredients];
+
+  updatedIngredients[state.selectedIngredientIndex] = action.payload;
+
+  return updateObject(state, { ingredients: updatedIngredients });
+};
+
+const startEdit = (
+  state: ShoppingListState,
+  action: ShoppingListActions.StartEdit
+): ShoppingListState => {
+  const updatedState = {
+    ...state,
+  };
+
+  const ingredient = state.ingredients.find((ingredient, index) => {
+    return index === action.payload;
+  });
+
+  if (!ingredient) {
+    alert('Invalid Input, please try again.');
+    return state;
+  }
+
+  return updateObject(updatedState, {
+    selectedIngredient: ingredient,
+    selectedIngredientIndex: action.payload,
+  });
+};
+
+const stopEdit = (
+  state: ShoppingListState,
+  action: ShoppingListActions.StopEdit
+): ShoppingListState => {
+  const updatedState = {
+    ...state,
+  };
+
+  return updateObject(updatedState, {
+    selectedIngredient: null,
+    selectedIngredientIndex: -1,
+  });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSiM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Action } from '@ngrx/store';
+import { Ingredient } from 'src/app/shared/ingredient.model';
+
+export const GET_INGREDIENT = 'INGREDIENT_GET';
+
+export const ADD_INGREDIENT = 'INGREDIENT_ADD';
+
+export const ADD_INGREDIENTS = 'INGREDIENTS_ADD';
+
+export const EDIT_INGREDIENT = 'INGREDIENT_EDIT';
+
+export const DELETE_INGREDIENT = 'INGREDIENT_DELETE';
+
+export const START_EDIT = 'START_EDIT';
+
+export const STOP_EDIT = 'STOP_EDIT';
+
+export class AddIngredient implements Action {
+  readonly type: string = ADD_INGREDIENT;
+
+  constructor(public payload: Ingredient) {}
+}
+
+export class AddIngredients implements Action {
+  readonly type: string = ADD_INGREDIENTS;
+
+  constructor(public payload: Ingredient[]) {}
+}
+
+export class RemoveIngredient implements Action {
+  readonly type: string = DELETE_INGREDIENT;
+
+  constructor() {}
+}
+
+export class EditIngredient implements Action {
+  readonly type: string = EDIT_INGREDIENT;
+
+  constructor(public payload: Ingredient) {}
+}
+
+export class StartEdit implements Action {
+  readonly type: string = START_EDIT;
+
+  constructor(public payload: number) {}
+}
+
+export class StopEdit implements Action {
+  readonly type: string = STOP_EDIT;
+}
+
+export type ShoppingListActionTypes =
+  | AddIngredient
+  | AddIngredients
+  | EditIngredient
+  | RemoveIngredient
+  | StartEdit
+  | StopEdit;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... MAS AQUI HÁ ALGO QUE PODEMOS FAZER.... -->
+
+
+
+
+CADA VEZ QUE EXECUTAMOS 
+
+
+
+
+
+'UPDATE/DELETE' de um ingredient,
+
+
+
+TAMBÉM 
+
+
+RESETTAR O 'editedIngredientIndex',
+
+
+
+
+colocá-lo como '-1' e o 'editedIngredient' como 
+
+
+
+NULL, ISSO PQ 
+
+
+
+
+ESSAS ACTIONS TAMBÉM VÃO 
+
+'STOP THE EDITING PROCESS', ao final...
+
+
+
+
+
+
+
+
+
+
+ok.. as actions ficam assim:
+
+
+
+
+
+
+
+
+
+
+const removeIngredient = (state: ShoppingListState, action: ShoppingListActions.RemoveIngredient): ShoppingListState => {
+
+  const updatedIngredients = [
+    ...state.ingredients
+  ]
+
+
+
+
+  // updatedIngredients.splice(action.payload, 1);
+  updatedIngredients.splice(state.selectedIngredientIndex, 1);
+ 
+
+  return updateObject(state, { ingredients: updatedIngredients, selectedIngredient: null, selectedIngredientIndex: -1})
+
+
+}
+
+
+
+
+
+const editIngredient = (state: ShoppingListState, action: ShoppingListActions.EditIngredient): ShoppingListState => {
+
+
+  const updatedIngredients = [
+    ...state.ingredients
+  ]
+
+
+
+
+//  const ingredientIndex = updatedIngredients.findIndex(
+//     (ingredient) => {
+//         return ingredient.recipeIndex === action.payload.index
+//     }
+//   );
+
+
+  // updatedIngredients[action.payload.index] = action.payload.ingredient;
+  updatedIngredients[state.selectedIngredientIndex] = action.payload
+
+
+  return updateObject(state, {ingredients: updatedIngredients, selectedIngredient: null, selectedIngredientIndex: -1});
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM TUDO ISSO,
+
+
+
+
+
+QUANDO EDITAMOS FUNCIONA, E QUANDO DELETAMOS, TAMBÉM..
+
+
+
+
+
+
+
+
+--> NOSSO CÓDIGO AGORA FICOU MAIS 'LEAN',
+
+
+pq não FAZEMOS MANAGE DE TANTA 'REDUNDANT DATA'
+
+
+no nosso component de shoppingList...
+

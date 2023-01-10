@@ -1,0 +1,396 @@
+
+
+
+
+O QUE É 
+
+'TESTING'? ----> não é testar o aplicativo manualmente....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> TESTING === AUTOMATED TESTS...
+
+
+
+
+
+
+
+
+
+
+--> passos gerais:
+
+
+
+
+
+1) build an application 
+
+
+2) Test manually in browser 
+
+2.5 ) test programatically
+
+
+3) Ship to a server.
+
+
+
+
+
+---------------------------------
+
+
+
+
+
+
+
+
+---------> AUTOMATED TESTS...-------------> testes que 
+
+RODAM AUTOMATICAMENTE... --> nós os REESCREVEMOS,
+
+E AI 
+
+
+
+CADA TESTE ___testa __ uma determinada __PARTE DE NOSSO APLICATIVO__... --> é isso que 
+
+chamamos 
+
+de 
+'unit test'....  (ele 'testa uma unidade de nosso app'...)
+
+
+
+
+
+
+A IDEIA 
+
+
+POR 
+
+TRÁS 
+
+DE TESTS COMO ESSES É 
+
+QUE, como 
+
+OS DEFINIMOS NÓS MESMOS,
+
+
+
+
+SE NÓS __MUDARMOS __ QUALQUER COISA NO NOSSO APLICATIVO E ISSO __QUEBRAR __ NOSSO APP 
+
+ou 
+
+__QUEBRAR UM COMPONENT NO NOSSO APP,
+
+
+
+
+
+aí o 'RESPECTIVE TEST' 
+
+
+__VAI FALHAR__... ---> com isso, podemos encontrar erros ANTES MESMO DE __PRECISAR_ _ TESTAR _ NOSSO 
+PROJETO __MANUALMENTE __ NO BROWSER...
+
+
+
+
+
+--> EM APLICATIVOS MAIS COMPLEXOS,
+
+ISSO É ESPECIALMENTE IMPORTANTE, pq 
+
+NELES 
+
+
+É 
+
+BEM MAIS FÁCIL __QUEBRAR__ ALGUMA COISA SEM PERCEBER rapidamente... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> HÁ TAMBÉM OUTRAS MANEIRAS DE PENSAR O 'TESTING'... ---> há 
+
+
+métodos de construção de apps 
+
+que 
+
+NÃO PENSAM NO TESTING COMO UM PASSO AO __FINAL DO WORKFLOW__,
+
+
+
+
+E SIM ___ NO MEIO DO DESENVOLVIMENTO... ('test-driven development')... -------> 
+
+
+
+
+
+
+
+TEST-DRIVEN DEVELOPMENT ---> ESSE APPROACH __ COLOCA FOCO ESPECIAL NOS TESTS; VOCÊ 
+
+ESCREVE OS __tESTS___ ANTES MESMO ____ DE ESCREVER __ QUALQUER APLICATIVO/dados de um aplicativo...
+
+
+
+
+
+
+-----> nesse approach, é óbvio que todos os tests vao FALHAR INICIALMENTE,
+
+mas eles vao falhando cada vez menos, até que vocÊ tem um APP FINALIZADO... -----> você 
+
+
+vai 
+
+
+adicionando os códigos pertinentes, que consertam os problemas,
+
+e o código vai progredindo... ------> mas 
+
+
+ESSE NÃO 
+
+É __ O CONCEITO QUE __O  PROFESSOR __ VAI NOS MOSTRAR AQUI__, NESSE CURSO...
+
+
+
+
+
+
+
+----> NÃO VAI NOS MOSTRAR ISSO PQ ___ESTE NÃO É UM CURSO SOBRE TESTS.. --> 
+
+
+é 
+
+por isso 
+
+quee 
+
+ele 
+
+vai só nos mostrar 
+
+
+
+os 
+
+UNIT TESTS,
+
+
+
+
+E VOCê PODE, ENTÃO, OBVIAMENTE 
+
+
+
+COMPLEMENTAR 
+
+
+SEUS CONHECIMENTOS DE TESTING POR CONTA PRÓPRIA....  
+
+----------------------------
+
+
+
+
+
+POR QUE TESTAR?
+
+
+
+
+
+
+
+
+BEM, DIGAMOS QUE TEMOS A SEGUINTE SITUAÇÃO:
+
+
+
+
+
+
+1) temos um aplicativo...
+
+
+
+
+
+
+2) Component deve dizer 'Hello' 
+
+
+
+3) Component deve SEMPRE RENDERIZAR UM COMPONENT 'PersonData'...
+
+
+3) Component deve SEMPRE RECEBER UM PROP 'persons'...
+
+
+4) COMPONENT DEVERÁ SEMPRE RENDERIZAR O COMPONENT 'newPerson' QUANDO 
+
+UM prop 'editable' (true) FOR RECEBIDO...
+
+
+
+
+
+
+
+
+--> DIGAMOS QUE 
+
+
+TEMOS UM COMPONENT QUE 
+
+FAZ 
+
+
+
+
+essas coisas aí... ---> aí digamos 
+
+que 
+
+rodamos 
+
+1 primeiro teste, um 
+
+'primeiro draft'... ------> 
+
+
+
+NESSE PRIMEIRO TEST,
+
+
+ o 
+
+ COMPONENT PASSA EM TODOS OS REQUISITOS....
+
+
+
+
+
+
+
+
+
+
+
+ ----> OK, MAS SUPONHA-SE QUE 
+
+ ___VOCê __ MUDE ALGO NO APLICATIVO,
+
+
+
+ OU ENTÃO ADICIONA-SE UMA NOVA FEATURE.... -------> 
+
+
+ aí 
+
+
+alguns tests vao PASSAR, MAS OUTROS VAO _fALHAR___  ---------> 
+
+
+
+
+ex:
+
+
+
+2) Component deve dizer 'Hello'   PASS 
+
+
+
+3) Component deve SEMPRE RENDERIZAR UM COMPONENT 'PersonData'... PASS 
+
+
+3) Component deve SEMPRE RECEBER UM PROP 'persons'... FAIL 
+
+
+4) COMPONENT DEVERÁ SEMPRE RENDERIZAR O COMPONENT 'newPerson' QUANDO  FAIL
+
+UM prop 'editable' (true) FOR RECEBIDO... 
+
+
+
+
+
+
+
+
+--> A UTILIDADE 
+
+
+
+DOS 'TESTS' é justamente 
+
+NOS CONDUZIR 
+
+
+À PARTE DO CÓDIGO QUE ESTÁ 
+DANDO ESSES ERROS... ('show us where to look on our code....' ) -----> na verdade,
+
+
+
+
+
+
+
+NOS AJUDA A ___ALTERAR __ OU O CÓDIGO DO APLICATIVO (erros no código do aplicativo),
+ 
+ OU O CÓDIGO DO TESTING (tests inapropriados.).
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSA É A IDEIA POR TRÁS DO TESTING...
+
+
+
+
+
+--> devemos ver algumas TESTING TOOLS, ANTES DE MAIS NADA.

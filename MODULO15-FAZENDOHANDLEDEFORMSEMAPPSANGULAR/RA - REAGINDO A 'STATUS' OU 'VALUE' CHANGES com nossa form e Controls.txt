@@ -1,0 +1,1110 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> QUASE ACABAMOS COM ESSA PARTE DO CURSO..
+
+
+
+
+
+
+
+
+
+-. TRABALHAMOS MT COM REACTIVE FORMS...
+
+
+
+
+
+
+
+
+
+
+
+--> NA ÚLTIMA AULA,
+
+
+NO FINAL,
+
+
+
+
+
+VIMOS UM CUSTOM ASYNC VALIDATOR:
+
+
+  /////EXEMPLO DE CUSTOM  VALIDATOR (isso só existe no approach REACTIVE)
+forbiddenNamesValidator(control: FormControl): {  //ISSO SIGNIFICA QUE ESSE METHOD DEVERÁ NOS RETORNAR UM OBJECT com formato como ''{nameIsForbidden: true}'''
+    [s: string]: boolean} | null 
+    
+    
+    {
+
+    console.log(this);
+      ///'this' dentro dessa class estará _ ERRADO__....
+
+
+      ///// '-1' é considerado como 'truthy', lembre-se disso...
+  if (this.forbiddenUsernames.indexOf(control.value) !== -1) { ////SE NOSSA VALIDATION __ FALHAR_, vamos querer retornar 'true'... (paradoxal, eu sei)...
+    return {'isForbiddenName': true }
+  }
+
+
+
+  return null;  //SE NOSSA VALIDATION __ FOR BEM SUCEDIDA, VAMOS QUERER RETORNAR 'null' ou 'nothing'... ( ou seja, VOCÊ NAÕ DEVE RETORNAR ESSE OBJECT com algo como '{'nameIsForbidden: false'}' )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> COM ESSE VALIDATOR,
+
+
+PERCEBEMOS QUE O 'STATUS'
+
+
+do input TROCOU de 
+
+
+
+'valid' 
+
+para 
+
+'pending'
+
+
+
+para 
+
+'invalid' 
+
+
+
+
+(
+
+    e vice-versa
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> AGORA, O PROFESSOR NOS INFORMA DE QUE 
+
+EXISTE UM 
+
+'FORM STATE'
+
+
+
+QUE PODEMOS __ TRACKAR,
+
+
+EM GERAL,
+
+
+
+
+que pode nos ajudar 
+
+
+a renderizar coisas nos nossos 'FormControl'/FormGroup...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> O PROFESSOR VAI NOS DEMONSTRAR ISSO 
+
+LÁ 
+
+EM 
+
+
+'ngOninit()'...
+
+
+
+
+
+
+
+
+
+
+
+--> ELE NOS EXPLICA 
+
+
+
+
+QUE 
+
+
+
+
+
+
+
+
+__ TEMOS: 
+
+
+
+
+
+
+
+1) NA SIGNUP FORM EM GERAL (na 'FormGroup' em geral, que representa a nossa form inteira)
+
+
+
+
+
+2) TAMBÉM EM CADA __ FormControl INDIVIDUAL   (e cada formControl é acessado pela grafia this.signupForm.get('controlKeyName')' 
+),
+
+
+
+
+
+
+
+
+
+
+
+
+
+VOCÊ TEM  ___________DUAS_ OBSERVABLES__ A QUE 
+
+
+VOCÊ 
+
+
+  
+  PODE FAZER 'LISTEN TO':
+
+
+
+
+
+
+
+
+  SÃO ELAS:
+
+
+
+
+
+
+  1) 'statusChanges' 
+
+
+
+
+
+  2) 'valueChanges'...
+
+
+
+
+
+
+
+
+
+
+
+  ->  o professor INICIALMENET FAZ UM 'LISTEN TO '
+
+
+
+  ao 
+
+
+  'valueChanges',
+
+
+por isso ele escreve 
+
+
+
+
+
+
+
+
+
+this.signupForm.valueChanges...
+
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ngOnInit(): void {
+    this.signupForm = new FormGroup({
+      ///////this.forbiddenNamesValidator.bind(this)  --> com isso, consertamos aquele bug dos custom validators, que não se referem ao 'this' de nossa class IMEDIATAMENTE; é necessário esse bind aí...
+      'userData': new FormGroup({ ////AQUI É POSSÍVEL OBSERVAR O 'NESTING' de 1 form GROUP dentro do nosso 'OVERALL FORM GROUP' (que representa nossa FORM INTEIRA)...
+        'username': new FormControl(null, [Validators.required, this.forbiddenNamesValidator.bind(this), Validators.minLength(5)]
+        ),
+        'email': new FormControl(  null, //1o argumento
+          
+          [Validators.required, Validators.email], ///2o argumento
+          
+
+          [this.forbiddenEmails.bind(this) as AsyncValidatorFn] ///3o argumento
+          
+          ),
+      }),
+      'gender': new FormControl(this.genders[0], [Validators.required]),
+      'hobbies': new FormArray([])
+    });
+
+
+
+
+    this.signupForm.valueChangess
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ---> COMO MENCIONADO,
+
+
+
+  ESSAS 2 COISAS SÃO OBSERVABLES,
+
+
+
+  POR ISSO 
+
+  PODEMOS (E DEVEMOS) FAZER 
+
+  SUBSCRIBE A ELAS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ele 
+
+
+  escreve 
+
+
+
+
+  this.signupForm.valueChanges.subscribe(
+      (value) => {
+
+
+      }
+  )
+
+
+
+
+
+
+
+
+
+
+  É CLARO QUE VAMOS RECEBER  O 'VALUE' aqui,
+
+
+
+  E ESSE 
+
+
+  VALUE PODERÁ SER CONSOLE.LOGGADO, AQUI... -----> 
+
+
+
+  O QUE ISSO FAZ, NO CASO,
+
+  É 
+
+  RODAR ESSE CÓDIGo 
+
+
+  do subscribe
+
+  CADA VEZ QUE O VALUE DE 
+
+
+  NOSSA FORM (que compreende TODOS os 'FormControl',
+os input fields, no  seu interior)
+
+
+
+
+
+
+FOR ALTERADo...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA SEMPRE QUE DIGITARMOS ALGO EM NOSSA FORM,
+
+
+
+
+
+
+
+VEREMOS __ QUE __ SERÁ CONSOLE.LOGGADO O VALUE DA FORM LÁ NO CONSOLE...
+
+
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER QUE ESSE 
+
+
+OBSERVABLE DISPARA 
+
+
+
+SEMPRE QUE 
+
+MUDARMOS ALGO SOBRE A FORM (
+
+    sempre que digitarmos em algum input....
+)
+
+
+
+
+
+
+
+
+
+
+-----> CERTO...
+
+
+
+
+
+ESSE ERA O 
+
+'valueChanges'..
+
+
+
+
+
+
+
+
+
+
+-->  E ESSE 'valueChanges'
+
+TAMBÉM FUNCIONA PARA 
+
+
+
+'FormControl's 
+
+
+INDIVIDUAIS..
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+    this.signupForm.get('username')?.valueChanges.subscribe( ////bom para fazer listen to a quaisquer changes na nossa input/control e aí renderizar coisas a partir disso...
+    (value) => {
+          console.log(value, 'FORMVALUE CHANGED');
+    }
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> OK...
+
+
+
+
+
+
+
+
+
+
+  MAS NÓS TAMBÉM TEMOS 'statusChanges',
+
+
+
+
+  QUE É O IRMÃO DESSE OBSERVABLE,
+
+
+
+  E NELE _ RECEBEMOS O _ STATUS_ 
+
+
+
+  DE NOSSO 
+
+  INPUT FIELD..
+
+
+
+
+
+
+  -> PODEMOS ESCREVER ASSIM:
+
+
+
+
+
+
+
+  this.signupForm.statusChanges.subscribe(
+      (status) => {
+            console.log(status);
+      }
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+  --> ISSO, NO CASO,
+
+  VAI __ DISPARAr_ SEMPRE QUE O STATUS DE NOSSA 
+
+  FORM EM GERAL FOR ALTERADO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  E ISSO REALMENTE FUNCIONA:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ngOnInit(): void {
+    this.signupForm = new FormGroup({
+      ///////this.forbiddenNamesValidator.bind(this)  --> com isso, consertamos aquele bug dos custom validators, que não se referem ao 'this' de nossa class IMEDIATAMENTE; é necessário esse bind aí...
+      'userData': new FormGroup({ ////AQUI É POSSÍVEL OBSERVAR O 'NESTING' de 1 form GROUP dentro do nosso 'OVERALL FORM GROUP' (que representa nossa FORM INTEIRA)...
+        'username': new FormControl(null, [Validators.required, this.forbiddenNamesValidator.bind(this), Validators.minLength(5)]
+        ),
+        'email': new FormControl(  null, //1o argumento
+          
+          [Validators.required, Validators.email], ///2o argumento
+          
+
+          [this.forbiddenEmails.bind(this) as AsyncValidatorFn] ///3o argumento
+          
+          ),
+      }),
+      'gender': new FormControl(this.genders[0], [Validators.required]),
+      'hobbies': new FormArray([])
+    });
+
+
+    // this.signupForm.valueChanges.subscribe( ////bom para fazer listen to a quaisquer changes na nossa input/control e aí renderizar coisas a partir disso...
+    //   (value) => {
+    //         console.log(value, 'FORMVALUE CHANGED');
+    //   }
+    // )
+
+
+  //   this.signupForm.get('username')?.valueChanges.subscribe( ////bom para fazer listen to a quaisquer changes na nossa input/control e aí renderizar coisas a partir disso...
+  //   (value) => {
+  //         console.log(value, 'FORMVALUE CHANGED');
+  //   }
+  // )
+
+
+
+
+  this.signupForm.statusChanges.subscribe( /////dispara SEMPRE QUE O STATUS DE NOSSA FORM FOR ALTERADO (valid para invalid, etc etc)...
+    (status) => {
+          console.log(status);
+    }
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> sempre que nosso STATUS FOR ALTERADO,
+
+tanto de 'VALID' para 'INVALID' como para 'PENDING',
+
+
+ELE SERÁ DISPARADO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> isso quer dizer que STATUSCHANGES E VALUECHANGES SÃO 2 HOOKS, 2 OBSERVABLES,
+
+
+
+QUE VOCÊ PODE OBSERVAR PARA REAGIR 
+
+
+
+,
+
+
+renderizar algo em seu tempalte...
+
+
+
+
+
+
+
+
+
+
+
+EXEMPLO LÁ DO TEMPLATE-DRIVEN APPROACH:
+
+
+
+
+
+
+
+
+
+
+
+
+  suggestedUserName() {
+    const suggestedName = 'Ronaldo'
+
+
+    // this.formReference.setValue( ////APPPROACH NÃO RECOMENDADO PARA _ MUDAR_ _ OS VALUES _ que você tem em seus input fields (pq aí o resto dos input fields vai acabar alterado, também, quando só QUERÍAMOS FAZER O CHANGE DO VALUE DE 'username', nesse nosso exemplo...)
+    //   {
+    //     userData: {
+    //       username: suggestedName,
+    //       email: ''
+    //     },
+    //     secret: 'pet',
+    //     questionAnswer: '',
+    //     gender: 'Male',
+    //     textValue: ''
+    //   }
+    // )
+
+    this.formReference.form.patchValue({
+
+      userData: {
+        username: suggestedName ////COM ISSO, OVERWRITTAMOS apenas esse control específico, dentro desse formGroup de 'userData' que também foi definido por nós...
+    }
+    }) ////METHOD PREFERÍVEL AO DE CIMA... --> vamos querer patchear APENAS O FIELD QUE NOS INTERESSA.... (alterar seu value para um value diferente)...
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> O PROFESSOR QUER NOS RELEMBRAR DE COMO PODEMOS USAR ISSO AÍ,
+
+TAMBÉM 
+
+
+NO APPROACH REACTIVE...
+
+
+
+
+
+
+
+
+
+
+
+--> basta 
+
+
+
+escrever assim:
+
+
+
+
+
+
+
+
+
+this.signupForm.setValue(
+    {
+
+    }
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE COM 'setValue'
+
+
+
+TODOS OS VALUES DA FORM ANTIGA _ _SERÃO 
+
+_PERIDDOS/OVERWRITTADOS...
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+this.signupForm.setValue(
+    {
+        'userData': {
+            'username': 'Max',
+            'email': 'max@test.com'
+        },
+        gender: 'male'
+        'hobbies': []
+    }
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> SE FAZEMOS ISSO EM 'ngOnInit',
+
+
+
+
+
+ESSES VALUES SÃO IMEDIATAMENTE DEFINIDOS NOS NOSSOS CONTROLS..
+
+
+
+
+
+
+
+
+
+--> E É CLARO QUE PODEMOS VINCULAR ISSO A UM CLICK EM UM BOTÃO..
+
+
+
+
+
+
+
+
+
+--> mesma coisa com 'patchValue',
+
+
+
+QUE PODEMOS 
+
+
+ESCREVER ASSIm:
+
+
+
+
+
+
+this.signupForm.patchValue(
+    {
+        'userData': {
+            'username': 'Anna',
+            }
+            
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO, NO CASO, VAI 
+
+ALTERAR 
+
+SÓ ESSE CONTROL DE 'username',
+
+o resto vai ficar 
+
+
+
+
+IGUAL COMO ANTESa....
+
+
+
+
+
+
+
+
+
+
+
+---> OU SEJA,
+
+A USAGE DE 'setValue'
+
+e 'patchValue'
+
+
+
+É EXATAMEWNTE A MESMA DAQUELA DO TEMPLATE-DRIVEN APPROACH (TD)...
+
+
+
+
+
+
+
+
+
+
+
+--> O RESET TAMBÉM FUNCIONA EXATAMENTE DA MESMA FORMA,
+
+
+
+com this.signupForm.reset()...
+
+
+
+
+
+
+
+
+
+
+
+
+---> e se você NÃO QUER RESETTAR ABSOLUTAMENTE TUDO DE SUA FORM,
+
+você poed passar 
+
+UM OBJECT ( {}) 
+
+ajvascript 
+
+
+
+
+
+AO RESET,
+
+EM QEU 
+ENTÃO 
+
+
+VOCCê DEFINE _ QUAIS_ _ INPUT FIELDS DEVEM SER RESETTADOS EXATAMETNE,
+
+
+
+e quais naõ...
+
+
+
+
+
+
+
+
+
+
+
+
+--. OK, COM ISSO TEMOS AS FERRAMENTAS PARA CONFIGURAR NOSSAS FORMS 
+
+
+BEM A FUNDo... 
+
+
+
+
+
+
+
+
+
+--> VAMOS PRATICAR TUDO ISSO NO FINAL ASSIGNMENT DO MÓDULO...

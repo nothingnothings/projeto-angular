@@ -1,0 +1,1016 @@
+
+
+
+
+
+
+
+
+
+
+
+COM A DIRECTIVE DE 'PLACEHOLDER' adicioanda,
+
+
+
+
+devemos VOLTAR AO 
+
+
+
+component de 'AuthPageComponent'
+
+
+
+E ENTAÕ 
+
+ADICIONAR UM __ NOVO ELEMENT_ 
+
+
+
+
+
+NO NOSSO TEMPLATE/html....
+
+
+
+
+
+
+
+
+
+
+
+
+--> PODERÍAMOS USAR UMA DIV,
+
+SIM,
+
+
+MAS O PROFESSOR ACHA QUE É BEM MELHOR USARMOS UM 
+
+
+'<ng-template>'
+
+
+
+
+
+
+
+
+--> o 'ng-template'
+
+É UMA DIRECTIVE BUILT-IN DO ANGULAR,
+,
+
+
+MAS UMA DIRECTIVE QUE NÃO ACTUALLY RENDERIZA ALGO NO DOM,
+
+
+
+MAS QUE __ 
+É 
+
+
+__ACESSÍVEL _ 
+
+
+
+À 'ANGULAR TEMPLATING LANGUAGE'-->   ISSO É ÓTIMO,
+
+
+
+
+
+PQ NÕA ADICIONAMOS O 'OVERHEAD' DE 1 ELEMENTO EXTRA AO NOSSO DOM,
+
+
+
+
+
+
+
+o que 
+
+quer dizer que 
+
+
+EM VEZ DISSO PODEMOS GANHAR ACESSO 
+
+A 
+
+1 LOCAL NO NOSSO DOM...
+
+
+
+
+
+
+
+
+--> a esse 'ng-template'
+
+
+
+
+nós __ adicionamos, DIRETAMENTE,
+
+
+
+NOSSA 
+
+DIRECTIVE DE 'appTemplate',
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+<ng-template appPlaceholder><ng-template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <ng-template appPlaceholder></ng-template> <!--directive de 'placeHolder', criada por nós... -->
+    <!-- <div class="alert alert-danger" *ngIf="error" (click)="error = null"> --><!-- o 'click' com esse código faz o rápído DISMISS da message de erro quando a clicamos...-->
+      <!-- <p>{{ error }}</p>  ,,,,, SUBSTITUÍDO pelo nosso 'DYNAMIC ERROR COMPONENT' --> 
+    <!-- </div> -->
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          required
+          email
+          name="email"
+          ngModel
+          placeholder="email@example.com"
+          #emailReference="ngModel"
+        />
+        <span *ngIf="!emailReference.value && emailReference.touched"
+          >Email is required</span
+        >
+        <span
+          *ngIf="
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK... AGORA TEMOS ESSE 
+
+
+ELEMENT DE 
+
+'ng-template' ADICIONADO...
+
+
+
+
+
+
+--> ESSE ELEMENT É CONSIDERADO __ PELO ANGULAr__ QUANDO ELE PARSEIA O TEMPLATE,
+
+
+
+MAS QUE 
+
+NÃO CAUSA O RENDER DE SEU PRÓPRIO ELEMENT AO DOM...
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS SEREMOS CAPAZES DE ACESSAR ESSE 'LOCAL' 
+
+
+
+NO DOM MAIS TARDE,
+
+
+
+__ PQ _ ELE É SIMPLESMENTE 'LEMBRADO' PELO ANGULAR,
+
+INTERNAMENTE...
+
+
+
+
+
+
+
+
+
+
+
+
+-------> OK... A PARTIR 
+
+
+
+DESSA DIRECTIVE 
+
+E 
+
+
+A PARTIR DESSE 'ng-template',
+
+
+
+
+podemos 
+
+
+
+OBTER ACESSO A ESSE LOCAL NO DOM,
+
+
+
+
+
+
+
+
+
+BASTA 
+
+
+_ USAR _ O DECORATOR DE '@ViewChild()'
+
+
+LÁ 
+
+
+NO COMPONENT EM QUE INSERIMOS ESSE '<ng-template>',
+
+
+NO CÓDIGO 'ts'...
+
+
+
+
+
+ex:
+
+
+
+
+
+
+  @ViewChild(PlaceholderDirective) dynamicAlertBox: ElementRef;
+
+
+
+
+
+
+
+
+
+
+
+
+  PASSAMOS ESSE SELECTOR AO nosso 'ViewChild',
+
+
+passamos 
+
+
+
+
+A REFERÊNCIA A NOSSA DIRECTIVE DE 
+
+
+'PlaceholderDirective',
+
+
+ESSA NOSSA DIRECTIVE --> 
+
+
+
+PQ 
+
+
+
+
+
+
+
+ESSE 'ViewChild()'
+
+
+
+TAMBÉM FUNCIONA COM QUALQUER 'TYPE' 
+
+
+QUE ELE ENCONTRAR NO DOM COM ESSE IDENTIFIER,
+
+
+E É CLARO QUE __ DIRECTIVES SÃO 'TYPES',
+
+
+por isso 
+
+
+essa sintaxe funciona sem problemas...
+
+
+
+
+
+
+
+
+
+
+
+COLOCAMOS 'dynamicAlertBoxHost',
+
+
+
+PQ ESSE SERÁ O LOCAL QUE 
+
+TERÁ A POSIÇÃO DESSE ALERT Box:
+
+
+
+
+
+
+
+
+ @ViewChild(PlaceholderDirective, {static: false}) dynamicAlertBoxHost: PlaceholderDirective
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> e é claro que o TYPE DESSE ELEMENT/PROPRIEDADE SERÁ 'PlaceholderDirective',
+
+
+
+
+ diz o professor...
+
+
+
+
+
+
+
+
+
+
+
+
+ ex:
+
+
+
+
+
+
+
+
+
+
+
+ import { Component, ComponentFactoryResolver, OnInit, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { AuthResponseData, AuthService } from '../auth.service';
+import { PlaceholderDirective } from '../placeholderDirective/placeholder.directive';
+
+import { AlertDynamicComponent } from '../shared/alertVersaoNgIf (bem mais pratica)/alert.component';
+
+@Component({
+  selector: 'app-auth-page',
+  templateUrl: './auth-page.component.html',
+  styleUrls: ['./auth-page.component.css'],
+})
+export class AuthPageComponent implements OnInit {
+  isSignup: boolean = true;
+
+  isLoading: boolean = false;
+
+
+      ///colocamos nossa 'Placeholder directive' PQ ELA TAMBÉM FUNCIONA com '@ViewChild()' (será selecionado o local/elemento do dom que está com essa directive posicionada no seu interior, no caso aquele 'ng-template'...)..
+  @ViewChild(PlaceholderDirective, {static: false}) dynamicAlertBoxHost: PlaceholderDirective
+  
+
+ ////// error: string | null = null; ////vai segurar nossas mensagens de error...   --> mas não precisaremos mais disso, pq agora o CREATE DINÂMICO DE NOSSO COMPONENT 'ALERT-BOX' (usada para o display de MESSAGES DE ERROR) já vai automaticamente passar aquele argumento de 'errorMessage', que será OUTPUTTADO NESSE COMPONNET, DIRETAMENTE.... (VER METHOD de 'private showErrorAlert()'...)
+
+  constructor(private authService: AuthService, private router: Router, private componentFactoryResolver: ComponentFactoryResolver) {////componentFactoy É USADO COM A CRIAÇÃO de clones...  
+
+  }
+
+  ngOnInit(): void {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> ok, isso quer dizer que 
+
+
+  NÓS OBTEMOS ACESSO A ESSA DIRECTIVE QUE USAMOS NO TEMPLATE,
+
+
+
+
+  E AÍ 
+
+
+  ARMAZENAMOS ESSA DIRECTIVE ESPECÍFICA_ _DENTRO __ DESSA PROPRIEDADE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -------> COM ISSO,
+
+  O PROFESSOR DIZ QUE 
+
+  'dynamicAlertBoxHost'
+
+
+
+, ESSA PROPRIEDADE AÍ,
+
+
+FINALMENTE PODE SER USADA EM 
+
+'showErrorAlert'.... (no  method)..
+
+
+
+
+
+
+
+
+--> PODEMOS USAR ESSA DIRECTIVE AÍ _ _ PARA OBTER _ O 'view container reference' 
+
+
+
+da posição/elemento do nosso dom que vai 
+
+
+
+
+
+__ HOSTEAR ESSE NOSSO COMPONENT DE 'alert error box' 
+que renderizaremos ao dom..
+
+
+
+
+ex:
+
+
+
+
+
+private showErrorAlert(message: string) {
+
+
+    const alertComponentFactory = this.componentFactoryResolver.resolveComponentFactory(AlertDynamicComponent);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+--> basta ganharmos ACESSO AO 'host' que vai segurar 
+
+
+
+esse component,
+
+
+
+por meio de uma escrita como 
+
+
+
+
+
+
+
+
+
+const hostViewContainerRef = this.dynamicAlertBoxHost.viewContainerRef; 
+
+
+
+
+
+
+
+
+
+
+
+--> isso vai nos dar o 'viewContainerRef'
+
+
+DESSE ELEMENTO AÍ....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ISSO É POSSÍVEL JUSTAMENTE PQ ESSE 
+
+
+
+
+
+'dynamicAlertBoxHost'
+
+
+
+tem essa propriedade de `viewContainerRef`,
+
+
+
+
+como definimos anteriormente... -->  e isso é possível pq 
+
+
+
+
+NOSSA DIRECTIVE É QUE 
+
+
+TEM ESSA PROPRIEDADE 
+
+de 
+
+'viewContainerRef':
+
+
+
+import { Directive, ViewContainerRef } from '@angular/core';
+
+@Directive({
+  selector: '[appPlaceholder]'
+})
+export class PlaceholderDirective {
+                
+  constructor(public viewContainerRef: ViewContainerRef ) 
+  { }   
+
+}
+
+
+---------------------
+
+
+
+
+
+
+
+
+
+
+
+--> E NOSSA DIRECTIVE EXPÕE ESSE 'viewContainerRef'
+
+
+
+
+COMO UMA PROPRIEDADE,
+
+
+e é exatamente por isso que 
+
+CONSEGUIMOS 
+
+
+ACESSAR ESSE 'viewContainerRef'
+
+
+
+LÁ 
+
+
+NO AUTH COMPONENT...
+
+
+
+
+
+
+
+ARMAZENAMOS ESSA REF EM UMA NOVA CONSTANTE,
+
+
+
+
+
+
+
+e agora podemos prosseguir..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------> o próximo passo é 
+
+
+
+FAZER O SIMPLES 'CLEAR'
+
+
+DE TUDO QUE JÁ HAVIA SIDO RENDERIZADO NO LUGAR DESSE 'viewContainerRef'
+
+
+
+ANTERIORMENTE,
+
+
+por meio do simples call de 
+
+
+
+'hostViewContainerRef.clear()' ...
+
+
+
+
+
+
+
+ 
+ ----> ISSO É POSSÍVEL PQ 
+
+
+ O 'view Container reference'
+
+
+
+ É MAIS DO QUE UM PAR DE COORDENADAS;
+
+ É UM OBJECT QUE 
+
+ TE DEIXAR 
+ INTERAGIR 
+
+
+
+
+ COM AQUELE LOCAL NO DOM...
+
+
+
+
+
+
+
+
+
+
+
+
+ -----> OK... E queremos LIMPAR TUDO NESSE LUGAR AÍ, ANTES DE RENDERIZAR ALGO NOVO..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> por fim,
+
+ agora podemos usar nossa 'componentFactory' PARA 
+
+
+
+
+CRIAR UM NOVO 
+
+'alert box Component ' 
+
+
+
+DENTRO/NAQUELA 
+
+
+
+REFERENCE 
+
+DE 
+'viewContainerRef'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> isso é feito por meio 
+
+do simples call de 
+
+
+
+
+
+
+hostViewContainerRef.createComponent();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS É CLARO QUE 
+
+
+ESSE METHOD AÍ 
+
+NÃO EXIGE NOSSO TYPE DIRETAMENTE,
+
+E SIM EXIGE _ UMA __ FACTORY...
+
+
+
+
+
+
+-> VAMOS PASSAR UMA REFERENCE A NOSSA FACTORY DE 
+
+
+'alertComponentFactory',
+
+
+
+
+
+
+
+
+O QUE FARÁ COM QUE UM NOVO COMPONENT DESSE TIPO SEJA _ AGORA__ CRIADO __ NAQUELE LUGAR,
+ 
+ TIPO ASSIm:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  @ViewChild(PlaceholderDirective, {static: false}) dynamicAlertBoxHost: PlaceholderDirective;   ///essa propriedade vai 'HOLD' nossa placeholder directive, como ela aparece no nosso tempalte..
+  
+
+
+
+
+
+
+    private showErrorAlert(errorMessage: string,) {  ////approach PROGRAMÁTICO DE 'CREATE A COMPONENT' por meio de código TS, e não HTML...
+
+      // const alertComponent = new AlertDynamicComponent();   ////////ISSO OBVIAMENTE NÃO FUNCIONARÁ, NÃO É ASSIM QUE VOCÊ CRIA/INSTANCIA COMPONENTS ANGULAR DENTRO DO CÓDIGO TS....
+
+
+          ///a esse method 'resolveComponentFactory' você deve passar: 1) O _ TYPE__ DO SEU COMPONENT, DO COMPONENT QUE VOCê QUER CRIAR.... 2) 
+   
+   
+          const alertComponentFactory = this.componentFactoryResolver.resolveComponentFactory(AlertDynamicComponent);  /////usamos isso para CRIAR NOSSO COMPONENT DINAMICAMENTE/PROGRAMATICAMENTE, DENTRO DO CÓDIGO 'ts'...
+
+          //OBS: VER DIRECTIVE DE 'placeholderDirective', que é usada com essa nosa 'alertComponentFactory'...
+
+          ////com esse method de 'resolveComponentFactory' armazenado em uma CONST, FICAMOS COM UMA VERDADEIRA FACTORY DESSE COMPONENT ESPECÍFICO (AlertDynamicComponent, no nosso caso).
+
+
+          const hostViewContainerRef = this.dynamicAlertBoxHost.viewContainerRef;   //     local/elemento em que será RENDERIZADO, MANUALMENTE, esse nosso 'component', por meio da factory...
+
+
+          hostViewContainerRef.clear();   ///simplesmente LIMPA todos os components que estavam renderizados naquele 'ng-template', naquele LUGAR (não importa qual seja) anteriormente, no seu DOM...
+        /////queremos LIMPAR TUDO NESSE LUGAR AÍ, ANTES DE RENDERIZAR ALGO NOVO..
+
+
+
+        hostViewContainerRef.createComponent(alertComponentFactory); ///cria um NOVO COMPONENT, COM (por meio de) ESSA FACTORY ESPECÍFICA, nesse 'local' (hostViewContainerRef) DE NOSSO TEMPLATE...
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SALVAMOS TUDO ISSO E AGORA TESTAMOS...
+
+
+
+
+
+
+
+
+TESTAMOS E GANHAMOS UM _ _ERROR...
+
+
+
+
+
+
+
+
+
+ERROR --> O ERRO É DE 
+
+
+
+'No component factory found for alertComponent, did you add it to @NgModule.entryComponents?'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O QUE SIGNIFICA ISSO?
+
+
+
+
+VEREMOS NA PRÓXIMA AULA...

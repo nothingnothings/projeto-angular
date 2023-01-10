@@ -1,0 +1,360 @@
+
+
+
+
+
+
+
+->> TIVE DE APRENDER ISSO COM O REACT, AGORA É HORA DE APRENDER MAIS UMA VEZ...
+
+
+
+
+
+
+
+
+
+
+
+-> eu _ ACHO __ QUE O CÓDIGO FICARÁ TIPO ASSIM:
+
+
+
+
+
+
+
+
+  isLoading: boolean = false;
+
+
+
+
+
+
+
+
+
+
+
+  e no method:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    onCreatePost(formReference: NgForm) { ///VAI FUNCIONAR, PQ USAMOS _ OBSERVABLES COM ESSE HTTP REQUEST....
+    //send HTTP POST request
+
+    this.isLoading = true;
+    console.log(formReference.value);
+
+    const postData = formReference.value;
+
+
+      //você não precisa chamar 'ngOnDestroy()' para dar unsubscribe em subscriptions feitas em cima de 'this.http.post()'...
+    ///this.http.post VAI NOS RETORNAR UM __ OBSERVABLE, SEMPRE... E AÍ VAMOS TER DE FAZER __ SUBSCRIBE __ A ELE..
+    this.http.post<{name : string}>('https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json',    //// '/posts.json' --> é uma IDIOSSINCRASIA DO 'FIREBASE', e não do angular --> precisamos definir um 'NOVO PATH' para armazenar nossos posts diretamente, e aí, AO FINAL DESSA ROUTE, SOMOS OBRIGADOS A ESCREVER '.json' (coisa do FIREBASE , que é MALUCO)...
+    
+    postData ///NOSSO OBJECT JAVASCRIPT SERÁ CONVERTIDO EM JSON DATA AUTOMATICAMENTE...
+    
+    
+    
+    ).subscribe(
+      (responseData) => {  //// 'responseData' --> é o equivalente ao nosso 'BODY' da response... não vai reunir TUDO TUDO da response (coisas como headers e tal, essas coisas são acessadas por OUTROS METHODS DA RESPONSE, NO ANGULAR)...
+ 
+
+          console.log(responseData);
+
+        this.isLoading = false;
+      }
+    )
+
+    formReference.reset(); //resetta os values de todos os fields a partir de um submit bem sucedido...
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> É CLARO QUE PRECISAMOS DE UM COMPONENT COMO UM 'SPINNER',
+
+
+
+
+  ou algo que seja OUTPUTTADO ENQUANTO 'isLoading'
+
+
+  ESTIVER COMO TRUE.
+
+
+
+
+
+
+
+
+
+
+
+  --> MAS O PROFESSOR QUER USAR ESSE 'isLoading'
+
+  SOMENTE COM O 'FETCH DE POSTS',
+
+
+
+
+  por isso só vai colocar isso lá 
+
+  em 
+
+
+  'fetchPosts',
+
+  e não 
+  em 
+
+  'onCreatePost'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> OK... NO NOSSO TEMPLATE,
+
+
+  QUEREMOS MOSTRAR 
+
+
+  'no posts AVAILABLE 
+  '
+
+
+
+  apenas __ se NÃO TIVERMOS POSTS,
+  E
+   APENAS SE NÃO ESTIVERMOS 
+
+   'currently fetching'...
+
+
+
+
+
+
+
+
+
+   é por isso que o check fica 
+
+
+
+   '!loadedPosts && !isFetching' 
+
+
+
+
+
+
+
+
+
+
+   --> ISSO PQ QUEREMOS MOSTRAR ESSE 'NO POSTS AVAILABLE' __ aPENAS_ SE 
+
+
+
+   NÃO ESTIVERMOS 'CARREGANDO NOVOS POSTS'..
+
+
+
+
+
+
+
+
+
+
+   EX:
+
+
+
+
+
+
+
+
+
+     <div class="row">
+    <div class="col-xs-12 col-md-6 col-md-offset-3" *ngIf="loadedPosts.length < 1 && !isLoading else existingPosts">
+      <p>No posts available!</p>
+    </div>
+
+    <ng-template #existingPosts>
+      <ul  class="list-group">
+        <li *ngFor="let post of loadedPosts" class="list-group-item" >
+          <h1>{{post.title}}</h1>
+          <p>{{post.content}}</p>
+        </li>
+      </ul>
+
+
+
+
+
+
+
+
+
+
+
+      CERTO... 
+
+
+
+
+
+
+
+
+
+
+
+
+      -> OK, AGORA TEMOS UM TERCEIRO CENÁRIO, EM QUE 
+
+
+
+
+      VAMOS ESTAR 'LOADING'...
+
+
+
+
+
+
+
+
+
+      -> para isso, se não tivermos um spinner em mãos,
+
+      podemos só escrever algo como 
+
+
+
+      '<p *ngIf="isLoading">Loading...</p>' 
+
+
+
+
+
+
+
+
+
+
+      O CÓDIGO FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div class="row">
+    <div class="col-xs-12 col-md-6 col-md-offset-3" *ngIf="loadedPosts.length < 1 && !isLoading">
+      <p>No posts available!</p>
+    </div>
+    <p *ngIf="isLoading">Loading...</p>
+
+      <ul  class="list-group" *ngIf="loadedPosts.length >= 1 && !isLoading">
+        <li *ngFor="let post of loadedPosts" class="list-group-item" >
+          <h1>{{post.title}}</h1>
+          <p>{{post.content}}</p>
+        </li>
+      </ul>
+      
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> ISSO 
+
+
+
+
+  FAZ COM QUE AGORA TENHAMOS UMA TELA DE LOADING, ESSENCIALMENTE..
+
+
+
+
+
+
+
+
+
+
+
+  Ook.. tudo bem...
+
+
+
+
+  FIREBASE É MT RÁPIDO, POR ISSO É DIFÍCIL DE VER ESSE 'LOADING'...

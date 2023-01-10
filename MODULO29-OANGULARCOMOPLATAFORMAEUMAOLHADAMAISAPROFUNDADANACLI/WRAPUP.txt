@@ -1,0 +1,136 @@
+
+
+
+
+
+
+
+
+ACABAMOS COM ESTE MÓDULO, POR ENQUANTO... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... MAS SEMPRE PODEMOS VER MAIS COISAS...
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR ACHA QUE É IMPORTANTE NOS APONTAR AOS OFFICIAL DOCS...
+
+
+
+
+
+
+
+ANGULAR É UM TÓPICO ENORME,
+
+É O FRAMEWORK,
+
+
+
+
+
+E TAMBÉM O CLI ECOSYSTEM... 
+
+
+
+(
+
+    POR ISSO QUE UM MONTE DE PESSOAS CHAMAM O ANGULAR DE 'PLATAFORMA'...
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE ESSE CURSO É SOBRE O FRAMEWORK DO ANGULAR... -->
+
+
+
+
+
+
+
+
+COMO ESCREVER E CONSTRUIR ANGULAR APPS...
+
+
+
+
+
+
+
+
+
+--> MAS SE VOCÊ QUER 
+
+
+
+APRENDER MAIS SOBRE 
+
+
+
+
+OS PRÓXIMOS PASSOS,
+
+SCHEMATICS E ETC,
+
+
+
+este módulo é um bom começo...
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+434 Getting-Started-with-Git
+https://academind.com/learn/web-dev/git-the-basics/
+
+
+
+

@@ -1,0 +1,3641 @@
+
+
+
+
+
+
+--> NAS ÚLTIMAS LIÇÕES,
+APRENDEMOS
+
+
+
+COMO PODEMOS 
+USAR 
+
+'canActivate'
+
+
+para CONTROLAR ACESSO  A 
+
+
+
+
+UMA ROUTE,
+
+
+
+
+
+
+
+
+o 'IN' de uma route..
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA QUEREMOS 
+
+CONTROLAR SE O _ USEr_ É 
+
+
+
+
+__ CAPAZ/TEM A PERMISSÃO PARA 
+
+FAZER 
+
+'LEAVE' de uma route ou não...
+
+
+
+
+
+
+
+
+
+
+
+
+--> NÓS TAMBÉM PODEMOS CONTROLAR ISSO NO ANGULAR,
+
+
+E 
+
+
+
+NÓS TALVEZ 
+
+
+VAMOS QUERER 
+
+CONTROLAR ISSO NESTA HIPÓTESE:
+
+
+
+
+1) DIGAMOS QUE ESTAMOS LOGGED IN,
+
+
+E AÍ EDITAMOS UM SERVER...
+
+
+
+
+
+
+
+
+2) nessa hipótese,
+
+vamos querer CONTROLAR O 'exit' do user....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok, temos permissão para editar o  DEVSERVER...
+
+
+
+
+-_> aí,
+
+
+nesse 
+
+negócio,
+
+
+
+
+
+NO COMPONENT DE 'EDIT SERVER',
+
+
+
+se nós 
+
+ACTUALLY ALTERARMOS ALGUMA 
+
+COISA,
+
+
+
+
+
+
+
+
+
+SE ELE _ ALTEROU ALGO NO 
+
+
+COMPONENT (trocou o nome do server, por exemplo, ou o STATUS do server),
+
+
+
+
+
+VAMOS QUERER _ PERGUNTAR A ELE _ SE 
+
+ELE __ REALMENTE_ QUER 
+
+SAIR 
+
+DA PAGE (se ele tentar sair),
+
+
+e que 
+
+
+se ele 
+
+SAIR,
+
+
+
+TODAS AS MUDANÇAS QUE ELE FEZ/FARÁ _ SERÃO DESCARTADAS (não serão salvas)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, É UM 'CONVENIENCE METHOD' para 
+
+
+
+IMPEDIR USERS DE 
+
+FAZER 
+
+
+'NAVIGATE AWAY'
+
+
+
+SEM QUERER....
+
+
+
+
+
+
+
+
+
+
+
+----> COMO IMPLEMENTAMOS ISSO AÍ..? 
+
+
+
+
+
+
+
+
+
+
+
+
+--> DEVEMOS IR ATÉ O COMPONENT DE 'edit-server.component.ts'
+
+
+E ENTAÕ 
+
+
+ADICIONAR UMA NOVA PROPRIEDADE..
+
+
+
+
+
+
+
+
+-> SERÁ UMA PROPRIEDADE de 
+
+
+'changesSaved',
+
+que 
+
+
+SERÁ 
+
+ADICIONADA 
+
+
+
+EM 'EditServerComponent'...
+
+
+
+
+
+
+
+FICA TIPO AASSIM:
+
+
+
+
+
+
+
+  server: { id: number; name: string; status: string };
+
+  serverName = '';
+  serverStatus = '';
+  allowEdit = false;
+  changesSaved = false;
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSA PROPRIEDADE ORIGINALMENTE SERÁ 'false.'..
+
+
+
+
+
+
+
+
+
+
+
+---> E QEUREMOS QUE ESSA PROPRIEDADE 
+
+
+SEJA 
+
+TROCADA 
+
+PARA 
+
+
+
+'true'
+
+
+SEMPER QUE 
+
+
+
+CLICAMOS 
+
+em 
+
+
+
+'onUpdateServer()'...
+
+
+
+
+
+
+
+
+
+
+-> É POR ISSO QUE ESCREVEMOS ESSE METHOD ASSIm:
+
+
+
+  onUpdateServer() {
+
+    this.serversService.updateServer(this.server.id, {
+      name: this.serverName,
+      status: this.serverStatus,
+    });
+
+    this.changesSaved = true;
+
+  }
+
+
+
+
+
+
+
+
+
+--> DEPOIS QUE AS CHANGES 
+
+
+FOREM 'SAVED' 
+
+
+e essa propriedade 
+
+
+tiver sido definida,
+
+
+
+
+
+O PROFESSOR VAI QUERER 
+
+'NAVIGATE AWAY'...
+
+
+
+
+
+
+
+
+
+---> é por isso que o PROFESSOR VAI USAR o 'router'
+
+
+nesse component aí,
+
+DE FORMA PROGRAMÁTICA,
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  constructor(private serversService: ServersService, private route: ActivatedRoute, private router: Router) {}
+
+
+
+
+
+  onUpdateServer() {
+
+    this.serversService.updateServer(this.server.id, {
+      name: this.serverName,
+      status: this.serverStatus,
+    });
+
+    this.changesSaved = true;
+    this.router.navigate(['/']);
+
+  }
+
+
+
+
+
+
+  -------------------------------
+
+
+
+
+
+
+
+
+
+
+  MAS EU ESCREVI ERRADO... -> eu coloquei para ele 'navigate' 
+
+
+  ao 
+
+
+  COMPONENT 'HOME',
+
+  mas o ideal seria fazer COM QUE ELE 
+
+  FOSSE 
+
+  'NAVIGATED'
+
+  até 
+
+  a 
+
+
+  ROUTE DO 
+  'last loaded server',
+
+
+  por isso 
+
+
+  o professor 
+
+  escreve 
+
+
+
+
+  '' this.router.navigate(['../']); ''',
+
+
+
+
+  para 'JUMP' 
+
+
+
+
+  um nível acima...
+
+
+
+
+
+
+
+
+
+
+  -> MAS PARA QUE ISSO FUNCIONE,
+
+  o professor 
+
+
+
+  precisa colocar aquela option de 
+
+
+  'relativeTo: this.route'....
+
+
+
+  ,
+
+
+
+
+
+
+
+  PQ ELE VAI QUERER 'NAVIGATE AWAY'
+
+  em relaçaõ 
+
+  À 
+
+
+
+  'CURRENTLY ACTIVE ROUTE'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> até agora tudo bem,
+
+
+  ESTAMOS MUDANDO ESSA PROPRIEDADE DE 
+
+  'changesSaved'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -------> AGORA TEMOS QUE IMPLEMENTAR_ 
+
+  ALGUMA LÓGICA QUE 
+  VAI IMPEDIR O USER DE 
+
+
+  'NAVIGATING AWAY'
+
+
+
+
+
+  _ SEMPRE QUE _ ELE 'CLICAR EM ALGO ACIDENTALMENTE'....
+
+
+
+
+NA VERDADE,
+
+VAMOS QUERER 'PERGUNTAR SE ELE REALMENTE QUER SAIR'...
+
+
+
+
+
+  --> para isso, 
+
+  PROVAVELMENTE VOU PRECISAR DE UM HOOK,
+
+
+  DE UM DOS LIFECYCLE HOOKS....
+
+
+
+
+
+
+
+
+
+  ----> E ESSE CÓDIGO QUE VAI 'IDENTIFICAR SE ELE REALMENTE QUER SAIR'
+
+
+
+
+  vai 
+
+  ter de ser settado lá em 
+
+  'ngOnInit()',
+
+
+
+
+  provavelmente 
+
+
+
+
+  COMO UM 'SUBSCRIBE',
+
+
+
+  que vai ficar 
+
+  'waiting for changes' 
+
+
+
+  ,
+
+
+  e que 
+
+  vai acabar nos informando 
+
+  'SE ESSE COMPONENT DE 'UPDATE SERVER' foi 
+
+  CLICADO OU NÃO'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> MAS ISSO TVZ ESTÁ ERRADO, ESSE PENSAMENTO..
+
+
+
+
+
+  -> BEM,
+
+  uma guard __ _SEMPRE PRECISA SER UM _ SERVICE,
+
+
+
+
+  precisa ser um service 
+
+
+
+
+
+  ___ PQ __ PRECISAMOS _O  PROVIDENCIAR 
+
+
+
+
+
+
+  EXATAMENTE COMO PROVIDENCIAMOS 'authGuard'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> ISSO QUER DIZER QUE, DE ALGUMA FORMA,
+
+
+
+  ESSA LÓGICA NÃO FUNCIONA:
+
+
+
+
+  PRECISAMOS:
+
+
+
+
+
+
+  1) ACESSAR O CÓDIGO NO NOSSO COMPONENT 
+
+
+
+  2) TER UM SERVICE 
+
+
+
+
+
+
+
+
+
+
+  --> ESSE PARECE SER UM SETUP SUPER COMPLICADO,
+
+
+
+
+  mas na verdade ele não é,
+
+  é super simples...
+
+
+
+
+
+
+
+
+
+
+  --. LÁ NO FOLDER de 'edit-server',
+
+
+
+  no meio desses arquivos,
+
+  o professor ADICIONA UM NOVO SERVICE,
+
+
+
+
+  chamado de 
+
+
+
+
+
+
+'can-deactivate-guard.service.ts;'
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> CERTO... DENTRO DESSE ARQUIVO,
+
+
+
+O PROFESSOR 
+PRIMEIRAMENTE VAI QUERER __FAZER EXPORT DE UMA INTERFACE,
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+export interface 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> UMA 'INTERFACE' --> É __ SIMPLESMENTE_ UM CONTRACT
+ 
+
+
+ QUE __ PODE _sER IMPORTADO POR _ OUTRA CLASS,
+
+
+
+ QUE _ FORÇA__ 
+ ESSA CLASS 
+
+
+
+
+
+
+
+
+
+
+ A __ PROVIDENCIAR __ 
+
+ ALGUMA LÓGICA ESPECÍFICA...
+
+
+
+
+
+
+
+
+
+
+
+
+ EX:
+
+
+
+
+
+
+
+
+
+
+
+ export interface CanComponentDeactivate { ////vamos querer EXPORTAR E USAR ESSA INTERFACE (e interfaces são só tipo CLASS TYPES _ QUE OBRIGAM O USER A ESCREVER CERTA LÓGICA NO SEU INTERIOR)....
+
+
+}
+
+
+
+
+
+
+---------------------------------
+
+
+
+
+
+
+
+
+CERTO, E ESSA INTERFACE __ VAI QUERER __ 
+
+
+1 
+
+
+ÚNICA COISA DO 
+
+component 
+
+QUE 
+
+
+
+A IMPLEMENTA...
+
+
+
+
+
+
+
+
+
+
+
+
+--> O NEGÓCIO QUE ESSA INTERFACE __ VAI _ FORÇAR_ O COMPONENT A TER 
+
+é 
+o 
+
+method de 
+'CanDeactivate() {}' 
+
+
+
+
+
+
+
+
+
+
+
+
+------> ESSE METHOD,
+
+
+CUJO TYPE SERÁ _DEFINIDO NESSA INTERFACE,
+
+
+
+será 
+
+assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+canDeactivate: () => Observable
+
+
+
+
+
+
+
+
+
+--> ESSE METHOD NÃO VAI TER NENHUM ARGUMENT,
+
+
+MAS NO FINAL DAS CONTAS VAI RETORNAR UM 'OBSERVABLE'...
+
+
+
+
+
+----> E ESSE METHOD 
+
+
+
+RESOLVERÁ OU COMO:
+
+
+1) UM OBSERVABLE  QUE RESOLVE COMO UM BOOLEAN 
+
+
+2) UMA PROMISE QUE RESOLVE COMO UM BOOLEAN 
+
+
+3) UM BOOLEAN PURO..
+
+
+
+
+
+
+
+
+
+
+-> ou seja,
+essa estrutura de RETURN É A MESMA DE 'canActivate,'
+
+
+
+
+ISSO PQ 
+
+ESSES 2 negócios 
+
+
+
+
+_COMPARTILHAM DA MESMA ESTRUTURA..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok, essa é a nossa INTERFACE.... ---> É BOM TÊ-LA,
+
+
+
+MAS ELA, POR SI SÓ,
+
+NÃO FAZ COISA ALGUMA...
+
+
+
+
+
+
+
+
+--> o código vai ficando assim:
+
+
+
+
+
+
+
+
+
+
+
+
+import { Observable } from 'rxjs/Observable';
+
+
+
+
+
+
+export interface CanComponentDeactivate {
+    canDeactivate: () => Observable<boolean> | Promise<boolean> | boolean;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS ESSA É SÓ NOSSA 'INTERFACE',
+
+
+a interface 
+
+de 'CanComponentDeactivate'...
+
+
+
+
+
+
+-> ELA DEVERÁ SER _ IMPLEMENTADA _ EM ALGUMA CLASS..
+
+
+
+
+
+
+
+
+
+
+-> logo abaixo dessa interface,
+
+
+
+escrevemos uma CLASS... --> A CLASS SERÁ 
+
+
+o 
+
+
+
+'MEAT'
+
+desse 
+
+service aí...
+
+
+
+
+
+
+
+
+
+
+
+
+---> ESSA CLASS SERÁ O 
+
+
+'service' de 'deactivate guard' 
+
+EM SI...
+
+
+
+
+
+
+
+
+
+--> para isso,
+
+o professor escreve assim:
+
+
+
+
+
+
+
+
+
+
+
+export class CanDeactivateGuard {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+-> CERTO, E ESSA 'GUARD' VAI IMPLEMENTAR_ 
+
+
+
+UMA INTERFACE QUE VAMOS OBTER LÁ DE 
+
+'@angular/router',
+
+que será 
+
+
+'CanDeactivate' (que NÃO É A MESMA COISA QUE A INTERFACE QUE RECÉM CRIAMOS, ESSA INTERFACE DE 'CanComponentDeactivate'...)..
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+export interface CanComponentDeactivate {
+    canDeactivate: () => Observable<boolean> | Promise<boolean> | boolean;
+
+}
+
+
+export class CanDeactivateGuard implements CanDeactivate {
+
+
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export class CanDeactivateGuard implements CanDeactivate {  //vai IMPLEMENTAR a interface vista logo acima, que vai o OBRIGAR A TER ESSE METHOD DE 'canDeactivate() {}', e que esse method retorne aqueles types ali...
+
+
+
+    canDeactivate() {
+        
+    }
+
+}
+
+
+
+
+
+
+
+
+
+------------------------
+
+
+
+
+
+
+
+
+
+
+'canDeactivate'
+
+É,
+
+ACTUALLY,
+
+UMA 
+
+
+
+
+
+_ INTERFACE_ 
+
+
+
+
+
+
+
+__ IMPORTADA 
+
+
+
+LÁ 
+
+DO 
+
+'angular/router'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO VAI FICANDO ASSim:
+
+
+
+
+
+
+import { CanDeactivate } from '@angular/router';
+import { Observable } from 'rxjs';
+
+export interface CanComponentDeactivate {
+  ////vamos querer EXPORTAR E USAR ESSA INTERFACE (e interfaces são só tipo CLASS TYPES _ QUE OBRIGAM O USER A ESCREVER CERTA LÓGICA NO SEU INTERIOR)....
+
+  canDeactivate: () => Observable<boolean> | Promise<boolean> | boolean; //esse method será obrigatório, e deverá retornar esses values com esses types aí...
+}
+
+export class CanDeactivateGuard implements CanDeactivate {
+  //vai IMPLEMENTAR a interface vista logo acima, que vai o OBRIGAR A TER ESSE METHOD DE 'canDeactivate() {}', e que esse method retorne aqueles types ali...
+
+  canDeactivate() {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> é CLARO QUE ESSE 'CanDeactivate'
+
+
+
+QUE IMPLEMENTAMOS 
+
+NESSA CLASS _ 
+
+
+
+
+
+_ É UM 'GENERIC TYPE',
+
+
+generic type que 
+
+
+
+__ VAMOS QUERER _ WRAPPAR_ AO REDOR DE NOSSA INTERFACE 
+
+de 
+
+
+
+'CanComponentDeactivate'... ----> ISSO FORÇARÁ/FORÇA 
+
+
+ALGUM COMPONENT/CLASS 
+
+
+
+
+
+
+_ A IMPLEMENTAR O METHOD DE 'canDeactivate'...
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+import { CanDeactivate } from '@angular/router';
+import { Observable } from 'rxjs';
+
+export interface CanComponentDeactivate {
+  ////vamos querer EXPORTAR E USAR ESSA INTERFACE (e interfaces são só tipo CLASS TYPES _ QUE OBRIGAM O USER A ESCREVER CERTA LÓGICA NO SEU INTERIOR)....
+
+  canDeactivate: () => Observable<boolean> | Promise<boolean> | boolean; //esse method será obrigatório, e deverá retornar esses values com esses types aí...
+}
+
+export class CanDeactivateGuard implements CanDeactivate<CanComponentDeactivate> {
+  //vai IMPLEMENTAR a interface vista logo acima, que vai o OBRIGAR A TER ESSE METHOD DE 'canDeactivate() {}', e que esse method retorne aqueles types ali...
+
+  canDeactivate() {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> certo...
+
+
+
+
+
+
+ISSO PODE _ SOAR_ COMPLICADO_,
+
+
+
+
+
+
+
+ESSE SETUP PODE PARECER COMPLICADO... --> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+import { CanDeactivate } from '@angular/router';
+import { Observable } from 'rxjs';
+
+export interface CanComponentDeactivate {
+  ////vamos querer EXPORTAR E USAR ESSA INTERFACE (e interfaces são só tipo CLASS TYPES _ QUE OBRIGAM O USER A ESCREVER CERTA LÓGICA NO SEU INTERIOR)....
+
+  canDeactivate: () => Observable<boolean> | Promise<boolean> | boolean; //esse method será obrigatório, e deverá retornar esses values com esses types aí...
+}
+
+export class CanDeactivateGuard implements CanDeactivate<CanComponentDeactivate> {
+  //vai IMPLEMENTAR a interface vista logo acima, que vai o OBRIGAR A TER ESSE METHOD DE 'canDeactivate() {}', e que esse method retorne aqueles types ali...
+
+  canDeactivate() {}
+}
+
+
+
+
+
+
+
+
+
+
+
+MAS _ 
+
+ESSE  É O SETUP QUE,
+MAIS TARDE,
+
+
+
+
+PODEERMOS 'FACILMENTE'
+
+
+CONECTAR UM COMPONENT 
+
+
+à nossa 
+
+
+
+
+
+
+guard de 'CanDeactivateGuard'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo..
+
+
+
+
+
+
+
+aí essa class,
+
+essa GUARd 
+
+de 
+'CanDeactivateGuard',
+
+
+
+
+
+
+
+
+
+
+ELA _ TAMBÉM __ VAI PRECISAR DE UM METHOD DE 'canDeactivate',
+
+
+
+
+QUE SERÁ 
+
+
+
+
+
+
+
+
+
+__JUSTAMENTE_ O METHOD QUE SERÁ CHAMADO PELO 'ANGULAR ROUTER'
+
+
+
+
+
+
+
+QUANDO TENTARMOS __ _DAR LEAVE_ EM UMA ROUTE..
+
+
+
+
+
+
+
+
+
+
+
+
+--. o código vai ficando assim:
+
+
+
+
+
+
+
+
+import { CanDeactivate } from '@angular/router';
+import { Observable } from 'rxjs';
+
+export interface CanComponentDeactivate {
+
+  canDeactivate: () => Observable<boolean> | Promise<boolean> | boolean; //esse method será obrigatório, e deverá retornar esses values com esses types aí...
+}
+
+export class CanDeactivateGuard implements CanDeactivate<CanComponentDeactivate> {
+
+  canDeactivate() {} ////ESSE METHOD SERÁ ATIVADO PELO ANGULAR-ROUTER QUANDO TENTARMOS DAR 'LEAVE' de algum component..
+}
+
+
+
+
+
+
+
+
+
+
+
+
+----> COMO ARGUMENTO,
+
+ESSE 
+
+METHOD 
+de 
+
+'canDeactivate'
+
+
+VAI RECEBER 
+
+
+
+
+um 'component',
+
+
+
+que terá,
+
+
+COMO TYPE,
+
+O 
+TYPE DE 
+
+
+
+'CanComponentDeactivate'...  
+
+
+
+
+
+
+(
+
+
+    EM OUTRAS PALAVRAS,
+
+    ESSE COMPONENT DEVERÁ SER UM COMPONENT QUE 
+
+
+
+    __ POSSUI ESSA INTERFACE 
+
+    de 
+
+    'CanComponentDeactivate'
+
+
+    __IMPLEMENTADA_ em si...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO FICA ASSIm:
+
+
+
+
+
+
+
+  canDeactivate(component: CanComponentDeactivate) {   ///ESSE É O METHOD que vai ser EXECUTADO _ PELO ANGULAR _ QUANDO TENTARMOS DAR 'LEAVE' de uma route.... 
+
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -------> OU SEJA,
+
+  esse 
+
+
+  'component'
+
+  SERÁ __ UM COMPONENT _ QUE 
+
+  TERÁ OBRIGATORIAMENTE UM METHOD DE 
+
+  'canDeactivate()'..
+
+
+
+
+
+(
+
+    esse detalhe se tornará SUPER IMPORTANTE logo logo...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+--> O SEGUNDO PARÂMETRO DE 
+
+'canDeactivate'
+
+
+SERÁ 
+
+
+
+
+
+'currentRoute',
+
+
+QUE 
+
+
+
+
+VAI TER AQUELE TYPE 
+
+ 
+
+
+ de 
+
+
+
+ 'ActivatedRouteSnapshot'...
+
+
+
+
+
+
+
+
+
+
+
+--> O TERCEIRO PARÂMETRO SERÁ 
+
+
+'state',
+
+
+
+
+
+QUE 
+
+
+SERÁ 
+
+
+
+
+O  TYPE DE 'RouterStateSnapshot'...
+
+
+
+
+
+
+
+
+
+
+-> VAI FICANDO TIPO ASSIM:
+
+
+
+
+
+
+
+
+  canDeactivate(component: CanComponentDeactivate,
+    currentRoute: ActivatedRouteSnapshot,
+    currentState: RouterStateSnapshot
+  
+  
+  ) {  
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> POR FIM,
+
+
+
+ESSE METHOD TAMBÉM VAI PRECISAR DE UM QUARTO PARÂMETRO,
+
+
+
+'nextState',
+
+
+
+QUE 
+
+
+SERÁ UM 
+
+
+
+__ ARGUMENT __ OPCIONAL (?),
+
+
+
+E QUE 
+
+
+REPRESENTA 
+
+
+
+
+'''O LUGAR QUE VOCÊ QUER IR/enviar o user ''',
+
+
+
+JUSTAMENTE 
+
+
+PQ ESSE METHOD 
+
+
+de 
+'canDeactivate'
+
+
+
+
+_SERÁ__ CHAMADO _ AO FINAL_ _ 
+
+
+,
+
+
+
+
+quando quisermos fazer 'LEAVE' 
+
+
+de uma determinada route...
+
+
+
+
+
+
+->  E O 'nextState'
+
+
+TAMBÉM __ SERÁ UMA 'router state snapshot'..
+
+
+
+
+
+
+
+
+
+
+
+
+é por isso q o negócio fica escrito assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  canDeactivate(component: CanComponentDeactivate,
+    currentRoute: ActivatedRouteSnapshot,
+    currentState: RouterStateSnapshot,
+    nextState?: RouterStateSnapshot
+  
+  
+  ) {  
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ------------>  COMO RETURN TYPE 
+
+  desse method,
+
+
+  TAMBÉM 
+
+
+  teremos 
+
+
+
+
+  '''um observable, uma promise ou um boolean',
+
+
+  por isso 
+
+  escrevemos assim:
+
+
+
+
+
+
+  
+
+  canDeactivate(component: CanComponentDeactivate,
+    currentRoute: ActivatedRouteSnapshot,
+    currentState: RouterStateSnapshot,
+    nextState?: RouterStateSnapshot
+  
+  
+  ): Observable<boolean> | Promise<boolean> | boolean  {  
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ESSA É A APARÊNCIA DE NOSSO METHOD 'canDeactivate'.... (BEM GORDO)....
+
+
+
+
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { ActivatedRoute, ActivatedRouteSnapshot, CanDeactivate, RouterStateSnapshot } from '@angular/router';
+import { Observable } from 'rxjs';
+
+export interface CanComponentDeactivate {
+  ////vamos querer EXPORTAR E USAR ESSA INTERFACE (e interfaces são só tipo CLASS TYPES _ QUE OBRIGAM O USER A ESCREVER CERTA LÓGICA NO SEU INTERIOR)....
+
+  canDeactivate: () => Observable<boolean> | Promise<boolean> | boolean; //esse method será obrigatório, e deverá retornar esses values com esses types aí...
+}
+
+export class CanDeactivateGuard implements CanDeactivate<CanComponentDeactivate> { //// essa é NOSSA __ GUARD__ DE 'CanDeactivateGuard' DE VERDADE, que vai ser CONECTADA AO COMPONENT EM QUE QUEREMOS QUE SEJA IMPLEMENTADA.. 
+
+
+
+  //vai IMPLEMENTAR a interface vista logo acima, que vai o OBRIGAR A TER ESSE METHOD DE 'canDeactivate() {}', e que esse method retorne aqueles types ali...
+
+
+
+
+  canDeactivate(component: CanComponentDeactivate, ///ESSE É O METHOD que vai ser EXECUTADO _ PELO ANGULAR _ QUANDO TENTARMOS DAR 'LEAVE' de uma route.... 
+    currentRoute: ActivatedRouteSnapshot,
+    currentState: RouterStateSnapshot , 
+    nextState?: RouterStateSnapshot
+    ): Observable<boolean> | Promise<boolean> | boolean {   
+
+
+
+
+  }
+}
+
+
+
+
+
+----------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO...
+
+
+
+
+
+
+
+
+por fim,
+
+dentro 
+
+
+de 
+
+
+
+
+
+'canDeactivate',
+
+
+esse method aí,
+
+
+
+VAMOS QUERER 
+
+
+
+
+__
+
+
+
+RETORNAR __ 
+
+
+UM VALUE 
+
+QUE 
+
+SERÁ 
+
+
+
+
+
+'component.canDeactivate()' 
+
+
+
+
+
+
+
+
+
+
+(
+
+    OU SEJA,
+
+
+    SERÁ _ UM RUN DO METHOD 'canDeactivate()'
+
+
+
+    QUE EXISTIRÁ/CODAREMOS ___ DENTRO DO 
+
+    COMPONENT _ 
+
+
+
+    EM QUE 
+
+    ESSA 
+
+
+
+    GUARD DE 
+
+    'CanDeactivateGuard'
+
+
+
+    TIVER SIDO POSICIONADA...
+
+
+
+)
+
+
+
+
+
+
+
+
+
+É ASSIM QUE FICA:
+
+
+
+  canDeactivate(component: CanComponentDeactivate, ///ESSE É O METHOD que vai ser EXECUTADO _ PELO ANGULAR _ QUANDO TENTARMOS DAR 'LEAVE' de uma route.... 
+    currentRoute: ActivatedRouteSnapshot,
+    currentState: RouterStateSnapshot , 
+    nextState?: RouterStateSnapshot
+    ): Observable<boolean> | Promise<boolean> | boolean {   
+
+
+
+            return component.canDeactivate();
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  essa linha 
+
+
+
+  ''''    return component.canDeactivate();  ///vai rodar o method 'canDeactivate()' que tivermos definido DENTRO DE NOSSO PRÓPRIO COMPONENT.. 
+ ''''
+
+
+
+
+
+ É 
+
+ A RAZÃO 
+
+
+
+ DE EU 
+
+ SER OBRIGADO A 'IMPLEMENT'
+
+ ESSA 
+
+
+
+
+
+ INTERFACE 
+
+
+
+
+ DE 
+
+
+ 'CanComponentDeactivate' 
+
+
+
+
+ __DENTRO __ 
+
+
+ DESSE COMponent/guard,
+
+
+
+
+
+ PQ 
+
+
+
+
+ __ AGORA__ 
+
+
+
+
+
+
+
+ O ANGULAR ROUTER 
+
+ VAI 
+
+ SER CAPAZ DE 
+
+ EXECUTAR 
+ 'canDeactivate()'
+
+
+
+
+
+
+
+
+
+ no __ NOSSO SERVICE,
+
+
+PODE FAZER ISSO AO MESMO TEMPO 
+
+
+QUE 
+
+
+
+'RELIES ON THE FACT' 
+
+
+
+
+de que 
+O 
+
+
+COMPONENT 
+
+
+
+EM QUE 
+
+ _ ESTAMOS _ TAMBÉM __ 
+
+ TERÁ 
+
+ ESSE METHOD DE 
+
+
+ 'canDeactivate()' no seu interior.... ------->  PQ É __ DENTRO __ 
+
+
+
+ DE NOSSO ACTUAL COMPONENT (page component, acho)
+
+
+
+
+ QUE VAMOS IMPLEMENTAR 
+
+ ESSA LÓGICA DE 
+
+
+
+
+
+
+'''' TEMOS PERMISSÃO PARA SAIR OU NÃO'''' -->  
+
+
+
+
+PQ _ NÓS PRECISAMOS DESSA CONNECTION 
+
+
+
+ENTRE O 
+
+'GUARD' 
+
+E 
+O 
+
+'COMPONENT'
+
+para 
+
+conseguir 
+
+
+
+definir esse comportamento de 'vocÊ não pode sair'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK, COM ESSA INFO ADICIONADA,
+
+
+
+
+PODEMOS VOLTAR AO 
+
+
+'app-routing.module.ts',
+
+
+
+
+
+
+
+
+
+
+__ QUE É O LOCAL EM QUE __ ADICIONAREMOS ESSA 
+
+
+guard 
+
+
+DE 
+
+'canDeactivate',
+
+
+
+
+
+
+ISSO à ROUTE DE 
+
+
+
+
+'EditServerComponent'..
+
+
+
+
+
+ex:
+
+
+
+
+
+
+      {
+        path: ':id/edit',
+        canDeactivate: [CanDeactivateGuard],   ///GUARD meio complicada de definir... ver estrutura em 'can-deactivate-guard.service.ts'... ----> O COMPORTAMENTO DE 'leave' dessa página de 'edit-component' SERÁ DEFINIDO NA PRÓPRIA PAGE, em 'edit-component.ts' mesmo.... (e não no service de 'can-deactivate-guard.service.ts')..
+        component: EditServerComponent,
+      },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK.... 
+
+
+
+
+
+
+
+ISSO FARÁ COM QUE 
+
+
+O ANGULAR __ EXECUTE ESSA 
+'GUARD'
+
+
+
+SEMPRE QUE 
+
+TENTARMOS __ 
+
+DAR 
+
+'LEAVE'
+
+
+
+NESSA PAGE de 
+
+
+'edit-server'...
+
+
+
+
+
+
+
+
+
+
+
+------> OK... AGORA SÓ PRECISAMOS DEFINIR A LÓGICA DE 
+
+
+'canDeactivate()' 
+
+
+method,
+
+lá 
+
+
+
+
+
+NO NOSSO PAGE COMPONET DE 
+
+
+'edit-server'...
+
+
+
+
+
+
+
+--> MAS ANTES DISSO,
+
+DEVEMOS PROVIDENCIAR ESSE MODULE de 'CanDeactivate'
+
+
+LÁ NOS 
+
+'providers',
+
+
+em 
+
+'app.module.ts'...
+
+
+----> 
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    ServersComponent,
+    UsersComponent,
+    ServerComponent,
+    EditServerComponent,
+    UserComponent,
+    PageNotFoundComponent,
+  ],
+  imports: [BrowserModule, FormsModule, 
+    AppRoutingModule //checar arquivo de 'app-routing.module.ts', em que OUTSOURCEAMOS O MANAGE DE NOSSAS ROUTES E AS ROUTES EM SI...
+    // RouterModule.forRoot(AppRoutes)
+
+ 
+  ], // RouterModule.forRoot(appRoutes)], ///vocÊ deve ESCREVER o 'RouterModule', declará-lo aqui, para o TER COMO __ FUNCIONALIDADE DE SEU APP (routing).. --> E PRECISAMOS DO METHOD DE '.forRoot(contComSuasRoutes)' PARA ACTUALLY REGISTRAR NOSSAS ROUTES NO NOSSO APp... --> 
+    ////COMO OUTSOURCEAMOS isso, o 'ROUTING MODULE' ao arquivo de 'app-routing.module.ts', nõa precisamos mais desse  'RoutingModule.forRoot(appRoutes)'...
+  //// e aí você deve usar 'router-outlet' lá no seu 'app.component.html' para CARREGAR SUAS ROUTES a partir da url...
+  providers: [ServersService, UsersService, AuthService, AuthGuard, CanDeactivateGuard],
+  bootstrap: [AppComponent],
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo.. 
+
+
+
+  providers: [ServersService, UsersService, AuthService, AuthGuard, CanDeactivateGuard],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -----> COM ISSO PROVIDENCIADO,
+
+
+
+
+
+  FALTA 1  PEDAÇO IMPORTANTE..
+
+
+
+
+
+
+
+
+  --> FALTA A LÓGICA DE 
+
+  'canDeactivate()'
+
+
+
+  DENTRO 
+
+  DE NOSSO COMPONENT...
+
+
+
+
+
+
+
+
+
+  -> É POR ISSO QUE TEMOS DE IR ATÉ 
+
+
+
+  'edit-server.component.ts',
+
+
+
+
+
+
+
+
+
+
+
+  QUE ATUALMENTE ESTÁ ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ServersService } from '../servers.service';
+
+@Component({
+  selector: 'app-edit-server',
+  templateUrl: './edit-server.component.html',
+  styleUrls: ['./edit-server.component.css'],
+})
+export class EditServerComponent implements OnInit {
+  server: { id: number; name: string; status: string };
+
+  serverName = '';
+  serverStatus = '';
+  allowEdit = false;
+  changesSaved = false;
+
+  constructor(private serversService: ServersService, private route: ActivatedRoute, private router: Router) {}
+
+  ngOnInit(): void {
+    // this.server = this.serversService.getServer(1)!;
+
+//aqui temos 2 MANEIRAS DE RETRIEVAR A DATA PASSADA POR QUERY PARAMS, EXATAMENTE COMO ANTES (a maneira que usa o approach de 'subscribe' ao 'this.route.queryParams' ou algo do gênero, ou então o APPROACH QUE TIRA UMA SNAPSHOT DO MOMENTO EM QUE ESSE COMPONENT É RENDERIZADO....)
+
+  //  const serverId =  this.route.snapshot.queryParams['allowEdit'];
+  //  const fragmentLoading = this.route.snapshot.fragment;
+
+
+   this.route.queryParams.subscribe(
+     (queryParams: Params) => {
+       console.log(queryParams['allowEdit']);
+          this.allowEdit = queryParams['allowEdit'] === '1' ? true : false ;
+          this.server = this.serversService.getServer(3)!;
+          this.serverName = this.server.name;
+          this.serverStatus = this.server.status;
+     }
+   )
+
+
+  // this.server = this.serversService.getServer(1)!;
+    // this.serverName = this.server.name;
+    // this.serverStatus = this.server.status;
+  }
+
+  onUpdateServer() {
+
+    this.serversService.updateServer(this.server.id, {
+      name: this.serverName,
+      status: this.serverStatus,
+    });
+
+    this.changesSaved = true;
+    this.router.navigate(['../'], {relativeTo: this.route});  ///vai 'JUMP' 1 nível acima, À route de 'the last loaded server'...
+
+  }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, PRECISAMOS ESCREVER 'implements' 
+
+
+e aí 
+
+
+
+A NOSSA INTERFACE 
+
+
+
+
+
+
+
+de 
+
+
+'CanComponentDeactivate'...
+
+
+,
+
+
+
+AQUELA INTERFACE _ QUE CRIAMOS NÓS MESMOS,
+
+e que 
+
+será 
+
+EXPORTADA LÁ 
+
+de 
+
+
+
+'can-deactivate-guard.service.ts'..
+
+
+
+
+
+
+
+-. TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { ServersService } from '../servers.service';
+import { CanComponentDeactivate } from './can-deactivate-guard.service';
+
+@Component({
+  selector: 'app-edit-server',
+  templateUrl: './edit-server.component.html',
+  styleUrls: ['./edit-server.component.css'],
+})
+export class EditServerComponent implements OnInit, CanComponentDeactivate {  ///essa segunda interface será implementada PARA FAZER NOSSA GUARD DE 'CanDeactivateGuard' FUNCIONAR.... --> E ELA NOS __ OBRIGA__ a adicionar o method de 'canDeactivate()'...
+  server: { id: number; name: string; status: string };
+
+  serverName = '';
+  serverStatus = '';
+  allowEdit = false;
+  changesSaved = false;
+
+  constructor(private serversService: ServersService, private route: ActivatedRoute, private router: Router) {}
+
+  ngOnInit(): void {
+    // this.server = this.serversService.getServer(1)!;
+
+//aqui temos 2 MANEIRAS DE RETRIEVAR A DATA PASSADA POR QUERY PARAMS, EXATAMENTE COMO ANTES (a maneira que usa o approach de 'subscribe' ao 'this.route.queryParams' ou algo do gênero, ou então o APPROACH QUE TIRA UMA SNAPSHOT DO MOMENTO EM QUE ESSE COMPONENT É RENDERIZADO....)
+
+  //  const serverId =  this.route.snapshot.queryParams['allowEdit'];
+  //  const fragmentLoading = this.route.snapshot.fragment;
+
+
+   this.route.queryParams.subscribe(
+     (queryParams: Params) => {
+       console.log(queryParams['allowEdit']);
+          this.allowEdit = queryParams['allowEdit'] === '1' ? true : false ;
+          this.server = this.serversService.getServer(3)!;
+          this.serverName = this.server.name;
+          this.serverStatus = this.server.status;
+     }
+   )
+
+
+  // this.server = this.serversService.getServer(1)!;
+    // this.serverName = this.server.name;
+    // this.serverStatus = this.server.status;
+  }
+
+
+
+
+
+
+ 
+  canDeactivate() {
+
+  }
+
+  onUpdateServer() {
+
+    this.serversService.updateServer(this.server.id, {
+      name: this.serverName,
+      status: this.serverStatus,
+    });
+
+    this.changesSaved = true;
+    this.router.navigate(['../'], {relativeTo: this.route});  ///vai 'JUMP' 1 nível acima, À route de 'the last loaded server'...
+
+  }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... É CLARO QUE ESSA INTERFACE__ NOS FORÇA_ 
+
+
+
+a impleemntar o method de 'canDeactivate' nesse component,
+
+pq 
+
+
+
+ESSE METHOD DESSE COMPONENT SERÁ __ CCHAMADO __ POR NOSSO SERVICE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok,
+
+
+
+
+
+E JÁ SABEMOS A APARÊNCIA DESSE METHOD:
+
+
+
+  canDeactivate: () => Observable<boolean> | Promise<boolean> | boolean;
+
+
+
+
+
+
+
+
+  --> ELE DEVERÁ RETORNAR 
+
+
+  'OU UMA PROMISE, OU UM OBSERVABLE, OU UMA BOOLEAN'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> é por isso 
+
+
+
+
+
+
+que o professor já escreve assim:
+
+
+
+
+  canDeactivate(): Observable<boolean> | Promise<boolean> | boolean {
+
+
+    return 
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> certo..
+
+
+
+
+
+
+com isso adiccionado,
+
+
+
+
+
+aqui,
+
+
+
+
+em 
+'canDeactivate',
+
+
+
+
+
+
+AGORA PROVIDENCIAMOS A ACTUAL LÓGICA QUE 
+
+DECIDE 
+
+SE VAMOS 
+
+'LEAVE' OU NÃO... ------> ESSA LÓGICA 
+
+
+
+SERÁ 
+
+ 
+ _ EXECUTADA__ 
+
+ SEMPRE QUE 
+
+
+ A 
+
+
+ GUARD DE 
+
+
+ 'CanDeactivateGuard'
+
+ FOR _ CHECADA __ PELO ANGULAR ROUTER..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> AQUI VAMOS RODAR UM MONTE DE IF CHECKS..
+
+
+
+
+
+
+
+ -> primeiramnete,
+
+
+ o professor 
+
+ checa 
+
+
+
+
+ if (!this.allowEdit) {
+     return true;
+ }
+
+
+
+
+
+
+ PQ 
+
+ SE NÓS 
+
+ NÃO TÍNHAMOS PERMISSÃO PARA EDIT,
+
+
+ vamos querer deixar o user sair de qualquer forma....
+
+
+
+
+
+
+
+
+
+
+
+ O SEGUNDO CHECK VAI CHECAR 
+
+ SE 
+
+
+
+
+ if (this.serverName !== this.server.name) {
+
+
+
+ }
+
+
+
+
+
+
+
+
+
+
+ -> OU SEJA,
+
+ SE O SERVERNAME 
+
+ _ NÃO É IGUAL AO VALUE QUE RECEBEMOS ORIGINALMENTE NESSE COMPONENT, ATRAVÉS 
+ DO 
+
+ 'two-way binding' 
+
+
+
+ (
+     PQ ESSE VALUE SERÁ EQUIVALENTE INICIALMENTE, MAS 
+
+
+     ASSIM QUE COMEÇARMOS A DIGITAR, MUDAR O VALUE DO SERVERNAME,
+
+     teremos diferenças... 
+
+
+     ESSAS DIFERENÇAS SIGNIFICAM QUE 
+
+
+     o value mudou,
+
+
+     o que quer dizer que 
+     se o user 
+
+     prosseguir com o exit SEM CLICAR EM 'UPDATE',
+
+     ele pode PERDER ESSAS CHANGES...
+ )
+
+
+
+
+
+
+
+
+
+
+ -> ok... --> 
+
+
+
+
+
+
+
+ if (this.serverName !== this.server.name || this.serverStatus !== this.server.status )  {
+
+
+
+
+
+ }
+
+
+
+ SE UMA 
+
+
+ DESSAS 2 COISAS TIVER SIDO ALTERADO....
+
+
+
+
+
+
+
+
+ SE UM DESSES 2 INPUTS TIVER SIDO ALTERADO
+
+
+ E _ SE __ 
+
+
+
+ o changes ainda estiver como 'false',
+
+ tipo assim:
+
+
+
+
+
+
+ 
+ if ((this.serverName !== this.server.name || this.serverStatus !== this.server.status) && !this.changesSaved)  
+ 
+ 
+ 
+ {
+
+
+
+
+
+ }
+
+
+
+
+
+
+--> NESSE CASE AÍ,
+
+
+
+VAMOS QUERER 
+
+
+
+
+FAZER __ RETURN 
+
+
+
+
+DE UM METHOD CHAMADO DE 
+
+
+
+'confirm()',
+
+
+
+
+
+
+
+UM DIÁLOGO DE 'confirm',
+
+
+
+QUE VAI 
+
+DIZER 
+
+'Discard server changes?' 
+
+
+
+
+
+
+
+
+--> NO ELSE CASE,
+
+
+
+
+VAMOS RETORNAR 'true',
+
+
+para que 
+
+
+o user realmente seja retornado/redirecionado 
+
+
+à route de 'servers '('../')....
+
+
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+ 
+  canDeactivate(): Observable<boolean> {
+
+      if (!this.allowEdit) {
+        return true;
+      }
+
+      if ((this.serverName !== this.server.name || this.serverStatus !== this.server.status ) && !this.changesSaved) {
+
+          return confirm('Discard server changes?');
+
+      } else {
+        return true;
+      }
+      
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+CÓDIGO COMPLETO:
+
+
+
+
+
+
+
+
+  canDeactivate(): Observable<boolean> | Promise<boolean> | boolean {  ///esse method será chamado SEMPRE QUE TENTARMOS DAR 'LEAVE' nessa nossa page de 'edit-component'...
+    if (!this.allowEdit) {
+      return true;
+  }
+    if ( (this.serverName !== this.server.name || this.serverStatus !== this.server.status ) && !this.changesSaved) {
+
+        return confirm('Discard server changes?')
+
+    } else {
+      return true;
+    }
+  }
+
+
+
+
+
+
+------------------------
+
+
+
+
+ISSO FEITO,
+
+
+
+VOLTAMOS AO NOSSO 
+
+
+
+
+APP...
+
+
+
+
+
+
+
+
+
+
+--> primeiramente apertamos em 'login', para conseguir o state de 'login'...
+
+
+
+
+
+
+
+
+
+
+-> clicamos no 'devServer'
+
+,
+
+que é aquele que 
+
+
+TEMOS PERMISSÃO 
+
+PARA 
+
+
+
+
+editar...
+
+
+
+
+
+--> AÍ 
+QUANDO 
+
+CLICAMOS 
+
+
+PARA SAIR DE NOSSA PAGE/DO SERVER,
+
+
+
+recebemos um promp 
+
+de 
+'confirm()' (yes or no),
+
+
+
+
+
+E SE 
+
+CLICAMOS 
+
+em 
+
+'cancel',
+
+
+PERMANECEMOS NA PAGE... -->
+
+
+e se clicamos 'yes',
+
+
+
+SAÍMOS DA PAGE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK... ENTENDI ESSE CÓDIGo...
+
+
+
+
+
+
+
+
+
+
+
+--> SE 
+
+
+
+1) OU NÃO TEMOS O 'AUTHENTICATE'
+
+
+
+2) OU TENTAMOS SAIR E CLICAMOS EM 'OK, SAIR',
+
+
+
+somos 
+
+
+__REDIRECIONADOS _ PARA FORA 
+
+
+
+DE NOSSA PAGE, sem nenhum problema..
+
+
+
+
+
+
+
+
+
+
+
+-> É POR CAUSA DESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+      class="list-group-item" 
+      [routerLink]="['/servers', server.id]"
+      [queryParams]="{allowEdit: server.id === 3 ? '1' : '0' }"
+      [fragment]="'loading'"
+
+
+
+
+
+
+
+
+
+
+
+
+  --> AINDA ASSIM, APRENDEMOS MT SOBRE ROUTING NESSE MÓDULO...

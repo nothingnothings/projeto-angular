@@ -1,0 +1,163 @@
+
+
+
+
+
+
+
+
+
+
+
+-> NESSE MÓDULO,
+
+
+VEREMOS UM POUCO MAIS DE COMPONENTS,
+
+MAS AGORA 
+
+
+
+'DYNAMIC COMPONENTS'..
+
+
+
+
+
+
+
+
+
+
+
+--. mas o que são dynamic components?
+
+
+
+
+
+
+
+
+
+
+--------> SÃO ESSENCIALMENTE COMPONENTS __ QUE SÃO CRIADOS DURANTE O RUNTIME 
+
+
+
+
+DO 
+
+
+
+
+SEU APP....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DIGAMOS QUE VOCÊ QUER MOSTRAR UM 'ALERT',
+
+OU UM MODAL..
+
+
+
+
+
+UM OVERLAY...  -------> ESSE COMPONENT AÍ _ 
+
+
+
+
+,
+
+A 'ERROR BOX',
+
+
+
+
+
+
+QUEREMOS MOSTRAR UM OVERLAY NA TELA INTEIRA,
+
+ OU ALGO ASSIM...
+
+
+
+
+
+
+
+
+
+
+
+ -----> ISSO PODE SER IMPLEMENTADO USANDO DYNAMIC COMPONENTS...
+
+
+
+
+
+
+
+
+
+ --> E DYNAMIC COMPONENTS NÃO É UM TERMO ESPECÍFICO,
+
+
+
+ NÃO É UMA FEATURE PROVIDENCIADA PELO ANGULAR ESPECIFICAMENTE,
+
+
+
+
+
+
+MAS PODEMOS __ SIMPLESMENTE 'ADD COMPONENTS'  
+
+
+
+
+
+
+que __ nós _ CARREGAMOS ATRAVÉS DE NOSSO CÓDIGO,
+
+
+E É EXATAMENTE ISSO QUE FAREMOS NESSE MÓDULO:
+
+
+
+
+
+
+
+1) COMO CRIAR UM COMPONENT DESSES 
+
+
+
+2) COMO CARREGAR ESSE COMPONENT 'ON DEMAND',,
+
+
+
+
+
+
+
+
+3) COMO _ SE COMUNICAR COM ESSE COMPONENT 
+
+
+
+
+
+4) COMO _ SE LIVRAR DESSE COMPONENT...

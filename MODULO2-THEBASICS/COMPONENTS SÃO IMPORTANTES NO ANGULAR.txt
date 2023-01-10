@@ -1,0 +1,471 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+----->  NA ÚLTIMA LIÇÃO, 
+
+
+
+
+nós demos uma olhada em o que acontece 
+
+
+quando visitamos 
+
+
+
+'localhost:4200'...
+
+
+
+
+
+
+
+
+
+
+
+-> ENTENDEMOS  QUE O ARQUIVO HTML VAI SER SERVIDO,
+
+E QUE 
+ELE 
+
+CONTERÁ UM PUNHADO DE SCRIPTS... ----> SCRIPS QUE ACABAM EXECUTADOS,
+
+E QUE BASICAMENTE  
+INICIALIZAM O APP ANGULAR... --> O ANGULAR ENTÃO 
+
+
+
+RECEBE A INFO IMPORTANTE,
+
+
+
+
+
+
+
+A INFO DE QUE PRECISA SABER,
+
+
+
+INFO COMO 'QUAL APP COMPONENT DEVO ANALISAR'...
+
+
+
+ex:
+
+
+
+platformBrowserDynamic().bootstrapModule(AppModule)
+  .catch(err => console.error(err));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> COM ESSA INFO,
+O 
+
+CÓDIGO ANGULAR É CAPAZ DE 
+
+PARSEAR 
+
+
+
+
+ESSE ELEMENTO /COMPONENt 
+
+
+
+
+
+
+
+'<app-root>'
+
+
+
+E ENTAÕ 
+
+INSERIR 
+
+NOSSO ANGULAR APP.... --------> E É EXATAMENTE POR ISSO QUE 
+
+
+
+
+NÃO VEMOS 
+
+'loading...'- --> SÓ VEMOS O LOADING NO INÍCIO, PQ ELE LOGO É SUBSTITUÍDO 
+
+
+
+PELO CÓDIGO ANGULAR,
+AT RUNTIME,
+
+
+
+PQ 
+
+É 
+
+ISSO QUE 
+
+
+O ANGULAR FAZ... (
+
+
+
+
+    ANGULAR, NO FINAL DAS CONTAS,
+
+    É UM JAVASCRIPT FRAMEWORK, O QUE QUER DIZER QUE 
+
+    ELE ALTERA SEU DOM (o html) 
+
+
+    NO MOMENTO DO RUNTIME..
+)
+
+
+
+
+
+
+
+
+
+
+
+
+-------> DEVEMOS ANALISAR AQUELE COMPONENT (E components em geral) 
+
+
+
+
+DEW 
+
+
+
+
+'app.component.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------> COMPONENTS SÃO UMA __ KEY FEATURE__ DO ANGULAR...
+
+
+
+
+
+
+
+
+
+
+
+-> VOCÊ CONSTRÓI SEU APP INTEIRO ATRAVÉS DE COMPONENTS, QUE CRIAMOS POR CONTA PRÓPRIA...
+
+
+
+
+
+
+
+
+
+
+
+
+--> NÓS COMEÇAMOS COM ESSE 'APP COMPONENT',
+
+
+
+O 'ROOT COMPONENT', por assim dizer,
+
+QUE 
+
+
+SEGURA _ TODO SEU APP, no final das contas...
+
+
+
+
+
+
+
+
+
+
+-----> ESSE ROOT COMPONENT, APP COMPONENT,
+
+SERÁ o
+
+
+
+COMPONENT EM QUE MAIS TARDE 
+
+NESTEAREMOS/ADDAREMOS NOSSOS OUTROS 
+
+COMPONENTS.... -----> 
+
+
+
+
+
+
+
+
+
+
+TIPICAMENTE TEREMOS UMA WEBPAGE COM:
+
+
+
+
+1) HEADER (com home e users)
+
+
+
+
+
+
+
+2) ÁREA 'main' 
+
+
+
+
+
+
+
+
+
+3) UMA SIDEBAR...
+
+
+
+
+
+
+
+
+
+
+HEADER --> PODE SER UM COMPONENT..
+
+
+
+
+ITEMS NO HEADER --> PODEM SER SEUS PRÓPRIOS COMPONENTS, TAMBÉM..
+
+
+
+
+
+
+
+MAIN AREA --> TAMBÉM SERÁ UM COMPONENT 
+
+
+
+
+
+
+SIDEBAR --> SERÁ UM COMPONENT....
+
+
+
+
+
+
+
+
+
+
+--> ESSA É A IDEIA CORE POR TRÁS DO ANGULAR,
+
+
+
+CONSTRUIR COMPONENTS...
+
+
+
+
+
+
+
+
+
+-> CADA COMPONENT TEM:
+
+
+
+
+
+1) SEU PRÓPRIO CÓDIGO HTML 
+
+
+
+
+2) TALVEZ SEU PRÓPRIO STYLING (css) 
+
+
+
+
+3) MAIS IMPORTANTE DO QUE ISSO,
+
+
+CONTÉM SUA PRÓPRIA 'business logic' (a lógica em si)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E ESSA É A GRANDE VANTAGEM DO ANGULAR:
+
+
+
+ELE TE PERMITE DIVIDIR/SPLITTAR 
+
+
+SEU APP COMPLEXO,
+
+
+SUA 
+
+
+WEBPAGE COMPLEXA,
+
+
+
+EM DIVERSAS PARTES REUTILIZÁVEIS,
+
+
+
+
+
+parecido com o react...
+
+
+
+
+
+
+
+
+
+-> VOCê PODE ACABAR USANDO 1 MESMO COMPONENT MÚLTIPLAS VEZES.. ---> isso te 
+
+
+
+deixa FACILMENTE REPLICAR SUA 'BUSINESS LOGIC',
+
+
+
+REPLICAR O STYLING,
+
+
+
+OU ENTÃO 
+
+
+
+uma 
+
+
+'finely controlled piece' no seu app,
+
+
+SEM TER QUE 
+
+
+
+COMPRIMIR TUDO EM 1 ÚNICO ARQUIVO JAVASCRIPT,
+
+
+1 ÚNICO ARQUIVO HTML, 1 ÚNICO ARQUIVO CSS... 
+
+
+
+
+
+
+
+
+
+
+
+-> EM VEZ DISSO,
+
+É MT FÁCIL DE UPDATAR,
+
+MT FÁCIL DE 'EXCHANGE',
+
+
+e totalmente reusable...
+
+
+
+
+
+
+---> VEREMOS COMO 
+
+
+
+
+1) CRIAR UM COMPONENT...
+
+
+
+
+
+
+2) O QUE ESSE '@component' faz...
+
+
+
+
+
+--> NA PRÓXIMA AULA....

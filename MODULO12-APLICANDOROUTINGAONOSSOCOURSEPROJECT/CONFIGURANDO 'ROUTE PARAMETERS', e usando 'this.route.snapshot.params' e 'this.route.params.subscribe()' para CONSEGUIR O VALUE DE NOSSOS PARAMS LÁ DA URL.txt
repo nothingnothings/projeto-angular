@@ -1,0 +1,1179 @@
+
+
+
+
+
+
+
+
+
+
+NA ÚLTIMA LIÇÃO,
+
+
+COMEÇAMOS A ADDAR 
+
+
+NOSSAS CHILD ROUTES...
+
+
+
+
+
+
+
+
+
+
+ELAS FICARAM ASSIm:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { GenericErrorPageComponent } from './generic-error-page/generic-error-page.component';
+import { HomePageComponent } from './home-page/home-page.component';
+import { RecipeBookComponent } from './recipeBook/recipe-book.component';
+import { RecipeDetailComponent } from './recipeBook/recipe-detail/recipe-detail.component';
+import { SelectARecipeComponent } from './recipeBook/select-a-recipe/select-a-recipe.component';
+import { ShoppingListComponent } from './ShoppingList/shoppingList.component';
+
+const appRoutes: Routes = [
+  // {   ///approach que USA UMA HOME PAGE COMO ROUTE DE '/'...
+  //   path: '',
+  //   component: HomePageComponent,
+  // },
+
+  {
+    path: '',
+    redirectTo: '/recipe-book',
+    pathMatch: 'full'  /// (COMMON GOTCHA) evita o error de 'SEMPRE VAI REDIRECIONAR PARA ESSA ROUTE DE recipe-book' (pq o padrão é 'prefix' em vez de 'full'; ou seja, é o MESMO COMPORTAMENTO DEFAULT DO REACT ROUTER)...
+  },
+  {
+    path: 'recipe-book',
+    component: RecipeBookComponent,
+    children: [
+      {
+        path: '',
+        component: SelectARecipeComponent
+      },
+      {
+        path: ':id',
+        component: RecipeDetailComponent,
+      },
+
+      // {
+      //     path: 'new-recipe',
+      // }
+    ],
+  },
+
+  {
+    path: 'shop-list',
+    component: ShoppingListComponent,
+  },
+
+  {
+    path: 'not-found',
+    component: GenericErrorPageComponent,
+    data: {
+      message: 'The requested page could not be found.',
+    },
+  },
+  {
+    path: '**',
+    redirectTo: '/not-found',
+  },
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(appRoutes)],
+
+  exports: [RouterModule],
+})
+export class AppRoutingModule {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MEU CÓDIGO DE 'recipe-detail'
+
+
+ESTÁ FUNCIONAOD,
+
+
+
+
+
+MAS A DO PROFESSOR NÃO..
+
+
+
+
+
+
+
+
+--> A RAZÃO PARA ISSO NÃO FUNCIONAR MAIS É QUE 
+
+
+
+usamos 
+
+
+
+'recipe'
+
+
+
+UM MONTE DE VEZES,
+
+
+
+ISSO LÁ EM 'recipe-detail'...
+
+
+
+
+
+
+
+
+
+
+
+--> E ESSE 'recipe' era uma propriedade do nosso component,
+
+
+
+mas 
+
+
+ERA UMA PROPRIEDAde 
+
+
+definida 
+
+ATRAVÉS 
+
+DE 
+
+
+'PROPERTY BINDING',
+
+
+
+
+
+por meio da escrita de 
+
+'@Input()",
+
+
+
+
+
+
+
+o que quer dizer que ele _ ESPERAVA (awaited) 
+
+
+PELO __ GET/SET DESSA 
+
+
+DATA 
+
+
+
+VINDA DO LADO DE FORA DO COMPONENT....
+
+
+
+
+
+
+
+
+
+
+
+-> MAS COMO AGORA 
+
+
+ESTAMOS USANDO ROUTING,
+
+ESSA 
+
+
+
+_ DATA NÃO VAI MAIS ALCANÇAR NOSSO COMPONENT... ->  É EXATAMENTE 
+
+POR ISSO QUE TEMOS QUE MUDAR A MANEIRA PELA QUAL 
+
+
+
+NÓS RECEBEMOS E SETTAMOS A RECIPE NESSE LUGAR..
+
+
+
+
+
+
+
+
+
+---->  E NÓS _ PODEMOS_ FAZER ISSO,
+
+
+PQ 
+
+
+
+NESSA ROUTE DE 
+
+'localhost:4200/recipe-book/xxx'
+
+
+
+
+NÓS JÁ PASSAMOS UM QUERY PARAMETER,
+
+que é aquele 'xxx',
+
+que pode ser '1' '2', '34920493i20',
+
+
+etc...
+
+
+
+
+
+
+
+
+
+
+
+------> E NÓS SOMOS CAPAZES DE 'LOAD A RECIPE'
+
+POR MEIO DO ID DESSA RECIPE... -----> o id VAI SIMPLESMENTE SE REFERIR 
+
+à POSITION  DESSA RECIPE NO ARRAY DE 
+
+'recipes' 
+
+
+lá no service de 'recipeBook.service'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> devemos 
+
+
+
+
+
+
+
+1) CONSERTAR O COMPONENT DE 'RECIPE-DETAIL'
+
+para que 
+
+ELE CONSIGA USAR ESSE 'id'
+
+
+no 'params' de sua url 
+
+para 
+
+
+'UPDATE A RECIPE QUE 
+
+É DISPLAYADA'
+
+ 
+
+ na sua page,
+
+
+
+ para que ESSA 
+
+ RECIPE 
+
+ SEJA _ RETRIEVADA  __ LÁ 
+
+ DO SERVICE DE 
+
+
+
+
+ 'recipeBook.service.ts'....
+
+
+
+
+
+
+
+
+
+
+
+ -> PARA ISSO, USAMOS O METHOD DE 'getRecipes()',
+
+ lá 
+
+ nesse service aí..
+
+
+
+
+
+
+
+
+
+
+
+ --> o código ficou assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ import { Component, OnInit, Input } from '@angular/core';
+import { RecipeBookService } from 'src/app/recipeBook.service';
+
+import { Recipe } from '../recipe.model';
+
+import { ActivatedRoute, Params } from '@angular/router';
+
+@Component({
+  selector: 'app-recipe-detail',
+  templateUrl: './recipe-detail.component.html',
+  styleUrls: ['./recipe-detail.component.css']
+})
+export class RecipeDetailComponent implements OnInit {
+
+
+
+  loadedRecipe: Recipe;
+
+  constructor(private recipeBookService: RecipeBookService, private route: ActivatedRoute) { 
+
+
+
+
+  }
+
+
+
+  ngOnInit(): void {
+
+
+    this.route.params.subscribe(
+      (params: Params) => {
+        console.log('TEST');
+
+        this.loadedRecipe = this.recipeBookService.getRecipes()[+params['id']]
+      }
+    )
+
+
+
+  }
+
+
+  sendToShoppingList() {
+    console.log('CLICKED');
+    this.recipeBookService.sendToShopList(this.loadedRecipe.ingredients);
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO, TAMBÉM PODEMOS LIMPAR O código lá de 'recipe-item':
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+
+import { Input } from '@angular/core';
+import { RecipeBookService } from 'src/app/recipeBook.service';
+
+@Component({
+  selector: 'app-recipe-item',
+  templateUrl: './recipe-item.component.html',
+  styleUrls: ['./recipe-item.component.css'],
+})
+export class RecipeItemComponent implements OnInit {
+
+  @Input() name: string;
+  @Input() description: string;
+  @Input() imagePath: string;
+
+
+    constructor() {
+
+
+  }
+
+  ngOnInit(): void {
+     
+  }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok... -> 
+
+
+
+
+lá em 'recipe-detail'
+
+
+
+VAMOS TER DE 'SOMEHOW'
+
+
+COSNEGUIR NOSSA 'SINGLE RECIPE'...
+
+
+
+
+
+
+
+
+
+
+-> SABEMOS QUE VAMOS CONSEGUIR O ID DA RECIPE LÁ DO 'ROUTER',
+
+lá 
+
+
+
+dos 'params'...
+
+
+
+
+
+
+
+
+
+--> PARA FETCHEAR O ID 
+
+desse negócio,
+
+APRENDEMOS QUE PRIMEIRAMNETE PRECISAMOS OBTER ACESSO AO 
+
+'ActivatedRoute'
+
+
+
+
+desse nosso component/route..
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+
+ESCREVEMOS ASSIM:
+
+
+
+
+
+
+
+  constructor(private recipeBookService: RecipeBookService, private route: ActivatedRoute) { 
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> CERTO...
+
+
+
+
+
+
+
+
+
+
+-> AÍ, DENTRO DO 'ngOnInit',
+
+
+
+
+
+USAMSO 
+
+
+ESSE 'private route'
+
+PARA 
+
+
+
+
+CONSEGUIR 
+
+
+
+
+NOSSO 'id'
+
+
+lá dos 'params'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> para isso,
+
+o professor escreve:
+
+
+
+
+
+
+
+
+
+
+
+
+
+ngOnInit() {
+    const id = this.route.snapshot.params['id'];
+}
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS ESSE CÓDIGO TEM UMA GRANDE DESVANTAGEM, QUE É 
+
+'''ESSE LOAD SÓ VAI FUNCIONAR __ PELA PRIMEIRA VEZ  QUE 
+
+CARREGAMOS O recipe-detail component''',
+
+
+justamente por ser uma SNAPSHOT...
+
+
+
+
+
+
+
+
+
+--> e isso NÃO SERVE, NÃO É O BASTANTE PARA NÓS,
+
+pq 
+o 
+user vai poder 
+
+
+CLICAR E TROCAR ENTRE OS 'recipe-items'
+
+
+ao longo do tempo...( tudo sem trocar de página)..
+
+
+
+
+
+
+
+
+
+
+-> É POR ISSO QUE USAMOS O APPROACH ALTERNATIVO,
+
+
+de 'this.route.params.subscribe()',
+
+
+
+
+que 
+
+
+VAI _ CONTINUAR_ NOS DANDO O 'id' 
+
+
+
+
+__ MESMO COM O USER TROCANDO OS PARAMS dessa page/route CONSTANTEMETNE...
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+  ngOnInit(): void {
+
+
+    this.route.params.subscribe(
+      (params: Params) => {
+
+        this.loadedRecipe = this.recipeBookService.getRecipes()[+params['id']]
+      }
+    )
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+  --------------------------
+
+
+
+
+
+
+
+
+
+
+  ok.... com isso, conseguimos fazer 
+
+  REACT A CHANGES nos nossos params....
+
+
+
+
+
+
+
+
+
+
+
+  -> USAMOS ESSE OBSERVABLE DE 'params'....
+
+
+
+
+
+
+
+
+
+
+  this.route.params.subscribe(
+      () => {
+
+      }
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  OK, AGORA PODEMOS 'REACT A UM NEW ID'...
+
+
+
+
+
+
+
+
+
+
+
+
+  O PROFESSOR CRIA UM METHOD DEDICADO EM 'recipe.service.ts'
+
+
+  PARA _ CONSEGUIR _ 
+
+
+  RETRIEVAR 1 ÚNICO RECIPE DE NOSSO ARRAY DE 'RECIPES'...
+
+
+
+
+
+
+
+
+
+
+
+
+  -> ele escreve 
+
+
+
+
+
+  getRecipe(id: number) {
+      return this.recipes[id];
+  }
+
+
+
+
+
+
+
+
+
+  -> OK, VOU IMPLEMENTAR ISSO AÍ,
+
+  pq é mais conveniente (não precisamos retrievar o ARRAY INTEIRO para então 
+  
+  pegar só 1 item)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+  CERTO...
+
+
+
+
+
+
+
+
+  --> COM ISSO CONSEGUIMOS RETORNAR UMA 'SINGLE RECIPE',
+
+
+
+SEM PROBLEMAS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR TAMBÉM VAI _ ARMAZENAR _ 
+
+
+
+O ID desse 'params'
+
+dentro de uma propriedade 
+
+'id',
+
+
+dentro 
+
+de 
+
+'RecipeDetailComponent'...
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+import { Component, OnInit, Input } from '@angular/core';
+import { RecipeBookService } from 'src/app/recipeBook.service';
+
+import { Recipe } from '../recipe.model';
+
+import { ActivatedRoute, Params } from '@angular/router';
+
+@Component({
+  selector: 'app-recipe-detail',
+  templateUrl: './recipe-detail.component.html',
+  styleUrls: ['./recipe-detail.component.css']
+})
+export class RecipeDetailComponent implements OnInit {
+
+
+  // loadedRecipe: Recipe;
+
+  // loadedRecipes: Recipe[] = this.recipeBookService.getRecipes();
+
+
+
+  loadedRecipe: Recipe;
+  id: number;
+
+  constructor(private recipeBookService: RecipeBookService, private route: ActivatedRoute) { 
+
+    // this.recipeBookService.recipeItemClickedEmitter.subscribe(
+    //   (data: Recipe) => {
+    //       console.log(data);
+    //   }
+    // )
+
+    // this.recipeBookService.recipeItemClickedEmitter.subscribe( ////SEM O USO DE ROUTING....
+    //   (data) => {
+    //       this.loadedRecipe = data;
+
+    //   }
+    // )
+
+
+
+
+    
+
+
+
+  }
+
+
+
+  ngOnInit(): void {
+
+
+
+    //     const recipeId = this.route.snapshot.params['id'];
+    //     console.log(recipeId);
+
+    ////approach ALTERNATIVA...
+    // const recipeId = +this.route.snapshot.params['id'];
+    // this.loadedRecipe = this.serviceBookService.getRecipes()[recipeId]
+    //this.loadedRecipe = this.serviceBookService.getRecipe(recipeId)
+
+
+    this.route.params.subscribe(
+      (params: Params) => {
+        console.log('TEST');
+        // this.loadedRecipe = this.loadedRecipes[+params['id']];
+
+        // this.loadedRecipe = this.recipeBookService.getRecipes()[+params['id']]
+        this.id = +params['id'];
+        this.loadedRecipe = this.recipeBookService.getRecipe(+params['id']);
+  
+      }
+    )
+
+
+
+  }
+
+
+  sendToShoppingList() {
+    console.log('CLICKED');
+    this.recipeBookService.sendToShopList(this.loadedRecipe.ingredients);
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ELE EXPLICA QUE MAIS TARDE ELE NOS EXPLICARÁ A RAZÃO DE ELE TER ESCRITO ESSE 
+
+'id: number',
+
+
+e querer DEPOSITAR O NUMBER DO ID 
+
+de nosso 
+
+
+recipe
+escolhido/selecionado 
+
+
+
+
+nesse lugar aí...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok, agora nosso app funciona mais uma vez...
+
+
+
+
+
+
+
+
+
+
+
+--> MAS NOSSOS LINKS AINDA NÃO ESTÃO FUNCIONANDO (na verdade, estão, pq meu código de 'recipeList' ficou assim):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row" >
+  <div class="col-xs-12">
+    <button class="btn btn-success">New Recipe</button>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-xs-12">
+    <app-recipe-item *ngFor="let recipe of recipes; let index=index"  
+    [routerLink]="['/recipe-book', index]"
+    [name]="recipe.name"
+    [description]="recipe.description"
+    [ngStyle]="{'cursor': 'pointer'}"
+    [imagePath]="recipe.imagePath"></app-recipe-item>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> esse 'routerLink' solucionou nosso problema...

@@ -1,0 +1,1060 @@
+ 
+
+
+
+
+
+
+
+
+
+ ESSA OUTRA MANEIRA DE FAZER HANDLE DE ERRORS 
+
+
+
+ PODE SER ÚTIL EM CASES COMO :
+
+
+
+
+ '''COMO QUANDO VOCÊ 
+
+
+
+ ENVIA 1 REQUEST __ E ENTÃO __ NÃO FAZ _ SUBSCRIBE A ESSE REQUEST 
+
+
+ EM 1 DE SEUS COMPONENTS'''' --------> É CLARO QUE 
+
+
+
+
+ É BEM FÁCIL DE FAZERMOS SUBSCRIBE NO COMPONENT, A PARTIR DE UM OBSERVABLE...  ------> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+ OU SEJA,
+
+  
+  A SINTAXE BÁSICA DE SUBSCRIBE,
+
+
+
+  COM AQUELES 3 PARÂMETROS, EM QUE 
+
+
+
+  O PRIMEIRO É O 'SUCCESS DATA'
+
+
+  e o segundo é o 'ERROR DATA',
+
+
+
+
+
+  ela é bem útil......... -------> entretanto,
+
+
+
+
+  nesses cases em que 
+
+
+
+  '''NAÕ VAMOS QUERER USAR A DATA RETORNADA PELO OBSERVABLE DO HTTP',
+
+
+
+  nesses cases aí,
+
+
+
+  pode ser interessante esse nosso APPROACH ALTERNATIVO,
+
+
+
+  QUE USA 'SUBJECTS' para o error HANDLING e _ NÃO TE OBRIGA A 
+
+
+
+
+  escrever '.subscribe()" no seu component/service para CONSEGUIR FAZER O 
+
+  ACTUAL SEND DE UM HTTP REQUEST..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> o exemplo de 
+
+
+
+
+  method, no nosso service de 'posts.service.ts',
+
+
+  em que 
+
+
+
+  __ FAZEMOS __ ESSE TIPO DE COISA,
+
+
+
+
+  TIPO UM _ SUBSCRIBE__ QUE OCORRE NO NOSSO PRÓPRIO SERVICE,
+
+
+
+  SEM FAZER SUBSCRIBE LÁ NO 
+
+
+  COMPONENT,
+
+
+
+
+FEZ COM QUE O 
+
+
+
+METHOD de 'app.component.ts'
+
+
+FICASSE ASSIM:
+
+
+
+
+
+
+
+
+onCreatePost(postData: Post) {
+
+
+    this.postsHttpService.createAndStorePost(postData.title, postData.content); 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+------> é claro que NESSE CASE AÍ _ TAMBÉM PODERÍAMOS 
+
+
+
+FAZER RETURN DO OBSERVABLE LA´NO SERVICE,
+
+E AÍ 
+
+
+
+SIMPLESMENTE USAR O '.subscribe()'
+
+
+NO NOSSO COMPONENT, exatamente como antes (basta não rodar nenhuma lógica no subscribe),
+
+
+E ISSO 
+
+
+
+NÃO FICARIA ERRADO..
+
+
+
+
+
+
+
+
+
+
+
+
+-----> MAS É CLARO QUE VOCÊ PODE IMPLEMENTAR UM PATTERN DIFERENTE DE 
+
+
+HANDLING DE ERRORS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VOCÊ PODE USAR __ UM SUBJECt___ --> ISSO, NO CASO,
+ 
+
+
+
+ É 
+
+
+ ÚTIL QUANDO VOCÊ TEM _ DIVERSOS _ LUGARES _ DE SEU 
+
+
+ APP QUE 
+
+ ESTÃO/ESTARÃO INTERESSADOS NO SEU ERROR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> PARA EXEMPLIFICAR ISSO, CRIO UM NOVO 'app.component.ts',
+
+
+ de nome 
+
+
+ 'appComOUsoDeServicesParaOErrorHandling.component.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> PARA EXEMPLIFICAR ISSO,
+ 
+
+
+
+ O PROFESSOR CRIA UMA NOVA PROPRIEDADE LÁ EM 'posts.service.ts',
+
+
+
+ QUE SERÁ 
+
+
+
+
+ 'error = new Subject()'
+
+
+
+
+
+
+
+
+ --> ESSA PROPRIEDADE VAI SEGURAR ESSE OBJECT DE 'Subject'..
+
+
+
+
+
+
+
+
+
+
+
+ -> COMO TODO  SUBJECT,
+
+
+ PRECISAMOS DIZER ''A QUE VALOR ESSE SUBJECT VAI FAZER RESOLVE''' -> dizemos, entaõ, que ele 
+
+ VAI SER RESOLVED 'COMO UMA STRING',
+
+ tipo assim:
+
+
+
+
+
+
+
+     error = new Subject<string>();  ////VAI SER __ RESOLVEd__ como uma STRING..
+
+
+
+
+
+
+
+
+
+
+
+
+------> ok... 
+
+
+
+
+
+
+
+
+
+--> A IDEIA, ENTAÕ,
+
+
+É QUE 
+
+
+
+
+__ AGORA,
+
+
+
+SEMPRE QUANDO FORMOS FAZER '.subscribe()',
+
+
+
+DENTRO DO CASE DE 'error'
+
+
+NESSE SUBSCRIBE,
+
+NO NOSSO SERVICE MESMO,
+
+
+
+
+
+
+VAMOS QUERER CHAMAR 
+
+
+
+o
+
+
+
+SUBJECT E ENTÃO CHAMAR 'next(error.message)'
+
+
+
+DENTRO DELE...
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+export class PostsHttpService {
+
+
+
+   error = new Subject<string>();
+
+
+
+  onCreatePost(postData: Post) {
+
+
+
+    this.http.post<{name: string}>(
+      'https://angularconnectiondummy-default-rtdb.firebaseio.com/posts.json',
+      postData
+
+    )
+    .subscribe(
+      (responseData) => {
+        console.log(responseData);
+      },
+
+      (error) => {
+        this.error.next(error.message);
+      }
+    )
+  }
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+  ---------------------------
+
+
+
+
+
+
+
+
+  --> ok... COM ISSO, A ÚNICA COISA QUE FALTA É FAZER 'SUBSCRIBE' A 
+
+
+  __ ESSE __ SUBJECT__ (de 'error")
+
+
+
+  EM 
+
+
+
+  _TODOS __ OS LOCAIS EM QUE VAMOS TER INTERESSE NESSA ERROR MESSAGE...
+
+
+
+
+
+
+
+
+
+  --> no exemplo fabricado pelo professor, um exemplo disso seria o 
+
+
+  'ngOnInit'
+
+
+  de app.component.ts,
+
+
+  QUE 
+
+
+  É UM LOCAL EM QUE 
+
+
+  
+
+   podemos já INICIALMENTE fazer um SUBSCRIBE 
+
+
+
+   a esse SUBJECT,
+
+
+
+
+   POR MEIO DESTE CÓDIGO:
+
+
+
+
+
+
+   ngOnInit() {
+
+
+       this.postsHttpService.error.subscribe(
+           (errorMessage) => {
+               this.error = errorMessage;
+           }
+       )
+
+
+
+       this.isLoading = true;
+
+
+       this.postsHttpService.fetchPosts().subscribe(
+           (posts) => {
+               ...
+           }
+       )
+   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   --> LEMBRE-SE: COMO ISSO (esse subscribe ao SUBJECT) 
+
+
+   é um CÓDIGO ASYNC,
+
+
+
+   ELE VAI SER TRIGGADO SEMPRE QUE UM 'PACOTE DE ERRO'
+
+
+
+   FOR CAPTADO PELO NOSSO SUBJECT 
+
+   (que no momento está captando OS ERRORS lá de 'fetchPosts', como visto pelo código logo acima)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   O CÓDIGO INICIALMENTE FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   import { Component } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+
+
+
+/////OUTSOURCEADOS.
+// import { HttpClient } from '@angular/common/http'; ///DEVE SER UTILIZADO, JUNTO DE 'HttpClientModule', lá em 'angular.module.ts', PARA CONSEGUIRMOS FAZER SEND DE HTTP REQUESTS...
+
+// import { map } from 'rxjs'; ////UM DE NOSSOS OPERATORS, a ser usado em nossos OBSERVABLES (no caso, será usado NO OBSERVABLE DE 'http'...)...
+
+import { Post } from './post.model'; ///modelo de post, CRIADO POR NÓS,  a ser usado PARA ESPECIFICAR COMO É A DATA QUE SERÁ RETORNADA DE NOSSO HTTP REQUEST...
+import { PostsHttpService } from './postsHttpServiceVersaoSubject.service';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  loadedPosts: Post[] = [];
+
+  isLoading: boolean = false;
+
+
+  error: any = null;
+
+  constructor(private httpPosts: PostsHttpService) {}
+
+  ngOnInit() {
+    // this.fetchPosts();
+
+    this.httpPosts.error.subscribe(
+        (errorMessage) => {
+            this.error = errorMessage
+        }
+    )
+    
+    this.fetchPosts();
+
+    console.log(this.loadedPosts);
+  }
+
+
+  onCreatePost(formReference: NgForm) {
+
+    console.log(formReference.value);
+
+    const postData = formReference.value;
+
+    // this.httpPosts.onCreatePost(postData).subscribe(
+    //   (responseData) => {
+
+    //     console.log(responseData);
+    //     formReference.reset(); //resetta os values de todos os fields a partir de um submit bem sucedido...
+
+    //     this.loadedPosts.push(
+    //     postData
+    //     )
+    //   }
+    // )
+
+    this.httpPosts.onCreatePost(postData);
+  }
+
+  onClearPosts() {
+    //send HTTP request
+
+    this.httpPosts.onDeletePosts()
+    .subscribe(
+      (responseData) => {
+
+        console.log(responseData);
+        this.loadedPosts = [];
+      }
+    )
+
+   
+
+  }
+
+  fetchPosts() {
+    this.isLoading = true;
+
+    this.httpPosts.onFetchPosts().subscribe(
+      
+      
+      (postsData) => {
+      this.loadedPosts = postsData;
+      this.isLoading = false;
+    },
+
+    (error) => {  
+      console.log('TEST ERROR');
+      console.log(error);
+      this.isLoading = false;
+        this.error = error.error.error; //mensagem de error.
+    } 
+
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS É CLARO QUE VAMOS QUERER SETTAR ESSE 
+
+OBSERVABLE/SUBJECT 
+
+
+COMO 
+
+
+'OBSERVABLE A _ SER _ DESTROYED',
+
+
+
+
+
+PQ VAMOS QUERER QUE SUA SUBSCRIPTION (essa subscription) 
+
+
+SEJA DESTRUÍDA AO TROCARMOS DE PÁGINA/DESTRUIR O COMPONENT,
+
+PQ QUEREMOS EVITAR MEMORY LEAKS...
+
+
+
+
+
+
+
+
+
+--> é por isso que o proefssor cria uma PROPRIEDADE de type 'Subscription',
+
+
+EM QUE VAMOS ARMAZENAR ESSE CALL de 'subscribe()',
+
+PARA MAIS TARDE O DESTRUIRMOS COM O 
+
+HOOK DE 
+
+'ngOnDestroy()'..
+
+
+
+
+
+
+
+
+
+
+
+
+FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnDestroy } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+
+import { Subscription } from 'rxjs';
+
+
+
+
+/////OUTSOURCEADOS.
+// import { HttpClient } from '@angular/common/http'; ///DEVE SER UTILIZADO, JUNTO DE 'HttpClientModule', lá em 'angular.module.ts', PARA CONSEGUIRMOS FAZER SEND DE HTTP REQUESTS...
+
+// import { map } from 'rxjs'; ////UM DE NOSSOS OPERATORS, a ser usado em nossos OBSERVABLES (no caso, será usado NO OBSERVABLE DE 'http'...)...
+
+import { Post } from './post.model'; ///modelo de post, CRIADO POR NÓS,  a ser usado PARA ESPECIFICAR COMO É A DATA QUE SERÁ RETORNADA DE NOSSO HTTP REQUEST...
+import { PostsHttpService } from './postsHttpServiceVersaoSubject.service';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent implements OnDestroy {
+  loadedPosts: Post[] = [];
+
+  isLoading: boolean = false;
+
+
+  error: any = null;
+
+
+
+  private errorSub: Subscription;
+
+  constructor(private httpPosts: PostsHttpService) {}
+
+  ngOnInit() {
+    // this.fetchPosts();
+
+   this.errorSub = this.httpPosts.error.subscribe(
+        (errorMessage) => {
+            this.error = errorMessage
+        }
+    )
+    
+    this.fetchPosts();
+
+    console.log(this.loadedPosts);
+  }
+
+
+  onCreatePost(formReference: NgForm) {
+
+    console.log(formReference.value);
+
+    const postData = formReference.value;
+
+    // this.httpPosts.onCreatePost(postData).subscribe(
+    //   (responseData) => {
+
+    //     console.log(responseData);
+    //     formReference.reset(); //resetta os values de todos os fields a partir de um submit bem sucedido...
+
+    //     this.loadedPosts.push(
+    //     postData
+    //     )
+    //   }
+    // )
+
+    this.httpPosts.onCreatePost(postData);
+  }
+
+  onClearPosts() {
+    //send HTTP request
+
+    this.httpPosts.onDeletePosts()
+    .subscribe(
+      (responseData) => {
+
+        console.log(responseData);
+        this.loadedPosts = [];
+      }
+    )
+
+   
+
+  }
+
+  fetchPosts() {
+    this.isLoading = true;
+
+    this.httpPosts.onFetchPosts().subscribe(
+      
+      
+      (postsData) => {
+      this.loadedPosts = postsData;
+      this.isLoading = false;
+    },
+
+    (error) => {  
+      console.log('TEST ERROR');
+      console.log(error);
+      this.isLoading = false;
+        this.error = error.error.error; //mensagem de error.
+    } 
+
+    );
+  }
+
+
+  ngOnDestroy(): void {
+      
+    this.errorSub.unsubscribe();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... AS PARTES IMPORTANTES:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnDestroy } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+
+import { Subscription } from 'rxjs';
+
+import { Post } from './post.model'; ///modelo de post, CRIADO POR NÓS,  a ser usado PARA ESPECIFICAR COMO É A DATA QUE SERÁ RETORNADA DE NOSSO HTTP REQUEST...
+import { PostsHttpService } from './postsHttpServiceVersaoSubject.service';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent implements OnDestroy {
+  loadedPosts: Post[] = [];
+
+  isLoading: boolean = false;
+
+
+  error: any = null; ////////ESTA
+ 
+
+
+  private errorSub: Subscription; ///////////ESTA
+
+  constructor(private httpPosts: PostsHttpService) {}
+
+  ngOnInit() {
+
+   this.errorSub = this.httpPosts.error.subscribe( //////////ESTA
+        (errorMessage) => {
+            this.error = errorMessage
+        }
+    )
+    
+    this.fetchPosts();
+
+    console.log(this.loadedPosts);
+  }
+
+
+  onCreatePost(formReference: NgForm) {
+
+
+    const postData = formReference.value;
+
+    this.httpPosts.onCreatePost(postData);
+  }
+
+  onClearPosts() {
+    //send HTTP request
+
+    this.httpPosts.onDeletePosts()
+    .subscribe(
+      (responseData) => {
+
+        console.log(responseData);
+        this.loadedPosts = [];
+      }
+    )
+
+   
+
+  }
+
+  fetchPosts() {
+    this.isLoading = true;
+
+    this.httpPosts.onFetchPosts().subscribe(
+      
+      
+      (postsData) => {
+      this.loadedPosts = postsData;
+      this.isLoading = false;
+    },
+
+    (error) => {  
+      console.log('TEST ERROR');
+      console.log(error);
+      this.isLoading = false;
+        this.error = error.error.error; //mensagem de error.
+    } 
+
+    );
+  }
+
+
+  ngOnDestroy(): void {
+      
+    this.errorSub.unsubscribe(); /////////////ESTA 
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... ISSO SIGNIFICA QUE AGORA USAMOS UMA 'SUBJECT-BASED' strategy 
+
+
+
+PARA _ FAZER_ O FORWARD_ DE NOSSO ERROR...
+
+
+
+
+
+
+
+
+--> E ISSO É FINE TAMBÉM,
+
+
+
+
+mas não parece tão útil como o nosso outro approach... 

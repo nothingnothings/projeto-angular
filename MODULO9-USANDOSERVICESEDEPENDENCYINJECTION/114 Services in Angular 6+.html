@@ -1,0 +1,25 @@
+
+                <html>
+                <head>
+                <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+                <title>114 Services in Angular 6+</title>
+                </head>
+                <body>
+                <div class="container">
+                <div class="row">
+                <div class="col-md-10 col-md-offset-1">
+                    <p class="lead"><p>If you're using <strong>Angular 6+</strong> (check your <code>package.json</code>  to find out), you can provide application-wide services in a different way.</p><p>Instead of adding a service class to the <code>providers[]</code>  array in <code>AppModule</code> , you can set the following config in <code>@Injectable()</code> :</p><pre class="prettyprint linenums">@Injectable({providedIn: 'root'})
+export class MyService { ... }</pre><p>This is exactly the same as:</p><pre class="prettyprint linenums">export class MyService { ... }</pre><p>and</p><pre class="prettyprint linenums">import { MyService } from './path/to/my.service';
+
+@NgModule({
+    ...
+    providers: [MyService]
+})
+export class AppModule { ... }</pre><p>Using this new syntax is <strong>completely optional</strong>, the traditional syntax (using <code>providers[]</code> ) will still work. The "new syntax" does offer one advantage though: Services <strong>can be loaded lazily </strong>by Angular (behind the scenes) and redundant code can be removed automatically. This can lead to a better performance and loading speed - though this really only kicks in for bigger services and apps in general.</p></p>
+                </div>
+                </div>
+                </div>
+                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+                </body>
+                </html>
+                

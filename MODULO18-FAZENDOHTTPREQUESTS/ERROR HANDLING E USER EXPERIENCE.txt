@@ -1,0 +1,428 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... ESSE FOI O ERROR HANDLING E ALGUMAS IDEIAS DE COMO COMEÇAR COM ERROR HANDLING...
+
+
+
+
+
+
+
+
+-> VOCÊ DEVE REVERTER O 'read' da sua database firebase 
+
+
+_DE VOLTA A 'TRUE',
+
+para que seja 
+
+possível 
+
+
+fazer fetch dos posts mais uma vez....
+
+
+
+
+
+
+
+
+
+
+
+--> ESSES CONCEITOS QUE O PROFESSOR NOS CONTOU AGORA 
+
+
+PODEM MELHORAR CONSIDERAVELMENTE A EXPERIENCIA DOS USERS NO NOSSO APP....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> UMA ÚLTIMA COISA QUE PODEMOS FAZER,
+
+NO CASO,
+
+
+
+É ADIICONAR 
+
+
+
+LÁ 
+
+
+NO NOSSO 
+
+
+
+'app.component.html'
+
+
+
+UM BUTTON DE 
+
+'Okay' 
+
+ou algo assim,
+
+para dar 'DISMISS'
+ 
+
+
+ NO ALERT DE 'An error has Occurred!' 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> obs::: aquele código de 'catchError',
+
+
+o OPERATOR, está me causando PROBLEMAS... (está afetando o 'PASS THROUGH' desse error aos meus SUBSCRIBES/subscriptions)...
+
+
+
+
+
+
+
+
+
+-> o código errado atualmente está assim:
+
+
+
+        catchError(
+          (errorRes) => {
+
+            return throwError(() => new Error(errorRes))
+          }
+        )
+
+
+
+
+
+
+
+
+
+
+
+
+        -> tenho que consertar isso...
+
+
+
+
+_> ESTA SINTAXE FUNCIONA:
+
+        catchError(
+          (errorRes) => {
+
+            return throwError(errorRes);
+          }
+        )
+
+
+
+
+
+
+
+
+
+        -> MAS O TYPESCRIPT NOS DIZ QUE 'SERÁ DEPRECADA'....
+
+
+ -----> 
+
+
+ TIPO ASSIM:
+
+
+
+
+
+
+        catchError(
+          (errorRes) => {
+
+            return throwError(() => errorRes);
+          }
+        )
+
+
+
+
+
+
+
+
+
+
+
+-> ESSA É A SINTAXE _ NÃO DEPRECADA, APARENTEMENTE....
+
+
+
+
+
+
+
+
+
+
+
+
+certo....
+
+
+
+
+
+
+
+
+LÁ 
+
+
+NO NOSSO 
+
+
+
+'app.component.html'
+
+
+
+UM BUTTON DE 
+
+'Okay' 
+
+ou algo assim,
+
+para dar 'DISMISS'
+ 
+
+
+ NO ALERT DE 'An error has Occurred!' 
+
+
+
+
+
+
+
+
+
+
+
+
+-----> TIPO ASSIM:
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-md-6 col-md-offset-3">
+      <form (ngSubmit)="onCreatePost(postForm)" #postForm="ngForm">
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input
+            type="text"
+            class="form-control"
+            id="title"
+            required
+            ngModel
+            name="title"
+          />
+        </div>
+        <div class="form-group">
+          <label for="content">Content</label>
+          <textarea
+            type="text"
+            class="form-control"
+            id="content"
+            required
+            ngModel
+            name="content"
+          ></textarea>
+        </div>
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="!postForm.valid"
+        >
+          Send Post
+        </button>
+      </form>
+    </div>
+  </div>
+  <hr />
+  <div class="row">
+    <div class="col-xs-12 col-md-6 col-md-offset-3">
+      <button class="btn btn-primary" type="button" (click)="fetchPosts()">
+        Fetch Posts
+      </button>
+      |
+      <button
+        class="btn btn-danger"
+        [disabled]="loadedPosts.length < 1"
+        (click)="onClearPosts()"
+      >
+        Clear Posts
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-md-6 col-md-offset-3" *ngIf="loadedPosts.length < 1 && !isLoading && !error">
+      <p>No posts available!</p>
+    </div>
+    <div class="alert alert-danger" *ngIf="error">
+      <h1>An Error Occured!</h1>
+      <p>{{ error }}</p>
+      <button class="btn btn-danger">Okay</button>
+    </div>
+    <p *ngIf="isLoading && !error">Loading...</p>
+      <ul  class="list-group" *ngIf="loadedPosts.length >= 1 && !isLoading">
+        <li *ngFor="let post of loadedPosts" class="list-group-item" >
+          <h1>{{post.title}}</h1>
+          <p>{{post.content}}</p>
+        </li>
+      </ul>
+      
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok...
+
+
+
+
+
+
+
+AGORA BASTA COLOCAR ALGUMA LÓGICA PARA REMOVER ESSE ERROR.... ----. A LÓGICA PROVAVELMENTE SERÁ 
+
+O REDEFINE DA PROPRIEDADE DE 'error' COMO SENDO 'null' (isso ocultará essa mensagem, essencialmente)...
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+      <button class="btn btn-danger" (click)="error = null">Okay</button>
+
+
+
+
+
+
+
+
+
+-> SIM, PODEMOS EXECUTAR CÓDIGO TYPESCRIPT DE DENTRO DE NOSSO TEMPLATE,
+
+SE FOR CÓDIGO SIMPLES ASSIM...
+
+
+
+
+
+
+
+-> entretanto, o professor prefere usar um METHOD PRÓPRIO PARA ISSO,
+
+
+LÁ EM 
+
+'app.component.ts'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, COM TUDO ISSO FORA DO CAMINHO,
+
+
+
+
+
+TEMOS UMA ERROR HANDLING STRATEGY QUE É BÁSICA, MAS QUE É UM BOM COMEÇO...

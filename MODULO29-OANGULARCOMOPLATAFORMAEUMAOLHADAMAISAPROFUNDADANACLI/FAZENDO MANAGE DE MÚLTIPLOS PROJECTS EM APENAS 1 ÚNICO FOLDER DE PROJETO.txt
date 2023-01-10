@@ -1,0 +1,1045 @@
+
+
+
+
+
+
+
+
+
+com isso, ACABAMOS COM O 'MANAGE DE NOSSO APP'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> HÁ MT O QUE FAZER,
+
+
+MAS AGORA TEMOS 
+
+UMA IDEIA GERAL DAS FEATURES DO APP... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA TEMOS UM BOM OVERVIEW DAS DIFERENTES FEATURES E ECOSSISTEMAS 
+
+DO ANGULAR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS AGORA O PROFESSOR QUER VOLTAR A UM NEGÓCIO QUE HAVIA MENCIONADO ANTERIORMENTE:
+
+
+
+
+
+
+
+
+'''MÚLTIPLOS ANGULAR PROJECTS'''...
+
+
+
+
+
+
+
+
+
+
+--> ELE DIZ QUE DENTRO DE 1 ANGULAR 'PROJECT'/FOLDER 
+
+
+
+
+
+
+
+
+VOCÊ PODE _ TER __ MÚLTIPLOS PROJECTS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> E VOCÊ SEMPRE VAI COMEÇAR COM 
+
+
+
+
+1 ÚNICO PROJECT,
+
+
+
+
+
+
+
+
+
+MAS __ É POSSÍVEL__ CRIAR 
+
+
+
+
+MAIS PROJECTS DENTRO DO SEU FOLDER...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> BASTA RODAR 'ng generate'..
+
+
+
+
+
+
+
+
+
+
+
+
+--> aí vocÊ pode GENERATE 2 TIPOS DE COISAS, 2 'PROJECT TYPES'...
+
+
+
+
+
+
+
+
+
+
+
+são eles:
+
+
+
+
+
+
+
+
+1) LIBRARY 
+
+
+
+
+
+2) APPLICATION...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COMEÇAMOS COM UMA APPLICATION...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> o professor escreve 'ng generate application backendUi' 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> isso pq agora ele quer TER DUAS DIFERENTES FRONTEND  UIs 
+
+no nosso project,
+
+
+
+
+uma UI PARA OS ADMINISTRADORES,
+
+E OUTRA PARA OS USUÁRIOS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+vou criar um novo project, sem INSTALAR NODE MODULES, pq estou ficando sem espaço no computador..
+
+
+
+
+
+
+
+
+
+
+para isso,
+
+escrevo assim:
+
+
+
+
+
+ng new --skip-install
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+ --> OK, ISSO FEITO,
+
+
+
+ eu executo 
+
+
+
+
+ o 'ng generate application backendUI'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> ASSIM QUE EU FIZ ISSO,
+
+
+
+ELE CRIOU UM NOVO FOLDER ,
+
+DE NOME 
+
+
+
+
+'projects',
+
+
+
+
+
+
+
+
+
+
+
+e DENTRO DESSE FOLDER,
+
+
+
+temos 1 SUBFOLDER,
+
+
+DE NOME 
+
+
+
+'backend-ui'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> e esse folder BASICAMENTE TEM UM 'NOVO ANGULAR PROJECt' no seu interior... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> esse folder será um pouco mais FINO,
+
+
+
+
+
+pq esse 'nested project'
+
+
+VAI COMPARTILHAR _ O MESMO 
+
+
+
+
+
+ARQUIVO 'angular.json'
+
+
+DO NOSSO 'MAIN PROJECT',
+
+
+
+
+
+
+
+mas o que interessa é que dentro dele temos 
+
+
+
+
+
+
+
+CÓDIGO QUE É ESSENCIALMENTE DESSE 'APP' pequeno,
+
+
+
+
+pq ele será basicamente uma 'SEPARATE ANGULAR APPLICATION'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PODERÍAMOS SERVIR NOSSO 'nested app' 
+
+
+
+
+
+com o COMANDO de 
+
+
+
+
+
+'ng serve --project=backend-ui'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É IMPORTANTE RODAR ESSE COMANDO, CASO CONTRÁRIO O NG SERVE NÃO VAI SABER QUE VOCê VAI QUERER 
+
+'SERVE' ESSE PROJECT AÍ...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK... e lá em 
+
+'angular.json'
+
+
+VOCÊ PODE DEFINIR 
+
+
+
+
+''''QUAL SERÁ SEU PROJECT ANGULAR DEFAULT A SER SERVIDO''''..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+essa option fica em 
+
+
+
+
+"defaultProject", em 'angular.json', 
+
+
+
+
+
+
+
+
+
+
+E LÁ 
+
+
+VOCÊ PODE DEFINIR O SEU  
+
+
+
+PROJECT 'MAIN' a ser servido...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------> MAS VOCÊ PODE ARGUMENTAR QUE 
+
+
+
+
+
+ESSA ESTRUTURA DE FOLDERS DEFAULT É MEIO FEIA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> pq ter um folder de 'projects' COMO PARTE DE NOSSA 'MAIN PROJECT STRUCTURE'
+
+
+não é uma boa ideia.....
+
+
+
+
+
+
+
+
+
+
+
+-----> bem, mas podemos fazer MELHOR... --> 
+
+
+
+
+
+
+
+
+
+
+PODEMOS USAR UMA ESTRUTURA DE PROJECTS _ MELHOR_...
+
+
+
+
+
+
+
+
+
+
+--> o professor vai lá e CRIA UM NOVO PROJECT, com 'ng new'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> agora digamos que estamos construindo uma 'angular-shop'...
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR 
+
+
+DIZ QUE 
+
+
+PODEMOS USAR '--help' 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+com o ng new 
+
+para 
+
+VER COMANDOS 
+
+
+QUE PODEMOS RODAR...
+
+
+
+
+
+
+
+
+
+
+
+
+--> NO MEIO DE 'help',
+
+encontramos 
+
+aquela flag de 
+
+
+'--create-application',
+
+
+
+
+QUE 
+
+
+
+
+
+
+NORMALMENTE (default) 
+
+FICA COMO TRUE...
+
+
+
+
+
+
+
+
+
+--> aqui, o professor define essa flag como FALSE,
+
+
+
+
+
+
+
+PARA QUE FIQUEMOS APENAS COM A _ ESTRUTURA__ 
+
+
+
+DE NOSSO APP...
+
+
+
+
+
+
+
+
+
+
+
+---> ele vai criar ALGUMAS FILES,
+
+MAS MENOS FILES DO QUE ANTES... --> ELE VAI 
+
+
+
+
+__ INSTALAR ALGUMAS DEPENDENCIES, SIM,,
+
+
+MAS NÃO VAI __ CRIAR 
+
+
+
+1 APP ANGULAR POR DEFAULT... 
+
+(
+
+
+
+
+
+    EM VEZ DISSO,
+
+
+
+
+
+
+    ELE __ VAI __ 
+
+
+
+
+
+    NOS DAR 
+
+
+
+
+
+    UM FOLDER BEM ESQUELETO....
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+O FOLDER ESQUELETO TEM ESTA ESTRUTURA:
+
+
+
+
+
+
+
+node_modules 
+
+.editorconfig
+
+.gitignore 
+
+.prettierrc 
+
+angular.json 
+
+
+
+package-lock.json 
+
+package.json 
+
+tsconfig.json 
+
+
+
+tslint.json 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------> E AGORA, DE FATO, PODEMOS SIMPLESMENTE RODAR 
+
+
+
+'ng generate application backendUI',
+
+
+
+
+
+
+
+e isso vai 
+
+CRIAR 1 NOVO FOLDER DE 'PROJECTS',
+
+SIM,
+
+
+
+
+MAS VAI CRIÁ-LO NO NOSSO ROOT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA TEREMOS UMA ESTRUTURA ASSIM:
+
+
+
+
+
+
+node_modules 
+
+.editorconfig
+
+.gitignore 
+
+.prettierrc 
+
+angular.json 
+
+
+projects (folder) --> nosso project está aqui dentro...
+
+package-lock.json 
+
+package.json 
+
+tsconfig.json 
+
+
+
+tslint.json 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ESSA ESTRUTURA É BEM MELHOR 
+
+
+
+
+
+
+QUANDO VOCê QUER TER MÚLTIPLOS APP ANGULAR EM 1 MESMO FOLDER...
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO, FUNCIONOU...
+
+
+
+
+
+
+
+
+
+
+--------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+FICAMOS COM 1 FOLDER DE 'projects' dentro do folder de nosso project,
+
+o que é mais organizado e melhor, para cases em que temos 
+
+
+
+
+múltiplos projects...
+
+
+
+
+
+
+ng new --create-application=false
+
+
+
+(
+    ou '''ng new --skip-install --create-application=false'''
+)
+
+
+--> isso é mais clean, sim...
+
+
+
+
+
+
+
+O TRABALHO COM MÚLTIPLOS ANGULAR PROJECTS DENTRO DE 1 PROJECT FOLDER FICA MAIS ORGANIZADO ASSIM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS É CLARO QUE É POSSÍVEL CONSTRUIR MAIS DO QUE WEBAPPS 
+
+
+com o angular; também é possível construir LIBRARIES...

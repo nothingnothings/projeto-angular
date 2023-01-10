@@ -1,0 +1,283 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK... ESSE MÓDULO É SOBRE SERVICES E DEPENDENCY INJECTION....
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O QUE É ISSO?
+
+
+
+
+
+
+
+
+
+
+--> O QUE SÃO SERVICES?
+
+
+
+
+
+
+
+DEVEMOS CONSIDERAR UM APP COMUM,
+
+
+estruturado assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+            AppComponent 
+            
+
+AboutComponent           UserComponent
+
+
+                            UserDetailComponent
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------> É CLARO QUE TALVEZ TEREMOS _ METHODS_ EM CADA 1 DESSES COMPONENTS, TIPO ASSIM:
+
+
+
+
+
+            AppComponent 
+            
+
+AboutComponent           UserComponent
+(log data to console)
+
+                            UserDetailComponent
+                            (log data to console)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> 2 methods diferentes.... ------> 
+
+
+
+
+
+MAS  DIGAMOS QUE ESSE 'LOG STATEMENT' É ALGO BEM SIMILAR,
+
+
+PRATICAMENTE O MESMO TEXT SENDO LOGGADO NESSES 2 LUGARES...
+
+
+
+(
+
+
+    basicamente nos repetindo, duplicando código em 2 diferentes components...
+)
+
+
+
+
+
+
+
+
+
+
+--> DIGAMOS QUE 
+
+
+NO COMPONENT DE 'USERS'
+
+TAMBÉM QUEIRAMOS 
+
+
+
+'''ACCESS SOME DATA''',
+
+
+talvez um array de users... ->  E TALVEZ 
+
+
+
+TBM,
+
+
+HIPOTETICAMENTE,
+
+NÃO 
+
+SABEMOS SE VAMOS USAR ESSE CÓDIGO EM ALGUM OUTRO LUGAR DE NOSSO APP...
+
+
+
+
+
+
+
+
+
+
+
+
+--> EM AMBOS USE-CASES,
+
+
+
+''DUPLICATION OF CODE''' 
+
+
+
+E 
+
+
+'''DATA STORAGE''''  (providenciamento de data)
+
+
+
+
+
+
+
+SÃO _ TYPICAL USE-CASES PARA __ SERVICES__... -> PQ SERVICES SÃO BASICAMENTE _ OUTRA 
+
+
+'PIECE'
+
+
+
+
+NO SEU APP ANGULAR,
+
+
+OUTRA CLASS QUE 
+
+VOCÊ PODE ADICIONAR,
+
+
+
+QUE SERVE COMO UM 'CENTRAL REPOSITORY',
+
+
+
+
+
+COMO UM 
+
+
+
+
+'''CENTRAL BUSINESS UNIT'''',
+
+
+
+
+UM __ LOCAL_ _ EM QUE VOCÊ PODE CENTRALIZAR/ARMAZENAR SEU CÓDIGO...
+
+
+
+
+
+
+
+
+
+------> PODEMOS, POR EXEMPLO, CRIAR UM 'LOG SERVICE',
+
+
+
+
+PARA _ CENTRALIZAR__ NOSSO 'LOG STATEMENT.'..
+
+
+
+
+
+
+
+
+-> PODERÍAMOS CRIAR UM 'USER SERVICE'
+
+
+PARA __ CRIAR _ UMA 
+
+'USER STORAGE',
+
+por exemplo...
+
+
+
+
+
+
+
+
+
+
+
+--> DEVEMOS VER ISSO EM UM APP DE VERDADE,
+
+PARA VER 
+
+
+COMO 
+
+ISSO 
+
+SE TORNA MAIS CLARO...

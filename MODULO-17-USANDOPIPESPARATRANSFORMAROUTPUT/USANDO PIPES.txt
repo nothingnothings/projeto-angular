@@ -1,0 +1,593 @@
+
+
+
+
+
+
+
+
+
+
+TEMOS UM NOVO PROJETO-EXAMPLE..
+
+
+
+
+
+
+
+
+-> PODEMOS COPIAR O PROFESSOR,
+
+CRIAR UM NOVO PROJETO..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> O CÓDIGO É BEM SIMPLES, APENAS 1 COMPONENT..
+
+
+
+
+
+
+
+
+
+--> NESSE COMPONENT, OUTPUTTAMOS UMA LISTA DE SERVERS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E OS SERVERS SÃO ARMAZENADOS NA FILE DE 'app.component.ts'...
+
+
+
+
+
+
+
+
+
+
+
+--> AÍ EMBAIXO TEMOS UMA HELPER CLASS,
+
+
+QUE AJUDA A RETRIEVAR A 
+
+
+CLASS CSS CORRETA 
+
+
+
+A CADA GROUP ITEM,
+
+
+
+
+DEPENDENDO DO STATUS DE CADA 
+
+
+SERVER, A DEPENDER SE 
+
+ESTÁ 'OFFLINE' ou 'STABLE'..
+
+
+
+
+
+
+
+
+
+-----> CERTO...
+
+
+
+
+
+
+
+-> E EM CADA SERVER, TEMOS COISAS COMO 
+
+
+
+
+
+'small' 
+
+
+
+'large' 
+
+
+
+e 
+
+
+aí 
+
+
+DATEs..
+
+
+
+
+
+
+
+
+--> como exemplo do que podemos fazer, o professor diz que PODEMOS TROCAR O CASING DOS 'small/large',
+
+
+
+
+E QUE 
+
+
+PODEMOS MEXER TAMBÉM NA MANEIRA 
+
+
+PELA QUAL É OUTPUTTADA 
+
+
+ESSA DATE...
+
+
+
+
+
+
+
+
+EX?
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="list-group">
+        <li class="list-group-item">
+          <span class="badge" {{ server.status }}></span>
+          <strong>{{ server.name }}</strong> | {{ server.instanceType }} |
+          {{ server.started }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  servers = [
+    {
+      instanceType: 'medium',
+      name: 'Production Server',
+      status: 'stable',
+      started: new Date(15, 1, 2017),
+    },
+
+    {
+      instanceType: 'large',
+      name: 'User Database',
+      status: 'stable',
+      started: new Date(15, 1, 2017),
+    },
+
+    {
+      instanceType: 'small',
+      name: 'Development Server',
+      status: 'offline',
+      started: new Date(15, 1, 2017),
+    },
+
+    {
+      instanceType: 'medium',
+      name: 'Production Server',
+      status: 'offline',
+      started: new Date(15, 1, 2017),
+    },
+  ];
+
+  getStatusClasses(server: {
+    instanceType: string;
+    name: string;
+    status: string;
+    started: Date;
+  }) {
+    return {
+      'list-group-item-success': server.status === 'stable',
+      'list-group-item-warning': server.status === 'offline',
+      'list-group-item-danger': server.status === 'critical ',
+    };
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+----- OK...
+
+
+
+
+
+
+
+
+AGORA VAMOS VER COMO USAR OS PIPES COM ESSE NEGÓCIO..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VAMOS COMEÇAR COM 'large', 'medium' e 'small'..
+
+
+
+
+
+
+
+--> OS PIPES SÃO ADICIONADOS ASSIm:
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="list-group">
+        <li class="list-group-item"
+        *ngFor="let server of servers"
+        [ngClass]="getStatusClasses(server)"
+        >
+          <span class="badge" >{{ server.status }}</span>
+          <strong>{{ server.name  }}</strong> | {{ server.instanceType | uppercase }} |
+          {{ server.started }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX :
+
+
+
+
+
+
+          <strong>{{ server.name  }}</strong> | {{ server.instanceType | uppercase }} |
+
+
+
+
+
+
+
+
+
+
+
+          ISSO RESULTOU EM 
+
+
+
+          COISAS COMO 
+
+
+          'LARGE '
+
+
+
+
+          'SMALL' 
+
+
+          'MEDIUM'...
+
+
+
+
+
+
+
+
+
+
+          ---->  OS PIPES SÃO SEMPRE ESCRITOS 
+
+
+
+
+          NO __ TEMPLAET,
+
+
+
+          JUSTAMENTE __ PQ 
+
+
+
+
+          O TEMPLATE É O LOCAL EM QUE AS NOSSAS COISAS SÃO OUTPUTTADAS (por ''ÚLTIMO''),
+
+
+          
+
+          POR ISSO É LÓGICO QUE OS PIPES,
+
+          QUE SÓ ALTERAM O OUTPUT BEM FINAL DA DATA,
+
+
+
+
+        DEVEM SER COLOCADOS AQUI..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> HÁ UM PUNHADO DE BUILT-IN PIPES,
+
+
+E VOCÊ TAMBÉM PODE ADICIONAR PIPES POR CONTA PRÓPRIA...
+
+
+
+
+
+
+
+
+
+
+-> UM PIPE BOM DE ADICIONAR, PARA FICAR TUDO EM UPPERCASE,
+
+É O PIPE 
+
+
+
+
+DE 
+
+'uppercase'.
+
+
+
+
+
+
+
+
+
+
+(
+
+    mas isso é meio inútil... --> 
+
+
+
+
+    a única vantagem é que não precisamos ALTERAR ISSO POR MEIO DE CSS...
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA VEREMOS A DATE.. ---> 
+
+
+PARA A DATE,
+
+
+
+TEMOS __ OUTRO PIPE__ QUE PODEMOS USAR..
+
+
+
+
+
+
+
+
+
+
+---> 'server.started' 
+
+
+É RESPONSÁVEL PELO OUTPUT DA DATE...
+
+
+
+
+
+
+
+-> no local em qeu ele foi escrito,
+
+
+
+podemos 
+
+escrever 
+
+
+
+o 
+
+PIPE DE 
+
+
+` | date ``,
+
+
+
+PARA ATIVAR 
+
+
+
+
+
+
+
+
+
+ESSE PIPE BUILT-IN,
+
+
+
+que vai 
+
+
+OUTPUTTAR NOSSA DATE 
+
+
+tipo assim: 
+
+
+
+'AUG 8, 1920'...
+
+
+
+
+
+
+
+
+
+----> 
+
+
+
+
+
+
+
+
+MAS 
+
+
+
+AINDA ASSIM, PODEMOS DEIXAR ISSO MAIS CUSTOMIZADO,
+
+
+CUSTOMIZAR NOSSOS PIPES DE MANEIRA MAIS DETALHADA..
+
+
+
+
+
+
+
+
+
+
+--> VAMOS VER COMO OS CONFIGURAR, NA PRÓXIMA AULA.... (mas não como os criar, e sim apenas como OS CUSTOMIZAR)..
+
+
+
+
+

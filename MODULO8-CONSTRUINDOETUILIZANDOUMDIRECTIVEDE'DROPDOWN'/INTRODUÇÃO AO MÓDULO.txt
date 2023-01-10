@@ -1,0 +1,1303 @@
+
+
+
+
+
+
+
+
+
+
+
+TENTAR CRIAR UMA DIRECTIVE SOZINHO, UMA __STRUCTURAL__ DIRECTIVE ( ou uma directive comum, pq não sei 
+
+
+se o que o professor quer é apenas o manage do style de uma 'dropdown bar')....
+
+
+
+
+
+
+
+--> basta rodar o código 
+
+
+
+ng g d dropdown
+
+
+
+
+
+
+--> colocamos essa directive de 'dropdown' em uma pasta com esse nome....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COMEÇAMOS COM ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+import { Directive } from '@angular/core';
+
+@Directive({
+  selector: '[appDropdown]'
+})
+export class DropdownDirective {
+
+  constructor() { }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> provavelmente será 
+
+uma 
+
+
+DIRECTIVE QUE VAI TOGGLAR UM STYLE DE 'OPEN/CLOSED' ( ou então vai RENDERIZAR UM ELEMENTO NA NOSSA PAGE...)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR NOS EXPLICA QUE _ JÁ ESTAMOS USANDO 
+
+'ngIf '
+
+
+
+' ngFor' 
+
+
+
+
+
+
+EM PARTES DE NOSSO APP,
+
+
+
+
+O QUE QUER DIZER QUE JÁ ESTÁVAMOS USANDO DIRECTIVES...
+
+
+
+
+
+
+
+
+
+
+--. MAS AGORA QUEREMOS MELHORAR ESSE PROJECT,
+
+POR MEIO DO ADD DE NOSSA PRÓPRIA 
+
+DIRECTIVE...
+
+
+
+
+
+--> QUEREMOS ABRIR OS DROPDOWNS,
+
+QUE ATÉ AGORA NÃO FUNCIONAM QUANDO VOCÊ CLICA NELES..
+
+
+
+
+
+
+-> O CÓDIGO DOS DROPDOWNS É ESTE:
+
+
+
+
+
+
+
+
+
+
+
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" role="button">Manage<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Save Data</a></li>
+                    <li><a href="#">Fetch Data</a></li>
+                </ul>
+            </li>
+        </ul>
+
+
+
+
+
+
+
+
+E ESTE AQUI:
+
+
+
+
+
+
+import { Component, Output } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+
+@Component({
+  templateUrl: './headerComponent.app.html',
+  styleUrls: ['./headerComponent.app.css'],
+  selector: 'app-header-component',
+})
+export class HeaderComponent {
+  collapsed = true;
+
+  @Output() selectedPage = new EventEmitter<string>();
+
+  constructor() {}
+
+  onShopList() {
+    this.selectedPage.emit('shopList');
+  }
+
+  onRecipeBook() {
+    this.selectedPage.emit('recipeBook');
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> o que interessa é esse 'collapsed'...
+
+
+
+
+
+
+
+
+-----> o professor diz que 
+
+ESSES DROPDOWNS __ NÃO ESTÃO FUNCIONANDO __ PQ _ ELE NÃO IMPORTOU/INSTALOU O 
+
+
+
+CÓDIGO JAVASCRIPT __ DO BOOTSTRAP --> E O PROFESSOR  NÃO QUER IMPORTAR ESSE CÓDIGO,
+
+
+
+PQ ELE QUER QUE  A ÚNICA COISA QUE INTERAJA 
+
+
+COM O DOM 
+
+
+
+__ SEJA __ O ANGULAR (para evitar conflitos)...
+
+
+
+
+
+
+
+
+
+
+
+
+-----> COM O CONHECIMENTO DE DIRECTIVES, PODEMOS 
+
+CRIAR NOSSAS PRÓPRIAS DIRECTIVES,
+
+QUE VAO FAZER 'MANIPULATE' desses buttons..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> talvez criar uma ATTRIBUTE DIRECTIVE PARA _ DEIXAR_ ESSE ELEMENTO COMO 'OPENED',
+
+ou algo assim;
+
+
+
+
+
+talvez criar uma ATTRIBUTE DIRECTIVE QUE DEPENDA DE 'collapsed',
+
+
+pq se COLLAPSED ESTIVER COMO TRUE,
+
+O style/selector
+
+
+
+NÃO FICARÁ ADICIONADO....
+
+
+
+já se 
+
+
+
+collapsed estiver como 'false',
+
+
+
+o style acaba adicionado....
+
+
+
+
+
+
+
+
+
+
+
+-> O QUE INTERESSA É ESTA CLASS:
+
+
+
+
+''''' <li class="dropdown"> '''' 
+
+
+
+
+
+--> ISSO PRECISA RECEBER A CLASS DE 'open',
+
+PARA FICAR ASSIM:
+
+
+
+
+<li class="dropdown open">
+
+
+
+
+
+
+
+
+
+
+
+-> PARA OBTER ESSE RESULTADO, podemos 
+
+usar vários approaches...
+
+
+
+
+
+
+
+--> COLOCAR UMA DIRECTIVE QUE FAZ O 'CONTROLE' DESSE DROPDOWN automaticamente..
+
+
+
+
+
+
+
+
+
+
+--> basta escrever algo assim:
+
+
+
+
+   <li class="dropdown" dropdown>
+
+
+
+
+
+
+
+
+
+
+   'dropdown' será o nome de nossa directive,
+
+   e quando ela é colocada nesse local,
+
+
+   ela já fará o set de nosso style,
+
+
+   basta codar sua lógica...
+
+
+
+
+
+
+
+
+
+
+   --> a lógica de 'dropdown' está assim, no momento:
+
+
+
+
+
+
+
+   import { Directive } from '@angular/core';
+
+@Directive({
+  selector: '[appDropdown]'
+})
+export class DropdownDirective {
+
+  constructor() { }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> escrevi um código que funcionou,
+
+ficou
+
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+import {
+  Directive,
+  ElementRef,
+  HostListener,
+  Input,
+  OnInit,
+  Renderer2,
+  ViewChild,
+} from '@angular/core';
+
+@Directive({
+  selector: '[appDropdown]',
+})
+export class DropdownDirective implements OnInit {
+  
+  isCollapsed: string = 'closed';
+
+
+  constructor(private elementRef: ElementRef, private renderer: Renderer2) {}
+
+  ngOnInit(): void {
+    
+  }
+
+  @HostListener('click') mouseClick(eventData: Event) {
+    console.log('CLICKED');
+    if (this.isCollapsed === 'closed') {
+      console.log(this.renderer);
+      this.renderer.addClass(this.elementRef.nativeElement, 'open');
+      this.isCollapsed = 'open';
+
+    } else {
+      this.renderer.removeClass(this.elementRef.nativeElement, 'open');
+      this.isCollapsed = 'closed';
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> usei um state dentro dessa directive,
+
+
+aí 
+
+
+
+
+
+agora tenho essa directive,
+
+que consigo colocar em qualquer elemento com 
+
+
+
+um funcionamento de 'toggle dropdown' 
+
+de minha página 
+
+
+
+(como aquele que tenho no 'Manage recipe' )
+
+
+
+
+
+
+
+
+
+
+
+
+--> é mt bom, pq é um código reutilizável...
+
+
+
+
+
+
+
+
+
+-> o local que coloquei, agora, foi neste elemento:
+
+
+
+
+
+
+
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" (click)="collapsed = !collapsed">
+            <span class="icon-bar" *ngFor="let iconBar of [1, 2, 3]"></span>
+          </button>
+          <a routerLink="/" class="navbar-brand">Recipe Book</a>
+      </div>
+      <!-- <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true"> -->
+        <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true">
+        <ul class="nav navbar-nav">
+          <!-- <li><a href="#">Recipes</a></li>
+          <li><a href="#">Shopping List</a></li> -->
+          <li (click)="onRecipeBook()"><a href="#">Recipes</a></li>
+          <li (click)="onShopList()"><a href="#">Shopping List</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown" appDropdown #dropdown>
+                <a href="#" class="dropdown-toggle" role="button">Manage<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Save Data</a></li>
+                    <li><a href="#">Fetch Data</a></li>
+                </ul>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  AGORA VOU COLOCAR EM OUTRO, NESTE AQUI:
+
+
+
+
+
+
+
+  <div class="btn-group" appDropdown> 
+      <ul class="dropdown-menu">
+          <li><a href="#">Add to Shopping List</a></li>
+          <li><a href="#">Edit Recipe</a></li>
+          <li><a href="#">Delete Recipe</a></li> 
+      </ul>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    --> MAS NESSE LOCAL AÍ, O NEGÓCIO NÃO FUNCIONOU...
+
+
+
+
+
+
+
+
+
+
+
+
+    --> não funcionou nesse outro local pq o código está uma bagunça,
+
+
+    está assim no presente:
+
+
+
+
+
+
+    <div *ngIf="loadedRecipe; else noRecipeLoaded">
+<div class="row">
+  <div class="col-xs-12">
+    <img src="{{loadedRecipe.imagePath}}" alt="" class="img-responsive" style="max-height: 300px; max-width: 400px;" />
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <h1>{{ loadedRecipe.name }}</h1>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <div class="btn-group"> <!--será tipo o nosso DROPDOWN de options..-->
+      <ul class="dropdown-menu">
+          <li><a href="#">Add to Shopping List</a></li>
+          <li><a href="#">Edit Recipe</a></li>
+          <li><a href="#">Delete Recipe</a></li> 
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <h2>{{loadedRecipe.description}}</h2>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        Ingredients
+    </div>
+</div>
+<button type="button" class="btn btn-primary dropdown-toggle">
+  Manage Recipe <span class="caret"></span>
+</button>
+</div>
+<ng-template #noRecipeLoaded>
+<p>Please select a Recipe!</p>
+</ng-template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E O CÓDIGO CORRETO É ASSIm::
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <img
+      [src]="recipe.imagePath"
+      alt="{{ recipe.name }}"
+      class="img-responsive"
+      style="max-height: 300px;">
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <h1>{{ recipe.name }}</h1>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <div
+      class="btn-group"
+      appDropdown>
+      <button
+        type="button"
+        class="btn btn-primary dropdown-toggle">
+        Manage Recipe <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu">
+        <li><a href="#">To Shopping List</a></li>
+        <li><a href="#">Edit Recipe</a></li>
+        <li><a href="#">Delete Recipe</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    {{ recipe.description }}
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    Ingredients
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> vou tentar copiar isso aí....
+
+
+
+
+
+
+
+
+
+
+
+--> OK, AGORA ESTÁ FUNCIONANDO...
+
+
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+
+<div *ngIf="loadedRecipe; else noRecipeLoaded">
+<div class="row">
+  <div class="col-xs-12">
+    <img src="{{loadedRecipe.imagePath}}" alt="" class="img-responsive" style="max-height: 300px; max-width: 400px;" />
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <h1>{{ loadedRecipe.name }}</h1>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+      <h2>{{loadedRecipe.description}}</h2>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <div class="btn-group" appDropdown>
+      <button type="button" class="btn btn-primary dropdown-toggle">
+        Manage Recipe <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu">
+          <li><a href="#">Add to Shopping List</a></li>
+          <li><a href="#">Edit Recipe</a></li>
+          <li><a href="#">Delete Recipe</a></li> 
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        Ingredients
+    </div>
+</div>
+
+</div>
+<ng-template #noRecipeLoaded>
+<p>Please select a Recipe!</p>
+</ng-template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> HORA DE VER O VÍDEO DO PROFESSOR....
+
+
+
+
+
+
+
+
+--> ok, ele criou essa directive...
+
+
+
+
+
+
+
+
+
+--> o meu código, no caso, havia ficado assim:
+
+
+
+
+
+
+
+
+
+
+import {
+  Directive,
+  ElementRef,
+  HostListener,
+  Input,
+  OnInit,
+  Renderer2,
+  ViewChild,
+} from '@angular/core';
+
+@Directive({
+  selector: '[appDropdown]',
+})
+export class DropdownDirective implements OnInit {
+  
+  isCollapsed: string = 'closed';
+
+
+  constructor(private elementRef: ElementRef, private renderer: Renderer2) {}
+
+  ngOnInit(): void {
+    
+  }
+
+  @HostListener('click') mouseClick(eventData: Event) {
+    console.log('CLICKED');
+    if (this.isCollapsed === 'closed') {
+      console.log(this.renderer);
+      this.renderer.addClass(this.elementRef.nativeElement, 'open');
+      this.isCollapsed = 'open';
+
+    } else {
+      this.renderer.removeClass(this.elementRef.nativeElement, 'open');
+      this.isCollapsed = 'closed';
+    }
+  }
+}
+
+
+
+
+-----------------------
+
+
+
+
+
+
+
+
+
+@Directive({
+  selector: '[appDropdown]',
+}) 
+
+
+
+
+
+
+
+
+
+
+--> PROFESSOR MENCIONA QUE USOU UM 'ATTRIBUTE SELECTOR'...
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR QUER ADICIONAR UMA FUNCIONALIDADE PARA ADICIONAR UMA CERTA 'CSS CLASS'
+
+
+AO ELEMENT EM QUE ELA É POSICIONADA,
+
+
+QUANDO ESSE ELEMENT EM QUE FOR POSICIONADA FOR CLICADA... 
+
+
+
+
+
+
+
+
+--> consegui implementar isso por conta própria (
+
+
+  method que 
+
+
+
+  FAZ LISTEN TO A CLICKS,
+
+  e 
+
+
+  aí 
+
+  roda 
+
+  código que 
+
+
+
+  ATTACHA DINAMICAMENTE 
+
+
+  CLASSES CSS...
+)
+
+
+
+
+
+
+
+
+
+---> A CLASS QUE PRECISAMOS ATTACHAR, É CLARO, É 
+
+'open'..
+
+
+
+
+
+
+
+
+
+-> btn-group --> btn-group open...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> deu certo, essencialmente...
+
+
+
+
+
+
+
+mas o código do professor ficou um pouco diferente..
+
+
+
+-> ELE ESCREVEU ASSIm:
+
+
+
+
+
+
+
+
+
+
+
+
+
+export class DropdownDirective {
+
+
+  isOpen = false;
+
+
+  @HostListener('click') toggleOpen() {
+
+
+        this.isOpen = !this.isOpen;
+
+  }
+}
+
+
+
+
+
+
+
+
+
+
+--> OK, ISSO TOGGLA AQUELA CLASS DINAMICAMENTE..
+
+
+
+--> AGORA PARA ATTACHAR/dettachar dinamicamente,
+
+
+
+
+A COISA QUE 
+
+O PROFESSOR FEZ FOI USAR 
+
+
+
+'@HostBinding',
+
+
+
+
+
+
+PARA AÍ 
+
+
+
+
+
+DEFINIRMOS QUE QUEREMOS 
+
+
+
+BINDAR O VALOR DE 
+
+'isOpen' (que pode ser false/true) COMO 
+
+
+
+
+A PROPRIEDADE 
+
+'class' 
+
+
+DO ELEMENTO 
+
+
+
+em que nosso attribute é posicionado...
+
+
+--> AÍ, NO CASO,
+
+O PROFESSOR VAI QUERER 
+
+
+
+
+
+MANIPULAR A CLASS DE '.open'
+
+
+
+dentro desse elemento,
+
+por isso ele escreve 
+
+
+
+
+
+
+
+
+'class.open'...
+
+
+
+
+
+
+
+--> O CÓDIGO VAI FICANDO ASSIM:
+
+
+
+
+export class DropdownDirective {
+
+    @HostBinding('class.open') isOpen = false;
+
+
+  @HostListener('click') toggleOpen() {
+
+
+        this.isOpen = !this.isOpen;
+
+  }
+}
+
+
+
+
+
+
+
+
+-----------------------
+
+
+
+
+
+
+
+
+
+
+
+
+-----> O RESTO SERÁ HANDLADO PELO ANGULAR,
+
+
+pq COMO BINDAMOS AO 'isOpen',
+
+
+
+
+ESSA CLASS SÓ SERÁ ADICIONADA 
+
+
+QUANDO O 'isOpen' for alterado...
+
+
+
+
+
+
+
+
+
+--> ok, aí adicionamos a directive em todos os components/elements em que desejamos a utilizar...
+
+
+
+
+
+
+
+
+
+
+
+-> com tudo isso no lugar, salvamos e o negócio funciona...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------->  com isso, já temos tudo que queríamos construir....
+
+
+
+
+
+
+
+
+--> PODEMOS VER, AGORA, SERVICES,
+
+
+UMA TOOL MT PODEROSA,
+
+QUE IMPLEMENTAREMOS NESSE APP (consertará coisas que fazíamos de forma meio complicada)...

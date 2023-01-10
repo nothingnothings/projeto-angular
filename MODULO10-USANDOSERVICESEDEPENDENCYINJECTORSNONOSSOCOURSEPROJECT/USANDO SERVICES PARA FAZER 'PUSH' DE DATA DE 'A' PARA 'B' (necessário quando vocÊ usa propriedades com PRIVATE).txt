@@ -1,0 +1,624 @@
+
+
+
+
+
+
+
+
+
+----> NA ÚLTIMA LIÇÃO,
+
+BASICAMENTE 
+
+
+TERMINAMOS NOSSO SERVICE DE 'SHOPPINGLIST',
+
+
+mas o problema é que 
+
+QUANDO ADICIONAMOS UM 
+
+NOVO ITEM À LISTA 
+
+DE 
+
+'ingredients',
+
+
+
+
+
+
+__ NADA _ _aCONTECE (
+
+
+
+    não acontece um erro,
+
+    mas o item TAMBÉM NÃO É ADICIONADO PELA LISt...
+
+
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+-> A RAZÃO PARA ISSO É SIMPLES:
+
+
+
+
+
+
+
+quando chamamos 'getIngredients()",
+
+
+
+
+QUE __ OBVIAEMNTE USAMOS _ _P ARA POPULAR_ AQUELA LIST 
+
+de 
+
+
+
+
+''shopList',
+
+
+
+NÓS _ APENAS_ GANHAMOS UMA _CÓPIA_ DOS INGREDIENTS DO NOSSO ARRAY, POR MEIO DO CÓDIGO DE 
+
+
+'getIngredients() {
+    return this.ingredients.slice()
+}' 
+
+
+
+
+
+
+
+
+
+
+
+--> UMA DAS SOLUÇÕES _ É SIMPLESMENTE ''''USAR O ARRAY ORIGINAL, E NÃO UMA CÓPIA'''..
+
+
+
+
+
+
+
+
+-> MAS O PROFESSOR ESCOLHEU UMA APPROACH DIFERENTE,
+
+
+PQ _ ELE QUER NOS MOSTRAR _UMA SOLUÇÃO DIFERENTE,....
+
+
+
+
+
+
+
+
+
+
+-> PRECISAMOS _ SIMPLESMENTE COMUNICAR AO 'shopping-list.services' 
+
+QEU 
+
+
+ALG DE NOVO ESTÁ DISPONÍVEL...
+
+
+
+
+
+
+para isso, o profesor cria um novo method, 'ingredientsChanged',
+
+
+
+
+
+QUE SERÁ UM EventEmitter....
+
+
+
+
+
+
+
+
+
+
+--> vai ficando assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export class ShoppingListService {
+    ingredientsChanged = new EventEmitter<Ingredient[]>();
+    private ingredients: Ingredient[] = [
+
+
+        new Ingredient('Apples', 3),
+        new Ingredient('Tomatoes', 10)
+    ]
+
+
+
+
+
+
+
+    getIngredients() {
+        return this.ingredients.slice();
+    }
+
+
+    addIngredient(ingredient: Ingredient) {
+
+                this.ingredients.push(ingredient);
+                ingredientsChanged.emit(this.ingredients);
+    }
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, ISSO SIGNIFICA QUE 
+
+
+
+AGORA TEREMOS 
+
+
+
+
+
+UM EMITTER DE UM EVENT QEU SERÁ 
+
+
+A LISTA DE INGREDIENTS,
+
+E
+ 
+
+
+
+
+ UM EVENT DESSES SERÁ EMITTAOD _ _SEMPRE__ QUE 
+
+
+
+
+ ADICIOANRMOS UM NOVO 
+
+ INGREDIENT 
+
+ AO ARRAY DE INGREDIENTS..
+
+
+
+
+
+
+
+ ----> PARA RECEBER ESSA CÓPIA DO ARRAY DE INGREDIENTS 
+
+
+
+ ENVIADA NESSE EVENTEMITTER,
+
+
+
+
+
+
+ VAMOS ATÉ O COMPONENT 'ShoppingList'
+
+ e aí 
+
+ ESCREVEMOS UM 
+
+ USO 
+
+
+
+ de 
+
+
+
+ 'this.shoppingListService.ingredientsChanged.subscribe(
+     (ingredients) => {
+
+                this.ingredients = ingredients
+
+     }
+ )',
+
+
+
+
+
+
+
+ LÁ NO 
+
+ 'ngOnInit' 
+
+ de 
+
+
+ 'shopping-list'...
+
+
+
+
+
+ fica tipo assim:
+
+
+
+
+
+
+
+
+
+ export class ShoppingListComponent implements OnInit {
+
+
+  ingredients: Ingredient[] = [];
+
+  selectedIngredient: Ingredient;
+
+  constructor(private shoppingListService: ShoppingListService) {
+    
+  }
+
+  ngOnInit(): void {
+
+    this.shoppingListService.ingredientsChanged.subscribe(
+        (ingredients) => {
+                this.ingredients = ingredients;
+        }
+    )
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  consegui, e o código completo ficou assim:
+
+
+
+
+
+
+
+
+
+
+
+  import { EventEmitter, Injectable, Output } from '@angular/core';
+import { Ingredient } from './shared/ingredient.model';
+
+
+@Injectable()
+export class ShoppingListService {
+  @Output() ingredientsChanged = new EventEmitter<Ingredient[]>();
+  private ingredients: Ingredient[] = [
+
+
+    new Ingredient('Potato', 1),
+    new Ingredient('Tomato', 3),
+    new Ingredient('Banana', 5),
+  ];
+
+  getIngredients() {
+    return [...this.ingredients];
+  }
+
+  onIngredientAdd(ingredient: Ingredient) {
+    this.ingredients.push(ingredient);
+    this.ingredientsChanged.emit([...this.ingredients]);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIm:
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { Ingredient } from '../shared/ingredient.model';
+import { ShoppingListService } from '../shoppingList.service';
+
+@Component({
+  selector: 'app-shopping-list',
+  templateUrl: './shoppingList.component.html',
+  styleUrls: ['./shoppingList.component.css'],
+})
+export class ShoppingListComponent implements OnInit {
+
+
+  ingredients: Ingredient[] = [];
+
+  selectedIngredient: Ingredient;
+
+  constructor(private shoppingListService: ShoppingListService) {
+    
+    this.ingredients = this.shoppingListService.getIngredients()
+  }
+
+  ngOnInit(): void {
+    this.shoppingListService.ingredientsChanged.subscribe(
+      (ingredients) => {
+        this.ingredients = ingredients;
+      }
+    )
+
+  }
+
+
+
+
+
+
+
+
+
+  -------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+  E ISSO REALMENTE FUNCIONOU...
+
+
+
+
+
+
+  (
+      faço o 'define' inicial do array desse component 
+
+
+      por meio do 'constructor',
+
+
+      e aí 
+
+
+
+      depois 
+
+
+      COMPLEMENTO 
+
+
+      ESSE 
+      INITIATE INICIAL por 
+
+
+      meio 
+
+
+      do 
+
+      'ngOnInit()'...
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  --> OK... isso significa que, mais uma vez, dependemos do 
+
+
+
+
+  EMIT DE EVENTS LÁ NO 
+  'service'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NA VERDADE, UMA COISA DEVO FAZER DE FORMA DIFERENTE,
+
+INICIALIZAR 
+
+o 
+
+
+array de 'this.ingredients'
+
+lá 
+
+em 
+
+
+'ngOnInit',
+
+e não em 
+
+'constructor',
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { Ingredient } from '../shared/ingredient.model';
+import { ShoppingListService } from '../shoppingList.service';
+
+@Component({
+  selector: 'app-shopping-list',
+  templateUrl: './shoppingList.component.html',
+  styleUrls: ['./shoppingList.component.css'],
+})
+export class ShoppingListComponent implements OnInit {
+
+
+  ingredients: Ingredient[] = [];
+
+  selectedIngredient: Ingredient;
+
+  constructor(private shoppingListService: ShoppingListService) {
+
+      ///SAIU DAQUI
+  }
+
+  ngOnInit(): void {
+
+         this.ingredients = this.shoppingListService.getIngredients();  ///FOI PRA CÁ...
+    this.shoppingListService.ingredientsChanged.subscribe(
+      (ingredients) => {
+        this.ingredients = ingredients;
+      }
+    )
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

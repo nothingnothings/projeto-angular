@@ -1,0 +1,953 @@
+
+
+
+
+
+
+
+
+
+
+
+TERMINAMOS A FORMA BÁSICA DE NOSSA FORM,
+
+
+
+
+
+
+E A MINHA TENTATIVA DE VALIDATION FICOU ASSIM:
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-12">
+    <form (ngSubmit)="onSubmitForm()" [formGroup]="recipeForm">
+      <div class="row">
+        <div class="col-xs-12"></div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="name">Recipe Name</label>
+            <input
+              type="text"
+              id="name"
+              formControlName="recipeName"
+              class="form-control"
+            />
+          </div>
+        </div>
+      </div>
+      <span *ngIf="!recipeForm.get('recipeName')?.value &&
+      recipeForm.get('recipeName')?.touched"
+      [ngStyle]="{ color: 'red' }"
+      
+      >Recipe Name is required!</span>
+      <span *ngIf="(recipeForm.get('recipeName')?.errors?.['minlength']) &&
+      recipeForm.get('recipeName')?.touched"
+      [ngStyle]="{ color: 'red' }"
+      
+      >Recipe Name must have at least 3 characters!</span>
+      <div class="row" [ngStyle]="{ 'margin-top': '12px' }">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="imagePath">Image URL</label>
+            <input
+              type="text"
+              id="imagePath"
+              class="form-control"
+              formControlName="imagePath"
+            />
+          </div>
+        </div>
+      </div>
+      <span *ngIf="!recipeForm.get('imagePath')?.valid &&
+      recipeForm.get('imagePath')?.touched"
+      [ngStyle]="{ color: 'red' }"
+      
+      >Image URL is required!</span>
+      <div class="row" *ngIf="!editMode">
+        <div class="col-xs-12">
+          <img
+            *ngIf="recipeForm.get('imagePath')?.value"
+            [src]="recipeForm.get('imagePath')?.value"
+            class="img-responsive"
+            alt="image"
+          />
+        </div>
+      </div>
+      <div class="row" [ngStyle]="{ 'margin-top': '12px' }">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="desc">Description</label>
+            <textarea
+              type="text"
+              formControlName="description"
+              id="description"
+              rows="6"
+              class="form-control"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+      <span *ngIf="!recipeForm.get('description')?.value &&
+      recipeForm.get('description')?.touched"
+      [ngStyle]="{ color: 'red' }"
+      
+      >Description is required!</span>
+      <span *ngIf="(recipeForm.get('description')?.errors?.['minlength']) &&
+      recipeForm.get('description')?.touched"
+      [ngStyle]="{ color: 'red' }"
+      
+      >Your description must have at least 10 characters!</span>
+
+      <div class="row" formArrayName="ingredients" [ngStyle]="{ 'margin-top': '12px' }">
+        <div class="col-xs-12">
+          <label for="ingredients">Ingredients</label>
+          <!-- <div class="row" *ngFor="let recipeControl of getRecipeControls(); let index=index" > -->
+            <div class="row" *ngFor="let recipeControl of getIngredientControls(); let index=index" [ngStyle]="{'margin-bottom': '12px'}" >
+              <div formGroupName="{{index}}">
+              <div class="col-xs-8" >
+                <input 
+                type="text"
+                formControlName="ingredient"
+                class="form-control">
+              </div>
+              <div class="col-xs-2">
+                <input 
+                formControlName="amount"
+                [min]="1"
+                type="number"
+                class="form-control">
+              </div>
+            </div>
+              <div class="col-xs-2" [ngStyle]="{ 'display': 'flex', 'margin-bottom': '10px' }">
+                <button class="btn btn-primary" [ngStyle]="{ 'flex-grow': '9', 
+                  'margin-right': '12px'}" (click)="onAddIngredient()"  *ngIf="index === 0">Add</button>
+                <button class="btn btn-danger" [ngStyle]="{ 'flex-grow': '1' }" >X</button>
+              </div>
+              <!-- <span *ngIf="(recipeForm.get('ingredients.index')?.value?.ingredient.length > 3)"
+              [ngStyle]="{ color: 'red', 'margin-left': '14px' }"
+              
+              >Ingredients must have at least 3 characters!</span>  NÃO FUNCIONA -->
+          </div>
+          <!-- <span *ngIf="!recipeForm.get('ingredients')?.valid &&
+          recipeForm.get('ingredients')?.touched && !recipeForm.get('ingredients.index')?.controls?.amount?.errors?.['required']"
+          [ngStyle]="{ color: 'red' }"
+          
+          >Ingredient information is required!</span> -->
+  
+
+        </div>
+
+      </div>
+      <span *ngIf="!recipeForm.valid &&
+      recipeForm.get('imagePath')?.touched"
+      [ngStyle]="{ color: 'red' }"
+      
+      >Recipe data currently invalid!</span>
+      <div [ngStyle]="{ 'margin-top': '20px' }">
+        <button type="submit" 
+        class="btn btn-success" 
+
+        [ngStyle]="{ 'margin-right': '6px' }">Save</button>
+        <button type="button" class="btn btn-danger" [disabled]="!recipeForm.valid">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+
+
+
+import { Component, OnInit, Input } from '@angular/core';
+import {
+  Form,
+  FormArray,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  NgForm,
+  Validators,
+} from '@angular/forms';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { RecipeBookService } from 'src/app/recipeBook.service';
+import { Recipe } from '../recipe.model';
+
+@Component({
+  selector: 'app-recipe-edit',
+  templateUrl: './recipe-edit.component.html',
+  styleUrls: ['./recipe-edit.component.css'],
+})
+export class RecipeEditComponent implements OnInit {
+  editableRecipe: Recipe;
+  recipeId: number;
+  editMode: boolean = false;
+
+  recipeForm: FormGroup;
+
+  constructor(
+    private recipeBookService: RecipeBookService,
+    private route: ActivatedRoute,
+  ) {}
+
+  ngOnInit(): void {
+    // this.recipeForm = new FormGroup({
+    //   recipeName: new FormControl(null, [
+    //     Validators.required,
+    //     Validators.minLength(3),
+    //   ]),
+    //   imagePath: new FormControl(null, [Validators.required]),
+    //   description: new FormControl(null, [
+    //     Validators.required,
+    //     Validators.minLength(10),
+    //   ]),
+
+    //   ingredients: new FormArray([
+    //     new FormGroup({
+    //       ingredient: new FormControl(null, [Validators.required]),
+    //       amount: new FormControl(null, [
+    //         Validators.required,
+    //         Validators.min(1),
+    //       ]),
+    //     }),
+    //   ]),
+    // });
+
+    this.route.params.subscribe((params: Params) => {
+      this.recipeId = +params['id'];
+
+      this.editMode = params['id'] != null;
+
+
+      this.initForm();
+    });
+
+    // if (this.editMode) {
+    //   this.editableRecipe = this.recipeBookService.getRecipe(this.recipeId);
+    // }
+
+    // this.getRecipeFormGroups();
+
+   
+  }
+
+  onSubmitForm() {
+    console.log(this.recipeForm);
+    console.log(this.recipeForm.get('ingredients.0')?.value.ingredient);
+  }
+
+  onAddIngredient() {
+    const newFormGroup: FormGroup = new FormGroup({
+      ingredient: new FormControl(null, [
+        Validators.required,
+        Validators.minLength(5),
+      ]),
+      amount: new FormControl(null, [Validators.required, Validators.min(1)]),
+    });
+
+
+
+    ///usamos essa escrita typescript para COMUNICAR AO ANGULAR QUE ESSE coiso de 'ingredients' é um FORMARRAY (pq ele não vai saber isso de pronto)...
+    (<FormArray>this.recipeForm.get('ingredients')).push(newFormGroup);
+  }
+
+  getIngredientControls() {  ///// This adjustment is required due to the way TS works and Angular parses your templates (it doesn't understand TS there).
+    return (<FormArray>this.recipeForm.get('ingredients')).controls;
+  }
+
+
+
+
+
+
+
+
+  private initForm() {
+
+
+    if (this.editMode) {
+
+
+      this.editableRecipe = this.recipeBookService.getRecipe(this.recipeId);
+
+      let recipeIngredients = new FormArray([]);
+
+      if (this.editableRecipe['ingredients']) {///entra-se nesse block SE TIVERMOS UMA RECIPE, E SE ELA TIVER INGREDIENTS NO SEU INTERIOR (interior não é EMPTY)....
+       recipeIngredients = new FormArray(this.editableRecipe.ingredients.map(
+          (ingredient) => {
+            return new FormGroup({
+              'ingredient': new FormControl(ingredient.name, [Validators.required]),
+              'amount': new FormControl(ingredient.amount, [Validators.required, Validators.min(1)] )
+            })
+          }
+        ))
+      } else {
+        recipeIngredients = new FormArray([
+          new FormGroup({
+            'ingredient': new FormControl(null, [Validators.required]),
+            'amount': new FormControl(null, [
+              Validators.required,
+              Validators.min(1),
+            ]),
+          }),
+        ])
+      }
+
+
+
+
+      this.recipeForm = new FormGroup({
+        recipeName: new FormControl(this.editableRecipe.name, [
+          Validators.required,
+          Validators.minLength(3),
+        ]),
+        imagePath: new FormControl(this.editableRecipe.imagePath, [Validators.required]),
+        description: new FormControl(this.editableRecipe.description, [
+          Validators.required,
+          Validators.minLength(10),
+        ]),
+        'ingredients': recipeIngredients
+
+     
+      });
+    }   else  {
+
+      this.recipeForm = new FormGroup({
+        recipeName: new FormControl(null, [
+          Validators.required,
+          Validators.minLength(3),
+        ]),
+        imagePath: new FormControl(null, [Validators.required]),
+        description: new FormControl(null, [
+          Validators.required,
+          Validators.minLength(10),
+        ]),
+  
+        ingredients: new FormArray([
+          new FormGroup({
+            'ingredient': new FormControl(null, [Validators.required]),
+            'amount': new FormControl(null, [
+              Validators.required,
+              Validators.min(1),
+            ]),
+          }),
+        ]),
+      });
+
+
+
+    }
+
+
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+-------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... AGORA É HORA DE VER COMO O PROFESSOR ADICIONA VALIDATION AO NOSSO CÓDIGO...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ELE VAI COLOCANDO 'Validators'
+
+
+EM CADA 1 DE NOSSOS CONTROLS...
+
+
+
+
+
+
+
+
+----> PARA O NAME,
+
+O PROFESSOR QUER ADICIONAR UM BUILT-IN VALIDATOR DE 
+
+
+'Validators.required'
+
+
+
+
+
+
+
+
+
+
+
+
+
+fica tipo assim:
+
+
+
+
+      this.recipeForm = new FormGroup({
+        recipeName: new FormControl(null, [
+          Validators.required,
+          Validators.minLength(3),
+        ]),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO.... PARA OS INGREDIENTS,
+
+
+O NAME TAMBÉM DEVERÁ 
+
+SER REQUIRED,...
+
+
+
+
+
+
+
+
+-> MAS PARA __ O  'AMOUNT',
+
+VAMOS QUERER COLOCAR 2 VALIDATORS,
+
+
+
+1 PARA 
+
+
+
+'required',
+
+
+e outro para 
+
+'pattern',
+
+
+
+
+
+E COLOCAREMOS AQUELE PATTERN QUE BLOQUEIA "números inferiores a 1"...
+
+
+
+
+
+
+
+
+
+
+
+
+--> BASTA ESCREVER ASSIM:
+
+
+
+
+
+
+
+
+            'amount': new FormControl(null, [
+              Validators.required,
+              Validators.pattern(/^[1-9]+[0-9]*$/)
+            ]),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            -_> OK.... ESSE SERÁ O NOSSO PATTERN...
+
+
+
+
+
+            --> E NÓS EXECUTAMOS 'pattern' PQ ISSO AÍ ATUARÁ COMO UMA 'FACTORY',
+
+
+            ELE VAI NOS DAR O 'CONFIGURED VALIDATOR',
+
+
+            que aí 
+            
+
+            será usado pelo angular...
+
+
+
+
+
+
+            O CÓDIGO FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            import { Component, OnInit, Input } from '@angular/core';
+import {
+  Form,
+  FormArray,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  NgForm,
+  Validators,
+} from '@angular/forms';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { RecipeBookService } from 'src/app/recipeBook.service';
+import { Recipe } from '../recipe.model';
+
+@Component({
+  selector: 'app-recipe-edit',
+  templateUrl: './recipe-edit.component.html',
+  styleUrls: ['./recipe-edit.component.css'],
+})
+export class RecipeEditComponent implements OnInit {
+  editableRecipe: Recipe;
+  recipeId: number;
+  editMode: boolean = false;
+
+  recipeForm: FormGroup;
+
+  constructor(
+    private recipeBookService: RecipeBookService,
+    private route: ActivatedRoute,
+  ) {}
+
+  ngOnInit(): void {
+    // this.recipeForm = new FormGroup({
+    //   recipeName: new FormControl(null, [
+    //     Validators.required,
+    //     Validators.minLength(3),
+    //   ]),
+    //   imagePath: new FormControl(null, [Validators.required]),
+    //   description: new FormControl(null, [
+    //     Validators.required,
+    //     Validators.minLength(10),
+    //   ]),
+
+    //   ingredients: new FormArray([
+    //     new FormGroup({
+    //       ingredient: new FormControl(null, [Validators.required]),
+    //       amount: new FormControl(null, [
+    //         Validators.required,
+    //         Validators.min(1),
+    //       ]),
+    //     }),
+    //   ]),
+    // });
+
+    this.route.params.subscribe((params: Params) => {
+      this.recipeId = +params['id'];
+
+      this.editMode = params['id'] != null;
+
+
+      this.initForm();
+    });
+
+    // if (this.editMode) {
+    //   this.editableRecipe = this.recipeBookService.getRecipe(this.recipeId);
+    // }
+
+    // this.getRecipeFormGroups();
+
+   
+  }
+
+  onSubmitForm() {
+    console.log(this.recipeForm);
+    console.log(this.recipeForm.get('ingredients.0')?.value.ingredient);
+  }
+
+  onAddIngredient() {
+    const newFormGroup: FormGroup = new FormGroup({
+      'ingredient': new FormControl(null, [
+        Validators.required,
+        Validators.minLength(5),
+      ]),
+      'amount': new FormControl(null, [Validators.required, Validators.min(1)]),
+    });
+
+
+
+    ///usamos essa escrita typescript para COMUNICAR AO ANGULAR QUE ESSE coiso de 'ingredients' é um FORMARRAY (pq ele não vai saber isso de pronto)...
+    (<FormArray>this.recipeForm.get('ingredients')).push(newFormGroup);
+  }
+
+  getIngredientControls() {  ///// This adjustment is required due to the way TS works and Angular parses your templates (it doesn't understand TS there).
+    return (<FormArray>this.recipeForm.get('ingredients')).controls;
+  }
+
+
+
+
+
+
+
+
+  private initForm() {
+
+
+    if (this.editMode) {
+
+
+      this.editableRecipe = this.recipeBookService.getRecipe(this.recipeId);
+
+      let recipeIngredients = new FormArray([]);
+
+      if (this.editableRecipe['ingredients']) {///entra-se nesse block SE TIVERMOS UMA RECIPE, E SE ELA TIVER INGREDIENTS NO SEU INTERIOR (interior não é EMPTY)....
+       recipeIngredients = new FormArray(this.editableRecipe.ingredients.map(
+          (ingredient) => {
+            return new FormGroup({
+              'ingredient': new FormControl(ingredient.name, [Validators.required]),
+              // 'amount': new FormControl(ingredient.amount, [Validators.required, Validators.min(1)] )
+              'amount': new FormControl(ingredient.amount, [Validators.required, 
+                Validators.pattern(/^[1-9]+[0-9]*$/)] ) ////só vai deixar que números POSITIVOS (que não sejam 0 ou inferiores) possam ser inputtados....
+            })
+          }
+        ))
+      } else {
+        recipeIngredients = new FormArray([
+          new FormGroup({
+            'ingredient': new FormControl(null, [Validators.required]),
+            'amount': new FormControl(null, [
+              Validators.required,
+              // Validators.min(1), ////só vai deixar que números POSITIVOS (que não sejam 0 ou inferiores) possam ser inputtados...
+              Validators.pattern(/^[1-9]+[0-9]*$/)
+            ]),
+          }),
+        ])
+      }
+
+
+
+
+      this.recipeForm = new FormGroup({
+        'recipeName': new FormControl(this.editableRecipe.name, [
+          Validators.required,
+          Validators.minLength(3),
+        ]),
+        'imagePath': new FormControl(this.editableRecipe.imagePath, [Validators.required]),
+        'description': new FormControl(this.editableRecipe.description, [
+          Validators.required,
+          Validators.minLength(10),
+        ]),
+        'ingredients': recipeIngredients
+
+     
+      });
+    }   else  {
+
+      this.recipeForm = new FormGroup({
+        'recipeName': new FormControl(null, [
+          Validators.required,
+          Validators.minLength(3),
+        ]),
+        'imagePath': new FormControl(null, [Validators.required]),
+        'description': new FormControl(null, [
+          Validators.required,
+          Validators.minLength(10),
+        ]),
+  
+        'ingredients': new FormArray([
+          new FormGroup({
+            'ingredient': new FormControl(null, [Validators.required]),
+            'amount': new FormControl(null, [
+              Validators.required,
+              // Validators.min(1),
+              Validators.pattern(/^[1-9]+[0-9]*$/)
+            ]),
+          }),
+        ]),
+      });
+
+
+
+    }
+
+
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK... 
+
+
+
+
+
+--> DESABILITAMOS O BUTTON DE 'SAVE'
+
+SE 
+
+
+A FORM NÃO ESTIVER COMO 'VALID'...
+
+
+
+
+
+
+--> certo...
+
+
+
+
+
+
+
+
+--> nosso validation state está sendo levado em consideração..
+
+
+
+
+
+
+
+
+--> PARA  TERMINAR A  VALIDATION, VAMOS QUERER MARCAR 
+
+
+
+
+OS INPUTS INVÁLIDOS...
+
+
+
+
+
+
+
+
+
+
+input .ng-invalid.ng-touched {
+    border: 1px solid red;
+}
+
+
+
+
+
+
+textarea .ng-invalid-.ng-touched {
+        border: 1px solid red;
+}
+
+
+
+
+
+
+
+
+
+CERTO, TUDO ISSO EU JÁ HAVIA FEITO...
+
+
+
+
+
+
+
+
+FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+     <div>
+        <span
+          *ngIf="!recipeForm.get('ingredients')?.valid && recipeForm.touched"
+          [ngStyle]="{ color: 'red' }"
+          >Ingredient and amount fields are
+          required!
+        </span>
+      </div>
+      <div [ngStyle]="{ 'margin-top': '20px', 'display': 'flex' }">
+        <button
+          type="submit"
+          class="btn btn-success"
+          [ngStyle]="{ 'margin-right': '1rem' }"
+        >
+          Save
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          [disabled]="!recipeForm.valid"
+          [ngStyle]="{ 'margin-right': '1rem' }"
+        >
+          Cancel
+        </button>
+
+        <span
+          *ngIf="!recipeForm.valid && recipeForm.touched"
+          [ngStyle]="{ 'color': 'white', 'display': 'inline-block', 'padding': '6px', 'border-radius': '4px', 'border': '1px solid rgb(180, 180, 180)', 'background-color': 'rgb(48,48,48)', 'cursor': 'auto' }"
+          >Recipe data currently invalid!</span
+        >
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+certo... o que mais falta?
+
+
+
+
+
+
+
+
+
+--> FALTA O ACTUAL SUBMIT 
+
+DA FORM,
+
+
+
+E AÍ, COM ISSO,_ _ 
+
+
+
+CARREGAR UMA NOVA RECIPE,
+
+OU EDITAR UMA RECIPE QUE JÁ EXISTE NO NOSSO ARRAY DE 'RECIPES'...

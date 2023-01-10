@@ -1,0 +1,15 @@
+<hr />
+
+<input 
+placeholder="Insert Username" 
+type="text"
+class="form-control"
+[(ngModel)]="username"
+/>
+<p>{{ username }}</p>
+<button
+[disabled]="!username"
+(click)="onButtonClick()"
+>
+Reset User
+</button>

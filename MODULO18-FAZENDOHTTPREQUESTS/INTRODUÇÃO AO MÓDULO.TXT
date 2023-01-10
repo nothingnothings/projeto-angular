@@ -1,0 +1,135 @@
+
+
+
+
+
+
+UM NOVO IDE -->  O PROFESSOR TROCOU PARA O VISUAL STUDIO COde...
+
+
+
+
+
+
+
+
+
+--> os próximos módulos mudaram, pq 
+
+os standards mudaram...
+
+
+
+
+
+
+--> O PROJECT AINDA SERÁ O MESMO, FOLDER STRUCTURE SERÁ A MESMA, SÓ ALGUMAS VISUAL CHANGES PEQUENAS..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+HTTP E INTERAÇAÕ COM O BACKEND..
+
+
+
+
+
+
+
+
+
+
+
+
+--> ATÉ AGORA SÓ 
+
+
+
+MEXEMOS 'IN-BROWSER ONLY' -->  ISSO SIGNIFICA QUE TODA NOSSA DATA FICAVA ARMAZENADA 
+
+
+
+NO PRÓPRIO BROWSER,
+
+A DATA NÃO PERSISTIA,
+
+ETC ETC..
+
+
+
+
+
+
+
+
+
+--> UM TÍPICO REQUISITO DE UM APP QUE VOCÊ CONSTRÓI É QUE 
+
+
+SUA FRONTEND VAI SE COMUNICAR A UM SERVER,
+
+
+PARA SE COMUNICAR COM ELE,
+
+FETCHEAR DATA,
+
+
+FAZER QUALQUER COISA QUE 
+
+VOCe^
+
+QUER 
+FAZER NO SEU APP..
+
+
+
+
+
+
+
+
+--> VAMOS APRENDER A MANEIRA PELA QUAL O 
+
+
+
+ANGULAR TRABALHA COM UM BACKEND,
+
+
+TBM 
+
+COMO 
+
+
+
+É FEITA 
+
+A TRANSFORMAÇÃO DE DATA, QUANDO 
+
+
+
+FOR NECESSÁRIO.. (
+
+
+
+    VEREMOS COISAS QUE 
+
+
+    APRENDEMOS LÁ NOS MÓDULOS DE 'OBSERVABLES' (obter data de modo ASYNC)...
+
+
+    E 
+
+    'PIPES' (transformação)
+)

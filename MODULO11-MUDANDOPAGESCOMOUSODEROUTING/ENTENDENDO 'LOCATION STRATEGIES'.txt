@@ -1,0 +1,1170 @@
+
+
+
+
+
+
+
+
+
+QUASE ACABAMOS..
+
+
+
+
+
+
+---> FOI UM MÓDULO MT LONGO..
+
+
+
+
+
+
+
+
+
+-> UMA SECTION BEM LONGA 
+
+
+NESSE CURSO,
+
+
+
+MAS É IMPORTANTE,
+
+PQ 
+
+ROUTING É UMA 
+
+KEY TASK __ EM QUALQUER APP...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS SE DERMOS UMA OLHADA NO NOSSO APP,
+
+
+
+TEMOS UM
+
+
+PUNHADO DE ROUTES:
+
+
+
+
+
+
+  {
+    ///COM NESTED ROUTES...
+    path: 'servers', //localhost:4200/servers
+    component: ServersComponent, //servers.component.html
+    // canActivate: [AuthGuard], ////PROPRIEDADE_ USADA _ PARA DEFINIR 'GUARD' ( ou guards) PARA ESSA SUA ROUTE específica... --> e essas guards serão aplicadas a TODAS AS CHILD ROUTES DESSA ROUTE, também....
+    canActivateChild: [AuthGuard], ///propriedade usada para DEFINIR 'guard' EM TODAS AS CHILD ROUTES, MAS NÃO NA ROUTE inicial/parent... (deixa essa route 'desprotegida' em relaçaõ ao acesso do user)... 
+    
+    children: [
+      ///child routes...
+      {
+        path: ':id',
+        component: ServerComponent,
+        resolve: {server: ServerResolver}
+      },
+
+      {
+        path: ':id/edit',
+        canDeactivate: [CanDeactivateGuard],   ///GUARD meio complicada de definir... ver estrutura em 'can-deactivate-guard.service.ts'... ----> O COMPORTAMENTO DE 'leave' dessa página de 'edit-component' SERÁ DEFINIDO NA PRÓPRIA PAGE, em 'edit-component.ts' mesmo.... (e não no service de 'can-deactivate-guard.service.ts')..
+        component: EditServerComponent,
+      },
+    ],
+  },
+
+
+
+  {
+    path: 'not-found', 
+    component: GenericErrorPageComponent, //2.0   --> essa page será usada para TODO TIPO DE ERRORS POSSÍVEIS..
+    data: { //pass de DATA ESTÁTICA a essa nossa route...  --> isso nos deixa usar aquele component de 'GenericErrorPageComponent' MUITAS E MUITAS VEZES, DE FORMA REUTILIZÁVEL...
+      message: 'Page not found!'
+    } 
+},
+
+
+
+  // {
+  //   path: 'not-found',
+  //   component: PageNotFoundComponent,  //1.0 (menos versátil/reusable que a versão de cima)...
+  // },
+
+  {
+    ////////////ESSA ROUTE DEVE SER SEMPRE ___ ABSOLUTAMENTE A ÚLTIMA ROUTE DE NOSSO ARRAY DE ROUTES, para ser 'catch-all' de todas as routes que não encaixarem naquelas definidas logo acima....
+    path: '**', ///o double asterisk significa 'CATCH ALL THE ROUTES THAT ARE NOT DEFINED ABOVE' (ou seja, é usado com pages de erro 404)...
+    redirectTo: 'not-found', ///USADO _ PARA _ REDIRECIONAR nosso user quando ele digita paths que não existem na url bar... --> vamos redirecionar à page de 'PageNotFoundComponent', que é nossa page de 'erro 404, not found'...
+   
+   
+
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-->  MAS AQUI 
+
+
+HÁ UM DETALHE IMPORTANTE:
+
+
+
+
+esse 
+
+
+
+negócio 
+
+
+FUNCIONA BEM AQUI,
+
+NO NOSSO LOCAL SETUP,
+
+
+
+MAS 
+
+
+
+ISSO 
+
+
+
+__ NÃO É ALGO QUE VOCÊ DEVE 'TAKE FOR GRANTED'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SE VOCÊ TIVER UMA ROUTE COMO 
+
+
+ESSA,
+
+
+
+
+'localhost:4200/servers'
+
+
+
+
+E 
+
+
+VOCÊ ESTÁ HOSTEANDO ESSE NEGÓCIO EM UM _ SERVER DE VERDADE,
+
+
+NA WEB,
+
+
+
+ESSE SEU LINK PODE 
+
+
+
+__ NÃO FUNCIONAR 'DIRETO DA CAIXA'...  ----> ISSO PQ LÁ,
+
+
+
+
+
+NA WEB,
+
+
+
+AS 'ROUTES' 
+
+
+
+SÃO _ ALWAYS__ 
+
+
+
+
+
+___ ALWAYS__ 
+
+
+
+
+'PARSED' 
+
+
+
+PELO 
+
+
+
+SEU SERVER_ PRIMEIRAMENTE (
+
+    ou seja,
+
+
+
+
+    a route é PARSEADA __ ANTES_ PELO SERVER QUE 
+
+
+    HOSTEIA SEU APP...
+)
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, AQUI, NO NOSSO 'LOCAL ENVIRONMENT',
+
+
+
+
+NÓS _ TAMBÉM ESTAMOS USANDO 
+
+
+UM 
+
+'DEV SERVER',
+
+
+
+
+
+MAS 
+
+ESSE 
+
+SERVER 
+
+
+
+TEM UMA __ CONFIGURAÇÃO ESPECIAL,
+
+
+
+CONFIGURAÇÃO QUE 
+
+
+
+
+SEU SERVER 
+
+
+'DE VERDADE',
+
+'real life',
+
+
+
+
+__ TAMBÉM _ TEM DE POSSUIR... --> E VEREMOS MAIS DETALHES SOBRE 
+
+
+
+
+ISSO LÁ NA SECTION de 
+
+
+'DEPLOYMENT'
+
+do curso...
+
+
+
+
+
+
+
+
+
+
+
+
+--> O SERVER HOSTEANDO SEU ANGULAR SPA (single-page application)
+
+
+
+TEM DE 
+
+ESTAR CONFIGURADO 
+
+DE MODO 
+
+
+QUE 
+
+
+
+__ EM _ CASES DE 
+
+ERRORS 
+
+404,
+
+
+
+ELE _ VAI __ rETORNAR _ 
+
+
+
+O 'INDEX.HTML',
+
+
+
+
+OU SEJA,
+
+
+
+A FILE _ QUE __ COMEÇA 
+
+
+E QUE CONTÉM 
+
+
+SEU 
+
+
+ANGULAR APP.... --> MAS PQ ISSO? 
+
+
+
+
+
+
+--> É PQ 
+
+
+ESSE ARQUIVO 
+
+
+'INDEX.HTML'
+
+ 
+
+ SERÁ _USADO_  ATÉ MESMO _ 
+
+
+ PELAS PÁGINAS DE ERROR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ E COMO NOSSAS URLS SÃO SEMPRE 'PARSEADAS PELO SERVER, ANTES DE MAIS NADA',
+
+
+
+
+
+
+ _ E NÃO PELO ANGULAR,
+
+
+ VOCÊ 
+
+
+ TEM QUE 
+
+ _ASSEGURAR_ QUE 
+
+ O 
+
+
+
+ SERVER __ SEMPRE _ 
+
+ VAI RETORNAR 
+
+
+ O ARQUIVO 'index.html',
+
+
+
+ TANTO 
+
+
+ EM CASES DE SUCCESS COMO ERROR (Erro 404)...
+
+
+
+
+
+
+
+
+
+ ----> VOCê CERTAMENTE VAI QUERER QUE O 
+
+
+
+ ANGULAR 
+
+ 'TAKE OVER'
+
+
+
+
+ E ACTUALLY PARSEIE
+  
+  ESSA ROUTE... -> ENTRETANTO,
+
+
+
+  O ANGULAR 
+
+
+  NUNCA VAI 'HAVE A CHANCE'
+
+
+
+
+  SE 
+
+
+
+  __ O SERVER QUE VOCÊ DEIXAR __ HOSTEANDO ESSE APP 
+
+
+
+  DECIDIR 
+
+  '''NÃO, NÃO CONHEÇO ESSA ROUTE,
+
+  RECEBA ESSA PAGE DE ERRO 404 QUE NÃO TEM NADA A VER COM SEU 
+
+  APP 
+
+  ANGULAr'''...
+
+
+
+
+
+
+
+
+  -->´E POR ISSO 
+
+
+  QUE VOCÊ PRECISA _ ASSEGURAR_ QUE 
+
+
+
+  MESMO NOS CASES DE 
+
+  'ERRO 404'
+
+
+
+  SEU APP AINDA VAI RETORNAR 
+
+
+
+
+  O ARQUIVO 'index.html'......
+
+
+
+
+
+
+
+
+
+
+
+
+  E, SE POR ALGUMA RAZÃO,
+
+
+  VOCÊ 
+
+
+  NÃO CONSEGUIR 
+
+
+
+
+
+
+
+
+FAZER ISSO FUNCIONAR,
+
+
+
+
+
+
+_ OU SE  VOCÊ PRECISA 
+
+
+SUPORTAR 
+
+
+
+BROWSERS __ MUUITO VELHOS_,
+
+
+
+BROWSERS QUE 
+
+
+
+NÃO SÃO CAPAZES DE PARSEAR 
+
+
+PATHS COMO ESSES NO CLIENT (
+
+    que é o que o angular faz
+),
+
+
+
+
+
+
+VOCÊ 
+
+TEM UMA 
+
+
+APPROACH ALTERNATIVA A USAR 
+
+
+ESSAS 
+
+'NICE URLS'
+
+
+com formato 
+
+
+
+de coisas como 
+
+'localhost:4200/users'...
+
+
+
+
+
+
+
+
+
+
+
+--> se vocÊ tiver browsers MUITO VELHOS, ruins,
+
+
+
+
+VOCê PODE 'fallback'
+
+
+
+PARA UMA _ TECNICA ANTIGA 
+DO 
+ANGULAR,
+
+
+
+
+
+
+QUE __ ERA USADA HÁ ALGUNS ANOS ATRÁS... ------> 
+
+
+
+
+
+
+
+
+
+
+COM ESSE APPROACH,
+
+
+ADICIONAMOS '#'
+
+
+nas nossas routes...
+
+
+
+
+
+
+
+
+
+--> DEVEMOS VER COMO ENABLAR ESSA FEATURE/APPROACH/COMPORTAMENTO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR EXPLICA QUE PODEMOS ENABLAR ESSE COMPORTAMENTO 
+
+LÁ EM 
+
+
+
+'app-routing.module.ts'...
+
+
+
+
+
+
+--> OU SEJA,
+
+
+NO ROUTING MODULE EM QUE VOCÊ DEFINE SUAS ROUTES...
+
+
+
+
+
+
+-> LÁ,
+
+
+
+VOCÊ 
+
+
+
+PODE EDITAR AQUELE METHOD DE '.forRoot()',
+
+
+VISTO AQUI:
+
+
+
+
+
+
+
+
+
+
+
+@NgModule({
+
+imports: [
+    RouterModule.forRoot(appRoutes) ///ISSO É NECESSÁRIO. É isso que vai REGISTRAR NOSSAS ROUTES...
+],
+
+exports: [
+    RouterModule  ///TAMBÉM É NECESSÁRIO. PRECISAMOS DISSO PARA__ ACTUALLY __ CONSEGUIR USAR ESSE NOSSO 'MODULE' de routing lá em 'app.module.ts', no array de 'imports:[]' dele...
+]
+
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------> NESSE METHOD,
+
+
+PODEMOS ESCREVER ALGUMAS COISAS...
+
+
+
+
+
+
+
+
+
+
+
+
+-> PODEMOS PASSAR UM __ SEGUNDO __ PARÂMETRO,
+
+UM JAVASCRIPT OBJECT,
+
+
+
+
+CONFIGURANDO 
+
+
+
+ESSE SEU SETUP DAS ROUTES..
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------> ISSO QUER DIZER QUE, ALÉM DAS ROUTES EM SI,
+
+
+AGORA PODEMOS AS CONFIGURAR, ATRAVÉS DESSE CÓDIGO...
+
+
+
+
+
+
+
+
+--> fica tipo assim:
+
+
+
+
+
+
+
+
+
+
+@NgModule({
+
+imports: [
+    RouterModule.forRoot(appRoutes, {}) ///EIS O CÓDIGO EM QUESTÃO.
+],
+
+exports: [
+    RouterModule  
+]
+
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> A CONFIGURAÇÃO QUE 'AUMENTA COMPATIBILIDADE' 
+
+é adquirida através do add 
+
+
+da propriedade 
+
+'useHash',
+
+
+
+
+
+QUE __ DEVE __ SER CONFIGURADA COMO 'true' ( o default é false)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SE FIZERMOS ISSO,
+
+
+
+
+
+E RECARREGARMOS NOSSO APP,
+
+imediatamente constatamos que a url já mudou...
+
+
+
+
+
+
+
+
+
+
+--. ficou assim:
+
+
+
+
+
+
+
+
+
+
+localhost:4200/#/servers
+
+
+
+
+
+
+
+
+
+
+
+
+---------->  OU SEJA,
+
+
+
+UM '#' foi inserido NO MEIO DE NOSSA URL...
+
+
+
+
+
+
+
+
+
+
+
+--> E ISSO NÃO É NENHUM BUG... --> NAÕ É BUG 
+
+PQ ESSE 
+
+É 
+
+
+
+O 'HASH-MODE ROUTING'
+
+
+
+
+de que o professor falava ------> o professor diz que 
+
+
+o que 
+
+esse 
+
+'#'
+
+
+e
+ 
+
+ 'useHash: true'
+
+ VÃO FAZER __ 
+ 
+É 
+
+
+
+
+___INFORMAR __ O WEBSERVER DE QUE 
+
+
+
+
+'HEY, VOCê SÓ DEVE SE IMPORTAR 
+
+COM  A PARTE DESSA URL 
+
+
+__ QUE EXISTE_ ANTES__ DA HASH TAG''... ------> 
+
+
+
+
+
+
+
+isso quer dizer que 
+
+TODAS AS PARTES QUE VÊM __ APÓS __ 
+
+
+O 
+
+
+HASH TAG 
+
+
+
+__SERÃO _ COMPLETAMENTE _ 
+
+
+IGNORADAS 
+
+POR SEU WEB SERVER...
+
+
+
+
+
+
+
+
+-> SERÃO IGNORADAS POR SEU WEB SERVER...  ------> A VANTAGEM É QUE 
+
+
+
+
+SEU CÓDIGO 
+
+
+
+E PÁGINAS DE ERROR _ DO ANGULAR_ 
+
+
+
+SERÃO _ EXECUTADAS _ 
+
+ATÉ MESMO __ 
+
+
+EM SERVERS 
+
+DESCONFIGURADOS,
+
+
+SERVERS QUE _ NÃO RETORNAM _ 
+
+
+
+
+
+O 'index.html'
+
+EM CASO 
+
+DE ERRORS 404... -----> ISSO PQ 
+
+
+
+
+
+
+AÍ OS SERVERS VÃO PASSAR A SE PREOCUPAR APENAS __ COM AS PARTES QUE 
+EXISTEM 
+
+
+__APÓS _ o '/#/',
+
+e não ANTES....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> E A PARTE DEPOIS DE '/#/' 
+
+
+VAI PASSAR 
+
+A SER 
+
+PARSEADA POR SEU CLIENT,
+
+PELO ANGULAR...
+
+
+
+
+
+
+
+
+
+
+
+
+-> essa é a solução que você deve usar 
+
+SE NÃO CONSEGUIR FAZER 
+
+O OUTRO APPROACH DE 'PAGES 404'
+
+funcionar..
+
+
+
+
+
+
+
+
+--> MAS O PROFESSOR 
+
+
+INDICA QUE 
+
+DEVEMOS USAR 
+
+
+O APPROACH DAS ROUTES MAIS 'PRETTY',
+
+
+QUE USA 
+
+
+O 
+
+
+'HTML HISTORY MODE' (esse é o nome dessa config),
+
+
+
+
+
+
+COM 
+
+
+
+
+
+AS ROUTES NORMAIS DE 
+
+'/servers/serverId/etc etc'....
+
+
+
+
+
+
+
+
+--. O PROFESSOR REVERTE À VERSÃO ANTIGA,
+
+
+
+
+que nos dá CLEANER ROUTES,
+
+que possuem uma aparência mt melhor,
+
+e se 
+
+assemelham a outros 
+
+
+
+
+webApps...

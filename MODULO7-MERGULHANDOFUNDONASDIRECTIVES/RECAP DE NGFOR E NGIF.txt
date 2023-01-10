@@ -1,0 +1,1137 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> o professor preparou um pequeno projeto para nós...
+
+
+
+
+
+
+
+
+
+
+-> podemos começar um novo projeto com ng new,
+
+
+
+
+e aí com toda lenga lenga...
+
+
+
+
+
+
+
+
+
+
+-----> É UM PROJETO SUPER SIMPLES... --> TEMOS UM BUTTON, O QUAL PODEMOS TOGGLAR 
+
+PARA 
+
+'APENAS VER ODD NUMBERS '(only show odd numbers)
+
+
+
+
+
+
+
+
+
+-> mas agora, no presente,
+
+
+NÃO VEMOS NENHUM NUMBER,
+
+
+
+PQ 
+
+
+
+__ EMBORA _ EU TENHA UM ARRAY DE NUMBERS NO CCOMPONENT 'app',
+
+
+lá em 
+
+'app.component.ts',
+
+
+
+
+EU _ NÃO ESTOU OS OUTPUTTANDO..
+
+
+
+
+
+
+
+
+--> mas já temos uma list...
+
+
+
+
+
+
+
+--> professor diz que devemos 'ir em frente' 
+
+
+
+E ADICIONAR um NGFOR 
+
+no list element,
+
+para 
+aí outputtar 
+essa list de elementos,
+
+1 
+
+elemento 'li' para 
+
+cada 
+
+
+
+elemento 
+
+
+no array do component 'app'...
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <button class="btn btn-primary"
+      (click)="onlyOdd = !onlyOdd">Only show odd numbers</button>
+      Only show odd numbers</button>
+      <br><br>
+      <ul class="list-group">
+        <li class="list-group-item"
+        *ngFor=""
+        >
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+E ASSIM:
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  numbers = [1, 2, 3, 4, 5];
+
+  onlyOdd = false;
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+--> colocamos um ngFor para ir por dentro de toods 'number' dentro de 'numbers'...
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <button class="btn btn-primary"
+      (click)="onlyOdd = !onlyOdd">Only show odd numbers</button>
+      Only show odd numbers</button>
+      <br><br>
+      <ul class="list-group">
+        <li class="list-group-item"
+        *ngFor="let number of numbers;"
+        >
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <button class="btn btn-primary"
+      (click)="onlyOdd = !onlyOdd">Only show odd numbers</button>
+      <br><br>
+      <ul class="list-group">
+        <li class="list-group-item"
+        *ngFor="let number of numbers;"
+        >
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PROFESSOR DIZ QUE NÃO PRECISAMOS DO 'INDEX',
+
+que só vamos querer o number,
+
+e aí o outputtar  tipo assim:
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <button class="btn btn-primary"
+      (click)="onlyOdd = !onlyOdd">Only show odd numbers</button>
+      <br><br>
+      <ul class="list-group">
+        <li class="list-group-item"
+        *ngFor="let number of numbers;"
+        >
+        {{number}}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+-----------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+-----> COM ISSO, ESTAREMOS OUTPUTTANDO 
+
+TODOS OS NUMBERS DA LIST (tanto os odd como os even)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS O BUTTON DE 'only show odd numbers'
+
+
+AINDA NÃO FAZ COISA ALGUMA...
+
+
+
+
+
+
+
+
+
+
+
+--> vamos querer que ele REMOVA DO DOM 
+
+
+OS ELEMENTOS QUE SEJAM 'even',
+
+basicamente...
+
+
+
+
+
+
+
+
+
+
+--> NO PRESENTE, ALGO REALMENTE ACONTECE SE CLICAMOS NESSE BUTTON,
+
+
+é 
+
+executado este código:
+
+
+
+
+
+(click)="onlyOdd = !onlyOdd"
+
+
+
+
+
+
+
+
+
+
+
+-> o que esse código faz, essencialmente, é definir a PROPRIEDADE 
+
+
+'onlyOdd',
+
+lá em 
+
+
+
+'app.component.ts',
+
+como visto aqui:
+
+
+
+''  onlyOdd = false;''' 
+
+
+
+
+
+
+
+COMO 
+
+
+
+SENDO UM VALUE __ OPOSTO _ AO QUE ERA ANTERIORMENTE (por meio do bang operator)....
+
+
+
+
+
+
+
+
+
+
+
+--> pelo visto, podemos RODAR QUALQUER CÓDIGO TYPESCRIPT dentro de 
+
+
+(xxxEvent)="códigoTypescript"
+
+
+
+
+
+
+
+
+
+
+
+
+-----> CERTO, ISSO SIGNIFICA QUE AQUI ESTAMOS DANDO 'TOGGLE' em um button, por meio 
+
+
+do set de true/false nesse state....
+
+
+
+
+
+
+
+
+
+
+-> MAS O PROBLEMA É QUE __ ESSA INFO _ DE 
+
+
+
+
+'onlyOdd'
+
+NÃO ESTÁ SENDO UTILIZADA PARA COISA ALGUMA...
+
+
+
+
+
+
+
+
+-> DEVEMOS A UTILIZAR...
+
+
+
+
+
+
+
+
+
+
+
+--> O QUE O PROFESSOR DIZ É QUE 
+
+PODERÍAMOS 
+
+
+
+TENTAR__ 
+
+
+
+COLOCAr 
+
+'*ngIf="" '
+
+
+
+
+
+DENTRO __ 
+
+DESSE COMPONENT LI,
+
+
+
+LOGO ABAIXO DE 
+
+'ngFor',
+
+tipo assim:
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <button class="btn btn-primary"
+      (click)="onlyOdd = !onlyOdd">Only show odd numbers</button>
+      <br><br>
+      <ul class="list-group">
+        <li class="list-group-item"
+        *ngFor="let number of numbers;"
+        *ngIf=""
+        >
+        {{number}}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> nesse 'ngIf',
+
+checaríamos 
+
+
+SE CADA NUMBER É REALMENTE 'odd' ou não....
+
+
+
+
+
+
+
+-> para fazer isso, basta executar o código de 
+
+
+
+
+
+
+
+x % 2 == 0;  ----> ISSO CHECA SE É 'EVEN'...
+
+
+
+
+
+
+
+eX:
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <button class="btn btn-primary"
+      (click)="onlyOdd = !onlyOdd">Only show odd numbers</button>
+      <br><br>
+      <ul class="list-group">
+        <li class="list-group-item"
+        *ngFor="let number of numbers;"
+        *ngIf="number % 2 == 0;"
+        >
+        {{number}}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS ESTE CÓDIGO AQUI:
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <button class="btn btn-primary"
+      (click)="onlyOdd = !onlyOdd">Only show odd numbers</button>
+      <br><br>
+      <ul class="list-group">
+        <li class="list-group-item"
+        *ngFor="let number of numbers;"
+        *ngIf="number % 2 == 0;"
+        >
+        {{number}}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+NÃO DEU CERTo..
+
+
+
+
+
+
+--> RECEBI ESTE ERRO:
+
+
+
+Error: src/app/app.component.html:10:16 - error TS2551: Property 'number' does not exist on type 'AppComponent'. Did you mean 'numbers'?
+
+
+
+
+
+
+
+
+
+
+
+---> ou seja,
+
+não é possível passar aquele 'number' como referencia/valor a esse 'ngIF'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS PQ ISSO ACONTECEU?
+
+
+
+
+
+
+
+
+
+
+
+
+--. ACONTECEU PQ __ É IMPOSSÍVEL_ _TER DE MAIS 
+
+1 
+
+'STRUCTURAL DIRECTIVE'
+
+
+EM 1 MESMO ELEMENT...
+
+
+
+
+
+
+
+------> VOCê DEVE ESCOLHER APENAS 1 
+
+
+
+STRUCTURAL DIRECTIVE POR ELEMENT... 
+
+
+
+
+
+
+
+
+
+-----> mas __ NÃO PRECISAMOS DE 2 STRUCTURAL DIRECTIVES NESSE MESMO 
+
+
+ELEMENT,
+
+podemos o alterar 
+
+
+
+de forma diferente... -> a forma que o professor usa 
+É 
+
+
+CRIAR 2 ARRAYS, 1 DE 'numbers' e outro de 'oddNumbers'....
+
+
+
+
+
+
+
+
+
+------> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+ele escreve tipo assim:
+
+
+
+
+
+
+ import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  // numbers = [1, 2, 3, 4, 5];  ////não funciona... vocÊ não pode usar 2 structural directives em 1 mesmo element/component...
+
+  oddNumbers = [1, 3, 5];
+
+  evenNumbers = [2, 4];
+
+  onlyOdd = false;
+
+}
+
+
+
+
+
+
+
+--------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+---------> ESSE BEHAVIOR NÃO É NADA ÓPTIMO --------> NA SECTION DE 'PIPES',
+
+
+VAMOS APRENDER __ SOBRE__ COMO PODEMOS 'DYNAMICALLY FILTER'
+
+UM ARRAY, POR EXEMPLO..
+
+
+
+
+
+
+
+
+
+
+----> ok.. 
+
+
+dividimos essa list em 2, basicamente..
+
+
+
+
+
+
+
+
+
+-----> AÍ AGORA VAMOS 
+
+
+ESCREVER ASSIM:
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <button class="btn btn-primary"
+      (click)="onlyOdd = !onlyOdd">Only show odd numbers</button>
+      <br><br>
+      <ul class="list-group">
+        <li class="list-group-item"
+        *ngFor="let odd of oddNumbers;"
+        >
+        {{odd}}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA FAREMOS A MESMA COISA PARA OS 'EVEN NUMBERS'...
+
+
+
+
+
+ex:
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <button class="btn btn-primary" (click)="onlyOdd = !onlyOdd">
+        Only show odd numbers
+      </button>
+      <br /><br />
+      <ul class="list-group">
+        <li class="list-group-item" *ngFor="let odd of oddNumbers">
+          {{ odd }}
+        </li>
+
+        <li class="list-group-item" *ngFor="let even of evenNumbers">
+          {{ even }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> certo... AGORA PARA DISPLAYAR _ APENAS 
+
+1 
+
+
+DOS 2 ,
+
+
+
+
+OU OS 
+
+LIST ITEMS DE 'ODD' OR DE 'EVEN',
+
+
+PODEMOS SIMPLESMENTE 
+
+
+OS WRAPPAR EM UMA DIV...
+
+
+
+
+
+
+provavelmente será 
+
+aquela 
+
+
+
+
+div com 
+
+
+
+'<ng-template>',
+
+
+que o professor usará com 
+
+
+O NGIF + else...
+
+
+
+
+
+
+
+
+
+--> NÃO, MAS O PROFESSOR NÃO USOU 'ng-template' (pq isso por alguma razão não funciona com 'ngFor' no interior do template)...
+
+
+
+
+
+
+
+
+
+
+
+
+FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <button class="btn btn-primary" (click)="onlyOdd = !onlyOdd">
+        Only show odd numbers
+      </button>
+      <br /><br />
+      <ul class="list-group">
+        <div *ngIf="onlyOdd">
+        <li class="list-group-item" *ngFor="let odd of oddNumbers">
+          {{ odd }}
+        </li>
+      </div>
+      <div *ngIf="!onlyOdd">
+        <li class="list-group-item" *ngFor="let even of evenNumbers">
+          {{ even }}
+        </li>
+      </div>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> E ISSO REALMENTE FUNCIONA:
+
+
+
+
+
+
+QUANDO CLICAMOS NO BUTTON,
+
+ELE ALTERNA 
+
+ENTRE 
+
+
+
+'odd numbers' e 'even numbers'...
+
+
+
+
+
+
+
+
+
+
+
+-----------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> podemos togglar entre as 2 lists....
+
+
+
+
+
+
+
+--> ok ,
+
+NADA DE NOVO, TUDO QUE JÁ APRENDEMOS...
+
+
+
+
+SÃO 
+
+OS 
+
+2 STRUCUTURAL DIRECTIVES QUE 
+
+JÁ HAVÍAMOS USADO...
+
+
+
+
+
+
+--> É ASSIM QUE POEDMOS OS UTILIZAR,
+
+E AGORA SABEMOS QUE 
+
+
+
+
+__ NÃO PODEMOS USAR AMBOS EM 1 MESMO ELEMENT...
+
+
+
+
+
+
+
+
+
+--> ANTES DE VERMOS MAIS SOBRE ISSO,
+
+DEVEMOS DAR UMA OLHADA NOS 
+
+2 
+
+'attribute directives'
+
+mais importantes que vimos até agora (que provavelmente são 'ngStyle' e 'ngClass'...)...

@@ -1,0 +1,471 @@
+
+
+
+
+
+
+
+
+
+
+
+---> ACABAMOS COM A PARTE DO 'RECIPEBOOK'..
+
+
+
+
+
+
+
+
+--> AGORA É HORA DE TRABALHAR COM A SHOPPING LIST...
+
+
+
+
+
+
+
+
+
+
+-> SE OBSERVARMOS NOSSAS FILES,
+
+
+
+
+
+NO ARQUIVO HTML,
+
+
+
+JÁ ADICIONAMOS ALGUM CONTEÚDO AO TEMPLATE DE 
+
+
+
+'shoppingList'..
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-10">
+      <app-shop-list-edit></app-shop-list-edit>
+      <hr>
+      <p>The List!</p>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS É MELHOR TROCAR ESSE '<p>'
+
+
+POR UMA '<ul>',
+
+
+
+
+FAZER TIPO ASSIM:
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-10">
+      <app-shop-list-edit></app-shop-list-edit>
+      <hr>
+      <ul class="list-group"></ul>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+-> DENTRO DESSA LIST, VAMOS QUERER 'CLICKABLE LIST ITEMS',
+
+
+por isso adicionamos ANCHOR TAGS 
+
+
+APONTANdo a um dummy...
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-10">
+      <app-shop-list-edit></app-shop-list-edit>
+      <hr>
+      <ul class="list-group">
+      <a href="#" class="list-group"></a>
+      </ul>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+-> COLOCAMOS A CLASS DE 'list-group'
+
+DO BOOTSTRAP __ PARA __ DAR A APARÊNCIA DE QUE ISSO É '''1 ITEM EM UMA UNORDERED LIST''...
+
+
+
+
+
+ex:
+
+
+
+<div class="row">
+  <div class="col-xs-10">
+      <app-shop-list-edit></app-shop-list-edit>
+      <hr>
+      <ul class="list-group">
+      <a href="#" class="list-group-item"></a>
+      </ul>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+O PROFESSOR ENTÃO COLOCA UM INLINE STYLE DE 'cursor: pointer'
+
+PARA __ FINGIR__ QUE 
+
+
+
+ESSE NEGÓCIO É UM BUTTON:
+
+
+
+
+
+
+
+
+<a href="#" class="list-group-item" style="cursor: pointer"></a>
+
+
+
+
+
+
+
+
+
+FICA ITPO ASSIM:
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-10">
+      <app-shop-list-edit></app-shop-list-edit>
+      <hr>
+      <ul class="list-group">
+        <a href="#" class="list-group-item" style="cursor: pointer"></a>
+
+
+      </ul>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAIS TARDE VAMOS USAR 
+
+
+
+ESSE ELEMENTO COMO UM 'BUTTON',
+
+
+
+e é por isso que o professor __ REMOVE__ 
+
+
+O 'href',
+
+
+
+
+PQ ELE VAI LEVAR A COMPORTAMENTOS INDESEJADOS..
+
+
+
+
+eX:
+
+
+
+
+
+
+
+<div class="row">
+  <div class="col-xs-10">
+      <app-shop-list-edit></app-shop-list-edit>
+      <hr>
+      <ul class="list-group">
+        <a class="list-group-item" style="cursor: pointer"></a>
+
+
+      </ul>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+-------------------------------------
+
+
+
+
+
+
+
+
+OK...ESSE SERÁ 1 ÚNICO ELEMENTO NA NOSSA SHOPPING LIST..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS PARA 
+
+DISPLAYARMOS ALGUMA COISA AQUI,
+
+
+PRECISAMOS OBRIGATORIAMEWNETE DE UMA 'LIST OF INGREDIENTS'...
+
+
+
+
+
+
+
+
+
+
+--> O QUE O PROFESSOR FARÁ, POR ENQUANTO,
+É ADICIONAR UMA PROPRIEDAED 
+
+DE 
+
+'ingredients'
+
+LÁ EM 
+
+'shoppingList',
+
+
+
+
+
+
+
+no arquivo typescript,
+
+
+
+dentro do component,
+
+
+
+
+
+
+E SERÁ INICIALMENTE UM EMPTY ARRAY...
+
+
+
+
+
+
+--> MAS AGORA, EXATAMENTE COMO 'recipe',
+
+
+VAMOS _ USAR_ INGREDIENTS UM MONTE 
+
+
+AO LONGO DE NOSSO APP..
+
+
+
+
+
+
+
+--> POR ISSO PRECISAMOS CRIAR UM MODEL DE 'ingredient'...
+
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+export class Ingredient {
+  constructor(public name: string, public quantity: number) {
+
+
+  }
+
+
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+E AÍ ASSIM:
+
+
+
+
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { Ingredient } from './ingredient.model';
+
+@Component({
+  selector: 'app-shopping-list',
+  templateUrl: './shoppingList.component.html',
+  styleUrls: ['./shoppingList.component.css'],
+})
+export class ShoppingListComponent implements OnInit {
+  ingredients: Ingredient[] = [];
+
+  constructor() {}
+
+  ngOnInit(): void {}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> CERTO....
+
+
+
+
+
+
+
+
+
+--> CRIEI ESSE MODEL..
+
+
+
+
+
+
+coloquei um 'name' e 'quantity' para cada objeto 'Ingredient'...

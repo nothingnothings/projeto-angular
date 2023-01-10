@@ -1,0 +1,1100 @@
+ 
+
+
+
+
+
+
+
+
+
+ ----> ok.... NÓS ADICIONAMOS NAVIGATION AO NOSSO PROJECT 
+
+
+
+
+
+
+ nas últimas aulas...
+
+
+
+
+
+
+
+
+
+
+ isso é visto no código do 'app.component.html':
+
+
+
+
+
+
+
+
+
+ <div class="container"> <!-- COM ROUTING-->
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="nav nav-tabs">
+        <!-- <li role="presentation" class="active"><a href="#">Home</a></li>  ///LINKS _ COM PERDA _ DE STATE, pq um NOVO HTML É ENVIADO QUANDO É EXECUTADA ESSA ANCHOR TAG..., OU SEJA, SEM O USO DO ATTRIBUTE DE 'routerLink'....
+
+        <li role="presentation" class="active"><a href="#">Servers</a></li>
+        <li role="presentation" class="active"><a href="#">Users</a></li> -->
+        <!-- <li role="presentation" class="active"><a routerLink="/">Home</a></li> USAMOS 'routerLink' para conseguir DEFINIR LINKS NO NOSSO APP__ QUE NÃO VÃO FAZER O USER PERDER O STATE.... -->
+        <li role="presentation" class="active"><a routerLink="/">Home</a></li> 
+        <!-- <li role="presentation" class="active"><a routerLink="/servers">Servers</a></li>  versão SIMPLIFICADA DO WRITE DE 'routerLink'.... é MELHOR USAR ESSA VERSÃO VISTA LOGO ABAIXO, com essa sintaxe de 'property binding', pq ela te deixa EDITAR COM _ MAIOR CONTROLE__ TODOS _OS SEGMENTS DE SEU PATH/url/route... -->
+        <li role="presentation" class="active"><a [routerLink]="['/servers']">Servers</a></li>
+        <li role="presentation" class="active"><a [routerLink]="['/users']">Users</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <!-- <app-home></app-home> --> 
+      <router-outlet></router-outlet><!-- É NESSE SLOT DE 'router-outlet' em que SERÃO OUTPUTTADOS/RENDERIZADOS os page-components de nossas ROUTES, a partir do path/route digitado na URL... -->
+    </div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS 1 PROBLEMA É QUE 
+
+
+
+
+EMBORA ISSO FUNCIONE,
+
+
+
+NÓS __ NAÕ 
+
+TEMOS 
+
+ 
+
+ INDICAÇÃO VISUAL ALGUMA 
+
+
+
+
+ __ SOBRE_ 
+
+
+
+
+ 'QUAL É A CURRENTLY ACTIVE ROUTE'....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> SERIA NICE SE 
+
+
+
+ A TAB 
+
+ de cima 
+
+
+ FOSSE ALTERADA AO SER SELECIOANDA UMA 'ROUTE.'.. -----> É CLARO QUE 
+
+
+
+ ISSO É SÓ UMA COISA 
+
+
+ 'CSS',
+
+
+
+
+
+
+
+
+
+
+
+
+ PQ SE CHECARMOS O 'app.component.html',
+
+
+
+
+
+
+ PERCEBEMOS ESTE CÓDIGO AQUI:
+
+
+
+
+  <li role="presentation" class="active"><a routerLink="/">Home</a></li> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ESSE ELEMENTO TEM UMA CLASS DE 'active'...
+
+
+
+
+
+
+
+
+
+
+
+--> é essa class de 'active'
+
+QUE DETERMINA SE ESSE LINK
+
+
+
+_FICA ACTIVE OU NÃO....
+
+
+
+
+
+
+
+
+
+
+
+
+-> SERIA NICE SE CONSEGUISSEMOS DEFINIR _ DINAMICAMENTE_ 
+
+
+ESSA CLASS 
+
+
+NOS NOSSOS COMPONENTS...
+
+
+
+
+
+
+
+
+
+
+--> ok, mas como podemos fazer isso? 
+
+
+
+
+
+
+
+
+
+
+-> A PRIMEIRA COISA QUE DEVEMOS FAZER É 
+
+REMOVER 
+
+'class="active" ' 
+
+
+
+
+desse elemento aí...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS COMO __ PODEMOS DEFINIR ESSA CLASS DINAMICAMENTE?
+
+
+
+
+BEM, O ANGULAR NOS DÁ UMA 
+
+
+
+DIRECTIVE _ ESPECÍFICA __ PARA ESSE TRABALHO....
+
+
+
+
+
+
+
+
+
+--> É A DIRECTIVE de 
+
+
+
+
+'routerLinkActive'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> CERTO... E A COISA NICE/CONVENIENTE _ SOBRE _eSSA DIRECTIVE É QUE PODEMOS 
+
+
+
+A _ ADICIONAR _ 
+
+
+
+
+A UM 'WRAPPING ELEMENT' (como a um LIST ITEM QUE SEGURA UMA ANCHOR TAG, como é o nosso caso )
+
+
+
+
+
+
+
+_ ou então _ AO ELEMENT EM SI... (o link em si, a anchor tag em si)...
+
+
+
+
+
+
+
+
+O CÓDIGO FICA TIPO ASSIM:
+
+
+
+
+
+  <li role="presentation"><a routerLink="/" routerLinkActive="" >Home</a></li> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ---> quando vocÊ fizer isso,
+
+  escrever essa directive,
+
+
+
+
+
+
+  ela 
+
+
+  vai 
+
+
+
+
+  ATTACHAR_ A CLASS__ QUE VOCê DEFINIR 
+
+
+  NO VALUE da directive....
+
+
+
+
+
+
+
+  tipo assim:
+
+
+
+
+    <li role="presentation"><a routerLink="/" routerLinkActive="active" >Home</a></li> 
+
+
+
+
+
+
+
+
+
+
+
+---> ok, isso significa que ela vai 'togglar' a class de 'active', on or off,
+
+
+a depender se estamos ou não na page/component desse 
+
+
+
+link...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+<div class="container"> <!-- COM ROUTING-->
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="nav nav-tabs">
+        <!-- <li role="presentation" class="active"><a href="#">Home</a></li>  ///LINKS _ COM PERDA _ DE STATE, pq um NOVO HTML É ENVIADO QUANDO É EXECUTADA ESSA ANCHOR TAG..., OU SEJA, SEM O USO DO ATTRIBUTE DE 'routerLink'....
+
+        <li role="presentation" class="active"><a href="#">Servers</a></li>
+        <li role="presentation" class="active"><a href="#">Users</a></li> -->
+        <!-- <li role="presentation" class="active"><a routerLink="/">Home</a></li> USAMOS 'routerLink' para conseguir DEFINIR LINKS NO NOSSO APP__ QUE NÃO VÃO FAZER O USER PERDER O STATE.... -->
+        <li role="presentation" class="active"><a routerLink="/" routerLinkActive="active">Home</a></li>
+        <!-- 'routerLinkActive' é uma directive que ATIVA o style que vocÊ definiu no value dela, se detectar que estamos no mesmo component/page descrito em 'routerLink'...--> 
+        <!-- <li role="presentation" class="active"><a routerLink="/servers">Servers</a></li>  versão SIMPLIFICADA DO WRITE DE 'routerLink'.... é MELHOR USAR ESSA VERSÃO VISTA LOGO ABAIXO, com essa sintaxe de 'property binding', pq ela te deixa EDITAR COM _ MAIOR CONTROLE__ TODOS _OS SEGMENTS DE SEU PATH/url/route... -->
+        <li role="presentation" class="active"><a [routerLink]="['/servers']" routerLinkActive="active">Servers</a></li>
+        <li role="presentation" class="active"><a [routerLink]="['/users']" routerLinkActive="active">Users</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <!-- <app-home></app-home> --> 
+      <router-outlet></router-outlet><!-- É NESSE SLOT DE 'router-outlet' em que SERÃO OUTPUTTADOS/RENDERIZADOS os page-components de nossas ROUTES, a partir do path/route digitado na URL... -->
+    </div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+assim:
+
+
+
+
+        <li role="presentation" class="active"><a routerLink="/" routerLinkActive="active">Home</a></li>
+        <li role="presentation" class="active"><a [routerLink]="['/servers']" routerLinkActive="active">Servers</a></li>
+        <li role="presentation" class="active"><a [routerLink]="['/users']" routerLinkActive="active">Users</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo, mas aqui temos um problema...
+
+
+
+
+-> SE USAMOS BOOTSTRAP,
+
+
+só escrever esses 'routerLinkActive'
+
+
+nas nossas ANCHOR TAGS NÃO SERÁ SUFICIENTE/SERÁ INCOMPATÍVEL..
+
+
+
+
+
+
+--> PARA __ O BOOTSTRAP,
+
+É NECESSÁRIO COLOCAR 
+
+
+ESSE 'routerLinkActive'
+
+
+_ NOS _ <li> elements,
+
+e não 
+
+
+na anchor tag....
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE ESCREVEMOS ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <li role="presentation" routerLinkActive="active"><a routerLink="/">Home</a></li>
+        <li role="presentation" routerLinkActive="active"><a [routerLink]="['/servers']" >Servers</a></li>
+        <li role="presentation" routerLinkActive="active"><a [routerLink]="['/users']" >Users</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+        -> certo, eu fiz assim, mas meus styles de 'active' ainda estão bugados.... (
+
+            o link 
+
+            de 
+
+            'home' 
+
+            NUNCA DEIXA DE FICAR SELECIONADO.... --> acho que é pq 
+
+
+            o 
+
+
+            path de '/' tecnicamente é 'COMPARTILHADO' por todos os outros paths...
+        )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR EXPLICA QUE o 
+
+
+
+
+'routerLinkActive'
+
+
+VAI DEPENDER _ DE QUAL ESTILO CSS/PACKAGE CSS VOCê ESTÁ USANDO.... (
+
+
+
+    você pode especificar qualquer class que vocÊ qusier,
+
+
+    para togglar com essa directive...
+)
+
+
+
+
+
+
+
+
+
+
+
+OK.... --. 
+
+
+
+
+O PROFESSOR ENTÃO FALA DESSE 'BUG'
+
+
+do 'home'...
+
+
+
+
+
+
+
+
+
+----> O HOME SEMPRE FICA MARCADO COMO 'ACTIVE'... --> significa que 
+
+isso não está funcionando corretamente...
+
+
+
+
+
+
+
+
+
+
+--> ISSO ACONTECE DEVIDO _ AO _ 
+COMPORTAMENTO 
+
+
+DA DIRECTIVE DE 
+
+
+'routerLinkActive'..
+
+
+
+
+
+
+
+
+
+
+--> o que faz essa directive, exatamente?
+
+
+
+
+
+
+-> ela:
+
+
+
+
+
+1) ANALISA SEU 'CURRENTLY LOADED PATH' na url...
+
+
+
+
+
+2) DEPOIS __ CHECA__ QUAIS_ _ LINKS__ LEVAM A UMA ROUTE 
+
+
+
+QUE __ UTILIZA__ ESSE PATH...
+
+
+
+
+
+3) AÍ, POR _ DEFAULT_,
+
+ESSA DIRECTIVE __ MARCA _ UM ELEMENT COMO 'active',
+
+
+
+ADICIONA ESSA CLASSE CSS,
+
+
+
+__ SE __ O LINK __ CONTÉM O 'PATH EM QUE VOCê ESTÁ AGORA'...(
+
+    checa se o LINK do <a> ou <li> faz 
+
+    PARTE_ DO PATH QUE ESTÁ ATUALMENTE CARREGADO NA PÁGINA...
+)
+
+
+
+
+
+
+
+
+
+
+---> é por isso que 
+
+PARA OS LINKS DE '/servers' 
+
+
+
+e 
+
+'/users' 
+
+
+
+isso funciona...
+
+
+
+
+
+
+
+
+MAS _ O PROBLEMA É QUE PARA 
+
+'/',
+
+
+ESSe__ SEMPRE _ É O CASO,
+sempre teremos '/' nos nossos links..
+
+
+
+
+
+
+--> talvez uma soluçaõ seja COLOCAR ESSE LINK COM '/' por último...-> mas isso seria ruim, meio scuffed...
+
+
+
+
+
+
+
+
+
+
+----> É REALMENTE O PROBLEMA QUE EU IMAGINEI...
+
+
+
+
+
+
+
+
+
+COMO PODEMOS TIRAR ISSO AÍ?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA CONSERTAR,
+
+
+
+_PODEMOS_ ADICIONAR UM POUCO DE 'CONFIGURATION' a essa directive 
+
+de 
+
+
+'routerLinkActive'...
+
+
+
+
+
+
+
+
+----->  OK, MAS COMO FAZEMOS ISSO?
+
+
+
+
+
+
+
+
+
+
+----> PARA __ CONFIGURAR O 'routerLinkActive',
+
+
+VOCÊ DEVE ADICIONAR A DIRECTIVE OPCIONAL DE 'routerLinkActiveOptions'...
+
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+ <li role="presentation" 
+ routerLinkActive="active"
+ routerLinkActiveOptions=""
+ 
+ 
+ ><a routerLink="/">Home</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -> OK....
+
+
+
+
+
+
+
+
+ MAS NÃO É TÃO SIMPLES ASSIM..
+
+
+
+
+
+
+
+
+ --> o 'routerLinkActiveOptions'
+
+
+
+
+
+
+ __ DEMANDA PROPERTY BINDING,
+
+
+
+PQ _ VAMOS 
+
+
+PASSAR MAIS DO QUE UMA SIMPLES STRING,
+
+VAMOS __ PASSAR UM _ JAVASCRIPT OBJECT configurando nosso 'routerLinkActive'...
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+        <li role="presentation" routerLinkActive="active"
+        [routerLinkActiveOptions]="{}"
+        
+        ><a routerLink="/">Home</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------>  OK... 
+
+
+
+
+
+
+
+
+
+
+
+ISSO PQ COM 
+
+'[]' podemos 
+
+PASSAR _ QUALQUER COISA QUE 
+
+
+VAI ACABAR 'RESOLVED DYNAMICALLY',
+
+
+
+
+COMO ESSE OBJECT JAVASCRIPT...
+
+
+
+
+
+
+
+
+------>  A CONFIGURAÇÃO QUE VAMOS QUERER ADICIONAR É SIMPLESMENTE A 
+
+KEY 
+
+'exact',
+
+
+que será definida como 'true'..
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+        <li role="presentation" routerLinkActive="active"
+        [routerLinkActiveOptions]="{exact: true}"
+        
+        ><a routerLink="/">Home</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ISSO PQ 
+
+'exact'
+
+
+É 
+
+KINDOF uma 
+
+RESERVED PROPERTY,
+
+
+
+
+NESSE OBJECT QUE VOCÊ PASSA AO 
+
+'routerLinkActiveOptions'....
+
+
+
+
+
+
+
+
+--> ISSO VAI _ BASICAMENTE DIZER AO ANGULAR
+
+
+
+
+''''apenas _aDICIONE _ ESSA CLASS DE ACTIVE 
+
+
+__ SE O _ FULL PATH__ FOR EXATAMENTE '/'       ''''' (
+
+
+    tudo tem que ser '/',
+
+
+    e não 
+    poderá apenas 
+
+    ''AH, TEM UM / no url''....
+
+
+
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, ISSO SIGNIFICA QUE AGORA CONSERTAMOS AQUELE BUG,
+
+AGORA 
+
+FAZEMOS COM QUE 
+
+SÓ SEJA MARCADO ESSE LINKK _ SE O 'FULL PATH' 
+é 
+
+a coisa/value/path que 
+
+
+definimos na directive de 'routerLink'....

@@ -1,0 +1,2223 @@
+
+
+
+
+
+
+
+
+
+-> NA ÚLTIMA LIÇÃO,
+
+CRIAMOS NOSSO PRIMEIRO  
+
+
+
+
+
+
+APP ANGULAR,
+
+
+MAS AINDA 
+
+NÃO CRIAMOS NADA NELE..
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR ESTÁ USANDO O IDE DE 'VISUAL STORM',
+
+que e´
+
+ÓTIMO PARA 
+
+
+
+ANGULAR,
+
+
+MAS __ QUE __ NÃO É DE GRAÇA...
+
+
+
+
+
+
+
+
+
+
+
+
+-> UMA ALTERNATIVA DE GRAÇA É O 'VISUAL STUDIO CODE'...
+
+
+
+
+
+
+
+
+
+
+
+----> ACHO MELHOR USAR O VISUAL STUDIO CODE..
+
+
+
+
+
+
+
+
+-----> ABRA O FOLDER EM QUE VOCÊ CRIOU SEU 
+
+
+PROJETO...
+
+
+
+
+
+
+
+
+
+--> nosso folder será carregado,
+
+
+tudo normal....
+
+
+
+
+
+
+
+
+
+--> PROJETO CARREGADO NO IDE... -> 
+
+
+
+
+
+
+
+
+AÍ VOCê VERÁ TODOS OS ARQUIVOS E FOLDERS QUE O ANGULAR-CLI CRIOU PARA VOCÊ...
+
+
+
+
+
+
+
+
+
+
+
+------> FICAMOS COM UM MONTE DE FILES,
+
+MAS MTAS DELAS SÃO 
+
+
+'CONFIGURATION FILES',
+
+que fazem CONFIGURATION WORK...
+
+
+
+
+
+
+
+
+
+
+-> UM ARQUIVO INTERESSANTE É 'package.json',
+
+QUE TE MOSTRA TODAS AS DEPENDENCIES DO ANGULAR:
+
+
+
+
+
+
+  "dependencies": {
+    "@angular/animations": "~13.3.0",
+    "@angular/common": "~13.3.0",
+    "@angular/compiler": "~13.3.0",
+    "@angular/core": "~13.3.0",
+    "@angular/forms": "~13.3.0",
+    "@angular/platform-browser": "~13.3.0",
+    "@angular/platform-browser-dynamic": "~13.3.0",
+    "@angular/router": "~13.3.0",
+    "rxjs": "~7.5.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.11.4"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "~13.3.3",
+    "@angular/cli": "~13.3.3",
+    "@angular/compiler-cli": "~13.3.0",
+    "@types/jasmine": "~3.10.0",
+    "@types/node": "^12.11.1",
+    "jasmine-core": "~4.0.0",
+    "karma": "~6.3.0",
+    "karma-chrome-launcher": "~3.1.0",
+    "karma-coverage": "~2.1.0",
+    "karma-jasmine": "~4.0.0",
+    "karma-jasmine-html-reporter": "~1.7.0",
+    "typescript": "~4.6.2"
+  }
+
+
+
+
+
+
+
+
+
+
+  -> ESSES SÃO OS THIRD PARTY PACAKGES DE QUE SEU PROJETO/packages precisam..
+
+
+
+
+
+
+
+
+
+
+
+  --> OK.. VAMOS QUERER EDITAR NOSSO CÓDIGo...
+
+
+
+
+
+
+
+  'e2e' --> SIGNIFICA 'END TO END TESTING'...
+
+
+
+
+
+
+
+
+
+
+
+
+  -> NODE_MODULES _--> É ONDE TODAS AS DEPENDENCIES FICAM..
+
+
+
+
+
+
+
+
+
+  ------> mas ESTAMOS INTERESSADOS 
+
+
+
+  NO FOLDER DE 'source',
+
+  E NADA MAIS...
+
+
+
+
+
+
+
+
+
+
+  ---> DENTRO DE 'source'  ('src'),
+
+
+
+  TEMOS AQUELE FOLDER DE 'app',
+
+   
+   E DENTRO 
+
+   DELE 
+
+   VEMOS ALGUNS OUTROS ARQUIVOS ((
+
+
+1) app.component.css 
+
+2) app.component.html
+ 
+3) app.component.spec.ts 
+
+
+
+4) app.component.ts 
+
+
+5) app.module.ts 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> mantenha o processo 'ng serve'
+
+
+
+RODANDO,
+
+PQ 
+
+
+
+
+É BASICAMENTE A MESMA COISA QUE O REACT,
+
+ELE 
+
+
+RECARREGA QUAISQUER MUDANÇAS QUE VOCê 
+
+
+
+EFETUAR NO SEU PROJETO...
+
+
+
+
+
+
+
+
+
+
+EM 'app.component.html',
+
+TEMOS O OUTPUT 
+
+
+
+DE 
+
+
+ALGUMAS COISAS...
+
+
+
+
+
+
+
+
+
+
+
+MAS MEU CÓDIGO ESTÁ DIFERENTE EM RELAÇÃO AO DO PROFESSOR....
+
+
+
+
+
+
+
+
+
+
+
+ vou copiar o que ele escreveu..
+
+
+
+
+
+ -----------------
+
+
+ FICOU TIPO ASSIM:
+
+
+
+
+ <div style="...">
+  <h1>Hi, this {{ title }}</h1>
+  <img width="300" alt="Angular Logo" src="data:" />
+</div>
+<h2>Here are some links to help you start:</h2>
+<ul>
+  <li>
+    <h2>
+      <a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a>
+    </h2>
+  </li>
+  <li>
+    <h2>
+      <a target="_blank" rel="noopener" href="https://github.com/angular/angular">CLI Documentation</a>
+    </h2>
+  </li>
+  <li>
+    <h2>
+      <a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a>
+    </h2>
+  </li>
+</ul>
+
+
+
+
+---------------------
+
+
+
+
+
+
+
+----> UMA COISA estranha que vemos aqui é 
+
+
+
+a marcação 
+
+
+
+''   <h1>Hi, this {{ title }}</h1> ''' 
+
+
+
+
+
+
+
+
+--> JÁ É POSSÍVEL OBSERVAR UM POUCO DO TRABALHO QUE O 
+
+
+ANGULAR FAZ, AQUI...
+
+
+
+
+
+
+
+
+--> ANGULAR __ OBVIAMENTE 
+
+É UMA FERRAMENTA 
+
+
+QUE 
+
+NÃO É USADA PARA 
+
+ESCREVER ARQUIVOS HTML ESTÁTICOS;.... --------> O ANGULAR 
+
+
+
+
+
+
+
+É USADO/NOS PERMITE 
+
+
+
+MISTURAR CÓDIGO HTML ESTÁTICO 
+
+
+
+
+
+E COISAS DINÂMICAS QUE QUEREMOS OUTPUTTAR 
+
+
+
+NESSE CÓDIGO...
+
+
+
+
+
+
+
+
+
+-> E AQUI JÁ TEMOS UMA DAS COISAS COM QUE 
+O 
+
+
+
+ANGULAR TRABALHA,
+
+
+
+NO CASO O COMPONENT 'APP'...
+
+
+
+
+
+
+
+
+
+
+
+UM ___ COMPONENT__ ANGULAR_ É SEMPRE FORMADO DE:
+
+
+
+
+
+1) HTML CODE (é o 'template', no caso o 'app.component.html')....
+
+
+
+
+
+
+2) POSSIVELMENTE ALGUNS STYLINGS (arquivos css) ---> na nossa página exemplo, não 
+                                                    temos código css, mas poderíamos ter....
+
+
+
+
+
+3) POR FIM, TEMOS O IMPORTANTE ARQUIVO '.ts',
+
+
+QUE É UM ARQUIVO TYPESCRIPT....
+
+
+
+
+
+
+
+
+
+
+
+--> O CÓDIGO TYPESCRIPT DE 'app.component.ts' é este:
+
+
+
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'my-first-app';
+}
+
+
+
+
+
+
+
+
+
+
+-----> ISSO É _ TYPESCRIPT_...   (a estrutura é estranha, mas remete ao react)..
+
+
+
+
+
+
+
+
+
+
+----> ESSE CÓDIGO AÍ É A DEFINIÇÃO DO COMPONENT... ----> É ISSO QUE 
+
+
+VAI SER __ CONVERTIDO _ EM JAVASCRIPT ___ COMUM __ ATRAVÉS 
+
+
+
+DO 
+
+BUILD WORKFLOW...
+
+
+
+
+
+
+
+
+
+
+--> NESSE ARQUIVO JÁ VEMOS UM MONTE DE COISAS INTERESSANTES,
+
+
+
+
+
+
+
+
+
+
+como
+
+
+
+
+'@Component'... --------> VEREMOS COM DETALHES O QUE  ISSO SIGNIFICA NO PRÓXIMO MÓDULO...
+
+
+
+
+
+
+
+
+
+
+
+
+interessante também é este trecho:
+
+
+
+
+
+
+
+export class AppComponent {
+  title = 'my-first-app';
+}
+
+
+
+
+
+
+
+
+
+----> SE VAMOS ATÉ O 'app.component.html',
+
+
+
+
+
+
+
+
+ENXERGAMOS ISTO:
+
+  <h1>Hi, this {{ title }}</h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> POR ISSO, ASSUMIMOS QUE O VALUE NESSE ARQUIVO AÍ _ ACABOU IMPLANTADO _ 
+
+
+LÁ NAQUELE TEMPLATE NOSSO...
+
+
+
+
+
+
+
+
+
+--> PODEMOS TESTAR, PODEMOS TROCAR 
+
+
+
+
+O VALOR PARA OUTRA COISA, PARA VER COMO 
+
+O OUTPUT 
+
+NO TEMPLATE MUDA... -------------> ESSE COMPORTAMENTO É CHAMADO DE 
+
+
+
+
+'DATA-BINDING',
+
+
+
+
+
+
+
+
+
+
+
+UM CONCEITO QUE VEREMOS DURANTE O CURSO... -> É ASSIM QUE OUTPUTTAMOS CONTEÚDO DINÂMICO... ->
+
+
+
+
+ESSE CONTEÚDO PODERIA/PODE SER CALCULADO DINAMICAMENTE,
+
+OU ENTÃO RETRIEVADO DE UM SERVER,
+
+
+
+
+E OUTPUTTADO NO NOSSO CÓDIGO HTML...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SE INSPECIONAMOS O PAGE SOURCE,
+
+
+
+
+NÃO ACTUALLY VEMOS ESSE CÓDIGO AÍ... 
+
+
+
+
+
+
+
+
+---> a única coisa que realmente vemos é um monte de script imports ao final do arquivo:
+
+
+
+<script src="runtime.js" type="module">
+</script><script src="polyfills.js" type="module">
+</script><script src="styles.js" defer></script><script src="vendor.js" type="module">
+</script><script src="main.js" type="module"></script></body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE É O 'BUILD CODE' e o ANGULAR FRAMEWORK CODE....
+
+
+
+
+
+
+
+
+
+--> O CÓDIGO INTEIRO É ASSIM:
+
+
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>MyFirstApp</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="stylesheet" href="styles.css"></head>
+<body>
+  <app-root></app-root>
+<script src="runtime.js" type="module">
+</script><script src="polyfills.js" type="module">
+</script><script src="styles.js" defer></script><script src="vendor.js" type="module">
+</script><script src="main.js" type="module"></script></body>
+</html>
+
+
+
+
+
+
+
+
+
+
+------> A TAG DE HEAD, QUE JÁ CONHECEMOS,
+
+
+E AÍ 
+
+
+ESSA PARTE ESTRANHA DE 
+
+'app-root'....
+
+
+
+
+
+
+
+  <app-root></app-root>
+
+
+
+
+
+
+
+
+
+
+
+---> ESSA PARTE DE 'app-root'
+
+
+TAMBÉM 
+
+
+
+É OBSERVADA 
+
+LÁ 
+
+no 
+
+
+
+'app.component.ts',
+
+
+
+
+
+NESTE TRECHO AQUI:
+
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+
+
+
+
+
+
+
+-----------------------
+
+
+
+
+
+
+
+
+
+
+-> OU SEJA,
+
+ATRAVÉS DA KEY DE 'selector',
+
+
+
+ESCOLHEMOS O __ LOCAL__ EM QUE __ 
+
+
+
+É 
+
+INSERIDO ESSE 'COMPONENT'.... ------> ESSE COMPONENT É QUASE COMO UMA 'TAG HTML' que estamos criando A PARTE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> A PAGE QUE ESTAMOS VISUALIZANDO AQUI,
+
+
+A QUE 
+
+ESSE FOLDER DE 'src' MANIPULA,
+
+
+
+
+É NA VERDADE O ARQUIVO 'index.html' 
+
+
+
+LÁ EM 
+
+'environments':
+
+
+
+
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>MyFirstApp</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+  <app-root></app-root>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> JÁ OS SCRIPT IMPORTS ESTÃO FALTANDO, NESSE ARQUIVO,
+
+PQ ELES SÃO INCORPORADOS __ DINAMICAMENTE POR MEIO DO NOSSO BUILD WORKFLOW....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O QUE O ANGULAR FAZ, NO FINAL DAS CONTAS,
+
+
+
+
+É __ SEMPRE_ CARREGAR_ ESSE 
+
+INDEX.HTML,
+
+
+E AÍ _ 
+
+
+CARREGAR __ DINAMICAMENTE ESSES SCRIPT IMPORTS,
+
+
+
+
+QUE 
+
+
+
+
+VÃO 
+
+
+
+DINAMICAMENTE 
+
+
+SUBSTITUIR 
+
+'app-root'
+
+
+
+
+
+POR 
+
+
+NOSSOS COMPONENTS..
+
+
+
+
+
+
+
+
+
+
+
+-----> E É CLARO QUE __ PODEMOS TER MAIS __ DE 1 ÚNICO 
+
+COMPONENT 
+
+EM 
+
+APPS ANGULAR...
+
+
+
+
+
+
+
+
+----> VEREMOS COMO TER MAIS DE 1 ÚNICO COMPONENT EM ANGULAR APPS AO LONGO DO CURSO...
+
+
+
+
+
+
+
+
+
+
+
+-> OK, ISSO É NICE,
+ 
+
+ MAS VAMOS FAZER ALGO MAIS DINÂMICO... -------> TENTAR MUDAR O NOSSO 'TITLE'
+
+
+
+ DE FORMA DINÂMICA...
+
+
+
+
+
+
+
+
+
+
+
+ --> VOLTAMOS AO 
+
+
+ 'app.component.html'
+
+
+ E 
+
+
+ O PROF ACTUALLY __ REMOVE _ TODO O CÓDIGO NESSE ARQUIVO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> AÍ, DENTRO 
+
+
+
+DESSE ARQUIVO,
+
+O PROFESSOR ADICIONA UMA TAG DE INPUT COMUM...
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+<input type="text">
+
+
+
+
+
+
+EMBAIXO DISSO,
+
+O PROFESSOR COLOCA 
+
+
+
+UMA PARAGRAPH TAG,
+
+EM QUE 
+OUTPUTTA UM '{{name}}' ,
+
+
+
+
+
+
+
+
+
+QUE SERÁ DEFINIDO DINAMICANETE....
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+<input type="text">
+<p>{{name}}</p>
+
+
+
+
+
+
+
+
+
+-------------------------
+
+
+
+
+
+
+
+
+
+-> OK... AÍ VOLTAMOS LÁ 
+
+
+
+em 
+
+
+
+
+export class AppComponent {
+  title = 'my-first-app';
+}
+
+
+
+
+
+
+
+
+
+E TROCAMOS 'title' para que fique 'name'....
+
+
+
+
+
+
+
+
+
+
+-------------------------
+
+
+
+
+
+ 
+ OK... SALVAMOS ISSO, AÍ VEMOS O INPUT E O NAME ('EXEMPLO")...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> OK, QUEREMOS SER CAPAZES DE:
+
+
+
+
+ 1) INPUTTAR ALGO NO INPUT 
+
+
+
+ 2) AUTOMATICAMENTE __ TROCAR O FIELD DE 'NAME'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> ISSO PODE SER FEITO COM UMA __ FERRAMENTA _ 
+
+
+ PROVIDENCIADA 
+
+ PELO ANGULAR,
+
+
+
+
+ UMA FERRAMENTA CHAMADA DE 
+
+ 'Directive',
+
+
+
+ QUE É CHAMADA DE 
+
+
+ 'ngModel'...
+
+
+
+
+
+
+
+
+
+
+
+
+ -> APRENDEREMOS A SINTAXE AO LONGO DO CURSO,
+
+ MAS O QUE INTERESSA É QUE A SINTAXE, AQUI, É 
+
+
+
+
+
+[(ngModel)]
+
+
+
+
+
+
+
+--> EX:
+
+
+
+
+
+<input type="text"  [(ngModel)]/>
+<p>{{ name }}</p>
+
+
+
+
+
+-------> TEM QUE SER ESSA GRAFIA EXATA...
+
+
+
+
+
+
+
+
+
+
+-----> OK... AÍ DEFINA O 'ngModel' 
+
+
+
+
+COMO SENDO EQUIVALENTE 
+
+
+a 
+
+
+'name'....
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+<input type="text"  [(ngModel)]="name"/>
+<p>{{ name }}</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, MAS ISSO ME DEU UM ERRO:
+
+<input type="text" [(ngModel)]="name"><!-- 'ngModel' É AQUILO QUE CHAMAMOS DE UMA 'DIRECTIVE'-->
+<p>{{ name }}</p>
+
+
+
+
+
+
+
+Error: src/app/app.component.html:1:33 - error TS2322: Type 'Event' is not assignable to type 'string'.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> ISSO É UMA _ DIRECTIVE___ ... -----> O QUE ISSO FAZ,
+
+
+BASIACMENTE,
+
+É 
+
+
+DIZER AO 
+
+
+ANGULAR PARA 
+
+
+FAZER 
+
+'LISTEN TO' 
+
+
+
+A QUALQUER COISA QUE VOCÊ INPUTTAR NESSE <input>
+
+
+de type 'text',
+
+E 
+
+AÍ 
+
+ARMAZENAR ESSE VALUE NESSA PROPRIEDADE 
+
+
+
+de 
+
+'name'.... (name PROPERTY, OU NAME _MODEL_...) 
+
+
+
+
+
+
+
+
+
+
+
+
+---> JÁ O {{name}} QUE COLOCAMOS NAQUELE '<p>'
+
+VAI FAZER OUTPUT 
+
+
+
+
+DO VALUE DESSE NAME QUE O USER DIGITAR NO INPUT FIELD....
+
+
+
+
+
+
+
+
+
+--------> certo.... SE SALVARMOS TUDO ISSO E RECARREGARMOS,
+
+
+
+
+GANHAREMOS UM __ ERROR_.... --. 
+
+
+
+
+
+
+e NADA APARECERÁ NA NOSSA PÁGINA... -> NAS DEV TOOLS,
+
+
+
+
+
+
+
+O PROFESSOR GANHOU O ERROR DE 
+
+'Template parse errors':
+
+
+
+
+
+
+'Cant bind to ngModel since it isnt a known property of "input" ' 
+
+
+
+
+
+
+
+
+
+
+
+------>   ISSO SIGNIFICA, EM OUTRAS PALAVRAS,
+
+QUE O 
+
+ANGULAR 
+
+
+
+'''NÃO COMPREENDE/ENTENDE o ngModel'... ------>  E ISSO É ESTRANHO,
+
+
+
+
+PQ O PROFESSOR HAVIA MENCIONADO QUE 
+
+
+ESSE NEGÓCIO É 'built-in' (o ngModel, builtin no angular)... -------> BEM,
+
+
+A 
+
+QUESTÃO 
+
+É QUE 
+O
+ 
+ANGULAR É DIVIDIDO EM __ DIFERENTES MÓDULOS.... --> você poderia os chamar de 
+
+'sub packages'... --> 
+
+
+
+
+
+
+
+e nós precisamos ADICIONAR _OS SUBMÓDULOS NOS NOSSOS ARQUIVOS __ SE DESEJAMOS USAR ALGUMA 
+
+FEATURE 
+
+CONTIDAN ELES... --------> E, NESSE CURSO,
+
+
+
+APRENDEREMOS AS  DIFERENTES PACKAGES 
+
+E AS 
+
+DIFERENTES FEATUERS QUE ELAS CONTÉM...
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ADICIONAR UMA FEATURE/SUBMÓDULO DESSES NO NOSSO PROJETO,
+
+
+
+
+devemos entrar 
+
+
+
+
+
+
+NAQUELE OUTRO ARQUIVO QUE AINDA NÃO ANALISAMOS, QUE É 
+
+
+'app.module.ts'....
+
+
+
+
+
+
+
+
+
+
+
+
+--> LÁ DENTRO, TEMOS ESTE CÓDIGO:
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> É NESSE ARQUIVO QUE DIZEMOS AO ANGULAR 'QUAIS PEDAÇOS/PIECES 
+
+PERTENCEM AO NOSSO APP'...
+
+
+
+
+
+
+
+
+
+
+
+--> DENTRO DE 'app.module.ts',
+
+
+
+PRECISAMOS _ ADICIONAR _UM VALUE NOVO A 'imports: []',
+
+
+
+
+PARA QUE 
+
+
+ENTÃO SEJA IMPORTADA__ OUTRA PACKAGE __ LÁ DO ANGULAr...
+
+
+
+
+
+
+
+
+
+
+
+--> COMO PRECISAMOS IMPORTAR ESSA PACKAGE, ESCREVEMOS AO TOPO DO ARQUIVO:
+
+
+
+
+
+
+
+
+
+import {} from '@angular/forms'...
+
+
+
+
+
+
+
+
+
+
+
+
+-> E ESSA É UMA _ OUTRA PACKAGE_ VINDA DO ANGULAR... ------> 
+
+
+
+
+
+
+E, A PARTIR DÁI,
+
+PODEMOS 
+
+IMPORTAR 
+
+
+
+O OBJETO de 'FormsModule'....
+
+
+
+
+
+
+
+
+FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { FormsModule } from '@angular/forms';
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+import { FormsModule } from '@angular/forms';
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSA NÃO É UMA 'FEATURE'/característica do 
+
+
+
+ANGULAR EM SI,
+
+e sim 
+
+
+
+DO TYPESCRIPT.... (
+
+
+  pq o typescript é BURRO, ele precisa saber 'em que lugar as coisas estão'....
+)
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { FormsModule } from '@angular/forms'; ////precisamos importar features, no typescript, para que funcionem com o angular... 
+
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM ESSE 'MODULE' do angular importado,
+
+
+
+DEVEMOS O UTILIZAR LÁ NA KEY DE 'imports',
+
+especificar naquele array ali...
+
+
+
+
+ex:
+
+
+
+
+
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { FormsModule } from '@angular/forms'; ////precisamos importar features, no typescript, para que funcionem com o angular... 
+
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+----------------------------
+
+
+
+
+
+
+
+
+
+
+---> ISSO FUNCIONOU, FEZ COM QUE O 
+
+
+
+INPUT DA PÁGINA 
+
+
+
+REALMENTE FICASSE VINCULADO COM AQUELE SLOT em que diz 'exemplo'...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> A KEY DE 'imports' nesse arquivo 'app.module.ts'
+
+
+
+É UMA __ FEATURE__ COMPREENDIDA PELO ANGULAR,
+
+
+
+
+JUSTAMENTE PQ FAZ PARTE DAQUELE TAL DE 
+
+
+
+'NgModule' (ANGULAR __ MODULE_ )
+
+
+
+
+
+
+
+
+
+
+
+'NG' -> ANGULAR...  essa é a sigla...
+
+
+
+
+
+
+
+
+
+-> QUANDO ESCREVEMOS 
+
+
+imports: [
+  FormsModule,
+  BrowserModule
+],
+
+
+
+ESTAMOS ESPECIFICANDO QUE VAMOS QUERER IMPORTAR UMA FEATURE DE 'Forms' lá do angular...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> 'ngModel' --> ANGULAR MODEL...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO....
+
+
+
+
+
+export class AppComponent {
+  // title = 'EXEMPLO';
+  name = 'EXEMPLO'
+}
+
+
+
+
+
+
+
+
+
+
+
+
+-> ISSO É REFLETIDO LÁ NA TAG COM A MARCAÇÃO DINÂMICA '{{name}}' (é o INITIAL STATE)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> ok...
+
+
+
+
+
+
+
+-> ISSO QUER DIZER QUE BINDAMOS UM VALOR A 'ngModel'..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O ANGULAR É SPLITTADO EM MÚLTIPLOS 'SUB-MODULES'...
+
+
+
+
+
+
+
+
+
+
+
+->  E PRECISAMOS ADICIONAR ESSES MÚLTIPLOS SUBMODULES 
+
+se queremos usar alguma feature específica do angular... 
+
+
+
+
+
+
+
+
+
+-> esses modulesd devem ser colocados/escritos 
+
+
+
+lá no arquivo 'app.module.ts'... 
+
+
+
+
+
+--> É AQUI QUE APONTAMOS QUAIS PIECES PERTENCEM AO NOSSO APP...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> é nesse arquivo 
+
+
+
+
+
+que IMPORTAMOS coisas como 
+o 
+
+
+'FormsModule'... 
+
+
+
+
+
+
+
+
+
+
+
+import { FormsModule } from '@angular/forms';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ADICIONAMOS ESSE MODULE AÍ...
+
+
+
+
+
+
+
+
+
+
+--> ESSA DIRECTIVE QUE ESTAMOS USANDO ,
+
+
+
+
+a 
+
+'ngModel',
+
+
+É UMA 
+
+
+__FEATURE_ DE FORMS,
+
+EXTRAÍDA 
+
+
+DIRETAMENTE 
+
+
+
+
+de 
+
+
+'@angular/forms'
+
+
+
+
+
+
+
+
+
+
+---> SALVAMOS TUDO ISSO E TESTAMOS... ---> 
+
+
+
+PODEMOS VER QUE NOSSO INPUT, QUANDWO DIGITAMOS COISAS DENTRO DELES,
+
+O text 
+
+
+NAQUELE <p>,
+
+dinâmico ('name')
+
+VAI SER UPDATADO DE ACORDO com seu value..
+
+
+
+
+
+
+
+
+
+
+-> ESSE É O NOSSO PRIMEIRO APP,
+
+MOSTRANOD AS FEATURES INICIAIS...
